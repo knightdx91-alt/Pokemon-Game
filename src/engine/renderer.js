@@ -1,73 +1,106 @@
 // GameRenderer — renders game world to #screen-primary canvas
 window.GameRenderer = (function () {
+    // Fixed tile size: 16x16 pixels per metatile, viewport 15x13 tiles → 240x208 px canvas
+    const TILE_PX          = 16;
+    const METATILES_PER_ROW = 16;  // spritesheet layout
+
     let canvas = null;
-    let ctx = null;
-    let rafId = null;
-    let _map = null;
+    let ctx    = null;
+    let rafId  = null;
+    let _map   = null;
     let _camera = null;
     let _player = null;
 
-    // Tile size in pixels (recalculated each frame based on canvas size)
-    function getTileSize() {
-        if (!canvas) return 32;
-        return Math.floor(Math.min(
-            canvas.width  / GameCamera.viewportW,
-            canvas.height / GameCamera.viewportH
-        ));
-    }
+    // Tileset state
+    let _tilesetName  = null;   // e.g. "pallet_town"
+    let _tilesetImg   = null;   // HTMLImageElement — the metatile spritesheet
+    let _tilesetMeta  = null;   // parsed JSON from data/tilesets/<name>.json
+    let _tilesetLoading = false;
 
-    // Color definitions
+    // Fallback color definitions (used when tileset image not ready)
     const COLORS = {
-        walkable:   '#4a7c4e',   // grass green
-        border:     '#1a1a2e',   // dark navy for impassable border
-        player:     '#e53935',   // red square
-        npc:        '#1565c0',   // blue square
-        warp:       '#f9a825',   // yellow for doors/warps
-        sign:       '#8d6e63',   // brown for signs
-        gridLine:   'rgba(0,0,0,0.12)',
-        bg:         '#2d4a2d'
+        walkable:  '#4a7c4e',
+        impassable:'#1a1a2e',
+        player:    '#e53935',
+        npc:       '#1565c0',
+        warp:      '#f9a825',
+        sign:      '#8d6e63',
+        gridLine:  'rgba(0,0,0,0.12)',
+        bg:        '#2d4a2d'
     };
 
+    // Keep canvas at exactly 240x208 (CSS scales it up)
     function resizeCanvas() {
         if (!canvas) return;
-        const parent = canvas.parentElement;
-        if (!parent) return;
-        canvas.width  = parent.clientWidth  || 480;
-        canvas.height = parent.clientHeight || 416;
+        if (canvas.width  !== 240) canvas.width  = 240;
+        if (canvas.height !== 208) canvas.height = 208;
     }
 
-    function drawTile(screenX, screenY, tileSize, color) {
-        ctx.fillStyle = color;
-        ctx.fillRect(screenX, screenY, tileSize, tileSize);
+    // Load (or reload) the tileset spritesheet for the given tileset name
+    function loadTileset(name) {
+        if (!name || name === _tilesetName) return;
+        _tilesetName    = name;
+        _tilesetImg     = null;
+        _tilesetMeta    = null;
+        _tilesetLoading = true;
+
+        // Load JSON metadata first, then image
+        fetch(`data/tilesets/${name}.json`)
+            .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
+            .then(meta => {
+                _tilesetMeta = meta;
+                const img = new Image();
+                img.onload  = () => { _tilesetImg = img; _tilesetLoading = false; };
+                img.onerror = () => { console.warn(`[Renderer] Failed to load tileset image: ${name}`); _tilesetLoading = false; };
+                img.src = `data/tilesets/${name}.png`;
+            })
+            .catch(e => {
+                console.warn(`[Renderer] Failed to load tileset JSON for ${name}:`, e);
+                _tilesetLoading = false;
+            });
+    }
+
+    // Draw one metatile from the spritesheet at screen (sx, sy)
+    function drawMetatile(metatileIdx, sx, sy) {
+        if (!_tilesetImg) return false;
+        const col = metatileIdx % METATILES_PER_ROW;
+        const row = Math.floor(metatileIdx / METATILES_PER_ROW);
+        ctx.drawImage(
+            _tilesetImg,
+            col * TILE_PX, row * TILE_PX, TILE_PX, TILE_PX,
+            sx, sy, TILE_PX, TILE_PX
+        );
+        return true;
     }
 
     function render() {
         if (!canvas || !ctx || !_map || !_camera || !_player) return;
 
         resizeCanvas();
-        const ts = getTileSize();
+
         const camX = _camera.x;
         const camY = _camera.y;
-        const vw = _camera.viewportW;
-        const vh = _camera.viewportH;
+        const vw   = _camera.viewportW;
+        const vh   = _camera.viewportH;
 
-        // Offset to center the viewport area within the canvas
-        const offsetX = Math.floor((canvas.width  - ts * vw) / 2);
-        const offsetY = Math.floor((canvas.height - ts * vh) / 2);
+        // Check if tileset needs loading/switching
+        const wantedTileset = _map.getTilesetName ? _map.getTilesetName() : null;
+        if (wantedTileset && wantedTileset !== _tilesetName) {
+            loadTileset(wantedTileset);
+        }
 
         // Background
         ctx.fillStyle = COLORS.bg;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Build sets for quick lookup
-        const warpSet  = new Set();
-        const signSet  = new Set();
-        const npcSet   = new Set();
-
+        // Build sets for quick warp/sign/npc lookup
+        const warpSet = new Set();
+        const signSet = new Set();
+        const npcSet  = new Set();
         if (_map.current) {
-            if (_map.current.warps)  _map.current.warps.forEach(w => warpSet.add(`${w.x},${w.y}`));
-            if (_map.current.signs)  _map.current.signs.forEach(s => signSet.add(`${s.x},${s.y}`));
-            if (_map.current.npcs)   _map.current.npcs.forEach(n => npcSet.add(`${n.x},${n.y}`));
+            if (_map.current.warps) _map.current.warps.forEach(w => warpSet.add(`${w.x},${w.y}`));
+            if (_map.current.signs) _map.current.signs.forEach(s => signSet.add(`${s.x},${s.y}`));
+            if (_map.current.npcs)  _map.current.npcs.forEach(n => npcSet.add(`${n.x},${n.y}`));
         }
 
         // Draw tiles
@@ -75,62 +108,66 @@ window.GameRenderer = (function () {
             for (let tx = 0; tx < vw; tx++) {
                 const worldX = camX + tx;
                 const worldY = camY + ty;
-                const sx = offsetX + tx * ts;
-                const sy = offsetY + ty * ts;
+                const sx = tx * TILE_PX;
+                const sy = ty * TILE_PX;
 
-                let color = COLORS.walkable;
-                if (!_map.isWalkable(worldX, worldY)) {
-                    color = COLORS.border;
+                // Try to draw from spritesheet
+                const metatileIdx = _map.getTile(worldX, worldY);
+                let drawnFromSheet = false;
+                if (metatileIdx !== null && metatileIdx !== undefined && _tilesetImg) {
+                    drawnFromSheet = drawMetatile(metatileIdx, sx, sy);
                 }
-                if (warpSet.has(`${worldX},${worldY}`)) color = COLORS.warp;
-                if (signSet.has(`${worldX},${worldY}`)) color = COLORS.sign;
 
-                drawTile(sx, sy, ts, color);
+                // Fallback: solid color tile
+                if (!drawnFromSheet) {
+                    const walkable = _map.isWalkable(worldX, worldY);
+                    ctx.fillStyle = walkable ? COLORS.walkable : COLORS.impassable;
+                    ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
+                }
 
-                // Grid lines
-                ctx.strokeStyle = COLORS.gridLine;
-                ctx.lineWidth = 1;
-                ctx.strokeRect(sx, sy, ts, ts);
+                // Warp/sign overlays (semi-transparent tint on top of tile graphics)
+                if (warpSet.has(`${worldX},${worldY}`)) {
+                    ctx.fillStyle = 'rgba(249,168,37,0.45)';
+                    ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
+                } else if (signSet.has(`${worldX},${worldY}`)) {
+                    ctx.fillStyle = 'rgba(141,110,99,0.45)';
+                    ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
+                }
             }
         }
 
-        // Draw NPCs
+        // Draw NPCs as colored overlay squares
         if (_map.current && _map.current.npcs) {
             for (const npc of _map.current.npcs) {
-                const sx = offsetX + (npc.x - camX) * ts;
-                const sy = offsetY + (npc.y - camY) * ts;
-                // Only draw if within viewport
-                if (npc.x >= camX && npc.x < camX + vw && npc.y >= camY && npc.y < camY + vh) {
-                    const pad = Math.floor(ts * 0.1);
-                    ctx.fillStyle = COLORS.npc;
-                    ctx.fillRect(sx + pad, sy + pad, ts - pad * 2, ts - pad * 2);
-                    // NPC face indicator (small white dot at top)
-                    ctx.fillStyle = '#ffffff';
-                    const dotSize = Math.max(3, Math.floor(ts * 0.15));
-                    ctx.fillRect(sx + Math.floor(ts / 2) - Math.floor(dotSize / 2), sy + pad + 2, dotSize, dotSize);
-                }
+                if (npc.x < camX || npc.x >= camX + vw || npc.y < camY || npc.y >= camY + vh) continue;
+                const sx = (npc.x - camX) * TILE_PX;
+                const sy = (npc.y - camY) * TILE_PX;
+                const pad = 2;
+                ctx.fillStyle = COLORS.npc;
+                ctx.fillRect(sx + pad, sy + pad, TILE_PX - pad * 2, TILE_PX - pad * 2);
+                // Face dot
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(sx + Math.floor(TILE_PX / 2) - 1, sy + pad + 1, 3, 3);
             }
         }
 
-        // Draw player (always centered in viewport)
-        const playerScreenX = offsetX + (_player.x - camX) * ts;
-        const playerScreenY = offsetY + (_player.y - camY) * ts;
-        const pad = Math.floor(ts * 0.1);
+        // Draw player (always at camera center offset)
+        const playerSX = (_player.x - camX) * TILE_PX;
+        const playerSY = (_player.y - camY) * TILE_PX;
+        const pad = 2;
         ctx.fillStyle = COLORS.player;
-        ctx.fillRect(playerScreenX + pad, playerScreenY + pad, ts - pad * 2, ts - pad * 2);
-        // Player face indicator
+        ctx.fillRect(playerSX + pad, playerSY + pad, TILE_PX - pad * 2, TILE_PX - pad * 2);
         ctx.fillStyle = '#ffffff';
-        const dotSize = Math.max(3, Math.floor(ts * 0.15));
-        ctx.fillRect(playerScreenX + Math.floor(ts / 2) - Math.floor(dotSize / 2), playerScreenY + pad + 2, dotSize, dotSize);
+        ctx.fillRect(playerSX + Math.floor(TILE_PX / 2) - 1, playerSY + pad + 1, 3, 3);
 
         // Map name overlay (top-left)
         if (_map.current && _map.current.name) {
             ctx.fillStyle = 'rgba(0,0,0,0.55)';
-            ctx.fillRect(offsetX, offsetY, ts * vw, 20);
+            ctx.fillRect(0, 0, canvas.width, 16);
             ctx.fillStyle = '#ffffff';
-            ctx.font = '13px monospace';
+            ctx.font = '10px monospace';
             ctx.textBaseline = 'middle';
-            ctx.fillText(_map.current.name, offsetX + 8, offsetY + 10);
+            ctx.fillText(_map.current.name, 4, 8);
         }
     }
 
@@ -141,9 +178,10 @@ window.GameRenderer = (function () {
 
     function init(canvasEl) {
         canvas = canvasEl;
-        ctx = canvas.getContext('2d');
+        ctx    = canvas.getContext('2d');
+        // Disable image smoothing so pixel art stays crisp when CSS scales the canvas
+        ctx.imageSmoothingEnabled = false;
         resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
         loop();
     }
 
