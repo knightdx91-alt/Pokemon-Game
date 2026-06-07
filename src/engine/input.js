@@ -8,7 +8,9 @@ window.GameInput = (function () {
         a: false,
         b: false,
         start: false,
-        select: false
+        select: false,
+        l: false,
+        r: false
     };
 
     // Key mappings

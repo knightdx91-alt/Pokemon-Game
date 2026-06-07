@@ -1,147 +1,143 @@
-// GameControls — renders D-pad or joystick into #controls-layer and wires up GameInput
+// GameControls — renders a GBA-style controller shell into #controls-layer
+// and wires up GameInput for all buttons.
 window.GameControls = (function () {
     let mode = 'dpad'; // 'dpad' | 'joystick'
     let layer = null;
 
-    function clearLayer() {
-        if (layer) layer.innerHTML = '';
+    // -------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------
+    function el(tag, cls, inner) {
+        const e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (inner !== undefined) e.innerHTML = inner;
+        return e;
     }
 
-    // Build a button element
-    function makeBtn(label, cls, extraCls) {
-        const btn = document.createElement('button');
-        btn.className = `control-btn ${cls}${extraCls ? ' ' + extraCls : ''}`;
-        btn.innerHTML = label;
-        btn.setAttribute('aria-label', label);
-        return btn;
+    function makeBtn(cls, label) {
+        const b = el('button', cls, label);
+        b.setAttribute('aria-label', label);
+        b.type = 'button';
+        return b;
     }
 
-    function buildDpad() {
-        clearLayer();
+    // -------------------------------------------------------------------
+    // D-pad cross
+    // -------------------------------------------------------------------
+    function buildDpadSection() {
+        const dpad = el('div', 'gba-dpad');
+        dpad.setAttribute('aria-label', 'D-pad');
 
-        // Directional pad container
-        const dpad = document.createElement('div');
-        dpad.className = 'dpad';
+        // Center cosmetic circle
+        dpad.appendChild(el('div', 'gba-dpad-center'));
 
         const dirs = [
-            { label: '▲', cls: 'btn-up',    btn: 'up' },
-            { label: '◄', cls: 'btn-left',  btn: 'left' },
-            { label: '▼', cls: 'btn-down',  btn: 'down' },
-            { label: '►', cls: 'btn-right', btn: 'right' }
+            { cls: 'gba-dpad-up',    key: 'up',    label: '▲' },
+            { cls: 'gba-dpad-down',  key: 'down',  label: '▼' },
+            { cls: 'gba-dpad-left',  key: 'left',  label: '◄' },
+            { cls: 'gba-dpad-right', key: 'right', label: '►' }
         ];
 
-        dirs.forEach(({ label, cls, btn }) => {
-            const el = makeBtn(label, 'dpad-dir', cls);
-            GameInput.bindDpadButton(el, btn);
-            dpad.appendChild(el);
+        dirs.forEach(function (d) {
+            const btn = makeBtn(d.cls, d.label);
+            GameInput.bindDpadButton(btn, d.key);
+            dpad.appendChild(btn);
         });
 
-        // Face buttons container (A + B)
-        const face = document.createElement('div');
-        face.className = 'face-buttons';
-
-        const faceMap = [
-            { label: 'B', cls: 'btn-b', btn: 'b' },
-            { label: 'A', cls: 'btn-a', btn: 'a' }
-        ];
-        faceMap.forEach(({ label, cls, btn }) => {
-            const el = makeBtn(label, 'face-btn', cls);
-            GameInput.bindDpadButton(el, btn);
-            face.appendChild(el);
-        });
-
-        // System buttons (Start + Select)
-        const sys = document.createElement('div');
-        sys.className = 'sys-buttons';
-
-        const sysMap = [
-            { label: 'SEL', cls: 'btn-select', btn: 'select' },
-            { label: 'STA', cls: 'btn-start',  btn: 'start' }
-        ];
-        sysMap.forEach(({ label, cls, btn }) => {
-            const el = makeBtn(label, 'sys-btn', cls);
-            GameInput.bindDpadButton(el, btn);
-            sys.appendChild(el);
-        });
-
-        layer.appendChild(dpad);
-        layer.appendChild(sys);
-        layer.appendChild(face);
-
-        // Allow dragging individual buttons via GameLayout (if already init'd)
-        if (window.GameLayout) {
-            layer.querySelectorAll('.control-btn').forEach(btn => {
-                GameLayout.makeControlDraggable(btn);
-            });
-        }
+        return dpad;
     }
 
-    function buildJoystick() {
-        clearLayer();
+    // -------------------------------------------------------------------
+    // Joystick section (replaces d-pad)
+    // -------------------------------------------------------------------
+    function buildJoystickSection() {
+        const wrap = el('div', 'gba-joystick-wrap');
 
-        // Joystick
-        const joystickWrap = document.createElement('div');
-        joystickWrap.className = 'joystick-wrap';
-
-        const base = document.createElement('div');
-        base.className = 'joystick-base';
+        const base = el('div', 'joystick-base');
         base.id = 'joystick-base';
 
-        const thumb = document.createElement('div');
-        thumb.className = 'joystick-thumb';
+        const thumb = el('div', 'joystick-thumb');
         thumb.id = 'joystick-thumb';
 
         base.appendChild(thumb);
-        joystickWrap.appendChild(base);
-
-        // Face buttons
-        const face = document.createElement('div');
-        face.className = 'face-buttons';
-
-        const faceMap = [
-            { label: 'B', cls: 'btn-b', btn: 'b' },
-            { label: 'A', cls: 'btn-a', btn: 'a' }
-        ];
-        faceMap.forEach(({ label, cls, btn }) => {
-            const el = makeBtn(label, 'face-btn', cls);
-            GameInput.bindDpadButton(el, btn);
-            face.appendChild(el);
-        });
-
-        // System buttons
-        const sys = document.createElement('div');
-        sys.className = 'sys-buttons';
-
-        const sysMap = [
-            { label: 'SEL', cls: 'btn-select', btn: 'select' },
-            { label: 'STA', cls: 'btn-start',  btn: 'start' }
-        ];
-        sysMap.forEach(({ label, cls, btn }) => {
-            const el = makeBtn(label, 'sys-btn', cls);
-            GameInput.bindDpadButton(el, btn);
-            sys.appendChild(el);
-        });
-
-        layer.appendChild(joystickWrap);
-        layer.appendChild(sys);
-        layer.appendChild(face);
+        wrap.appendChild(base);
 
         GameInput.bindJoystick(base, thumb);
-
-        if (window.GameLayout) {
-            layer.querySelectorAll('.control-btn').forEach(btn => {
-                GameLayout.makeControlDraggable(btn);
-            });
-        }
+        return wrap;
     }
 
+    // -------------------------------------------------------------------
+    // Build full GBA shell
+    // -------------------------------------------------------------------
+    function build() {
+        layer.innerHTML = '';
+
+        // Root shell
+        const gba = el('div', 'gba-controller');
+
+        // ---- Shoulder row ----
+        const shoulderRow = el('div', 'gba-shoulder-row');
+
+        const lBtn = makeBtn('gba-shoulder-l', 'L');
+        GameInput.bindDpadButton(lBtn, 'l');
+
+        const rBtn = makeBtn('gba-shoulder-r', 'R');
+        GameInput.bindDpadButton(rBtn, 'r');
+
+        shoulderRow.appendChild(lBtn);
+        shoulderRow.appendChild(rBtn);
+
+        // ---- Main row ----
+        const mainRow = el('div', 'gba-main-row');
+
+        // Left: d-pad or joystick
+        const leftSection = el('div', 'gba-left');
+        if (mode === 'joystick') {
+            leftSection.appendChild(buildJoystickSection());
+        } else {
+            leftSection.appendChild(buildDpadSection());
+        }
+
+        // Center: SELECT + START (angled via CSS)
+        const centerSection = el('div', 'gba-center');
+
+        const selectBtn = makeBtn('gba-sys-btn', 'SELECT');
+        GameInput.bindDpadButton(selectBtn, 'select');
+
+        const startBtn = makeBtn('gba-sys-btn', 'START');
+        GameInput.bindDpadButton(startBtn, 'start');
+
+        centerSection.appendChild(selectBtn);
+        centerSection.appendChild(startBtn);
+
+        // Right: A + B
+        const rightSection = el('div', 'gba-right');
+
+        const aBtn = makeBtn('gba-btn-a', 'A');
+        GameInput.bindDpadButton(aBtn, 'a');
+
+        const bBtn = makeBtn('gba-btn-b', 'B');
+        GameInput.bindDpadButton(bBtn, 'b');
+
+        rightSection.appendChild(aBtn);
+        rightSection.appendChild(bBtn);
+
+        mainRow.appendChild(leftSection);
+        mainRow.appendChild(centerSection);
+        mainRow.appendChild(rightSection);
+
+        gba.appendChild(shoulderRow);
+        gba.appendChild(mainRow);
+
+        layer.appendChild(gba);
+    }
+
+    // -------------------------------------------------------------------
+    // Public API
+    // -------------------------------------------------------------------
     function setMode(newMode) {
         mode = newMode;
-        if (mode === 'joystick') {
-            buildJoystick();
-        } else {
-            buildDpad();
-        }
+        if (layer) build();
     }
 
     function init() {
@@ -150,8 +146,12 @@ window.GameControls = (function () {
             console.warn('[Controls] #controls-layer not found');
             return;
         }
-        setMode(mode);
+        build();
     }
 
-    return { init, setMode, get mode() { return mode; } };
+    return {
+        init,
+        setMode,
+        get mode() { return mode; }
+    };
 })();
