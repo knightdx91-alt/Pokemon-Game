@@ -105,8 +105,59 @@ def extract_platinum_encounters():
     print(f"[pokeplatinum] Extracted encounters for {count} maps → data/encounters/sinnoh/")
 
 
+def extract_heartgold_encounters():
+    """
+    HeartGold stores all encounters in a single gs_enc_data.json.
+    Splits it into per-map files under data/encounters/johto/ and writes a combined index.
+    Includes morning/day/night time-of-day variations per the HGSS encounter system.
+    """
+    src_path = os.path.join(
+        SOURCE_DIR, "pokeheartgold", "files", "fielddata", "encountdata", "gs_enc_data.json"
+    )
+    out_dir = os.path.join(OUT_DIR, "johto")
+    os.makedirs(out_dir, exist_ok=True)
+
+    if not os.path.isfile(src_path):
+        print(f"[pokeheartgold] gs_enc_data.json not found: {src_path}", file=sys.stderr)
+        return
+
+    with open(src_path) as f:
+        raw = json.load(f)
+
+    combined = {}
+    count = 0
+
+    for entry in raw.get("encounters", []):
+        map_name = entry.get("map")
+        if not map_name:
+            continue
+
+        unified = {
+            "map": map_name,
+            "region": "johto",
+            "land": entry.get("land", {}),
+            "surf": entry.get("surf", {}),
+            "rock_smash": entry.get("rock_smash", {}),
+            "fishing": entry.get("fishing", {}),
+            "headbutt": entry.get("headbutt", {}),
+        }
+
+        out_path = os.path.join(out_dir, f"{map_name}.json")
+        with open(out_path, "w") as f:
+            json.dump(unified, f, indent=2)
+
+        combined[map_name] = unified
+        count += 1
+
+    with open(os.path.join(OUT_DIR, "johto.json"), "w") as f:
+        json.dump(combined, f, indent=2)
+
+    print(f"[pokeheartgold] Extracted encounters for {count} maps → data/encounters/johto/")
+
+
 if __name__ == "__main__":
     os.makedirs(OUT_DIR, exist_ok=True)
     extract_gba_encounters("pokefirered", "kanto")
     extract_gba_encounters("pokeemerald", "hoenn")
+    extract_heartgold_encounters()
     extract_platinum_encounters()
