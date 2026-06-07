@@ -1,0 +1,48 @@
+{
+  "id": "pal_park",
+  "name": "Pal Park",
+  "region": "sinnoh",
+  "source": "platinum",
+  "npcs": [
+    {
+      "local_id": "LOCALID_WORKER",
+      "graphics_id": "OBJ_EVENT_GFX_WORKER",
+      "x": 28,
+      "y": 0,
+      "z": 48,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 6,
+      "hidden_flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 24,
+      "y": null,
+      "z": 52,
+      "dest_map": null,
+      "dest_warp_id": 1
+    },
+    {
+      "x": 25,
+      "y": null,
+      "z": 52,
+      "dest_map": null,
+      "dest_warp_id": 1
+    }
+  ],
+  "signs": [],
+  "coord_events": [
+    {
+      "script": 5,
+      "x": 22,
+      "z": 48,
+      "y": 0,
+      "width": 6,
+      "length": 1,
+      "var": "VAR_PAL_PARK_STATE",
+      "value": 1
+    }
+  ]
+}

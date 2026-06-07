@@ -1,0 +1,64 @@
+{
+  "id": "iron_island",
+  "name": "Iron Island",
+  "region": "sinnoh",
+  "source": "platinum",
+  "npcs": [
+    {
+      "local_id": "LOCALID_SAILOR",
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 99,
+      "y": 0,
+      "z": 502,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_RILEY",
+      "graphics_id": "OBJ_EVENT_GFX_RILEY",
+      "x": 117,
+      "y": 0,
+      "z": 490,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "FLAG_HIDE_IRON_ISLAND_RILEY"
+    }
+  ],
+  "warps": [
+    {
+      "x": 111,
+      "y": null,
+      "z": 499,
+      "dest_map": null,
+      "dest_warp_id": 0
+    },
+    {
+      "x": 117,
+      "y": null,
+      "z": 489,
+      "dest_map": null,
+      "dest_warp_id": 0
+    },
+    {
+      "x": 103,
+      "y": null,
+      "z": 489,
+      "dest_map": null,
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 114,
+      "y": 0,
+      "z": 504,
+      "script": 8051,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    }
+  ],
+  "coord_events": []
+}

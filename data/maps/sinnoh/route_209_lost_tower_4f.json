@@ -1,0 +1,101 @@
+{
+  "id": "route_209_lost_tower_4f",
+  "name": "Route 209 Lost Tower 4F",
+  "region": "sinnoh",
+  "source": "platinum",
+  "npcs": [
+    {
+      "local_id": "LOCALID_ITEM_TM27",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 6,
+      "y": 0,
+      "z": 12,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7094,
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_209_LOST_TOWER_4F_TM27"
+    },
+    {
+      "local_id": "LOCALID_POKEFAN_REBEKAH",
+      "graphics_id": "OBJ_EVENT_GFX_POKEFAN_F",
+      "x": 9,
+      "y": 0,
+      "z": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_POKEFAN_REBEKAH",
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_YOUNG_COUPLE_TRAINER_MIKE",
+      "graphics_id": "OBJ_EVENT_GFX_POKEMON_BREEDER_M",
+      "x": 4,
+      "y": 0,
+      "z": 9,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_YOUNG_COUPLE_MIKE_AND_NAT",
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_YOUNG_COUPLE_TRAINER_NAT",
+      "graphics_id": "OBJ_EVENT_GFX_POKEMON_BREEDER_F",
+      "x": 5,
+      "y": 0,
+      "z": 9,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_YOUNG_COUPLE_MIKE_AND_NAT",
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_PA_BOB",
+      "graphics_id": "OBJ_EVENT_GFX_RANCHER",
+      "x": 13,
+      "y": 0,
+      "z": 13,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_BELLE_AND_PA_BETH_AND_BOB",
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_BELLE_BETH",
+      "graphics_id": "OBJ_EVENT_GFX_COWGIRL",
+      "x": 13,
+      "y": 0,
+      "z": 14,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_BELLE_AND_PA_BETH_AND_BOB",
+      "hidden_flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": null,
+      "z": 3,
+      "dest_map": null,
+      "dest_warp_id": 1
+    },
+    {
+      "x": 4,
+      "y": null,
+      "z": 3,
+      "dest_map": null,
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 2,
+      "y": 0,
+      "z": 11,
+      "script": 8188,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    }
+  ],
+  "coord_events": []
+}

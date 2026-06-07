@@ -1,0 +1,380 @@
+{
+  "id": "route_212_north",
+  "name": "Route 212 North",
+  "region": "sinnoh",
+  "source": "platinum",
+  "npcs": [
+    {
+      "local_id": "LOCALID_RICH_BOY_JASON",
+      "graphics_id": "OBJ_EVENT_GFX_RICH_BOY",
+      "x": 472,
+      "y": 0,
+      "z": 780,
+      "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_RICH_BOY_JASON",
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_LADY_MELISSA",
+      "graphics_id": "OBJ_EVENT_GFX_LADY",
+      "x": 474,
+      "y": 0,
+      "z": 780,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_LADY_MELISSA",
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_GENTLEMAN_JEREMY",
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 455,
+      "y": 0,
+      "z": 796,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_GENTLEMAN_JEREMY",
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_SOCIALITE_REINA",
+      "graphics_id": "OBJ_EVENT_GFX_SOCIALITE",
+      "x": 458,
+      "y": 0,
+      "z": 796,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_WEST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_SOCIALITE_REINA",
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_POLICEMAN_BOBBY",
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 458,
+      "y": 0,
+      "z": 759,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_POLICEMAN_BOBBY",
+      "hidden_flag": "FLAG_HIDE_ROUTE_212_NORTH_POLICEMAN_BOBBY"
+    },
+    {
+      "local_id": "LOCALID_POLICEMAN_ALEX",
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 458,
+      "y": 0,
+      "z": 777,
+      "movement_type": "MOVEMENT_TYPE_WALK_WEST_NORTH_SOUTH_EAST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_POLICEMAN_ALEX",
+      "hidden_flag": "FLAG_HIDE_ROUTE_212_NORTH_POLICEMAN_ALEX"
+    },
+    {
+      "local_id": "LOCALID_POLICEMAN_DYLAN",
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 460,
+      "y": 0,
+      "z": 787,
+      "movement_type": "MOVEMENT_TYPE_WALK_BACK_AND_FORTH",
+      "trainer_type": "TRAINER_TYPE_FACE_SIDES",
+      "script": "TRAINER_POLICEMAN_DYLAN",
+      "hidden_flag": "FLAG_HIDE_ROUTE_212_NORTH_POLICEMAN_DYLAN"
+    },
+    {
+      "local_id": "LOCALID_POLICEMAN_CALEB",
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 466,
+      "y": 0,
+      "z": 797,
+      "movement_type": "MOVEMENT_TYPE_WALK_BACK_AND_FORTH",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_POLICEMAN_CALEB",
+      "hidden_flag": "FLAG_HIDE_ROUTE_212_NORTH_POLICEMAN_CALEB"
+    },
+    {
+      "local_id": "LOCALID_ARROW_SIGNPOST_HEARTHOME_CITY",
+      "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
+      "x": 455,
+      "y": 0,
+      "z": 744,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_SIGNBOARD_POKEMON_MANSION",
+      "graphics_id": "OBJ_EVENT_GFX_SIGNBOARD",
+      "x": 468,
+      "y": 0,
+      "z": 803,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TRAINER_TIPS_SIGNPOST",
+      "graphics_id": "OBJ_EVENT_GFX_TRAINER_TIPS_SIGNPOST",
+      "x": 459,
+      "y": 0,
+      "z": 822,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 4,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_CUT_TREE_1",
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 454,
+      "y": 0,
+      "z": 807,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10000,
+      "hidden_flag": "FLAG_HIDE_OBSTACLE_1"
+    },
+    {
+      "local_id": "LOCALID_ITEM_ROSE_INCENSE",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 456,
+      "y": 0,
+      "z": 791,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7055,
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_212_NORTH_ROSE_INCENSE"
+    },
+    {
+      "local_id": "LOCALID_ITEM_TM11",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 450,
+      "y": 0,
+      "z": 777,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7054,
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_212_NORTH_TM11"
+    },
+    {
+      "local_id": "LOCALID_BERRY_SOIL_1",
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
+      "x": 460,
+      "y": 0,
+      "z": 797,
+      "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2800,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_BERRY_SOIL_2",
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
+      "x": 461,
+      "y": 0,
+      "z": 797,
+      "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2800,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_BERRY_SOIL_3",
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
+      "x": 448,
+      "y": 0,
+      "z": 817,
+      "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2800,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_BERRY_SOIL_4",
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
+      "x": 449,
+      "y": 0,
+      "z": 817,
+      "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2800,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_ITEM_ELIXIR",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 459,
+      "y": 0,
+      "z": 821,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7056,
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_212_NORTH_ELIXIR"
+    },
+    {
+      "local_id": "LOCALID_VENT_1",
+      "graphics_id": "OBJ_EVENT_GFX_VENT",
+      "x": 456,
+      "y": 0,
+      "z": 826,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2027,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_VENT_2",
+      "graphics_id": "OBJ_EVENT_GFX_VENT",
+      "x": 461,
+      "y": 0,
+      "z": 826,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2027,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_VENT_3",
+      "graphics_id": "OBJ_EVENT_GFX_VENT",
+      "x": 464,
+      "y": 0,
+      "z": 826,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2027,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_YOUNGSTER",
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 461,
+      "y": 0,
+      "z": 805,
+      "movement_type": "MOVEMENT_TYPE_WANDER_WEST_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_COLLECTOR",
+      "graphics_id": "OBJ_EVENT_GFX_COLLECTOR",
+      "x": 454,
+      "y": 0,
+      "z": 748,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 5,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_POLICEMAN_BOBBY_NO_BATTLE",
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 458,
+      "y": 0,
+      "z": 759,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 6,
+      "hidden_flag": "FLAG_HIDE_ROUTE_212_NORTH_POLICEMAN_BOBBY_NO_BATTLE"
+    },
+    {
+      "local_id": "LOCALID_POLICEMAN_ALEX_NO_BATTLE",
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 458,
+      "y": 0,
+      "z": 777,
+      "movement_type": "MOVEMENT_TYPE_WALK_WEST_NORTH_SOUTH_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7,
+      "hidden_flag": "FLAG_HIDE_ROUTE_212_NORTH_POLICEMAN_ALEX_NO_BATTLE"
+    },
+    {
+      "local_id": "LOCALID_POLICEMAN_DYLAN_NO_BATTLE",
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 460,
+      "y": 0,
+      "z": 787,
+      "movement_type": "MOVEMENT_TYPE_WALK_BACK_AND_FORTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 8,
+      "hidden_flag": "FLAG_HIDE_ROUTE_212_NORTH_POLICEMAN_DYLAN_NO_BATTLE"
+    },
+    {
+      "local_id": "LOCALID_POLICEMAN_CALEB_NO_BATTLE",
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 466,
+      "y": 0,
+      "z": 797,
+      "movement_type": "MOVEMENT_TYPE_WALK_BACK_AND_FORTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 9,
+      "hidden_flag": "FLAG_HIDE_ROUTE_212_NORTH_POLICEMAN_CALEB_NO_BATTLE"
+    },
+    {
+      "local_id": "LOCALID_ITEM_GREEN_SHARD",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 476,
+      "y": 0,
+      "z": 768,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7273,
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_212_NORTH_GREEN_SHARD"
+    },
+    {
+      "local_id": "LOCALID_ITEM_IRON",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 461,
+      "y": 0,
+      "z": 766,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7272,
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_212_NORTH_IRON"
+    }
+  ],
+  "warps": [
+    {
+      "x": 458,
+      "y": null,
+      "z": 736,
+      "dest_map": null,
+      "dest_warp_id": 1
+    },
+    {
+      "x": 459,
+      "y": null,
+      "z": 736,
+      "dest_map": null,
+      "dest_warp_id": 1
+    },
+    {
+      "x": 470,
+      "y": null,
+      "z": 772,
+      "dest_map": null,
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 475,
+      "y": 0,
+      "z": 803,
+      "script": 8018,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 467,
+      "y": 0,
+      "z": 779,
+      "script": 8017,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    }
+  ],
+  "coord_events": []
+}

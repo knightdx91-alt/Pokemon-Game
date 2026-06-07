@@ -1,0 +1,48 @@
+{
+  "id": "route_214_gate_to_veilstone_city",
+  "name": "Route 214 Gate To Veilstone City",
+  "region": "sinnoh",
+  "source": "platinum",
+  "npcs": [
+    {
+      "local_id": "LOCALID_MIDDLE_AGED_MAN",
+      "graphics_id": "OBJ_EVENT_GFX_MIDDLE_AGED_MAN",
+      "x": 6,
+      "y": 0,
+      "z": 8,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_REPORTER",
+      "graphics_id": "OBJ_EVENT_GFX_REPORTER",
+      "x": 4,
+      "y": 0,
+      "z": 4,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10164,
+      "hidden_flag": "FLAG_HIDE_ROUTE_214_GATE_TO_VEILSTONE_CITY_REPORTER"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": null,
+      "z": 2,
+      "dest_map": null,
+      "dest_warp_id": 11
+    },
+    {
+      "x": 5,
+      "y": null,
+      "z": 12,
+      "dest_map": null,
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "coord_events": []
+}

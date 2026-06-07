@@ -1,0 +1,99 @@
+{
+  "id": "hearthome_city_pokecenter_1f",
+  "name": "Hearthome City Pokecenter 1F",
+  "region": "sinnoh",
+  "source": "platinum",
+  "npcs": [
+    {
+      "local_id": "LOCALID_HEARTHOME_NURSE",
+      "graphics_id": "OBJ_EVENT_GFX_POKECENTER_NURSE",
+      "x": 8,
+      "y": 0,
+      "z": 4,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_HEARTHOME_YOUNGSTER",
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 10,
+      "y": 0,
+      "z": 8,
+      "movement_type": "MOVEMENT_TYPE_WANDER_NORTH_AND_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_HEARTHOME_SOCIALITE",
+      "graphics_id": "OBJ_EVENT_GFX_SOCIALITE",
+      "x": 5,
+      "y": 0,
+      "z": 9,
+      "movement_type": "MOVEMENT_TYPE_WANDER_WEST_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_HEARTHOME_GUITARIST",
+      "graphics_id": "OBJ_EVENT_GFX_GUITARIST",
+      "x": 2,
+      "y": 0,
+      "z": 7,
+      "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 4,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_HEARTHOME_DAILY_TRAINER_1",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_A",
+      "x": 6,
+      "y": 0,
+      "z": 6,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10401,
+      "hidden_flag": "FLAG_HIDE_POKECENTER_DAILY_TRAINER_1"
+    },
+    {
+      "local_id": "LOCALID_HEARTHOME_DAILY_TRAINER_2",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_B",
+      "x": 5,
+      "y": 0,
+      "z": 6,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10402,
+      "hidden_flag": "FLAG_HIDE_POKECENTER_DAILY_TRAINER_2"
+    }
+  ],
+  "warps": [
+    {
+      "x": 8,
+      "y": null,
+      "z": 12,
+      "dest_map": null,
+      "dest_warp_id": 5
+    },
+    {
+      "x": 2,
+      "y": null,
+      "z": 10,
+      "dest_map": null,
+      "dest_warp_id": 0
+    },
+    {
+      "x": 14,
+      "y": null,
+      "z": 10,
+      "dest_map": null,
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "coord_events": []
+}

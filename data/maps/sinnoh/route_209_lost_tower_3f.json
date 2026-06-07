@@ -1,0 +1,59 @@
+{
+  "id": "route_209_lost_tower_3f",
+  "name": "Route 209 Lost Tower 3F",
+  "region": "sinnoh",
+  "source": "platinum",
+  "npcs": [
+    {
+      "local_id": "LOCALID_ITEM_REVIVE",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 1,
+      "y": 0,
+      "z": 13,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7093,
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_209_LOST_TOWER_3F_REVIVE"
+    },
+    {
+      "local_id": "LOCALID_POKEFAN_LEONARD",
+      "graphics_id": "OBJ_EVENT_GFX_POKEFAN_M",
+      "x": 7,
+      "y": 0,
+      "z": 6,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_POKEFAN_LEONARD",
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_ROUGHNECK_KIRBY",
+      "graphics_id": "OBJ_EVENT_GFX_ROUGHNECK",
+      "x": 5,
+      "y": 0,
+      "z": 14,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_ROUGHNECK_KIRBY",
+      "hidden_flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": null,
+      "z": 3,
+      "dest_map": null,
+      "dest_warp_id": 1
+    },
+    {
+      "x": 4,
+      "y": null,
+      "z": 3,
+      "dest_map": null,
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "coord_events": []
+}

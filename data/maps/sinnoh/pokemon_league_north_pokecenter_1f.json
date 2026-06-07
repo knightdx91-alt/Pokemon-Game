@@ -1,0 +1,128 @@
+{
+  "id": "pokemon_league_north_pokecenter_1f",
+  "name": "Pokemon League North Pokecenter 1F",
+  "region": "sinnoh",
+  "source": "platinum",
+  "npcs": [
+    {
+      "local_id": "LOCALID_LEAGUE_NORTH_ACE_TRAINER_M",
+      "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_M",
+      "x": 11,
+      "y": 0,
+      "z": 3,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_LEAGUE_NORTH_CASHIER_F",
+      "graphics_id": "OBJ_EVENT_GFX_CASHIER_F",
+      "x": 16,
+      "y": 0,
+      "z": 1,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_LEAGUE_NORTH_CASHIER_M",
+      "graphics_id": "OBJ_EVENT_GFX_CASHIER_M",
+      "x": 17,
+      "y": 0,
+      "z": 1,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_LEAGUE_NORTH_NURSE",
+      "graphics_id": "OBJ_EVENT_GFX_POKECENTER_NURSE",
+      "x": 4,
+      "y": 0,
+      "z": 1,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 8,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_LEAGUE_NORTH_ACE_TRAINER_F",
+      "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_F",
+      "x": 6,
+      "y": 0,
+      "z": 9,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_SOUTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 6,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_LEAGUE_NORTH_RIVAL",
+      "graphics_id": "OBJ_EVENT_GFX_BARRY",
+      "x": 11,
+      "y": 0,
+      "z": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "FLAG_HIDE_POKEMON_LEAGUE_NORTH_POKECENTER_1F_RIVAL"
+    },
+    {
+      "local_id": "LOCALID_LEAGUE_NORTH_GUITARIST",
+      "graphics_id": "OBJ_EVENT_GFX_GUITARIST",
+      "x": 17,
+      "y": 0,
+      "z": 8,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7,
+      "hidden_flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": null,
+      "z": 2,
+      "dest_map": null,
+      "dest_warp_id": 1
+    },
+    {
+      "x": 11,
+      "y": null,
+      "z": 11,
+      "dest_map": null,
+      "dest_warp_id": 1
+    },
+    {
+      "x": 2,
+      "y": null,
+      "z": 12,
+      "dest_map": null,
+      "dest_warp_id": 0
+    },
+    {
+      "x": 6,
+      "y": null,
+      "z": 14,
+      "dest_map": null,
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "coord_events": [
+    {
+      "script": 4,
+      "x": 10,
+      "z": 4,
+      "y": 0,
+      "width": 3,
+      "length": 1,
+      "var": "VAR_RIVAL_BEAT_SUNYSHORE_GYM",
+      "value": 0
+    }
+  ]
+}

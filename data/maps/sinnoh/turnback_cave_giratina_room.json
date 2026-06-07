@@ -1,0 +1,95 @@
+{
+  "id": "turnback_cave_giratina_room",
+  "name": "Turnback Cave Giratina Room",
+  "region": "sinnoh",
+  "source": "platinum",
+  "npcs": [
+    {
+      "local_id": "LOCALID_GIRATINA",
+      "graphics_id": "OBJ_EVENT_GFX_GIRATINA_ALTERED",
+      "x": 11,
+      "y": 0,
+      "z": 14,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "FLAG_HIDE_TURNBACK_CAVE_GIRATINA_ROOM_GIRATINA"
+    },
+    {
+      "local_id": "LOCALID_ITEM",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 11,
+      "y": 0,
+      "z": 13,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "FLAG_HIDE_TURNBACK_CAVE_GIRATINA_ROOM_ITEM"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": null,
+      "z": 1,
+      "dest_map": null,
+      "dest_warp_id": 2
+    },
+    {
+      "x": 20,
+      "y": null,
+      "z": 11,
+      "dest_map": null,
+      "dest_warp_id": 3
+    },
+    {
+      "x": 11,
+      "y": null,
+      "z": 20,
+      "dest_map": null,
+      "dest_warp_id": 0
+    },
+    {
+      "x": 2,
+      "y": null,
+      "z": 11,
+      "dest_map": null,
+      "dest_warp_id": 1
+    }
+  ],
+  "signs": [
+    {
+      "x": 11,
+      "y": 0,
+      "z": 12,
+      "script": 4,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "z": 12,
+      "script": 4,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "z": 12,
+      "script": 4,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 11,
+      "y": 0,
+      "z": 14,
+      "script": 6,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    }
+  ],
+  "coord_events": []
+}

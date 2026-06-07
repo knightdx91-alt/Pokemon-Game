@@ -1,0 +1,108 @@
+{
+  "id": "route_206_cycling_road_south_gate",
+  "name": "Route 206 Cycling Road South Gate",
+  "region": "sinnoh",
+  "source": "platinum",
+  "npcs": [
+    {
+      "local_id": "LOCALID_CASHIER_M_WEST",
+      "graphics_id": "OBJ_EVENT_GFX_CASHIER_M",
+      "x": 3,
+      "y": 0,
+      "z": 7,
+      "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_CASHIER_M_EAST",
+      "graphics_id": "OBJ_EVENT_GFX_CASHIER_M",
+      "x": 11,
+      "y": 0,
+      "z": 7,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_BATTLE_GIRL",
+      "graphics_id": "OBJ_EVENT_GFX_BATTLE_GIRL",
+      "x": 9,
+      "y": 0,
+      "z": 9,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_SOUTH_AND_WEST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 5,
+      "hidden_flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": null,
+      "z": 2,
+      "dest_map": null,
+      "dest_warp_id": 7
+    },
+    {
+      "x": 6,
+      "y": null,
+      "z": 12,
+      "dest_map": null,
+      "dest_warp_id": 0
+    },
+    {
+      "x": 7,
+      "y": null,
+      "z": 2,
+      "dest_map": null,
+      "dest_warp_id": 2
+    },
+    {
+      "x": 8,
+      "y": null,
+      "z": 2,
+      "dest_map": null,
+      "dest_warp_id": 8
+    },
+    {
+      "x": 7,
+      "y": null,
+      "z": 12,
+      "dest_map": null,
+      "dest_warp_id": 0
+    },
+    {
+      "x": 8,
+      "y": null,
+      "z": 12,
+      "dest_map": null,
+      "dest_warp_id": 1
+    }
+  ],
+  "signs": [],
+  "coord_events": [
+    {
+      "script": 3,
+      "x": 5,
+      "z": 6,
+      "y": 0,
+      "width": 5,
+      "length": 1,
+      "var": "VAR_MAP_LOCAL_2",
+      "value": 0
+    },
+    {
+      "script": 4,
+      "x": 5,
+      "z": 8,
+      "y": 0,
+      "width": 5,
+      "length": 1,
+      "var": "VAR_MAP_LOCAL_2",
+      "value": 1
+    }
+  ]
+}

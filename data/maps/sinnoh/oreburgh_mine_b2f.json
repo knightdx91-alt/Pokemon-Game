@@ -1,0 +1,140 @@
+{
+  "id": "oreburgh_mine_b2f",
+  "name": "Oreburgh Mine B2F",
+  "region": "sinnoh",
+  "source": "platinum",
+  "npcs": [
+    {
+      "local_id": "LOCALID_ROARK",
+      "graphics_id": "OBJ_EVENT_GFX_ROARK",
+      "x": 18,
+      "y": 1,
+      "z": 28,
+      "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "FLAG_HIDE_OREBURGH_MINE_B2F_ROARK"
+    },
+    {
+      "local_id": "LOCALID_ROCK_SMASH_1",
+      "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
+      "x": 19,
+      "y": 0,
+      "z": 28,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10001,
+      "hidden_flag": "FLAG_HIDE_OBSTACLE_1"
+    },
+    {
+      "local_id": "LOCALID_ROCK_SMASH_2",
+      "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
+      "x": 17,
+      "y": 0,
+      "z": 28,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10001,
+      "hidden_flag": "FLAG_HIDE_OBSTACLE_2"
+    },
+    {
+      "local_id": "LOCALID_ITEM_ESCAPE_ROPE",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 4,
+      "y": 0,
+      "z": 28,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7007,
+      "hidden_flag": "FLAG_OBTAINED_OREBURGH_MINE_B2F_ESCAPE_ROPE"
+    },
+    {
+      "local_id": "LOCALID_ITEM_POTION",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 26,
+      "y": 0,
+      "z": 24,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7008,
+      "hidden_flag": "FLAG_OBTAINED_OREBURGH_MINE_B2F_POTION"
+    },
+    {
+      "local_id": "LOCALID_WORKER_COLIN",
+      "graphics_id": "OBJ_EVENT_GFX_WORKER",
+      "x": 8,
+      "y": 1,
+      "z": 28,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_WORKER_COLIN",
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_WORKER_MASON",
+      "graphics_id": "OBJ_EVENT_GFX_WORKER",
+      "x": 26,
+      "y": 1,
+      "z": 20,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_WORKER_MASON",
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_WORKER",
+      "graphics_id": "OBJ_EVENT_GFX_WORKER",
+      "x": 21,
+      "y": 1,
+      "z": 15,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 5,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_MACHOP_1",
+      "graphics_id": "OBJ_EVENT_GFX_MACHOP",
+      "x": 12,
+      "y": 1,
+      "z": 28,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_MACHOP_2",
+      "graphics_id": "OBJ_EVENT_GFX_MACHOP",
+      "x": 20,
+      "y": 1,
+      "z": 15,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 4,
+      "hidden_flag": "0"
+    },
+    {
+      "local_id": "LOCALID_MACHOP_3",
+      "graphics_id": "OBJ_EVENT_GFX_MACHOP",
+      "x": 27,
+      "y": 1,
+      "z": 15,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 15,
+      "y": null,
+      "z": 1,
+      "dest_map": null,
+      "dest_warp_id": 3
+    }
+  ],
+  "signs": [],
+  "coord_events": []
+}

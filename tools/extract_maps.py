@@ -1,7 +1,7 @@
 """
-Extract map data from GBA decomp repos (pokefirered, pokeemerald) into unified JSON.
+Extract map data from all decomp repos into unified JSON.
 Usage: python3 tools/extract_maps.py
-Output: data/maps/firered/*.json, data/maps/emerald/*.json
+Output: data/maps/kanto/, data/maps/hoenn/, data/maps/heartgold/, data/maps/sinnoh/
 """
 
 import json
@@ -154,39 +154,79 @@ def extract_hgss_maps():
 
 
 def extract_platinum_maps():
-    """Extract Platinum field area data into unified format."""
-    area_dir = os.path.join(
-        SOURCE_DIR, "pokeplatinum", "res", "field", "area_data"
-    )
-    out_dir = os.path.join(DATA_DIR, "platinum")
+    """
+    Extract Platinum event data (NPCs, warps, signs) into unified format.
+    Each events_<mapname>.json in res/field/events/ becomes one output file.
+    Encounters are handled separately by extract_encounters.py.
+    """
+    events_dir = os.path.join(SOURCE_DIR, "pokeplatinum", "res", "field", "events")
+    out_dir = os.path.join(DATA_DIR, "sinnoh")
     os.makedirs(out_dir, exist_ok=True)
 
-    if not os.path.isdir(area_dir):
-        print(f"[pokeplatinum] area_data dir not found: {area_dir}", file=sys.stderr)
+    if not os.path.isdir(events_dir):
+        print(f"[pokeplatinum] events dir not found: {events_dir}", file=sys.stderr)
         return 0
 
     count = 0
-    for filename in sorted(os.listdir(area_dir)):
+    for filename in sorted(os.listdir(events_dir)):
         if not filename.endswith(".json"):
             continue
 
-        area_id = filename.replace(".json", "")
-        with open(os.path.join(area_dir, filename)) as f:
+        # Strip leading "events_" prefix for the map name
+        map_name = filename.replace("events_", "").replace(".json", "")
+
+        with open(os.path.join(events_dir, filename)) as f:
             raw = json.load(f)
 
         unified = {
-            "id": area_id,
+            "id": map_name,
+            "name": map_name.replace("_", " ").title(),
             "region": "sinnoh",
             "source": "platinum",
-            "raw": raw,
+            "npcs": [
+                {
+                    "local_id": e.get("id"),
+                    "graphics_id": e.get("graphics_id"),
+                    "x": e.get("x"),
+                    "y": e.get("y"),
+                    "z": e.get("z"),
+                    "movement_type": e.get("movement_type"),
+                    "trainer_type": e.get("trainer_type"),
+                    "script": e.get("script"),
+                    "hidden_flag": e.get("hidden_flag"),
+                }
+                for e in raw.get("object_events", [])
+            ],
+            "warps": [
+                {
+                    "x": w.get("x"),
+                    "y": w.get("y"),
+                    "z": w.get("z"),
+                    "dest_map": w.get("dest_map"),
+                    "dest_warp_id": w.get("dest_warp_id"),
+                }
+                for w in raw.get("warp_events", [])
+            ],
+            "signs": [
+                {
+                    "x": b.get("x"),
+                    "y": b.get("y"),
+                    "z": b.get("z"),
+                    "script": b.get("script"),
+                    "type": b.get("type"),
+                    "player_facing_dir": b.get("player_facing_dir"),
+                }
+                for b in raw.get("bg_events", [])
+            ],
+            "coord_events": raw.get("coord_events", []),
         }
 
-        out_path = os.path.join(out_dir, f"{area_id}.json")
+        out_path = os.path.join(out_dir, f"{map_name}.json")
         with open(out_path, "w") as f:
             json.dump(unified, f, indent=2)
         count += 1
 
-    print(f"[pokeplatinum] Extracted {count} area files → data/maps/platinum/")
+    print(f"[pokeplatinum] Extracted {count} maps → data/maps/sinnoh/")
     return count
 
 
