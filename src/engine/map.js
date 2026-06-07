@@ -23,6 +23,8 @@ window.GameMap = (function () {
                 if (npc.x === x && npc.y === y) return false;
             }
         }
+        // Warp tiles are always walkable (FireRed handles warps separately from collision)
+        if (getWarp(x, y)) return true;
         // Use collision data from layout if available
         if (layoutData && layoutData.collision) {
             return layoutData.collision[y * mapWidth + x] === 0;

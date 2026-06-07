@@ -32,6 +32,10 @@
                 if (GameMap.isWalkable(nx, ny)) {
                     player.x = nx;
                     player.y = ny;
+                    const warp = GameMap.getWarp(nx, ny);
+                    if (warp) {
+                        console.log(`[Warp] -> ${warp.dest_map}`);
+                    }
                 }
                 lastMoveTime = timestamp;
             }

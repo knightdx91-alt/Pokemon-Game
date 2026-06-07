@@ -17,6 +17,10 @@ window.GameRenderer = (function () {
     let _tilesetMeta  = null;   // parsed JSON from data/tilesets/<name>.json
     let _tilesetLoading = false;
 
+    // NPC sprite state
+    let _npcIndex     = null;   // parsed index.json: { stem -> path }
+    let _npcImgCache  = new Map(); // stem -> HTMLImageElement (or 'loading'/'error')
+
     // Fallback color definitions (used when tileset image not ready)
     const COLORS = {
         walkable:  '#4a7c4e',
@@ -136,18 +140,27 @@ window.GameRenderer = (function () {
             }
         }
 
-        // Draw NPCs as colored overlay squares
+        // Draw NPCs
         if (_map.current && _map.current.npcs) {
             for (const npc of _map.current.npcs) {
                 if (npc.x < camX || npc.x >= camX + vw || npc.y < camY || npc.y >= camY + vh) continue;
                 const sx = (npc.x - camX) * TILE_PX;
                 const sy = (npc.y - camY) * TILE_PX;
-                const pad = 2;
-                ctx.fillStyle = COLORS.npc;
-                ctx.fillRect(sx + pad, sy + pad, TILE_PX - pad * 2, TILE_PX - pad * 2);
-                // Face dot
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(sx + Math.floor(TILE_PX / 2) - 1, sy + pad + 1, 3, 3);
+
+                const stem = _gfxToStem(npc.graphics_id);
+                const img  = stem ? _getNpcImg(stem) : null;
+
+                if (img) {
+                    // Draw first frame (16x32) of spritesheet; feet on tile, body above
+                    ctx.drawImage(img, 0, 0, 16, 32, sx, sy - TILE_PX, TILE_PX, TILE_PX * 2);
+                } else {
+                    // Fallback: blue square with face dot
+                    const pad = 2;
+                    ctx.fillStyle = COLORS.npc;
+                    ctx.fillRect(sx + pad, sy + pad, TILE_PX - pad * 2, TILE_PX - pad * 2);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(sx + Math.floor(TILE_PX / 2) - 1, sy + pad + 1, 3, 3);
+                }
             }
         }
 
@@ -176,12 +189,43 @@ window.GameRenderer = (function () {
         rafId = requestAnimationFrame(loop);
     }
 
+    // Load NPC sprite index JSON
+    function _loadNpcIndex() {
+        fetch('data/sprites/npcs/index.json')
+            .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
+            .then(data => { _npcIndex = data; })
+            .catch(e => console.warn('[Renderer] Failed to load NPC sprite index:', e));
+    }
+
+    // Get (or start loading) an NPC sprite image by stem key
+    function _getNpcImg(stem) {
+        if (!_npcIndex || !_npcIndex[stem]) return null;
+        if (_npcImgCache.has(stem)) {
+            const v = _npcImgCache.get(stem);
+            return (v instanceof HTMLImageElement) ? v : null;
+        }
+        // Start loading
+        _npcImgCache.set(stem, 'loading');
+        const img = new Image();
+        img.onload  = () => { _npcImgCache.set(stem, img); };
+        img.onerror = () => { _npcImgCache.set(stem, 'error'); };
+        img.src = _npcIndex[stem];
+        return null;
+    }
+
+    // Convert OBJ_EVENT_GFX_WOMAN_1 -> woman_1
+    function _gfxToStem(graphicsId) {
+        if (!graphicsId) return null;
+        return graphicsId.replace(/^OBJ_EVENT_GFX_/, '').toLowerCase();
+    }
+
     function init(canvasEl) {
         canvas = canvasEl;
         ctx    = canvas.getContext('2d');
         // Disable image smoothing so pixel art stays crisp when CSS scales the canvas
         ctx.imageSmoothingEnabled = false;
         resizeCanvas();
+        _loadNpcIndex();
         loop();
     }
 
