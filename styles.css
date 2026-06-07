@@ -1,0 +1,520 @@
+/* ===================================================================
+   Pokémon Game — Global Styles
+   Dark theme, full-screen, no scrollbars.
+   Supports all 4 orientations via CSS + JS orientation class on body.
+   =================================================================== */
+
+/* --- Reset & base -------------------------------------------------- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #0d0d0d;
+    color: #e0e0e0;
+    font-family: 'Courier New', Courier, monospace;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ===================================================================
+   GAME WRAPPER
+   =================================================================== */
+#game-wrapper {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background: #0d0d0d;
+}
+
+/* ===================================================================
+   SCREEN CONTAINERS
+   =================================================================== */
+#screen-primary,
+#screen-secondary {
+    position: relative;
+    background: #111;
+    border: 2px solid #333;
+    border-radius: 6px;
+    overflow: hidden;
+    /* default sizing set by orientation rules below */
+}
+
+#screen-primary canvas,
+#screen-secondary canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+
+/* Drag handle — shown in portrait only (hidden in landscape by default) */
+.drag-handle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 22px;
+    background: rgba(255,255,255,0.06);
+    color: #888;
+    font-size: 14px;
+    line-height: 22px;
+    text-align: center;
+    cursor: grab;
+    z-index: 10;
+    touch-action: none;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* Resize handle — bottom-right corner */
+.resize-handle {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(135deg, transparent 50%, #555 50%);
+    cursor: se-resize;
+    z-index: 20;
+    touch-action: none;
+}
+
+/* ===================================================================
+   PORTRAIT  (primary orientation)
+   Game screen sits at top, controls below.
+   Screens are draggable/resizable.
+   =================================================================== */
+@media (orientation: portrait) {
+    #game-wrapper {
+        flex-direction: column;
+    }
+
+    #screen-primary {
+        width: 100vw;
+        height: 55vh;
+        flex-shrink: 0;
+    }
+
+    #screen-secondary {
+        width: 100vw;
+        height: 30vh;
+        flex-shrink: 0;
+    }
+
+    .drag-handle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #controls-layer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 42vh;
+    }
+}
+
+/* ===================================================================
+   REVERSE PORTRAIT  — body gets class "reverse-portrait" from JS
+   CSS rotates content 180°; game screen above, controls below (same)
+   =================================================================== */
+body.reverse-portrait #game-wrapper {
+    transform: rotate(180deg);
+    transform-origin: center center;
+}
+
+/* ===================================================================
+   LANDSCAPE  (primary orientation)
+   Game screen fills width minus right controls panel.
+   Screens NOT draggable/resizable (CSS controls layout).
+   =================================================================== */
+@media (orientation: landscape) {
+    #game-wrapper {
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    #screen-primary {
+        flex: 1 1 auto;
+        height: 100vh;
+        /* override any portrait-saved inline position */
+        position: static !important;
+        top: auto !important;
+        left: auto !important;
+        width: auto !important;
+        height: auto !important;
+    }
+
+    #screen-primary canvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    #screen-secondary {
+        width: 256px;
+        height: 100vh;
+        flex-shrink: 0;
+    }
+
+    .drag-handle {
+        display: none;
+    }
+
+    .resize-handle {
+        display: none;
+    }
+
+    #controls-layer {
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+    }
+}
+
+/* ===================================================================
+   REVERSE LANDSCAPE — body gets class "reverse-landscape" from JS
+   =================================================================== */
+body.reverse-landscape #game-wrapper {
+    transform: rotate(180deg);
+    transform-origin: center center;
+}
+
+/* ===================================================================
+   CONTROLS LAYER
+   =================================================================== */
+#controls-layer {
+    pointer-events: none; /* children enable their own pointer events */
+    z-index: 100;
+    touch-action: none;
+}
+
+/* D-pad */
+.dpad {
+    position: relative;
+    width: calc(120px * var(--control-scale, 1));
+    height: calc(120px * var(--control-scale, 1));
+    pointer-events: none;
+    /* Fixed position in portrait bottom-left area */
+    position: fixed;
+    bottom: calc(40px * var(--control-scale, 1));
+    left: calc(20px * var(--control-scale, 1));
+}
+
+.dpad-dir {
+    position: absolute;
+    width: calc(40px * var(--control-scale, 1));
+    height: calc(40px * var(--control-scale, 1));
+    pointer-events: all;
+}
+
+.btn-up    { top: 0;   left: calc(40px * var(--control-scale, 1)); }
+.btn-down  { bottom: 0; left: calc(40px * var(--control-scale, 1)); }
+.btn-left  { left: 0;  top: calc(40px * var(--control-scale, 1)); }
+.btn-right { right: 0; top: calc(40px * var(--control-scale, 1)); }
+
+/* Face buttons (A + B) — fixed bottom-right */
+.face-buttons {
+    position: fixed;
+    bottom: calc(50px * var(--control-scale, 1));
+    right: calc(20px * var(--control-scale, 1));
+    display: flex;
+    gap: calc(8px * var(--control-scale, 1));
+    pointer-events: none;
+}
+
+.face-btn {
+    width: calc(44px * var(--control-scale, 1));
+    height: calc(44px * var(--control-scale, 1));
+    border-radius: 50%;
+    pointer-events: all;
+}
+
+.btn-a { background: #c62828; color: #fff; }
+.btn-b { background: #1565c0; color: #fff; }
+
+/* System buttons (Start + Select) — fixed bottom center */
+.sys-buttons {
+    position: fixed;
+    bottom: calc(14px * var(--control-scale, 1));
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: calc(12px * var(--control-scale, 1));
+    pointer-events: none;
+}
+
+.sys-btn {
+    width: calc(52px * var(--control-scale, 1));
+    height: calc(24px * var(--control-scale, 1));
+    border-radius: 12px;
+    font-size: calc(10px * var(--control-scale, 1));
+    pointer-events: all;
+}
+
+/* Shared button styles */
+.control-btn {
+    background: rgba(60, 60, 80, 0.85);
+    border: 2px solid rgba(255,255,255,0.2);
+    color: #e0e0e0;
+    font-family: inherit;
+    font-size: calc(14px * var(--control-scale, 1));
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.08s;
+    position: relative; /* for drag reposition */
+}
+
+.control-btn:active {
+    background: rgba(120, 120, 160, 0.9);
+    border-color: rgba(255,255,255,0.5);
+}
+
+/* Joystick */
+.joystick-wrap {
+    position: fixed;
+    bottom: calc(50px * var(--control-scale, 1));
+    left: calc(20px * var(--control-scale, 1));
+    width: calc(100px * var(--control-scale, 1));
+    height: calc(100px * var(--control-scale, 1));
+    pointer-events: none;
+}
+
+.joystick-base {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(60,60,80,0.6);
+    border: 2px solid rgba(255,255,255,0.2);
+    pointer-events: all;
+    touch-action: none;
+}
+
+.joystick-thumb {
+    position: absolute;
+    width: calc(40px * var(--control-scale, 1));
+    height: calc(40px * var(--control-scale, 1));
+    border-radius: 50%;
+    background: rgba(180,180,220,0.85);
+    border: 2px solid rgba(255,255,255,0.4);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    touch-action: none;
+}
+
+/* ===================================================================
+   UI OVERLAY (HUD)
+   =================================================================== */
+#ui-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 200;
+}
+
+#hud-info {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 12px;
+    color: #ccc;
+    pointer-events: none;
+    line-height: 1.7;
+}
+
+#settings-btn {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid #555;
+    border-radius: 4px;
+    padding: 5px 10px;
+    color: #ccc;
+    font-size: 13px;
+    cursor: pointer;
+    pointer-events: all;
+    font-family: inherit;
+    transition: background 0.1s;
+}
+
+#settings-btn:hover {
+    background: rgba(60,60,80,0.85);
+}
+
+/* ===================================================================
+   SETTINGS PANEL
+   =================================================================== */
+#settings-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1a1a2e;
+    border: 1px solid #444;
+    border-radius: 8px;
+    width: min(340px, 90vw);
+    z-index: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #333;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#settings-close {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 20px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+}
+
+#settings-close:hover { color: #fff; }
+
+.settings-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.setting-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.setting-row label {
+    min-width: 90px;
+    font-size: 13px;
+    color: #bbb;
+}
+
+.toggle-group {
+    display: flex;
+    gap: 6px;
+}
+
+.toggle-btn {
+    background: #222;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #ccc;
+    font-family: inherit;
+    font-size: 12px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: background 0.1s, border-color 0.1s;
+}
+
+.toggle-btn.active {
+    background: #2a4a7a;
+    border-color: #4a8adf;
+    color: #fff;
+}
+
+.toggle-btn:hover:not(.active) {
+    background: #333;
+}
+
+#btn-size-slider {
+    flex: 1;
+    min-width: 100px;
+    accent-color: #4a8adf;
+}
+
+#btn-size-value {
+    font-size: 12px;
+    color: #bbb;
+    min-width: 36px;
+}
+
+.action-btn {
+    background: #2a2a3e;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #ccc;
+    font-family: inherit;
+    font-size: 13px;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.action-btn:hover {
+    background: #3a3a5e;
+}
+
+/* ===================================================================
+   LANDSCAPE override: controls shift to right column
+   =================================================================== */
+@media (orientation: landscape) {
+    .dpad {
+        position: static;
+        margin: 0 auto;
+    }
+
+    .face-buttons {
+        position: static;
+        justify-content: center;
+    }
+
+    .sys-buttons {
+        position: static;
+        transform: none;
+        justify-content: center;
+    }
+
+    .joystick-wrap {
+        position: static;
+        margin: 0 auto;
+    }
+
+    #controls-layer {
+        right: 0;
+    }
+}

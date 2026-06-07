@@ -2,10 +2,70 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokemon Multi-Region</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Pokémon — Kanto</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Pokemon Multi-Region</h1>
+    <div id="game-wrapper">
+
+        <!-- Primary game screen -->
+        <div id="screen-primary">
+            <div class="drag-handle" aria-label="Drag screen">&#9776;</div>
+            <canvas id="canvas-primary"></canvas>
+        </div>
+
+        <!-- Secondary screen (DS games: HeartGold, Platinum, etc.) — hidden by default -->
+        <div id="screen-secondary" class="hidden">
+            <div class="drag-handle" aria-label="Drag secondary screen">&#9776;</div>
+            <canvas id="canvas-secondary"></canvas>
+        </div>
+
+    </div><!-- #game-wrapper -->
+
+    <!-- On-screen controls (D-pad / joystick) -->
+    <div id="controls-layer"></div>
+
+    <!-- HUD overlay (map name, position, settings button) -->
+    <div id="ui-overlay"></div>
+
+    <!-- Settings panel (hidden by default) -->
+    <div id="settings-panel" class="hidden" role="dialog" aria-label="Settings">
+        <div class="settings-header">
+            <span>Settings</span>
+            <button id="settings-close" aria-label="Close settings">&times;</button>
+        </div>
+        <div class="settings-body">
+
+            <div class="setting-row">
+                <label>Controls</label>
+                <div class="toggle-group">
+                    <button class="toggle-btn active" id="toggle-dpad" data-mode="dpad">D-pad</button>
+                    <button class="toggle-btn" id="toggle-joystick" data-mode="joystick">Joystick</button>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <label for="btn-size-slider">Button Size</label>
+                <input type="range" id="btn-size-slider" min="0.6" max="1.8" step="0.1" value="1.0">
+                <span id="btn-size-value">1.0×</span>
+            </div>
+
+            <div class="setting-row">
+                <button id="reset-layout-btn" class="action-btn">Reset Layout</button>
+            </div>
+
+        </div>
+    </div><!-- #settings-panel -->
+
+    <!-- Scripts — load order matters: engine deps first, then ui, then main -->
+    <script src="src/engine/input.js"></script>
+    <script src="src/engine/camera.js"></script>
+    <script src="src/engine/map.js"></script>
+    <script src="src/engine/renderer.js"></script>
+    <script src="src/ui/layout.js"></script>
+    <script src="src/ui/controls.js"></script>
+    <script src="src/ui/hud.js"></script>
+    <script src="src/main.js"></script>
 </body>
 </html>
