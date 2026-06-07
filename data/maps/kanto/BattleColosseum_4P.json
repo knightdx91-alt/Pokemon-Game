@@ -1,0 +1,71 @@
+{
+  "id": "MAP_BATTLE_COLOSSEUM_4P",
+  "name": "BattleColosseum_4P",
+  "region": "kanto",
+  "layout": "LAYOUT_BATTLE_COLOSSEUM_4P",
+  "music": "MUS_POKE_CENTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    },
+    {
+      "x": 7,
+      "y": 8,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    },
+    {
+      "x": 8,
+      "y": 8,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 3,
+      "y": 4,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "BattleColosseum_4P_EventScript_PlayerSpot0"
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "BattleColosseum_4P_EventScript_PlayerSpot2"
+    },
+    {
+      "x": 10,
+      "y": 4,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "BattleColosseum_4P_EventScript_PlayerSpot1"
+    },
+    {
+      "x": 10,
+      "y": 6,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "BattleColosseum_4P_EventScript_PlayerSpot3"
+    }
+  ],
+  "signs": []
+}

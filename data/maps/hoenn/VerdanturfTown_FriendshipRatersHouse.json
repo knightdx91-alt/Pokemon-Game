@@ -1,0 +1,51 @@
+{
+  "id": "MAP_VERDANTURF_TOWN_FRIENDSHIP_RATERS_HOUSE",
+  "name": "VerdanturfTown_FriendshipRatersHouse",
+  "region": "hoenn",
+  "layout": "LAYOUT_HOUSE2",
+  "music": "MUS_VERDANTURF",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 3,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VerdanturfTown_FriendshipRatersHouse_EventScript_FriendshipRater",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PIKACHU",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VerdanturfTown_FriendshipRatersHouse_EventScript_Pikachu",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 7,
+      "dest_map": "MAP_VERDANTURF_TOWN",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_VERDANTURF_TOWN",
+      "dest_warp_id": "5"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

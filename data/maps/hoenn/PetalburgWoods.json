@@ -1,0 +1,211 @@
+{
+  "id": "MAP_PETALBURG_WOODS",
+  "name": "PetalburgWoods",
+  "region": "hoenn",
+  "layout": "LAYOUT_PETALBURG_WOODS",
+  "music": "MUS_PETALBURG_WOODS",
+  "weather": "WEATHER_SHADE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 19,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_11"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 19,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_12"
+    },
+    {
+      "local_id": "LOCALID_PETALBURG_WOODS_GRUNT",
+      "graphics_id": "OBJ_EVENT_GFX_AQUA_MEMBER_M",
+      "x": 26,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_PETALBURG_WOODS_AQUA_GRUNT"
+    },
+    {
+      "local_id": "LOCALID_PETALBURG_WOODS_DEVON_EMPLOYEE",
+      "graphics_id": "OBJ_EVENT_GFX_MAN_2",
+      "x": 26,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_PETALBURG_WOODS_DEVON_EMPLOYEE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 45,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_EventScript_ItemGreatBall",
+      "flag": "FLAG_ITEM_PETALBURG_WOODS_GREAT_BALL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 35,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_EventScript_ItemXAttack",
+      "flag": "FLAG_ITEM_PETALBURG_WOODS_X_ATTACK"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 4,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_EventScript_ItemEther",
+      "flag": "FLAG_ITEM_PETALBURG_WOODS_ETHER"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY_2",
+      "x": 15,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_EventScript_Boy1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 7,
+      "y": 32,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "PetalburgWoods_EventScript_Lyle",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 4,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_UP_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "PetalburgWoods_EventScript_James",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY_3",
+      "x": 30,
+      "y": 34,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_EventScript_Boy2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 4,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_EventScript_ItemParalyzeHeal",
+      "flag": "FLAG_ITEM_PETALBURG_WOODS_PARALYZE_HEAL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GIRL_2",
+      "x": 33,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_EventScript_Girl",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 14,
+      "y": 5,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 15,
+      "y": 5,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 16,
+      "y": 38,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 17,
+      "y": 38,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 36,
+      "y": 38,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 37,
+      "y": 38,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "7"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 26,
+      "y": 23,
+      "var": "VAR_PETALBURG_WOODS_STATE",
+      "var_value": "0",
+      "script": "PetalburgWoods_EventScript_DevonResearcherLeft"
+    },
+    {
+      "x": 27,
+      "y": 23,
+      "var": "VAR_PETALBURG_WOODS_STATE",
+      "var_value": "0",
+      "script": "PetalburgWoods_EventScript_DevonResearcherRight"
+    }
+  ],
+  "signs": [
+    {
+      "x": 14,
+      "y": 32,
+      "script": "PetalburgWoods_EventScript_Sign1"
+    },
+    {
+      "x": 11,
+      "y": 8,
+      "script": "PetalburgWoods_EventScript_Sign2"
+    }
+  ]
+}

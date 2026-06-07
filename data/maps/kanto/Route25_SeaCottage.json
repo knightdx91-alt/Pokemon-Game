@@ -1,0 +1,63 @@
+{
+  "id": "MAP_ROUTE25_SEA_COTTAGE",
+  "name": "Route25_SeaCottage",
+  "region": "kanto",
+  "layout": "LAYOUT_ROUTE25_SEA_COTTAGE",
+  "music": "MUS_FUCHSIA",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_BILL_HUMAN",
+      "graphics_id": "OBJ_EVENT_GFX_BILL",
+      "x": 7,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route25_SeaCottage_EventScript_Bill",
+      "flag": "FLAG_HIDE_BILL_HUMAN_SEA_COTTAGE"
+    },
+    {
+      "local_id": "LOCALID_BILL_CLEFAIRY",
+      "graphics_id": "OBJ_EVENT_GFX_CLEFAIRY",
+      "x": 10,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route25_SeaCottage_EventScript_Bill",
+      "flag": "FLAG_HIDE_BILL_CLEFAIRY"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 9,
+      "dest_map": "MAP_ROUTE25",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 7,
+      "y": 9,
+      "dest_map": "MAP_ROUTE25",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 8,
+      "y": 9,
+      "dest_map": "MAP_ROUTE25",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 4,
+      "y": 5,
+      "script": "Route25_SeaCottage_EventScript_Computer"
+    }
+  ]
+}

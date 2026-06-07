@@ -1,0 +1,51 @@
+{
+  "id": "MAP_SSANNE_CAPTAINS_OFFICE",
+  "name": "SSAnne_CaptainsOffice",
+  "region": "kanto",
+  "layout": "LAYOUT_SSANNE_CAPTAINS_OFFICE",
+  "music": "MUS_SS_ANNE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_SS_ANNE_CAPTAIN",
+      "graphics_id": "OBJ_EVENT_GFX_CAPTAIN",
+      "x": 5,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SSAnne_CaptainsOffice_EventScript_Captain",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 7,
+      "dest_map": "MAP_SSANNE_2F_CORRIDOR",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 2,
+      "y": 4,
+      "script": "SSAnne_CaptainsOffice_EventScript_Book"
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "script": "SSAnne_CaptainsOffice_EventScript_TrashCan"
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "script": "SSAnne_CaptainsOffice_EventScript_Book"
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "id": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE3",
+  "name": "Route110_TrickHousePuzzle3",
+  "region": "hoenn",
+  "layout": "LAYOUT_ROUTE110_TRICK_HOUSE_PUZZLE3",
+  "music": "MUS_TRICK_HOUSE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 7,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route110_TrickHousePuzzle3_EventScript_Justin",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route110_TrickHousePuzzle3_EventScript_Martha",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 10,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route110_TrickHousePuzzle3_EventScript_Alan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 1,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route110_TrickHousePuzzle3_EventScript_ItemWoodMail",
+      "flag": "FLAG_ITEM_TRICK_HOUSE_PUZZLE_3_WOOD_MAIL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 4,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route110_TrickHousePuzzle3_EventScript_ItemShadowMail",
+      "flag": "FLAG_ITEM_TRICK_HOUSE_PUZZLE_3_SHADOW_MAIL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BREAKABLE_ROCK",
+      "x": 1,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_15"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BREAKABLE_ROCK",
+      "x": 2,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_16"
+    }
+  ],
+  "warps": [
+    {
+      "x": 0,
+      "y": 21,
+      "dest_map": "MAP_ROUTE110_TRICK_HOUSE_ENTRANCE",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 1,
+      "y": 21,
+      "dest_map": "MAP_ROUTE110_TRICK_HOUSE_ENTRANCE",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 13,
+      "y": 1,
+      "dest_map": "MAP_ROUTE110_TRICK_HOUSE_END",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 4,
+      "y": 14,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "Route110_TrickHousePuzzle3_EventScript_Button1"
+    },
+    {
+      "x": 3,
+      "y": 11,
+      "var": "VAR_TEMP_2",
+      "var_value": "0",
+      "script": "Route110_TrickHousePuzzle3_EventScript_Button2"
+    },
+    {
+      "x": 12,
+      "y": 5,
+      "var": "VAR_TEMP_3",
+      "var_value": "0",
+      "script": "Route110_TrickHousePuzzle3_EventScript_Button3"
+    },
+    {
+      "x": 8,
+      "y": 2,
+      "var": "VAR_TEMP_4",
+      "var_value": "0",
+      "script": "Route110_TrickHousePuzzle3_EventScript_Button4"
+    }
+  ],
+  "signs": [
+    {
+      "x": 0,
+      "y": 14,
+      "script": "Route110_TrickHousePuzzle3_EventScript_Scroll"
+    }
+  ]
+}

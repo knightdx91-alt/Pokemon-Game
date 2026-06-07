@@ -1,0 +1,75 @@
+{
+  "id": "MAP_FOUR_ISLAND_ICEFALL_CAVE_1F",
+  "name": "FourIsland_IcefallCave_1F",
+  "region": "kanto",
+  "layout": "LAYOUT_FOUR_ISLAND_ICEFALL_CAVE_1F",
+  "music": "MUS_SEVII_CAVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 11,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FourIsland_IcefallCave_1F_EventScript_ItemUltraBall",
+      "flag": "FLAG_HIDE_FOUR_ISLAND_ICEFALL_CAVE_1F_ULTRA_BALL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 12,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FourIsland_IcefallCave_1F_EventScript_ItemHM07",
+      "flag": "FLAG_HIDE_FOUR_ISLAND_ICEFALL_CAVE_1F_HM07"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 17,
+      "dest_map": "MAP_FOUR_ISLAND_ICEFALL_CAVE_ENTRANCE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 2,
+      "y": 8,
+      "dest_map": "MAP_FOUR_ISLAND_ICEFALL_CAVE_ENTRANCE",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 12,
+      "y": 12,
+      "dest_map": "MAP_FOUR_ISLAND_ICEFALL_CAVE_B1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 12,
+      "y": 3,
+      "dest_map": "MAP_FOUR_ISLAND_ICEFALL_CAVE_B1F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 15,
+      "y": 16,
+      "dest_map": "MAP_FOUR_ISLAND_ICEFALL_CAVE_B1F",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "dest_map": "MAP_FOUR_ISLAND_ICEFALL_CAVE_BACK",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

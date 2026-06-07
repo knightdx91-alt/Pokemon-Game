@@ -1,0 +1,55 @@
+{
+  "id": "MAP_ROUTE1",
+  "name": "Route1",
+  "region": "kanto",
+  "layout": "LAYOUT_ROUTE1",
+  "music": "MUS_ROUTE1",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_VIRIDIAN_CITY",
+      "offset": -12,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_PALLET_TOWN",
+      "offset": 0,
+      "direction": "down"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CLERK",
+      "x": 6,
+      "y": 28,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route1_EventScript_MartClerk",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY",
+      "x": 19,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route1_EventScript_Boy",
+      "flag": "0"
+    }
+  ],
+  "warps": [],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 9,
+      "y": 31,
+      "script": "Route1_EventScript_RouteSign"
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "id": "MAP_ROCKET_HIDEOUT_B3F",
+  "name": "RocketHideout_B3F",
+  "region": "kanto",
+  "layout": "LAYOUT_ROCKET_HIDEOUT_B3F",
+  "music": "MUS_ROCKET_HIDEOUT",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 19,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RocketHideout_B3F_EventScript_Grunt2",
+      "flag": "FLAG_HIDE_MISC_KANTO_ROCKETS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 2,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RocketHideout_B3F_EventScript_Grunt1",
+      "flag": "FLAG_HIDE_MISC_KANTO_ROCKETS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 12,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RocketHideout_B3F_EventScript_ItemRareCandy",
+      "flag": "FLAG_HIDE_ROCKET_HIDEOUT_B3F_RARE_CANDY"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 19,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RocketHideout_B3F_EventScript_ItemTM21",
+      "flag": "FLAG_HIDE_ROCKET_HIDEOUT_B3F_TM21"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 14,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RocketHideout_B3F_EventScript_ItemBlackGlasses",
+      "flag": "FLAG_HIDE_ROCKET_HIDEOUT_B3F_BLACK_GLASSES"
+    }
+  ],
+  "warps": [
+    {
+      "x": 18,
+      "y": 2,
+      "dest_map": "MAP_ROCKET_HIDEOUT_B2F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 15,
+      "y": 18,
+      "dest_map": "MAP_ROCKET_HIDEOUT_B4F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

@@ -1,0 +1,93 @@
+{
+  "id": "MAP_ONE_ISLAND_KINDLE_ROAD_EMBER_SPA",
+  "name": "OneIsland_KindleRoad_EmberSpa",
+  "region": "kanto",
+  "layout": "LAYOUT_ONE_ISLAND_KINDLE_ROAD_EMBER_SPA",
+  "music": "MUS_FUCHSIA",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 11,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OneIsland_KindleRoad_EmberSpa_EventScript_OldMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 15,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OneIsland_KindleRoad_EmberSpa_EventScript_BaldingMan1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 6,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OneIsland_KindleRoad_EmberSpa_EventScript_BlackBelt",
+      "flag": "FLAG_HIDE_POSTGAME_GOSSIPERS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "x": 20,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OneIsland_KindleRoad_EmberSpa_EventScript_OldWoman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 10,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OneIsland_KindleRoad_EmberSpa_EventScript_RockSmashMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 11,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OneIsland_KindleRoad_EmberSpa_EventScript_BaldingMan2",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 13,
+      "y": 36,
+      "dest_map": "MAP_ONE_ISLAND_KINDLE_ROAD",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 13,
+      "y": 13,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "OneIsland_KindleRoad_EmberSpa_EventScript_SpaHeal"
+    }
+  ],
+  "signs": []
+}

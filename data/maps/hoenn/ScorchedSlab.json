@@ -1,0 +1,35 @@
+{
+  "id": "MAP_SCORCHED_SLAB",
+  "name": "ScorchedSlab",
+  "region": "hoenn",
+  "layout": "LAYOUT_SCORCHED_SLAB",
+  "music": "MUS_PETALBURG_WOODS",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 7,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ScorchedSlab_EventScript_ItemTMSunnyDay",
+      "flag": "FLAG_ITEM_SCORCHED_SLAB_TM_SUNNY_DAY"
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 16,
+      "dest_map": "MAP_ROUTE120",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

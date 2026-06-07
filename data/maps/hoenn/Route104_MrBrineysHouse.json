@@ -1,0 +1,51 @@
+{
+  "id": "MAP_ROUTE104_MR_BRINEYS_HOUSE",
+  "name": "Route104_MrBrineysHouse",
+  "region": "hoenn",
+  "layout": "LAYOUT_ROUTE104_MR_BRINEYS_HOUSE",
+  "music": "MUS_PETALBURG",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_BRINEYS_HOUSE_BRINEY",
+      "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
+      "x": 5,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_DOWN_LEFT_UP_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route104_MrBrineysHouse_EventScript_Briney",
+      "flag": "FLAG_HIDE_BRINEYS_HOUSE_MR_BRINEY"
+    },
+    {
+      "local_id": "LOCALID_BRINEYS_HOUSE_PEEKO",
+      "graphics_id": "OBJ_EVENT_GFX_WINGULL",
+      "x": 6,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route104_MrBrineysHouse_EventScript_Peeko",
+      "flag": "FLAG_HIDE_BRINEYS_HOUSE_PEEKO"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

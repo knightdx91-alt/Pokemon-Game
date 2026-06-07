@@ -1,0 +1,65 @@
+{
+  "id": "MAP_SILPH_CO_1F",
+  "name": "SilphCo_1F",
+  "region": "kanto",
+  "layout": "LAYOUT_SILPH_CO_1F",
+  "music": "MUS_SILPH",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_F",
+      "x": 3,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SilphCo_1F_EventScript_Receptionist",
+      "flag": "FLAG_HIDE_SAFFRON_CIVILIANS"
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 21,
+      "dest_map": "MAP_SAFFRON_CITY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 8,
+      "y": 20,
+      "dest_map": "MAP_SAFFRON_CITY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 9,
+      "y": 20,
+      "dest_map": "MAP_SAFFRON_CITY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 31,
+      "y": 2,
+      "dest_map": "MAP_SILPH_CO_2F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 22,
+      "y": 3,
+      "dest_map": "MAP_SILPH_CO_ELEVATOR",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 30,
+      "y": 1,
+      "script": "SilphCo_1F_EventScript_FloorSign"
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "id": "MAP_ROUTE24",
+  "name": "Route24",
+  "region": "kanto",
+  "layout": "LAYOUT_ROUTE24",
+  "music": "MUS_ROUTE24",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_CERULEAN_CITY",
+      "offset": -12,
+      "direction": "down"
+    },
+    {
+      "map": "MAP_ROUTE25",
+      "offset": 0,
+      "direction": "right"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": "LOCALID_ROUTE24_ROCKET",
+      "graphics_id": "OBJ_EVENT_GFX_MAN",
+      "x": 12,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route24_EventScript_Rocket",
+      "flag": "FLAG_HIDE_NUGGET_BRIDGE_ROCKET"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 12,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route24_EventScript_Ethan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 10,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route24_EventScript_Reli",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 12,
+      "y": 25,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route24_EventScript_Timmy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 10,
+      "y": 28,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route24_EventScript_Ali",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 12,
+      "y": 31,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route24_EventScript_Cale",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 5,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route24_EventScript_Shane",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 11,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route24_EventScript_ItemTM45",
+      "flag": "FLAG_HIDE_ROUTE24_TM45"
+    }
+  ],
+  "warps": [],
+  "triggers": [
+    {
+      "x": 10,
+      "y": 15,
+      "var": "VAR_MAP_SCENE_ROUTE24",
+      "var_value": "0",
+      "script": "Route24_EventScript_RocketTriggerLeft"
+    },
+    {
+      "x": 11,
+      "y": 15,
+      "var": "VAR_MAP_SCENE_ROUTE24",
+      "var_value": "0",
+      "script": "Route24_EventScript_RocketTriggerRight"
+    }
+  ],
+  "signs": []
+}

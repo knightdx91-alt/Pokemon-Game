@@ -1,0 +1,98 @@
+{
+  "id": "MAP_FUCHSIA_CITY_WARDENS_HOUSE",
+  "name": "FuchsiaCity_WardensHouse",
+  "region": "kanto",
+  "layout": "LAYOUT_FUCHSIA_CITY_WARDENS_HOUSE",
+  "music": "MUS_FUCHSIA",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_2",
+      "x": 3,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FuchsiaCity_WardensHouse_EventScript_Warden",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 11,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 11,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FuchsiaCity_WardensHouse_EventScript_ItemRareCandy",
+      "flag": "FLAG_HIDE_FUCHSIA_CITY_WARDENS_HOUSE_RARE_CANDY"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "0",
+      "x": 4,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FuchsiaCity_WardensHouse_EventScript_PokemonJournalKoga",
+      "flag": "FLAG_HIDE_FAME_CHECKER_KOGA_JOURNAL"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 10,
+      "dest_map": "MAP_FUCHSIA_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 6,
+      "y": 9,
+      "dest_map": "MAP_FUCHSIA_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 7,
+      "y": 10,
+      "dest_map": "MAP_FUCHSIA_CITY",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 7,
+      "y": 4,
+      "script": "FuchsiaCity_WardensHouse_EventScript_DisplaySign2"
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "script": "FuchsiaCity_WardensHouse_EventScript_DisplaySign1"
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "script": "FuchsiaCity_WardensHouse_EventScript_DisplaySign1"
+    },
+    {
+      "x": 6,
+      "y": 4,
+      "script": "FuchsiaCity_WardensHouse_EventScript_DisplaySign2"
+    }
+  ]
+}

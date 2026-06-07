@@ -1,0 +1,41 @@
+{
+  "id": "MAP_MT_EMBER_RUBY_PATH_B1F_STAIRS",
+  "name": "MtEmber_RubyPath_B1F_Stairs",
+  "region": "kanto",
+  "layout": "LAYOUT_MT_EMBER_RUBY_PATH_B1F_STAIRS",
+  "music": "MUS_SEVII_CAVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH_ROCK",
+      "x": 4,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_12"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 1,
+      "dest_map": "MAP_MT_EMBER_RUBY_PATH_B3F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "dest_map": "MAP_MT_EMBER_RUBY_PATH_B2F_STAIRS",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

@@ -1,0 +1,124 @@
+{
+  "id": "MAP_CELADON_CITY_CONDOMINIUMS_3F",
+  "name": "CeladonCity_Condominiums_3F",
+  "region": "kanto",
+  "layout": "LAYOUT_CELADON_CITY_CONDOMINIUMS_3F",
+  "music": "MUS_CELADON",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKER",
+      "x": 0,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeladonCity_Condominiums_3F_EventScript_Programmer",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN",
+      "x": 3,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeladonCity_Condominiums_3F_EventScript_Designer",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_MANIAC",
+      "x": 4,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeladonCity_Condominiums_3F_EventScript_GraphicArtist",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 0,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeladonCity_Condominiums_3F_EventScript_Writer",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 2,
+      "y": 2,
+      "dest_map": "MAP_CELADON_CITY_CONDOMINIUMS_2F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "dest_map": "MAP_CELADON_CITY_CONDOMINIUMS_ROOF",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 12,
+      "y": 2,
+      "dest_map": "MAP_CELADON_CITY_CONDOMINIUMS_ROOF",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 11,
+      "y": 2,
+      "dest_map": "MAP_CELADON_CITY_CONDOMINIUMS_2F",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 8,
+      "y": 12,
+      "script": "CeladonCity_Condominiums_3F_EventScript_DevelopmentRoomSign"
+    },
+    {
+      "x": 1,
+      "y": 9,
+      "script": "CeladonCity_Condominiums_3F_EventScript_Computer1"
+    },
+    {
+      "x": 5,
+      "y": 9,
+      "script": "CeladonCity_Condominiums_3F_EventScript_Computer2"
+    },
+    {
+      "x": 1,
+      "y": 12,
+      "script": "CeladonCity_Condominiums_3F_EventScript_Computer3"
+    },
+    {
+      "x": 7,
+      "y": 12,
+      "script": "CeladonCity_Condominiums_3F_EventScript_DevelopmentRoomSign"
+    },
+    {
+      "x": 0,
+      "y": 12,
+      "script": "CeladonCity_Condominiums_3F_EventScript_Computer3"
+    },
+    {
+      "x": 0,
+      "y": 9,
+      "script": "CeladonCity_Condominiums_3F_EventScript_Computer1"
+    },
+    {
+      "x": 4,
+      "y": 9,
+      "script": "CeladonCity_Condominiums_3F_EventScript_Computer2"
+    }
+  ]
+}

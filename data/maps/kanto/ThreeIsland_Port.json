@@ -1,0 +1,73 @@
+{
+  "id": "MAP_THREE_ISLAND_PORT",
+  "name": "ThreeIsland_Port",
+  "region": "kanto",
+  "layout": "LAYOUT_THREE_ISLAND_PORT",
+  "music": "MUS_ROUTE3",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_THREE_ISLAND",
+      "offset": 0,
+      "direction": "up"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_3",
+      "x": 14,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_Port_EventScript_Woman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BIKER",
+      "x": 8,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_WALK_RIGHT_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_Port_EventScript_Biker1",
+      "flag": "FLAG_HIDE_THREE_ISLAND_BIKERS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BIKER",
+      "x": 13,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_UP_RIGHT_DOWN_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_Port_EventScript_Biker2",
+      "flag": "FLAG_HIDE_THREE_ISLAND_BIKERS"
+    }
+  ],
+  "warps": [
+    {
+      "x": 16,
+      "y": 4,
+      "dest_map": "MAP_THREE_ISLAND_DUNSPARCE_TUNNEL",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 38,
+      "y": 5,
+      "dest_map": "MAP_THREE_ISLAND_DUNSPARCE_TUNNEL",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 12,
+      "y": 13,
+      "dest_map": "MAP_THREE_ISLAND_HARBOR",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

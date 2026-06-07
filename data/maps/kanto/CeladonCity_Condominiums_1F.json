@@ -1,0 +1,106 @@
+{
+  "id": "MAP_CELADON_CITY_CONDOMINIUMS_1F",
+  "name": "CeladonCity_Condominiums_1F",
+  "region": "kanto",
+  "layout": "LAYOUT_CELADON_CITY_CONDOMINIUMS_1F",
+  "music": "MUS_CELADON",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MEOWTH",
+      "x": 1,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeladonCity_Condominiums_1F_EventScript_Meowth",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CLEFAIRY",
+      "x": 5,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeladonCity_Condominiums_1F_EventScript_Clefairy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_NIDORAN_F",
+      "x": 5,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeladonCity_Condominiums_1F_EventScript_Nidoran",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "x": 2,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeladonCity_Condominiums_1F_EventScript_TeaWoman",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 19,
+      "dest_map": "MAP_CELADON_CITY",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 12,
+      "y": 18,
+      "dest_map": "MAP_CELADON_CITY",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 13,
+      "y": 19,
+      "dest_map": "MAP_CELADON_CITY",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "dest_map": "MAP_CELADON_CITY_CONDOMINIUMS_2F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 12,
+      "y": 2,
+      "dest_map": "MAP_CELADON_CITY_CONDOMINIUMS_2F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "dest_map": "MAP_CELADON_CITY",
+      "dest_warp_id": "11"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 8,
+      "y": 12,
+      "script": "CeladonCity_Condominiums_1F_EventScript_SuiteSign"
+    },
+    {
+      "x": 7,
+      "y": 12,
+      "script": "CeladonCity_Condominiums_1F_EventScript_SuiteSign"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "id": "MAP_ROUTE5_POKEMON_DAY_CARE",
+  "name": "Route5_PokemonDayCare",
+  "region": "kanto",
+  "layout": "LAYOUT_ROUTE5_POKEMON_DAY_CARE",
+  "music": "MUS_PEWTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route5_PokemonDayCare_EventScript_DaycareMan",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 7,
+      "dest_map": "MAP_ROUTE5",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_ROUTE5",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "dest_map": "MAP_ROUTE5",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

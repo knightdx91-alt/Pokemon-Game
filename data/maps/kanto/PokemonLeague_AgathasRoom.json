@@ -1,0 +1,41 @@
+{
+  "id": "MAP_POKEMON_LEAGUE_AGATHAS_ROOM",
+  "name": "PokemonLeague_AgathasRoom",
+  "region": "kanto",
+  "layout": "LAYOUT_POKEMON_LEAGUE_AGATHAS_ROOM",
+  "music": "MUS_POKE_TOWER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_AGATHA",
+      "x": 6,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PokemonLeague_AgathasRoom_EventScript_Agatha",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 12,
+      "dest_map": "MAP_POKEMON_LEAGUE_BRUNOS_ROOM",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "dest_map": "MAP_POKEMON_LEAGUE_LANCES_ROOM",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

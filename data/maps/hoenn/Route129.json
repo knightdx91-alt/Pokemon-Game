@@ -1,0 +1,84 @@
+{
+  "id": "MAP_ROUTE129",
+  "name": "Route129",
+  "region": "hoenn",
+  "layout": "LAYOUT_ROUTE129",
+  "music": "MUS_ROUTE119",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_OCEAN_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE128",
+      "offset": 0,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_ROUTE130",
+      "offset": 0,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_UNDERWATER_ROUTE129",
+      "offset": 0,
+      "direction": "dive"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M",
+      "x": 28,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_DOWN_LEFT_UP_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route129_EventScript_Chase",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F",
+      "x": 10,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_RIGHT_DOWN_LEFT_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route129_EventScript_Allison",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F",
+      "x": 13,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route129_EventScript_Tisha",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M",
+      "x": 35,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_ROTATE_CLOCKWISE",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route129_EventScript_Reed",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M",
+      "x": 13,
+      "y": 27,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route129_EventScript_Clarence",
+      "flag": "0"
+    }
+  ],
+  "warps": [],
+  "triggers": [],
+  "signs": []
+}

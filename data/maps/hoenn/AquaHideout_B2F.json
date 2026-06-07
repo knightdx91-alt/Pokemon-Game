@@ -1,0 +1,154 @@
+{
+  "id": "MAP_AQUA_HIDEOUT_B2F",
+  "name": "AquaHideout_B2F",
+  "region": "hoenn",
+  "layout": "LAYOUT_AQUA_HIDEOUT_B2F",
+  "music": "MUS_AQUA_MAGMA_HIDEOUT",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_AQUA_HIDEOUT_MATT",
+      "graphics_id": "OBJ_EVENT_GFX_AQUA_MEMBER_M",
+      "x": 23,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "AquaHideout_B2F_EventScript_Matt",
+      "flag": "FLAG_HIDE_AQUA_HIDEOUT_GRUNTS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_AQUA_MEMBER_M",
+      "x": 23,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_UP_LEFT_DOWN_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "AquaHideout_B2F_EventScript_Grunt4",
+      "flag": "FLAG_HIDE_AQUA_HIDEOUT_GRUNTS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 3,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "AquaHideout_B2F_EventScript_ItemNestBall",
+      "flag": "FLAG_ITEM_AQUA_HIDEOUT_B2F_NEST_BALL"
+    },
+    {
+      "local_id": "LOCALID_AQUA_HIDEOUT_SUBMARINE",
+      "graphics_id": "OBJ_EVENT_GFX_SUBMARINE_SHADOW",
+      "x": 19,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_AQUA_HIDEOUT_B2F_SUBMARINE_SHADOW"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_AQUA_MEMBER_F",
+      "x": 7,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "AquaHideout_B2F_EventScript_Grunt6",
+      "flag": "FLAG_HIDE_AQUA_HIDEOUT_GRUNTS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_AQUA_MEMBER_M",
+      "x": 13,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "AquaHideout_B2F_EventScript_Grunt8",
+      "flag": "FLAG_HIDE_AQUA_HIDEOUT_GRUNTS"
+    }
+  ],
+  "warps": [
+    {
+      "x": 18,
+      "y": 1,
+      "dest_map": "MAP_AQUA_HIDEOUT_B1F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 12,
+      "y": 1,
+      "dest_map": "MAP_AQUA_HIDEOUT_B1F",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "dest_map": "MAP_AQUA_HIDEOUT_B1F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 31,
+      "y": 8,
+      "dest_map": "MAP_AQUA_HIDEOUT_B2F",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 8,
+      "y": 8,
+      "dest_map": "MAP_AQUA_HIDEOUT_B2F",
+      "dest_warp_id": "8"
+    },
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_AQUA_HIDEOUT_B2F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 18,
+      "y": 13,
+      "dest_map": "MAP_AQUA_HIDEOUT_B2F",
+      "dest_warp_id": "7"
+    },
+    {
+      "x": 12,
+      "y": 13,
+      "dest_map": "MAP_AQUA_HIDEOUT_B2F",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 31,
+      "y": 17,
+      "dest_map": "MAP_AQUA_HIDEOUT_B2F",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 32,
+      "y": 20,
+      "dest_map": "MAP_AQUA_HIDEOUT_B1F",
+      "dest_warp_id": "4"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 28,
+      "y": 17,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "AquaHideout_B2F_EventScript_MattNoticePlayer"
+    },
+    {
+      "x": 28,
+      "y": 16,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "AquaHideout_B2F_EventScript_MattNoticePlayer"
+    }
+  ],
+  "signs": []
+}

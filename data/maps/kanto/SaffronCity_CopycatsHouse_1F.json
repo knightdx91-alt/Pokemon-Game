@@ -1,0 +1,73 @@
+{
+  "id": "MAP_SAFFRON_CITY_COPYCATS_HOUSE_1F",
+  "name": "SaffronCity_CopycatsHouse_1F",
+  "region": "kanto",
+  "layout": "LAYOUT_SAFFRON_CITY_COPYCATS_HOUSE_1F",
+  "music": "MUS_PEWTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 8,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_CopycatsHouse_1F_EventScript_CopycatsDad",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_3",
+      "x": 3,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_CopycatsHouse_1F_EventScript_CopycatsMom",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CHANSEY",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_CopycatsHouse_1F_EventScript_Chansey",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 8,
+      "dest_map": "MAP_SAFFRON_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_SAFFRON_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_SAFFRON_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 10,
+      "y": 2,
+      "dest_map": "MAP_SAFFRON_CITY_COPYCATS_HOUSE_2F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

@@ -1,0 +1,105 @@
+{
+  "id": "MAP_POKEMON_MANSION_2F",
+  "name": "PokemonMansion_2F",
+  "region": "kanto",
+  "layout": "LAYOUT_POKEMON_MANSION_2F",
+  "music": "MUS_POKE_MANSION",
+  "weather": "WEATHER_SHADE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_MANIAC",
+      "x": 5,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "PokemonMansion_2F_EventScript_Arnie",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 36,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PokemonMansion_2F_EventScript_ItemCalcium",
+      "flag": "FLAG_HIDE_POKEMON_MANSION_2F_CALCIUM"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 18,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PokemonMansion_2F_EventScript_ItemZinc",
+      "flag": "FLAG_HIDE_POKEMON_MANSION_2F_ZINC"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 35,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PokemonMansion_2F_EventScript_ItemHPUp",
+      "flag": "FLAG_HIDE_POKEMON_MANSION_2F_HP_UP"
+    }
+  ],
+  "warps": [
+    {
+      "x": 9,
+      "y": 3,
+      "dest_map": "MAP_POKEMON_MANSION_3F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 34,
+      "y": 22,
+      "dest_map": "MAP_POKEMON_MANSION_3F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 6,
+      "y": 14,
+      "dest_map": "MAP_POKEMON_MANSION_1F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 9,
+      "y": 14,
+      "dest_map": "MAP_POKEMON_MANSION_3F",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 27,
+      "y": 17,
+      "dest_map": "MAP_POKEMON_MANSION_3F",
+      "dest_warp_id": "5"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 2,
+      "y": 16,
+      "script": "PokemonMansion_2F_EventScript_Statue"
+    },
+    {
+      "x": 6,
+      "y": 31,
+      "script": "PokemonMansion_2F_EventScript_DiaryJuly10th"
+    },
+    {
+      "x": 25,
+      "y": 4,
+      "script": "PokemonMansion_2F_EventScript_DiaryJuly5th"
+    }
+  ]
+}

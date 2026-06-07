@@ -1,0 +1,493 @@
+{
+  "id": "MAP_ROUTE120",
+  "name": "Route120",
+  "region": "hoenn",
+  "layout": "LAYOUT_ROUTE120",
+  "music": "MUS_ROUTE120",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_FORTREE_CITY",
+      "offset": 0,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_ROUTE121",
+      "offset": 80,
+      "direction": "right"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 4,
+      "y": 79,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 5,
+      "y": 79,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 6,
+      "y": 79,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 7,
+      "y": 79,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 34,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 35,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 36,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 9,
+      "y": 92,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 10,
+      "y": 92,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 11,
+      "y": 92,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN_5",
+      "x": 5,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route120_EventScript_Colin",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN_5",
+      "x": 32,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route120_EventScript_Robert",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 27,
+      "y": 51,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route120_EventScript_Lorenzo",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 36,
+      "y": 45,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route120_EventScript_Jenna",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MANIAC",
+      "x": 19,
+      "y": 80,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route120_EventScript_Jeffrey",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 20,
+      "y": 55,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route120_EventScript_ItemNugget",
+      "flag": "FLAG_ITEM_ROUTE_120_NUGGET"
+    },
+    {
+      "local_id": "LOCALID_ROUTE120_TY_1",
+      "graphics_id": "OBJ_EVENT_GFX_CAMERAMAN",
+      "x": 37,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GabbyAndTy_EventScript_TyBattle3",
+      "flag": "FLAG_HIDE_ROUTE_120_GABBY_AND_TY_1"
+    },
+    {
+      "local_id": "LOCALID_ROUTE120_GABBY_1",
+      "graphics_id": "OBJ_EVENT_GFX_REPORTER_F",
+      "x": 36,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GabbyAndTy_EventScript_GabbyBattle3",
+      "flag": "FLAG_HIDE_ROUTE_120_GABBY_AND_TY_1"
+    },
+    {
+      "local_id": "LOCALID_ROUTE120_GABBY_2",
+      "graphics_id": "OBJ_EVENT_GFX_REPORTER_F",
+      "x": 36,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GabbyAndTy_EventScript_GabbyBattle6",
+      "flag": "FLAG_HIDE_ROUTE_120_GABBY_AND_TY_2"
+    },
+    {
+      "local_id": "LOCALID_ROUTE120_TY_2",
+      "graphics_id": "OBJ_EVENT_GFX_CAMERAMAN",
+      "x": 37,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GabbyAndTy_EventScript_TyBattle6",
+      "flag": "FLAG_HIDE_ROUTE_120_GABBY_AND_TY_2"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 35,
+      "y": 32,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_11"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 7,
+      "y": 89,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route120_EventScript_ItemFullHeal",
+      "flag": "FLAG_ITEM_ROUTE_120_FULL_HEAL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 14,
+      "y": 92,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route120_EventScript_BerryBeauty",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_5",
+      "x": 31,
+      "y": 37,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route120_EventScript_Jennifer",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 9,
+      "y": 60,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route120_EventScript_Chip",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_5",
+      "x": 16,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_ROTATE_COUNTERCLOCKWISE",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route120_EventScript_Clarissa",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_5",
+      "x": 18,
+      "y": 34,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route120_EventScript_Angelica",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 22,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route120_EventScript_ItemNestBall",
+      "flag": "FLAG_ITEM_ROUTE_120_NEST_BALL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 23,
+      "y": 82,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route120_EventScript_ItemHyperPotion",
+      "flag": "FLAG_ITEM_ROUTE_120_HYPER_POTION"
+    },
+    {
+      "local_id": "LOCALID_BRIDGE_KECLEON",
+      "graphics_id": "OBJ_EVENT_GFX_KECLEON",
+      "x": 12,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route120_EventScript_BridgeKecleon",
+      "flag": "FLAG_HIDE_ROUTE_120_KECLEON_BRIDGE"
+    },
+    {
+      "local_id": "LOCALID_ROUTE120_STEVEN",
+      "graphics_id": "OBJ_EVENT_GFX_STEVEN",
+      "x": 13,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route120_EventScript_Steven",
+      "flag": "FLAG_HIDE_ROUTE_120_STEVEN"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 20,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_14"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 15,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_12"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
+      "x": 10,
+      "y": 72,
+      "movement_type": "MOVEMENT_TYPE_MOUNTAIN_DISGUISE",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route120_EventScript_Keigo",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
+      "x": 19,
+      "y": 28,
+      "movement_type": "MOVEMENT_TYPE_TREE_DISGUISE",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route120_EventScript_Riley",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_BRIDGE_KECLEON_SHADOW",
+      "graphics_id": "OBJ_EVENT_GFX_KECLEON_BRIDGE_SHADOW",
+      "x": 12,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_ROUTE_120_KECLEON_BRIDGE_SHADOW"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_KECLEON",
+      "x": 20,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route120_EventScript_Kecleon1",
+      "flag": "FLAG_HIDE_ROUTE_120_KECLEON_1"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_KECLEON",
+      "x": 27,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route120_EventScript_Kecleon2",
+      "flag": "FLAG_HIDE_ROUTE_120_KECLEON_2"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_KECLEON",
+      "x": 4,
+      "y": 77,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route120_EventScript_Kecleon3",
+      "flag": "FLAG_HIDE_ROUTE_120_KECLEON_3"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_KECLEON",
+      "x": 7,
+      "y": 51,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route120_EventScript_Kecleon5",
+      "flag": "FLAG_HIDE_ROUTE_120_KECLEON_5"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_KECLEON",
+      "x": 19,
+      "y": 48,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route120_EventScript_Kecleon4",
+      "flag": "FLAG_HIDE_ROUTE_120_KECLEON_4"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GIRL_3",
+      "x": 19,
+      "y": 32,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route120_EventScript_Callie",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN_3",
+      "x": 14,
+      "y": 34,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route120_EventScript_Leonel",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 24,
+      "y": 33,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route120_EventScript_ItemRevive",
+      "flag": "FLAG_ITEM_ROUTE_120_REVIVE"
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 55,
+      "dest_map": "MAP_ANCIENT_TOMB",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 19,
+      "y": 23,
+      "dest_map": "MAP_SCORCHED_SLAB",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 27,
+      "y": 3,
+      "script": "Route120_EventScript_RouteSignFortree"
+    },
+    {
+      "x": 38,
+      "y": 88,
+      "script": "Route120_EventScript_RouteSign121"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "id": "MAP_FUCHSIA_CITY_SAFARI_ZONE_ENTRANCE",
+  "name": "FuchsiaCity_SafariZone_Entrance",
+  "region": "kanto",
+  "layout": "LAYOUT_FUCHSIA_CITY_SAFARI_ZONE_ENTRANCE",
+  "music": "MUS_FUCHSIA",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_M",
+      "x": 7,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_M",
+      "x": 1,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FuchsiaCity_SafariZone_Entrance_EventScript_InfoAttendant",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 1,
+      "dest_map": "MAP_SAFARI_ZONE_CENTER",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "dest_map": "MAP_FUCHSIA_CITY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_FUCHSIA_CITY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "dest_map": "MAP_FUCHSIA_CITY",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 4,
+      "y": 3,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "FuchsiaCity_SafariZone_Entrance_EventScript_EntryTriggerMid"
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "FuchsiaCity_SafariZone_Entrance_EventScript_EntryTriggerRight"
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "FuchsiaCity_SafariZone_Entrance_EventScript_EntryTriggerLeft"
+    }
+  ],
+  "signs": []
+}

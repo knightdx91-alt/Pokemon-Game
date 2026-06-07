@@ -1,0 +1,40 @@
+{
+  "id": "MAP_UNDERWATER_ROUTE126",
+  "name": "Underwater_Route126",
+  "region": "hoenn",
+  "layout": "LAYOUT_UNDERWATER_ROUTE126",
+  "music": "MUS_UNDERWATER",
+  "weather": "WEATHER_UNDERWATER_BUBBLES",
+  "map_type": "MAP_TYPE_UNDERWATER",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_UNDERWATER_ROUTE124",
+      "offset": 0,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_UNDERWATER_ROUTE127",
+      "offset": 0,
+      "direction": "right"
+    },
+    {
+      "map": "MAP_ROUTE126",
+      "offset": 0,
+      "direction": "emerge"
+    }
+  ],
+  "npcs": [],
+  "warps": [
+    {
+      "x": 45,
+      "y": 65,
+      "dest_map": "MAP_UNDERWATER_SOOTOPOLIS_CITY",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

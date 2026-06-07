@@ -1,0 +1,76 @@
+{
+  "id": "MAP_TWO_ISLAND_JOYFUL_GAME_CORNER",
+  "name": "TwoIsland_JoyfulGameCorner",
+  "region": "kanto",
+  "layout": "LAYOUT_TWO_ISLAND_JOYFUL_GAME_CORNER",
+  "music": "MUS_GAME_CORNER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_JOYFUL_GAME_CORNER_DADDY",
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 5,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TwoIsland_JoyfulGameCorner_EventScript_LostellesDaddy",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_JOYFUL_GAME_CORNER_BIKER",
+      "graphics_id": "OBJ_EVENT_GFX_BIKER",
+      "x": 5,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_TWO_ISLAND_GAME_CORNER_BIKER"
+    },
+    {
+      "local_id": "LOCALID_JOYFUL_GAME_CORNER_LOSTELLE",
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_GIRL",
+      "x": 6,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TwoIsland_JoyfulGameCorner_EventScript_Lostelle",
+      "flag": "FLAG_HIDE_TWO_ISLAND_GAME_CORNER_LOSTELLE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN",
+      "x": 4,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TwoIsland_JoyfulGameCorner_EventScript_InfoMan",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_TWO_ISLAND",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 1,
+      "y": 1,
+      "script": "TwoIsland_JoyfulGameCorner_EventScript_ShowPokemonJumpRecords"
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "script": "TwoIsland_JoyfulGameCorner_EventScript_ShowDodrioBerryPickingRecords"
+    }
+  ]
+}

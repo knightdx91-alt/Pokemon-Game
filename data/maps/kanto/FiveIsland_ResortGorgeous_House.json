@@ -1,0 +1,56 @@
+{
+  "id": "MAP_FIVE_ISLAND_RESORT_GORGEOUS_HOUSE",
+  "name": "FiveIsland_ResortGorgeous_House",
+  "region": "kanto",
+  "layout": "LAYOUT_FIVE_ISLAND_RESORT_GORGEOUS_HOUSE",
+  "music": "MUS_SEVII_45",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_RESORT_GORGEOUS_HOUSE_SELPHY",
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FiveIsland_ResortGorgeous_House_EventScript_Selphy",
+      "flag": "FLAG_HIDE_RESORT_GORGEOUS_INSIDE_SELPHY"
+    },
+    {
+      "local_id": "LOCALID_RESORT_GORGEOUS_HOUSE_BUTLER",
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 6,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FiveIsland_ResortGorgeous_House_EventScript_Butler",
+      "flag": "FLAG_HIDE_SELPHYS_BUTLER"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_FIVE_ISLAND_RESORT_GORGEOUS",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 9,
+      "y": 1,
+      "script": "FiveIsland_ResortGorgeous_House_EventScript_PokemonJournal"
+    },
+    {
+      "x": 8,
+      "y": 1,
+      "script": "FiveIsland_ResortGorgeous_House_EventScript_PokemonJournal"
+    }
+  ]
+}

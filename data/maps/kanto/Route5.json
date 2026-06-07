@@ -1,0 +1,59 @@
+{
+  "id": "MAP_ROUTE5",
+  "name": "Route5",
+  "region": "kanto",
+  "layout": "LAYOUT_ROUTE5",
+  "music": "MUS_ROUTE3",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_CERULEAN_CITY",
+      "offset": 0,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_SAFFRON_CITY_CONNECTION",
+      "offset": 0,
+      "direction": "down"
+    }
+  ],
+  "npcs": [],
+  "warps": [
+    {
+      "x": 31,
+      "y": 31,
+      "dest_map": "MAP_UNDERGROUND_PATH_NORTH_ENTRANCE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 23,
+      "y": 25,
+      "dest_map": "MAP_ROUTE5_POKEMON_DAY_CARE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 24,
+      "y": 32,
+      "dest_map": "MAP_ROUTE5_SOUTH_ENTRANCE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 25,
+      "y": 32,
+      "dest_map": "MAP_ROUTE5_SOUTH_ENTRANCE",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 32,
+      "y": 32,
+      "script": "Route5_EventScript_UndergroundPathSign"
+    }
+  ]
+}

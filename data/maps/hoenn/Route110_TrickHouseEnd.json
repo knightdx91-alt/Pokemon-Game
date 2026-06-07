@@ -1,0 +1,49 @@
+{
+  "id": "MAP_ROUTE110_TRICK_HOUSE_END",
+  "name": "Route110_TrickHouseEnd",
+  "region": "hoenn",
+  "layout": "LAYOUT_ROUTE110_TRICK_HOUSE_END",
+  "music": "MUS_TRICK_HOUSE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_TRICK_MASTER_END",
+      "graphics_id": "OBJ_EVENT_GFX_MAN_1",
+      "x": 4,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route110_TrickHouseEnd_EventScript_TrickMaster",
+      "flag": "FLAG_HIDE_TRICK_HOUSE_END_MAN"
+    }
+  ],
+  "warps": [
+    {
+      "x": 10,
+      "y": 1,
+      "dest_map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE1",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "dest_map": "MAP_ROUTE110_TRICK_HOUSE_CORRIDOR",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 2,
+      "y": 2,
+      "var": "VAR_TEMP_2",
+      "var_value": "0",
+      "script": "Route110_TrickHouseEnd_EventScript_TrickMasterExitTrigger"
+    }
+  ],
+  "signs": []
+}

@@ -1,0 +1,153 @@
+{
+  "id": "MAP_BATTLE_FRONTIER_BATTLE_TOWER_LOBBY",
+  "name": "BattleFrontier_BattleTowerLobby",
+  "region": "hoenn",
+  "layout": "LAYOUT_BATTLE_FRONTIER_BATTLE_TOWER_LOBBY",
+  "music": "MUS_B_TOWER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_TOWER_ATTENDANT_SINGLES",
+      "graphics_id": "OBJ_EVENT_GFX_TEALA",
+      "x": 6,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_BattleTowerLobby_EventScript_SinglesAttendant",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN_4",
+      "x": 23,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_BattleTowerLobby_EventScript_FeelingsMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_5",
+      "x": 17,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_BattleTowerLobby_EventScript_Woman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY_1",
+      "x": 15,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_BattleTowerLobby_EventScript_Boy",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TOWER_LOBBY_REPORTER",
+      "graphics_id": "OBJ_EVENT_GFX_REPORTER_F",
+      "x": 11,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_BattleTowerLobby_EventScript_Reporter",
+      "flag": "FLAG_HIDE_BATTLE_TOWER_REPORTER"
+    },
+    {
+      "local_id": "LOCALID_APPRENTICE",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_0",
+      "x": 1,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_BattleTowerLobby_EventScript_Apprentice",
+      "flag": "FLAG_HIDE_APPRENTICE"
+    },
+    {
+      "local_id": "LOCALID_TOWER_ATTENDANT_DOUBLES",
+      "graphics_id": "OBJ_EVENT_GFX_TEALA",
+      "x": 10,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_BattleTowerLobby_EventScript_DoublesAttendant",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TOWER_ATTENDANT_MULTIS",
+      "graphics_id": "OBJ_EVENT_GFX_TEALA",
+      "x": 14,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_BattleTowerLobby_EventScript_MultisAttendant",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TOWER_ATTENDANT_LINK_MULTIS",
+      "graphics_id": "OBJ_EVENT_GFX_TEALA",
+      "x": 18,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_BattleTowerLobby_EventScript_LinkMultisAttendant",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 12,
+      "y": 9,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_EAST",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 13,
+      "y": 9,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_EAST",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "dest_map": "MAP_BATTLE_FRONTIER_BATTLE_TOWER_BATTLE_ROOM",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 4,
+      "y": 5,
+      "script": "BattleFrontier_BattleTowerLobby_EventScript_ShowSinglesResults"
+    },
+    {
+      "x": 8,
+      "y": 5,
+      "script": "BattleFrontier_BattleTowerLobby_EventScript_ShowDoublesResults"
+    },
+    {
+      "x": 12,
+      "y": 5,
+      "script": "BattleFrontier_BattleTowerLobby_EventScript_ShowMultisResults"
+    },
+    {
+      "x": 16,
+      "y": 5,
+      "script": "BattleFrontier_BattleTowerLobby_EventScript_ShowLinkMultisResults"
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "script": "BattleFrontier_BattleTowerLobby_EventScript_RulesBoard"
+    }
+  ]
+}

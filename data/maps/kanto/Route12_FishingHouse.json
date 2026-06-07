@@ -1,0 +1,53 @@
+{
+  "id": "MAP_ROUTE12_FISHING_HOUSE",
+  "name": "Route12_FishingHouse",
+  "region": "kanto",
+  "layout": "LAYOUT_HOUSE4",
+  "music": "MUS_CELADON",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route12_FishingHouse_EventScript_FishingGuruBrother",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 2,
+      "y": 8,
+      "dest_map": "MAP_ROUTE12",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "dest_map": "MAP_ROUTE12",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_ROUTE12",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 9,
+      "y": 1,
+      "script": "Route12_FishingHouse_EventScript_MagikarpRecordSign"
+    }
+  ]
+}

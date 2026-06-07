@@ -1,0 +1,41 @@
+{
+  "id": "MAP_THREE_ISLAND_DUNSPARCE_TUNNEL",
+  "name": "ThreeIsland_DunsparceTunnel",
+  "region": "kanto",
+  "layout": "LAYOUT_THREE_ISLAND_DUNSPARCE_TUNNEL",
+  "music": "MUS_VIRIDIAN_FOREST",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_PROSPECTOR",
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 23,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_DunsparceTunnel_EventScript_Prospector",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 4,
+      "dest_map": "MAP_THREE_ISLAND_PORT",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 25,
+      "y": 5,
+      "dest_map": "MAP_THREE_ISLAND_PORT",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

@@ -1,0 +1,147 @@
+{
+  "id": "MAP_ROUTE16_NORTH_ENTRANCE_1F",
+  "name": "Route16_NorthEntrance_1F",
+  "region": "kanto",
+  "layout": "LAYOUT_ROUTE16_NORTH_ENTRANCE_1F",
+  "music": "MUS_PEWTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 6,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route16_NorthEntrance_1F_EventScript_Guard",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 7,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route16_NorthEntrance_1F_EventScript_OldMan",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 1,
+      "y": 3,
+      "dest_map": "MAP_ROUTE16",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 11,
+      "y": 3,
+      "dest_map": "MAP_ROUTE16",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 1,
+      "y": 12,
+      "dest_map": "MAP_ROUTE16",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 11,
+      "y": 12,
+      "dest_map": "MAP_ROUTE16",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 9,
+      "y": 16,
+      "dest_map": "MAP_ROUTE16_NORTH_ENTRANCE_2F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 10,
+      "y": 12,
+      "var": "VAR_MAP_SCENE_ROUTE16",
+      "var_value": "1",
+      "script": "EventScript_SetExitingCyclingRoad"
+    },
+    {
+      "x": 2,
+      "y": 12,
+      "var": "VAR_MAP_SCENE_ROUTE16",
+      "var_value": "0",
+      "script": "EventScript_SetEnteringCyclingRoad"
+    },
+    {
+      "x": 6,
+      "y": 10,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "Route16_NorthEntrance_1F_EventScript_NeedBikeTriggerTop"
+    },
+    {
+      "x": 6,
+      "y": 11,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "Route16_NorthEntrance_1F_EventScript_NeedBikeTriggerMidTop"
+    },
+    {
+      "x": 1,
+      "y": 13,
+      "var": "VAR_MAP_SCENE_ROUTE16",
+      "var_value": "0",
+      "script": "EventScript_SetEnteringCyclingRoad"
+    },
+    {
+      "x": 1,
+      "y": 11,
+      "var": "VAR_MAP_SCENE_ROUTE16",
+      "var_value": "0",
+      "script": "EventScript_SetEnteringCyclingRoad"
+    },
+    {
+      "x": 11,
+      "y": 11,
+      "var": "VAR_MAP_SCENE_ROUTE16",
+      "var_value": "1",
+      "script": "EventScript_SetExitingCyclingRoad"
+    },
+    {
+      "x": 11,
+      "y": 13,
+      "var": "VAR_MAP_SCENE_ROUTE16",
+      "var_value": "1",
+      "script": "EventScript_SetExitingCyclingRoad"
+    },
+    {
+      "x": 6,
+      "y": 12,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "Route16_NorthEntrance_1F_EventScript_NeedBikeTriggerMid"
+    },
+    {
+      "x": 6,
+      "y": 13,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "Route16_NorthEntrance_1F_EventScript_NeedBikeTriggerMidBottom"
+    },
+    {
+      "x": 6,
+      "y": 14,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "Route16_NorthEntrance_1F_EventScript_NeedBikeTriggerBottom"
+    }
+  ],
+  "signs": []
+}

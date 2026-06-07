@@ -1,0 +1,173 @@
+{
+  "id": "MAP_VERMILION_CITY_GYM",
+  "name": "VermilionCity_Gym",
+  "region": "kanto",
+  "layout": "LAYOUT_VERMILION_CITY_GYM",
+  "music": "MUS_GYM",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LT_SURGE",
+      "x": 5,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_Gym_EventScript_LtSurge",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 2,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "VermilionCity_Gym_EventScript_Baily",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 8,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "VermilionCity_Gym_EventScript_Dwayne",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 4,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_Gym_EventScript_GymGuy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 7,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "VermilionCity_Gym_EventScript_Tucker",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 19,
+      "dest_map": "MAP_VERMILION_CITY",
+      "dest_warp_id": "9"
+    },
+    {
+      "x": 5,
+      "y": 19,
+      "dest_map": "MAP_VERMILION_CITY",
+      "dest_warp_id": "9"
+    },
+    {
+      "x": 6,
+      "y": 19,
+      "dest_map": "MAP_VERMILION_CITY",
+      "dest_warp_id": "9"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 3,
+      "y": 17,
+      "script": "VermilionCity_Gym_EventScript_GymStatue"
+    },
+    {
+      "x": 7,
+      "y": 17,
+      "script": "VermilionCity_Gym_EventScript_GymStatue"
+    },
+    {
+      "x": 1,
+      "y": 10,
+      "script": "VermilionCity_Gym_EventScript_TrashCan1"
+    },
+    {
+      "x": 3,
+      "y": 10,
+      "script": "VermilionCity_Gym_EventScript_TrashCan2"
+    },
+    {
+      "x": 5,
+      "y": 10,
+      "script": "VermilionCity_Gym_EventScript_TrashCan3"
+    },
+    {
+      "x": 7,
+      "y": 10,
+      "script": "VermilionCity_Gym_EventScript_TrashCan4"
+    },
+    {
+      "x": 9,
+      "y": 10,
+      "script": "VermilionCity_Gym_EventScript_TrashCan5"
+    },
+    {
+      "x": 1,
+      "y": 12,
+      "script": "VermilionCity_Gym_EventScript_TrashCan6"
+    },
+    {
+      "x": 3,
+      "y": 12,
+      "script": "VermilionCity_Gym_EventScript_TrashCan7"
+    },
+    {
+      "x": 5,
+      "y": 12,
+      "script": "VermilionCity_Gym_EventScript_TrashCan8"
+    },
+    {
+      "x": 7,
+      "y": 12,
+      "script": "VermilionCity_Gym_EventScript_TrashCan9"
+    },
+    {
+      "x": 9,
+      "y": 12,
+      "script": "VermilionCity_Gym_EventScript_TrashCan10"
+    },
+    {
+      "x": 1,
+      "y": 14,
+      "script": "VermilionCity_Gym_EventScript_TrashCan11"
+    },
+    {
+      "x": 3,
+      "y": 14,
+      "script": "VermilionCity_Gym_EventScript_TrashCan12"
+    },
+    {
+      "x": 5,
+      "y": 14,
+      "script": "VermilionCity_Gym_EventScript_TrashCan13"
+    },
+    {
+      "x": 7,
+      "y": 14,
+      "script": "VermilionCity_Gym_EventScript_TrashCan14"
+    },
+    {
+      "x": 9,
+      "y": 14,
+      "script": "VermilionCity_Gym_EventScript_TrashCan15"
+    }
+  ]
+}

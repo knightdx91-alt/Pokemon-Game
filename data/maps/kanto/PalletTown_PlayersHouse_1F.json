@@ -1,0 +1,59 @@
+{
+  "id": "MAP_PALLET_TOWN_PLAYERS_HOUSE_1F",
+  "name": "PalletTown_PlayersHouse_1F",
+  "region": "kanto",
+  "layout": "LAYOUT_PALLET_TOWN_PLAYERS_HOUSE_1F",
+  "music": "MUS_PALLET",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_MOM",
+      "graphics_id": "OBJ_EVENT_GFX_MOM",
+      "x": 8,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_PlayersHouse_1F_EventScript_Mom",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_PALLET_TOWN",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_PALLET_TOWN",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 10,
+      "y": 2,
+      "dest_map": "MAP_PALLET_TOWN_PLAYERS_HOUSE_2F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 3,
+      "y": 9,
+      "dest_map": "MAP_PALLET_TOWN",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 6,
+      "y": 1,
+      "script": "PalletTown_PlayersHouse_1F_EventScript_TV"
+    }
+  ]
+}

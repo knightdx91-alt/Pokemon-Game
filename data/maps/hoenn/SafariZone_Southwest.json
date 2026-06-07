@@ -1,0 +1,62 @@
+{
+  "id": "MAP_SAFARI_ZONE_SOUTHWEST",
+  "name": "SafariZone_Southwest",
+  "region": "hoenn",
+  "layout": "LAYOUT_SAFARI_ZONE_SOUTHWEST",
+  "music": "MUS_SAFARI_ZONE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_SAFARI_ZONE_NORTHWEST",
+      "offset": 0,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_SAFARI_ZONE_SOUTH",
+      "offset": 0,
+      "direction": "right"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 22,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZone_Southwest_EventScript_Woman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 0,
+      "y": 37,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZone_Southwest_EventScript_ItemMaxRevive",
+      "flag": "FLAG_ITEM_SAFARI_ZONE_SOUTH_WEST_MAX_REVIVE"
+    }
+  ],
+  "warps": [
+    {
+      "x": 29,
+      "y": 7,
+      "dest_map": "MAP_SAFARI_ZONE_REST_HOUSE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 32,
+      "y": 7,
+      "script": "SafariZone_Southwest_EventScript_RestHouseSign"
+    }
+  ]
+}

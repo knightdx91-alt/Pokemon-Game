@@ -1,0 +1,123 @@
+{
+  "id": "MAP_SAFARI_ZONE_CENTER",
+  "name": "SafariZone_Center",
+  "region": "kanto",
+  "layout": "LAYOUT_SAFARI_ZONE_CENTER",
+  "music": "MUS_EVOLUTION",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 24,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZone_Center_EventScript_ItemNugget",
+      "flag": "FLAG_HIDE_SAFARI_ZONE_CENTER_NUGGET"
+    }
+  ],
+  "warps": [
+    {
+      "x": 25,
+      "y": 30,
+      "dest_map": "MAP_FUCHSIA_CITY_SAFARI_ZONE_ENTRANCE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 26,
+      "y": 30,
+      "dest_map": "MAP_FUCHSIA_CITY_SAFARI_ZONE_ENTRANCE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 27,
+      "y": 30,
+      "dest_map": "MAP_FUCHSIA_CITY_SAFARI_ZONE_ENTRANCE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 25,
+      "y": 5,
+      "dest_map": "MAP_SAFARI_ZONE_NORTH",
+      "dest_warp_id": "9"
+    },
+    {
+      "x": 26,
+      "y": 5,
+      "dest_map": "MAP_SAFARI_ZONE_NORTH",
+      "dest_warp_id": "10"
+    },
+    {
+      "x": 27,
+      "y": 5,
+      "dest_map": "MAP_SAFARI_ZONE_NORTH",
+      "dest_warp_id": "11"
+    },
+    {
+      "x": 8,
+      "y": 17,
+      "dest_map": "MAP_SAFARI_ZONE_WEST",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 8,
+      "y": 18,
+      "dest_map": "MAP_SAFARI_ZONE_WEST",
+      "dest_warp_id": "7"
+    },
+    {
+      "x": 8,
+      "y": 19,
+      "dest_map": "MAP_SAFARI_ZONE_WEST",
+      "dest_warp_id": "8"
+    },
+    {
+      "x": 43,
+      "y": 15,
+      "dest_map": "MAP_SAFARI_ZONE_EAST",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 43,
+      "y": 16,
+      "dest_map": "MAP_SAFARI_ZONE_EAST",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 43,
+      "y": 17,
+      "dest_map": "MAP_SAFARI_ZONE_EAST",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 29,
+      "y": 25,
+      "dest_map": "MAP_SAFARI_ZONE_CENTER_REST_HOUSE",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 30,
+      "y": 26,
+      "script": "SafariZone_Center_EventScript_RestHouseSign"
+    },
+    {
+      "x": 25,
+      "y": 27,
+      "script": "SafariZone_Center_EventScript_TrainerTips"
+    },
+    {
+      "x": 33,
+      "y": 20,
+      "script": "SafariZone_Center_EventScript_AreaSign"
+    }
+  ]
+}

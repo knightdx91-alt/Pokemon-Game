@@ -1,0 +1,105 @@
+{
+  "id": "MAP_SEVEN_ISLAND_SEVAULT_CANYON_ENTRANCE",
+  "name": "SevenIsland_SevaultCanyon_Entrance",
+  "region": "kanto",
+  "layout": "LAYOUT_SEVEN_ISLAND_SEVAULT_CANYON_ENTRANCE",
+  "music": "MUS_SEVII_ROUTE",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_SEVEN_ISLAND",
+      "offset": 0,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_SEVEN_ISLAND_SEVAULT_CANYON",
+      "offset": 20,
+      "direction": "right"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 12,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SevenIsland_SevaultCanyon_Entrance_EventScript_Miah",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 3,
+      "y": 34,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SevenIsland_SevaultCanyon_Entrance_EventScript_Eve",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN",
+      "x": 4,
+      "y": 34,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SevenIsland_SevaultCanyon_Entrance_EventScript_Jon",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 11,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_UP_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SevenIsland_SevaultCanyon_Entrance_EventScript_Nicolas",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 10,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_UP_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SevenIsland_SevaultCanyon_Entrance_EventScript_Madeline",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKER",
+      "x": 11,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_ROTATE_COUNTERCLOCKWISE",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SevenIsland_SevaultCanyon_Entrance_EventScript_Mason",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_M",
+      "x": 7,
+      "y": -2,
+      "movement_type": null,
+      "trainer_type": null,
+      "script": null,
+      "flag": null
+    }
+  ],
+  "warps": [],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 14,
+      "y": 26,
+      "script": "SevenIsland_SevaultCanyon_Entrance_EventScript_RouteSign"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "id": "MAP_POKEMON_LEAGUE_CHAMPIONS_ROOM",
+  "name": "PokemonLeague_ChampionsRoom",
+  "region": "kanto",
+  "layout": "LAYOUT_POKEMON_LEAGUE_CHAMPIONS_ROOM",
+  "music": "MUS_VICTORY_ROAD",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_CHAMPIONS_ROOM_RIVAL",
+      "graphics_id": "OBJ_EVENT_GFX_BLUE",
+      "x": 6,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_CHAMPIONS_ROOM_PROF_OAK",
+      "graphics_id": "OBJ_EVENT_GFX_PROF_OAK",
+      "x": 6,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_OAK_IN_CHAMP_ROOM"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 19,
+      "dest_map": "MAP_POKEMON_LEAGUE_LANCES_ROOM",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "dest_map": "MAP_POKEMON_LEAGUE_HALL_OF_FAME",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

@@ -1,0 +1,101 @@
+{
+  "id": "MAP_TRAINER_TOWER_LOBBY",
+  "name": "TrainerTower_Lobby",
+  "region": "kanto",
+  "layout": "LAYOUT_TRAINER_TOWER_LOBBY",
+  "music": "MUS_TRAINER_TOWER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_TOWER_NURSE",
+      "graphics_id": "OBJ_EVENT_GFX_NURSE",
+      "x": 4,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TrainerTower_Lobby_EventScript_Nurse",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TOWER_MART_CLERK",
+      "graphics_id": "OBJ_EVENT_GFX_UNION_ROOM_RECEPTIONIST",
+      "x": 14,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TrainerTower_Lobby_EventScript_MartClerk",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TOWER_RECEPTIONIST",
+      "graphics_id": "OBJ_EVENT_GFX_UNION_ROOM_RECEPTIONIST",
+      "x": 11,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TrainerTower_Lobby_EventScript_Receptionist",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TOWER_COOLTRAINER_F",
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_F",
+      "x": 12,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TrainerTower_Lobby_EventScript_CooltrainerF",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TOWER_BALDING_MAN",
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 2,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TrainerTower_Lobby_EventScript_BaldingMan",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 9,
+      "y": 2,
+      "dest_map": "MAP_TRAINER_TOWER_1F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 9,
+      "y": 15,
+      "dest_map": "MAP_SEVEN_ISLAND_TRAINER_TOWER",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 17,
+      "y": 8,
+      "dest_map": "MAP_TRAINER_TOWER_ELEVATOR",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 9,
+      "y": 7,
+      "var": "VAR_MAP_SCENE_TRAINER_TOWER",
+      "var_value": "0",
+      "script": "TrainerTower_Lobby_EventScript_EntryTrigger"
+    }
+  ],
+  "signs": [
+    {
+      "x": 8,
+      "y": 10,
+      "script": "TrainerTower_Lobby_EventScript_ShowRecords"
+    }
+  ]
+}

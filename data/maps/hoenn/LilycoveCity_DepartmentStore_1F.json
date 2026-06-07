@@ -1,0 +1,109 @@
+{
+  "id": "MAP_LILYCOVE_CITY_DEPARTMENT_STORE_1F",
+  "name": "LilycoveCity_DepartmentStore_1F",
+  "region": "hoenn",
+  "layout": "LAYOUT_LILYCOVE_CITY_DEPARTMENT_STORE_1F",
+  "music": "MUS_LILYCOVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 8,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_DepartmentStore_1F_EventScript_Greeter",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_LOTTERY_CLERK",
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 10,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_DepartmentStore_1F_EventScript_LotteryClerk",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKEFAN_F",
+      "x": 14,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_DepartmentStore_1F_EventScript_PokefanF",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_GIRL",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_DepartmentStore_1F_EventScript_LittleGirl",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKEFAN_M",
+      "x": 3,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_DepartmentStore_1F_EventScript_PokefanM",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_AZUMARILL",
+      "x": 2,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_DepartmentStore_1F_EventScript_Azumarill",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 8,
+      "y": 7,
+      "dest_map": "MAP_LILYCOVE_CITY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 9,
+      "y": 7,
+      "dest_map": "MAP_LILYCOVE_CITY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 16,
+      "y": 1,
+      "dest_map": "MAP_LILYCOVE_CITY_DEPARTMENT_STORE_2F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "dest_map": "MAP_LILYCOVE_CITY_DEPARTMENT_STORE_ELEVATOR",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 0,
+      "y": 8,
+      "script": "LilycoveCity_DepartmentStore_1F_EventScript_FloorNamesSign"
+    }
+  ]
+}

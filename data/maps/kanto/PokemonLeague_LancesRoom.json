@@ -1,0 +1,41 @@
+{
+  "id": "MAP_POKEMON_LEAGUE_LANCES_ROOM",
+  "name": "PokemonLeague_LancesRoom",
+  "region": "kanto",
+  "layout": "LAYOUT_POKEMON_LEAGUE_LANCES_ROOM",
+  "music": "MUS_VICTORY_ROAD",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_LANCE",
+      "graphics_id": "OBJ_EVENT_GFX_LANCE",
+      "x": 6,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PokemonLeague_LancesRoom_EventScript_Lance",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 23,
+      "y": 13,
+      "dest_map": "MAP_POKEMON_LEAGUE_AGATHAS_ROOM",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "dest_map": "MAP_POKEMON_LEAGUE_CHAMPIONS_ROOM",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

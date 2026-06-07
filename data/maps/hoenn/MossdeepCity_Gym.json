@@ -1,0 +1,538 @@
+{
+  "id": "MAP_MOSSDEEP_CITY_GYM",
+  "name": "MossdeepCity_Gym",
+  "region": "hoenn",
+  "layout": "LAYOUT_MOSSDEEP_CITY_GYM",
+  "music": "MUS_GYM",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TATE",
+      "x": 23,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_Gym_EventScript_TateAndLiza",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PSYCHIC_M",
+      "x": 1,
+      "y": 30,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MossdeepCity_Gym_EventScript_Preston",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PSYCHIC_M",
+      "x": 5,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MossdeepCity_Gym_EventScript_Blake",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 4,
+      "y": 29,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MossdeepCity_Gym_EventScript_Maura",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 4,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MossdeepCity_Gym_EventScript_Samantha",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PSYCHIC_M",
+      "x": 6,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MossdeepCity_Gym_EventScript_Virgil",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 6,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MossdeepCity_Gym_EventScript_Hannah",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN_2",
+      "x": 5,
+      "y": 33,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_Gym_EventScript_GymGuide",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIZA",
+      "x": 24,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_Gym_EventScript_TateAndLiza",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 2,
+      "y": 30,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 1,
+      "y": 29,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 4,
+      "y": 30,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 5,
+      "y": 29,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 5,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 7,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 10,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 9,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MossdeepCity_Gym_EventScript_Nate",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HEX_MANIAC",
+      "x": 7,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MossdeepCity_Gym_EventScript_Sylvia",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 6,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 12,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 11,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 11,
+      "y": 34,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 12,
+      "y": 33,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 12,
+      "y": 34,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 22,
+      "y": 25,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MossdeepCity_Gym_EventScript_Clifford",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 23,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 25,
+      "y": 25,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MossdeepCity_Gym_EventScript_Macey",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HEX_MANIAC",
+      "x": 22,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MossdeepCity_Gym_EventScript_Kathleen",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 21,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 21,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 22,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PSYCHIC_M",
+      "x": 25,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MossdeepCity_Gym_EventScript_Nicholas",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 24,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 24,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 6,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 23,
+      "y": 25,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 35,
+      "dest_map": "MAP_MOSSDEEP_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 7,
+      "y": 35,
+      "dest_map": "MAP_MOSSDEEP_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 3,
+      "y": 28,
+      "dest_map": "MAP_MOSSDEEP_CITY_GYM",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 1,
+      "y": 23,
+      "dest_map": "MAP_MOSSDEEP_CITY_GYM",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 7,
+      "y": 18,
+      "dest_map": "MAP_MOSSDEEP_CITY_GYM",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 8,
+      "y": 12,
+      "dest_map": "MAP_MOSSDEEP_CITY_GYM",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 9,
+      "y": 18,
+      "dest_map": "MAP_MOSSDEEP_CITY_GYM",
+      "dest_warp_id": "7"
+    },
+    {
+      "x": 23,
+      "y": 20,
+      "dest_map": "MAP_MOSSDEEP_CITY_GYM",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 1,
+      "y": 33,
+      "dest_map": "MAP_MOSSDEEP_CITY_GYM",
+      "dest_warp_id": "9"
+    },
+    {
+      "x": 20,
+      "y": 24,
+      "dest_map": "MAP_MOSSDEEP_CITY_GYM",
+      "dest_warp_id": "8"
+    },
+    {
+      "x": 11,
+      "y": 3,
+      "dest_map": "MAP_MOSSDEEP_CITY_GYM",
+      "dest_warp_id": "11"
+    },
+    {
+      "x": 11,
+      "y": 35,
+      "dest_map": "MAP_MOSSDEEP_CITY_GYM",
+      "dest_warp_id": "10"
+    },
+    {
+      "x": 13,
+      "y": 32,
+      "dest_map": "MAP_MOSSDEEP_CITY_GYM",
+      "dest_warp_id": "13"
+    },
+    {
+      "x": 21,
+      "y": 10,
+      "dest_map": "MAP_MOSSDEEP_CITY_GYM",
+      "dest_warp_id": "12"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 2,
+      "y": 21,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "MossdeepCity_Gym_EventScript_YellowFloorSwitch"
+    },
+    {
+      "x": 8,
+      "y": 10,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "MossdeepCity_Gym_EventScript_BlueFloorSwitch"
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "MossdeepCity_Gym_EventScript_BlueFloorSwitch"
+    },
+    {
+      "x": 15,
+      "y": 34,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "MossdeepCity_Gym_EventScript_GreenFloorSwitch"
+    },
+    {
+      "x": 23,
+      "y": 24,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "MossdeepCity_Gym_EventScript_PurpleFloorSwitch"
+    },
+    {
+      "x": 23,
+      "y": 21,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "MossdeepCity_Gym_EventScript_PurpleFloorSwitch"
+    },
+    {
+      "x": 8,
+      "y": 6,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "MossdeepCity_Gym_EventScript_RedFloorSwitch"
+    },
+    {
+      "x": 21,
+      "y": 6,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "MossdeepCity_Gym_EventScript_WarpToEntrance"
+    },
+    {
+      "x": 3,
+      "y": 30,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "MossdeepCity_Gym_EventScript_YellowFloorSwitch"
+    }
+  ],
+  "signs": [
+    {
+      "x": 4,
+      "y": 34,
+      "script": "MossdeepCity_Gym_EventScript_LeftGymStatue"
+    },
+    {
+      "x": 8,
+      "y": 34,
+      "script": "MossdeepCity_Gym_EventScript_RightGymStatue"
+    }
+  ]
+}

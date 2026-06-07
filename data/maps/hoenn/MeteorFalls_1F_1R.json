@@ -1,0 +1,169 @@
+{
+  "id": "MAP_METEOR_FALLS_1F_1R",
+  "name": "MeteorFalls_1F_1R",
+  "region": "hoenn",
+  "layout": "LAYOUT_METEOR_FALLS_1F_1R",
+  "music": "MUS_CAVE_OF_ORIGIN",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 2,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MeteorFalls_1F_1R_EventScript_ItemTMIronTail",
+      "flag": "FLAG_ITEM_METEOR_FALLS_1F_1R_TM_IRON_TAIL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 2,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MeteorFalls_1F_1R_EventScript_ItemMoonStone",
+      "flag": "FLAG_ITEM_METEOR_FALLS_1F_1R_MOON_STONE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 27,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MeteorFalls_1F_1R_EventScript_ItemFullHeal",
+      "flag": "FLAG_ITEM_METEOR_FALLS_1F_1R_FULL_HEAL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 26,
+      "y": 32,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MeteorFalls_1F_1R_EventScript_ItemPPUP",
+      "flag": "FLAG_ITEM_METEOR_FALLS_1F_1R_PP_UP"
+    },
+    {
+      "local_id": "LOCALID_METEOR_FALLS_MAGMA_GRUNT_1",
+      "graphics_id": "OBJ_EVENT_GFX_MAGMA_MEMBER_M",
+      "x": 12,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_METEOR_FALLS_TEAM_MAGMA"
+    },
+    {
+      "local_id": "LOCALID_METEOR_FALLS_MAGMA_GRUNT_2",
+      "graphics_id": "OBJ_EVENT_GFX_MAGMA_MEMBER_M",
+      "x": 14,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_METEOR_FALLS_TEAM_MAGMA"
+    },
+    {
+      "local_id": "LOCALID_METEOR_FALLS_ARCHIE",
+      "graphics_id": "OBJ_EVENT_GFX_ARCHIE",
+      "x": 6,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_METEOR_FALLS_TEAM_AQUA"
+    },
+    {
+      "local_id": "LOCALID_METEOR_FALLS_AQUA_GRUNT_1",
+      "graphics_id": "OBJ_EVENT_GFX_AQUA_MEMBER_M",
+      "x": 6,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_METEOR_FALLS_TEAM_AQUA"
+    },
+    {
+      "local_id": "LOCALID_METEOR_FALLS_AQUA_GRUNT_2",
+      "graphics_id": "OBJ_EVENT_GFX_AQUA_MEMBER_M",
+      "x": 6,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_METEOR_FALLS_TEAM_AQUA"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_1",
+      "x": 13,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MeteorFalls_1F_1R_EventScript_ProfCozmo",
+      "flag": "FLAG_HIDE_METEOR_FALLS_1F_1R_COZMO"
+    }
+  ],
+  "warps": [
+    {
+      "x": 27,
+      "y": 18,
+      "dest_map": "MAP_ROUTE114",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 6,
+      "y": 39,
+      "dest_map": "MAP_ROUTE115",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 10,
+      "y": 3,
+      "dest_map": "MAP_METEOR_FALLS_1F_2R",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "dest_map": "MAP_METEOR_FALLS_B1F_1R",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 26,
+      "y": 28,
+      "dest_map": "MAP_METEOR_FALLS_B1F_1R",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "dest_map": "MAP_METEOR_FALLS_STEVENS_CAVE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 14,
+      "y": 18,
+      "var": "VAR_METEOR_FALLS_STATE",
+      "var_value": "0",
+      "script": "MeteorFalls_1F_1R_EventScript_MagmaStealsMeteoriteScene"
+    }
+  ],
+  "signs": [
+    {
+      "x": 9,
+      "y": 58,
+      "script": "0x0"
+    }
+  ]
+}

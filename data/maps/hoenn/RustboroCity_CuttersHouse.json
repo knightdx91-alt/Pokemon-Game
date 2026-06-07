@@ -1,0 +1,51 @@
+{
+  "id": "MAP_RUSTBORO_CITY_CUTTERS_HOUSE",
+  "name": "RustboroCity_CuttersHouse",
+  "region": "hoenn",
+  "layout": "LAYOUT_RUSTBORO_CITY_CUTTERS_HOUSE",
+  "music": "MUS_RUSTBORO",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKEFAN_M",
+      "x": 7,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_CuttersHouse_EventScript_Cutter",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 9,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_CuttersHouse_EventScript_Lass",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_RUSTBORO_CITY",
+      "dest_warp_id": "8"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "dest_map": "MAP_RUSTBORO_CITY",
+      "dest_warp_id": "8"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

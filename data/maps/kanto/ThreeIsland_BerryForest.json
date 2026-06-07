@@ -1,0 +1,188 @@
+{
+  "id": "MAP_THREE_ISLAND_BERRY_FOREST",
+  "name": "ThreeIsland_BerryForest",
+  "region": "kanto",
+  "layout": "LAYOUT_THREE_ISLAND_BERRY_FOREST",
+  "music": "MUS_VIRIDIAN_FOREST",
+  "weather": "WEATHER_SHADE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_BERRY_FOREST_LOSTELLE",
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_GIRL",
+      "x": 4,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_BerryForest_EventScript_Lostelle",
+      "flag": "FLAG_HIDE_LOSTELLE_IN_BERRY_FOREST"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 12,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_12"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 19,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_13"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 23,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_14"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 38,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_15"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 44,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_16"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 44,
+      "y": 29,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_17"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 16,
+      "y": 43,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_18"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 17,
+      "y": 39,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_19"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 14,
+      "y": 39,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_1A"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 11,
+      "y": 39,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_1B"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 12,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_BerryForest_EventScript_ItemMaxEther",
+      "flag": "FLAG_HIDE_THREE_ISLAND_BERRY_FOREST_MAX_ETHER"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 27,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_BerryForest_EventScript_ItemFullHeal",
+      "flag": "FLAG_HIDE_THREE_ISLAND_BERRY_FOREST_FULL_HEAL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 12,
+      "y": 43,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_BerryForest_EventScript_ItemMaxElixir",
+      "flag": "FLAG_HIDE_THREE_ISLAND_BERRY_FOREST_MAX_ELIXIR"
+    }
+  ],
+  "warps": [
+    {
+      "x": 43,
+      "y": 41,
+      "dest_map": "MAP_THREE_ISLAND_BOND_BRIDGE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 42,
+      "y": 41,
+      "dest_map": "MAP_THREE_ISLAND_BOND_BRIDGE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 44,
+      "y": 41,
+      "dest_map": "MAP_THREE_ISLAND_BOND_BRIDGE",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 7,
+      "y": 27,
+      "script": "ThreeIsland_BerryForest_EventScript_BewareSign"
+    },
+    {
+      "x": 39,
+      "y": 35,
+      "script": "ThreeIsland_BerryForest_EventScript_WelcomeSign"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "id": "MAP_RUSTBORO_CITY_FLAT2_2F",
+  "name": "RustboroCity_Flat2_2F",
+  "region": "hoenn",
+  "layout": "LAYOUT_RUSTBORO_CITY_FLAT2_2F",
+  "music": "MUS_RUSTBORO",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN",
+      "x": 11,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_Flat2_2F_EventScript_OldMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
+      "x": 7,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_Flat2_2F_EventScript_NinjaBoy",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 1,
+      "dest_map": "MAP_RUSTBORO_CITY_FLAT2_1F",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "dest_map": "MAP_RUSTBORO_CITY_FLAT2_3F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

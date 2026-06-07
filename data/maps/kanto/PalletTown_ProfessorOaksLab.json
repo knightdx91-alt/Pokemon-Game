@@ -1,0 +1,201 @@
+{
+  "id": "MAP_PALLET_TOWN_PROFESSOR_OAKS_LAB",
+  "name": "PalletTown_ProfessorOaksLab",
+  "region": "kanto",
+  "layout": "LAYOUT_PALLET_TOWN_PROFESSOR_OAKS_LAB",
+  "music": "MUS_OAK_LAB",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST",
+      "x": 3,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_Aide1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_F",
+      "x": 2,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_Aide3",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST",
+      "x": 11,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_Aide2",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_OAKS_LAB_PROF_OAK",
+      "graphics_id": "OBJ_EVENT_GFX_PROF_OAK",
+      "x": 6,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_ProfOak",
+      "flag": "FLAG_HIDE_OAK_IN_HIS_LAB"
+    },
+    {
+      "local_id": "LOCALID_BULBASAUR_BALL",
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 8,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_BulbasaurBall",
+      "flag": "FLAG_HIDE_BULBASAUR_BALL"
+    },
+    {
+      "local_id": "LOCALID_SQUIRTLE_BALL",
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 9,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_SquirtleBall",
+      "flag": "FLAG_HIDE_SQUIRTLE_BALL"
+    },
+    {
+      "local_id": "LOCALID_CHARMANDER_BALL",
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 10,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_CharmanderBall",
+      "flag": "FLAG_HIDE_CHARMANDER_BALL"
+    },
+    {
+      "local_id": "LOCALID_OAKS_LAB_RIVAL",
+      "graphics_id": "OBJ_EVENT_GFX_BLUE",
+      "x": 5,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_Rival",
+      "flag": "FLAG_HIDE_RIVAL_IN_LAB"
+    },
+    {
+      "local_id": "LOCALID_POKEDEX_1",
+      "graphics_id": "OBJ_EVENT_GFX_POKEDEX",
+      "x": 4,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_Pokedex",
+      "flag": "FLAG_HIDE_POKEDEX"
+    },
+    {
+      "local_id": "LOCALID_POKEDEX_2",
+      "graphics_id": "OBJ_EVENT_GFX_POKEDEX",
+      "x": 5,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_Pokedex",
+      "flag": "FLAG_HIDE_POKEDEX"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 12,
+      "dest_map": "MAP_PALLET_TOWN",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 7,
+      "y": 12,
+      "dest_map": "MAP_PALLET_TOWN",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 5,
+      "y": 12,
+      "dest_map": "MAP_PALLET_TOWN",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 5,
+      "y": 8,
+      "var": "VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB",
+      "var_value": "2",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_LeaveStarterSceneTrigger"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "var": "VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB",
+      "var_value": "2",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_LeaveStarterSceneTrigger"
+    },
+    {
+      "x": 7,
+      "y": 8,
+      "var": "VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB",
+      "var_value": "2",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_LeaveStarterSceneTrigger"
+    },
+    {
+      "x": 5,
+      "y": 8,
+      "var": "VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB",
+      "var_value": "3",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_RivalBattleTriggerLeft"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "var": "VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB",
+      "var_value": "3",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_RivalBattleTriggerMid"
+    },
+    {
+      "x": 7,
+      "y": 8,
+      "var": "VAR_MAP_SCENE_PALLET_TOWN_PROFESSOR_OAKS_LAB",
+      "var_value": "3",
+      "script": "PalletTown_ProfessorOaksLab_EventScript_RivalBattleTriggerRight"
+    }
+  ],
+  "signs": [
+    {
+      "x": 2,
+      "y": 1,
+      "script": "PalletTown_ProfessorOaksLab_EventScript_Computer"
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "script": "PalletTown_ProfessorOaksLab_EventScript_Computer"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "script": "PalletTown_ProfessorOaksLab_EventScript_LeftSign"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "script": "PalletTown_ProfessorOaksLab_EventScript_RightSign"
+    }
+  ]
+}

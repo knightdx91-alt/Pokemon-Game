@@ -1,0 +1,55 @@
+{
+  "id": "MAP_SEVEN_ISLAND_SEVAULT_CANYON_HOUSE",
+  "name": "SevenIsland_SevaultCanyon_House",
+  "region": "kanto",
+  "layout": "LAYOUT_HOUSE3",
+  "music": "MUS_SEVII_67",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_CHANSEY_DANCE_MAN",
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 2,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SevenIsland_SevaultCanyon_House_EventScript_ChanseyDanceMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CHANSEY",
+      "x": 4,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SevenIsland_SevaultCanyon_House_EventScript_Chansey",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 6,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SevenIsland_SevaultCanyon_House_EventScript_ItemLuckyPunch",
+      "flag": "FLAG_HIDE_SEVEN_ISLAND_SEVAULT_CANYON_HOUSE_LUCKY_PUNCH"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_SEVEN_ISLAND_SEVAULT_CANYON",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

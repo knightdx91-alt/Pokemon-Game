@@ -1,0 +1,35 @@
+{
+  "id": "MAP_NAVEL_ROCK_BASE",
+  "name": "NavelRock_Base",
+  "region": "kanto",
+  "layout": "LAYOUT_NAVEL_ROCK_BASE",
+  "music": "MUS_SEVII_CAVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_NAVEL_ROCK_LUGIA",
+      "graphics_id": "OBJ_EVENT_GFX_LUGIA",
+      "x": 10,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NavelRock_Base_EventScript_Lugia",
+      "flag": "FLAG_HIDE_LUGIA"
+    }
+  ],
+  "warps": [
+    {
+      "x": 13,
+      "y": 20,
+      "dest_map": "MAP_NAVEL_ROCK_BASE_PATH_B11F",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

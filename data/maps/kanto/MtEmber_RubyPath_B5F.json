@@ -1,0 +1,41 @@
+{
+  "id": "MAP_MT_EMBER_RUBY_PATH_B5F",
+  "name": "MtEmber_RubyPath_B5F",
+  "region": "kanto",
+  "layout": "LAYOUT_MT_EMBER_RUBY_PATH_B5F",
+  "music": "MUS_SEVII_CAVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_RUBY",
+      "x": 7,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtEmber_RubyPath_B5F_EventScript_Ruby",
+      "flag": "FLAG_HIDE_RUBY"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 7,
+      "dest_map": "MAP_MT_EMBER_RUBY_PATH_B4F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 7,
+      "y": 2,
+      "script": "MtEmber_RubyPath_B5F_EventScript_BrailleMessage"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "id": "MAP_VERMILION_CITY_POKEMON_FAN_CLUB",
+  "name": "VermilionCity_PokemonFanClub",
+  "region": "kanto",
+  "layout": "LAYOUT_VERMILION_CITY_POKEMON_FAN_CLUB",
+  "music": "MUS_VERMILLION",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 5,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_PokemonFanClub_EventScript_Chairman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_F",
+      "x": 6,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_PokemonFanClub_EventScript_WorkerF",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PIKACHU",
+      "x": 7,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_PokemonFanClub_EventScript_Pikachu",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SEEL",
+      "x": 4,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_PokemonFanClub_EventScript_Seel",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_POKEMON_FAN_CLUB_WOMAN",
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_1",
+      "x": 4,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_PokemonFanClub_EventScript_Woman",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_POKEMON_FAN_CLUB_FAT_MAN",
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 7,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_PokemonFanClub_EventScript_FatMan",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 10,
+      "dest_map": "MAP_VERMILION_CITY",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 5,
+      "y": 10,
+      "dest_map": "MAP_VERMILION_CITY",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 6,
+      "y": 10,
+      "dest_map": "MAP_VERMILION_CITY",
+      "dest_warp_id": "5"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 2,
+      "y": 1,
+      "script": "VermilionCity_PokemonFanClub_EventScript_RulesSign1"
+    },
+    {
+      "x": 9,
+      "y": 1,
+      "script": "VermilionCity_PokemonFanClub_EventScript_RulesSign2"
+    }
+  ]
+}

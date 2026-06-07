@@ -1,0 +1,91 @@
+{
+  "id": "MAP_SEVEN_ISLAND_POKEMON_CENTER_1F",
+  "name": "SevenIsland_PokemonCenter_1F",
+  "region": "kanto",
+  "layout": "LAYOUT_POKEMON_CENTER_1F",
+  "music": "MUS_POKE_CENTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_SEVEN_ISLAND_NURSE",
+      "graphics_id": "OBJ_EVENT_GFX_NURSE",
+      "x": 7,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SevenIsland_PokemonCenter_1F_EventScript_Nurse",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 11,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SevenIsland_PokemonCenter_1F_EventScript_OldMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 14,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SevenIsland_PokemonCenter_1F_EventScript_Sailor",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SevenIsland_PokemonCenter_1F_EventScript_Beauty",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "0",
+      "x": 3,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SevenIsland_PokemonCenter_1F_EventScript_PokemonJournal",
+      "flag": "FLAG_HIDE_POSTGAME_GOSSIPERS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "0",
+      "x": 2,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SevenIsland_PokemonCenter_1F_EventScript_PokemonJournal",
+      "flag": "FLAG_HIDE_POSTGAME_GOSSIPERS"
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 8,
+      "dest_map": "MAP_SEVEN_ISLAND",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "dest_map": "MAP_SEVEN_ISLAND_POKEMON_CENTER_2F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

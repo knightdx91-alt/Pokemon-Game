@@ -1,0 +1,51 @@
+{
+  "id": "MAP_PACIFIDLOG_TOWN_HOUSE5",
+  "name": "PacifidlogTown_House5",
+  "region": "hoenn",
+  "layout": "LAYOUT_PACIFIDLOG_TOWN_HOUSE1",
+  "music": "MUS_LILYCOVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
+      "x": 9,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PacifidlogTown_House5_EventScript_MirageIslandWatcher",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 3,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PacifidlogTown_House5_EventScript_Gentleman",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_PACIFIDLOG_TOWN",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_PACIFIDLOG_TOWN",
+      "dest_warp_id": "5"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

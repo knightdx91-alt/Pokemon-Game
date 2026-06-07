@@ -1,0 +1,377 @@
+{
+  "id": "MAP_MOSSDEEP_CITY",
+  "name": "MossdeepCity",
+  "region": "hoenn",
+  "layout": "LAYOUT_MOSSDEEP_CITY",
+  "music": "MUS_RUSTBORO",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_CITY",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE125",
+      "offset": 0,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_ROUTE127",
+      "offset": 0,
+      "direction": "down"
+    },
+    {
+      "map": "MAP_ROUTE124",
+      "offset": -40,
+      "direction": "left"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 38,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_EventScript_Sailor",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
+      "x": 50,
+      "y": 34,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_EventScript_ExpertM",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKEFAN_F",
+      "x": 32,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_EventScript_PokefanF",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
+      "x": 26,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_EventScript_NinjaBoy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GIRL_1",
+      "x": 45,
+      "y": 18,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_EventScript_Girl",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 62,
+      "y": 35,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_EventScript_ItemNetBall",
+      "flag": "FLAG_ITEM_MOSSDEEP_CITY_NET_BALL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN_1",
+      "x": 55,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_EventScript_Man",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_1",
+      "x": 56,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_EventScript_Woman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY_2",
+      "x": 23,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_EventScript_KingsRockBoy",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_MOSSDEEP_GRUNT_1",
+      "graphics_id": "OBJ_EVENT_GFX_MAGMA_MEMBER_M",
+      "x": 44,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_MOSSDEEP_CITY_TEAM_MAGMA"
+    },
+    {
+      "local_id": "LOCALID_MOSSDEEP_GRUNT_2",
+      "graphics_id": "OBJ_EVENT_GFX_MAGMA_MEMBER_M",
+      "x": 44,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_MOSSDEEP_CITY_TEAM_MAGMA"
+    },
+    {
+      "local_id": "LOCALID_MOSSDEEP_GRUNT_3",
+      "graphics_id": "OBJ_EVENT_GFX_MAGMA_MEMBER_M",
+      "x": 44,
+      "y": 25,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_MOSSDEEP_CITY_TEAM_MAGMA"
+    },
+    {
+      "local_id": "LOCALID_MOSSDEEP_GRUNT_4",
+      "graphics_id": "OBJ_EVENT_GFX_MAGMA_MEMBER_M",
+      "x": 44,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_MOSSDEEP_CITY_TEAM_MAGMA"
+    },
+    {
+      "local_id": "LOCALID_MOSSDEEP_MAXIE",
+      "graphics_id": "OBJ_EVENT_GFX_MAXIE",
+      "x": 45,
+      "y": 25,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_MOSSDEEP_CITY_TEAM_MAGMA"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 19,
+      "y": 25,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_EventScript_DynamicPunchTutor",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_MOSSDEEP_SCOTT",
+      "graphics_id": "OBJ_EVENT_GFX_SCOTT",
+      "x": 61,
+      "y": 29,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_EventScript_Scott",
+      "flag": "FLAG_HIDE_MOSSDEEP_CITY_SCOTT"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 31,
+      "y": 29,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MossdeepCity_EventScript_BlackBelt",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 28,
+      "y": 9,
+      "dest_map": "MAP_MOSSDEEP_CITY_HOUSE1",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 38,
+      "y": 9,
+      "dest_map": "MAP_MOSSDEEP_CITY_GYM",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 28,
+      "y": 16,
+      "dest_map": "MAP_MOSSDEEP_CITY_POKEMON_CENTER_1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 67,
+      "y": 25,
+      "dest_map": "MAP_MOSSDEEP_CITY_HOUSE2",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 37,
+      "y": 18,
+      "dest_map": "MAP_MOSSDEEP_CITY_MART",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 49,
+      "y": 6,
+      "dest_map": "MAP_MOSSDEEP_CITY_HOUSE3",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 19,
+      "y": 10,
+      "dest_map": "MAP_MOSSDEEP_CITY_STEVENS_HOUSE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 18,
+      "y": 16,
+      "dest_map": "MAP_MOSSDEEP_CITY_HOUSE4",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 64,
+      "y": 15,
+      "dest_map": "MAP_MOSSDEEP_CITY_SPACE_CENTER_1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 36,
+      "y": 24,
+      "dest_map": "MAP_MOSSDEEP_CITY_GAME_CORNER_1F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 25,
+      "y": 25,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "MossdeepCity_EventScript_VisitedMossdeep"
+    },
+    {
+      "x": 26,
+      "y": 25,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "MossdeepCity_EventScript_VisitedMossdeep"
+    },
+    {
+      "x": 32,
+      "y": 27,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "MossdeepCity_EventScript_VisitedMossdeep"
+    },
+    {
+      "x": 33,
+      "y": 27,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "MossdeepCity_EventScript_VisitedMossdeep"
+    },
+    {
+      "x": 42,
+      "y": 21,
+      "var": "VAR_MOSSDEEP_CITY_STATE",
+      "var_value": "1",
+      "script": "MossdeepCity_EventScript_TeamMagmaEnterSpaceCenter"
+    },
+    {
+      "x": 41,
+      "y": 22,
+      "var": "VAR_MOSSDEEP_CITY_STATE",
+      "var_value": "1",
+      "script": "MossdeepCity_EventScript_TeamMagmaEnterSpaceCenter"
+    },
+    {
+      "x": 41,
+      "y": 23,
+      "var": "VAR_MOSSDEEP_CITY_STATE",
+      "var_value": "1",
+      "script": "MossdeepCity_EventScript_TeamMagmaEnterSpaceCenter"
+    },
+    {
+      "x": 41,
+      "y": 24,
+      "var": "VAR_MOSSDEEP_CITY_STATE",
+      "var_value": "1",
+      "script": "MossdeepCity_EventScript_TeamMagmaEnterSpaceCenter"
+    },
+    {
+      "x": 40,
+      "y": 25,
+      "var": "VAR_MOSSDEEP_CITY_STATE",
+      "var_value": "1",
+      "script": "MossdeepCity_EventScript_TeamMagmaEnterSpaceCenter"
+    },
+    {
+      "x": 40,
+      "y": 26,
+      "var": "VAR_MOSSDEEP_CITY_STATE",
+      "var_value": "1",
+      "script": "MossdeepCity_EventScript_TeamMagmaEnterSpaceCenter"
+    }
+  ],
+  "signs": [
+    {
+      "x": 25,
+      "y": 16,
+      "script": "MossdeepCity_EventScript_CitySign"
+    },
+    {
+      "x": 34,
+      "y": 9,
+      "script": "MossdeepCity_EventScript_GymSign"
+    },
+    {
+      "x": 29,
+      "y": 16,
+      "script": "Common_EventScript_ShowPokemonCenterSign"
+    },
+    {
+      "x": 38,
+      "y": 18,
+      "script": "Common_EventScript_ShowPokemartSign"
+    },
+    {
+      "x": 66,
+      "y": 16,
+      "script": "MossdeepCity_EventScript_SpaceCenterSign"
+    },
+    {
+      "x": 30,
+      "y": 16,
+      "script": "Common_EventScript_ShowPokemonCenterSign"
+    },
+    {
+      "x": 39,
+      "y": 18,
+      "script": "Common_EventScript_ShowPokemartSign"
+    },
+    {
+      "x": 57,
+      "y": 21,
+      "script": "MossdeepCity_EventScript_WhiteRock"
+    }
+  ]
+}

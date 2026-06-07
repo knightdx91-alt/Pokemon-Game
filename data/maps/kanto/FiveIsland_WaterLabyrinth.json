@@ -1,0 +1,49 @@
+{
+  "id": "MAP_FIVE_ISLAND_WATER_LABYRINTH",
+  "name": "FiveIsland_WaterLabyrinth",
+  "region": "kanto",
+  "layout": "LAYOUT_FIVE_ISLAND_WATER_LABYRINTH",
+  "music": "MUS_SEVII_ROUTE",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_FIVE_ISLAND_RESORT_GORGEOUS",
+      "offset": 48,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_FIVE_ISLAND",
+      "offset": 48,
+      "direction": "down"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 14,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FiveIsland_WaterLabyrinth_EventScript_EggGentleman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 9,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "FiveIsland_WaterLabyrinth_EventScript_Alize",
+      "flag": "0"
+    }
+  ],
+  "warps": [],
+  "triggers": [],
+  "signs": []
+}

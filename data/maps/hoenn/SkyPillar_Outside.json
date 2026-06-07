@@ -1,0 +1,41 @@
+{
+  "id": "MAP_SKY_PILLAR_OUTSIDE",
+  "name": "SkyPillar_Outside",
+  "region": "hoenn",
+  "layout": "LAYOUT_SKY_PILLAR_OUTSIDE",
+  "music": "MUS_MT_CHIMNEY",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_SKY_PILLAR_WALLACE",
+      "graphics_id": "OBJ_EVENT_GFX_WALLACE",
+      "x": 13,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SkyPillar_Outside_EventScript_Wallace",
+      "flag": "FLAG_HIDE_SKY_PILLAR_WALLACE"
+    }
+  ],
+  "warps": [
+    {
+      "x": 17,
+      "y": 13,
+      "dest_map": "MAP_SKY_PILLAR_ENTRANCE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 14,
+      "y": 5,
+      "dest_map": "MAP_SKY_PILLAR_1F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

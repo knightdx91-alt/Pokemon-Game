@@ -1,0 +1,155 @@
+{
+  "id": "MAP_JAGGED_PASS",
+  "name": "JaggedPass",
+  "region": "hoenn",
+  "layout": "LAYOUT_JAGGED_PASS",
+  "music": "MUS_PETALBURG_WOODS",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 10,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "JaggedPass_EventScript_Eric",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 16,
+      "y": 35,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "JaggedPass_EventScript_Ethan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 23,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "JaggedPass_EventScript_ItemBurnHeal",
+      "flag": "FLAG_ITEM_JAGGED_PASS_BURN_HEAL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 9,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "JaggedPass_EventScript_Diana",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_MAGMA_HIDEOUT_GUARD",
+      "graphics_id": "OBJ_EVENT_GFX_MAGMA_MEMBER_M",
+      "x": 16,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "JaggedPass_EventScript_MagmaHideoutGuard",
+      "flag": "FLAG_HIDE_JAGGED_PASS_MAGMA_GUARD"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 14,
+      "y": 25,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "JaggedPass_EventScript_Autumn",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CYCLING_TRIATHLETE_M",
+      "x": 18,
+      "y": 25,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "JaggedPass_EventScript_Julio",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 14,
+      "y": 40,
+      "dest_map": "MAP_ROUTE112",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 15,
+      "y": 40,
+      "dest_map": "MAP_ROUTE112",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 13,
+      "y": 5,
+      "dest_map": "MAP_MT_CHIMNEY",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 14,
+      "y": 5,
+      "dest_map": "MAP_MT_CHIMNEY",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 16,
+      "y": 18,
+      "dest_map": "MAP_MAGMA_HIDEOUT_1F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 21,
+      "y": 15,
+      "var": "VAR_JAGGED_PASS_STATE",
+      "var_value": "1",
+      "script": "JaggedPass_EventScript_OpenMagmaHideout"
+    },
+    {
+      "x": 22,
+      "y": 20,
+      "var": "VAR_JAGGED_PASS_STATE",
+      "var_value": "1",
+      "script": "JaggedPass_EventScript_OpenMagmaHideout"
+    },
+    {
+      "x": 21,
+      "y": 20,
+      "var": "VAR_JAGGED_PASS_STATE",
+      "var_value": "1",
+      "script": "JaggedPass_EventScript_OpenMagmaHideout"
+    },
+    {
+      "x": 14,
+      "y": 15,
+      "var": "VAR_JAGGED_PASS_STATE",
+      "var_value": "1",
+      "script": "JaggedPass_EventScript_OpenMagmaHideout"
+    },
+    {
+      "x": 13,
+      "y": 15,
+      "var": "VAR_JAGGED_PASS_STATE",
+      "var_value": "1",
+      "script": "JaggedPass_EventScript_OpenMagmaHideout"
+    }
+  ],
+  "signs": []
+}

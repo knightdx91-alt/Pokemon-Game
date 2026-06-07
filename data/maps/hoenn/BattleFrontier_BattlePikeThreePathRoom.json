@@ -1,0 +1,102 @@
+{
+  "id": "MAP_BATTLE_FRONTIER_BATTLE_PIKE_THREE_PATH_ROOM",
+  "name": "BattleFrontier_BattlePikeThreePathRoom",
+  "region": "hoenn",
+  "layout": "LAYOUT_BATTLE_FRONTIER_BATTLE_PIKE_THREE_PATH_ROOM",
+  "music": "MUS_B_PIKE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LINK_RECEPTIONIST",
+      "x": 4,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_BattlePikeThreePathRoom_EventScript_Attendant",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_PIKE_HINT_GIVER",
+      "graphics_id": "OBJ_EVENT_GFX_LINK_RECEPTIONIST",
+      "x": 8,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_BattlePikeThreePathRoom_EventScript_HintGiver",
+      "flag": "0"
+    }
+  ],
+  "warps": [],
+  "triggers": [
+    {
+      "x": 2,
+      "y": 3,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "BattleFrontier_BattlePikeThreePathRoom_EventScript_LeftRoomWarp"
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "BattleFrontier_BattlePikeThreePathRoom_EventScript_CenterRoomWarp"
+    },
+    {
+      "x": 10,
+      "y": 3,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "BattleFrontier_BattlePikeThreePathRoom_EventScript_RightRoomWarp"
+    },
+    {
+      "x": 5,
+      "y": 10,
+      "var": "VAR_TEMP_3",
+      "var_value": "1",
+      "script": "BattleFrontier_BattlePikeThreePathRoom_EventScript_NoTurningBack"
+    },
+    {
+      "x": 6,
+      "y": 10,
+      "var": "VAR_TEMP_3",
+      "var_value": "1",
+      "script": "BattleFrontier_BattlePikeThreePathRoom_EventScript_NoTurningBack"
+    },
+    {
+      "x": 6,
+      "y": 9,
+      "var": "VAR_TEMP_2",
+      "var_value": "0",
+      "script": "BattleFrontier_BattlePikeThreePathRoom_EventScript_SetEnteredRoom"
+    },
+    {
+      "x": 5,
+      "y": 9,
+      "var": "VAR_TEMP_2",
+      "var_value": "0",
+      "script": "BattleFrontier_BattlePikeThreePathRoom_EventScript_SetEnteredRoom"
+    },
+    {
+      "x": 7,
+      "y": 9,
+      "var": "VAR_TEMP_2",
+      "var_value": "0",
+      "script": "BattleFrontier_BattlePikeThreePathRoom_EventScript_SetEnteredRoom"
+    },
+    {
+      "x": 7,
+      "y": 10,
+      "var": "VAR_TEMP_3",
+      "var_value": "1",
+      "script": "BattleFrontier_BattlePikeThreePathRoom_EventScript_NoTurningBack"
+    }
+  ],
+  "signs": []
+}

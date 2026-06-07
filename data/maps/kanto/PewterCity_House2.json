@@ -1,0 +1,57 @@
+{
+  "id": "MAP_PEWTER_CITY_HOUSE2",
+  "name": "PewterCity_House2",
+  "region": "kanto",
+  "layout": "LAYOUT_HOUSE2",
+  "music": "MUS_PEWTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 3,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PewterCity_House2_EventScript_OldMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_BOY",
+      "x": 5,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PewterCity_House2_EventScript_LittleBoy",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 7,
+      "dest_map": "MAP_PEWTER_CITY",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_PEWTER_CITY",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "dest_map": "MAP_PEWTER_CITY",
+      "dest_warp_id": "6"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

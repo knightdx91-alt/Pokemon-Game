@@ -1,0 +1,30 @@
+{
+  "id": "MAP_UNDERGROUND_PATH_NORTH_SOUTH_TUNNEL",
+  "name": "UndergroundPath_NorthSouthTunnel",
+  "region": "kanto",
+  "layout": "LAYOUT_UNDERGROUND_PATH_NORTH_SOUTH_TUNNEL",
+  "music": "MUS_ROUTE1",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 4,
+      "y": 3,
+      "dest_map": "MAP_UNDERGROUND_PATH_NORTH_ENTRANCE",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 3,
+      "y": 60,
+      "dest_map": "MAP_UNDERGROUND_PATH_SOUTH_ENTRANCE",
+      "dest_warp_id": "3"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

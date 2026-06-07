@@ -1,0 +1,125 @@
+{
+  "id": "MAP_ROUTE18_EAST_ENTRANCE_1F",
+  "name": "Route18_EastEntrance_1F",
+  "region": "kanto",
+  "layout": "LAYOUT_ENTRANCE_1F",
+  "music": "MUS_PEWTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 6,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route18_EastEntrance_1F_EventScript_Guard",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 1,
+      "y": 6,
+      "dest_map": "MAP_ROUTE18",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 11,
+      "y": 6,
+      "dest_map": "MAP_ROUTE18",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 9,
+      "y": 10,
+      "dest_map": "MAP_ROUTE18_EAST_ENTRANCE_2F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 2,
+      "y": 6,
+      "var": "VAR_MAP_SCENE_ROUTE16",
+      "var_value": "0",
+      "script": "EventScript_SetEnteringCyclingRoad"
+    },
+    {
+      "x": 6,
+      "y": 4,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "Route18_EastEntrance_1F_EventScript_NeedBikeTriggerTop"
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "Route18_EastEntrance_1F_EventScript_NeedBikeTriggerMidTop"
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "Route18_EastEntrance_1F_EventScript_NeedBikeTriggerMid"
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "Route18_EastEntrance_1F_EventScript_NeedBikeTriggerMidBottom"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "Route18_EastEntrance_1F_EventScript_NeedBikeTriggerBottom"
+    },
+    {
+      "x": 10,
+      "y": 6,
+      "var": "VAR_MAP_SCENE_ROUTE16",
+      "var_value": "1",
+      "script": "EventScript_SetExitingCyclingRoad"
+    },
+    {
+      "x": 11,
+      "y": 5,
+      "var": "VAR_MAP_SCENE_ROUTE16",
+      "var_value": "1",
+      "script": "EventScript_SetExitingCyclingRoad"
+    },
+    {
+      "x": 11,
+      "y": 7,
+      "var": "VAR_MAP_SCENE_ROUTE16",
+      "var_value": "1",
+      "script": "EventScript_SetExitingCyclingRoad"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "var": "VAR_MAP_SCENE_ROUTE16",
+      "var_value": "0",
+      "script": "EventScript_SetEnteringCyclingRoad"
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "var": "VAR_MAP_SCENE_ROUTE16",
+      "var_value": "0",
+      "script": "EventScript_SetEnteringCyclingRoad"
+    }
+  ],
+  "signs": []
+}

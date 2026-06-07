@@ -1,0 +1,148 @@
+{
+  "id": "MAP_VIRIDIAN_CITY_GYM",
+  "name": "ViridianCity_Gym",
+  "region": "kanto",
+  "layout": "LAYOUT_VIRIDIAN_CITY_GYM",
+  "music": "MUS_GYM",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 10,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "ViridianCity_Gym_EventScript_Takashi",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_M",
+      "x": 12,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "ViridianCity_Gym_EventScript_Yuji",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 11,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "ViridianCity_Gym_EventScript_Atsushi",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN",
+      "x": 10,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "ViridianCity_Gym_EventScript_Jason",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN",
+      "x": 2,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "ViridianCity_Gym_EventScript_Cole",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 3,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "ViridianCity_Gym_EventScript_Kiyo",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_M",
+      "x": 6,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "ViridianCity_Gym_EventScript_Samuel",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_VIRIDIAN_GIOVANNI",
+      "graphics_id": "OBJ_EVENT_GFX_GIOVANNI",
+      "x": 2,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_Gym_EventScript_Giovanni",
+      "flag": "FLAG_HIDE_VIRIDIAN_GIOVANNI"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_M",
+      "x": 13,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "ViridianCity_Gym_EventScript_Warren",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 16,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_Gym_EventScript_GymGuy",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 16,
+      "y": 22,
+      "dest_map": "MAP_VIRIDIAN_CITY",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 17,
+      "y": 22,
+      "dest_map": "MAP_VIRIDIAN_CITY",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 18,
+      "y": 22,
+      "dest_map": "MAP_VIRIDIAN_CITY",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 15,
+      "y": 20,
+      "script": "ViridianCity_Gym_EventScript_GymStatue"
+    },
+    {
+      "x": 19,
+      "y": 20,
+      "script": "ViridianCity_Gym_EventScript_GymStatue"
+    }
+  ]
+}

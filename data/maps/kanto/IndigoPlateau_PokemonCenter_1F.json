@@ -1,0 +1,117 @@
+{
+  "id": "MAP_INDIGO_PLATEAU_POKEMON_CENTER_1F",
+  "name": "IndigoPlateau_PokemonCenter_1F",
+  "region": "kanto",
+  "layout": "LAYOUT_INDIGO_PLATEAU_POKEMON_CENTER_1F",
+  "music": "MUS_GYM",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CLERK",
+      "x": 0,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "IndigoPlateau_PokemonCenter_1F_EventScript_Clerk",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_LEAGUE_NURSE",
+      "graphics_id": "OBJ_EVENT_GFX_NURSE",
+      "x": 13,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "IndigoPlateau_PokemonCenter_1F_EventScript_Nurse",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 7,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "IndigoPlateau_PokemonCenter_1F_EventScript_GymGuy",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_LEAGUE_DOOR_GUARD",
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_F",
+      "x": 5,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "IndigoPlateau_PokemonCenter_1F_EventScript_DoorGuard",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 23,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "IndigoPlateau_PokemonCenter_1F_EventScript_BlackBelt",
+      "flag": "FLAG_HIDE_POSTGAME_GOSSIPERS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "0",
+      "x": 22,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "IndigoPlateau_PokemonCenter_1F_EventScript_PokemonJournal",
+      "flag": "FLAG_HIDE_POSTGAME_GOSSIPERS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_M",
+      "x": 16,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "IndigoPlateau_PokemonCenter_1F_EventScript_CooltrainerM",
+      "flag": "FLAG_HIDE_POSTGAME_GOSSIPERS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "0",
+      "x": 23,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "IndigoPlateau_PokemonCenter_1F_EventScript_PokemonJournal",
+      "flag": "FLAG_HIDE_POSTGAME_GOSSIPERS"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 16,
+      "dest_map": "MAP_INDIGO_PLATEAU_EXTERIOR",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "dest_map": "MAP_POKEMON_LEAGUE_LORELEIS_ROOM",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 1,
+      "y": 14,
+      "dest_map": "MAP_INDIGO_PLATEAU_POKEMON_CENTER_2F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

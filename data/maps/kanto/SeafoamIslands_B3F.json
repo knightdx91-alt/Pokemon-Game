@@ -1,0 +1,133 @@
+{
+  "id": "MAP_SEAFOAM_ISLANDS_B3F",
+  "name": "SeafoamIslands_B3F",
+  "region": "kanto",
+  "layout": "LAYOUT_SEAFOAM_ISLANDS_B3F",
+  "music": "MUS_VIRIDIAN_FOREST",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 23,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_SEAFOAM_B3F_BOULDER_1"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 24,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_SEAFOAM_B3F_BOULDER_2"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 12,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "FLAG_HIDE_SEAFOAM_B4F_BOULDER_2",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "FLAG_HIDE_SEAFOAM_B3F_BOULDER_5"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 13,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "FLAG_HIDE_SEAFOAM_B3F_BOULDER_6"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 9,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "FLAG_HIDE_SEAFOAM_B3F_BOULDER_4"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 6,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "FLAG_HIDE_SEAFOAM_B4F_BOULDER_1",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "FLAG_HIDE_SEAFOAM_B3F_BOULDER_3"
+    }
+  ],
+  "warps": [
+    {
+      "x": 8,
+      "y": 14,
+      "dest_map": "MAP_SEAFOAM_ISLANDS_B2F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 31,
+      "y": 4,
+      "dest_map": "MAP_SEAFOAM_ISLANDS_B2F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 31,
+      "y": 16,
+      "dest_map": "MAP_SEAFOAM_ISLANDS_B2F",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 12,
+      "y": 9,
+      "dest_map": "MAP_SEAFOAM_ISLANDS_B4F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 29,
+      "y": 5,
+      "dest_map": "MAP_SEAFOAM_ISLANDS_B4F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 23,
+      "y": 9,
+      "dest_map": "MAP_SEAFOAM_ISLANDS_B2F",
+      "dest_warp_id": "7"
+    },
+    {
+      "x": 24,
+      "y": 9,
+      "dest_map": "MAP_SEAFOAM_ISLANDS_B2F",
+      "dest_warp_id": "8"
+    },
+    {
+      "x": 6,
+      "y": 18,
+      "dest_map": "MAP_SEAFOAM_ISLANDS_B4F",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 9,
+      "y": 18,
+      "dest_map": "MAP_SEAFOAM_ISLANDS_B4F",
+      "dest_warp_id": "3"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

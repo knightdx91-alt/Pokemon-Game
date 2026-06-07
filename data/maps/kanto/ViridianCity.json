@@ -1,0 +1,210 @@
+{
+  "id": "MAP_VIRIDIAN_CITY",
+  "name": "ViridianCity",
+  "region": "kanto",
+  "layout": "LAYOUT_VIRIDIAN_CITY",
+  "music": "MUS_PEWTER",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_TOWN",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE2",
+      "offset": 12,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_ROUTE1",
+      "offset": 12,
+      "direction": "down"
+    },
+    {
+      "map": "MAP_ROUTE22",
+      "offset": 10,
+      "direction": "left"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 8,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_EventScript_DreamEaterTutor",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 11,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_11"
+    },
+    {
+      "local_id": "LOCALID_VIRIDIAN_OLD_MAN",
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 34,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_EventScript_OldMan",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TUTORIAL_MAN",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_0",
+      "x": 21,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_EventScript_TutorialOldMan",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_VIRIDIAN_WOMAN",
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_3",
+      "x": 20,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_EventScript_Woman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 33,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_EventScript_Youngster",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY",
+      "x": 16,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_EventScript_Boy",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_VIRIDIAN_BORDER_TREE",
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 18,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_12"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 17,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_EventScript_ItemPotion",
+      "flag": "FLAG_HIDE_VIRIDIAN_CITY_POTION"
+    }
+  ],
+  "warps": [
+    {
+      "x": 26,
+      "y": 26,
+      "dest_map": "MAP_VIRIDIAN_CITY_POKEMON_CENTER_1F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 25,
+      "y": 11,
+      "dest_map": "MAP_VIRIDIAN_CITY_HOUSE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 36,
+      "y": 10,
+      "dest_map": "MAP_VIRIDIAN_CITY_GYM",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 25,
+      "y": 18,
+      "dest_map": "MAP_VIRIDIAN_CITY_SCHOOL",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 36,
+      "y": 19,
+      "dest_map": "MAP_VIRIDIAN_CITY_MART",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 22,
+      "y": 11,
+      "var": "VAR_MAP_SCENE_VIRIDIAN_CITY_OLD_MAN",
+      "var_value": "0",
+      "script": "ViridianCity_EventScript_RoadBlocked"
+    },
+    {
+      "x": 36,
+      "y": 11,
+      "var": "VAR_MAP_SCENE_VIRIDIAN_CITY_GYM_DOOR",
+      "var_value": "0",
+      "script": "ViridianCity_EventScript_GymDoorLocked"
+    },
+    {
+      "x": 20,
+      "y": 8,
+      "var": "VAR_MAP_SCENE_VIRIDIAN_CITY_OLD_MAN",
+      "var_value": "1",
+      "script": "ViridianCity_EventScript_TutorialTriggerLeft"
+    },
+    {
+      "x": 22,
+      "y": 8,
+      "var": "VAR_MAP_SCENE_VIRIDIAN_CITY_OLD_MAN",
+      "var_value": "1",
+      "script": "ViridianCity_EventScript_TutorialTriggerRight"
+    }
+  ],
+  "signs": [
+    {
+      "x": 23,
+      "y": 1,
+      "script": "ViridianCity_EventScript_TrainerTips1"
+    },
+    {
+      "x": 32,
+      "y": 10,
+      "script": "ViridianCity_EventScript_GymSign"
+    },
+    {
+      "x": 20,
+      "y": 31,
+      "script": "ViridianCity_EventScript_TrainerTips2"
+    },
+    {
+      "x": 20,
+      "y": 16,
+      "script": "ViridianCity_EventScript_CitySign"
+    },
+    {
+      "x": 36,
+      "y": 10,
+      "script": "ViridianCity_EventScript_GymDoor"
+    }
+  ]
+}

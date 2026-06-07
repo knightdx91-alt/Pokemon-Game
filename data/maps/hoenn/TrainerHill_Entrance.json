@@ -1,0 +1,101 @@
+{
+  "id": "MAP_TRAINER_HILL_ENTRANCE",
+  "name": "TrainerHill_Entrance",
+  "region": "hoenn",
+  "layout": "LAYOUT_TRAINER_HILL_ENTRANCE",
+  "music": "MUS_B_TOWER_RS",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_TRAINER_HILL_ATTENDANT",
+      "graphics_id": "OBJ_EVENT_GFX_TEALA",
+      "x": 11,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TrainerHill_Entrance_EventScript_Attendant",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TRAINER_HILL_NURSE",
+      "graphics_id": "OBJ_EVENT_GFX_NURSE",
+      "x": 4,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TrainerHill_Entrance_EventScript_Nurse",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MART_EMPLOYEE",
+      "x": 14,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TrainerHill_Entrance_EventScript_Clerk",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TRAINER_HILL_GIRL",
+      "graphics_id": "OBJ_EVENT_GFX_GIRL_3",
+      "x": 5,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TrainerHill_Entrance_EventScript_Girl",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TRAINER_HILL_MAN",
+      "graphics_id": "OBJ_EVENT_GFX_MAN_3",
+      "x": 14,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TrainerHill_Entrance_EventScript_Man",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 9,
+      "y": 16,
+      "dest_map": "MAP_ROUTE111",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 10,
+      "y": 16,
+      "dest_map": "MAP_ROUTE111",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 9,
+      "y": 1,
+      "dest_map": "MAP_TRAINER_HILL_1F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 9,
+      "y": 6,
+      "var": "VAR_TRAINER_HILL_IS_ACTIVE",
+      "var_value": "0",
+      "script": "TrainerHill_Entrance_EventScript_EntryTrigger"
+    }
+  ],
+  "signs": [
+    {
+      "x": 8,
+      "y": 10,
+      "script": "TrainerHill_Entrance_EventScript_Records"
+    }
+  ]
+}

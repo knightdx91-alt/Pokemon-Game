@@ -1,0 +1,45 @@
+{
+  "id": "MAP_BIRTH_ISLAND_HARBOR",
+  "name": "BirthIsland_Harbor",
+  "region": "hoenn",
+  "layout": "LAYOUT_ISLAND_HARBOR",
+  "music": "MUS_NONE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_BIRTH_ISLAND_SAILOR",
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 8,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BirthIsland_Harbor_EventScript_Sailor",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_BIRTH_ISLAND_SS_TIDAL",
+      "graphics_id": "OBJ_EVENT_GFX_SS_TIDAL",
+      "x": 8,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 8,
+      "y": 2,
+      "dest_map": "MAP_BIRTH_ISLAND_EXTERIOR",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

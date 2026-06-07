@@ -1,0 +1,55 @@
+{
+  "id": "MAP_SSANNE_2F_ROOM4",
+  "name": "SSAnne_2F_Room4",
+  "region": "kanto",
+  "layout": "LAYOUT_SSANNE_ROOM2",
+  "music": "MUS_SS_ANNE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 0,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SSAnne_2F_Room4_EventScript_Lamar",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 3,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SSAnne_2F_Room4_EventScript_Dawn",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 2,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SSAnne_2F_Room4_EventScript_ItemXAttack",
+      "flag": "FLAG_HIDE_SSANNE_2F_ROOM4_X_ATTACK"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_SSANNE_2F_CORRIDOR",
+      "dest_warp_id": "6"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

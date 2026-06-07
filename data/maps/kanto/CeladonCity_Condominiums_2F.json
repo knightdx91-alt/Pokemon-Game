@@ -1,0 +1,74 @@
+{
+  "id": "MAP_CELADON_CITY_CONDOMINIUMS_2F",
+  "name": "CeladonCity_Condominiums_2F",
+  "region": "kanto",
+  "layout": "LAYOUT_CELADON_CITY_CONDOMINIUMS_2F",
+  "music": "MUS_CELADON",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "0",
+      "x": 6,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeladonCity_Condominiums_2F_EventScript_PokemonJournalErika",
+      "flag": "FLAG_HIDE_FAME_CHECKER_ERIKA_JOURNALS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "0",
+      "x": 5,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeladonCity_Condominiums_2F_EventScript_PokemonJournalErika",
+      "flag": "FLAG_HIDE_FAME_CHECKER_ERIKA_JOURNALS"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 2,
+      "dest_map": "MAP_CELADON_CITY_CONDOMINIUMS_1F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "dest_map": "MAP_CELADON_CITY_CONDOMINIUMS_3F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 11,
+      "y": 2,
+      "dest_map": "MAP_CELADON_CITY_CONDOMINIUMS_3F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 12,
+      "y": 2,
+      "dest_map": "MAP_CELADON_CITY_CONDOMINIUMS_1F",
+      "dest_warp_id": "4"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 8,
+      "y": 12,
+      "script": "CeladonCity_Condominiums_2F_EventScript_MeetingRoomSign"
+    },
+    {
+      "x": 7,
+      "y": 12,
+      "script": "CeladonCity_Condominiums_2F_EventScript_MeetingRoomSign"
+    }
+  ]
+}

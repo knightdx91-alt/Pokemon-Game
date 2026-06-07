@@ -1,0 +1,68 @@
+{
+  "id": "MAP_ROUTE110_SEASIDE_CYCLING_ROAD_SOUTH_ENTRANCE",
+  "name": "Route110_SeasideCyclingRoadSouthEntrance",
+  "region": "hoenn",
+  "layout": "LAYOUT_ROUTE110_SEASIDE_CYCLING_ROAD_ENTRANCE",
+  "music": "MUS_SLATEPORT",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": true,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MART_EMPLOYEE",
+      "x": 7,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route110_SeasideCyclingRoadSouthEntrance_EventScript_Clerk",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 1,
+      "y": 5,
+      "dest_map": "MAP_ROUTE110",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "dest_map": "MAP_ROUTE110",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 12,
+      "y": 5,
+      "dest_map": "MAP_ROUTE110",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 13,
+      "y": 5,
+      "dest_map": "MAP_ROUTE110",
+      "dest_warp_id": "5"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 7,
+      "y": 4,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "Route110_SeasideCyclingRoadSouthEntrance_EventScript_BikeCheck"
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "var": "VAR_TEMP_1",
+      "var_value": "1",
+      "script": "Route110_SeasideCyclingRoadSouthEntrance_EventScript_ClearCyclingRoad"
+    }
+  ],
+  "signs": []
+}

@@ -1,0 +1,56 @@
+{
+  "id": "MAP_TRADE_CENTER",
+  "name": "TradeCenter",
+  "region": "hoenn",
+  "layout": "LAYOUT_TRADE_CENTER",
+  "music": "MUS_EVER_GRANDE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LINK_RECEPTIONIST",
+      "x": 9,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TradeCenter_EventScript_Attendant",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 4,
+      "y": 5,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "EventScript_TradeCenter_Chair0"
+    },
+    {
+      "x": 7,
+      "y": 5,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "EventScript_TradeCenter_Chair1"
+    }
+  ],
+  "signs": []
+}

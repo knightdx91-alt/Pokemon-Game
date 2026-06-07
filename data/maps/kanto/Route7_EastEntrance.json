@@ -1,0 +1,75 @@
+{
+  "id": "MAP_ROUTE7_EAST_ENTRANCE",
+  "name": "Route7_EastEntrance",
+  "region": "kanto",
+  "layout": "LAYOUT_SAFFRON_CITY_EAST_WEST_ENTRANCE",
+  "music": "MUS_PEWTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 6,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route7_EastEntrance_EventScript_Guard",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 1,
+      "y": 5,
+      "dest_map": "MAP_ROUTE7",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "dest_map": "MAP_ROUTE7",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 11,
+      "y": 5,
+      "dest_map": "MAP_SAFFRON_CITY",
+      "dest_warp_id": "8"
+    },
+    {
+      "x": 11,
+      "y": 6,
+      "dest_map": "MAP_SAFFRON_CITY",
+      "dest_warp_id": "8"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 6,
+      "y": 4,
+      "var": "VAR_MAP_SCENE_ROUTE5_ROUTE6_ROUTE7_ROUTE8_GATES",
+      "var_value": "0",
+      "script": "Route7_EastEntrance_EventScript_GuardTriggerTop"
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "var": "VAR_MAP_SCENE_ROUTE5_ROUTE6_ROUTE7_ROUTE8_GATES",
+      "var_value": "0",
+      "script": "Route7_EastEntrance_EventScript_GuardTriggerMid"
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "var": "VAR_MAP_SCENE_ROUTE5_ROUTE6_ROUTE7_ROUTE8_GATES",
+      "var_value": "0",
+      "script": "Route7_EastEntrance_EventScript_GuardTriggerBottom"
+    }
+  ],
+  "signs": []
+}

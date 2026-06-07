@@ -1,0 +1,83 @@
+{
+  "id": "MAP_VIRIDIAN_CITY_SCHOOL",
+  "name": "ViridianCity_School",
+  "region": "kanto",
+  "layout": "LAYOUT_VIRIDIAN_CITY_SCHOOL",
+  "music": "MUS_PEWTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_SCHOOL_WOMAN",
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 6,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_School_EventScript_Woman",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_SCHOOL_LASS",
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 4,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_School_EventScript_Lass",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 7,
+      "dest_map": "MAP_VIRIDIAN_CITY",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_VIRIDIAN_CITY",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "dest_map": "MAP_VIRIDIAN_CITY",
+      "dest_warp_id": "3"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 4,
+      "y": 4,
+      "script": "ViridianCity_School_EventScript_Notebook"
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "script": "ViridianCity_School_EventScript_Blackboard"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "script": "ViridianCity_School_EventScript_Blackboard"
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "script": "ViridianCity_School_EventScript_PokemonJournal"
+    },
+    {
+      "x": 8,
+      "y": 2,
+      "script": "ViridianCity_School_EventScript_PokemonJournal"
+    }
+  ]
+}

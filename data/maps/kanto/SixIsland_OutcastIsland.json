@@ -1,0 +1,101 @@
+{
+  "id": "MAP_SIX_ISLAND_OUTCAST_ISLAND",
+  "name": "SixIsland_OutcastIsland",
+  "region": "kanto",
+  "layout": "LAYOUT_SIX_ISLAND_OUTCAST_ISLAND",
+  "music": "MUS_SEVII_ROUTE",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_SIX_ISLAND_GREEN_PATH",
+      "offset": 0,
+      "direction": "down"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 9,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SixIsland_OutcastIsland_EventScript_Rocket",
+      "flag": "FLAG_HIDE_FIVE_ISLAND_ROCKETS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 12,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SixIsland_OutcastIsland_EventScript_Tylor",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M_WATER",
+      "x": 13,
+      "y": 34,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SixIsland_OutcastIsland_EventScript_Mymo",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F_WATER",
+      "x": 14,
+      "y": 61,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_DOWN_LEFT_UP_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SixIsland_OutcastIsland_EventScript_Nicole",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F_WATER",
+      "x": 10,
+      "y": 44,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SixIsland_OutcastIsland_EventScript_Ava",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TUBER_M_WATER",
+      "x": 11,
+      "y": 44,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SixIsland_OutcastIsland_EventScript_Geb",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 11,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SixIsland_OutcastIsland_EventScript_ItemPPUp",
+      "flag": "FLAG_HIDE_SIX_ISLAND_OUTCAST_ISLAND_PP_UP"
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 21,
+      "dest_map": "MAP_SIX_ISLAND_ALTERING_CAVE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

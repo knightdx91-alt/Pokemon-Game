@@ -1,0 +1,184 @@
+{
+  "id": "MAP_SS_TIDAL_CORRIDOR",
+  "name": "SSTidalCorridor",
+  "region": "hoenn",
+  "layout": "LAYOUT_SS_TIDAL_CORRIDOR",
+  "music": "MUS_SAILING",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_SS_TIDAL_EXIT_SAILOR",
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 1,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SSTidalCorridor_EventScript_ExitSailor",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 16,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SSTidalCorridor_EventScript_Sailor",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
+      "x": 9,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SSTidalCorridor_EventScript_Briney",
+      "flag": "FLAG_HIDE_SS_TIDAL_CORRIDOR_MR_BRINEY"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WINGULL",
+      "x": 7,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SSTidalCorridor_EventScript_Peeko",
+      "flag": "FLAG_HIDE_SS_TIDAL_CORRIDOR_MR_BRINEY"
+    },
+    {
+      "local_id": "LOCALID_SS_TIDAL_SCOTT",
+      "graphics_id": "OBJ_EVENT_GFX_SCOTT",
+      "x": 9,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_SS_TIDAL_CORRIDOR_SCOTT"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 9,
+      "dest_map": "MAP_SS_TIDAL_ROOMS",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 7,
+      "y": 9,
+      "dest_map": "MAP_SS_TIDAL_ROOMS",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 10,
+      "y": 9,
+      "dest_map": "MAP_SS_TIDAL_ROOMS",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 13,
+      "y": 9,
+      "dest_map": "MAP_SS_TIDAL_ROOMS",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "dest_map": "MAP_SS_TIDAL_ROOMS",
+      "dest_warp_id": "8"
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "dest_map": "MAP_SS_TIDAL_ROOMS",
+      "dest_warp_id": "9"
+    },
+    {
+      "x": 10,
+      "y": 3,
+      "dest_map": "MAP_SS_TIDAL_ROOMS",
+      "dest_warp_id": "10"
+    },
+    {
+      "x": 13,
+      "y": 3,
+      "dest_map": "MAP_SS_TIDAL_ROOMS",
+      "dest_warp_id": "11"
+    },
+    {
+      "x": 16,
+      "y": 2,
+      "dest_map": "MAP_SS_TIDAL_LOWER_DECK",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 2,
+      "y": 1,
+      "script": "SSTidalCorridor_EventScript_Porthole"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "script": "SSTidalCorridor_EventScript_Porthole"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "script": "SSTidalCorridor_EventScript_Porthole"
+    },
+    {
+      "x": 8,
+      "y": 1,
+      "script": "SSTidalCorridor_EventScript_Porthole"
+    },
+    {
+      "x": 10,
+      "y": 1,
+      "script": "SSTidalCorridor_EventScript_Porthole"
+    },
+    {
+      "x": 12,
+      "y": 1,
+      "script": "SSTidalCorridor_EventScript_Porthole"
+    },
+    {
+      "x": 14,
+      "y": 1,
+      "script": "SSTidalCorridor_EventScript_Porthole"
+    },
+    {
+      "x": 16,
+      "y": 1,
+      "script": "SSTidalCorridor_EventScript_Porthole"
+    },
+    {
+      "x": 5,
+      "y": 9,
+      "script": "SSTidalCorridor_EventScript_Cabin1Sign"
+    },
+    {
+      "x": 8,
+      "y": 9,
+      "script": "SSTidalCorridor_EventScript_Cabin2Sign"
+    },
+    {
+      "x": 11,
+      "y": 9,
+      "script": "SSTidalCorridor_EventScript_Cabin3Sign"
+    },
+    {
+      "x": 14,
+      "y": 9,
+      "script": "SSTidalCorridor_EventScript_Cabin4Sign"
+    }
+  ]
+}

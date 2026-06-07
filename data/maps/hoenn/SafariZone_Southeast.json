@@ -1,0 +1,79 @@
+{
+  "id": "MAP_SAFARI_ZONE_SOUTHEAST",
+  "name": "SafariZone_Southeast",
+  "region": "hoenn",
+  "layout": "LAYOUT_SAFARI_ZONE_SOUTHEAST",
+  "music": "MUS_SAFARI_ZONE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_SAFARI_ZONE_SOUTH",
+      "offset": 0,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_SAFARI_ZONE_NORTHEAST",
+      "offset": 0,
+      "direction": "up"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_RICH_BOY",
+      "x": 7,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZone_Southeast_EventScript_RichBoy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 20,
+      "y": 30,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZone_Southeast_EventScript_FatMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_GIRL",
+      "x": 8,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZone_Southeast_EventScript_LittleGirl",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 31,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZone_Southeast_EventScript_ItemBigPearl",
+      "flag": "FLAG_ITEM_SAFARI_ZONE_SOUTH_EAST_BIG_PEARL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 12,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZone_Southeast_EventScript_ExpansionZoneAttendant",
+      "flag": "FLAG_HIDE_SAFARI_ZONE_SOUTH_EAST_EXPANSION"
+    }
+  ],
+  "warps": [],
+  "triggers": [],
+  "signs": []
+}

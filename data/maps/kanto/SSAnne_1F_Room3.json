@@ -1,0 +1,55 @@
+{
+  "id": "MAP_SSANNE_1F_ROOM3",
+  "name": "SSAnne_1F_Room3",
+  "region": "kanto",
+  "layout": "LAYOUT_SSANNE_ROOM1",
+  "music": "MUS_SS_ANNE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_GIRL",
+      "x": 3,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_RIGHT_DOWN_LEFT_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SSAnne_1F_Room3_EventScript_LittleGirl",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WIGGLYTUFF",
+      "x": 4,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SSAnne_1F_Room3_EventScript_Wigglytuff",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 0,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SSAnne_1F_Room3_EventScript_BaldingMan",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 2,
+      "y": 1,
+      "dest_map": "MAP_SSANNE_1F_CORRIDOR",
+      "dest_warp_id": "8"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

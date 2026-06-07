@@ -1,0 +1,125 @@
+{
+  "id": "MAP_SAFFRON_CITY_POKEMON_TRAINER_FAN_CLUB",
+  "name": "SaffronCity_PokemonTrainerFanClub",
+  "region": "kanto",
+  "layout": "LAYOUT_SAFFRON_CITY_POKEMON_TRAINER_FAN_CLUB",
+  "music": "MUS_PEWTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_TRAINER_FAN_CLUB_BATTLE_GIRL",
+      "graphics_id": "OBJ_EVENT_GFX_CRUSH_GIRL",
+      "x": 7,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_PokemonTrainerFanClub_EventScript_CrushGirl",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TRAINER_FAN_CLUB_LITTLE_GIRL",
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_GIRL",
+      "x": 6,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_PokemonTrainerFanClub_EventScript_LittleGirl",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TRAINER_FAN_CLUB_YOUNGSTER",
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 3,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_PokemonTrainerFanClub_EventScript_Youngster",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TRAINER_FAN_CLUB_GENTLEMAN",
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 3,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_PokemonTrainerFanClub_EventScript_Gentleman",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TRAINER_FAN_CLUB_WOMAN",
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_3",
+      "x": 9,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_PokemonTrainerFanClub_EventScript_Woman",
+      "flag": "FLAG_HIDE_SAFFRON_FAN_CLUB_WOMAN"
+    },
+    {
+      "local_id": "LOCALID_TRAINER_FAN_CLUB_ROCKER",
+      "graphics_id": "OBJ_EVENT_GFX_ROCKER",
+      "x": 7,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_PokemonTrainerFanClub_EventScript_Rocker",
+      "flag": "FLAG_HIDE_SAFFRON_FAN_CLUB_ROCKER"
+    },
+    {
+      "local_id": "LOCALID_TRAINER_FAN_CLUB_BEAUTY",
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 9,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_PokemonTrainerFanClub_EventScript_Beauty",
+      "flag": "FLAG_HIDE_SAFFRON_FAN_CLUB_BEAUTY"
+    },
+    {
+      "local_id": "LOCALID_TRAINER_FAN_CLUB_BLACK_BELT",
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 5,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_PokemonTrainerFanClub_EventScript_BlackBelt",
+      "flag": "FLAG_HIDE_SAFFRON_FAN_CLUB_BLACK_BELT"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "0",
+      "x": 2,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_PokemonTrainerFanClub_EventScript_PokemonJournalBruno",
+      "flag": "FLAG_HIDE_POSTGAME_GOSSIPERS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "0",
+      "x": 3,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_PokemonTrainerFanClub_EventScript_PokemonJournalBruno",
+      "flag": "FLAG_HIDE_POSTGAME_GOSSIPERS"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 15,
+      "dest_map": "MAP_SAFFRON_CITY",
+      "dest_warp_id": "14"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

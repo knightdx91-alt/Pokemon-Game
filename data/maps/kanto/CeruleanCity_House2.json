@@ -1,0 +1,69 @@
+{
+  "id": "MAP_CERULEAN_CITY_HOUSE2",
+  "name": "CeruleanCity_House2",
+  "region": "kanto",
+  "layout": "LAYOUT_CERULEAN_CITY_HOUSE2",
+  "music": "MUS_FUCHSIA",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 1,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeruleanCity_House2_EventScript_Hiker",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 7,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeruleanCity_House2_EventScript_Lass",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 2,
+      "y": 7,
+      "dest_map": "MAP_CERULEAN_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "dest_map": "MAP_CERULEAN_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_CERULEAN_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "dest_map": "MAP_CERULEAN_CITY",
+      "dest_warp_id": "9"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 4,
+      "y": 1,
+      "script": "CeruleanCity_House2_EventScript_WallHole"
+    }
+  ]
+}

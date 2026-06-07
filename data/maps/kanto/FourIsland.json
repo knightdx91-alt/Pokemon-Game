@@ -1,0 +1,198 @@
+{
+  "id": "MAP_FOUR_ISLAND",
+  "name": "FourIsland",
+  "region": "kanto",
+  "layout": "LAYOUT_FOUR_ISLAND",
+  "music": "MUS_SEVII_45",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_TOWN",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_FOUR_ISLAND_DAYCARE_MAN",
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 16,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FourIsland_EventScript_DaycareMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_DODUO",
+      "x": 12,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_NIDORAN_F",
+      "x": 13,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_NIDORAN_M",
+      "x": 14,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PSYDUCK",
+      "x": 17,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "x": 26,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FourIsland_EventScript_OldWoman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH_ROCK",
+      "x": 5,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_12"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 5,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FourIsland_EventScript_ItemStarPiece",
+      "flag": "FLAG_HIDE_FOUR_ISLAND_STAR_PIECE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 32,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FourIsland_EventScript_ItemStardust",
+      "flag": "FLAG_HIDE_FOUR_ISLAND_STARDUST"
+    },
+    {
+      "local_id": "LOCALID_FOUR_ISLAND_RIVAL",
+      "graphics_id": "OBJ_EVENT_GFX_BLUE",
+      "x": 8,
+      "y": 25,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_FOUR_ISLAND_RIVAL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 36,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FourIsland_EventScript_FatMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_GIRL",
+      "x": 31,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FourIsland_EventScript_LittleGirl",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 18,
+      "y": 20,
+      "dest_map": "MAP_FOUR_ISLAND_POKEMON_CENTER_1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 12,
+      "y": 13,
+      "dest_map": "MAP_FOUR_ISLAND_POKEMON_DAY_CARE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 25,
+      "y": 14,
+      "dest_map": "MAP_FOUR_ISLAND_HOUSE1",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 38,
+      "y": 12,
+      "dest_map": "MAP_FOUR_ISLAND_ICEFALL_CAVE_ENTRANCE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 33,
+      "y": 23,
+      "dest_map": "MAP_FOUR_ISLAND_LORELEIS_HOUSE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 25,
+      "y": 26,
+      "dest_map": "MAP_FOUR_ISLAND_HOUSE2",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 10,
+      "y": 28,
+      "dest_map": "MAP_FOUR_ISLAND_HARBOR",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 22,
+      "y": 26,
+      "dest_map": "MAP_FOUR_ISLAND_MART",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 13,
+      "y": 19,
+      "script": "FourIsland_EventScript_IslandSign"
+    },
+    {
+      "x": 31,
+      "y": 23,
+      "script": "FourIsland_EventScript_LoreleisHouseSign"
+    }
+  ]
+}

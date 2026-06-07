@@ -1,0 +1,129 @@
+{
+  "id": "MAP_POWER_PLANT",
+  "name": "PowerPlant",
+  "region": "kanto",
+  "layout": "LAYOUT_POWER_PLANT",
+  "music": "MUS_POKE_MANSION",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 7,
+      "y": 27,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PowerPlant_EventScript_ItemMaxPotion",
+      "flag": "FLAG_HIDE_POWER_PLANT_MAX_POTION"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 40,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PowerPlant_EventScript_ItemTM17",
+      "flag": "FLAG_HIDE_POWER_PLANT_TM17"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 46,
+      "y": 37,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PowerPlant_EventScript_ItemTM25",
+      "flag": "FLAG_HIDE_POWER_PLANT_TM25"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 45,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PowerPlant_EventScript_ItemThunderStone",
+      "flag": "FLAG_HIDE_POWER_PLANT_THUNDER_STONE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 26,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PowerPlant_EventScript_ItemElixir",
+      "flag": "FLAG_HIDE_POWER_PLANT_ELIXIR"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ZAPDOS",
+      "x": 5,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PowerPlant_EventScript_Zapdos",
+      "flag": "FLAG_HIDE_ZAPDOS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 36,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PowerPlant_EventScript_Electrode2",
+      "flag": "FLAG_HIDE_POWER_PLANT_ELECTRODE_2"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 30,
+      "y": 38,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PowerPlant_EventScript_Electrode1",
+      "flag": "FLAG_HIDE_POWER_PLANT_ELECTRODE_1"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 39,
+      "dest_map": "MAP_ROUTE10",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 5,
+      "y": 38,
+      "dest_map": "MAP_ROUTE10",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 6,
+      "y": 39,
+      "dest_map": "MAP_ROUTE10",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 1,
+      "y": 11,
+      "dest_map": "MAP_ROUTE10",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 0,
+      "y": 13,
+      "dest_map": "MAP_ROUTE10",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

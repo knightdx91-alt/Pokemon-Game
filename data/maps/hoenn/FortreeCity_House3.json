@@ -1,0 +1,51 @@
+{
+  "id": "MAP_FORTREE_CITY_HOUSE3",
+  "name": "FortreeCity_House3",
+  "region": "hoenn",
+  "layout": "LAYOUT_FORTREE_CITY_HOUSE1",
+  "music": "MUS_FORTREE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MANIAC",
+      "x": 0,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FortreeCity_House3_EventScript_Maniac",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCHOOL_KID_M",
+      "x": 5,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FortreeCity_House3_EventScript_SchoolKidM",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 5,
+      "dest_map": "MAP_FORTREE_CITY",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 4,
+      "y": 5,
+      "dest_map": "MAP_FORTREE_CITY",
+      "dest_warp_id": "5"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

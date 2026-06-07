@@ -1,0 +1,88 @@
+{
+  "id": "MAP_CELADON_CITY_DEPARTMENT_STORE_1F",
+  "name": "CeladonCity_DepartmentStore_1F",
+  "region": "kanto",
+  "layout": "LAYOUT_CELADON_CITY_DEPARTMENT_STORE_1F",
+  "music": "MUS_POKE_CENTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_F",
+      "x": 6,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeladonCity_DepartmentStore_1F_EventScript_Receptionist",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 1,
+      "y": 15,
+      "dest_map": "MAP_CELADON_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 2,
+      "y": 14,
+      "dest_map": "MAP_CELADON_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 3,
+      "y": 15,
+      "dest_map": "MAP_CELADON_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 9,
+      "y": 15,
+      "dest_map": "MAP_CELADON_CITY",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 10,
+      "y": 14,
+      "dest_map": "MAP_CELADON_CITY",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 11,
+      "y": 15,
+      "dest_map": "MAP_CELADON_CITY",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "dest_map": "MAP_CELADON_CITY_DEPARTMENT_STORE_ELEVATOR",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "dest_map": "MAP_CELADON_CITY_DEPARTMENT_STORE_2F",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 9,
+      "y": 11,
+      "script": "CeladonCity_DepartmentStore_1F_EventScript_LayoutSign"
+    },
+    {
+      "x": 8,
+      "y": 1,
+      "script": "CeladonCity_DepartmentStore_1F_EventScript_FloorSign"
+    }
+  ]
+}

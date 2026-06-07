@@ -1,0 +1,65 @@
+{
+  "id": "MAP_UNDERWATER_SEAFLOOR_CAVERN",
+  "name": "Underwater_SeafloorCavern",
+  "region": "hoenn",
+  "layout": "LAYOUT_UNDERWATER_SEAFLOOR_CAVERN",
+  "music": "MUS_UNDERWATER",
+  "weather": "WEATHER_UNDERWATER_BUBBLES",
+  "map_type": "MAP_TYPE_UNDERWATER",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "x": 5,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Underwater_SeafloorCavern_EventScript_CheckStolenSub",
+      "flag": "FLAG_HIDE_UNDERWATER_SEA_FLOOR_CAVERN_STOLEN_SUBMARINE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "x": 6,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Underwater_SeafloorCavern_EventScript_CheckStolenSub",
+      "flag": "FLAG_HIDE_UNDERWATER_SEA_FLOOR_CAVERN_STOLEN_SUBMARINE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "x": 7,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Underwater_SeafloorCavern_EventScript_CheckStolenSub",
+      "flag": "FLAG_HIDE_UNDERWATER_SEA_FLOOR_CAVERN_STOLEN_SUBMARINE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL",
+      "x": 8,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Underwater_SeafloorCavern_EventScript_CheckStolenSub",
+      "flag": "FLAG_HIDE_UNDERWATER_SEA_FLOOR_CAVERN_STOLEN_SUBMARINE"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 7,
+      "dest_map": "MAP_UNDERWATER_ROUTE128",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

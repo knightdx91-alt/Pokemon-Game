@@ -1,0 +1,30 @@
+{
+  "id": "MAP_TERRA_CAVE_ENTRANCE",
+  "name": "TerraCave_Entrance",
+  "region": "hoenn",
+  "layout": "LAYOUT_TERRA_CAVE_ENTRANCE",
+  "music": "MUS_PETALBURG_WOODS",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 8,
+      "y": 18,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    },
+    {
+      "x": 14,
+      "y": 1,
+      "dest_map": "MAP_TERRA_CAVE_END",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

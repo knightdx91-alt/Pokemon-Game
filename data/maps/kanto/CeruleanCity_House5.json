@@ -1,0 +1,41 @@
+{
+  "id": "MAP_CERULEAN_CITY_HOUSE5",
+  "name": "CeruleanCity_House5",
+  "region": "kanto",
+  "layout": "LAYOUT_CERULEAN_CITY_HOUSE5",
+  "music": "MUS_FUCHSIA",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_2",
+      "x": 7,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeruleanCity_House5_EventScript_BerryPowderMan",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_CERULEAN_CITY",
+      "dest_warp_id": "13"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 3,
+      "y": 1,
+      "script": "CeruleanCity_House5_EventScript_BerryCrushRankings"
+    }
+  ]
+}

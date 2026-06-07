@@ -1,0 +1,55 @@
+{
+  "id": "MAP_SSANNE_2F_ROOM2",
+  "name": "SSAnne_2F_Room2",
+  "region": "kanto",
+  "layout": "LAYOUT_SSANNE_ROOM2",
+  "music": "MUS_SS_ANNE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 5,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SSAnne_2F_Room2_EventScript_Dale",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 1,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SSAnne_2F_Room2_EventScript_Brooks",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 3,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SSAnne_2F_Room2_EventScript_ItemStardust",
+      "flag": "FLAG_HIDE_SSANNE_2F_ROOM2_STARDUST"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_SSANNE_2F_CORRIDOR",
+      "dest_warp_id": "4"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

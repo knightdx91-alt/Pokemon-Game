@@ -1,0 +1,51 @@
+{
+  "id": "MAP_MT_CHIMNEY_CABLE_CAR_STATION",
+  "name": "MtChimney_CableCarStation",
+  "region": "hoenn",
+  "layout": "LAYOUT_CABLE_CAR_STATION",
+  "music": "MUS_ROUTE110",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_MT_CHIMNEY_CABLE_CAR_ATTENDANT",
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 6,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_CableCarStation_EventScript_Attendant",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CABLE_CAR",
+      "x": 6,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 11,
+      "dest_map": "MAP_MT_CHIMNEY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "dest_map": "MAP_MT_CHIMNEY",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

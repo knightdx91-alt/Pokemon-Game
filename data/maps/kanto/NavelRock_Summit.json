@@ -1,0 +1,43 @@
+{
+  "id": "MAP_NAVEL_ROCK_SUMMIT",
+  "name": "NavelRock_Summit",
+  "region": "kanto",
+  "layout": "LAYOUT_NAVEL_ROCK_SUMMIT",
+  "music": "MUS_SEVII_CAVE",
+  "weather": "WEATHER_SHADE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_NAVEL_ROCK_HO_OH",
+      "graphics_id": "OBJ_EVENT_GFX_HO_OH",
+      "x": 9,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_HO_OH"
+    }
+  ],
+  "warps": [
+    {
+      "x": 10,
+      "y": 18,
+      "dest_map": "MAP_NAVEL_ROCK_SUMMIT_PATH_5F",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 9,
+      "y": 12,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "NavelRock_Summit_EventScript_HoOh"
+    }
+  ],
+  "signs": []
+}

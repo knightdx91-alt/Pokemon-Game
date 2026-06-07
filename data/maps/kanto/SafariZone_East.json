@@ -1,0 +1,117 @@
+{
+  "id": "MAP_SAFARI_ZONE_EAST",
+  "name": "SafariZone_East",
+  "region": "kanto",
+  "layout": "LAYOUT_SAFARI_ZONE_EAST",
+  "music": "MUS_EVOLUTION",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 13,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZone_East_EventScript_ItemMaxPotion",
+      "flag": "FLAG_HIDE_SAFARI_ZONE_EAST_MAX_POTION"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 37,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZone_East_EventScript_ItemFullRestore",
+      "flag": "FLAG_HIDE_SAFARI_ZONE_EAST_FULL_RESTORE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 31,
+      "y": 18,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZone_East_EventScript_ItemTM11",
+      "flag": "FLAG_HIDE_SAFARI_ZONE_EAST_TM11"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 36,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZone_East_EventScript_ItemLeafStone",
+      "flag": "FLAG_HIDE_SAFARI_ZONE_EAST_LEAF_STONE"
+    }
+  ],
+  "warps": [
+    {
+      "x": 8,
+      "y": 9,
+      "dest_map": "MAP_SAFARI_ZONE_NORTH",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 8,
+      "y": 10,
+      "dest_map": "MAP_SAFARI_ZONE_NORTH",
+      "dest_warp_id": "7"
+    },
+    {
+      "x": 8,
+      "y": 11,
+      "dest_map": "MAP_SAFARI_ZONE_NORTH",
+      "dest_warp_id": "8"
+    },
+    {
+      "x": 8,
+      "y": 26,
+      "dest_map": "MAP_SAFARI_ZONE_CENTER",
+      "dest_warp_id": "9"
+    },
+    {
+      "x": 8,
+      "y": 27,
+      "dest_map": "MAP_SAFARI_ZONE_CENTER",
+      "dest_warp_id": "10"
+    },
+    {
+      "x": 8,
+      "y": 28,
+      "dest_map": "MAP_SAFARI_ZONE_CENTER",
+      "dest_warp_id": "11"
+    },
+    {
+      "x": 40,
+      "y": 14,
+      "dest_map": "MAP_SAFARI_ZONE_EAST_REST_HOUSE",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 18,
+      "y": 27,
+      "script": "SafariZone_East_EventScript_AreaSign"
+    },
+    {
+      "x": 43,
+      "y": 15,
+      "script": "SafariZone_East_EventScript_RestHouseSign"
+    },
+    {
+      "x": 17,
+      "y": 8,
+      "script": "SafariZone_East_EventScript_TrainerTips"
+    }
+  ]
+}

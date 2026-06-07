@@ -1,0 +1,66 @@
+{
+  "id": "MAP_RUSTBORO_CITY_DEVON_CORP_3F",
+  "name": "RustboroCity_DevonCorp_3F",
+  "region": "hoenn",
+  "layout": "LAYOUT_RUSTBORO_CITY_DEVON_CORP_3F",
+  "music": "MUS_RUSTBORO",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 17,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_DevonCorp_3F_EventScript_MrStone",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_DEVON_CORP_3F_EMPLOYEE",
+      "graphics_id": "OBJ_EVENT_GFX_MAN_2",
+      "x": 3,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_DevonCorp_3F_EventScript_Employee",
+      "flag": "FLAG_HIDE_RUSTBORO_CITY_DEVON_CORP_3F_EMPLOYEE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 15,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_DevonCorp_3F_EventScript_MrStone",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 2,
+      "y": 1,
+      "dest_map": "MAP_RUSTBORO_CITY_DEVON_CORP_2F",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 1,
+      "y": 5,
+      "script": "RustboroCity_DevonCorp_3F_EventScript_RareRocksDisplay"
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "script": "RustboroCity_DevonCorp_3F_EventScript_RareRocksDisplay"
+    }
+  ]
+}

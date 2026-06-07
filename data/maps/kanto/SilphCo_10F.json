@@ -1,0 +1,141 @@
+{
+  "id": "MAP_SILPH_CO_10F",
+  "name": "SilphCo_10F",
+  "region": "kanto",
+  "layout": "LAYOUT_SILPH_CO_10F",
+  "music": "MUS_SILPH",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST",
+      "x": 2,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SilphCo_10F_EventScript_Travis",
+      "flag": "FLAG_HIDE_SILPH_ROCKETS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_F",
+      "x": 10,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SilphCo_10F_EventScript_WorkerF",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 0,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SilphCo_10F_EventScript_Grunt",
+      "flag": "FLAG_HIDE_SILPH_ROCKETS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 5,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SilphCo_10F_EventScript_ItemCarbos",
+      "flag": "FLAG_HIDE_SILPH_CO_10F_CARBOS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 2,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SilphCo_10F_EventScript_ItemUltraBall",
+      "flag": "FLAG_HIDE_SILPH_CO_10F_ULTRA_BALL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 3,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SilphCo_10F_EventScript_ItemRareCandy",
+      "flag": "FLAG_HIDE_SILPH_CO_10F_RARE_CANDY"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 2,
+      "dest_map": "MAP_SILPH_CO_11F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 10,
+      "y": 14,
+      "dest_map": "MAP_SILPH_CO_4F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 14,
+      "y": 9,
+      "dest_map": "MAP_SILPH_CO_4F",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 8,
+      "y": 2,
+      "dest_map": "MAP_SILPH_CO_9F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 14,
+      "y": 17,
+      "dest_map": "MAP_SILPH_CO_4F",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 13,
+      "y": 3,
+      "dest_map": "MAP_SILPH_CO_ELEVATOR",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 12,
+      "y": 11,
+      "script": "SilphCo_10F_EventScript_Door"
+    },
+    {
+      "x": 13,
+      "y": 11,
+      "script": "SilphCo_10F_EventScript_Door"
+    },
+    {
+      "x": 12,
+      "y": 12,
+      "script": "SilphCo_10F_EventScript_Door"
+    },
+    {
+      "x": 13,
+      "y": 12,
+      "script": "SilphCo_10F_EventScript_Door"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "script": "SilphCo_10F_EventScript_FloorSign"
+    }
+  ]
+}

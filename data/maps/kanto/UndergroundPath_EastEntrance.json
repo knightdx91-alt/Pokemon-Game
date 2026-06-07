@@ -1,0 +1,53 @@
+{
+  "id": "MAP_UNDERGROUND_PATH_EAST_ENTRANCE",
+  "name": "UndergroundPath_EastEntrance",
+  "region": "kanto",
+  "layout": "LAYOUT_UNDERGROUND_PATH_ENTRANCE",
+  "music": "MUS_PEWTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 5,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "UndergroundPath_EastEntrance_EventScript_Woman",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_ROUTE8",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "dest_map": "MAP_ROUTE8",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 7,
+      "y": 8,
+      "dest_map": "MAP_ROUTE8",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "dest_map": "MAP_UNDERGROUND_PATH_EAST_WEST_TUNNEL",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

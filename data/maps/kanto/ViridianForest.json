@@ -1,0 +1,196 @@
+{
+  "id": "MAP_VIRIDIAN_FOREST",
+  "name": "ViridianForest",
+  "region": "kanto",
+  "layout": "LAYOUT_VIRIDIAN_FOREST",
+  "music": "MUS_VIRIDIAN_FOREST",
+  "weather": "WEATHER_SHADE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 29,
+      "y": 58,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianForest_EventScript_Youngster",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY",
+      "x": 45,
+      "y": 58,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianForest_EventScript_Boy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 47,
+      "y": 45,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "ViridianForest_EventScript_Rick",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 47,
+      "y": 29,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "ViridianForest_EventScript_Doug",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 7,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "ViridianForest_EventScript_Sammy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 5,
+      "y": 41,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianForest_EventScript_ItemPokeBall",
+      "flag": "FLAG_HIDE_VIRIDIAN_FOREST_POKE_BALL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 40,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianForest_EventScript_ItemAntidote",
+      "flag": "FLAG_HIDE_VIRIDIAN_FOREST_ANTIDOTE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 21,
+      "y": 34,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianForest_EventScript_ItemPotion",
+      "flag": "FLAG_HIDE_VIRIDIAN_FOREST_POTION"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 43,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "ViridianForest_EventScript_Anthony",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 16,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "ViridianForest_EventScript_Charlie",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 49,
+      "y": 60,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianForest_EventScript_ItemPotion2",
+      "flag": "FLAG_HIDE_VIRIDIAN_FOREST_POTION_2"
+    }
+  ],
+  "warps": [
+    {
+      "x": 29,
+      "y": 62,
+      "dest_map": "MAP_ROUTE2_VIRIDIAN_FOREST_SOUTH_ENTRANCE",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 28,
+      "y": 62,
+      "dest_map": "MAP_ROUTE2_VIRIDIAN_FOREST_SOUTH_ENTRANCE",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 5,
+      "y": 9,
+      "dest_map": "MAP_ROUTE2_VIRIDIAN_FOREST_NORTH_ENTRANCE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 6,
+      "y": 9,
+      "dest_map": "MAP_ROUTE2_VIRIDIAN_FOREST_NORTH_ENTRANCE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 30,
+      "y": 62,
+      "dest_map": "MAP_ROUTE2_VIRIDIAN_FOREST_SOUTH_ENTRANCE",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 4,
+      "y": 9,
+      "dest_map": "MAP_ROUTE2_VIRIDIAN_FOREST_NORTH_ENTRANCE",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 39,
+      "y": 59,
+      "script": "ViridianForest_EventScript_TrainerTips1"
+    },
+    {
+      "x": 43,
+      "y": 26,
+      "script": "ViridianForest_EventScript_TrainerTips3"
+    },
+    {
+      "x": 9,
+      "y": 29,
+      "script": "ViridianForest_EventScript_TrainerTips4"
+    },
+    {
+      "x": 6,
+      "y": 12,
+      "script": "ViridianForest_EventScript_ExitSign"
+    },
+    {
+      "x": 28,
+      "y": 44,
+      "script": "ViridianForest_EventScript_TrainerTips2"
+    },
+    {
+      "x": 31,
+      "y": 60,
+      "script": "ViridianForest_EventScript_TrainerTips5"
+    }
+  ]
+}

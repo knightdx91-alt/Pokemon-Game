@@ -1,0 +1,148 @@
+{
+  "id": "MAP_SIX_ISLAND_WATER_PATH",
+  "name": "SixIsland_WaterPath",
+  "region": "kanto",
+  "layout": "LAYOUT_SIX_ISLAND_WATER_PATH",
+  "music": "MUS_SEVII_ROUTE",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_SIX_ISLAND_GREEN_PATH",
+      "offset": 0,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_SIX_ISLAND",
+      "offset": 40,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_SIX_ISLAND_RUIN_VALLEY",
+      "offset": 80,
+      "direction": "left"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 12,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_UP_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SixIsland_WaterPath_EventScript_Rose",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKER",
+      "x": 11,
+      "y": 52,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SixIsland_WaterPath_EventScript_Edward",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M_WATER",
+      "x": 13,
+      "y": 35,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SixIsland_WaterPath_EventScript_Samir",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F_WATER",
+      "x": 15,
+      "y": 45,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SixIsland_WaterPath_EventScript_Denise",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_GIRL",
+      "x": 6,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SixIsland_WaterPath_EventScript_Miu",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_GIRL",
+      "x": 7,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SixIsland_WaterPath_EventScript_Mia",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 11,
+      "y": 76,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SixIsland_WaterPath_EventScript_Earl",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 17,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SixIsland_WaterPath_EventScript_ItemElixir",
+      "flag": "FLAG_HIDE_SIX_ISLAND_WATER_PATH_ELIXIR"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 17,
+      "y": 87,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SixIsland_WaterPath_EventScript_ItemDragonScale",
+      "flag": "FLAG_HIDE_SIX_ISLAND_WATER_PATH_DRAGON_SCALE"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 13,
+      "dest_map": "MAP_SIX_ISLAND_WATER_PATH_HOUSE1",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 11,
+      "y": 19,
+      "dest_map": "MAP_SIX_ISLAND_WATER_PATH_HOUSE2",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 8,
+      "y": 14,
+      "script": "SixIsland_WaterPath_EventScript_HornWantedSign"
+    },
+    {
+      "x": 12,
+      "y": 54,
+      "script": "SixIsland_WaterPath_EventScript_RouteSign"
+    }
+  ]
+}

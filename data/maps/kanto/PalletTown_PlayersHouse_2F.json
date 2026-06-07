@@ -1,0 +1,40 @@
+{
+  "id": "MAP_PALLET_TOWN_PLAYERS_HOUSE_2F",
+  "name": "PalletTown_PlayersHouse_2F",
+  "region": "kanto",
+  "layout": "LAYOUT_PALLET_TOWN_PLAYERS_HOUSE_2F",
+  "music": "MUS_PALLET",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 10,
+      "y": 2,
+      "dest_map": "MAP_PALLET_TOWN_PLAYERS_HOUSE_1F",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 6,
+      "y": 5,
+      "script": "PalletTown_PlayersHouse_2F_EventScript_NES"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "script": "PalletTown_PlayersHouse_2F_EventScript_PC"
+    },
+    {
+      "x": 11,
+      "y": 1,
+      "script": "PalletTown_PlayersHouse_2F_EventScript_Sign"
+    }
+  ]
+}

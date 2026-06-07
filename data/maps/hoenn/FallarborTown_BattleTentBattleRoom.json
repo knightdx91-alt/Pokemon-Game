@@ -1,0 +1,48 @@
+{
+  "id": "MAP_FALLARBOR_TOWN_BATTLE_TENT_BATTLE_ROOM",
+  "name": "FallarborTown_BattleTentBattleRoom",
+  "region": "hoenn",
+  "layout": "LAYOUT_BATTLE_TENT_BATTLE_ROOM",
+  "music": "MUS_B_TOWER_RS",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_FALLARBOR_TENT_BATTLE_PLAYER",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_1",
+      "x": 4,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_FALLARBOR_TENT_BATTLE_ATTENDANT",
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 3,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_FALLARBOR_TENT_BATTLE_OPPONENT",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_0",
+      "x": 5,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    }
+  ],
+  "warps": [],
+  "triggers": [],
+  "signs": []
+}

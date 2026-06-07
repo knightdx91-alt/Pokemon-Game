@@ -1,0 +1,73 @@
+{
+  "id": "MAP_PALLET_TOWN_RIVALS_HOUSE",
+  "name": "PalletTown_RivalsHouse",
+  "region": "kanto",
+  "layout": "LAYOUT_PALLET_TOWN_RIVALS_HOUSE",
+  "music": "MUS_PALLET",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_DAISY",
+      "graphics_id": "OBJ_EVENT_GFX_DAISY",
+      "x": 10,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_RivalsHouse_EventScript_Daisy",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_TOWN_MAP",
+      "graphics_id": "OBJ_EVENT_GFX_TOWN_MAP",
+      "x": 6,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_RivalsHouse_EventScript_TownMap",
+      "flag": "FLAG_HIDE_TOWN_MAP"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_PALLET_TOWN",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_PALLET_TOWN",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 3,
+      "y": 8,
+      "dest_map": "MAP_PALLET_TOWN",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 12,
+      "y": 1,
+      "script": "PalletTown_RivalsHouse_EventScript_Bookshelf"
+    },
+    {
+      "x": 11,
+      "y": 1,
+      "script": "PalletTown_RivalsHouse_EventScript_Bookshelf"
+    },
+    {
+      "x": 9,
+      "y": 1,
+      "script": "PalletTown_RivalsHouse_EventScript_Picture"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "id": "MAP_ROUTE114_LANETTES_HOUSE",
+  "name": "Route114_LanettesHouse",
+  "region": "hoenn",
+  "layout": "LAYOUT_ROUTE114_LANETTES_HOUSE",
+  "music": "MUS_FALLARBOR",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 5,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route114_LanettesHouse_EventScript_Lanette",
+      "flag": "FLAG_HIDE_LANETTES_HOUSE_LANETTE"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 7,
+      "dest_map": "MAP_ROUTE114",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "dest_map": "MAP_ROUTE114",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 5,
+      "y": 1,
+      "script": "Route114_LanettesHouse_EventScript_Notebook"
+    },
+    {
+      "x": 8,
+      "y": 1,
+      "script": "Route114_LanettesHouse_EventScript_PC"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "script": "Route114_LanettesHouse_EventScript_PC"
+    }
+  ]
+}

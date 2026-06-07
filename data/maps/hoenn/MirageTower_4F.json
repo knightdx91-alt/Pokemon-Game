@@ -1,0 +1,55 @@
+{
+  "id": "MAP_MIRAGE_TOWER_4F",
+  "name": "MirageTower_4F",
+  "region": "hoenn",
+  "layout": "LAYOUT_MIRAGE_TOWER_4F",
+  "music": "MUS_MT_CHIMNEY",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_MIRAGE_ROOT_FOSSIL",
+      "graphics_id": "OBJ_EVENT_GFX_FOSSIL",
+      "x": 5,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MirageTower_4F_EventScript_RootFossil",
+      "flag": "FLAG_HIDE_MIRAGE_TOWER_ROOT_FOSSIL"
+    },
+    {
+      "local_id": "LOCALID_MIRAGE_CLAW_FOSSIL",
+      "graphics_id": "OBJ_EVENT_GFX_FOSSIL",
+      "x": 7,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MirageTower_4F_EventScript_ClawFossil",
+      "flag": "FLAG_HIDE_MIRAGE_TOWER_CLAW_FOSSIL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BREAKABLE_ROCK",
+      "x": 6,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_11"
+    }
+  ],
+  "warps": [
+    {
+      "x": 1,
+      "y": 4,
+      "dest_map": "MAP_MIRAGE_TOWER_3F",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

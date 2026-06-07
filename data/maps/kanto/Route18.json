@@ -1,0 +1,83 @@
+{
+  "id": "MAP_ROUTE18",
+  "name": "Route18",
+  "region": "kanto",
+  "layout": "LAYOUT_ROUTE18",
+  "music": "MUS_ROUTE3",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE17",
+      "offset": 0,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_FUCHSIA_CITY",
+      "offset": -10,
+      "direction": "right"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKER",
+      "x": 46,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route18_EventScript_Jacob",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKER",
+      "x": 41,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route18_EventScript_Ramiro",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKER",
+      "x": 39,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route18_EventScript_Wilton",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 41,
+      "y": 9,
+      "dest_map": "MAP_ROUTE18_EAST_ENTRANCE_1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 48,
+      "y": 9,
+      "dest_map": "MAP_ROUTE18_EAST_ENTRANCE_1F",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 37,
+      "y": 7,
+      "script": "Route18_EventScript_CyclingRoadSign"
+    },
+    {
+      "x": 52,
+      "y": 7,
+      "script": "Route18_EventScript_RouteSign"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "id": "MAP_VERDANTURF_TOWN_HOUSE",
+  "name": "VerdanturfTown_House",
+  "region": "hoenn",
+  "layout": "LAYOUT_HOUSE1",
+  "music": "MUS_VERDANTURF",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_5",
+      "x": 4,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VerdanturfTown_House_EventScript_Woman1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_5",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VerdanturfTown_House_EventScript_Woman2",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 8,
+      "dest_map": "MAP_VERDANTURF_TOWN",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_VERDANTURF_TOWN",
+      "dest_warp_id": "6"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

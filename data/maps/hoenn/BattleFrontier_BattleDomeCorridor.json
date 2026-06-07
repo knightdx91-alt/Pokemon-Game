@@ -1,0 +1,41 @@
+{
+  "id": "MAP_BATTLE_FRONTIER_BATTLE_DOME_CORRIDOR",
+  "name": "BattleFrontier_BattleDomeCorridor",
+  "region": "hoenn",
+  "layout": "LAYOUT_BATTLE_FRONTIER_BATTLE_DOME_CORRIDOR",
+  "music": "MUS_B_DOME_LOBBY",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_DOME_CORRIDOR_ATTENDANT",
+      "graphics_id": "OBJ_EVENT_GFX_TEALA",
+      "x": 23,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 8,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_WEST",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 7,
+      "y": 8,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_WEST",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

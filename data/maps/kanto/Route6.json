@@ -1,0 +1,114 @@
+{
+  "id": "MAP_ROUTE6",
+  "name": "Route6",
+  "region": "kanto",
+  "layout": "LAYOUT_ROUTE6",
+  "music": "MUS_ROUTE3",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_SAFFRON_CITY_CONNECTION",
+      "offset": 0,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_VERMILION_CITY",
+      "offset": -12,
+      "direction": "down"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 3,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route6_EventScript_Keigo",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 12,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route6_EventScript_Ricky",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 13,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route6_EventScript_Nancy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 20,
+      "y": 25,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route6_EventScript_Elijah",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 13,
+      "y": 32,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route6_EventScript_Isabelle",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 13,
+      "y": 33,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route6_EventScript_Jeff",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 19,
+      "y": 13,
+      "dest_map": "MAP_UNDERGROUND_PATH_SOUTH_ENTRANCE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 12,
+      "y": 5,
+      "dest_map": "MAP_ROUTE6_NORTH_ENTRANCE",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 13,
+      "y": 5,
+      "dest_map": "MAP_ROUTE6_NORTH_ENTRANCE",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 21,
+      "y": 15,
+      "script": "Route6_EventScript_UndergroundPathSign"
+    }
+  ]
+}

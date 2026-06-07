@@ -1,0 +1,316 @@
+{
+  "id": "MAP_CERULEAN_CITY",
+  "name": "CeruleanCity",
+  "region": "kanto",
+  "layout": "LAYOUT_CERULEAN_CITY",
+  "music": "MUS_FUCHSIA",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_TOWN",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE24",
+      "offset": 12,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_ROUTE5",
+      "offset": 0,
+      "direction": "down"
+    },
+    {
+      "map": "MAP_ROUTE4",
+      "offset": 10,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_ROUTE9",
+      "offset": 10,
+      "direction": "right"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": "LOCALID_CERULEAN_POLICEMAN",
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 31,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeruleanCity_EventScript_Policeman",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_CERULEAN_GRUNT",
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 33,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeruleanCity_EventScript_Grunt",
+      "flag": "FLAG_HIDE_CERULEAN_ROCKET"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_BOY",
+      "x": 16,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeruleanCity_EventScript_LittleBoy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 9,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeruleanCity_EventScript_BaldingMan",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_CERULEAN_SLOWBRO",
+      "graphics_id": "OBJ_EVENT_GFX_SLOWBRO",
+      "x": 32,
+      "y": 29,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeruleanCity_EventScript_Slowbro",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_CERULEAN_LASS",
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 33,
+      "y": 29,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeruleanCity_EventScript_Lass",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 34,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeruleanCity_EventScript_Youngster",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_CERULEAN_RIVAL",
+      "graphics_id": "OBJ_EVENT_GFX_BLUE",
+      "x": 22,
+      "y": 0,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_CERULEAN_RIVAL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 26,
+      "y": 32,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_13"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 50,
+      "y": 18,
+      "movement_type": null,
+      "trainer_type": null,
+      "script": null,
+      "flag": null
+    },
+    {
+      "local_id": "LOCALID_CERULEAN_WOMAN",
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_1",
+      "x": 12,
+      "y": 30,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeruleanCity_EventScript_Woman",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_CERULEAN_CAVE_GUARD",
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_M",
+      "x": 1,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeruleanCity_EventScript_CeruleanCaveGuard",
+      "flag": "FLAG_HIDE_CERULEAN_CAVE_GUARD"
+    }
+  ],
+  "warps": [
+    {
+      "x": 10,
+      "y": 11,
+      "dest_map": "MAP_CERULEAN_CITY_HOUSE1",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 30,
+      "y": 11,
+      "dest_map": "MAP_CERULEAN_CITY_HOUSE2",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 15,
+      "y": 17,
+      "dest_map": "MAP_CERULEAN_CITY_HOUSE3",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 22,
+      "y": 19,
+      "dest_map": "MAP_CERULEAN_CITY_POKEMON_CENTER_1F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 31,
+      "y": 21,
+      "dest_map": "MAP_CERULEAN_CITY_GYM",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 13,
+      "y": 28,
+      "dest_map": "MAP_CERULEAN_CITY_BIKE_SHOP",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 29,
+      "y": 28,
+      "dest_map": "MAP_CERULEAN_CITY_MART",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 1,
+      "y": 12,
+      "dest_map": "MAP_CERULEAN_CAVE_1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 10,
+      "y": 8,
+      "dest_map": "MAP_CERULEAN_CITY_HOUSE1",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 31,
+      "y": 8,
+      "dest_map": "MAP_CERULEAN_CITY_HOUSE2",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 31,
+      "y": 9,
+      "dest_map": "MAP_CERULEAN_CITY_HOUSE2",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 14,
+      "y": 28,
+      "dest_map": "MAP_CERULEAN_CITY_BIKE_SHOP",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 23,
+      "y": 28,
+      "dest_map": "MAP_CERULEAN_CITY_HOUSE4",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 17,
+      "y": 11,
+      "dest_map": "MAP_CERULEAN_CITY_HOUSE5",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 22,
+      "y": 6,
+      "var": "VAR_MAP_SCENE_CERULEAN_CITY_RIVAL",
+      "var_value": "0",
+      "script": "CeruleanCity_EventScript_RivalTriggerLeft"
+    },
+    {
+      "x": 23,
+      "y": 6,
+      "var": "VAR_MAP_SCENE_CERULEAN_CITY_RIVAL",
+      "var_value": "0",
+      "script": "CeruleanCity_EventScript_RivalTriggerMid"
+    },
+    {
+      "x": 24,
+      "y": 6,
+      "var": "VAR_MAP_SCENE_CERULEAN_CITY_RIVAL",
+      "var_value": "0",
+      "script": "CeruleanCity_EventScript_RivalTriggerRight"
+    },
+    {
+      "x": 33,
+      "y": 5,
+      "var": "VAR_MAP_SCENE_CERULEAN_CITY_ROCKET",
+      "var_value": "0",
+      "script": "CeruleanCity_EventScript_GruntTriggerTop"
+    },
+    {
+      "x": 33,
+      "y": 7,
+      "var": "VAR_MAP_SCENE_CERULEAN_CITY_ROCKET",
+      "var_value": "0",
+      "script": "CeruleanCity_EventScript_GruntTriggerBottom"
+    }
+  ],
+  "signs": [
+    {
+      "x": 20,
+      "y": 25,
+      "script": "CeruleanCity_EventScript_CitySign"
+    },
+    {
+      "x": 27,
+      "y": 21,
+      "script": "CeruleanCity_EventScript_GymSign"
+    },
+    {
+      "x": 11,
+      "y": 28,
+      "script": "CeruleanCity_EventScript_BikeShopSign"
+    },
+    {
+      "x": 19,
+      "y": 32,
+      "script": "CeruleanCity_EventScript_TrainerTips"
+    },
+    {
+      "x": 11,
+      "y": 25,
+      "script": "CeruleanCity_BikeShop_EventScript_Bicycle"
+    },
+    {
+      "x": 11,
+      "y": 27,
+      "script": "CeruleanCity_BikeShop_EventScript_Bicycle"
+    },
+    {
+      "x": 11,
+      "y": 26,
+      "script": "CeruleanCity_BikeShop_EventScript_Bicycle"
+    }
+  ]
+}

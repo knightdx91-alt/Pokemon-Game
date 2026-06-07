@@ -1,0 +1,41 @@
+{
+  "id": "MAP_TRAINER_TOWER_ROOF",
+  "name": "TrainerTower_Roof",
+  "region": "kanto",
+  "layout": "LAYOUT_TRAINER_TOWER_ROOF",
+  "music": "MUS_TRAINER_TOWER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRAINER_TOWER_DUDE",
+      "x": 9,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TrainerTower_EventScript_Owner",
+      "flag": "FLAG_TEMP_6"
+    }
+  ],
+  "warps": [
+    {
+      "x": 13,
+      "y": 5,
+      "dest_map": "MAP_TRAINER_TOWER_ELEVATOR",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 4,
+      "y": 6,
+      "dest_map": "MAP_TRAINER_TOWER_8F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

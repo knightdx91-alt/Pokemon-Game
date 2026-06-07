@@ -1,0 +1,88 @@
+{
+  "id": "MAP_CERULEAN_CITY_GYM",
+  "name": "CeruleanCity_Gym",
+  "region": "kanto",
+  "layout": "LAYOUT_CERULEAN_CITY_GYM",
+  "music": "MUS_GYM",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M_WATER",
+      "x": 10,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "CeruleanCity_Gym_EventScript_Luis",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 4,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "CeruleanCity_Gym_EventScript_Diana",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MISTY",
+      "x": 8,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeruleanCity_Gym_EventScript_Misty",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 7,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeruleanCity_Gym_EventScript_GymGuy",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 18,
+      "dest_map": "MAP_CERULEAN_CITY",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 8,
+      "y": 18,
+      "dest_map": "MAP_CERULEAN_CITY",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 9,
+      "y": 18,
+      "dest_map": "MAP_CERULEAN_CITY",
+      "dest_warp_id": "4"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 6,
+      "y": 17,
+      "script": "CeruleanCity_Gym_EventScript_GymStatue"
+    },
+    {
+      "x": 10,
+      "y": 17,
+      "script": "CeruleanCity_Gym_EventScript_GymStatue"
+    }
+  ]
+}

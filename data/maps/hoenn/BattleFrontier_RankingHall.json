@@ -1,0 +1,122 @@
+{
+  "id": "MAP_BATTLE_FRONTIER_RANKING_HALL",
+  "name": "BattleFrontier_RankingHall",
+  "region": "hoenn",
+  "layout": "LAYOUT_BATTLE_FRONTIER_RANKING_HALL",
+  "music": "MUS_LILYCOVE_MUSEUM",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TEALA",
+      "x": 24,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_RankingHall_EventScript_Attendant",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
+      "x": 4,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_RankingHall_EventScript_NinjaBoy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY_3",
+      "x": 44,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_RankingHall_EventScript_Boy",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 26,
+      "y": 14,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_EAST",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 27,
+      "y": 14,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_EAST",
+      "dest_warp_id": "4"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 26,
+      "y": 9,
+      "script": "BattleFrontier_RankingHall_EventScript_TowerSinglesRecords"
+    },
+    {
+      "x": 23,
+      "y": 8,
+      "script": "BattleFrontier_RankingHall_EventScript_TowerDoublesRecords"
+    },
+    {
+      "x": 26,
+      "y": 5,
+      "script": "BattleFrontier_RankingHall_EventScript_TowerMultisRecords"
+    },
+    {
+      "x": 29,
+      "y": 8,
+      "script": "BattleFrontier_RankingHall_EventScript_TowerLinkRecords"
+    },
+    {
+      "x": 42,
+      "y": 9,
+      "script": "BattleFrontier_RankingHall_EventScript_ArenaRecords"
+    },
+    {
+      "x": 46,
+      "y": 9,
+      "script": "BattleFrontier_RankingHall_EventScript_PalaceRecords"
+    },
+    {
+      "x": 10,
+      "y": 9,
+      "script": "BattleFrontier_RankingHall_EventScript_FactoryRecords"
+    },
+    {
+      "x": 8,
+      "y": 7,
+      "script": "BattleFrontier_RankingHall_EventScript_DomeRecords"
+    },
+    {
+      "x": 6,
+      "y": 9,
+      "script": "BattleFrontier_RankingHall_EventScript_PikeRecords"
+    },
+    {
+      "x": 44,
+      "y": 7,
+      "script": "BattleFrontier_RankingHall_EventScript_PyramidRecords"
+    },
+    {
+      "x": 16,
+      "y": 8,
+      "script": "BattleFrontier_RankingHall_EventScript_DomePikeFactoryRecordsSign"
+    },
+    {
+      "x": 36,
+      "y": 8,
+      "script": "BattleFrontier_RankingHall_EventScript_PalaceArenaPyramidRecordsSIgn"
+    }
+  ]
+}

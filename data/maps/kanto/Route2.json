@@ -1,0 +1,171 @@
+{
+  "id": "MAP_ROUTE2",
+  "name": "Route2",
+  "region": "kanto",
+  "layout": "LAYOUT_ROUTE2",
+  "music": "MUS_ROUTE1",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_PEWTER_CITY",
+      "offset": -12,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_VIRIDIAN_CITY",
+      "offset": -12,
+      "direction": "down"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 16,
+      "y": 62,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_14"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 15,
+      "y": 69,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_13"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 11,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_15"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 18,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_16"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 17,
+      "y": 54,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route2_EventScript_ItemEther",
+      "flag": "FLAG_HIDE_ROUTE2_ETHER"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 17,
+      "y": 64,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route2_EventScript_ItemParalyzeHeal",
+      "flag": "FLAG_HIDE_ROUTE2_PARALYZE_HEAL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 6,
+      "y": 85,
+      "movement_type": null,
+      "trainer_type": null,
+      "script": null,
+      "flag": null
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 13,
+      "dest_map": "MAP_ROUTE2_VIRIDIAN_FOREST_NORTH_ENTRANCE",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 6,
+      "y": 13,
+      "dest_map": "MAP_ROUTE2_VIRIDIAN_FOREST_NORTH_ENTRANCE",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 5,
+      "y": 51,
+      "dest_map": "MAP_ROUTE2_VIRIDIAN_FOREST_SOUTH_ENTRANCE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 17,
+      "y": 11,
+      "dest_map": "MAP_DIGLETTS_CAVE_NORTH_ENTRANCE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 17,
+      "y": 22,
+      "dest_map": "MAP_ROUTE2_HOUSE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 18,
+      "y": 46,
+      "dest_map": "MAP_ROUTE2_EAST_BUILDING",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 18,
+      "y": 41,
+      "dest_map": "MAP_ROUTE2_EAST_BUILDING",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 19,
+      "y": 41,
+      "dest_map": "MAP_ROUTE2_EAST_BUILDING",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 19,
+      "y": 46,
+      "dest_map": "MAP_ROUTE2_EAST_BUILDING",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 6,
+      "y": 51,
+      "dest_map": "MAP_ROUTE2_VIRIDIAN_FOREST_SOUTH_ENTRANCE",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 14,
+      "y": 12,
+      "script": "Route2_EventScript_DiglettsCaveSign"
+    },
+    {
+      "x": 7,
+      "y": 73,
+      "script": "Route2_EventScript_RouteSign"
+    }
+  ]
+}

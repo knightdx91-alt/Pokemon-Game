@@ -1,0 +1,41 @@
+{
+  "id": "MAP_CELADON_CITY_DEPARTMENT_STORE_ELEVATOR",
+  "name": "CeladonCity_DepartmentStore_Elevator",
+  "region": "kanto",
+  "layout": "LAYOUT_CELADON_CITY_DEPARTMENT_STORE_ELEVATOR",
+  "music": "MUS_POKE_CENTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 2,
+      "y": 5,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    },
+    {
+      "x": 2,
+      "y": 6,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 0,
+      "y": 2,
+      "script": "CeladonCity_DepartmentStore_Elevator_EventScript_FloorSelect"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "script": "CeladonCity_DepartmentStore_Elevator_EventScript_FloorSelect"
+    }
+  ]
+}

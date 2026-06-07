@@ -1,0 +1,127 @@
+{
+  "id": "MAP_ROCKET_HIDEOUT_B4F",
+  "name": "RocketHideout_B4F",
+  "region": "kanto",
+  "layout": "LAYOUT_ROCKET_HIDEOUT_B4F",
+  "music": "MUS_ROCKET_HIDEOUT",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_HIDEOUT_GIOVANNI",
+      "graphics_id": "OBJ_EVENT_GFX_GIOVANNI",
+      "x": 19,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RocketHideout_B4F_EventScript_Giovanni",
+      "flag": "FLAG_HIDE_HIDEOUT_GIOVANNI"
+    },
+    {
+      "local_id": "LOCALID_SILPH_SCOPE",
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 20,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RocketHideout_B4F_EventScript_SilphScope",
+      "flag": "FLAG_HIDE_SILPH_SCOPE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 4,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RocketHideout_B4F_EventScript_Grunt1",
+      "flag": "FLAG_HIDE_MISC_KANTO_ROCKETS"
+    },
+    {
+      "local_id": "LOCALID_LIFT_KEY",
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 3,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RocketHideout_B4F_EventScript_LiftKey",
+      "flag": "FLAG_HIDE_LIFT_KEY"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 19,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RocketHideout_B4F_EventScript_Grunt3",
+      "flag": "FLAG_HIDE_MISC_KANTO_ROCKETS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 16,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RocketHideout_B4F_EventScript_Grunt2",
+      "flag": "FLAG_HIDE_MISC_KANTO_ROCKETS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 1,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RocketHideout_B4F_EventScript_ItemTM49",
+      "flag": "FLAG_HIDE_ROCKET_HIDEOUT_B4F_TM49"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 4,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RocketHideout_B4F_EventScript_ItemMaxEther",
+      "flag": "FLAG_HIDE_ROCKET_HIDEOUT_B4F_MAX_ETHER"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 6,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RocketHideout_B4F_EventScript_ItemCalcium",
+      "flag": "FLAG_HIDE_ROCKET_HIDEOUT_B4F_CALCIUM"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 15,
+      "dest_map": "MAP_ROCKET_HIDEOUT_B3F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 20,
+      "y": 23,
+      "dest_map": "MAP_ROCKET_HIDEOUT_ELEVATOR",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 21,
+      "y": 23,
+      "dest_map": "MAP_ROCKET_HIDEOUT_ELEVATOR",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

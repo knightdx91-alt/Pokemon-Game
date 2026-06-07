@@ -1,0 +1,70 @@
+{
+  "id": "MAP_SEALED_CHAMBER_INNER_ROOM",
+  "name": "SealedChamber_InnerRoom",
+  "region": "hoenn",
+  "layout": "LAYOUT_SEALED_CHAMBER_INNER_ROOM",
+  "music": "MUS_SEALED_CHAMBER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 10,
+      "y": 19,
+      "dest_map": "MAP_SEALED_CHAMBER_OUTER_ROOM",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 10,
+      "y": 4,
+      "script": "SealedChamber_InnerRoom_EventScript_BrailleBackWall"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "script": "SealedChamber_InnerRoom_EventScript_BrailleStoryPart1"
+    },
+    {
+      "x": 14,
+      "y": 8,
+      "script": "SealedChamber_InnerRoom_EventScript_BrailleStoryPart2"
+    },
+    {
+      "x": 4,
+      "y": 13,
+      "script": "SealedChamber_InnerRoom_EventScript_BrailleStoryPart3"
+    },
+    {
+      "x": 16,
+      "y": 13,
+      "script": "SealedChamber_InnerRoom_EventScript_BrailleStoryPart4"
+    },
+    {
+      "x": 6,
+      "y": 18,
+      "script": "SealedChamber_InnerRoom_EventScript_BrailleStoryPart5"
+    },
+    {
+      "x": 14,
+      "y": 18,
+      "script": "SealedChamber_InnerRoom_EventScript_BrailleStoryPart6"
+    },
+    {
+      "x": 9,
+      "y": 4,
+      "script": "SealedChamber_InnerRoom_EventScript_BrailleBackWall"
+    },
+    {
+      "x": 11,
+      "y": 4,
+      "script": "SealedChamber_InnerRoom_EventScript_BrailleBackWall"
+    }
+  ]
+}

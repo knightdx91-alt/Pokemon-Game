@@ -1,0 +1,166 @@
+{
+  "id": "MAP_ONE_ISLAND_POKEMON_CENTER_1F",
+  "name": "OneIsland_PokemonCenter_1F",
+  "region": "kanto",
+  "layout": "LAYOUT_ONE_ISLAND_POKEMON_CENTER_1F",
+  "music": "MUS_NET_CENTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_ONE_ISLAND_NURSE",
+      "graphics_id": "OBJ_EVENT_GFX_NURSE",
+      "x": 5,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OneIsland_PokemonCenter_1F_EventScript_Nurse",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_ONE_ISLAND_POKEMON_CENTER_BILL",
+      "graphics_id": "OBJ_EVENT_GFX_BILL",
+      "x": 14,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OneIsland_PokemonCenter_1F_EventScript_Bill",
+      "flag": "FLAG_HIDE_ONE_ISLAND_POKECENTER_BILL"
+    },
+    {
+      "local_id": "LOCALID_CELIO",
+      "graphics_id": "OBJ_EVENT_GFX_CELIO",
+      "x": 15,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OneIsland_PokemonCenter_1F_EventScript_Celio",
+      "flag": "FLAG_HIDE_ONE_ISLAND_POKECENTER_CELIO"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_BOY",
+      "x": 6,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OneIsland_PokemonCenter_1F_EventScript_LittleBoy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 3,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OneIsland_PokemonCenter_1F_EventScript_Hiker",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CRUSH_GIRL",
+      "x": 7,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OneIsland_PokemonCenter_1F_EventScript_CrushGirl",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 9,
+      "y": 9,
+      "dest_map": "MAP_ONE_ISLAND",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "dest_map": "MAP_ONE_ISLAND_POKEMON_CENTER_2F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 12,
+      "y": 6,
+      "var": "VAR_MAP_SCENE_ONE_ISLAND_POKEMON_CENTER_1F",
+      "var_value": "2",
+      "script": "OneIsland_PokemonCenter_1F_EventScript_LeaveOneIslandTriggerTop"
+    },
+    {
+      "x": 12,
+      "y": 7,
+      "var": "VAR_MAP_SCENE_ONE_ISLAND_POKEMON_CENTER_1F",
+      "var_value": "2",
+      "script": "OneIsland_PokemonCenter_1F_EventScript_LeaveOneIslandTriggerMidTop"
+    },
+    {
+      "x": 12,
+      "y": 8,
+      "var": "VAR_MAP_SCENE_ONE_ISLAND_POKEMON_CENTER_1F",
+      "var_value": "2",
+      "script": "OneIsland_PokemonCenter_1F_EventScript_LeaveOneIslandTriggerMidBottom"
+    },
+    {
+      "x": 12,
+      "y": 9,
+      "var": "VAR_MAP_SCENE_ONE_ISLAND_POKEMON_CENTER_1F",
+      "var_value": "2",
+      "script": "OneIsland_PokemonCenter_1F_EventScript_LeaveOneIslandTriggerBottom"
+    }
+  ],
+  "signs": [
+    {
+      "x": 12,
+      "y": 2,
+      "script": "OneIsland_PokemonCenter_1F_EventScript_NetworkMachine"
+    },
+    {
+      "x": 12,
+      "y": 3,
+      "script": "OneIsland_PokemonCenter_1F_EventScript_NetworkMachine"
+    },
+    {
+      "x": 12,
+      "y": 4,
+      "script": "OneIsland_PokemonCenter_1F_EventScript_NetworkMachine"
+    },
+    {
+      "x": 12,
+      "y": 5,
+      "script": "OneIsland_PokemonCenter_1F_EventScript_NetworkMachine"
+    },
+    {
+      "x": 13,
+      "y": 5,
+      "script": "OneIsland_PokemonCenter_1F_EventScript_NetworkMachine"
+    },
+    {
+      "x": 15,
+      "y": 5,
+      "script": "OneIsland_PokemonCenter_1F_EventScript_NetworkMachine"
+    },
+    {
+      "x": 14,
+      "y": 5,
+      "script": "OneIsland_PokemonCenter_1F_EventScript_NetworkMachine"
+    },
+    {
+      "x": 16,
+      "y": 5,
+      "script": "OneIsland_PokemonCenter_1F_EventScript_NetworkMachine"
+    },
+    {
+      "x": 17,
+      "y": 5,
+      "script": "OneIsland_PokemonCenter_1F_EventScript_NetworkMachine"
+    }
+  ]
+}

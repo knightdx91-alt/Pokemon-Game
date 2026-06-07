@@ -1,0 +1,126 @@
+{
+  "id": "MAP_PALLET_TOWN",
+  "name": "PalletTown",
+  "region": "kanto",
+  "layout": "LAYOUT_PALLET_TOWN",
+  "music": "MUS_PALLET",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_TOWN",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE1",
+      "offset": 0,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_ROUTE21_NORTH",
+      "offset": 0,
+      "direction": "down"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": "LOCALID_PALLET_SIGN_LADY",
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_1",
+      "x": 3,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_EventScript_SignLady",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_PALLET_FAT_MAN",
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 13,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_EventScript_FatMan",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_PALLET_PROF_OAK",
+      "graphics_id": "OBJ_EVENT_GFX_PROF_OAK",
+      "x": 10,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_OAK_IN_PALLET_TOWN"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 7,
+      "dest_map": "MAP_PALLET_TOWN_PLAYERS_HOUSE_1F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 15,
+      "y": 7,
+      "dest_map": "MAP_PALLET_TOWN_RIVALS_HOUSE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 16,
+      "y": 13,
+      "dest_map": "MAP_PALLET_TOWN_PROFESSOR_OAKS_LAB",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 12,
+      "y": 1,
+      "var": "VAR_MAP_SCENE_PALLET_TOWN_OAK",
+      "var_value": "0",
+      "script": "PalletTown_EventScript_OakTriggerLeft"
+    },
+    {
+      "x": 13,
+      "y": 1,
+      "var": "VAR_MAP_SCENE_PALLET_TOWN_OAK",
+      "var_value": "0",
+      "script": "PalletTown_EventScript_OakTriggerRight"
+    },
+    {
+      "x": 13,
+      "y": 2,
+      "var": "VAR_TEMP_2",
+      "var_value": "1",
+      "script": "PalletTown_EventScript_SignLadyTrigger"
+    }
+  ],
+  "signs": [
+    {
+      "x": 16,
+      "y": 16,
+      "script": "PalletTown_EventScript_OaksLabSign"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "script": "PalletTown_EventScript_PlayersHouseSign"
+    },
+    {
+      "x": 13,
+      "y": 7,
+      "script": "PalletTown_EventScript_RivalsHouseSign"
+    },
+    {
+      "x": 9,
+      "y": 11,
+      "script": "PalletTown_EventScript_TownSign"
+    },
+    {
+      "x": 5,
+      "y": 14,
+      "script": "PalletTown_EventScript_TrainerTips"
+    }
+  ]
+}

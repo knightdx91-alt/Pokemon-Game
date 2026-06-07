@@ -1,0 +1,51 @@
+{
+  "id": "MAP_MIRAGE_TOWER_3F",
+  "name": "MirageTower_3F",
+  "region": "hoenn",
+  "layout": "LAYOUT_MIRAGE_TOWER_3F",
+  "music": "MUS_MT_CHIMNEY",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BREAKABLE_ROCK",
+      "x": 3,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_11"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BREAKABLE_ROCK",
+      "x": 4,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_12"
+    }
+  ],
+  "warps": [
+    {
+      "x": 18,
+      "y": 12,
+      "dest_map": "MAP_MIRAGE_TOWER_2F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "dest_map": "MAP_MIRAGE_TOWER_4F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

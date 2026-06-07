@@ -1,0 +1,54 @@
+{
+  "id": "MAP_SIX_ISLAND_DOTTED_HOLE_B3F",
+  "name": "SixIsland_DottedHole_B3F",
+  "region": "kanto",
+  "layout": "LAYOUT_SIX_ISLAND_DOTTED_HOLE_B3F",
+  "music": "MUS_SEVII_DUNGEON",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 6,
+      "y": 7,
+      "dest_map": "MAP_SIX_ISLAND_DOTTED_HOLE_B2F",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "dest_map": "MAP_SIX_ISLAND_DOTTED_HOLE_1F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 11,
+      "y": 5,
+      "dest_map": "MAP_SIX_ISLAND_DOTTED_HOLE_B4F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 6,
+      "y": 9,
+      "dest_map": "MAP_SIX_ISLAND_DOTTED_HOLE_1F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "dest_map": "MAP_SIX_ISLAND_DOTTED_HOLE_1F",
+      "dest_warp_id": "3"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 6,
+      "y": 5,
+      "script": "SixIsland_DottedHole_B3F_EventScript_BrailleRight"
+    }
+  ]
+}

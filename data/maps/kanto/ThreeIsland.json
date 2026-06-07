@@ -1,0 +1,289 @@
+{
+  "id": "MAP_THREE_ISLAND",
+  "name": "ThreeIsland",
+  "region": "kanto",
+  "layout": "LAYOUT_THREE_ISLAND",
+  "music": "MUS_SEVII_123",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_TOWN",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_THREE_ISLAND_PORT",
+      "offset": 0,
+      "direction": "down"
+    },
+    {
+      "map": "MAP_THREE_ISLAND_BOND_BRIDGE",
+      "offset": 0,
+      "direction": "left"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": "LOCALID_THREE_ISLAND_ANTIBIKER1",
+      "graphics_id": "OBJ_EVENT_GFX_MAN",
+      "x": 7,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_EventScript_AntiBiker1",
+      "flag": "FLAG_HIDE_THREE_ISLAND_ANTIBIKERS"
+    },
+    {
+      "local_id": "LOCALID_THREE_ISLAND_ANTIBIKER2",
+      "graphics_id": "OBJ_EVENT_GFX_MAN",
+      "x": 8,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_EventScript_AntiBiker2",
+      "flag": "FLAG_HIDE_THREE_ISLAND_ANTIBIKERS"
+    },
+    {
+      "local_id": "LOCALID_PAXTON",
+      "graphics_id": "OBJ_EVENT_GFX_BIKER",
+      "x": 8,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_EventScript_Biker",
+      "flag": "FLAG_HIDE_THREE_ISLAND_LONE_BIKER"
+    },
+    {
+      "local_id": "LOCALID_THREE_ISLAND_BIKER3",
+      "graphics_id": "OBJ_EVENT_GFX_BIKER",
+      "x": 9,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_EventScript_Biker",
+      "flag": "FLAG_HIDE_THREE_ISLAND_BIKERS"
+    },
+    {
+      "local_id": "LOCALID_THREE_ISLAND_BIKER1",
+      "graphics_id": "OBJ_EVENT_GFX_BIKER",
+      "x": 9,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_EventScript_Biker",
+      "flag": "FLAG_HIDE_THREE_ISLAND_BIKERS"
+    },
+    {
+      "local_id": "LOCALID_THREE_ISLAND_BIKER4",
+      "graphics_id": "OBJ_EVENT_GFX_BIKER",
+      "x": 10,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_EventScript_Biker",
+      "flag": "FLAG_HIDE_THREE_ISLAND_BIKERS"
+    },
+    {
+      "local_id": "LOCALID_THREE_ISLAND_BIKER2",
+      "graphics_id": "OBJ_EVENT_GFX_BIKER",
+      "x": 10,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_EventScript_Biker",
+      "flag": "FLAG_HIDE_THREE_ISLAND_BIKERS"
+    },
+    {
+      "local_id": "LOCALID_THREE_ISLAND_BIKER5",
+      "graphics_id": "OBJ_EVENT_GFX_BIKER",
+      "x": 11,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_EventScript_Biker",
+      "flag": "FLAG_HIDE_THREE_ISLAND_BIKERS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 20,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_12"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 18,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_EventScript_ItemZinc",
+      "flag": "FLAG_HIDE_THREE_ISLAND_ZINC"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_1",
+      "x": 15,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_EventScript_Woman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_BOY",
+      "x": 14,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_EventScript_LittleBoy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_DODUO",
+      "x": 15,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_EventScript_Doduo",
+      "flag": "0"
+    },
+    {
+      "local_id": "LOCALID_THREE_ISLAND_BIKER6",
+      "graphics_id": "OBJ_EVENT_GFX_BIKER",
+      "x": 15,
+      "y": 31,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ThreeIsland_EventScript_Biker6",
+      "flag": "FLAG_HIDE_THREE_ISLAND_BIKERS"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 31,
+      "dest_map": "MAP_THREE_ISLAND_HOUSE1",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 14,
+      "y": 27,
+      "dest_map": "MAP_THREE_ISLAND_POKEMON_CENTER_1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 18,
+      "y": 12,
+      "dest_map": "MAP_THREE_ISLAND_MART",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 4,
+      "y": 6,
+      "dest_map": "MAP_THREE_ISLAND_HOUSE2",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 12,
+      "y": 6,
+      "dest_map": "MAP_THREE_ISLAND_HOUSE3",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 12,
+      "y": 12,
+      "dest_map": "MAP_THREE_ISLAND_HOUSE4",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 13,
+      "y": 19,
+      "dest_map": "MAP_THREE_ISLAND_HOUSE5",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 7,
+      "y": 27,
+      "var": "VAR_MAP_SCENE_THREE_ISLAND",
+      "var_value": "2",
+      "script": "ThreeIsland_EventScript_BikerBossIntroTrigger"
+    },
+    {
+      "x": 8,
+      "y": 27,
+      "var": "VAR_MAP_SCENE_THREE_ISLAND",
+      "var_value": "2",
+      "script": "ThreeIsland_EventScript_BikerBossIntroTrigger"
+    },
+    {
+      "x": 9,
+      "y": 27,
+      "var": "VAR_MAP_SCENE_THREE_ISLAND",
+      "var_value": "2",
+      "script": "ThreeIsland_EventScript_BikerBossIntroTrigger"
+    },
+    {
+      "x": 10,
+      "y": 27,
+      "var": "VAR_MAP_SCENE_THREE_ISLAND",
+      "var_value": "2",
+      "script": "ThreeIsland_EventScript_BikerBossIntroTrigger"
+    },
+    {
+      "x": 7,
+      "y": 26,
+      "var": "VAR_MAP_SCENE_THREE_ISLAND",
+      "var_value": "3",
+      "script": "ThreeIsland_EventScript_BattleBikersTriggerLeft"
+    },
+    {
+      "x": 8,
+      "y": 26,
+      "var": "VAR_MAP_SCENE_THREE_ISLAND",
+      "var_value": "3",
+      "script": "ThreeIsland_EventScript_BattleBikersTriggerMidLeft"
+    },
+    {
+      "x": 9,
+      "y": 26,
+      "var": "VAR_MAP_SCENE_THREE_ISLAND",
+      "var_value": "3",
+      "script": "ThreeIsland_EventScript_BattleBikersTriggerMid"
+    },
+    {
+      "x": 11,
+      "y": 27,
+      "var": "VAR_MAP_SCENE_THREE_ISLAND",
+      "var_value": "2",
+      "script": "ThreeIsland_EventScript_BikerBossIntroTrigger"
+    },
+    {
+      "x": 10,
+      "y": 26,
+      "var": "VAR_MAP_SCENE_THREE_ISLAND",
+      "var_value": "3",
+      "script": "ThreeIsland_EventScript_BattleBikersTriggerMidRight"
+    },
+    {
+      "x": 11,
+      "y": 26,
+      "var": "VAR_MAP_SCENE_THREE_ISLAND",
+      "var_value": "3",
+      "script": "ThreeIsland_EventScript_BattleBikersTriggerRight"
+    }
+  ],
+  "signs": [
+    {
+      "x": 12,
+      "y": 31,
+      "script": "ThreeIsland_EventScript_IslandSign"
+    }
+  ]
+}

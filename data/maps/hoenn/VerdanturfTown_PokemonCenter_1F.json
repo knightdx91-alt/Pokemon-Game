@@ -1,0 +1,77 @@
+{
+  "id": "MAP_VERDANTURF_TOWN_POKEMON_CENTER_1F",
+  "name": "VerdanturfTown_PokemonCenter_1F",
+  "region": "hoenn",
+  "layout": "LAYOUT_POKEMON_CENTER_1F",
+  "music": "MUS_POKE_CENTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_VERDANTURF_NURSE",
+      "graphics_id": "OBJ_EVENT_GFX_NURSE",
+      "x": 7,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VerdanturfTown_PokemonCenter_1F_EventScript_Nurse",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 4,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VerdanturfTown_PokemonCenter_1F_EventScript_Gentleman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
+      "x": 12,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VerdanturfTown_PokemonCenter_1F_EventScript_ExpertM",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_BOY",
+      "x": 10,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VerdanturfTown_PokemonCenter_1F_EventScript_FuryCutterTutor",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 8,
+      "dest_map": "MAP_VERDANTURF_TOWN",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "dest_map": "MAP_VERDANTURF_TOWN",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "dest_map": "MAP_VERDANTURF_TOWN_POKEMON_CENTER_2F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

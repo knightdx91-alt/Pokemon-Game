@@ -1,0 +1,96 @@
+{
+  "id": "MAP_POKEMON_TOWER_6F",
+  "name": "PokemonTower_6F",
+  "region": "kanto",
+  "layout": "LAYOUT_POKEMON_TOWER_6F",
+  "music": "MUS_POKE_TOWER",
+  "weather": "WEATHER_FOG_HORIZONTAL",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CHANNELER",
+      "x": 13,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "PokemonTower_6F_EventScript_Angelica",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CHANNELER",
+      "x": 18,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "PokemonTower_6F_EventScript_Jennifer",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CHANNELER",
+      "x": 9,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "PokemonTower_6F_EventScript_Emilia",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 5,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PokemonTower_6F_EventScript_ItemRareCandy",
+      "flag": "FLAG_HIDE_POKEMON_TOWER_6F_RARE_CANDY"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 15,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PokemonTower_6F_EventScript_ItemXAccuracy",
+      "flag": "FLAG_HIDE_POKEMON_TOWER_6F_X_ACCURACY"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 16,
+      "dest_map": "MAP_POKEMON_TOWER_7F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 18,
+      "y": 10,
+      "dest_map": "MAP_POKEMON_TOWER_5F",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 11,
+      "y": 15,
+      "var": "VAR_MAP_SCENE_POKEMON_TOWER_6F",
+      "var_value": "0",
+      "script": "PokemonTower_6F_EventScript_MarowakGhost"
+    },
+    {
+      "x": 12,
+      "y": 16,
+      "var": "VAR_MAP_SCENE_POKEMON_TOWER_6F",
+      "var_value": "0",
+      "script": "PokemonTower_6F_EventScript_MarowakGhost"
+    }
+  ],
+  "signs": []
+}

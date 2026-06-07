@@ -1,0 +1,161 @@
+{
+  "id": "MAP_ROCK_TUNNEL_1F",
+  "name": "RockTunnel_1F",
+  "region": "kanto",
+  "layout": "LAYOUT_ROCK_TUNNEL_1F",
+  "music": "MUS_MT_MOON",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 26,
+      "y": 28,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RockTunnel_1F_EventScript_Dana",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 39,
+      "y": 27,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RockTunnel_1F_EventScript_Ariana",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 45,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RockTunnel_1F_EventScript_Leah",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 20,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RockTunnel_1F_EventScript_Lucas",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 5,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RockTunnel_1F_EventScript_Oliver",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 7,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RockTunnel_1F_EventScript_Lenny",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_MANIAC",
+      "x": 27,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RockTunnel_1F_EventScript_Ashton",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 37,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RockTunnel_1F_EventScript_ItemRepel",
+      "flag": "FLAG_HIDE_ROCK_TUNNEL_1F_REPEL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 33,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RockTunnel_1F_EventScript_ItemPearl",
+      "flag": "FLAG_HIDE_ROCK_TUNNEL_1F_PEARL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 22,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RockTunnel_1F_EventScript_ItemEscapeRope",
+      "flag": "FLAG_HIDE_ROCK_TUNNEL_1F_ESCAPE_ROPE"
+    }
+  ],
+  "warps": [
+    {
+      "x": 17,
+      "y": 2,
+      "dest_map": "MAP_ROUTE10",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 45,
+      "y": 2,
+      "dest_map": "MAP_ROCK_TUNNEL_B1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "dest_map": "MAP_ROCK_TUNNEL_B1F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 20,
+      "y": 13,
+      "dest_map": "MAP_ROCK_TUNNEL_B1F",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 45,
+      "y": 21,
+      "dest_map": "MAP_ROCK_TUNNEL_B1F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 18,
+      "y": 37,
+      "dest_map": "MAP_ROUTE10",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 14,
+      "y": 33,
+      "script": "RockTunnel_1F_EventScript_RouteSign"
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "id": "MAP_VERMILION_CITY_POKEMON_CENTER_1F",
+  "name": "VermilionCity_PokemonCenter_1F",
+  "region": "kanto",
+  "layout": "LAYOUT_POKEMON_CENTER_1F",
+  "music": "MUS_POKE_CENTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": "LOCALID_VERMILION_NURSE",
+      "graphics_id": "OBJ_EVENT_GFX_NURSE",
+      "x": 7,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_PokemonCenter_1F_EventScript_Nurse",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN",
+      "x": 4,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_PokemonCenter_1F_EventScript_Man",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 12,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_PokemonCenter_1F_EventScript_Hiker",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 14,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_PokemonCenter_1F_EventScript_Youngster",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_F",
+      "x": 6,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_PokemonCenter_1F_EventScript_VSSeekerWoman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "0",
+      "x": 2,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_PokemonCenter_1F_EventScript_PokemonJournalLtSurge",
+      "flag": "FLAG_HIDE_FAME_CHECKER_LT_SURGE_JOURNAL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "0",
+      "x": 3,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_PokemonCenter_1F_EventScript_PokemonJournalLtSurge",
+      "flag": "FLAG_HIDE_FAME_CHECKER_LT_SURGE_JOURNAL"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 8,
+      "dest_map": "MAP_VERMILION_CITY",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 7,
+      "y": 8,
+      "dest_map": "MAP_VERMILION_CITY",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 8,
+      "y": 8,
+      "dest_map": "MAP_VERMILION_CITY",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "dest_map": "MAP_VERMILION_CITY_POKEMON_CENTER_2F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}
