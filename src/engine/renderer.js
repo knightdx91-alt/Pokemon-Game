@@ -21,6 +21,10 @@ window.GameRenderer = (function () {
     let _npcIndex     = null;   // parsed index.json: { stem -> path }
     let _npcImgCache  = new Map(); // stem -> HTMLImageElement (or 'loading'/'error')
 
+    // Player sprite state
+    let _playerImg    = null;   // HTMLImageElement for data/sprites/player.png
+    const PLAYER_DIR_FRAME = { down: 0, up: 3, left: 6, right: 6 };
+
     // Fallback color definitions (used when tileset image not ready)
     const COLORS = {
         walkable:  '#4a7c4e',
@@ -167,11 +171,31 @@ window.GameRenderer = (function () {
         // Draw player (always at camera center offset)
         const playerSX = (_player.x - camX) * TILE_PX;
         const playerSY = (_player.y - camY) * TILE_PX;
-        const pad = 2;
-        ctx.fillStyle = COLORS.player;
-        ctx.fillRect(playerSX + pad, playerSY + pad, TILE_PX - pad * 2, TILE_PX - pad * 2);
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(playerSX + Math.floor(TILE_PX / 2) - 1, playerSY + pad + 1, 3, 3);
+        if (_playerImg) {
+            const dir = _player.direction || 'down';
+            const frameCol = PLAYER_DIR_FRAME[dir] !== undefined ? PLAYER_DIR_FRAME[dir] : 0;
+            const srcX = frameCol * 16;
+            const isRight = (dir === 'right');
+            if (isRight) {
+                ctx.save();
+                ctx.scale(-1, 1);
+                // After scale(-1,1), x-coords are negated:
+                // screen left-edge of sprite in flipped space = -(playerSX + TILE_PX)
+                ctx.drawImage(_playerImg, srcX, 0, 16, 32,
+                    -(playerSX + TILE_PX), playerSY - TILE_PX, TILE_PX, TILE_PX * 2);
+                ctx.restore();
+            } else {
+                ctx.drawImage(_playerImg, srcX, 0, 16, 32,
+                    playerSX, playerSY - TILE_PX, TILE_PX, TILE_PX * 2);
+            }
+        } else {
+            // Fallback: red square
+            const pad = 2;
+            ctx.fillStyle = COLORS.player;
+            ctx.fillRect(playerSX + pad, playerSY + pad, TILE_PX - pad * 2, TILE_PX - pad * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(playerSX + Math.floor(TILE_PX / 2) - 1, playerSY + pad + 1, 3, 3);
+        }
 
         // Map name overlay (top-left)
         if (_map.current && _map.current.name) {
@@ -219,6 +243,13 @@ window.GameRenderer = (function () {
         return graphicsId.replace(/^OBJ_EVENT_GFX_/, '').toLowerCase();
     }
 
+    function _loadPlayerImg() {
+        const img = new Image();
+        img.onload  = () => { _playerImg = img; };
+        img.onerror = () => { console.warn('[Renderer] Failed to load player sprite'); };
+        img.src = 'data/sprites/player.png';
+    }
+
     function init(canvasEl) {
         canvas = canvasEl;
         ctx    = canvas.getContext('2d');
@@ -226,6 +257,7 @@ window.GameRenderer = (function () {
         ctx.imageSmoothingEnabled = false;
         resizeCanvas();
         _loadNpcIndex();
+        _loadPlayerImg();
         loop();
     }
 

@@ -5,12 +5,16 @@
     // --- Player state ---
     const player = {
         x: 10,
-        y: 10
+        y: 10,
+        direction: 'down'
     };
 
     // --- Movement cooldown ---
     const MOVE_COOLDOWN_MS = 150;
     let lastMoveTime = 0;
+
+    // --- Previous input state (for rising-edge detection) ---
+    let prevStartState = false;
 
     // --- Game loop ---
     function gameLoop(timestamp) {
@@ -21,10 +25,10 @@
             let dx = 0;
             let dy = 0;
 
-            if      (inp.up)    dy = -1;
-            else if (inp.down)  dy =  1;
-            else if (inp.left)  dx = -1;
-            else if (inp.right) dx =  1;
+            if      (inp.up)    { dy = -1; player.direction = 'up'; }
+            else if (inp.down)  { dy =  1; player.direction = 'down'; }
+            else if (inp.left)  { dx = -1; player.direction = 'left'; }
+            else if (inp.right) { dx =  1; player.direction = 'right'; }
 
             if (dx !== 0 || dy !== 0) {
                 const nx = player.x + dx;
@@ -40,6 +44,13 @@
                 lastMoveTime = timestamp;
             }
         }
+
+        // START button — rising edge → toggle start menu
+        const curStart = GameInput.state.start;
+        if (curStart && !prevStartState) {
+            if (window.GameStartMenu) GameStartMenu.toggle();
+        }
+        prevStartState = curStart;
 
         // Update camera
         GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);

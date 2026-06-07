@@ -6,6 +6,9 @@ window.GameHUD = (function () {
     let settingsPanel = null;
     let mapRef = null;
     let playerRef = null;
+    let _lastMapName = null;
+    let _bannerEl = null;
+    let _bannerTimer = null;
 
     // --- Settings wiring ---
     function initSettings() {
@@ -82,19 +85,34 @@ window.GameHUD = (function () {
         }
     }
 
+    // --- Map name banner ---
+    function _showBanner(name) {
+        if (!_bannerEl || !overlay) return;
+        _bannerEl.textContent = name;
+        _bannerEl.style.opacity = '1';
+        if (_bannerTimer) clearTimeout(_bannerTimer);
+        // Fade out after 2s
+        _bannerTimer = setTimeout(function () {
+            _bannerEl.style.opacity = '0';
+            _bannerTimer = setTimeout(function () {
+                _bannerEl.style.display = 'none';
+            }, 400);
+        }, 2000);
+        _bannerEl.style.display = 'block';
+    }
+
     // --- Update display ---
     function update() {
         if (!infoEl) return;
         const mapName = (mapRef && mapRef.current) ? mapRef.current.name : '—';
-        const px = playerRef ? playerRef.x : '?';
-        const py = playerRef ? playerRef.y : '?';
-        infoEl.textContent = '';
-        const line1 = document.createElement('div');
-        line1.textContent = mapName;
-        const line2 = document.createElement('div');
-        line2.textContent = `(${px}, ${py})`;
-        infoEl.appendChild(line1);
-        infoEl.appendChild(line2);
+        // Only show map name (no coordinates)
+        infoEl.textContent = mapName;
+
+        // Show banner when map changes
+        if (mapName !== _lastMapName && mapName !== '—') {
+            _lastMapName = mapName;
+            _showBanner(mapName);
+        }
     }
 
     function init(map, player) {
@@ -112,11 +130,17 @@ window.GameHUD = (function () {
         infoEl.id = 'hud-info';
         overlay.appendChild(infoEl);
 
-        // Settings button
+        // Settings button (bottom-left)
         settingsBtn = document.createElement('button');
         settingsBtn.id = 'settings-btn';
         settingsBtn.textContent = '⚙ Settings';
         overlay.appendChild(settingsBtn);
+
+        // Map name banner
+        _bannerEl = document.createElement('div');
+        _bannerEl.id = 'map-name-banner';
+        _bannerEl.style.display = 'none';
+        overlay.appendChild(_bannerEl);
 
         initSettings();
         update();
