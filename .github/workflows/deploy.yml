@@ -30,6 +30,9 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
+      - name: Inject cache-bust version
+        run: sed -i "s/__CACHE_BUST__/${{ github.sha }}/g" index.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
