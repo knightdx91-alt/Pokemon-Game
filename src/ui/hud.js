@@ -112,6 +112,13 @@ window.GameHUD = (function () {
         if (mapName !== _lastMapName && mapName !== '—') {
             _lastMapName = mapName;
             _showBanner(mapName);
+            // Record as visited
+            if (window.GameSave && GameSave.state) {
+                if (GameSave.state.visitedMaps) {
+                    GameSave.state.visitedMaps.add(mapName);
+                }
+                GameSave.markDirty();
+            }
         }
     }
 

@@ -197,15 +197,7 @@ window.GameRenderer = (function () {
             ctx.fillRect(playerSX + Math.floor(TILE_PX / 2) - 1, playerSY + pad + 1, 3, 3);
         }
 
-        // Map name overlay (top-left)
-        if (_map.current && _map.current.name) {
-            ctx.fillStyle = 'rgba(0,0,0,0.55)';
-            ctx.fillRect(0, 0, canvas.width, 16);
-            ctx.fillStyle = '#ffffff';
-            ctx.font = '10px monospace';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(_map.current.name, 4, 8);
-        }
+        // Map name overlay removed — handled by HUD banner
     }
 
     function loop() {
