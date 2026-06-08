@@ -168,7 +168,7 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
-    const GAME_VERSION = 'v0.3.9';
+    const GAME_VERSION = 'v0.3.10';
 
     // --- Update display ---
     function update() {
@@ -235,7 +235,7 @@ window.GameHUD = (function () {
         var ssBtn = document.createElement('button');
         ssBtn.id = 'screenshot-btn';
         ssBtn.textContent = '📷';
-        ssBtn.title = 'Screenshot → commit to repo';
+        ssBtn.title = 'Screenshot (JPEG) → commit to repo';
         ssBtn.style.cssText = 'position:absolute;top:4px;right:4px;z-index:100;background:#0a1830;color:#18b8c8;border:1px solid #18b8c8;border-radius:3px;padding:2px 5px;font-size:11px;cursor:pointer;pointer-events:all;';
         ssBtn.addEventListener('click', _takeScreenshot);
         overlay.appendChild(ssBtn);
@@ -274,8 +274,9 @@ window.GameHUD = (function () {
 
         if (!target) { alert('No canvas found to screenshot.'); return; }
 
-        var dataUrl = target.toDataURL('image/png');
-        var base64  = dataUrl.replace(/^data:image\/png;base64,/, '');
+        // Use JPEG at 0.85 quality to keep file size small (GitHub API limit ~1MB)
+        var dataUrl = target.toDataURL('image/jpeg', 0.85);
+        var base64  = dataUrl.replace(/^data:image\/jpeg;base64,/, '');
 
         var token = localStorage.getItem('gh_debug_token');
         if (!token) {
@@ -283,12 +284,16 @@ window.GameHUD = (function () {
             return;
         }
 
-        var path = 'screenshots/latest.png';
+        var path = 'screenshots/latest.jpg';
         var apiUrl = 'https://api.github.com/repos/knightdx91-alt/pokemon-game/contents/' + path;
 
         // Get current SHA if file exists (needed for update)
         fetch(apiUrl, { headers: { Authorization: 'token ' + token } })
-            .then(function(r) { return r.ok ? r.json() : null; })
+            .then(function(r) {
+                if (r.status === 404) return null;
+                if (!r.ok) return r.text().then(function(t){ throw new Error('GET SHA failed ' + r.status + ': ' + t); });
+                return r.json();
+            })
             .then(function(existing) {
                 var body = {
                     message: 'debug: screenshot ' + new Date().toISOString(),
@@ -304,7 +309,7 @@ window.GameHUD = (function () {
             })
             .then(function(r) {
                 if (r.ok) {
-                    console.log('[Screenshot] Committed to repo: screenshots/latest.png');
+                    console.log('[Screenshot] Committed to repo: screenshots/latest.jpg');
                     // Flash button green
                     var btn = document.getElementById('screenshot-btn');
                     if (btn) { btn.style.color = '#20d840'; setTimeout(function(){ btn.style.color = '#18b8c8'; }, 1500); }
