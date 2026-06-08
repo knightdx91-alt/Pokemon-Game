@@ -168,7 +168,7 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
-    const GAME_VERSION = 'v0.3.33';
+    const GAME_VERSION = 'v0.3.34';
 
     // --- Update display ---
     function update() {
@@ -262,21 +262,7 @@ window.GameHUD = (function () {
         update();
     }
 
-    // --- Screenshot → GitHub repo ---
-    function _showScreenshotToast(msg) {
-        var t = document.getElementById('ss-toast');
-        if (!t) {
-            t = document.createElement('div');
-            t.id = 'ss-toast';
-            t.style.cssText = 'position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:#0a1830;color:#20d840;border:1px solid #20d840;border-radius:4px;padding:8px 18px;font-family:monospace;font-size:13px;z-index:9999;pointer-events:none;transition:opacity 0.4s;';
-            document.body.appendChild(t);
-        }
-        t.textContent = msg;
-        t.style.opacity = '1';
-        clearTimeout(t._timer);
-        t._timer = setTimeout(function() { t.style.opacity = '0'; }, 2000);
-    }
-
+    // --- Screenshot → GitHub Gist (new gist each time, shows share link) ---
     function _takeScreenshot() {
         var screen = document.getElementById('screen-primary');
         var canvas = screen ? screen.querySelector('canvas') : null;
@@ -284,51 +270,67 @@ window.GameHUD = (function () {
         var target = subCanvas || canvas;
         if (!target) { alert('No canvas found to screenshot.'); return; }
 
-        var dataUrl = target.toDataURL('image/jpeg', 0.85);
-        var base64 = dataUrl.replace(/^data:image\/(jpeg|png);base64,/, '');
-        var ext = dataUrl.startsWith('data:image/png') ? 'png' : 'jpg';
-
         var token = localStorage.getItem('gh_debug_token');
         if (!token) {
             alert('No GitHub token set.\nOpen Settings → paste your token → Save, then try again.');
             return;
         }
 
+        var dataUrl = target.toDataURL('image/jpeg', 0.85);
+        var ext = dataUrl.startsWith('data:image/png') ? 'png' : 'jpg';
+        var base64 = dataUrl.replace(/^data:image\/(jpeg|png);base64,/, '');
         var ts = new Date().toISOString().replace(/[:.]/g, '-');
         var fname = 'shot-' + ts + '.' + ext;
-        var hdrs = { Authorization: 'token ' + token, 'Content-Type': 'application/json' };
         var files = {};
         files[fname] = { content: base64 };
         files['view.html'] = { content: '<!DOCTYPE html><html><body style="margin:0;background:#000"><img src="data:image/' + ext + ';base64,' + base64 + '" style="max-width:100%;image-rendering:pixelated"></body></html>' };
 
-        var gistId = localStorage.getItem('gh_screenshot_gist');
-        var req;
-        if (gistId) {
-            req = fetch('https://api.github.com/gists/' + gistId, {
-                method: 'PATCH', headers: hdrs,
-                body: JSON.stringify({ files: files })
-            });
-        } else {
-            req = fetch('https://api.github.com/gists', {
-                method: 'POST', headers: hdrs,
-                body: JSON.stringify({ description: 'Pokemon screenshots', public: false, files: files })
-            });
-        }
-
-        req.then(function(r) {
-            if (!r.ok) return r.text().then(function(t){
-                var msg = t; try { msg = JSON.parse(t).message || t; } catch(e){}
-                throw new Error(r.status + ': ' + msg);
+        fetch('https://api.github.com/gists', {
+            method: 'POST',
+            headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ description: 'Pokemon screenshot ' + ts, public: false, files: files })
+        })
+        .then(function(r) {
+            if (!r.ok) return r.text().then(function(t) {
+                var m = t; try { m = JSON.parse(t).message || t; } catch(e) {}
+                throw new Error(r.status + ': ' + m);
             });
             return r.json();
         })
-        .then(function(gist) {
-            localStorage.setItem('gh_screenshot_gist', gist.id);
-            var btn = document.getElementById('screenshot-btn');
-            if (btn) { btn.style.color = '#20d840'; setTimeout(function(){ btn.style.color = '#18b8c8'; }, 2000); }
-            _showScreenshotToast('Screenshot saved!');
-        })
+        .then(function(gist) { _showSsUrl(gist.html_url); })
         .catch(function(e) { alert('Screenshot error:\n' + e.message); });
+    }
+
+    function _showSsUrl(url) {
+        var existing = document.getElementById('ss-overlay');
+        if (existing) existing.remove();
+        var ov = document.createElement('div');
+        ov.id = 'ss-overlay';
+        ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;';
+        var box = document.createElement('div');
+        box.style.cssText = 'background:#0a1830;border:2px solid #18b8c8;border-radius:6px;padding:16px;width:88vw;max-width:360px;font-family:monospace;color:#c8d8e8;';
+        var title = document.createElement('div');
+        title.textContent = 'Screenshot saved!';
+        title.style.cssText = 'font-size:14px;font-weight:bold;color:#20d840;margin-bottom:10px;';
+        var inp = document.createElement('input');
+        inp.type = 'text'; inp.value = url; inp.readOnly = true;
+        inp.style.cssText = 'width:100%;box-sizing:border-box;background:#060610;color:#c8d8e8;border:1px solid #18b8c8;border-radius:3px;padding:6px;font-size:11px;margin-bottom:10px;';
+        var copyBtn = document.createElement('button');
+        copyBtn.textContent = 'Copy Link';
+        copyBtn.style.cssText = 'background:#0a1830;color:#18b8c8;border:1px solid #18b8c8;border-radius:3px;padding:6px 14px;font-size:13px;cursor:pointer;margin-right:8px;touch-action:manipulation;';
+        copyBtn.onclick = function() {
+            inp.select();
+            navigator.clipboard.writeText(url).catch(function() { document.execCommand('copy'); });
+            copyBtn.textContent = '✓ Copied!';
+            setTimeout(function() { copyBtn.textContent = 'Copy Link'; }, 2000);
+        };
+        var closeBtn = document.createElement('button');
+        closeBtn.textContent = 'Close';
+        closeBtn.style.cssText = 'background:#0a1830;color:#c8d8e8;border:1px solid #446;border-radius:3px;padding:6px 14px;font-size:13px;cursor:pointer;touch-action:manipulation;';
+        closeBtn.onclick = function() { ov.remove(); };
+        box.appendChild(title); box.appendChild(inp); box.appendChild(copyBtn); box.appendChild(closeBtn);
+        ov.appendChild(box); document.body.appendChild(ov);
+        setTimeout(function() { inp.select(); }, 100);
     }
 
     return { init, update, showAchievementToast };
