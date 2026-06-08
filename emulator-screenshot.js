@@ -27,7 +27,7 @@
         fetch('https://api.github.com/repos/knightdx91-alt/pokemon-game/contents/' + path, {
             method: 'PUT',
             headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: 'ee screenshot ' + ts, content: base64, branch: 'screenshots' })
+            body: JSON.stringify({ message: 'ee screenshot ' + ts, content: base64, branch: 'main' })
         })
         .then(function(r) {
             if (!r.ok) return r.text().then(function(t) {

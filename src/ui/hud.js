@@ -168,7 +168,7 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
-    const GAME_VERSION = 'v0.3.29';
+    const GAME_VERSION = 'v0.3.30';
 
     // --- Update display ---
     function update() {
@@ -290,7 +290,7 @@ window.GameHUD = (function () {
             body: JSON.stringify({
                 message: 'screenshot ' + ts,
                 content: base64,
-                branch: 'screenshots'
+                branch: 'main'
             })
         })
         .then(function(r) {
