@@ -217,8 +217,45 @@ window.GameLayout = (function () {
         reflow();
     }
 
+    // --- Forced orientation (user preference) ---
+    const ORIENT_KEY = 'pokemon_orientation';
+    const ORIENT_CLASSES = ['force-portrait', 'force-landscape', 'reverse-portrait', 'reverse-landscape'];
+
+    function setOrientation(mode) {
+        // mode: 'auto' | 'portrait' | 'reverse-portrait' | 'landscape' | 'reverse-landscape'
+        ORIENT_CLASSES.forEach(function (c) { document.body.classList.remove(c); });
+
+        if (mode === 'portrait') {
+            document.body.classList.add('force-portrait');
+        } else if (mode === 'reverse-portrait') {
+            document.body.classList.add('force-portrait');
+            document.body.classList.add('reverse-portrait');
+        } else if (mode === 'landscape') {
+            document.body.classList.add('force-landscape');
+        } else if (mode === 'reverse-landscape') {
+            document.body.classList.add('force-landscape');
+            document.body.classList.add('reverse-landscape');
+        }
+        // 'auto' = no forced class, device orientation takes over
+
+        if (mode && mode !== 'auto') {
+            localStorage.setItem(ORIENT_KEY, mode);
+        } else {
+            localStorage.removeItem(ORIENT_KEY);
+        }
+        reflow();
+    }
+
+    function getOrientationPref() {
+        return localStorage.getItem(ORIENT_KEY) || 'auto';
+    }
+
     function init() {
         loadLayout();
+
+        // Restore saved orientation preference
+        const savedOrient = localStorage.getItem(ORIENT_KEY);
+        if (savedOrient) setOrientation(savedOrient);
 
         const primary   = document.getElementById('screen-primary');
         const secondary = document.getElementById('screen-secondary');
@@ -250,5 +287,5 @@ window.GameLayout = (function () {
         window.addEventListener('resize', reflow);
     }
 
-    return { init, reset, reflow, getOrientation, isPortrait, makeControlDraggable };
+    return { init, reset, reflow, getOrientation, isPortrait, makeControlDraggable, setOrientation, getOrientationPref };
 })();

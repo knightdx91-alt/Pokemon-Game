@@ -306,12 +306,45 @@ window.GameStartMenu = (function () {
 
     function _buildOptions(el) {
         const savedScale = parseFloat(localStorage.getItem('pokemon_control_scale')||'1');
+        const currentOrient = window.GameLayout ? GameLayout.getOrientationPref() : 'auto';
+
+        // Controls mode
         const controlRow=document.createElement('div'); controlRow.className='sm-opt-row';
         controlRow.innerHTML='<span class="sm-opt-label">Controls</span><span class="sm-opt-btns"><button class="sm-opt-btn" id="sm-dpad-btn">D-Pad</button><button class="sm-opt-btn" id="sm-joy-btn">Joystick</button></span>';
         el.appendChild(controlRow);
+
+        // Button size
         const sizeRow=document.createElement('div'); sizeRow.className='sm-opt-row';
         sizeRow.innerHTML='<span class="sm-opt-label">Button Size</span><span class="sm-opt-btns"><input type="range" id="sm-size-slider" min="0.5" max="2" step="0.1" value="'+savedScale+'"><span id="sm-size-val">'+savedScale.toFixed(1)+'×</span></span>';
         el.appendChild(sizeRow);
+
+        // Orientation
+        const orientRow=document.createElement('div'); orientRow.className='sm-opt-row sm-opt-row-col';
+        orientRow.innerHTML='<span class="sm-opt-label">Orientation</span>';
+        const orientBtns=document.createElement('span'); orientBtns.className='sm-opt-btns sm-orient-btns';
+        const orientOpts=[
+            { val:'auto',            label:'Auto'    },
+            { val:'portrait',        label:'Portrait'},
+            { val:'reverse-portrait',label:'↕ Rev P' },
+            { val:'landscape',       label:'Landscape'},
+            { val:'reverse-landscape',label:'↔ Rev L'},
+        ];
+        orientOpts.forEach(function(o){
+            const btn=document.createElement('button');
+            btn.className='sm-opt-btn sm-orient-btn'+(currentOrient===o.val?' active':'');
+            btn.textContent=o.label;
+            btn.dataset.orient=o.val;
+            btn.addEventListener('click',function(){
+                orientBtns.querySelectorAll('.sm-orient-btn').forEach(function(b){b.classList.remove('active');});
+                btn.classList.add('active');
+                if(window.GameLayout) GameLayout.setOrientation(o.val);
+            });
+            orientBtns.appendChild(btn);
+        });
+        orientRow.appendChild(orientBtns);
+        el.appendChild(orientRow);
+
+        // Wire controls/size
         const dp=document.getElementById('sm-dpad-btn'), jy=document.getElementById('sm-joy-btn'),
               sl=document.getElementById('sm-size-slider'), sv=document.getElementById('sm-size-val');
         if(dp) dp.addEventListener('click',function(){if(window.GameControls)GameControls.setMode('dpad');dp.classList.add('active');if(jy)jy.classList.remove('active');});

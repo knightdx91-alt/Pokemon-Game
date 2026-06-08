@@ -132,6 +132,23 @@ html, body {
 }
 
 /* ===================================================================
+   FORCED ORIENTATION — body.force-portrait / force-landscape override
+   the device media query so the user's chosen layout is always applied.
+   =================================================================== */
+body.force-portrait #game-wrapper           { flex-direction: column; }
+body.force-portrait #screen-primary         { width: 100vw; height: 55vh; flex-shrink: 0; position: static !important; top: auto !important; left: auto !important; }
+body.force-portrait #screen-secondary       { width: 100vw; height: 30vh; flex-shrink: 0; }
+body.force-portrait .drag-handle            { display: flex; align-items: center; justify-content: center; }
+body.force-portrait #controls-layer         { position: fixed; bottom: 0; left: 0; width: 100%; height: 42vh; right: auto; top: auto; }
+
+body.force-landscape #game-wrapper          { flex-direction: row; align-items: stretch; }
+body.force-landscape #screen-primary        { flex: 1 1 auto; position: static !important; top: auto !important; left: auto !important; width: auto !important; height: auto !important; }
+body.force-landscape #screen-secondary      { width: 256px; height: 100vh; flex-shrink: 0; }
+body.force-landscape .drag-handle           { display: none; }
+body.force-landscape .resize-handle         { display: none; }
+body.force-landscape #controls-layer        { position: fixed; right: 0; top: 0; width: 280px; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+
+/* ===================================================================
    REVERSE PORTRAIT  — body gets class "reverse-portrait" from JS
    CSS rotates content 180°; game screen above, controls below (same)
    =================================================================== */
@@ -891,6 +908,8 @@ body.reverse-landscape #game-wrapper {
 }
 .sm-opt-label { color: #7799aa; white-space: nowrap; }
 .sm-opt-btns  { display: flex; align-items: center; gap: 6px; }
+.sm-opt-row-col { flex-wrap: wrap; }
+.sm-orient-btns { flex-wrap: wrap; gap: 4px; justify-content: flex-end; }
 .sm-opt-btn {
     font-family: "Courier New", Courier, monospace;
     font-size: 10px;
