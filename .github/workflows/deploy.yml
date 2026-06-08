@@ -31,7 +31,7 @@ jobs:
         uses: actions/configure-pages@v4
 
       - name: Inject cache-bust version
-        run: sed -i "s/__CACHE_BUST__/${{ github.sha }}/g" index.html
+        run: sed -i "s/__CACHE_BUST__/${{ github.sha }}/g" index.html game.html emulator.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
