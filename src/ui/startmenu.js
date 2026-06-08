@@ -552,5 +552,5 @@ window.GameStartMenu = (function () {
 
     document.addEventListener('DOMContentLoaded', init);
 
-    return { toggle, open, close };
+    return { toggle, open, close, get isOpen() { return isOpen; } };
 })();

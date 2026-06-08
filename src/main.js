@@ -142,7 +142,8 @@
     // ---------------------------------------------------------------
     function gameLoop(timestamp) {
         // Process input — move one tile per keypress with cooldown
-        if (!_transitioning) {
+        const menuOpen = window.GameStartMenu && GameStartMenu.isOpen;
+        if (!_transitioning && !menuOpen) {
             const elapsed = timestamp - lastMoveTime;
             if (elapsed >= MOVE_COOLDOWN_MS) {
                 const inp = GameInput.state;
