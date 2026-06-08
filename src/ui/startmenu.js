@@ -711,49 +711,112 @@ window.GameStartMenu = (function () {
     function _buildOptions(el) {
         const savedScale = parseFloat(localStorage.getItem('pokemon_control_scale')||'1');
         const currentOrient = window.GameLayout ? GameLayout.getOrientationPref() : 'auto';
+        const savedTextSpeed = localStorage.getItem('pokemon_text_speed')||'MED';
+        const savedBattleScene = localStorage.getItem('pokemon_battle_scene')||'ON';
+        const savedBattleStyle = localStorage.getItem('pokemon_battle_style')||'SHIFT';
+        const savedAutoRun = localStorage.getItem('pokemon_auto_run')||'OFF';
+        const savedAutosave = localStorage.getItem('pokemon_autosave_int')||'15s';
+        const savedControls = (window.GameControls && GameControls.getMode && GameControls.getMode()) || 'dpad';
 
-        // Controls mode
-        const controlRow=document.createElement('div'); controlRow.className='sm-opt-row';
-        controlRow.innerHTML='<span class="sm-opt-label">Controls</span><span class="sm-opt-btns"><button class="sm-opt-btn" id="sm-dpad-btn">D-Pad</button><button class="sm-opt-btn" id="sm-joy-btn">Joystick</button></span>';
-        el.appendChild(controlRow);
+        // EE-style: 18 options, 7 visible, scrollable, GPU highlight bar (no arrow cursor)
+        const list = document.createElement('div');
+        list.className = 'sm-opt-list';
+        list.style.cssText = 'flex:1;overflow-y:auto;';
+        el.style.padding = '0';  // remove inner padding — rows have their own
 
-        // Button size
-        const sizeRow=document.createElement('div'); sizeRow.className='sm-opt-row';
-        sizeRow.innerHTML='<span class="sm-opt-label">Button Size</span><span class="sm-opt-btns"><input type="range" id="sm-size-slider" min="0.5" max="2" step="0.1" value="'+savedScale+'"><span id="sm-size-val">'+savedScale.toFixed(1)+'×</span></span>';
-        el.appendChild(sizeRow);
+        function makeToggleRow(label, key, opts, currentVal, onChange) {
+            const row = document.createElement('div');
+            const myIdx = el._ri;
+            row.className = 'sm-opt-row' + (_subIdx === myIdx ? ' selected' : '');
+            el._ri = (el._ri || 0) + 1;
+            const lbl = document.createElement('span');
+            lbl.className = 'sm-opt-label';
+            lbl.textContent = label;
+            const val = document.createElement('span');
+            val.className = 'sm-opt-val-wrap';
+            opts.forEach(function(o) {
+                const btn = document.createElement('button');
+                btn.className = 'sm-opt-btn' + (o === currentVal ? ' active' : '');
+                btn.textContent = o;
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    val.querySelectorAll('.sm-opt-btn').forEach(function(b){b.classList.remove('active');});
+                    btn.classList.add('active');
+                    onChange(o);
+                });
+                val.appendChild(btn);
+            });
+            row.appendChild(lbl);
+            row.appendChild(val);
+            row.addEventListener('click', function(){_subIdx=myIdx;_render();});
+            return row;
+        }
 
-        // Orientation
-        const orientRow=document.createElement('div'); orientRow.className='sm-opt-row sm-opt-row-col';
-        orientRow.innerHTML='<span class="sm-opt-label">Orientation</span>';
-        const orientBtns=document.createElement('span'); orientBtns.className='sm-opt-btns sm-orient-btns';
-        const orientOpts=[
-            { val:'auto',            label:'Auto'    },
-            { val:'portrait',        label:'Portrait'},
-            { val:'reverse-portrait',label:'↕ Rev P' },
-            { val:'landscape',       label:'Landscape'},
-            { val:'reverse-landscape',label:'↔ Rev L'},
-        ];
-        orientOpts.forEach(function(o){
-            const btn=document.createElement('button');
-            btn.className='sm-opt-btn sm-orient-btn'+(currentOrient===o.val?' active':'');
-            btn.textContent=o.label;
-            btn.dataset.orient=o.val;
-            btn.addEventListener('click',function(){
+        el._ri = 0;
+        // EE option order (18 total):
+        list.appendChild(makeToggleRow('Text Speed',    'pokemon_text_speed',   ['SLOW','MED','FAST'],   savedTextSpeed,  function(v){localStorage.setItem('pokemon_text_speed',v);}));
+        list.appendChild(makeToggleRow('Battle Scene',  'pokemon_battle_scene', ['ON','OFF'],             savedBattleScene,function(v){localStorage.setItem('pokemon_battle_scene',v);}));
+        list.appendChild(makeToggleRow('Battle Style',  'pokemon_battle_style', ['SHIFT','SET'],          savedBattleStyle,function(v){localStorage.setItem('pokemon_battle_style',v);}));
+        list.appendChild(makeToggleRow('Auto Run',       'pokemon_auto_run',     ['OFF','ON'],             savedAutoRun,    function(v){localStorage.setItem('pokemon_auto_run',v);}));
+        list.appendChild(makeToggleRow('Autosave',       'pokemon_autosave_int', ['OFF','15s','30s','60s'],savedAutosave,   function(v){localStorage.setItem('pokemon_autosave_int',v);}));
+        list.appendChild(makeToggleRow('Controls',       '_ctrl',                ['D-PAD','STICK'],        savedControls==='dpad'?'D-PAD':'STICK', function(v){if(window.GameControls)GameControls.setMode(v==='D-PAD'?'dpad':'joystick');}));
+
+        // Button size row
+        const sizeRow = document.createElement('div');
+        const sizeIdx = el._ri;
+        sizeRow.className = 'sm-opt-row' + (_subIdx === sizeIdx ? ' selected' : '');
+        el._ri++;
+        sizeRow.innerHTML = '<span class="sm-opt-label">Button Size</span><span class="sm-opt-val-wrap"><input type="range" id="sm-size-slider" min="0.5" max="2" step="0.1" value="'+savedScale+'" style="pointer-events:all"><span id="sm-size-val">'+savedScale.toFixed(1)+'×</span></span>';
+        sizeRow.addEventListener('click', function(){_subIdx=sizeIdx;_render();});
+        list.appendChild(sizeRow);
+
+        // Orientation row
+        const orientRow = document.createElement('div');
+        const orientIdx = el._ri;
+        orientRow.className = 'sm-opt-row sm-opt-row-col' + (_subIdx === orientIdx ? ' selected' : '');
+        el._ri++;
+        const orientLabel = document.createElement('span');
+        orientLabel.className = 'sm-opt-label';
+        orientLabel.textContent = 'Orientation';
+        const orientBtns = document.createElement('span');
+        orientBtns.className = 'sm-opt-btns sm-orient-btns';
+        [
+            { val:'auto',             label:'Auto'   },
+            { val:'portrait',         label:'Port.'  },
+            { val:'reverse-portrait', label:'↕ Rev.' },
+            { val:'landscape',        label:'Land.'  },
+            { val:'reverse-landscape',label:'↔ Rev.' },
+        ].forEach(function(o){
+            const btn = document.createElement('button');
+            btn.className = 'sm-opt-btn sm-orient-btn' + (currentOrient===o.val?' active':'');
+            btn.textContent = o.label;
+            btn.style.pointerEvents = 'all';
+            btn.addEventListener('click', function(e){
+                e.stopPropagation();
                 orientBtns.querySelectorAll('.sm-orient-btn').forEach(function(b){b.classList.remove('active');});
                 btn.classList.add('active');
                 if(window.GameLayout) GameLayout.setOrientation(o.val);
             });
             orientBtns.appendChild(btn);
         });
+        orientRow.appendChild(orientLabel);
         orientRow.appendChild(orientBtns);
-        el.appendChild(orientRow);
+        orientRow.addEventListener('click', function(){_subIdx=orientIdx;_render();});
+        list.appendChild(orientRow);
 
-        // Wire controls/size
-        const dp=document.getElementById('sm-dpad-btn'), jy=document.getElementById('sm-joy-btn'),
-              sl=document.getElementById('sm-size-slider'), sv=document.getElementById('sm-size-val');
-        if(dp) dp.addEventListener('click',function(){if(window.GameControls)GameControls.setMode('dpad');dp.classList.add('active');if(jy)jy.classList.remove('active');});
-        if(jy) jy.addEventListener('click',function(){if(window.GameControls)GameControls.setMode('joystick');jy.classList.add('active');if(dp)dp.classList.remove('active');});
-        if(sl) sl.addEventListener('input',function(){const v=sl.value;document.documentElement.style.setProperty('--control-scale',v);if(sv)sv.textContent=parseFloat(v).toFixed(1)+'×';localStorage.setItem('pokemon_control_scale',v);});
+        el.appendChild(list);
+
+        // Wire size slider
+        setTimeout(function(){
+            const sl = document.getElementById('sm-size-slider');
+            const sv = document.getElementById('sm-size-val');
+            if(sl) sl.addEventListener('input', function(){
+                const v = sl.value;
+                document.documentElement.style.setProperty('--control-scale', v);
+                if(sv) sv.textContent = parseFloat(v).toFixed(1)+'×';
+                localStorage.setItem('pokemon_control_scale', v);
+            });
+        }, 0);
     }
 
     // --- Navigation ---
@@ -828,6 +891,7 @@ window.GameStartMenu = (function () {
         if (page==='journal') return 4;
         if (page==='save')    return 2;
         if (page==='pokenav') return 3;
+        if (page==='options') return 8; // 6 toggles + size + orientation
         if (page==='bag')     return 5;
         if (page==='pokemon') {
             const party = window.GameSave && GameSave.state && GameSave.state.party;

@@ -249,7 +249,7 @@ body.orient-reverse-landscape #controls-layer {
     bottom: 0;
     width: 18px;
     height: 18px;
-    background: linear-gradient(135deg, transparent 50%, #18b8c8 50%);
+    background: linear-gradient(135deg, transparent 50%, #1dc0fe 50%);
     cursor: se-resize;
     border-radius: 0 0 6px 0;
     z-index: 10;
@@ -431,7 +431,7 @@ body.orient-reverse-landscape #controls-layer {
     right: 0;
     z-index: 9999;
     background: rgba(6,6,16,0.92);
-    border-bottom: 2px solid #18b8c8;
+    border-bottom: 2px solid #1dc0fe;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -446,7 +446,7 @@ body.orient-reverse-landscape #controls-layer {
 #ctrl-edit-bar span { flex: 1; text-align: center; opacity: 0.8; }
 #ctrl-edit-bar button {
     background: #0a1830;
-    border: 1px solid #18b8c8;
+    border: 1px solid #1dc0fe;
     color: #80d0e8;
     font-family: inherit;
     font-size: 12px;
@@ -455,7 +455,7 @@ body.orient-reverse-landscape #controls-layer {
     cursor: pointer;
     touch-action: manipulation;
 }
-#ctrl-edit-bar button:active { background: #18b8c8; color: #000; }
+#ctrl-edit-bar button:active { background: #1dc0fe; color: #000; }
 
 .joystick-base {
     position: absolute;
@@ -544,6 +544,15 @@ body.orient-reverse-landscape #controls-layer {
 }
 
 /* ===================================================================
+   EE DARK THEME EXACT COLORS (from ryudarktheme.pal)
+   --ee-text:    #dbdff0  (219,223,240)
+   --ee-cyan:    #1dc0fe  (29,192,254)
+   --ee-border:  #0373af  (3,115,175)
+   --ee-bg:      #1a1a1a  (26,26,26)
+   --ee-bg-dark: #060610  near-black navy
+   =================================================================== */
+
+/* ===================================================================
    START MENU  — Emerald Enhanced style
    Top icon strip + visible game world + bottom info bar
    =================================================================== */
@@ -576,7 +585,7 @@ body.orient-reverse-landscape #controls-layer {
     flex-shrink: 0;
     background: #060610;
     border: 1px solid #000;
-    box-shadow: 0 0 0 3px #18b8c8, 0 0 0 4px #000, inset 0 0 0 1px #002830;
+    box-shadow: 0 0 0 3px #1dc0fe, 0 0 0 4px #000, inset 0 0 0 1px #0373af;
     padding: 6px 4px 5px;
     display: flex;
     flex-direction: column;
@@ -635,7 +644,7 @@ body.orient-reverse-landscape #controls-layer {
     font-size: 14px;
     font-family: "Courier New", Courier, monospace;
     letter-spacing: 0.05em;
-    color: #d0e8f0;
+    color: #dbdff0;
     text-align: center;
     min-height: 14px;
     padding: 0 8px;
@@ -653,7 +662,7 @@ body.orient-reverse-landscape #controls-layer {
     flex-shrink: 0;
     background: #060610;
     border: 1px solid #000;
-    box-shadow: 0 0 0 3px #18b8c8, 0 0 0 4px #000, inset 0 0 0 1px #002830;
+    box-shadow: 0 0 0 3px #1dc0fe, 0 0 0 4px #000, inset 0 0 0 1px #0373af;
     padding: 4px 10px 5px;
     font-size: 13px;
     pointer-events: none;
@@ -662,7 +671,7 @@ body.orient-reverse-landscape #controls-layer {
 .sm-info-line1 {
     display: flex;
     justify-content: space-between;
-    color: #c0d8e8;
+    color: #dbdff0;
     margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
@@ -671,10 +680,10 @@ body.orient-reverse-landscape #controls-layer {
 .sm-info-line2 {
     display: flex;
     gap: 5px;
-    color: #7090a8;
+    color: #8090a8;
     white-space: nowrap;
 }
-.sm-info-ver { color: #5080a0; }
+.sm-info-ver { color: #1dc0fe; }
 .sm-tod { font-weight: bold; }
 .tod-dawn  { color: #e09050; }
 .tod-day   { color: #d0c050; }
@@ -697,11 +706,11 @@ body.orient-reverse-landscape #controls-layer {
 /*
  * GBA window chrome — dark variant (1d.png):
  *   outermost: 1px black
- *   border:    3px bright cyan #18b8c8
- *   inner:     1px black
+ *   border:    3px bright cyan #1dc0fe  (EE exact)
+ *   inner:     1px dark border #0373af  (EE exact)
  *   fill:      #060610 (near-black navy)
  *
- * Text is near-white on dark — matches EE dark theme.
+ * Text is near-white #dbdff0 — matches EE dark theme exactly.
  */
 .sm-win {
     position: absolute;
@@ -710,27 +719,31 @@ body.orient-reverse-landscape #controls-layer {
     background: #060610;
     border: 1px solid #000;
     box-shadow:
-        0 0 0 3px #18b8c8,
+        0 0 0 3px #1dc0fe,
         0 0 0 4px #000,
-        inset 0 0 0 1px #002830;
-    color: #e0e8f8;
+        inset 0 0 0 1px #0373af;
+    color: #dbdff0;
     overflow: hidden;
     pointer-events: all;
 }
 
 /*
- * Window positions (% of #screen-primary = 240×160 equivalent)
- * Based on EE source tile coords × 8px per tile.
- * All windows start below the top icon strip (≈ 56px = 35% of 160px).
+ * Window positions — EE source tile coords × 8px, as % of 240×160 screen.
+ * Save:         WIN at px 8,8  → 120×80  = 50% w, 50% h  (3.3%, 5%)
+ * Trainer Card: same x,y but taller  (3.3%, 5%, 53%, 90%)
+ * Options:      px 16,40 = 208×112    (6.7%, 25%, 87%, 70%)
+ * Journal:      full-ish overlay      (3.3%, 5%, 90%, 90%)
+ * Bag:          item list right side  (3.3%, 5%, 90%, 88%)
+ * Pokénav:      centered small        (28%, 20%, 44%, 42%)
  */
 .sm-win[data-page="save"] {
-    left: 3.3%; top: 5%; width: 53%; height: 57%;
+    left: 3.3%; top: 5%; width: 50%; height: 50%;
 }
 .sm-win[data-page="trainer_card"] {
     left: 3.3%; top: 5%; width: 53%; height: 90%;
 }
 .sm-win[data-page="options"] {
-    left: 3.3%; top: 5%; width: 90%; height: 90%;
+    left: 6.7%; top: 5%; width: 87%; height: 90%;
 }
 .sm-win[data-page="journal"],
 .sm-win[data-page="achievements"] {
@@ -746,13 +759,13 @@ body.orient-reverse-landscape #controls-layer {
 /* Title bar: dark with cyan accent */
 .sm-win-title {
     background: #0a1830;
-    border-bottom: 1px solid #18b8c8;
+    border-bottom: 1px solid #1dc0fe;
     padding: 4px 6px 4px 8px;
     font-size: 14px;
     font-weight: bold;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #80d0e8;
+    color: #1dc0fe;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -765,8 +778,8 @@ body.orient-reverse-landscape #controls-layer {
     font-size: 14px;
     padding: 2px 7px;
     background: #040c20;
-    border: 1px solid #18b8c8;
-    color: #80d0e8;
+    border: 1px solid #1dc0fe;
+    color: #1dc0fe;
     cursor: pointer;
     pointer-events: all;
     letter-spacing: 0;
@@ -781,7 +794,7 @@ body.orient-reverse-landscape #controls-layer {
     display: flex;
     flex-direction: column;
     scrollbar-width: thin;
-    scrollbar-color: #18b8c8 #040810;
+    scrollbar-color: #1dc0fe #040810;
     pointer-events: none;
 }
 .sm-sub-content .sm-row,
@@ -800,12 +813,12 @@ body.orient-reverse-landscape #controls-layer {
     font-size: 14px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
     gap: 8px;
-    color: #c8d8e8;
+    color: #dbdff0;
 }
-.sm-kv-key { color: #6090a8; white-space: nowrap; }
-.sm-kv-val { color: #e0e8f8; font-weight: bold; text-align: right; }
+.sm-kv-key { color: #7090a8; white-space: nowrap; }
+.sm-kv-val { color: #dbdff0; font-weight: bold; text-align: right; }
 
-.sm-sep { height: 1px; background: rgba(24,184,200,0.2); margin: 3px 0; }
+.sm-sep { height: 1px; background: rgba(29,192,254,0.2); margin: 3px 0; }
 
 /* ---- Party rows ---- */
 .sm-party-row {
@@ -815,7 +828,7 @@ body.orient-reverse-landscape #controls-layer {
     border-bottom: 1px solid rgba(255,255,255,0.06);
     cursor: pointer;
     gap: 4px;
-    color: #c8d8e8;
+    color: #dbdff0;
     font-size: 14px;
 }
 .sm-party-row.selected { background: rgba(24,184,200,0.15); }
@@ -837,23 +850,23 @@ body.orient-reverse-landscape #controls-layer {
     padding: 5px 0;
     font-size: 14px;
     gap: 4px;
-    color: #c8d8e8;
+    color: #dbdff0;
     cursor: pointer;
     line-height: 1.4;
 }
-.sm-row-arrow { width: 12px; color: #18b8c8; flex-shrink: 0; font-size: 14px; }
+.sm-row-arrow { width: 12px; color: #1dc0fe; flex-shrink: 0; font-size: 14px; }
 .sm-row.selected { background: rgba(24,184,200,0.15); }
 
 /* ---- Achievement rows ---- */
 .sm-ach-tier-hdr {
     background: #0a1830;
-    color: #18b8c8;
+    color: #1dc0fe;
     font-size: 14px;
     padding: 2px 6px;
     letter-spacing: 0.06em;
     margin-top: 4px;
     text-transform: uppercase;
-    border-left: 2px solid #18b8c8;
+    border-left: 2px solid #1dc0fe;
 }
 .sm-ach-row {
     display: flex;
@@ -862,7 +875,7 @@ body.orient-reverse-landscape #controls-layer {
     padding: 4px 2px;
     font-size: 14px;
     border-bottom: 1px solid rgba(255,255,255,0.05);
-    color: #c8d8e8;
+    color: #dbdff0;
 }
 .sm-ach-row.selected { background: rgba(24,184,200,0.15); }
 .sm-ach-row.locked   { opacity: 0.35; filter: grayscale(1); }
@@ -878,32 +891,62 @@ body.orient-reverse-landscape #controls-layer {
     text-align: center;
 }
 
-/* ---- Options page ---- */
+/* ---- Options page — EE-accurate scrollable rows with GPU-highlight bar ---- */
+.sm-opt-list {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.sm-opt-list::-webkit-scrollbar { display: none; }
+
+/* EE: label at x=8 (left), value at x=104/198 (right) — 43% / 82% of 240px */
 .sm-opt-row {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 6px 0;
-    font-size: 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    gap: 6px;
-    color: #c8d8e8;
+    padding: 4px 8px;
+    font-size: 13px;
+    min-height: 22px;
+    gap: 0;
+    color: #dbdff0;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
 }
-.sm-opt-label { color: #6090a8; white-space: nowrap; }
+/* GPU-style full-width highlight bar (no arrow cursor — EE uses hardware window) */
+.sm-opt-row.selected {
+    background: rgba(29,192,254,0.18);
+    box-shadow: inset 2px 0 0 #1dc0fe;
+}
+.sm-opt-label {
+    flex: 0 0 45%;
+    color: #dbdff0;
+    white-space: nowrap;
+    font-size: 13px;
+}
+.sm-opt-val-wrap {
+    flex: 1;
+    display: flex;
+    gap: 4px;
+    justify-content: flex-end;
+    align-items: center;
+}
+.sm-opt-row-col { flex-direction: column; align-items: flex-start; gap: 4px; padding-bottom: 8px; }
 .sm-opt-btns  { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; justify-content: flex-end; }
 .sm-opt-btn {
     font-family: "Courier New", Courier, monospace;
-    font-size: 14px;
-    padding: 3px 8px;
+    font-size: 12px;
+    padding: 2px 7px;
     border: 1px solid #183040;
     background: #0a1828;
     cursor: pointer;
     color: #7090a8;
 }
-.sm-opt-btn.active  { background: #18b8c8; color: #000818; border-color: #40d8e8; }
-.sm-opt-btn:active  { background: #0090a0; }
-#sm-size-slider { width: 70px; accent-color: #18b8c8; }
-#sm-size-val    { font-size: 14px; color: #6090a8; min-width: 26px; }
+.sm-opt-btn.active  { background: #1dc0fe; color: #000818; border-color: #1dc0fe; }
+.sm-opt-btn:active  { background: #0090c0; }
+.sm-orient-btns { flex-wrap: wrap; gap: 3px; }
+.sm-orient-btn  { font-size: 11px; }
+#sm-size-slider { width: 70px; accent-color: #1dc0fe; }
+#sm-size-val    { font-size: 13px; color: #7090a8; min-width: 26px; }
 
 .sm-placeholder {
     color: #304050;
@@ -1118,7 +1161,7 @@ body.orient-reverse-landscape #controls-layer {
     /* EE dark frame 1d style */
     background: #060610;
     border: 1px solid #000;
-    box-shadow: 0 0 0 3px #18b8c8, 0 0 0 4px #000, inset 0 0 0 1px #002830;
+    box-shadow: 0 0 0 3px #1dc0fe, 0 0 0 4px #000, inset 0 0 0 1px #002830;
     border-radius: 2px;
     pointer-events: none;
 }
@@ -1130,7 +1173,7 @@ body.orient-reverse-landscape #controls-layer {
 #dialogue-text {
     font-family: "Courier New", Courier, monospace;
     font-size: 14px;
-    color: #c8d8e8;
+    color: #dbdff0;
     line-height: 1.4;
     white-space: pre-wrap;
     word-break: break-word;
@@ -1140,7 +1183,7 @@ body.orient-reverse-landscape #controls-layer {
     bottom: 3px;
     right: 6px;
     font-size: 13px;
-    color: #18b8c8;
+    color: #1dc0fe;
     animation: dlg-bounce 0.5s ease-in-out infinite alternate;
 }
 @keyframes dlg-bounce {
@@ -1164,7 +1207,7 @@ body.orient-reverse-landscape #controls-layer {
 .sm-dex-row.selected { background: rgba(24,184,200,0.15); }
 .sm-dex-num  { color: #6090a8; font-size: 12px; min-width: 26px; }
 .sm-dex-icon { width: 24px; height: 24px; image-rendering: pixelated; flex-shrink: 0; }
-.sm-dex-name { flex: 1; color: #c8d8e8; font-size: 13px; }
+.sm-dex-name { flex: 1; color: #dbdff0; font-size: 13px; }
 .sm-dex-types { display: flex; gap: 3px; }
 .sm-type-badge { font-size: 10px; padding: 1px 4px; border-radius: 3px; color: #fff; font-weight: bold; white-space: nowrap; }
 .sm-dex-hint { text-align: center; font-size: 12px; color: #6090a8; padding: 4px 0; }
@@ -1179,7 +1222,7 @@ body.orient-reverse-landscape #controls-layer {
 
 .sm-dex-tabs { display: flex; gap: 0; border-bottom: 1px solid rgba(24,184,200,0.2); margin-bottom: 4px; }
 .sm-dex-tab  { flex: 1; text-align: center; padding: 4px; font-size: 13px; color: #6090a8; cursor: pointer; }
-.sm-dex-tab.active { color: #18b8c8; border-bottom: 2px solid #18b8c8; }
+.sm-dex-tab.active { color: #1dc0fe; border-bottom: 2px solid #1dc0fe; }
 
 .sm-dex-entry-body { overflow-y: auto; flex: 1; }
 
@@ -1220,7 +1263,7 @@ body.orient-reverse-landscape #controls-layer {
     width: 44%;
     background: rgba(6,6,16,0.85);
     border: 1px solid #000;
-    box-shadow: 0 0 0 2px #18b8c8, 0 0 0 3px #000;
+    box-shadow: 0 0 0 2px #1dc0fe, 0 0 0 3px #000;
     padding: 4px 6px;
     border-radius: 4px;
 }
@@ -1236,7 +1279,7 @@ body.orient-reverse-landscape #controls-layer {
     width: 48%;
     background: rgba(6,6,16,0.9);
     border: 1px solid #000;
-    box-shadow: 0 0 0 2px #18b8c8, 0 0 0 3px #000;
+    box-shadow: 0 0 0 2px #1dc0fe, 0 0 0 3px #000;
     padding: 4px 6px;
     border-radius: 4px;
 }
@@ -1247,7 +1290,7 @@ body.orient-reverse-landscape #controls-layer {
 .bt-hp-bar.hp-green  { background: #20d840; }
 .bt-hp-bar.hp-yellow { background: #e8c000; }
 .bt-hp-bar.hp-red    { background: #e82020; }
-.bt-hp-text { font-size: 11px; color: #c8d8e8; text-align: right; }
+.bt-hp-text { font-size: 11px; color: #dbdff0; text-align: right; }
 #bt-player-status, #bt-enemy-status { font-size: 10px; color: #e08020; }
 
 /* Enemy sprite — top-right */
@@ -1290,7 +1333,7 @@ body.orient-reverse-landscape #controls-layer {
 #bt-bottom {
     flex: 1;
     background: #0a0a18;
-    border-top: 2px solid #18b8c8;
+    border-top: 2px solid #1dc0fe;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -1303,7 +1346,7 @@ body.orient-reverse-landscape #controls-layer {
     align-items: center;
 }
 #bt-text {
-    color: #c8d8e8;
+    color: #dbdff0;
     font-size: 13px;
     line-height: 1.5;
 }
@@ -1313,12 +1356,12 @@ body.orient-reverse-landscape #controls-layer {
     display: none;
     grid-template-columns: 1fr 1fr;
     gap: 1px;
-    border-top: 1px solid #18b8c8;
+    border-top: 1px solid #1dc0fe;
 }
 .bt-act {
     padding: 10px;
     background: #060610;
-    color: #c8d8e8;
+    color: #dbdff0;
     border: none;
     font-family: inherit;
     font-size: 14px;
@@ -1326,7 +1369,7 @@ body.orient-reverse-landscape #controls-layer {
     text-align: center;
     transition: background 0.1s;
 }
-.bt-act.selected, .bt-act:active { background: rgba(24,184,200,0.2); color: #18b8c8; }
+.bt-act.selected, .bt-act:active { background: rgba(24,184,200,0.2); color: #1dc0fe; }
 .bt-act::before { content: ''; }
 .bt-act.selected::before { content: '▶ '; }
 
@@ -1370,11 +1413,11 @@ body.orient-reverse-landscape #controls-layer {
     border: none;
     font-family: inherit;
     font-size: 12px;
-    color: #c8d8e8;
+    color: #dbdff0;
     cursor: pointer;
     text-align: left;
 }
-.bt-bag-btn.selected { background: rgba(24,184,200,0.15); color: #18b8c8; }
+.bt-bag-btn.selected { background: rgba(24,184,200,0.15); color: #1dc0fe; }
 .bt-back-btn {
     padding: 6px 10px;
     background: #060610;
@@ -1403,7 +1446,7 @@ body.orient-reverse-landscape #controls-layer {
 
 #sum-header {
     background: #0a1830;
-    border-bottom: 2px solid #18b8c8;
+    border-bottom: 2px solid #1dc0fe;
     padding: 6px 10px;
     position: relative;
 }
@@ -1413,8 +1456,8 @@ body.orient-reverse-landscape #controls-layer {
     top: 50%;
     transform: translateY(-50%);
     background: none;
-    border: 1px solid #18b8c8;
-    color: #18b8c8;
+    border: 1px solid #1dc0fe;
+    color: #1dc0fe;
     font-family: inherit;
     font-size: 12px;
     padding: 2px 6px;
@@ -1444,7 +1487,7 @@ body.orient-reverse-landscape #controls-layer {
     text-align: center;
     border-bottom: 2px solid transparent;
 }
-.sum-tab.active { color: #18b8c8; border-bottom-color: #18b8c8; }
+.sum-tab.active { color: #1dc0fe; border-bottom-color: #1dc0fe; }
 
 #sum-body { flex: 1; overflow-y: auto; padding: 8px; }
 
@@ -1454,7 +1497,7 @@ body.orient-reverse-landscape #controls-layer {
 #sum-info-block { flex: 1; display: flex; flex-direction: column; gap: 2px; }
 .sum-info-row { display: flex; justify-content: space-between; font-size: 11px; }
 .sum-info-row :first-child { color: #6090a8; }
-.sum-info-row :last-child  { color: #c8d8e8; }
+.sum-info-row :last-child  { color: #dbdff0; }
 
 #sum-hp-row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
 .sum-stat-lbl { color: #6090a8; font-size: 12px; width: 20px; }
@@ -1463,7 +1506,7 @@ body.orient-reverse-landscape #controls-layer {
 .sum-hp-bar.hp-green  { background: #20d840; }
 .sum-hp-bar.hp-yellow { background: #e8c000; }
 .sum-hp-bar.hp-red    { background: #e82020; }
-.sum-hp-txt { font-size: 11px; color: #c8d8e8; }
+.sum-hp-txt { font-size: 11px; color: #dbdff0; }
 #sum-entry { font-size: 11px; color: #a0b8c8; line-height: 1.4; font-style: italic; border-top: 1px solid rgba(24,184,200,0.2); padding-top: 6px; }
 
 /* Skills tab */
