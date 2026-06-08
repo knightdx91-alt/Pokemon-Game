@@ -13,6 +13,27 @@ window.GameInput = (function () {
         r: false
     };
 
+    // justPressed: latches true on press, cleared by consumeJustPressed().
+    // Guarantees a quick tap is seen by the game loop even if released before the next rAF.
+    const justPressed = {
+        up: false, down: false, left: false, right: false,
+        a: false, b: false, start: false, select: false, l: false, r: false
+    };
+
+    function _setPressed(btn) {
+        state[btn] = true;
+        justPressed[btn] = true;
+    }
+
+    function _clearPressed(btn) {
+        state[btn] = false;
+    }
+
+    // Call this from the game loop after reading justPressed to reset the latches
+    function consumeJustPressed() {
+        for (const k in justPressed) justPressed[k] = false;
+    }
+
     // Key mappings
     const KEY_MAP = {
         ArrowUp:    'up',    w: 'up',    W: 'up',
@@ -28,7 +49,7 @@ window.GameInput = (function () {
     function onKeyDown(e) {
         const btn = KEY_MAP[e.key];
         if (btn) {
-            state[btn] = true;
+            _setPressed(btn);
             e.preventDefault();
         }
     }
@@ -36,7 +57,7 @@ window.GameInput = (function () {
     function onKeyUp(e) {
         const btn = KEY_MAP[e.key];
         if (btn) {
-            state[btn] = false;
+            _clearPressed(btn);
         }
     }
 
@@ -44,11 +65,11 @@ window.GameInput = (function () {
     function bindDpadButton(el, btn) {
         function press(e) {
             e.preventDefault();
-            state[btn] = true;
+            _setPressed(btn);
         }
         function release(e) {
             e.preventDefault();
-            state[btn] = false;
+            _clearPressed(btn);
         }
         el.addEventListener('mousedown', press);
         el.addEventListener('touchstart', press, { passive: false });
@@ -65,10 +86,10 @@ window.GameInput = (function () {
     const DEADZONE = 20; // px
 
     function clearJoystickDirs() {
-        state.up = false;
-        state.down = false;
-        state.left = false;
-        state.right = false;
+        _clearPressed('up');
+        _clearPressed('down');
+        _clearPressed('left');
+        _clearPressed('right');
     }
 
     function updateJoystick(cx, cy, thumbEl) {
@@ -89,11 +110,11 @@ window.GameInput = (function () {
             const absX = Math.abs(dx);
             const absY = Math.abs(dy);
             if (absX >= absY) {
-                if (dx > 0) state.right = true;
-                else state.left = true;
+                if (dx > 0) _setPressed('right');
+                else        _setPressed('left');
             } else {
-                if (dy > 0) state.down = true;
-                else state.up = true;
+                if (dy > 0) _setPressed('down');
+                else        _setPressed('up');
             }
         }
     }
@@ -147,6 +168,8 @@ window.GameInput = (function () {
 
     return {
         state,
+        justPressed,
+        consumeJustPressed,
         init,
         bindDpadButton,
         bindJoystick

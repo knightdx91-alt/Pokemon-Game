@@ -26,8 +26,6 @@
     const MOVE_COOLDOWN_MS = 150;
     let lastMoveTime = 0;
 
-    // --- Previous input state (for rising-edge detection) ---
-    let prevStartState = false;
 
     // ---------------------------------------------------------------
     // Transition helpers
@@ -144,18 +142,16 @@
         // Process input — move one tile per keypress with cooldown
         const menuOpen = window.GameStartMenu && GameStartMenu.isOpen;
 
-        // Route D-pad / buttons into the menu when it's open
+        // Route D-pad / buttons into the menu when it's open.
+        // Use justPressed (latched on touchstart) so a quick tap is never missed.
         if (menuOpen) {
-            const elapsed = timestamp - lastMoveTime;
-            if (elapsed >= MOVE_COOLDOWN_MS) {
-                const inp = GameInput.state;
-                if      (inp.up)    { GameStartMenu.moveUp();    lastMoveTime = timestamp; }
-                else if (inp.down)  { GameStartMenu.moveDown();  lastMoveTime = timestamp; }
-                else if (inp.left)  { GameStartMenu.moveLeft();  lastMoveTime = timestamp; }
-                else if (inp.right) { GameStartMenu.moveRight(); lastMoveTime = timestamp; }
-                else if (inp.a)     { GameStartMenu.confirm();   lastMoveTime = timestamp; }
-                else if (inp.b)     { GameStartMenu.back();      lastMoveTime = timestamp; }
-            }
+            const jp = GameInput.justPressed;
+            if      (jp.up)    GameStartMenu.moveUp();
+            else if (jp.down)  GameStartMenu.moveDown();
+            else if (jp.left)  GameStartMenu.moveLeft();
+            else if (jp.right) GameStartMenu.moveRight();
+            else if (jp.a)     GameStartMenu.confirm();
+            else if (jp.b)     GameStartMenu.back();
         }
 
         if (!_transitioning && !menuOpen) {
@@ -205,17 +201,18 @@
         }
 
         // START button — rising edge → toggle start menu
-        const curStart = GameInput.state.start;
-        if (curStart && !prevStartState) {
+        if (GameInput.justPressed.start) {
             if (window.GameStartMenu) GameStartMenu.toggle();
         }
-        prevStartState = curStart;
 
         // Update camera
         GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
 
         // Update HUD display
         GameHUD.update();
+
+        // Clear just-pressed latches after all systems have read them
+        GameInput.consumeJustPressed();
 
         requestAnimationFrame(gameLoop);
     }
