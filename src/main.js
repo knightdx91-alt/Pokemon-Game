@@ -6,7 +6,8 @@
     const player = {
         x: 7,
         y: 8,
-        direction: 'down'
+        direction: 'down',
+        walkFrame: 0   // 0=stand, 1=step1, 2=step2 — cycles on each move
     };
 
     // --- Region tracking ---
@@ -57,13 +58,31 @@
             }
 
             if (returnWarp) {
-                player.x = returnWarp.x;
-                // Indoor maps: exit warp is at the bottom edge — spawn one tile north (inside)
-                // Outdoor maps: exterior door warp — spawn one tile south (outside, facing away)
-                const destType = GameMap.current && GameMap.current.map_type;
-                const isIndoor = destType === 'MAP_TYPE_INDOOR' || destType === 'MAP_TYPE_UNDERGROUND';
-                player.y = isIndoor ? returnWarp.y - 1 : returnWarp.y + 1;
+                // Find the best spawn tile: first adjacent tile that is walkable and not itself a warp
+                const rx = returnWarp.x, ry = returnWarp.y;
+                // Prefer: south, north, east, west — matching typical entry direction
+                const candidates = [
+                    [rx, ry - 1], // north (inside a building, step away from exit)
+                    [rx, ry + 1], // south (outside a building)
+                    [rx - 1, ry],
+                    [rx + 1, ry],
+                    [rx, ry]      // last resort: stand on the warp itself
+                ];
+                let placed = false;
+                for (const [cx, cy] of candidates) {
+                    if (GameMap.isWalkable(cx, cy) && !GameMap.getWarp(cx, cy)) {
+                        player.x = cx;
+                        player.y = cy;
+                        placed = true;
+                        break;
+                    }
+                }
+                if (!placed) {
+                    player.x = rx;
+                    player.y = ry;
+                }
                 player.direction = 'down';
+                player.walkFrame = 0;
             } else {
                 // Centre of map
                 player.x = Math.floor(GameMap.width  / 2);
@@ -166,6 +185,9 @@
                     } else if (GameMap.isWalkable(nx, ny)) {
                         player.x = nx;
                         player.y = ny;
+                        // Advance walk animation: 0→1→2→1→0... (step1, step2 alternating)
+                        player.walkFrame = player.walkFrame === 0 ? 1 :
+                                           player.walkFrame === 1 ? 2 : 1;
                         if (window.GameSave) GameSave.markDirty();
 
                         // Check for warp at new position (skip if in cooldown after a recent transition)
@@ -175,6 +197,9 @@
                         }
                     }
                     lastMoveTime = timestamp;
+                } else {
+                    // No direction held — return to standing frame
+                    player.walkFrame = 0;
                 }
             }
         }

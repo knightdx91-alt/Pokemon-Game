@@ -173,7 +173,9 @@ window.GameRenderer = (function () {
         const playerSY = (_player.y - camY) * TILE_PX;
         if (_playerImg) {
             const dir = _player.direction || 'down';
-            const frameCol = PLAYER_DIR_FRAME[dir] !== undefined ? PLAYER_DIR_FRAME[dir] : 0;
+            const baseCol  = PLAYER_DIR_FRAME[dir] !== undefined ? PLAYER_DIR_FRAME[dir] : 0;
+            const walkFrame = _player.walkFrame || 0;  // 0=stand, 1=step1, 2=step2
+            const frameCol  = baseCol + walkFrame;
             const srcX = frameCol * 16;
             const isRight = (dir === 'right');
             if (isRight) {
