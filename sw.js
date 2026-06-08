@@ -1,22 +1,12 @@
-// Service Worker — caches ROM and EmulatorJS core files
-const CACHE = 'pokemon-emu-v1';
-
-// Files to pre-cache on install
-const PRECACHE = [
-    'pokeemerald_ee_debug.gba'
-];
+// Service Worker — cache-on-demand for ROM and EmulatorJS assets
+const CACHE = 'pokemon-emu-v2';
 
 self.addEventListener('install', function(e) {
-    e.waitUntil(
-        caches.open(CACHE).then(function(cache) {
-            return cache.addAll(PRECACHE);
-        })
-    );
+    // Nothing to pre-cache — just activate immediately
     self.skipWaiting();
 });
 
 self.addEventListener('activate', function(e) {
-    // Remove old caches
     e.waitUntil(
         caches.keys().then(function(keys) {
             return Promise.all(
@@ -31,7 +21,6 @@ self.addEventListener('activate', function(e) {
 self.addEventListener('fetch', function(e) {
     var url = e.request.url;
 
-    // Cache the ROM and EmulatorJS CDN files
     var shouldCache = url.includes('pokeemerald_ee_debug.gba') ||
                       url.includes('cdn.emulatorjs.org');
 
@@ -40,9 +29,15 @@ self.addEventListener('fetch', function(e) {
     e.respondWith(
         caches.open(CACHE).then(function(cache) {
             return cache.match(e.request).then(function(cached) {
-                if (cached) return cached;
+                if (cached) {
+                    console.log('[SW] Serving from cache:', url);
+                    return cached;
+                }
+                console.log('[SW] Fetching and caching:', url);
                 return fetch(e.request).then(function(response) {
-                    if (response.ok) cache.put(e.request, response.clone());
+                    if (response.ok) {
+                        cache.put(e.request, response.clone());
+                    }
                     return response;
                 });
             });
