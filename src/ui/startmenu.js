@@ -108,6 +108,42 @@ window.GameStartMenu = (function () {
     // --- Bag state ---
     var _bagPocket   = 0;
     var _bagAssets   = null; // { bg, icons: [{unsel,sel}×8] }
+    var _bagItemIconCache = {}; // name → Image|null
+
+    function _itemIconPath(item) {
+        if (!item) return null;
+        var name = (item.name || '').toLowerCase()
+            .replace(/[éè]/g,'e').replace(/[^a-z0-9]+/g,'_').replace(/_+$/,'');
+        // Direct matches and common mappings
+        var MAP = {
+            'poke_ball':'poke_ball','pok_ball':'poke_ball',
+            'great_ball':'great_ball','ultra_ball':'ultra_ball','master_ball':'master_ball',
+            'potion':'potion','super_potion':'super_potion','hyper_potion':'hyper_potion',
+            'max_potion':'max_potion','full_restore':'full_restore',
+            'antidote':'antidote','burn_heal':'burn_heal','ice_heal':'ice_heal',
+            'awakening':'awakening','parlyz_heal':'parlyz_heal','full_heal':'full_heal',
+            'revive':'revive','max_revive':'max_revive',
+            'nugget':'nugget','big_nugget':'big_nugget',
+            'bicycle':'bicycle','old_rod':'old_rod','good_rod':'good_rod','super_rod':'super_rod',
+            'oran_berry':'oran_berry','sitrus_berry':'sitrus_berry','lum_berry':'lum_berry',
+            'leppa_berry':'leppa_berry','rawst_berry':'rawst_berry',
+        };
+        // TM/HM check
+        if (/^tm\d/.test(name)) return 'src/assets/bag/item_icons/tm01_rgba.png';
+        if (/^hm\d/.test(name)) return 'src/assets/bag/item_icons/tm01_rgba.png';
+        var key = MAP[name] || name;
+        return 'src/assets/bag/item_icons/' + key + '_rgba.png';
+    }
+
+    function _loadItemIcon(item, cb) {
+        var path = _itemIconPath(item);
+        if (!path) { cb(null); return; }
+        if (_bagItemIconCache[path] !== undefined) { cb(_bagItemIconCache[path]); return; }
+        var img = new Image();
+        img.onload = function() { _bagItemIconCache[path] = img; cb(img); };
+        img.onerror = function() { _bagItemIconCache[path] = null; cb(null); };
+        img.src = path;
+    }
     function _loadBagAssets(cb) {
         if (_bagAssets) { cb(_bagAssets); return; }
         var assets = { bg: null, icons: [] };
@@ -764,7 +800,7 @@ window.GameStartMenu = (function () {
 
     // ── Canvas bag renderer — 2× internal resolution (480×320) for crisp text ─
     var BAG_W = 480, BAG_H = 320, BAG_S = 2; // scale factor
-    function _drawBagCanvas(ctx, assets) {
+    function _drawBagCanvas(ctx, assets, itemIcon) {
         var POCKETS = _getBagPockets();
         var pocket  = POCKETS[_bagPocket] || POCKETS[0];
         var items   = pocket.items;
@@ -800,6 +836,13 @@ window.GameStartMenu = (function () {
         ctx.fillStyle = COL_TEXT;
         ctx.textBaseline = 'alphabetic';
         ctx.fillText(pocket.label, 26*S, 11*S);
+
+        // ── Selected item icon — left panel centre ~(56,60) GBA px
+        if (itemIcon) {
+            ctx.imageSmoothingEnabled = false;
+            var icSize = 24 * S;
+            ctx.drawImage(itemIcon, 44*S, 48*S, icSize, icSize);
+        }
 
         // ── Item list — EE WIN[0]: x=112, y=8, w=120, h=144
         var MAX_VIS = 9;
@@ -902,7 +945,16 @@ window.GameStartMenu = (function () {
             }
         });
 
-        el._redraw = function() { _loadBagAssets(function(a) { _drawBagCanvas(ctx, a); }); };
+        el._redraw = function() {
+            var POCKETS = _getBagPockets();
+            var pocket = POCKETS[_bagPocket] || POCKETS[0];
+            var selItem = pocket.items[_subIdx] || null;
+            _loadBagAssets(function(a) {
+                _loadItemIcon(selItem, function(iconImg) {
+                    _drawBagCanvas(ctx, a, iconImg);
+                });
+            });
+        };
         el._redraw();
     }
 
