@@ -640,56 +640,335 @@ body.reverse-landscape #game-wrapper {
 }
 
 /* ===================================================================
-   START MENU
+   START MENU — Emerald Enhanced style
    =================================================================== */
+
+/* Panel: slides in from the right */
 .pokemon-menu {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 200;
-    background: white;
-    border: 3px solid #1a1a1a;
-    padding: 8px 4px;
-    min-width: 140px;
-    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: min(200px, 60vw);
+    z-index: 400;
+    background: #fff;
+    border-left: 3px solid #1a1a2e;
+    border-bottom: 3px solid #1a1a2e;
+    display: flex;
+    flex-direction: column;
     pointer-events: all;
+    font-family: monospace;
+    transform: translateX(100%);
+    transition: transform 0.18s ease-out;
+    overflow: hidden;
 }
 
 .pokemon-menu.open {
-    display: block;
+    transform: translateX(0);
 }
 
-.menu-item {
-    display: block;
-    width: 100%;
-    background: none;
-    border: none;
-    padding: 6px 12px;
-    font-size: 8px;
-    font-family: monospace;
+/* Header row */
+.sm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1a1a2e;
+    color: #fff;
+    padding: 6px 10px;
+    font-size: 10px;
+    flex-shrink: 0;
+}
+
+.sm-header-name {
+    font-weight: bold;
+    letter-spacing: 0.05em;
+}
+
+.sm-header-time {
+    font-size: 9px;
+    color: #aac4ff;
+}
+
+/* Menu items */
+.sm-item {
+    display: flex;
+    align-items: center;
+    padding: 7px 10px;
+    font-size: 10px;
     cursor: pointer;
-    text-align: left;
-    color: #1a1a1a;
-    white-space: pre;
+    user-select: none;
+    color: #1a1a2e;
+    gap: 4px;
+    border-bottom: 1px solid #e8e8f0;
 }
 
-.menu-item:hover {
+.sm-item:hover {
+    background: #f0f4ff;
+}
+
+.sm-item.selected {
+    background: #fdf8d0;
+    color: #f8e84a;
+    color: #1a1a2e;
+}
+
+.sm-item.selected .sm-label {
+    color: #b87800;
+}
+
+.sm-arrow {
+    width: 12px;
+    text-align: center;
+    color: #e8a000;
+    font-size: 9px;
+    flex-shrink: 0;
+}
+
+.sm-label {
+    flex: 1;
+}
+
+/* Sub-pages */
+.sm-subpage {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.sm-scroll {
+    overflow-y: auto;
+    flex: 1;
+}
+
+.sm-sep {
+    height: 1px;
+    background: #d0d4e8;
+    margin: 2px 0;
+}
+
+/* Trainer Card rows */
+.sm-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 12px;
+    font-size: 9px;
+    color: #1a1a2e;
+    border-bottom: 1px solid #f0f0f8;
+    gap: 4px;
+}
+
+.sm-card-row.sm-selectable {
+    cursor: pointer;
+    background: #f8f8ff;
+}
+
+.sm-card-row.sm-selectable:hover {
+    background: #e8ecff;
+}
+
+.sm-card-key {
+    color: #555;
+    white-space: nowrap;
+}
+
+.sm-card-val {
+    color: #1a1a2e;
+    font-weight: bold;
+    text-align: right;
+    word-break: break-all;
+}
+
+/* Achievement rows */
+.sm-ach-tier-hdr {
+    background: #1a1a2e;
+    color: #aac4ff;
+    font-size: 9px;
+    padding: 3px 12px;
+    letter-spacing: 0.08em;
+}
+
+.sm-ach-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    font-size: 9px;
+    color: #1a1a2e;
+    border-bottom: 1px solid #f0f0f8;
+    cursor: default;
+}
+
+.sm-ach-row.selected {
+    background: #fdf8d0;
+}
+
+.sm-ach-row.locked {
+    opacity: 0.4;
+    filter: grayscale(1);
+}
+
+.sm-ach-icon {
+    flex-shrink: 0;
+    font-size: 11px;
+}
+
+.sm-ach-name {
+    flex: 1;
+}
+
+.sm-ach-ap {
+    color: #888;
+    white-space: nowrap;
+}
+
+/* Faction rows */
+.sm-faction-row {
+    padding: 6px 12px;
+    font-size: 9px;
+    color: #1a1a2e;
+    border-bottom: 1px solid #f0f0f8;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sm-faction-name {
+    font-weight: bold;
+}
+
+.sm-faction-rank {
+    color: #666;
+    font-size: 8px;
+}
+
+.sm-faction-bar-wrap {
+    height: 4px;
+    background: #e0e0e8;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 2px;
+}
+
+.sm-faction-bar-fill {
+    height: 100%;
+    background: #3060c0;
+    border-radius: 2px;
+    transition: width 0.3s;
+}
+
+/* Save page */
+.sm-save-msg {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: #555;
+    padding: 20px;
+}
+
+.sm-save-msg.done {
+    color: #2a8a2a;
+}
+
+/* Options page */
+.sm-opt-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    font-size: 9px;
+    color: #1a1a2e;
+    border-bottom: 1px solid #f0f0f8;
+    gap: 8px;
+}
+
+.sm-opt-label {
+    white-space: nowrap;
+}
+
+.sm-opt-btns {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sm-opt-btn {
+    font-family: monospace;
+    font-size: 8px;
+    padding: 3px 8px;
+    border: 1px solid #aaa;
+    background: #f0f0f0;
+    cursor: pointer;
+    color: #1a1a2e;
+}
+
+.sm-opt-btn.active {
+    background: #1a1a2e;
+    color: #fff;
+    border-color: #1a1a2e;
+}
+
+.sm-opt-btn:hover:not(.active) {
     background: #e0e8ff;
 }
 
-.menu-item.selected {
-    background: #3060c0;
-    color: white;
+#sm-size-slider {
+    width: 60px;
 }
 
-.menu-save-msg {
-    text-align: center;
+#sm-size-val {
     font-size: 8px;
+    color: #555;
+    min-width: 24px;
+}
+
+/* ===================================================================
+   ACHIEVEMENT TOAST
+   =================================================================== */
+.ach-toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(0);
+    background: #1a1a2e;
+    border: 2px solid #e8a000;
+    color: #fff;
     font-family: monospace;
-    color: #3060c0;
-    padding: 4px 0;
-    border-top: 1px solid #ccc;
-    margin-top: 4px;
+    font-size: 10px;
+    padding: 8px 16px;
+    text-align: center;
+    z-index: 600;
+    pointer-events: none;
+    white-space: nowrap;
+    min-width: 160px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.ach-toast-show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.ach-toast-hide {
+    transform: translateX(-50%) translateY(120px);
+    opacity: 0;
+}
+
+.ach-toast-title {
+    color: #f8c840;
+    font-weight: bold;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+    margin-bottom: 3px;
+}
+
+.ach-toast-name {
+    font-size: 10px;
+    color: #fff;
 }
 
 /* ===================================================================

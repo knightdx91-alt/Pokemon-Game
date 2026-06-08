@@ -143,8 +143,8 @@
 
             console.log(`[Achievements] Unlocked: ${_byId[id].name} (+${ap} AP)`);
             // Trigger notification if available
-            if (window.GameUI && window.GameUI.showAchievementToast) {
-                window.GameUI.showAchievementToast(_byId[id]);
+            if (window.GameHUD && window.GameHUD.showAchievementToast) {
+                window.GameHUD.showAchievementToast(_byId[id]);
             }
         },
 

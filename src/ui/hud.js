@@ -10,6 +10,30 @@ window.GameHUD = (function () {
     let _lastMapName = null;
     let _bannerEl = null;
     let _bannerTimer = null;
+    let _toastEl = null;
+    let _toastTimer = null;
+
+    const TIER_ICON = { platinum: '💎', gold: '🥇', silver: '🥈', bronze: '🥉' };
+
+    // --- Achievement toast ---
+    function showAchievementToast(ach) {
+        if (!_toastEl) return;
+        clearTimeout(_toastTimer);
+
+        _toastEl.innerHTML =
+            '<div class="ach-toast-title">Achievement Unlocked!</div>'
+          + '<div class="ach-toast-name">'
+          + (TIER_ICON[ach.tier] || '') + ' ' + (ach.name || '')
+          + '</div>';
+
+        _toastEl.classList.remove('ach-toast-hide');
+        _toastEl.classList.add('ach-toast-show');
+
+        _toastTimer = setTimeout(function () {
+            _toastEl.classList.remove('ach-toast-show');
+            _toastEl.classList.add('ach-toast-hide');
+        }, 3000);
+    }
 
     // --- Settings wiring ---
     function initSettings() {
@@ -157,9 +181,15 @@ window.GameHUD = (function () {
         coordsEl.id = 'hud-coords';
         overlay.appendChild(coordsEl);
 
+        // Achievement toast
+        _toastEl = document.createElement('div');
+        _toastEl.id = 'ach-toast';
+        _toastEl.className = 'ach-toast ach-toast-hide';
+        overlay.appendChild(_toastEl);
+
         initSettings();
         update();
     }
 
-    return { init, update };
+    return { init, update, showAchievementToast };
 })();
