@@ -977,6 +977,13 @@ window.GameStartMenu = (function () {
                 var cx = (e.clientX - rect.left) * (240 / rect.width);
                 var cy = (e.clientY - rect.top)  * (160 / rect.height);
                 var party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
+                if (!party.some(Boolean) && window.GameSave && GameSave.DEFAULT_POKEMON) {
+                    party = [Object.assign(GameSave.DEFAULT_POKEMON(), {
+                        speciesId: 4, nickname: 'CHARMANDER', level: 5,
+                        currentHp: 19, maxHp: 19, moves: ['Scratch', 'Growl', null, null],
+                        caughtLevel: 5, exp: 35
+                    }), null, null, null, null, null];
+                }
                 var filled = party.filter(Boolean);
                 // Slot 0: x=8..87, y=24..79
                 if (cx >= 8 && cx < 88 && cy >= 24 && cy < 80) { _subIdx = 0; _render(); return; }
@@ -1001,6 +1008,14 @@ window.GameStartMenu = (function () {
         var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
 
         var party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
+        if (!party.some(Boolean) && window.GameSave && GameSave.DEFAULT_POKEMON) {
+            party = [Object.assign(GameSave.DEFAULT_POKEMON(), {
+                speciesId: 4, nickname: 'CHARMANDER', level: 5,
+                currentHp: 19, maxHp: 19,
+                moves: ['Scratch', 'Growl', null, null],
+                caughtLevel: 5, exp: 35
+            }), null, null, null, null, null];
+        }
         var filled = party.filter(Boolean);
 
         ctx.textBaseline = 'top';
