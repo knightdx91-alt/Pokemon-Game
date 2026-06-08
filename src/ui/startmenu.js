@@ -16,6 +16,8 @@ window.GameStartMenu = (function () {
     ];
 
     const ICON_PATH = 'src/assets/start_menu/';
+    // Use RGBA versions (palette index 0 made transparent)
+    function _iconFile(name) { return ICON_PATH + name.replace('.png', '_rgba.png'); }
 
     const TIER_ICON  = { platinum: '💎', gold: '🥇', silver: '🥈', bronze: '🥉' };
     const TIER_ORDER = ['platinum', 'gold', 'silver', 'bronze'];
@@ -105,8 +107,8 @@ window.GameStartMenu = (function () {
 
             const sprite = document.createElement('div');
             sprite.className = 'sm-icon-sprite';
-            sprite.style.backgroundImage = 'url("' + ICON_PATH + itm.icon + '")';
-            // top half = normal, bottom half = selected glow (set via CSS)
+            sprite.style.backgroundImage = 'url("' + _iconFile(itm.icon) + '")';
+            // top half = normal frame, bottom half = selected/cyan frame (set via CSS)
 
             wrap.appendChild(sprite);
             wrap.addEventListener('click', function () {

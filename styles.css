@@ -680,84 +680,103 @@ body.reverse-landscape #game-wrapper {
     pointer-events: all;
 }
 
-/* TOP STRIP — dark bordered box, icons + label */
+/* ===================================================
+   TOP STRIP — EE action-name window (black bg, blue border)
+   =================================================== */
 .sm-top-strip {
     flex-shrink: 0;
-    background: #181820;
-    border-bottom: 3px solid #484868;
-    box-shadow: 0 2px 0 #000, inset 0 -1px 0 #2a2a40;
-    padding: 6px 0 4px;
+    background: #000008;
+    outline: 2px solid #0050c8;
+    outline-offset: -2px;
+    border-bottom: 4px solid #000;
+    box-shadow: 0 4px 0 #0050c8;
+    padding: 8px 4px 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3px;
+    gap: 6px;
 }
 
-/* Icon row */
+/* Icon carousel */
 .sm-carousel {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: 6px;
+    overflow-x: auto;
+    max-width: 100%;
+    scrollbar-width: none;
+    padding: 0 4px;
 }
+.sm-carousel::-webkit-scrollbar { display: none; }
 
+/* Each icon slot */
 .sm-icon-wrap {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     flex-shrink: 0;
-    position: relative;
+    border: 1px solid transparent;
+    border-radius: 2px;
 }
+.sm-icon-wrap:hover { border-color: rgba(80,160,255,0.4); }
 
-/* The actual GBA pixel art icon (32x32 window into 32x64 sheet) */
+/* GBA pixel art icon — 32x32 window into 32x64 transparent spritesheet */
 .sm-icon-sprite {
     width: 32px;
     height: 32px;
     background-size: 32px 64px;
     background-repeat: no-repeat;
+    background-position: 0 0;
     image-rendering: pixelated;
-    transition: transform 0.1s;
+    image-rendering: crisp-edges;
 }
 
+/* Selected icon: show bottom frame (cyan glow) */
 .sm-icon-wrap.selected .sm-icon-sprite {
-    background-position-y: -32px; /* selected/glow frame */
-    transform: scale(1.2);
-    filter: drop-shadow(0 0 4px rgba(160,224,255,0.9));
+    background-position: 0 -32px;
+    transform: scale(1.25);
+    filter: drop-shadow(0 0 6px rgba(0,200,255,0.9));
 }
 
-/* Label text below icons */
+/* Item name label */
 .sm-label-bar {
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #e0e0e8;
+    font-size: 11px;
+    font-family: "Courier New", Courier, monospace;
+    letter-spacing: 0.05em;
+    color: #f0f0f8;
     text-shadow: 1px 1px 0 #000;
-    min-height: 14px;
     text-align: center;
+    min-height: 16px;
+    padding: 0 8px;
+    text-transform: uppercase;
 }
 
-/* MIDDLE — transparent, game world shows through */
+/* MIDDLE — fully transparent so game map shows through */
 .sm-middle {
     flex: 1;
     pointer-events: none;
 }
 
-/* BOTTOM INFO BOX — EE-style two-line stats */
+/* BOTTOM INFO BOX — EE info window style */
 .sm-info-box {
     flex-shrink: 0;
-    background: #181820;
-    border-top: 3px solid #484868;
-    box-shadow: 0 -2px 0 #000, inset 0 1px 0 #2a2a40;
-    padding: 4px 12px 4px;
+    background: #000008;
+    outline: 2px solid #0050c8;
+    outline-offset: -2px;
+    border-top: 4px solid #000;
+    box-shadow: 0 -4px 0 #0050c8;
+    padding: 4px 10px 5px;
     font-size: 9px;
+    pointer-events: none;
 }
 .sm-info-line1 {
     display: flex;
     justify-content: space-between;
-    color: #a8b8c8;
+    color: #c0d0e0;
     margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
@@ -765,16 +784,17 @@ body.reverse-landscape #game-wrapper {
 }
 .sm-info-line2 {
     display: flex;
-    gap: 6px;
-    color: #788898;
+    gap: 5px;
+    color: #8090a0;
     white-space: nowrap;
 }
-.sm-info-ver { color: #6688aa; }
+.sm-info-ver { color: #6080a8; }
 .sm-tod { font-weight: bold; }
 .tod-dawn  { color: #ffaa66; }
-.tod-day   { color: #ffe066; }
+.tod-day   { color: #ffe870; }
 .tod-dusk  { color: #dd88aa; }
-.tod-night { color: #6688cc; }
+.tod-night { color: #88aaee; }
+
 
 /* ---- SUB-PAGES (Journal, Trainer Card, etc.) ---- */
 /* Sub-pages take over the full overlay with a semi-transparent bg */
