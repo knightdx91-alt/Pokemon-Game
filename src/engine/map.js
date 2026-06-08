@@ -6,6 +6,11 @@ window.GameMap = (function () {
 
     const REGIONS = { kanto: 'kanto', johto: 'johto', hoenn: 'hoenn', sinnoh: 'sinnoh' };
 
+    // Tall grass / long grass / short grass behavior bytes → trigger land encounters
+    const GRASS_BEHAVIORS = new Set([0x02, 0x03, 0x07]);
+    // Cave floor behavior byte → trigger land encounters (no visual grass)
+    const CAVE_BEHAVIORS  = new Set([0x08]);
+
     // Behavior bytes that require Surf — player cannot walk on these on foot.
     // Values are consistent across FireRed, Emerald, HeartGold, and Platinum.
     const WATER_BEHAVIORS = new Set([
@@ -241,6 +246,47 @@ window.GameMap = (function () {
         return layoutData ? layoutData.tileset : null;
     }
 
+    // Returns 'grass' | 'cave' | 'water' | null for the given tile
+    function getTileTerrainType(x, y) {
+        if (!tilesetBehaviors || !layoutData || !layoutData.metatiles) return null;
+        const metatileIdx = layoutData.metatiles[y * mapWidth + x];
+        if (metatileIdx === undefined) return null;
+        const b = tilesetBehaviors[metatileIdx];
+        if (GRASS_BEHAVIORS.has(b)) return 'grass';
+        if (CAVE_BEHAVIORS.has(b))  return 'cave';
+        if (WATER_BEHAVIORS.has(b)) return 'water';
+        return null;
+    }
+
+    // Encounter data for the current map — loaded lazily
+    let _encounterData = null;
+    let _encounterMapId = null;
+
+    async function loadEncounterData(region) {
+        const mapId = current && current.id;
+        if (!mapId) return;
+        if (_encounterMapId === mapId) return; // already loaded
+        _encounterData = null;
+        _encounterMapId = mapId;
+        try {
+            const resp = await fetch(`data/encounters/${region}.json`);
+            if (!resp.ok) return;
+            const blob = await resp.json();
+            // Flatten across wild_encounter_groups
+            const groups = blob.wild_encounter_groups || [];
+            for (const grp of groups) {
+                for (const enc of (grp.encounters || [])) {
+                    if (enc.map === mapId) {
+                        _encounterData = enc;
+                        return;
+                    }
+                }
+            }
+        } catch(e) { /* no encounter data */ }
+    }
+
+    function getEncounterData() { return _encounterData; }
+
     // ---------------------------------------------------------------
     // Public API
     // ---------------------------------------------------------------
@@ -262,5 +308,8 @@ window.GameMap = (function () {
         getSign,
         getNpcAt,
         getTilesetName,
+        getTileTerrainType,
+        loadEncounterData,
+        getEncounterData,
     };
 })();

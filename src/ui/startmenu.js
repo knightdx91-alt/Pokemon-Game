@@ -769,6 +769,14 @@ window.GameStartMenu = (function () {
             else if (page==='pokedex' && _dexList && _dexList[_subIdx]) {
                 _dexEntry = _dexList[_subIdx];
                 page = 'pokedex_entry'; _subIdx = 0; _render();
+            } else if (page==='pokemon') {
+                // Open summary screen for selected party member
+                const party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
+                const filled = party.filter(Boolean);
+                if (filled[_subIdx] && window.GameSummary) {
+                    close();
+                    GameSummary.show(_subIdx);
+                }
             }
             return;
         }

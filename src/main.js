@@ -169,9 +169,50 @@
     }
 
     // ---------------------------------------------------------------
+    // Wild encounter trigger
+    // ---------------------------------------------------------------
+    const ENCOUNTER_RATE_DIVISOR = 40; // Steps between encounter rolls on average
+
+    async function _checkWildEncounter(x, y) {
+        const terrain = GameMap.getTileTerrainType(x, y);
+        if (!terrain || terrain === 'water') return;
+        await GameMap.loadEncounterData(currentRegion);
+        const enc = GameMap.getEncounterData();
+        if (!enc || !enc.land_mons) return;
+        const rate = enc.land_mons.encounter_rate || 10;
+        if (Math.random() * 100 >= rate) return;
+        if (window.GameBattle) {
+            const entry = GameBattle.rollEncounter(currentRegion);
+            if (!entry) return;
+            // Ensure player has a party Pokémon
+            const st = window.GameSave && GameSave.state;
+            if (!st || !st.party || !st.party[0]) return;
+            GameBattle.start(entry, (result) => {
+                console.log('[Battle] ended:', result);
+            });
+        }
+    }
+
+    // ---------------------------------------------------------------
     // Game loop
     // ---------------------------------------------------------------
     function gameLoop(timestamp) {
+        // Battle system intercepts all input when active
+        if (window.GameBattle && GameBattle.isActive()) {
+            GameBattle.consumeInput(GameInput.justPressed);
+            GameInput.consumeJustPressed();
+            requestAnimationFrame(gameLoop);
+            return;
+        }
+
+        // Summary screen intercepts all input when open
+        if (window.GameSummary && GameSummary.isOpen()) {
+            GameSummary.handleInput(GameInput.justPressed);
+            GameInput.consumeJustPressed();
+            requestAnimationFrame(gameLoop);
+            return;
+        }
+
         // Process input — move one tile per keypress with cooldown
         const menuOpen = window.GameStartMenu && GameStartMenu.isOpen;
 
@@ -217,7 +258,6 @@
                     } else if (GameMap.isWalkable(nx, ny)) {
                         player.x = nx;
                         player.y = ny;
-                        // Advance walk animation: 0→1→2→1→0... (step1, step2 alternating)
                         player.walkFrame = player.walkFrame === 0 ? 1 :
                                            player.walkFrame === 1 ? 2 : 1;
                         if (window.GameSave) GameSave.markDirty();
@@ -226,6 +266,9 @@
                         const warp = GameMap.getWarp(nx, ny);
                         if (warp && performance.now() >= _warpCooldownUntil) {
                             transitionToWarp(warp);
+                        } else {
+                            // Wild encounter check (grass/cave tiles)
+                            _checkWildEncounter(nx, ny);
                         }
                     }
                     lastMoveTime = timestamp;
