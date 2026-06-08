@@ -1046,8 +1046,10 @@ window.GameStartMenu = (function () {
 
             canvas.addEventListener('click', function(e) {
                 var rect = canvas.getBoundingClientRect();
-                var cx = (e.clientX - rect.left) * (240 / rect.width);
-                var cy = (e.clientY - rect.top)  * (160 / rect.height);
+                // Map click to GBA coordinates (canvas is drawn at S=2 on 240×160 canvas)
+                var S = 2;
+                var gx = (e.clientX - rect.left) * (240 / rect.width) / S;
+                var gy = (e.clientY - rect.top)  * (160 / rect.height) / S;
                 var filled = _getParty().filter(Boolean);
 
                 // If action menu is open, handle its clicks
@@ -1055,35 +1057,34 @@ window.GameStartMenu = (function () {
                     var opts = ['SUMMARY', 'SWITCH', 'CANCEL'];
                     var ax = 130, ay = 50, aw = 100, ah = 14;
                     for (var oi = 0; oi < opts.length; oi++) {
-                        if (cx >= ax && cx < ax+aw && cy >= ay+oi*ah && cy < ay+(oi+1)*ah) {
+                        if (gx >= ax && gx < ax+aw && gy >= ay+oi*ah && gy < ay+(oi+1)*ah) {
                             if (opts[oi] === 'CANCEL') {
                                 _partyActionOpen = false; redraw();
                             } else if (opts[oi] === 'SUMMARY') {
                                 _partyActionOpen = false;
                                 _openPartySummary(_partyActionMon, _partyActionIdx, filled, loadIconsAndDraw);
                             }
-                            // SWITCH: placeholder for now
                             return;
                         }
                     }
                     _partyActionOpen = false; redraw(); return;
                 }
 
-                // Slot 0: x=8..87, y=24..79
-                if (cx >= 8 && cx < 88 && cy >= 24 && cy < 80 && filled[0]) {
+                // Slot 0: GBA x=8..87, y=24..79
+                if (gx >= 8 && gx < 88 && gy >= 24 && gy < 80 && filled[0]) {
                     _partyActionMon = filled[0]; _partyActionIdx = 0;
                     _partyActionOpen = true; redraw(); return;
                 }
-                // Slots 1-5: x=96..239
+                // Slots 1-5: GBA x=96..239
                 for (var si = 1; si < 6; si++) {
                     var sy = 8 + (si - 1) * 24;
-                    if (cx >= 96 && cx < 240 && cy >= sy && cy < sy+24 && filled[si]) {
+                    if (gx >= 96 && gx < 240 && gy >= sy && gy < sy+24 && filled[si]) {
                         _partyActionMon = filled[si]; _partyActionIdx = si;
                         _partyActionOpen = true; redraw(); return;
                     }
                 }
-                // Cancel bar
-                if (cy >= 120 && cy < 152) { _goBack(); }
+                // Cancel bar: GBA y=120..151
+                if (gy >= 120 && gy < 152) { _goBack(); }
             });
         });
     }
@@ -1181,38 +1182,44 @@ window.GameStartMenu = (function () {
             ctx.fillText(gender === 'M' ? '♂' : '♀', x*S, y*S);
         }
 
-        // ── Slot 0 (large left): x=8..87, y=24..79
+        // ── Slot 0 (large left): GBA x=8..87, y=24..79  (window size 80×56)
+        // EE sPartyBoxInfoRects[LEFT_COLUMN] coords are relative to window origin (8,24):
+        //   nickname (24,11) → screen (32,35) | level (32,20) → (40,44) | gender (64,20) → (72,44)
+        //   HP bar (24,35)w48 → (32,59) | HP text (28,37)/(48,37) → (36,61)/(56,61)
+        //   icon sprite screen (16,40) 32×32
         var mon0 = filled[0];
         var isSel0 = (_subIdx === 0);
         ctx.fillStyle = isSel0 ? 'rgba(90,206,214,0.25)' : '#0c1020';
         ctx.fillRect(8*S, 24*S, 80*S, 56*S);
         if (isSel0) { ctx.fillStyle = COL_CYAN; ctx.fillRect(8*S, 24*S, 2, 56*S); }
 
-        // Icon at (16,40) per EE sPartyMenuSpriteCoords
+        // Text first (behind icon per EE layer order)
+        ctx.font = 'bold '+(6*S)+'px monospace'; ctx.fillStyle = COL_TEXT;
+        ctx.fillText((mon0.nickname||'???').slice(0,8), 32*S, 35*S);
+        ctx.font = (5*S)+'px monospace'; ctx.fillStyle = COL_DIM;
+        ctx.fillText('Lv'+(mon0.level||'?'), 40*S, 44*S);
+        drawGender(mon0.gender, 72, 44);
+        var hp0pct = mon0.maxHp > 0 ? Math.max(0, Math.min(1, (mon0.currentHp||0)/mon0.maxHp)) : 0;
+        var hp0col = hp0pct > 0.5 ? '#20d840' : hp0pct > 0.25 ? '#e8c000' : '#e82020';
+        ctx.fillStyle = COL_DIM; ctx.fillText('HP', 14*S, 61*S);
+        drawHpBar(32, 59, 48, 3, hp0pct, hp0col);
+        ctx.fillStyle = COL_TEXT;
+        ctx.fillText((mon0.currentHp||0)+'/'+(mon0.maxHp||0), 36*S, 61*S);
+        if (mon0.statusCondition) {
+            ctx.fillStyle = STATUS_COLOR[mon0.statusCondition] || '#666666';
+            ctx.fillText('['+mon0.statusCondition+']', 14*S, 70*S);
+        }
+        // Icon on top at screen (16,40) 32×32
         var icon0 = iconImgs && iconImgs[0];
         if (icon0) { ctx.imageSmoothingEnabled=false; ctx.drawImage(icon0, 16*S, 40*S, 32*S, 32*S); }
 
-        ctx.font = 'bold '+(6*S)+'px monospace'; ctx.fillStyle = COL_TEXT;
-        ctx.fillText((mon0.nickname||mon0.speciesId||'???').slice(0,8), 12*S, 28*S);
-        // Gender at x=64,y=20 within window (window top=24), absolute y=44
-        drawGender(mon0.gender, 64, 44);
-        ctx.font = (5*S)+'px monospace'; ctx.fillStyle = COL_DIM;
-        ctx.fillText('Lv.'+(mon0.level||'?'), 12*S, 38*S);
-        var hp0pct = mon0.maxHp > 0 ? Math.max(0, Math.min(1, (mon0.currentHp||0)/mon0.maxHp)) : 0;
-        var hp0col = hp0pct > 0.5 ? '#20d840' : hp0pct > 0.25 ? '#e8c000' : '#e82020';
-        ctx.fillStyle = COL_DIM; ctx.fillText('HP', 12*S, 50*S);
-        drawHpBar(28, 52, 52, 4, hp0pct, hp0col);
-        ctx.fillStyle = COL_TEXT;
-        ctx.fillText((mon0.currentHp||0)+'/'+(mon0.maxHp||0), 12*S, 58*S);
-        if (mon0.statusCondition) {
-            ctx.fillStyle = STATUS_COLOR[mon0.statusCondition] || '#666666';
-            ctx.fillText('['+mon0.statusCondition+']', 12*S, 68*S);
-        }
-
-        // ── Slots 1-5 (compact right col): x=96..239
+        // ── Slots 1-5 (compact right col): GBA x=96..239, each 24px tall
+        // EE sPartyBoxInfoRects[RIGHT_COLUMN]:
+        //   nickname (22,3) | level (30,12) | gender (62,12) | HP bar (88,10)w48 | HP text (92,12)/(112,12)
+        //   icon screen x=104, y=18/42/66/90/114  size 32×32 (but clipped to 24px row so use 20×20)
         for (var i = 1; i < 6; i++) {
             var mon = filled[i];
-            var slotY = 8 + (i-1)*24;
+            var slotY = 8 + (i-1)*24;  // GBA y of each right-col slot
             if (!mon) {
                 ctx.fillStyle = '#080810'; ctx.fillRect(96*S, slotY*S, 144*S, 22*S);
                 ctx.fillStyle = '#333344'; ctx.font = (5*S)+'px monospace';
@@ -1223,22 +1230,21 @@ window.GameStartMenu = (function () {
                 ctx.fillRect(96*S, slotY*S, 144*S, 22*S);
                 if (isSel) { ctx.fillStyle = COL_CYAN; ctx.fillRect(96*S, slotY*S, 2, 22*S); }
 
-                // Icon at (104,18/42/66/90/114) per EE coords — offset by slotY
-                var iconI = iconImgs && iconImgs[i];
-                if (iconI) { ctx.imageSmoothingEnabled=false; ctx.drawImage(iconI, 96*S, slotY*S, 20*S, 20*S); }
-
+                // Text: nickname at (96+22, slotY+3), level at (96+30, slotY+12), gender at (96+62, slotY+12)
                 ctx.font = 'bold '+(5*S)+'px monospace'; ctx.fillStyle = COL_TEXT;
-                ctx.fillText((mon.nickname||mon.speciesId||'???').slice(0,10), 120*S, (slotY+2)*S);
-                // Gender at x=62,y=12 within window
-                drawGender(mon.gender, 120 + ctx.measureText((mon.nickname||'').slice(0,10)).width/S + 2, slotY+2);
+                ctx.fillText((mon.nickname||'???').slice(0,10), (96+22)*S, (slotY+3)*S);
                 ctx.font = (5*S)+'px monospace'; ctx.fillStyle = COL_DIM;
-                ctx.fillText('Lv.'+(mon.level||'?'), 200*S, (slotY+2)*S);
+                ctx.fillText('Lv'+(mon.level||'?'), (96+30)*S, (slotY+12)*S);
+                drawGender(mon.gender, 96+62, slotY+12);
                 var hpPct = mon.maxHp > 0 ? Math.max(0, Math.min(1, (mon.currentHp||0)/mon.maxHp)) : 0;
                 var hpCol = hpPct > 0.5 ? '#20d840' : hpPct > 0.25 ? '#e8c000' : '#e82020';
-                ctx.fillStyle = COL_DIM; ctx.fillText('HP', 120*S, (slotY+12)*S);
-                drawHpBar(134, slotY+14, 60, 3, hpPct, hpCol);
+                drawHpBar(96+88, slotY+10, 48, 3, hpPct, hpCol);
                 ctx.fillStyle = COL_TEXT;
-                ctx.fillText((mon.currentHp||0)+'/'+(mon.maxHp||0), 196*S, (slotY+12)*S);
+                ctx.fillText((mon.currentHp||0)+'/'+(mon.maxHp||0), (96+92)*S, (slotY+12)*S);
+
+                // Icon on top: EE x=104, y=18+(i-1)*24 in screen coords → x=104, y=slotY+slotOffset
+                var iconI = iconImgs && iconImgs[i];
+                if (iconI) { ctx.imageSmoothingEnabled=false; ctx.drawImage(iconI, 96*S, slotY*S, 20*S, 20*S); }
             }
         }
 
