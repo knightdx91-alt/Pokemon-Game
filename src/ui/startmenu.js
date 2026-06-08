@@ -817,36 +817,30 @@ window.GameStartMenu = (function () {
         var items   = pocket.items;
         var S = BAG_S;
 
-        // EE dark palette: bg=#000, panel=#1D2D34, cyan=#5ACED6, text=#fff, dim=#626273
+        // EE dark palette
         var CYAN    = '#5aced6';
         var TEXT    = '#ffffff';
         var DIM     = '#888899';
         var BG      = '#000000';
-        var PANEL   = '#1d2d34';
-        var SEL_BG  = 'rgba(90,206,214,0.18)';
+        var SEL_BG  = 'rgba(90,206,214,0.25)';
 
         ctx.imageSmoothingEnabled = false;
         ctx.clearRect(0, 0, BAG_W, BAG_H);
         ctx.fillStyle = BG;
         ctx.fillRect(0, 0, BAG_W, BAG_H);
 
-        // ── Left panel background ──────────────────────────────────────────────
-        ctx.fillStyle = PANEL;
-        ctx.fillRect(0, 0, 112*S, BAG_H);
-
-        // ── Pocket name row (y=0..7 GBA): ◄ L ► label ──────────────────────
-        ctx.font = 'bold ' + (7*S) + 'px monospace';
+        // ── Pocket name row (y=0..9 GBA): ( ◄ label ► ) ─────────────────────
+        ctx.font = 'bold ' + (8*S) + 'px monospace';
         ctx.textBaseline = 'top';
-        // Left arrow
         ctx.fillStyle = CYAN;
-        ctx.fillText('◄', 2*S, 1*S);
-        // Pocket label centered
+        ctx.fillText('(', 2*S, 1*S);
+        ctx.fillText('◄', 8*S, 1*S);
         ctx.fillStyle = TEXT;
         var labelW = ctx.measureText(pocket.label).width;
         ctx.fillText(pocket.label, (56*S) - labelW/2, 1*S);
-        // Right arrow
         ctx.fillStyle = CYAN;
-        ctx.fillText('►', 104*S, 1*S);
+        ctx.fillText('►', (100*S) - ctx.measureText('►').width, 1*S);
+        ctx.fillText(')', (108*S) - ctx.measureText(')').width, 1*S);
 
         // ── Pocket icon row (y=8..15 GBA) ────────────────────────────────────
         var iconRowY = 8*S;
@@ -909,40 +903,40 @@ window.GameStartMenu = (function () {
             var idx = scroll + j;
             if (idx >= items.length) break;
             var item = items[idx];
-            var row_y = (4 + j * 18) * S;
+            var row_y = (4 + j * 16) * S;
             var sel = (idx === _subIdx);
 
             if (sel) {
                 ctx.fillStyle = SEL_BG;
-                ctx.fillRect(114*S, row_y, 124*S, 16*S);
-                ctx.fillStyle = CYAN;
-                ctx.fillText('▶', 114*S, row_y + 1*S);
+                ctx.fillRect(114*S, row_y - 1*S, 124*S, 15*S);
             }
+
+            // Cursor triangle
+            ctx.fillStyle = sel ? CYAN : BG;
+            ctx.fillText('▶', 115*S, row_y);
 
             ctx.fillStyle = TEXT;
             var name = item.name || item.itemId || '?';
-            ctx.fillText(name, 124*S, row_y + 1*S);
+            ctx.fillText(name, 124*S, row_y);
 
-            ctx.fillStyle = DIM;
-            ctx.fillText('×', 210*S, row_y + 1*S);
-            ctx.fillStyle = TEXT;
-            var qty = String(item.quantity || 1);
+            // quantity: × N right-aligned
+            var qty = '\xd7' + String(item.quantity || 1);
             var qw = ctx.measureText(qty).width;
-            ctx.fillText(qty, 237*S - qw, row_y + 1*S);
+            ctx.fillText(qty, 237*S - qw, row_y);
         }
 
         // "Close Pack" entry
-        var closeY = (4 + Math.min(MAX_VIS, items.length) * 18) * S;
+        var closeY = (4 + Math.min(MAX_VIS, items.length) * 16) * S;
         if (closeY < 152*S) {
             var closeSel = (_subIdx >= items.length);
             if (closeSel) {
                 ctx.fillStyle = SEL_BG;
-                ctx.fillRect(114*S, closeY, 124*S, 16*S);
-                ctx.fillStyle = CYAN;
-                ctx.fillText('▶', 114*S, closeY + 1*S);
+                ctx.fillRect(114*S, closeY - 1*S, 124*S, 15*S);
             }
+            ctx.fillStyle = closeSel ? CYAN : BG;
+            ctx.fillText('▶', 115*S, closeY);
             ctx.fillStyle = DIM;
-            ctx.fillText('Close Pack', 124*S, closeY + 1*S);
+            ctx.fillText('Close Pack', 124*S, closeY);
         }
 
         // Scroll arrows
