@@ -6,6 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **ALL work goes on `main` branch ONLY. Never create feature branches. Never open PRs. Push directly to `main`.**
 - **The EE submodule lives at `source/emerald-enhanced/` — use it as the reference for any UI/visual work.**
 - **No build system. Plain HTML/CSS/JS, all globals (`window.GameXxx`). No npm, no bundler.**
+- **Every commit MUST bump `GAME_VERSION` in `src/ui/hud.js` (semver patch: v0.X.Y → v0.X.Y+1). Always tell the user the new version number when pushing.**
 
 ---
 
