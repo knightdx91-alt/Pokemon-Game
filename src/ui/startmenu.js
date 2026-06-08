@@ -8,16 +8,23 @@ window.GameStartMenu = (function () {
     const TIER_ICON = { platinum: '💎', gold: '🥇', silver: '🥈', bronze: '🥉' };
     const TIER_ORDER = ['platinum', 'gold', 'silver', 'bronze'];
 
-    // Main menu items
-    const MAIN_ITEMS = [
-        { id: 'POKEDEX',       label: 'POKÉDEX'      },
-        { id: 'POKEMON',       label: 'POKÉMON'       },
-        { id: 'BAG',           label: 'BAG'           },
-        { id: 'POKENAV',       label: 'POKÉNAV'       },
-        { id: 'TRAINER_CARD',  label: 'TRAINER CARD'  },
-        { id: 'SAVE',          label: 'SAVE'          },
-        { id: 'OPTIONS',       label: 'OPTIONS'       },
-        { id: 'EXIT',          label: 'EXIT'          }
+    // Main menu items — matches Emerald Enhanced layout
+    // Player name replaces TRAINER CARD as its own item (as in the original)
+    function _mainItems() {
+        const name = _playerName();
+        return [
+            { id: 'POKEMON',      label: 'POKéMON'      },
+            { id: 'BAG',          label: 'PACK'          },
+            { id: 'TRAINER_CARD', label: name            },
+            { id: 'POKENAV',      label: 'POKéNAV'      },
+            { id: 'SAVE',         label: 'SAVE'          },
+            { id: 'OPTIONS',      label: 'OPTIONS'       },
+            { id: 'EXIT',         label: 'CLOSE'         },
+        ];
+    }
+    // Keep a static reference for item count; items are built fresh each render
+    const MAIN_ITEMS_STATIC = [
+        'POKEMON','BAG','TRAINER_CARD','POKENAV','SAVE','OPTIONS','EXIT'
     ];
 
     // -----------------------------------------------------------------------
@@ -131,10 +138,10 @@ window.GameStartMenu = (function () {
         menuEl.innerHTML = '';
         menuEl.appendChild(_makeHeader());
 
-        MAIN_ITEMS.forEach(function (item, i) {
+        _mainItems().forEach(function (item, i) {
             const row = document.createElement('div');
             row.className = 'sm-item' + (i === selectedIdx ? ' selected' : '');
-            row.innerHTML = '<span class="sm-arrow">' + (i === selectedIdx ? '►' : ' ') + '</span>'
+            row.innerHTML = '<span class="sm-arrow">' + (i === selectedIdx ? '►' : ' ') + '</span>'
                           + '<span class="sm-label">' + item.label + '</span>';
             row.addEventListener('click', function () {
                 selectedIdx = i;
@@ -423,7 +430,7 @@ window.GameStartMenu = (function () {
     // Number of selectable items per page (for cursor wrap)
     // -----------------------------------------------------------------------
     function _itemCount() {
-        if (page === 'main') return MAIN_ITEMS.length;
+        if (page === 'main') return MAIN_ITEMS_STATIC.length;
         if (page === 'achievements') {
             const all = window.GameAchievements ? GameAchievements.getAll() : [];
             return 1 + all.length; // back + each achievement
@@ -466,7 +473,7 @@ window.GameStartMenu = (function () {
 
     function _confirmSelected() {
         if (page === 'main') {
-            const item = MAIN_ITEMS[selectedIdx];
+            const item = _mainItems()[selectedIdx];
             if (!item) return;
             if (item.id === 'EXIT') { close(); return; }
             if (item.id === 'SAVE') { _prevPage = 'main'; page = 'save'; selectedIdx = 0; _render(); return; }
