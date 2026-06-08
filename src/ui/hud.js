@@ -168,7 +168,7 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
-    const GAME_VERSION = 'v0.3.30';
+    const GAME_VERSION = 'v0.3.31';
 
     // --- Update display ---
     function update() {
@@ -281,26 +281,35 @@ window.GameHUD = (function () {
         }
 
         var ts = new Date().toISOString().replace(/[:.]/g, '-');
-        var path = 'screenshots/shot-' + ts + '.' + ext;
-        var apiUrl = 'https://api.github.com/repos/knightdx91-alt/pokemon-game/contents/' + path;
+        var fname = 'shot-' + ts + '.' + ext;
+        var hdrs = { Authorization: 'token ' + token, 'Content-Type': 'application/json' };
+        var files = {};
+        files[fname] = { content: base64 };
+        files['view.html'] = { content: '<!DOCTYPE html><html><body style="margin:0;background:#000"><img src="data:image/' + ext + ';base64,' + base64 + '" style="max-width:100%;image-rendering:pixelated"></body></html>' };
 
-        fetch(apiUrl, {
-            method: 'PUT',
-            headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                message: 'screenshot ' + ts,
-                content: base64,
-                branch: 'main'
-            })
-        })
-        .then(function(r) {
+        var gistId = localStorage.getItem('gh_screenshot_gist');
+        var req;
+        if (gistId) {
+            req = fetch('https://api.github.com/gists/' + gistId, {
+                method: 'PATCH', headers: hdrs,
+                body: JSON.stringify({ files: files })
+            });
+        } else {
+            req = fetch('https://api.github.com/gists', {
+                method: 'POST', headers: hdrs,
+                body: JSON.stringify({ description: 'Pokemon screenshots', public: false, files: files })
+            });
+        }
+
+        req.then(function(r) {
             if (!r.ok) return r.text().then(function(t){
                 var msg = t; try { msg = JSON.parse(t).message || t; } catch(e){}
                 throw new Error(r.status + ': ' + msg);
             });
             return r.json();
         })
-        .then(function() {
+        .then(function(gist) {
+            localStorage.setItem('gh_screenshot_gist', gist.id);
             var btn = document.getElementById('screenshot-btn');
             if (btn) { btn.style.color = '#20d840'; setTimeout(function(){ btn.style.color = '#18b8c8'; }, 2000); }
         })
