@@ -9,6 +9,11 @@
         direction: 'down'
     };
 
+    // --- Autosave interval (15 s) ---
+    setInterval(function () {
+        if (window.GameSave) GameSave.autosave();
+    }, 15000);
+
     // --- Movement cooldown ---
     const MOVE_COOLDOWN_MS = 150;
     let lastMoveTime = 0;
@@ -36,6 +41,7 @@
                 if (GameMap.isWalkable(nx, ny)) {
                     player.x = nx;
                     player.y = ny;
+                    if (window.GameSave) GameSave.markDirty();
                     const warp = GameMap.getWarp(nx, ny);
                     if (warp) {
                         console.log(`[Warp] -> ${warp.dest_map}`);
