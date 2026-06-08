@@ -78,11 +78,13 @@
 
             // Inventory pockets
             inventory: {
-                items:     [],  // { itemId, quantity }
-                keyItems:  [],
-                pokeBalls: [],
-                tms:       [],
-                berries:   []
+                items:     [{ itemId: 1, name: 'Potion',        quantity: 5,  desc: 'Restores 20 HP.' }],
+                medicine:  [{ itemId: 2, name: 'Antidote',      quantity: 2,  desc: 'Cures poison.' }],
+                valuables: [{ itemId: 3, name: 'Nugget',        quantity: 1,  desc: 'A nugget of pure gold.' }],
+                keyItems:  [{ itemId: 4, name: 'Bicycle',       quantity: 1,  desc: 'A folding bicycle.' }],
+                pokeBalls: [{ itemId: 5, name: 'Poké Ball',     quantity: 10, desc: 'A device for catching Pokémon.' }],
+                tms:       [{ itemId: 6, name: 'TM01 Focus Punch', quantity: 1, desc: 'Teaches Focus Punch.' }],
+                berries:   [{ itemId: 7, name: 'Oran Berry',    quantity: 3,  desc: 'Restores 10 HP if held.' }],
             },
 
             // Badges per region
@@ -271,6 +273,20 @@
             // Re-inflate Sets
             if (Array.isArray(data.worldFlags))  data.worldFlags  = new Set(data.worldFlags);
             if (Array.isArray(data.visitedMaps)) data.visitedMaps = new Set(data.visitedMaps);
+            // Backfill test items so all 7 bag pockets are non-empty
+            const inv = data.inventory || (data.inventory = {});
+            const SEEDS = {
+                items:     { itemId:1,  name:'Potion',           quantity:5,  desc:'Restores 20 HP.' },
+                medicine:  { itemId:2,  name:'Antidote',         quantity:2,  desc:'Cures poison.' },
+                valuables: { itemId:3,  name:'Nugget',           quantity:1,  desc:'A nugget of pure gold.' },
+                keyItems:  { itemId:4,  name:'Bicycle',          quantity:1,  desc:'A folding bicycle.' },
+                pokeBalls: { itemId:5,  name:'Poké Ball',        quantity:10, desc:'A device for catching Pokémon.' },
+                tms:       { itemId:6,  name:'TM01 Focus Punch', quantity:1,  desc:'Teaches Focus Punch.' },
+                berries:   { itemId:7,  name:'Oran Berry',       quantity:3,  desc:'Restores 10 HP if held.' },
+            };
+            for (const [pocket, seed] of Object.entries(SEEDS)) {
+                if (!Array.isArray(inv[pocket]) || inv[pocket].length === 0) inv[pocket] = [seed];
+            }
             this.currentSlot = slotIndex;
             this.state = data;
             this._dirty = false;
