@@ -168,7 +168,7 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
-    const GAME_VERSION = 'v0.3.13';
+    const GAME_VERSION = 'v0.3.14';
 
     // --- Update display ---
     function update() {
@@ -330,7 +330,7 @@ window.GameHUD = (function () {
                                             .then(function(newCommit) {
                                                 // Step 6: update ref
                                                 return fetch(base + '/git/refs/heads/' + BRANCH, { method:'PATCH', headers:hdrs,
-                                                        body: JSON.stringify({ sha: newCommit.sha }) })
+                                                        body: JSON.stringify({ sha: newCommit.sha, force: true }) })
                                                     .then(function(r){ return r.ok ? r.json() : apiErr('updateref',r); });
                                             });
                                     });
