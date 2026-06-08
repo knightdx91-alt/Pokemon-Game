@@ -61,37 +61,11 @@
             console.log('[Warp] returnWarp:', JSON.stringify(returnWarp));
 
             if (returnWarp) {
-                const rx = returnWarp.x, ry = returnWarp.y;
-                // Spawn in the direction the player was already travelling so they
-                // step cleanly away from the warp tile in the same direction.
-                const dir = player.direction;
-                const primary = dir === 'up'    ? [rx, ry - 1] :
-                                dir === 'down'  ? [rx, ry + 1] :
-                                dir === 'left'  ? [rx - 1, ry] :
-                                                  [rx + 1, ry];
-                const candidates = [primary];
-                for (let dist = 1; dist <= 4; dist++) {
-                    candidates.push([rx, ry - dist]);
-                    candidates.push([rx, ry + dist]);
-                    candidates.push([rx - dist, ry]);
-                    candidates.push([rx + dist, ry]);
-                }
-                candidates.push([rx, ry]); // absolute last resort
-                let placed = false;
-                for (const [cx, cy] of candidates) {
-                    if (GameMap.isWalkable(cx, cy) && !GameMap.getWarp(cx, cy)) {
-                        player.x = cx;
-                        player.y = cy;
-                        placed = true;
-                        break;
-                    }
-                }
-                if (!placed) {
-                    player.x = rx;
-                    player.y = ry;
-                }
-                console.log(`[Warp] spawned at (${player.x},${player.y}) placed=${placed}`);
-                // Keep the direction the player was facing — don't snap to 'down'
+                // Spawn directly on the return warp tile, same direction the player
+                // was already moving. The cooldown prevents immediately re-triggering.
+                player.x = returnWarp.x;
+                player.y = returnWarp.y;
+                console.log(`[Warp] spawned at (${player.x},${player.y})`);
                 player.walkFrame = 0;
             } else {
                 // Centre of map
