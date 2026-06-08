@@ -168,7 +168,7 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
-    const GAME_VERSION = 'v0.3.7';
+    const GAME_VERSION = 'v0.3.8';
 
     // --- Update display ---
     function update() {
@@ -240,6 +240,24 @@ window.GameHUD = (function () {
         ssBtn.addEventListener('click', _takeScreenshot);
         overlay.appendChild(ssBtn);
 
+        // Token input in settings panel
+        var tokenInput = document.getElementById('screenshot-token-input');
+        var tokenSave  = document.getElementById('screenshot-token-save');
+        if (tokenInput) {
+            var saved = localStorage.getItem('gh_debug_token');
+            if (saved) tokenInput.value = saved;
+        }
+        if (tokenSave) {
+            tokenSave.addEventListener('click', function() {
+                var v = tokenInput ? tokenInput.value.trim() : '';
+                if (v) {
+                    localStorage.setItem('gh_debug_token', v);
+                    tokenSave.textContent = '✓ Saved';
+                    setTimeout(function(){ tokenSave.textContent = 'Save'; }, 1500);
+                }
+            });
+        }
+
         initSettings();
         update();
     }
@@ -261,10 +279,8 @@ window.GameHUD = (function () {
 
         var token = localStorage.getItem('gh_debug_token');
         if (!token) {
-            var t = prompt('Enter GitHub PAT (stored in localStorage, never committed):\n(needs Contents: Write on knightdx91-alt/pokemon-game)');
-            if (!t) return;
-            localStorage.setItem('gh_debug_token', t.trim());
-            token = t.trim();
+            alert('No GitHub token set.\nOpen Settings → paste your token in the GitHub Token field → Save, then try again.');
+            return;
         }
 
         var path = 'screenshots/latest.png';
