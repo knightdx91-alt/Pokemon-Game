@@ -44,10 +44,32 @@ def tileset_name_to_path(tileset_name: str, kind: str) -> Path:
 
 
 def _camel_to_snake(raw: str) -> str:
-    """CamelCase123 → camel_case_123  (inserts _ before uppercase and before digit-runs)"""
+    """
+    CamelCase / acronym-aware snake_case:
+      SSAnne        → ss_anne
+      GenericBuilding1 → generic_building_1
+      SilphCo       → silph_co
+      SeviiIslands123 → sevii_islands_123
+    Rules:
+      - Insert _ before an uppercase that follows a lowercase/digit
+      - Insert _ before an uppercase that is followed by a lowercase, when preceded by uppercase
+        (handles acronym boundaries: SS|Anne → ss_anne)
+      - Insert _ before a digit-run that follows a non-digit
+    """
     snake = ""
+    n = len(raw)
     for i, ch in enumerate(raw):
-        if i > 0 and (ch.isupper() or (ch.isdigit() and not raw[i-1].isdigit())):
+        if i == 0:
+            snake += ch.lower()
+            continue
+        prev = raw[i - 1]
+        nxt  = raw[i + 1] if i + 1 < n else ""
+        if ch.isupper():
+            if prev.islower() or prev.isdigit():
+                snake += "_"
+            elif prev.isupper() and nxt and nxt.islower():
+                snake += "_"
+        elif ch.isdigit() and not prev.isdigit():
             snake += "_"
         snake += ch.lower()
     return snake
@@ -244,8 +266,10 @@ def process_tileset_pair(primary_name: str, secondary_name: str):
     secondary_dir = tileset_name_to_path(secondary_name, "secondary")
 
     # --- Load tiles images ---
-    primary_img   = Image.open(primary_dir   / "tiles.png").convert("P")
-    secondary_img = Image.open(secondary_dir / "tiles.png").convert("P")
+    primary_img   = Image.open(primary_dir / "tiles.png").convert("P")
+    sec_tiles_path = secondary_dir / "tiles.png"
+    # Some secondary tilesets (e.g. SilphCo) have no tiles.png — they reuse primary tiles only
+    secondary_img = Image.open(sec_tiles_path).convert("P") if sec_tiles_path.exists() else primary_img
 
     pri_tiles = list(primary_img.getdata())
     sec_tiles = list(secondary_img.getdata())
