@@ -899,6 +899,17 @@ window.GameStartMenu = (function () {
         ctx.font = (7*S) + 'px monospace';
         ctx.textBaseline = 'top';
 
+        function drawCursor(cx, cy, h) {
+            // Filled right-pointing triangle as cursor
+            ctx.fillStyle = CYAN;
+            ctx.beginPath();
+            ctx.moveTo(cx,        cy + 1);
+            ctx.lineTo(cx + 5*S,  cy + Math.floor(h/2));
+            ctx.lineTo(cx,        cy + h - 1);
+            ctx.closePath();
+            ctx.fill();
+        }
+
         for (var j = 0; j < MAX_VIS; j++) {
             var idx = scroll + j;
             if (idx >= items.length) break;
@@ -909,11 +920,8 @@ window.GameStartMenu = (function () {
             if (sel) {
                 ctx.fillStyle = SEL_BG;
                 ctx.fillRect(114*S, row_y - 1*S, 124*S, 15*S);
+                drawCursor(115*S, row_y, 13*S);
             }
-
-            // Cursor triangle
-            ctx.fillStyle = sel ? CYAN : BG;
-            ctx.fillText('▶', 115*S, row_y);
 
             ctx.fillStyle = TEXT;
             var name = item.name || item.itemId || '?';
@@ -932,16 +940,21 @@ window.GameStartMenu = (function () {
             if (closeSel) {
                 ctx.fillStyle = SEL_BG;
                 ctx.fillRect(114*S, closeY - 1*S, 124*S, 15*S);
+                drawCursor(115*S, closeY, 13*S);
             }
-            ctx.fillStyle = closeSel ? CYAN : BG;
-            ctx.fillText('▶', 115*S, closeY);
             ctx.fillStyle = DIM;
             ctx.fillText('Close Pack', 124*S, closeY);
         }
 
-        // Scroll arrows
-        if (scroll > 0) { ctx.fillStyle = CYAN; ctx.fillText('▲', 232*S, 4*S); }
-        if (scroll + MAX_VIS < items.length) { ctx.fillStyle = CYAN; ctx.fillText('▼', 232*S, 152*S); }
+        // Scroll arrows — drawn as triangles too
+        if (scroll > 0) {
+            ctx.fillStyle = CYAN;
+            ctx.beginPath(); ctx.moveTo(232*S, 8*S); ctx.lineTo(236*S, 4*S); ctx.lineTo(240*S, 8*S); ctx.closePath(); ctx.fill();
+        }
+        if (scroll + MAX_VIS < items.length) {
+            ctx.fillStyle = CYAN;
+            ctx.beginPath(); ctx.moveTo(232*S, 150*S); ctx.lineTo(236*S, 154*S); ctx.lineTo(240*S, 150*S); ctx.closePath(); ctx.fill();
+        }
     }
 
     function _buildBag(el) {
