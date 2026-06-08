@@ -168,7 +168,7 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
-    const GAME_VERSION = 'v0.3.8';
+    const GAME_VERSION = 'v0.3.9';
 
     // --- Update display ---
     function update() {
@@ -309,7 +309,11 @@ window.GameHUD = (function () {
                     var btn = document.getElementById('screenshot-btn');
                     if (btn) { btn.style.color = '#20d840'; setTimeout(function(){ btn.style.color = '#18b8c8'; }, 1500); }
                 } else {
-                    return r.text().then(function(t){ console.error('[Screenshot] Failed:', t); alert('Screenshot failed — check token/permissions.'); });
+                    return r.text().then(function(t){
+                        var msg = t;
+                        try { msg = JSON.parse(t).message || t; } catch(e){}
+                        alert('Screenshot failed (' + r.status + '):\n' + msg);
+                    });
                 }
             })
             .catch(function(e) { console.error('[Screenshot]', e); alert('Screenshot error: ' + e.message); });
