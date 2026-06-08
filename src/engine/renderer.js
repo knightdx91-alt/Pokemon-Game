@@ -198,7 +198,15 @@ window.GameRenderer = (function () {
             ctx.fillRect(playerSX + Math.floor(TILE_PX / 2) - 1, playerSY + pad + 1, 3, 3);
         }
 
-        // Map name overlay removed — handled by HUD banner
+        // Coords overlay — drawn directly on canvas so it's always visible
+        if (_player) {
+            const coordText = `(${_player.x}, ${_player.y})`;
+            ctx.font = '8px monospace';
+            ctx.fillStyle = 'rgba(0,0,0,0.6)';
+            ctx.fillRect(1, 1, coordText.length * 5 + 4, 11);
+            ctx.fillStyle = '#fff';
+            ctx.fillText(coordText, 3, 10);
+        }
     }
 
     function loop() {
