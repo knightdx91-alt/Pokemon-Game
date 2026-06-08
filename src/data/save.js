@@ -71,7 +71,12 @@
             },
 
             // Party — up to 6 Pokemon (null = empty slot)
-            party: [null, null, null, null, null, null],
+            party: [Object.assign(DEFAULT_POKEMON(), {
+                speciesId: 4, nickname: 'CHARMANDER', level: 5,
+                currentHp: 19, maxHp: 19,
+                moves: ['Scratch', 'Growl', null, null],
+                caughtLevel: 5, exp: 35
+            }), null, null, null, null, null],
 
             // PC Boxes — 20 boxes × 30 slots
             pcBoxes: Array.from({ length: 20 }, (_, i) => DEFAULT_BOX('Box ' + (i + 1))),
@@ -286,6 +291,15 @@
             };
             for (const [pocket, seed] of Object.entries(SEEDS)) {
                 if (!Array.isArray(inv[pocket]) || inv[pocket].length === 0) inv[pocket] = [seed];
+            }
+            // Backfill test Charmander if party is completely empty
+            if (!Array.isArray(data.party) || data.party.every(s => s === null)) {
+                data.party = [Object.assign(DEFAULT_POKEMON(), {
+                    speciesId: 4, nickname: 'CHARMANDER', level: 5,
+                    currentHp: 19, maxHp: 19,
+                    moves: ['Scratch', 'Growl', null, null],
+                    caughtLevel: 5, exp: 35
+                }), null, null, null, null, null];
             }
             this.currentSlot = slotIndex;
             this.state = data;
