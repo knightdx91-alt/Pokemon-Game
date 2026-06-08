@@ -48,16 +48,17 @@
 
             // Remember source map id before we load the destination
             const sourceMapId = GameMap.current && GameMap.current.id;
+            console.log(`[Warp] sourceMapId=${sourceMapId} dir=${player.direction}`);
 
             // Load destination map
             await GameMap.load(mapName, currentRegion);
 
             // Find return warp: prefer the warp that points back to our source map.
-            // Falling back to array index is unreliable after deduplication, so we
-            // always try the back-reference first.
             const destWarps = (GameMap.current && GameMap.current.warps) || [];
+            console.log('[Warp] destWarps:', JSON.stringify(destWarps));
             let returnWarp = destWarps.find(w => w.dest_map === sourceMapId) || null;
             if (!returnWarp) returnWarp = destWarps[warpIndex] || destWarps[0] || null;
+            console.log('[Warp] returnWarp:', JSON.stringify(returnWarp));
 
             if (returnWarp) {
                 const rx = returnWarp.x, ry = returnWarp.y;
@@ -89,6 +90,7 @@
                     player.x = rx;
                     player.y = ry;
                 }
+                console.log(`[Warp] spawned at (${player.x},${player.y}) placed=${placed}`);
                 // Keep the direction the player was facing — don't snap to 'down'
                 player.walkFrame = 0;
             } else {
