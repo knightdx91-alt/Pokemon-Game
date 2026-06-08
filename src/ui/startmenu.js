@@ -147,13 +147,13 @@ window.GameStartMenu = (function () {
     function _loadBagAssets(cb) {
         if (_bagAssets) { cb(_bagAssets); return; }
         var assets = { bg: null, icons: [] };
-        var pending = 1 + 16; // bg + 8 unsel + 8 sel
+        var pending = 1 + 14; // bg + 7 unsel + 7 sel
         function done() { if (--pending === 0) { _bagAssets = assets; cb(assets); } }
         var bg = new Image();
         bg.onload = function() { assets.bg = bg; done(); };
         bg.onerror = function() { done(); };
         bg.src = _bagBgPath();
-        for (var i = 0; i < 8; i++) {
+        for (var i = 0; i < 7; i++) {
             (function(idx) {
                 var icon = { unsel: null, sel: null };
                 assets.icons.push(icon);
@@ -794,7 +794,6 @@ window.GameStartMenu = (function () {
             { label: 'Poké Balls', items: pick('pokeBalls') },
             { label: 'TMs & HMs',  items: pick('tms')       },
             { label: 'Berries',    items: pick('berries')   },
-            { label: 'Free Space', items: inv.free || []    },
         ];
     }
 
@@ -821,7 +820,7 @@ window.GameStartMenu = (function () {
 
         // ── Pocket indicator icons — 8×8 sprite tiles at (24+i*8, 16) in GBA px
         ctx.imageSmoothingEnabled = false;
-        for (var i = 0; i < 8; i++) {
+        for (var i = 0; i < 7; i++) {
             var ix = (24 + i * 8) * S;
             var iy = 16 * S;
             var icon = assets && assets.icons && assets.icons[i];
