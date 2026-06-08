@@ -30,6 +30,17 @@ window.GameStartMenu = (function () {
     let _saveDone   = false;
     let _subIdx     = 0;
 
+    // --- Bag state ---
+    var _bagPocket  = 0;   // 0-7: which pocket tab is open
+    var _bagBgImg   = null; // cached Image for bag_bg.png
+    function _loadBagBg(cb) {
+        if (_bagBgImg && _bagBgImg.complete) { cb(_bagBgImg); return; }
+        _bagBgImg = new Image();
+        _bagBgImg.onload = function() { cb(_bagBgImg); };
+        _bagBgImg.onerror = function() { cb(null); };
+        _bagBgImg.src = 'src/assets/bag/bag_bg.png';
+    }
+
     // --- Data helpers ---
     function _playtime() {
         const secs = (window.GameSave && GameSave.state && GameSave.state.meta)
@@ -545,102 +556,168 @@ window.GameStartMenu = (function () {
         el.appendChild(descBox);
     }
 
-    function _buildBag(el) {
-        // EE item_menu.c sDefaultBagWindows layout:
-        // WIN[0] item list:    right side  — left=112px, top=8px,  120×144px
-        // WIN[1] description:  bottom-left — left=0px,   top=104px, 112×48px
-        // WIN[2] pocket name:  top-center of left area   left=32px, top=8px,  64×16px
-        // Left panel: pocket icon/selector; Right panel: item list for selected pocket
+    // ── Bag pocket data helper ──────────────────────────────────────────────
+    function _getBagPockets() {
         const inv = (window.GameSave && GameSave.state && GameSave.state.inventory)
-            ? GameSave.state.inventory
-            : { items:[], medicine:[], valuables:[], keyItems:[], pokeBalls:[], tms:[], berries:[] };
-
-        const POCKETS = [
-            { id:'items',     label:'Items',      icon:'🎒', items: inv.items     || [] },
-            { id:'medicine',  label:'Medicine',   icon:'💊', items: inv.medicine  || inv.items || [] },
-            { id:'valuables', label:'Valuables',  icon:'💰', items: inv.valuables || [] },
-            { id:'keyItems',  label:'Key Items',  icon:'🔑', items: inv.keyItems  || [] },
-            { id:'pokeBalls', label:'Poké Balls', icon:'⚪', items: inv.pokeBalls || [] },
-            { id:'tms',       label:'TMs/HMs',    icon:'💿', items: inv.tms       || [] },
-            { id:'berries',   label:'Berries',    icon:'🍒', items: inv.berries   || [] },
+            ? GameSave.state.inventory : {};
+        return [
+            { label: 'Items',      items: inv.items     || [] },
+            { label: 'Medicine',   items: inv.medicine  || [] },
+            { label: 'Valuables',  items: inv.valuables || [] },
+            { label: 'Key Items',  items: inv.keyItems  || [] },
+            { label: 'Poké Balls', items: inv.pokeBalls || [] },
+            { label: 'TMs & HMs',  items: inv.tms       || [] },
+            { label: 'Berries',    items: inv.berries   || [] },
+            { label: 'Free Space', items: inv.free      || [] },
         ];
+    }
 
-        el.style.padding = '0';
-        el.style.flexDirection = 'column';
+    // ── Canvas bag renderer (GBA pixel-exact at 240×160) ───────────────────
+    function _drawBagCanvas(ctx, bg) {
+        var POCKETS = _getBagPockets();
+        var pocket  = POCKETS[_bagPocket] || POCKETS[0];
+        var items   = pocket.items;
 
-        // ── Pocket name bar (top of left area — EE WIN[2])
-        const pocketBar = document.createElement('div');
-        pocketBar.className = 'bag-pocket-bar';
-        const pocketName = document.createElement('span');
-        pocketName.className = 'bag-pocket-name';
-        pocketName.textContent = POCKETS[_subIdx] ? POCKETS[_subIdx].label : 'Items';
-        pocketBar.appendChild(pocketName);
-        el.appendChild(pocketBar);
+        // ── 1. Background image (240×160 assembled from EE tileset+tilemap)
+        ctx.clearRect(0, 0, 240, 160);
+        if (bg) ctx.drawImage(bg, 0, 0, 240, 160);
 
-        // ── Two-column body
-        const body = document.createElement('div');
-        body.className = 'bag-body';
-
-        // LEFT: pocket selector column
-        const leftCol = document.createElement('div');
-        leftCol.className = 'bag-left-col';
-
-        POCKETS.forEach(function(pocket, i) {
-            const btn = document.createElement('div');
-            btn.className = 'bag-pocket-btn' + (i === _subIdx ? ' selected' : '');
-            btn.style.pointerEvents = 'all';
-            btn.innerHTML = '<span class="bag-pocket-icon">' + pocket.icon + '</span>'
-                + '<span class="bag-pocket-lbl">' + pocket.label + '</span>';
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                _subIdx = i;
-                _render();
-            });
-            leftCol.appendChild(btn);
-        });
-
-        body.appendChild(leftCol);
-
-        // RIGHT: item list (EE WIN[0])
-        const rightCol = document.createElement('div');
-        rightCol.className = 'bag-right-col';
-
-        const sel = POCKETS[_subIdx] || POCKETS[0];
-        if (!sel.items.length) {
-            const empty = document.createElement('div');
-            empty.className = 'bag-item-empty';
-            empty.textContent = 'Empty';
-            rightCol.appendChild(empty);
-        } else {
-            const itemList = document.createElement('div');
-            itemList.className = 'bag-item-list';
-            sel.items.forEach(function(entry, ii) {
-                const row = document.createElement('div');
-                row.className = 'bag-item-row';
-                const iname = document.createElement('span');
-                iname.className = 'bag-item-name';
-                iname.textContent = entry.name || entry.itemId || entry.id || '?';
-                const qty = document.createElement('span');
-                qty.className = 'bag-item-qty';
-                qty.textContent = '×' + (entry.quantity || 1);
-                row.appendChild(iname);
-                row.appendChild(qty);
-                itemList.appendChild(row);
-            });
-            rightCol.appendChild(itemList);
+        // ── 2. Pocket indicator squares
+        // EE: InitPocketIndicatorIcons places 8 tiles at (i+3, 2) = px (24+i*8, 16)
+        // Selected = cyan filled; unselected = dark square
+        for (var i = 0; i < 8; i++) {
+            if (i === _bagPocket) {
+                ctx.fillStyle = '#1dc0fe';
+            } else {
+                ctx.fillStyle = '#0d2030';
+                ctx.strokeStyle = '#1dc0fe';
+                ctx.lineWidth = 0.5;
+                ctx.strokeRect(24 + i*8 + 0.5, 16.5, 6, 6);
+            }
+            if (i === _bagPocket) ctx.fillRect(24 + i*8, 16, 7, 7);
         }
 
-        body.appendChild(rightCol);
-        el.appendChild(body);
+        // ── 3. Pocket name (EE WIN[2]: tilemapLeft=3, tilemapTop=0 → px 24, 0 classic)
+        ctx.font = 'bold 8px "Courier New"';
+        ctx.fillStyle = '#1dc0fe';
+        ctx.fillText(pocket.label, 26, 11);
 
-        // ── Description bar (bottom-left — EE WIN[1])
-        const desc = document.createElement('div');
-        desc.className = 'bag-desc-bar';
-        const selItem = sel.items[0]; // show first item desc, or pocket summary
-        desc.textContent = selItem
-            ? (selItem.desc || selItem.description || ('Select an item to use or toss.'))
-            : (sel.label + ' pocket is empty.');
-        el.appendChild(desc);
+        // ── 4. Item list (EE WIN[0]: x=112, y=8, w=120, h=144; item_X=8, upText_Y=1)
+        // 9 items visible (144px / 16px per row), scroll to keep cursor visible
+        var MAX_VIS = 9;
+        var scroll  = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), items.length - MAX_VIS));
+        if (scroll < 0) scroll = 0;
+
+        ctx.font = '7px "Courier New"';
+        for (var j = 0; j < MAX_VIS; j++) {
+            var idx = scroll + j;
+            if (idx >= items.length) break;
+            var item = items[idx];
+            var iy   = 8 + j * 16;
+            var sel  = (idx === _subIdx);
+
+            if (sel) {
+                // EE GPU window highlight bar
+                ctx.fillStyle = 'rgba(29,192,254,0.18)';
+                ctx.fillRect(113, iy, 126, 14);
+                // Left-edge highlight strip
+                ctx.fillStyle = '#1dc0fe';
+                ctx.fillRect(113, iy, 2, 14);
+            }
+
+            ctx.fillStyle = sel ? '#ffffff' : '#dbdff0';
+            var name = item.name || item.itemId || item.id || '?';
+            ctx.fillText(name, 122, iy + 10);
+
+            // Quantity right-aligned at x=232
+            var qty = '\xd7' + (item.quantity || 1);
+            var qw  = ctx.measureText(qty).width;
+            ctx.fillText(qty, 238 - qw, iy + 10);
+        }
+
+        // Scroll arrows if list overflows
+        if (scroll > 0) {
+            ctx.fillStyle = '#1dc0fe';
+            ctx.fillText('▲', 231, 13);
+        }
+        if (scroll + MAX_VIS < items.length) {
+            ctx.fillStyle = '#1dc0fe';
+            ctx.fillText('▼', 231, 153);
+        }
+
+        // CANCEL entry at bottom of right panel (always shown)
+        var cancelY = 8 + Math.min(MAX_VIS, items.length) * 16;
+        if (cancelY < 152) {
+            ctx.fillStyle = '#dbdff0';
+            ctx.fillText('CANCEL', 122, cancelY + 10);
+        }
+
+        // ── 5. Description (EE WIN[1]: tilemapLeft=0, tilemapTop=14 → px 0, 112 classic)
+        var selItem = items[_subIdx];
+        var desc = selItem
+            ? (selItem.desc || selItem.description || 'No description.')
+            : pocket.label + ' pocket is empty.';
+        ctx.fillStyle = '#dbdff0';
+        ctx.font = '7px "Courier New"';
+        // Simple word-wrap in 108px width at x=4
+        var words = desc.split(' ');
+        var line = '', lx = 4, ly = 122;
+        for (var w = 0; w < words.length; w++) {
+            var test = line ? line + ' ' + words[w] : words[w];
+            if (ctx.measureText(test).width > 104 && line) {
+                ctx.fillText(line, lx, ly);
+                line = words[w];
+                ly += 11;
+                if (ly > 154) break;
+            } else {
+                line = test;
+            }
+        }
+        if (line) ctx.fillText(line, lx, ly);
+    }
+
+    function _buildBag(el) {
+        el.style.cssText = 'padding:0;overflow:hidden;background:none;position:absolute;inset:0;';
+
+        var canvas = document.createElement('canvas');
+        canvas.width  = 240;
+        canvas.height = 160;
+        canvas.style.cssText = 'width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges;';
+        canvas.style.pointerEvents = 'all';
+        el.appendChild(canvas);
+
+        var ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+
+        // Touch/click: pocket tabs and item list
+        canvas.addEventListener('click', function(e) {
+            var rect = canvas.getBoundingClientRect();
+            var cx = (e.clientX - rect.left) * (240 / rect.width);
+            var cy = (e.clientY - rect.top)  * (160 / rect.height);
+
+            // Pocket indicator squares: y=16..23, x=24..88 (8 squares of 8px)
+            if (cy >= 16 && cy < 24 && cx >= 24 && cx < 88) {
+                var p = Math.floor((cx - 24) / 8);
+                if (p >= 0 && p < 8) { _bagPocket = p; _subIdx = 0; _render(); return; }
+            }
+            // Item list: x=113..239, y=8..152
+            if (cx >= 113 && cy >= 8 && cy < 152) {
+                var row = Math.floor((cy - 8) / 16);
+                var POCKETS = _getBagPockets();
+                var items = (POCKETS[_bagPocket] || POCKETS[0]).items;
+                var MAX_VIS = 9;
+                var scroll = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), items.length - MAX_VIS));
+                if (scroll < 0) scroll = 0;
+                var itemIdx = scroll + row;
+                if (itemIdx >= 0 && itemIdx < items.length) {
+                    _subIdx = itemIdx; _render();
+                }
+            }
+        });
+
+        // Store redraw fn for when page re-renders
+        el._redraw = function() { _loadBagBg(function(bg) { _drawBagCanvas(ctx, bg); }); };
+        el._redraw();
     }
 
     // --- Party viewer ---
@@ -1435,12 +1512,14 @@ window.GameStartMenu = (function () {
     function moveLeft() {
         if (!isOpen) return;
         if (page==='main') { selectedIdx=(selectedIdx-1+ITEMS.length)%ITEMS.length; _render(); return; }
-        if (page==='journal') { _journalPage=(_journalPage-1+JOURNAL_PAGES.length)%JOURNAL_PAGES.length; _render(); }
+        if (page==='journal') { _journalPage=(_journalPage-1+JOURNAL_PAGES.length)%JOURNAL_PAGES.length; _render(); return; }
+        if (page==='bag') { _bagPocket=(_bagPocket-1+8)%8; _subIdx=0; _render(); return; }
     }
     function moveRight() {
         if (!isOpen) return;
         if (page==='main') { selectedIdx=(selectedIdx+1)%ITEMS.length; _render(); return; }
-        if (page==='journal') { _journalPage=(_journalPage+1)%JOURNAL_PAGES.length; _render(); }
+        if (page==='journal') { _journalPage=(_journalPage+1)%JOURNAL_PAGES.length; _render(); return; }
+        if (page==='bag') { _bagPocket=(_bagPocket+1)%8; _subIdx=0; _render(); return; }
     }
     function moveUp() {
         if (!isOpen||page==='main') return;
@@ -1455,7 +1534,7 @@ window.GameStartMenu = (function () {
         if (page==='save')    return 2;
         if (page==='pokenav') return 5;  // Map, Condition, Ribbons, Match Call, Close
         if (page==='options') return 21; // 18 EE options + 3 engine extras
-        if (page==='bag')     return 7;  // 7 pockets in EE
+        if (page==='bag')     return _getBagPockets()[_bagPocket].items.length;
         if (page==='pokemon') {
             const party = window.GameSave && GameSave.state && GameSave.state.party;
             return party ? party.filter(Boolean).length || 1 : 1;
