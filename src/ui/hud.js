@@ -168,11 +168,13 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
+    const GAME_VERSION = 'v0.1.7';
+
     // --- Update display ---
     function update() {
         if (!infoEl) return;
         const mapName = (mapRef && mapRef.current) ? mapRef.current.name : '—';
-        infoEl.textContent = mapName;
+        infoEl.innerHTML = mapName + '<br><span id="hud-version">' + GAME_VERSION + '</span>';
         if (coordsEl && playerRef) {
             coordsEl.textContent = `x: ${playerRef.x}  y: ${playerRef.y}`;
         }
