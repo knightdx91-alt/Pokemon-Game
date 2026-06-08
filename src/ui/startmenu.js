@@ -146,8 +146,8 @@ window.GameStartMenu = (function () {
     }
     function _loadBagAssets(cb) {
         if (_bagAssets) { cb(_bagAssets); return; }
-        var assets = { bg: null, icons: [] };
-        var pending = 1 + 14; // bg + 7 unsel + 7 sel
+        var assets = { bg: null, icons: [], bagFrames: [] };
+        var pending = 1 + 14 + 6; // bg + 7 unsel + 7 sel + 6 bag frames
         function done() { if (--pending === 0) { _bagAssets = assets; cb(assets); } }
         var bg = new Image();
         bg.onload = function() { assets.bg = bg; done(); };
@@ -166,6 +166,14 @@ window.GameStartMenu = (function () {
                 s.onerror = function() { done(); };
                 s.src = 'src/assets/bag/pocket_icon_' + idx + '_sel.png';
             })(i);
+        }
+        for (var f = 0; f < 6; f++) {
+            (function(fi) {
+                var bf = new Image();
+                bf.onload = function() { assets.bagFrames[fi] = bf; done(); };
+                bf.onerror = function() { assets.bagFrames[fi] = null; done(); };
+                bf.src = 'src/assets/bag/bag_frame_' + fi + '_rgba.png';
+            })(f);
         }
     }
 
@@ -797,105 +805,149 @@ window.GameStartMenu = (function () {
         ];
     }
 
-    // ── Canvas bag renderer — 2× internal resolution (480×320) for crisp text ─
-    var BAG_W = 480, BAG_H = 320, BAG_S = 2; // scale factor
+    // ── Canvas bag renderer — 2× GBA resolution (480×320) ──────────────────────
+    // EE bag layout (GBA 240×160):
+    //   Left panel x=0..111: pocket name row (y=0..7), pocket icons (y=8..15),
+    //     big bag sprite (y=16..79), item icon box (y=84..111), description (y=116..159)
+    //   Right panel x=112..239: item list box with cyan border
+    var BAG_W = 480, BAG_H = 320, BAG_S = 2;
     function _drawBagCanvas(ctx, assets, itemIcon) {
         var POCKETS = _getBagPockets();
         var pocket  = POCKETS[_bagPocket] || POCKETS[0];
         var items   = pocket.items;
         var S = BAG_S;
 
-        ctx.clearRect(0, 0, BAG_W, BAG_H);
-        ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, BAG_W, BAG_H);
-        if (assets && assets.bg) {
-            ctx.imageSmoothingEnabled = false;
-            ctx.drawImage(assets.bg, 0, 0, BAG_W, BAG_H);
-        }
+        // EE dark palette: bg=#000, panel=#1D2D34, cyan=#5ACED6, text=#fff, dim=#626273
+        var CYAN    = '#5aced6';
+        var TEXT    = '#ffffff';
+        var DIM     = '#888899';
+        var BG      = '#000000';
+        var PANEL   = '#1d2d34';
+        var SEL_BG  = 'rgba(90,206,214,0.18)';
 
-        ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.globalAlpha = 1;
-
-        // EE dark palette colors
-        var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
-
-        // ── Pocket indicator icons — 8×8 sprite tiles at (24+i*8, 16) in GBA px
         ctx.imageSmoothingEnabled = false;
+        ctx.clearRect(0, 0, BAG_W, BAG_H);
+        ctx.fillStyle = BG;
+        ctx.fillRect(0, 0, BAG_W, BAG_H);
+
+        // ── Left panel background ──────────────────────────────────────────────
+        ctx.fillStyle = PANEL;
+        ctx.fillRect(0, 0, 112*S, BAG_H);
+
+        // ── Pocket name row (y=0..7 GBA): ◄ L ► label ──────────────────────
+        ctx.font = 'bold ' + (7*S) + 'px monospace';
+        ctx.textBaseline = 'top';
+        // Left arrow
+        ctx.fillStyle = CYAN;
+        ctx.fillText('◄', 2*S, 1*S);
+        // Pocket label centered
+        ctx.fillStyle = TEXT;
+        var labelW = ctx.measureText(pocket.label).width;
+        ctx.fillText(pocket.label, (56*S) - labelW/2, 1*S);
+        // Right arrow
+        ctx.fillStyle = CYAN;
+        ctx.fillText('►', 104*S, 1*S);
+
+        // ── Pocket icon row (y=8..15 GBA) ────────────────────────────────────
+        var iconRowY = 8*S;
+        var iconStartX = Math.round((112 - 7*10) / 2) * S; // center 7 icons of 10px each
         for (var i = 0; i < 7; i++) {
-            var ix = (24 + i * 8) * S;
-            var iy = 16 * S;
+            var ix = iconStartX + i * 10*S;
             var icon = assets && assets.icons && assets.icons[i];
             if (icon) {
                 var img = (i === _bagPocket) ? icon.sel : icon.unsel;
-                if (img) ctx.drawImage(img, ix, iy, 8*S, 8*S);
+                if (img) ctx.drawImage(img, ix, iconRowY, 8*S, 8*S);
             }
         }
 
-        // ── Pocket name at (26, 11) GBA px
-        ctx.font = 'bold ' + (8*S) + 'px monospace';
-        ctx.fillStyle = COL_TEXT;
-        ctx.textBaseline = 'alphabetic';
-        ctx.fillText(pocket.label, 26*S, 11*S);
-
-        // ── Selected item icon — centred inside icon box at x=0..31, y=83..110 GBA px
-        if (itemIcon) {
-            ctx.imageSmoothingEnabled = false;
-            var icSize = 24 * S;
-            ctx.drawImage(itemIcon, 4*S, 86*S, icSize, icSize);
+        // ── Big bag sprite (y=16..79 GBA, 64×64) ─────────────────────────────
+        var bagFrame = assets && assets.bagFrames && assets.bagFrames[Math.min(_bagPocket, 5)];
+        if (bagFrame) {
+            var bx = Math.round((112 - 64) / 2) * S;
+            ctx.drawImage(bagFrame, bx, 16*S, 64*S, 64*S);
         }
 
-        // ── Item list — EE WIN[0]: x=112, y=8, w=120, h=144
-        var MAX_VIS = 9;
-        var scroll  = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), items.length - MAX_VIS));
+        // ── Item icon box (x=2..33, y=84..111 GBA) with cyan border ──────────
+        ctx.strokeStyle = CYAN;
+        ctx.lineWidth = S;
+        ctx.strokeRect(2*S, 84*S, 32*S, 28*S);
+        if (itemIcon) {
+            ctx.drawImage(itemIcon, 4*S, 86*S, 24*S, 24*S);
+        }
+
+        // ── Description text (y=116..159 GBA) ────────────────────────────────
+        var selItem = items[_subIdx];
+        var desc = selItem ? (selItem.desc || selItem.description || '') : '';
+        if (!desc) desc = pocket.label + ' is empty.';
+        ctx.fillStyle = TEXT;
+        ctx.font = (7*S) + 'px monospace';
+        ctx.textBaseline = 'top';
+        var words = desc.split(' '), line = '', lx = 2*S, ly = 116*S, maxW = 108*S, lineH = 9*S;
+        for (var w = 0; w < words.length; w++) {
+            var test = line ? line + ' ' + words[w] : words[w];
+            if (ctx.measureText(test).width > maxW && line) {
+                ctx.fillText(line, lx, ly); line = words[w]; ly += lineH;
+                if (ly > 150*S) break;
+            } else { line = test; }
+        }
+        if (line && ly <= 150*S) ctx.fillText(line, lx, ly);
+
+        // ── Right panel: item list box ────────────────────────────────────────
+        // Outer box border
+        ctx.strokeStyle = CYAN;
+        ctx.lineWidth = S;
+        ctx.strokeRect(113*S, 1*S, 126*S, 158*S);
+
+        var MAX_VIS = 8;
+        var scroll = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), items.length - MAX_VIS));
         if (scroll < 0) scroll = 0;
 
-        ctx.font = (8*S) + 'px monospace';
+        ctx.font = (7*S) + 'px monospace';
+        ctx.textBaseline = 'top';
+
         for (var j = 0; j < MAX_VIS; j++) {
             var idx = scroll + j;
             if (idx >= items.length) break;
             var item = items[idx];
-            var row_y = (8 + j * 16) * S;
-            var sel   = (idx === _subIdx);
+            var row_y = (4 + j * 18) * S;
+            var sel = (idx === _subIdx);
 
             if (sel) {
-                ctx.fillStyle = 'rgba(90,206,214,0.20)';
-                ctx.fillRect(113*S, row_y, 127*S, 14*S);
-                ctx.fillStyle = COL_CYAN;
-                ctx.fillRect(113*S, row_y, 2*S, 14*S);
+                ctx.fillStyle = SEL_BG;
+                ctx.fillRect(114*S, row_y, 124*S, 16*S);
+                ctx.fillStyle = CYAN;
+                ctx.fillText('▶', 114*S, row_y + 1*S);
             }
 
-            ctx.fillStyle = COL_TEXT;
-            var name = item.name || item.itemId || item.id || '?';
-            ctx.fillText(name, 122*S, (row_y + 10*S));
+            ctx.fillStyle = TEXT;
+            var name = item.name || item.itemId || '?';
+            ctx.fillText(name, 124*S, row_y + 1*S);
 
-            var qty = '\xd7' + (item.quantity || 1);
-            var qw  = ctx.measureText(qty).width;
-            ctx.fillText(qty, 238*S - qw, row_y + 10*S);
+            ctx.fillStyle = DIM;
+            ctx.fillText('×', 210*S, row_y + 1*S);
+            ctx.fillStyle = TEXT;
+            var qty = String(item.quantity || 1);
+            var qw = ctx.measureText(qty).width;
+            ctx.fillText(qty, 237*S - qw, row_y + 1*S);
         }
 
-        if (scroll > 0) { ctx.fillStyle = COL_CYAN; ctx.fillText('▲', 231*S, 13*S); }
-        if (scroll + MAX_VIS < items.length) { ctx.fillStyle = COL_CYAN; ctx.fillText('▼', 231*S, 153*S); }
-
-        var cancelY = (8 + Math.min(MAX_VIS, items.length) * 16) * S;
-        if (cancelY < 152*S) {
-            ctx.fillStyle = COL_DIM;
-            ctx.fillText('CANCEL', 122*S, cancelY + 10*S);
+        // "Close Pack" entry
+        var closeY = (4 + Math.min(MAX_VIS, items.length) * 18) * S;
+        if (closeY < 152*S) {
+            var closeSel = (_subIdx >= items.length);
+            if (closeSel) {
+                ctx.fillStyle = SEL_BG;
+                ctx.fillRect(114*S, closeY, 124*S, 16*S);
+                ctx.fillStyle = CYAN;
+                ctx.fillText('▶', 114*S, closeY + 1*S);
+            }
+            ctx.fillStyle = DIM;
+            ctx.fillText('Close Pack', 124*S, closeY + 1*S);
         }
 
-        // ── Description — EE WIN[1]: x=0, y=104 (tilemapTop=13 × 8)
-        var selItem = items[_subIdx];
-        var desc = selItem ? (selItem.desc || selItem.description || '') : '';
-        if (!desc) desc = pocket.label + ' pocket is empty.';
-        ctx.fillStyle = COL_TEXT;
-        ctx.font = (8*S) + 'px monospace';
-        var words = desc.split(' '), line = '', lx = 4*S, ly = 122*S, maxW = 104*S;
-        for (var w = 0; w < words.length; w++) {
-            var test = line ? line + ' ' + words[w] : words[w];
-            if (ctx.measureText(test).width > maxW && line) {
-                ctx.fillText(line, lx, ly); line = words[w]; ly += 11*S;
-                if (ly > 154*S) break;
-            } else { line = test; }
-        }
-        if (line) ctx.fillText(line, lx, ly);
+        // Scroll arrows
+        if (scroll > 0) { ctx.fillStyle = CYAN; ctx.fillText('▲', 232*S, 4*S); }
+        if (scroll + MAX_VIS < items.length) { ctx.fillStyle = CYAN; ctx.fillText('▼', 232*S, 152*S); }
     }
 
     function _buildBag(el) {
