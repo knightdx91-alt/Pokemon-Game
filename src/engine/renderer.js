@@ -40,9 +40,6 @@ window.GameRenderer = (function () {
         impassable:'#1a1a2e',
         player:    '#e53935',
         npc:       '#1565c0',
-        warp:      '#f9a825',
-        sign:      '#8d6e63',
-        gridLine:  'rgba(0,0,0,0.12)',
         bg:        '#2d4a2d'
     };
 
@@ -110,14 +107,10 @@ window.GameRenderer = (function () {
         ctx.fillStyle = COLORS.bg;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Build sets for quick warp/sign/npc lookup
-        const warpSet = new Set();
+        // Build sign set for fallback overlay (only used when tileset not loaded)
         const signSet = new Set();
-        const npcSet  = new Set();
-        if (_map.current) {
-            if (_map.current.warps) _map.current.warps.forEach(w => warpSet.add(`${w.x},${w.y}`));
-            if (_map.current.signs) _map.current.signs.forEach(s => signSet.add(`${s.x},${s.y}`));
-            if (_map.current.npcs)  _map.current.npcs.forEach(n => npcSet.add(`${n.x},${n.y}`));
+        if (_map.current && _map.current.signs) {
+            _map.current.signs.forEach(s => signSet.add(`${s.x},${s.y}`));
         }
 
         // Draw tiles
