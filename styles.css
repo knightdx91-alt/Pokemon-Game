@@ -218,12 +218,12 @@ body.orient-reverse-landscape #controls-layer {
    GBA CONTROLLER SHELL
    =================================================================== */
 
-/* The whole shell — portrait: pinned to bottom full-width; landscape: right column */
+/* The whole shell — no background, buttons float directly over the game */
 .gba-controller {
-    pointer-events: all;
-    background: #1a1a2e;
-    border: 1px solid rgba(255,255,255,0.12);
-    box-shadow: 0 -4px 24px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05) inset;
+    pointer-events: none; /* children handle their own events */
+    background: transparent;
+    border: none;
+    box-shadow: none;
     display: flex;
     flex-direction: column;
     touch-action: none;
