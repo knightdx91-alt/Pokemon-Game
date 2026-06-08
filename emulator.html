@@ -85,6 +85,19 @@
     </div>
 
     <script>
+        // Register service worker for caching ROM + EmulatorJS assets
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(function(reg) {
+                var s = document.getElementById('status');
+                if (reg.installing) {
+                    if (s) s.textContent = 'Downloading game data (cached after first run)…';
+                } else if (reg.active) {
+                    if (s) s.textContent = 'Loading from cache…';
+                }
+            });
+        }
+    </script>
+    <script>
         // EmulatorJS config
         window.EJS_player = '#game';
         window.EJS_core = 'gba';
