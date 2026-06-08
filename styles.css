@@ -223,66 +223,84 @@ body.orient-reverse-landscape #controls-layer {
 }
 
 /* ===================================================================
-   GBA CONTROLLER SHELL
+   FREE-FLOATING BUTTON WIDGETS
+   Each button is position:absolute inside #controls-layer (inset:0)
    =================================================================== */
 
-/* The whole shell — no background, buttons float directly over the game */
-.gba-controller {
-    pointer-events: none; /* children handle their own events */
-    background: transparent;
-    border: none;
-    box-shadow: none;
+/* Widget wrapper — positions each button freely */
+.ctrl-widget {
+    position: absolute;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     touch-action: none;
-    -webkit-tap-highlight-color: transparent;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+    /* pointer-events enabled — children handle input */
 }
 
-@media (orientation: portrait) {
-    .gba-controller {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 42vh;
-        border-radius: 16px 16px 0 0;
-        padding: 6px 10px 4px;
-        justify-content: space-between;
-    }
+/* Edit mode: dashed highlight + cursor */
+.ctrl-widget.ctrl-edit {
+    outline: 2px dashed rgba(24,184,200,0.7);
+    outline-offset: 2px;
+    cursor: move;
+    background: rgba(24,184,200,0.06);
+    border-radius: 8px;
 }
 
-@media (orientation: landscape) {
-    .gba-controller {
-        position: fixed;
-        right: 0;
-        top: 0;
-        width: 280px;
-        height: 100vh;
-        border-radius: 0;
-        padding: 8px 10px;
-        justify-content: space-between;
-    }
+/* Resize handle — bottom-right corner, only visible in edit mode */
+.ctrl-resize-handle {
+    display: none;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(135deg, transparent 50%, #18b8c8 50%);
+    cursor: se-resize;
+    border-radius: 0 0 6px 0;
+    z-index: 10;
+    touch-action: none;
 }
+.ctrl-edit .ctrl-resize-handle { display: block; }
 
-/* --- Shoulder row -------------------------------------------------- */
-.gba-shoulder-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 100%;
-    flex-shrink: 0;
-}
-
-.gba-shoulder-l,
-.gba-shoulder-r {
-    width: calc(72px * var(--control-scale, 1));
-    height: calc(24px * var(--control-scale, 1));
-    background: #252535;
+/* Circle button (A, B) — fills widget */
+.gba-btn-circle {
+    width: 85%;
+    height: 85%;
+    border-radius: 50%;
     border: 1px solid rgba(255,255,255,0.15);
     color: #ccc;
     font-family: inherit;
-    font-size: calc(11px * var(--control-scale, 1));
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: all;
+    touch-action: none;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.1) inset;
+    transition: background 0.07s, transform 0.07s;
+}
+.ctrl-edit .gba-btn-circle { pointer-events: none; }
+.gba-btn-circle:active { transform: scale(0.93); box-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+.gba-btn-a-color { background: #8b1a1a; }
+.gba-btn-a-color:active { background: #b02020; }
+.gba-btn-b-color { background: #1a3a6b; }
+.gba-btn-b-color:active { background: #254d8a; }
+
+/* Shoulder button — pill shape, fills widget height */
+.gba-shoulder-btn {
+    width: 100%;
+    height: 55%;
+    background: #252535;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    color: #ccc;
+    font-family: inherit;
+    font-size: 13px;
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -291,67 +309,21 @@ body.orient-reverse-landscape #controls-layer {
     pointer-events: all;
     touch-action: none;
     box-shadow: 0 2px 6px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.08) inset;
-    transition: background 0.07s, box-shadow 0.07s, transform 0.07s;
-    -webkit-tap-highlight-color: transparent;
+    transition: background 0.07s, transform 0.07s;
 }
+.ctrl-edit .gba-shoulder-btn { pointer-events: none; }
+.gba-shoulder-btn:active { background: #363650; transform: scale(0.96); }
 
-.gba-shoulder-l {
-    border-radius: 8px 8px 0 8px;
-}
-
-.gba-shoulder-r {
-    border-radius: 8px 8px 8px 0;
-}
-
-.gba-shoulder-l:active,
-.gba-shoulder-r:active {
-    background: #363650;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3) inset;
-    transform: scale(0.96);
-}
-
-/* --- Main row ------------------------------------------------------ */
-.gba-main-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    flex: 1 1 auto;
-    min-height: 0;
-    padding: 4px 0 2px;
-    gap: 4px;
-}
-
-/* Left section: d-pad or joystick */
-.gba-left {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 auto;
-    width: calc(110px * var(--control-scale, 1));
-    height: calc(110px * var(--control-scale, 1));
-}
-
-/* Center section: start + select */
-.gba-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: calc(10px * var(--control-scale, 1));
-    flex: 1 1 auto;
-    transform: rotate(-20deg);
-}
-
+/* System button (START/SELECT) — oval, fills widget */
 .gba-sys-btn {
-    width: calc(48px * var(--control-scale, 1));
-    height: calc(18px * var(--control-scale, 1));
+    width: 90%;
+    height: 45%;
     background: #252535;
     border: 1px solid rgba(255,255,255,0.15);
     border-radius: 9px;
     color: #ccc;
     font-family: inherit;
-    font-size: calc(8px * var(--control-scale, 1));
+    font-size: 11px;
     font-weight: bold;
     letter-spacing: 0.5px;
     display: flex;
@@ -361,94 +333,17 @@ body.orient-reverse-landscape #controls-layer {
     pointer-events: all;
     touch-action: none;
     box-shadow: 0 2px 5px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.07) inset;
-    transition: background 0.07s, box-shadow 0.07s, transform 0.07s;
-    -webkit-tap-highlight-color: transparent;
+    transition: background 0.07s, transform 0.07s;
 }
-
-.gba-sys-btn:active {
-    background: #363650;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.4) inset;
-    transform: scale(0.96);
-}
-
-/* Right section: A + B face buttons */
-.gba-right {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 auto;
-    width: calc(100px * var(--control-scale, 1));
-    height: calc(100px * var(--control-scale, 1));
-    position: relative;
-}
-
-/* A button — upper-right */
-.gba-btn-a {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: calc(52px * var(--control-scale, 1));
-    height: calc(52px * var(--control-scale, 1));
-    border-radius: 50%;
-    background: #8b1a1a;
-    border: 1px solid rgba(255,255,255,0.15);
-    color: #ccc;
-    font-family: inherit;
-    font-size: calc(14px * var(--control-scale, 1));
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    pointer-events: all;
-    touch-action: none;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.1) inset;
-    transition: background 0.07s, box-shadow 0.07s, transform 0.07s;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.gba-btn-a:active {
-    background: #b02020;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.5) inset;
-    transform: scale(0.95);
-}
-
-/* B button — lower-left */
-.gba-btn-b {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: calc(44px * var(--control-scale, 1));
-    height: calc(44px * var(--control-scale, 1));
-    border-radius: 50%;
-    background: #1a3a6b;
-    border: 1px solid rgba(255,255,255,0.15);
-    color: #ccc;
-    font-family: inherit;
-    font-size: calc(13px * var(--control-scale, 1));
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    pointer-events: all;
-    touch-action: none;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.1) inset;
-    transition: background 0.07s, box-shadow 0.07s, transform 0.07s;
-    -webkit-tap-highlight-color: transparent;
-}
-
-.gba-btn-b:active {
-    background: #254d8a;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.5) inset;
-    transform: scale(0.95);
-}
+.ctrl-edit .gba-sys-btn { pointer-events: none; }
+.gba-sys-btn:active { background: #363650; transform: scale(0.96); }
 
 /* --- D-pad --------------------------------------------------------- */
+/* D-pad fills its widget; hit areas are 34% of widget each side     */
 .gba-dpad {
     position: relative;
-    width: calc(110px * var(--control-scale, 1));
-    height: calc(110px * var(--control-scale, 1));
+    width: 100%;
+    height: 100%;
     pointer-events: none;
 }
 
@@ -466,17 +361,17 @@ body.orient-reverse-landscape #controls-layer {
 
 /* Horizontal bar */
 .gba-dpad::before {
-    top: calc(36px * var(--control-scale, 1));
+    top: 33%;
     left: 0;
     width: 100%;
-    height: calc(38px * var(--control-scale, 1));
+    height: 34%;
 }
 
 /* Vertical bar */
 .gba-dpad::after {
-    left: calc(36px * var(--control-scale, 1));
+    left: 33%;
     top: 0;
-    width: calc(38px * var(--control-scale, 1));
+    width: 34%;
     height: 100%;
 }
 
@@ -486,8 +381,8 @@ body.orient-reverse-landscape #controls-layer {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: calc(32px * var(--control-scale, 1));
-    height: calc(32px * var(--control-scale, 1));
+    width: 30%;
+    height: 30%;
     border-radius: 50%;
     background: #2e2e44;
     border: 1px solid rgba(255,255,255,0.1);
@@ -511,42 +406,15 @@ body.orient-reverse-landscape #controls-layer {
     align-items: center;
     justify-content: center;
     color: rgba(200,200,220,0.5);
-    font-size: calc(11px * var(--control-scale, 1));
+    font-size: 11px;
     -webkit-tap-highlight-color: transparent;
     transition: color 0.07s;
 }
 
-.gba-dpad-up {
-    top: 0;
-    left: calc(36px * var(--control-scale, 1));
-    width: calc(38px * var(--control-scale, 1));
-    height: calc(38px * var(--control-scale, 1));
-    border-radius: 4px 4px 0 0;
-}
-
-.gba-dpad-down {
-    bottom: 0;
-    left: calc(36px * var(--control-scale, 1));
-    width: calc(38px * var(--control-scale, 1));
-    height: calc(38px * var(--control-scale, 1));
-    border-radius: 0 0 4px 4px;
-}
-
-.gba-dpad-left {
-    left: 0;
-    top: calc(36px * var(--control-scale, 1));
-    width: calc(38px * var(--control-scale, 1));
-    height: calc(38px * var(--control-scale, 1));
-    border-radius: 4px 0 0 4px;
-}
-
-.gba-dpad-right {
-    right: 0;
-    top: calc(36px * var(--control-scale, 1));
-    width: calc(38px * var(--control-scale, 1));
-    height: calc(38px * var(--control-scale, 1));
-    border-radius: 0 4px 4px 0;
-}
+.gba-dpad-up    { top: 0;   left: 33%; width: 34%; height: 34%; border-radius: 4px 4px 0 0; }
+.gba-dpad-down  { bottom: 0; left: 33%; width: 34%; height: 34%; border-radius: 0 0 4px 4px; }
+.gba-dpad-left  { left: 0;  top: 33%; width: 34%; height: 34%; border-radius: 4px 0 0 4px; }
+.gba-dpad-right { right: 0; top: 33%; width: 34%; height: 34%; border-radius: 0 4px 4px 0; }
 
 .gba-dpad-up:active,
 .gba-dpad-down:active,
@@ -558,10 +426,44 @@ body.orient-reverse-landscape #controls-layer {
 /* --- Joystick (replaces d-pad in joystick mode) -------------------- */
 .gba-joystick-wrap {
     position: relative;
-    width: calc(100px * var(--control-scale, 1));
-    height: calc(100px * var(--control-scale, 1));
+    width: 100%;
+    height: 100%;
     pointer-events: none;
 }
+
+/* --- Edit mode toolbar --------------------------------------------- */
+#ctrl-edit-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: rgba(6,6,16,0.92);
+    border-bottom: 2px solid #18b8c8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 6px 12px;
+    font-family: 'PokemonGBA', 'Courier New', Courier, monospace;
+    font-size: 12px;
+    color: #80d0e8;
+    pointer-events: all;
+    touch-action: manipulation;
+}
+#ctrl-edit-bar span { flex: 1; text-align: center; opacity: 0.8; }
+#ctrl-edit-bar button {
+    background: #0a1830;
+    border: 1px solid #18b8c8;
+    color: #80d0e8;
+    font-family: inherit;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+#ctrl-edit-bar button:active { background: #18b8c8; color: #000; }
 
 .joystick-base {
     position: absolute;
@@ -576,8 +478,8 @@ body.orient-reverse-landscape #controls-layer {
 
 .joystick-thumb {
     position: absolute;
-    width: calc(40px * var(--control-scale, 1));
-    height: calc(40px * var(--control-scale, 1));
+    width: 36%;
+    height: 36%;
     border-radius: 50%;
     background: #3a3a58;
     border: 1px solid rgba(255,255,255,0.25);

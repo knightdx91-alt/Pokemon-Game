@@ -75,6 +75,15 @@ window.GameHUD = (function () {
             });
         }
 
+        // Customize button layout
+        const customizeBtn = document.getElementById('customize-layout-btn');
+        if (customizeBtn) {
+            customizeBtn.addEventListener('click', () => {
+                settingsPanel.classList.add('hidden');
+                if (window.GameControls) GameControls.toggleEditMode();
+            });
+        }
+
         // Button size slider
         if (sizeSlider) {
             // Load saved scale
