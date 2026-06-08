@@ -1102,7 +1102,6 @@ window.GameStartMenu = (function () {
                 // Cancel bar: GBA y=120..151
                 if (gy >= 120 && gy < 152) { _goBack(); }
             });
-        });
     }
 
     function _openPartySummary(mon, idx, filled, returnCb) {
