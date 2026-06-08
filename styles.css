@@ -722,13 +722,13 @@ body.orient-reverse-landscape #controls-layer {
     position: absolute;
     display: flex;
     flex-direction: column;
-    background: #060610;
+    background: var(--theme-win-bg, #060610);
     border: 1px solid #000;
     box-shadow:
-        0 0 0 3px #1dc0fe,
+        0 0 0 3px var(--theme-hi, #1dc0fe),
         0 0 0 4px #000,
-        inset 0 0 0 1px #0373af;
-    color: #dbdff0;
+        inset 0 0 0 1px var(--theme-border, #0373af);
+    color: var(--theme-text, #dbdff0);
     overflow: hidden;
     pointer-events: all;
 }
@@ -769,14 +769,14 @@ body.orient-reverse-landscape #controls-layer {
 
 /* Title bar: dark with cyan accent */
 .sm-win-title {
-    background: #0a1830;
-    border-bottom: 1px solid #1dc0fe;
+    background: var(--theme-title-bg, #0a1830);
+    border-bottom: 1px solid var(--theme-hi, #1dc0fe);
     padding: 4px 6px 4px 8px;
     font-size: 14px;
     font-weight: bold;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #1dc0fe;
+    color: var(--theme-hi, #1dc0fe);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -942,20 +942,20 @@ body.orient-reverse-landscape #controls-layer {
     font-size: 13px;
     min-height: 22px;
     gap: 0;
-    color: #dbdff0;
+    color: var(--theme-text, #dbdff0);
     cursor: pointer;
     border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 /* GPU-style full-width highlight bar (no arrow cursor — EE uses hardware window) */
 .opt-row.selected,
 .sm-opt-row.selected {
-    background: rgba(29,192,254,0.18);
-    box-shadow: inset 2px 0 0 #1dc0fe;
+    background: rgba(var(--theme-hi-rgb, 29,192,254),0.18);
+    box-shadow: inset 2px 0 0 var(--theme-hi, #1dc0fe);
 }
 .opt-label,
 .sm-opt-label {
     flex: 0 0 45%;
-    color: #dbdff0;
+    color: var(--theme-text, #dbdff0);
     white-space: nowrap;
     font-size: 13px;
 }

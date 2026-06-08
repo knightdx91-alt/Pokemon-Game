@@ -56,6 +56,55 @@ window.GameStartMenu = (function () {
     function _loadPartyBg(cb)       { _loadSimpleBg('src/assets/party/party_bg.png',           _ptBgRef, cb); }
     function _loadPokedexBg(cb)     { _loadSimpleBg('src/assets/pokedex/pokedex_bg.png',        _pdBgRef, cb); }
 
+    // --- Theme helpers ---
+    // Colors sourced from EE: 1d.gbapal (dark), 1.gbapal (light), ryudarktheme.gbapal, hatlighttheme.gbapal
+    function _getThemeColors() {
+        var theme   = localStorage.getItem('pokemon_theme')    || 'DARK';
+        var preset  = localStorage.getItem('pokemon_theme_preset'); // BlueSteel|RoyalPurple|Synthwave|Mocha
+
+        var PRESETS = {
+            // [bg, text, dim, border, highlight, titleBg] — indices 1,2,3,13,14 from custom_interface.c × 8
+            'BlueSteel':   { bg:'#181810', text:'#00a0f8', dim:'#000000', border:'#b0b0b0', hi:'#505050', titleBg:'#101018' },
+            'RoyalPurple': { bg:'#181810', text:'#900098', dim:'#480060', border:'#780098', hi:'#500050', titleBg:'#101010' },
+            'Synthwave':   { bg:'#300058', text:'#f8f8f8', dim:'#505060', border:'#600098', hi:'#d800f8', titleBg:'#180030' },
+            'Mocha':       { bg:'#302800', text:'#f8e8c8', dim:'#707050', border:'#585840', hi:'#403838', titleBg:'#201800' },
+        };
+
+        if (preset && PRESETS[preset]) return PRESETS[preset];
+
+        if (theme === 'LIGHT' || theme === 'VANILLA') {
+            // From 1.gbapal: fill=index5=#f8f8f8, hi=index14=#c0b8d8, border=index13=#6860d0
+            // From hatlighttheme.gbapal: text=index2=#000000, dim=index3=#b8b8b8
+            return { bg:'#f0e8f8', text:'#000000', dim:'#808080', border:'#6860d0', hi:'#c0b8d8', titleBg:'#d8d0e8' };
+        }
+        // DARK (default) — from 1d.gbapal: fill=index1=#181818, hi=index14=#18c0f8, border=index13=#0070a8
+        // From ryudarktheme.gbapal: text=index2=#d8d8f0, dim=index3=#787888
+        return { bg:'#181818', text:'#d8d8f0', dim:'#787888', border:'#0070a8', hi:'#18c0f8', titleBg:'#0a1830' };
+    }
+
+    function _applyThemeCSS() {
+        var tc = _getThemeColors();
+        var r = document.documentElement;
+        r.style.setProperty('--theme-win-bg',   tc.bg);
+        r.style.setProperty('--theme-title-bg', tc.titleBg);
+        r.style.setProperty('--theme-text',     tc.text);
+        r.style.setProperty('--theme-hi',       tc.hi);
+        r.style.setProperty('--theme-border',   tc.border);
+        // RGB breakdown for rgba() usage
+        function hexRgb(h) { h=h.replace('#',''); return parseInt(h.slice(0,2),16)+','+parseInt(h.slice(2,4),16)+','+parseInt(h.slice(4,6),16); }
+        r.style.setProperty('--theme-hi-rgb', hexRgb(tc.hi));
+    }
+
+    function _bagBgPath() {
+        var ui    = (localStorage.getItem('pokemon_theme_ui')  || 'CLASSIC').toLowerCase();
+        var theme = (localStorage.getItem('pokemon_theme')     || 'DARK').toLowerCase();
+        // light/vanilla → light palette; anything else → dark
+        var palKey = (theme === 'light' || theme === 'vanilla') ? 'light' : 'dark';
+        // ui: modern|classic|vanilla
+        if (ui !== 'modern' && ui !== 'vanilla') ui = 'classic';
+        return 'src/assets/bag/bag_bg_' + ui + '_' + palKey + '.png';
+    }
+
     // --- Bag state ---
     var _bagPocket   = 0;
     var _bagAssets   = null; // { bg, icons: [{unsel,sel}×8] }
@@ -67,7 +116,7 @@ window.GameStartMenu = (function () {
         var bg = new Image();
         bg.onload = function() { assets.bg = bg; done(); };
         bg.onerror = function() { done(); };
-        bg.src = 'src/assets/bag/bag_bg.png';
+        bg.src = _bagBgPath();
         for (var i = 0; i < 8; i++) {
             (function(idx) {
                 var icon = { unsel: null, sel: null };
@@ -310,7 +359,8 @@ window.GameStartMenu = (function () {
     }
 
     function _canvasBg(ctx, bg) {
-        ctx.fillStyle = '#060610';
+        var _tc = _getThemeColors();
+        ctx.fillStyle = _tc.bg;
         ctx.fillRect(0, 0, GBA_W, GBA_H);
         if (bg) { ctx.imageSmoothingEnabled = false; ctx.drawImage(bg, 0, 0, GBA_W, GBA_H); }
         ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.globalAlpha = 1;
@@ -321,9 +371,7 @@ window.GameStartMenu = (function () {
             _loadTrainerCardBg(function(bg) {
                 _canvasBg(ctx, bg);
                 var S = 2;
-                var COL_TEXT = '#ffffff';
-                var COL_DIM  = '#b4b4b4';
-                var COL_CYAN = '#5aced6';
+                var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
                 ctx.textBaseline = 'top';
 
                 var ls = _lifeSkills();
@@ -489,19 +537,17 @@ window.GameStartMenu = (function () {
     function _drawJournalCanvas(ctx, bg) {
         _canvasBg(ctx, bg);
         var S = 2;
-        var COL_TEXT = '#ffffff';
-        var COL_DIM  = '#b4b4b4';
-        var COL_CYAN = '#5aced6';
+        var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
 
         // Title bar area (y=8..30)
-        ctx.fillStyle = '#0a1830';
+        ctx.fillStyle = _tc.titleBg;
         ctx.fillRect(0, 0, GBA_W, 28*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 28*S, GBA_W, 2);
 
         ctx.textBaseline = 'top';
         ctx.font = 'bold '+(8*S)+'px monospace';
-        ctx.fillStyle = '#80d0e8';
+        ctx.fillStyle = _tc.hi;
         ctx.fillText('JOURNAL', 8*S, 8*S);
 
         // Page name
@@ -531,7 +577,7 @@ window.GameStartMenu = (function () {
         });
 
         // Trainer info strip at y=112
-        ctx.fillStyle = '#0a1830';
+        ctx.fillStyle = _tc.titleBg;
         ctx.fillRect(0, 112*S, GBA_W, 48*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 112*S, GBA_W, 2);
@@ -588,9 +634,7 @@ window.GameStartMenu = (function () {
     function _drawAchievementsCanvas(ctx, bg) {
         _canvasBg(ctx, bg);
         var S = 2;
-        var COL_TEXT = '#ffffff';
-        var COL_DIM  = '#b4b4b4';
-        var COL_CYAN = '#5aced6';
+        var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
 
         var all = window.GameAchievements ? GameAchievements.getAll() : [];
         var totalAP = all.reduce(function(s, a) { return s + (a.unlocked ? a.apReward : 0); }, 0);
@@ -598,14 +642,14 @@ window.GameStartMenu = (function () {
         var unlockCount = all.filter(function(a) { return a.unlocked; }).length;
 
         // Title bar
-        ctx.fillStyle = '#0a1830';
+        ctx.fillStyle = _tc.titleBg;
         ctx.fillRect(0, 0, GBA_W, 20*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 20*S, GBA_W, 2);
 
         ctx.textBaseline = 'top';
         ctx.font = 'bold '+(7*S)+'px monospace';
-        ctx.fillStyle = '#80d0e8';
+        ctx.fillStyle = _tc.hi;
         ctx.fillText('ACHIEVEMENT ATLAS', 8*S, 6*S);
 
         // Total AP right-aligned
@@ -659,7 +703,7 @@ window.GameStartMenu = (function () {
         if (_achOffset + LIST_ROWS < filtered.length) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px monospace'; ctx.fillText('▼', GBA_W/2 - 4, (listY + LIST_ROWS*14)*S); }
 
         // Desc box at bottom (y=112)
-        ctx.fillStyle = '#0a1830';
+        ctx.fillStyle = _tc.titleBg;
         ctx.fillRect(0, 112*S, GBA_W, 48*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 112*S, GBA_W, 2);
@@ -727,9 +771,7 @@ window.GameStartMenu = (function () {
         ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.globalAlpha = 1;
 
         // EE dark palette colors
-        var COL_TEXT = '#ffffff';
-        var COL_DIM  = '#b4b4b4';
-        var COL_CYAN = '#5aced6';
+        var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
 
         // ── Pocket indicator icons — 8×8 sprite tiles at (24+i*8, 16) in GBA px
         ctx.imageSmoothingEnabled = false;
@@ -895,9 +937,7 @@ window.GameStartMenu = (function () {
     function _drawPartyCanvas(ctx, bg) {
         _canvasBg(ctx, bg);
         var S = 2;
-        var COL_TEXT = '#ffffff';
-        var COL_DIM  = '#b4b4b4';
-        var COL_CYAN = '#5aced6';
+        var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
 
         var party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
         var filled = party.filter(Boolean);
@@ -905,19 +945,19 @@ window.GameStartMenu = (function () {
         ctx.textBaseline = 'top';
 
         // Title
-        ctx.fillStyle = '#0a1830';
+        ctx.fillStyle = _tc.titleBg;
         ctx.fillRect(0, 0, GBA_W, 20*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 20*S, GBA_W, 2);
         ctx.font = 'bold '+(7*S)+'px monospace';
-        ctx.fillStyle = '#80d0e8';
+        ctx.fillStyle = _tc.hi;
         ctx.fillText('POKEMON', 8*S, 5*S);
 
         if (!filled.length) {
             ctx.fillStyle = COL_DIM;
             ctx.font = (7*S)+'px monospace';
             ctx.fillText('No Pokemon in party', 8*S, 40*S);
-            ctx.fillStyle = '#0a1830';
+            ctx.fillStyle = _tc.titleBg;
             ctx.fillRect(0, 120*S, GBA_W, 32*S);
             ctx.fillStyle = COL_CYAN;
             ctx.fillRect(0, 120*S, GBA_W, 2);
@@ -993,7 +1033,7 @@ window.GameStartMenu = (function () {
         // Detail bar for selected mon (y=112..119)
         var selMon = filled[_subIdx];
         if (selMon) {
-            ctx.fillStyle = '#0a1830';
+            ctx.fillStyle = _tc.titleBg;
             ctx.fillRect(0, 112*S, GBA_W, 8*S);
             ctx.fillStyle = COL_CYAN;
             ctx.fillRect(0, 112*S, GBA_W, 1);
@@ -1004,7 +1044,7 @@ window.GameStartMenu = (function () {
         }
 
         // Cancel bar
-        ctx.fillStyle = '#0a1830';
+        ctx.fillStyle = _tc.titleBg;
         ctx.fillRect(0, 120*S, GBA_W, 40*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 120*S, GBA_W, 2);
@@ -1075,18 +1115,16 @@ window.GameStartMenu = (function () {
     function _drawPokedexCanvas(ctx, bg) {
         _canvasBg(ctx, bg);
         var S = 2;
-        var COL_TEXT = '#ffffff';
-        var COL_DIM  = '#b4b4b4';
-        var COL_CYAN = '#5aced6';
+        var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
 
         // Title bar
-        ctx.fillStyle = '#0a1830';
+        ctx.fillStyle = _tc.titleBg;
         ctx.fillRect(0, 0, GBA_W, 20*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 20*S, GBA_W, 2);
         ctx.textBaseline = 'top';
         ctx.font = 'bold '+(7*S)+'px monospace';
-        ctx.fillStyle = '#80d0e8';
+        ctx.fillStyle = _tc.hi;
         ctx.fillText('POKEDEX', 8*S, 5*S);
 
         if (!_dexList || !_dexList.length) {
@@ -1159,7 +1197,7 @@ window.GameStartMenu = (function () {
         }
 
         // Scroll hint
-        ctx.fillStyle = '#0a1830';
+        ctx.fillStyle = _tc.titleBg;
         ctx.fillRect(0, 153*S, GBA_W, 7*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 153*S, GBA_W, 1);
@@ -1203,19 +1241,17 @@ window.GameStartMenu = (function () {
     function _drawPokedexEntryCanvas(ctx, entry, keyName, spriteImg) {
         _canvasBg(ctx, null);
         var S = 2;
-        var COL_TEXT = '#ffffff';
-        var COL_DIM  = '#b4b4b4';
-        var COL_CYAN = '#5aced6';
+        var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
 
         ctx.textBaseline = 'top';
 
         // Title bar
-        ctx.fillStyle = '#0a1830';
+        ctx.fillStyle = _tc.titleBg;
         ctx.fillRect(0, 0, GBA_W, 20*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 20*S, GBA_W, 2);
         ctx.font = 'bold '+(7*S)+'px monospace';
-        ctx.fillStyle = '#80d0e8';
+        ctx.fillStyle = _tc.hi;
         ctx.fillText('POKEDEX', 8*S, 5*S);
 
         // Sprite area (left): 0..79, y=22..87 (GBA px: 0..79px, 22..87px)
@@ -1254,7 +1290,7 @@ window.GameStartMenu = (function () {
         }
 
         // Tabs row area at y=74 (buttons overlaid via HTML, just draw separator)
-        ctx.fillStyle = '#0a1830';
+        ctx.fillStyle = _tc.titleBg;
         ctx.fillRect(80*S, 68*S, GBA_W - 80*S, 22*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(80*S, 90*S, GBA_W - 80*S, 2);
@@ -1339,7 +1375,7 @@ window.GameStartMenu = (function () {
             var learnset2 = fullEntry2 && fullEntry2.learnset;
             if (learnset2) {
                 ctx.clearRect(0, bodyY*S, GBA_W, (160 - bodyY)*S);
-                ctx.fillStyle = '#060610'; ctx.fillRect(0, bodyY*S, GBA_W, (160 - bodyY)*S);
+                ctx.fillStyle = _tc.bg; ctx.fillRect(0, bodyY*S, GBA_W, (160 - bodyY)*S);
                 var lvl2 = learnset2.level_up || [];
                 lvl2.slice(0, 10).forEach(function(m, i) {
                     var ry = (bodyY + i * 10) * S;
@@ -1376,12 +1412,10 @@ window.GameStartMenu = (function () {
     function _drawPokenavCanvas(ctx) {
         _canvasBg(ctx, null);
         var S = 2;
-        var COL_TEXT = '#ffffff';
-        var COL_DIM  = '#b4b4b4';
-        var COL_CYAN = '#5aced6';
+        var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
 
         // Title bar
-        ctx.fillStyle = '#0a1830';
+        ctx.fillStyle = _tc.titleBg;
         ctx.fillRect(0, 0, GBA_W, 36*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 36*S, GBA_W, 2);
@@ -1391,7 +1425,7 @@ window.GameStartMenu = (function () {
         ctx.fillStyle = COL_CYAN;
         ctx.fillText('POKENAV', 8*S, 8*S);
         ctx.font = (6*S)+'px monospace';
-        ctx.fillStyle = '#80d0e8';
+        ctx.fillStyle = _tc.hi;
         ctx.fillText('Navigation System', 8*S, 24*S);
 
         // Menu options
@@ -1418,7 +1452,7 @@ window.GameStartMenu = (function () {
         });
 
         // Help bar at bottom
-        ctx.fillStyle = '#0a1830';
+        ctx.fillStyle = _tc.titleBg;
         ctx.fillRect(0, 148*S, GBA_W, 12*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 148*S, GBA_W, 1);
@@ -1444,18 +1478,16 @@ window.GameStartMenu = (function () {
     function _drawSaveCanvas(ctx) {
         _canvasBg(ctx, null);
         var S = 2;
-        var COL_TEXT = '#ffffff';
-        var COL_DIM  = '#b4b4b4';
-        var COL_CYAN = '#5aced6';
+        var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
 
         // Title bar
-        ctx.fillStyle = '#0a1830';
+        ctx.fillStyle = _tc.titleBg;
         ctx.fillRect(0, 0, GBA_W, 20*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 20*S, GBA_W, 2);
         ctx.textBaseline = 'top';
         ctx.font = 'bold '+(7*S)+'px monospace';
-        ctx.fillStyle = '#80d0e8';
+        ctx.fillStyle = _tc.hi;
         ctx.fillText('SAVE', 8*S, 5*S);
 
         // Info box
@@ -1642,20 +1674,20 @@ window.GameStartMenu = (function () {
         list.appendChild(makeToggleRow('Battle Scene',    ['ON','OFF'],                  savedBScene,    function(v){localStorage.setItem('pokemon_battle_scene',v);}));
         list.appendChild(makeToggleRow('Force Set Battle',['ON','OFF'],                  savedForceSet,  function(v){localStorage.setItem('pokemon_force_set',v);}));
         list.appendChild(makeToggleRow('Damage Numbers',  ['ON','OFF'],                  savedDmgNums,   function(v){localStorage.setItem('pokemon_damage_nums',v);}));
-        list.appendChild(makeToggleRow('Theme UI',        ['MODERN','CLASSIC','VANILLA'],savedThemeUI,   function(v){localStorage.setItem('pokemon_theme_ui',v);}));
-        list.appendChild(makeToggleRow('Theme',           ['DARK','LIGHT','VANILLA','USER'],savedTheme,  function(v){localStorage.setItem('pokemon_theme',v);}));
-        // Theme Presets — action row
-        (function(){
-            var myIdx = rowIndex++;
-            var row = document.createElement('div');
-            row.className = 'opt-row' + (_subIdx === myIdx ? ' selected' : '');
-            row.style.pointerEvents = 'all';
-            var lbl = document.createElement('span'); lbl.className = 'opt-label'; lbl.textContent = 'Theme Presets';
-            var val = document.createElement('span'); val.className = 'opt-val-wrap'; val.textContent = '▶ APPLY';
-            row.appendChild(lbl); row.appendChild(val);
-            row.addEventListener('click', function(){_subIdx=myIdx;_render();});
-            list.appendChild(row);
-        })();
+        list.appendChild(makeToggleRow('Theme UI',        ['MODERN','CLASSIC','VANILLA'],savedThemeUI,   function(v){localStorage.setItem('pokemon_theme_ui',v); _bagAssets=null; _applyThemeCSS(); _render();}));
+        list.appendChild(makeToggleRow('Theme',           ['DARK','LIGHT','VANILLA','USER'],savedTheme,  function(v){localStorage.setItem('pokemon_theme',v); localStorage.removeItem('pokemon_theme_preset'); _bagAssets=null; _applyThemeCSS(); _render();}));
+        // Theme Presets — matches EE's PRESETTHEME_* values from custom_interface.c
+        list.appendChild(makeToggleRow('Preset',
+            ['None','BlueSteel','RoyalPurple','Synthwave','Mocha'],
+            localStorage.getItem('pokemon_theme_preset') || 'None',
+            function(v) {
+                if (v === 'None') localStorage.removeItem('pokemon_theme_preset');
+                else localStorage.setItem('pokemon_theme_preset', v);
+                // Presets force USER theme mode like EE's ApplyPresetRGBUserTheme
+                localStorage.setItem('pokemon_theme', 'USER');
+                _bagAssets = null; _applyThemeCSS(); _render();
+            }
+        ));
         list.appendChild(makeNumberRow('Frame',       'pokemon_frame',      savedFrame,    1, 20));
         list.appendChild(makeNumberRow('Theme Ball',  'pokemon_theme_ball', savedThemeBall,1, 31));
         list.appendChild(makeToggleRow('Random Music', ['ON','OFF'],                  savedRandMusic, function(v){localStorage.setItem('pokemon_random_music',v);}));
@@ -1746,17 +1778,18 @@ window.GameStartMenu = (function () {
     }
 
     function _drawOptionsCanvasBg(ctx) {
-        ctx.fillStyle = '#060610';
+        var _tc = _getThemeColors();
+        ctx.fillStyle = _tc.bg;
         ctx.fillRect(0, 0, GBA_W, GBA_H);
         var S = 2;
         // Title bar
-        ctx.fillStyle = '#0a1830';
+        ctx.fillStyle = _tc.titleBg;
         ctx.fillRect(0, 0, GBA_W, 20*S);
-        ctx.fillStyle = '#5aced6';
+        ctx.fillStyle = _tc.hi;
         ctx.fillRect(0, 20*S, GBA_W, 2);
         ctx.textBaseline = 'top';
         ctx.font = 'bold '+(7*S)+'px monospace';
-        ctx.fillStyle = '#80d0e8';
+        ctx.fillStyle = _tc.hi;
         ctx.fillText('OPTIONS', 8*S, 5*S);
         ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.globalAlpha = 1;
     }
@@ -1866,6 +1899,7 @@ window.GameStartMenu = (function () {
     }
 
     function init() {
+        _applyThemeCSS(); // apply saved theme to CSS variables on startup
         // Attach inside #screen-primary so the menu is clipped to the game
         // screen and never covers the control buttons below it.
         const screen = document.getElementById('screen-primary');
