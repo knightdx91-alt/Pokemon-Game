@@ -30,6 +30,32 @@ window.GameStartMenu = (function () {
     let _saveDone   = false;
     let _subIdx     = 0;
 
+    // --- Canvas bg image caches ---
+    var _journalBg     = undefined; // null = tried + failed, undefined = not loaded yet
+    var _apBg          = undefined;
+    var _trainerCardBg = undefined;
+    var _partyBg       = undefined;
+    var _pokedexBg     = undefined;
+
+    function _loadSimpleBg(src, storeRef, cb) {
+        if (storeRef.val !== undefined) { cb(storeRef.val); return; }
+        var img = new Image();
+        img.onload  = function() { storeRef.val = img; cb(img); };
+        img.onerror = function() { storeRef.val = null; cb(null); };
+        img.src = src;
+    }
+    // Wrapper objects so we can pass by reference
+    var _jBgRef  = {};
+    var _aBgRef  = {};
+    var _tcBgRef = {};
+    var _ptBgRef = {};
+    var _pdBgRef = {};
+    function _loadJournalBg(cb)     { _loadSimpleBg('src/assets/journal/journal_bg.png',      _jBgRef,  cb); }
+    function _loadApBg(cb)          { _loadSimpleBg('src/assets/ap/ap_bg.png',                 _aBgRef,  cb); }
+    function _loadTrainerCardBg(cb) { _loadSimpleBg('src/assets/trainer_card/trainer_card_bg.png', _tcBgRef, cb); }
+    function _loadPartyBg(cb)       { _loadSimpleBg('src/assets/party/party_bg.png',           _ptBgRef, cb); }
+    function _loadPokedexBg(cb)     { _loadSimpleBg('src/assets/pokedex/pokedex_bg.png',        _pdBgRef, cb); }
+
     // --- Bag state ---
     var _bagPocket   = 0;
     var _bagAssets   = null; // { bg, icons: [{unsel,sel}×8] }
@@ -183,11 +209,21 @@ window.GameStartMenu = (function () {
         subEl.innerHTML = '';
 
         // Canvas-based full-screen pages bypass the sm-win wrapper entirely
-        if (page === 'bag') {
-            var bagEl = document.createElement('div');
-            bagEl.style.cssText = 'position:absolute;inset:0;pointer-events:all;';
-            _buildBag(bagEl);
-            subEl.appendChild(bagEl);
+        var CANVAS_PAGES = ['bag','journal','achievements','trainer_card','options','pokemon','pokedex','pokedex_entry','pokenav','save'];
+        if (CANVAS_PAGES.indexOf(page) !== -1) {
+            var pageEl = document.createElement('div');
+            pageEl.style.cssText = 'position:absolute;inset:0;pointer-events:all;';
+            if      (page === 'bag')          _buildBag(pageEl);
+            else if (page === 'journal')      _buildJournal(pageEl);
+            else if (page === 'achievements') _buildAchievements(pageEl);
+            else if (page === 'trainer_card') _buildTrainerCard(pageEl);
+            else if (page === 'options')      _buildOptions(pageEl);
+            else if (page === 'pokemon')      _buildParty(pageEl);
+            else if (page === 'pokedex')      _buildPokedex(pageEl);
+            else if (page === 'pokedex_entry')_buildPokedexEntry(pageEl);
+            else if (page === 'pokenav')      _buildPokenav(pageEl);
+            else if (page === 'save')         _buildSave(pageEl);
+            subEl.appendChild(pageEl);
             subEl.style.display = 'block';
             return;
         }
@@ -250,28 +286,77 @@ window.GameStartMenu = (function () {
         }
     }
 
-    // --- Sub-page builders ---
+    // --- Sub-page builders (canvas-based) ---
+    var GBA_W = 480, GBA_H = 320;
+
+    function _makeCanvasShell(el, redrawFn) {
+        el.style.cssText = 'padding:0;overflow:hidden;background:none;position:absolute;inset:0;';
+        var backBtn = document.createElement('button');
+        backBtn.textContent = 'B BACK';
+        backBtn.className = 'sm-back-btn';
+        backBtn.style.cssText = 'position:absolute;bottom:4px;right:4px;z-index:10;pointer-events:all;';
+        backBtn.addEventListener('click', _goBack);
+        el.appendChild(backBtn);
+        var canvas = document.createElement('canvas');
+        canvas.width  = GBA_W;
+        canvas.height = GBA_H;
+        canvas.style.cssText = 'width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges;';
+        canvas.style.pointerEvents = 'all';
+        el.appendChild(canvas);
+        var ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+        redrawFn(ctx, canvas);
+        return { ctx: ctx, canvas: canvas };
+    }
+
+    function _canvasBg(ctx, bg) {
+        ctx.fillStyle = '#060610';
+        ctx.fillRect(0, 0, GBA_W, GBA_H);
+        if (bg) { ctx.imageSmoothingEnabled = false; ctx.drawImage(bg, 0, 0, GBA_W, GBA_H); }
+        ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+    }
+
     function _buildTrainerCard(el) {
-        const ls = _lifeSkills();
-        [
-            { key:'Name',        val:_playerName()                               },
-            { key:'Trainer ID',  val:_trainerId()                                },
-            { key:'Money',       val:'₽'+_money().toLocaleString()              },
-            { key:'Location',    val:_mapName()                                  },
-            null,
-            { key:'Badges',      val:_badges()+' / 8'                           },
-            { key:'Ach Points',  val:_ap()+' AP  ('+_achList().length+' earned)'},
-            { key:'Play Time',   val:_playtime()                                 },
-            null,
-            { key:'Botany',      val:'Lv '+(ls.botany||0)                       },
-            { key:'Mining',      val:'Lv '+(ls.mining||0)                       },
-            { key:'Alchemy',     val:'Lv '+(ls.alchemy||0)                      },
-        ].forEach(function (r) {
-            if (!r) { const s=document.createElement('div'); s.className='sm-sep'; el.appendChild(s); return; }
-            const row = document.createElement('div');
-            row.className = 'sm-kv-row';
-            row.innerHTML='<span class="sm-kv-key">'+r.key+'</span><span class="sm-kv-val">'+r.val+'</span>';
-            el.appendChild(row);
+        _makeCanvasShell(el, function(ctx) {
+            _loadTrainerCardBg(function(bg) {
+                _canvasBg(ctx, bg);
+                var S = 2;
+                var COL_TEXT = '#ffffff';
+                var COL_DIM  = '#b4b4b4';
+                var COL_CYAN = '#5aced6';
+                ctx.textBaseline = 'top';
+
+                var ls = _lifeSkills();
+                var rows = [
+                    { key:'Name',       val:_playerName() },
+                    { key:'Trainer ID', val:_trainerId() },
+                    { key:'Money',      val:'₱'+_money().toLocaleString() },
+                    { key:'Location',   val:_mapName() },
+                    null,
+                    { key:'Badges',     val:_badges()+' / 8' },
+                    { key:'Ach Points', val:_ap()+' AP  ('+_achList().length+' earned)' },
+                    { key:'Play Time',  val:_playtime() },
+                    null,
+                    { key:'Botany',     val:'Lv '+(ls.botany||0) },
+                    { key:'Mining',     val:'Lv '+(ls.mining||0) },
+                    { key:'Alchemy',    val:'Lv '+(ls.alchemy||0) },
+                ];
+
+                ctx.font = 'bold '+(8*S)+'px monospace';
+                ctx.fillStyle = COL_CYAN;
+                ctx.fillText('TRAINER CARD', 16*S, 8*S);
+
+                ctx.font = (7*S)+'px monospace';
+                var y = 28*S;
+                rows.forEach(function(r) {
+                    if (!r) { y += 8*S; return; }
+                    ctx.fillStyle = COL_DIM;
+                    ctx.fillText(r.key, 16*S, y);
+                    ctx.fillStyle = COL_TEXT;
+                    ctx.fillText(r.val, 130*S, y);
+                    y += 14*S;
+                });
+            });
         });
     }
 
@@ -373,87 +458,89 @@ window.GameStartMenu = (function () {
     ];
 
     function _buildJournal(el) {
-        // EE journal.c layout: full-screen with page-name strip, stat table, trainer info at bottom
-        // We fit this into the .sm-sub-content div which already has padding.
-        // Remove default padding so we can control layout fully.
-        el.style.padding = '0';
-        el.style.gap = '0';
-
-        // ── Page name bar (top) — tiles 1,4 → y=32px in 160px screen = 20%
-        const pageBar = document.createElement('div');
-        pageBar.className = 'jn-page-bar';
-        const leftArrow = document.createElement('button');
-        leftArrow.className = 'jn-page-btn';
-        leftArrow.textContent = '◀ L';
-        leftArrow.style.pointerEvents = 'all';
-        leftArrow.addEventListener('click', function(e) {
-            e.stopPropagation();
-            _journalPage = (_journalPage - 1 + JOURNAL_PAGES.length) % JOURNAL_PAGES.length;
-            _render();
-        });
-        const pageTitle = document.createElement('span');
-        pageTitle.className = 'jn-page-title';
-        pageTitle.textContent = JOURNAL_PAGES[_journalPage].name;
-        const rightArrow = document.createElement('button');
-        rightArrow.className = 'jn-page-btn';
-        rightArrow.textContent = 'R ▶';
-        rightArrow.style.pointerEvents = 'all';
-        rightArrow.addEventListener('click', function(e) {
-            e.stopPropagation();
-            _journalPage = (_journalPage + 1) % JOURNAL_PAGES.length;
-            _render();
-        });
-        pageBar.appendChild(leftArrow);
-        pageBar.appendChild(pageTitle);
-        pageBar.appendChild(rightArrow);
-        el.appendChild(pageBar);
-
-        // ── Stats table (middle) — tiles 1,6 → y=48px, 28×8 tiles = 224×64px
-        // Name left-aligned, value right-aligned at LEFT_MIDDLE=112px (47% of 240)
-        const stats = JOURNAL_PAGES[_journalPage].stats();
-        const table = document.createElement('div');
-        table.className = 'jn-stat-table';
-        stats.forEach(function(row) {
-            const r = document.createElement('div');
-            r.className = 'jn-stat-row';
-            const lbl = document.createElement('span');
-            lbl.className = 'jn-stat-lbl';
-            lbl.textContent = row[0];
-            const val = document.createElement('span');
-            val.className = 'jn-stat-val';
-            val.textContent = row[1];
-            r.appendChild(lbl);
-            r.appendChild(val);
-            table.appendChild(r);
-        });
-        el.appendChild(table);
-
-        // ── Page indicator dots
-        const dots = document.createElement('div');
-        dots.className = 'jn-dots';
-        JOURNAL_PAGES.forEach(function(_, i) {
-            const d = document.createElement('span');
-            d.className = 'jn-dot' + (i === _journalPage ? ' active' : '');
-            d.textContent = i === _journalPage ? '◆' : '◇';
-            d.style.pointerEvents = 'all';
-            d.style.cursor = 'pointer';
-            d.addEventListener('click', function(e) {
+        var shell = _makeCanvasShell(el, function(ctx, canvas) {
+            _loadJournalBg(function(bg) {
+                _drawJournalCanvas(ctx, bg);
+            });
+            // L/R nav buttons overlaid on canvas
+            var lBtn = document.createElement('button');
+            lBtn.textContent = '◀ L';
+            lBtn.className = 'sm-back-btn';
+            lBtn.style.cssText = 'position:absolute;bottom:4px;left:4px;z-index:10;pointer-events:all;';
+            lBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                _journalPage = i;
+                _journalPage = (_journalPage - 1 + JOURNAL_PAGES.length) % JOURNAL_PAGES.length;
                 _render();
             });
-            dots.appendChild(d);
+            el.appendChild(lBtn);
+            var rBtn = document.createElement('button');
+            rBtn.textContent = 'R ▶';
+            rBtn.className = 'sm-back-btn';
+            rBtn.style.cssText = 'position:absolute;bottom:4px;left:56px;z-index:10;pointer-events:all;';
+            rBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                _journalPage = (_journalPage + 1) % JOURNAL_PAGES.length;
+                _render();
+            });
+            el.appendChild(rBtn);
         });
-        el.appendChild(dots);
+    }
 
-        // ── Trainer info strip at bottom — tiles 7,14 / 14,14 / 18,14 = y=112px
-        const strip = document.createElement('div');
-        strip.className = 'jn-trainer-strip';
-        strip.innerHTML =
-            '<span class="jn-strip-name">' + _playerName() + '</span>' +
-            '<span class="jn-strip-id">ID: ' + _trainerId() + '</span>' +
-            '<span class="jn-strip-money">₽' + _money().toLocaleString() + '</span>';
-        el.appendChild(strip);
+    function _drawJournalCanvas(ctx, bg) {
+        _canvasBg(ctx, bg);
+        var S = 2;
+        var COL_TEXT = '#ffffff';
+        var COL_DIM  = '#b4b4b4';
+        var COL_CYAN = '#5aced6';
+
+        // Title bar area (y=8..30)
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(0, 0, GBA_W, 28*S);
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillRect(0, 28*S, GBA_W, 2);
+
+        ctx.textBaseline = 'top';
+        ctx.font = 'bold '+(8*S)+'px monospace';
+        ctx.fillStyle = '#80d0e8';
+        ctx.fillText('JOURNAL', 8*S, 8*S);
+
+        // Page name
+        ctx.font = (7*S)+'px monospace';
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillText(JOURNAL_PAGES[_journalPage].name, 8*S, 34*S);
+
+        // Page dots
+        var dotX = GBA_W - (JOURNAL_PAGES.length * 14 * S) - 4*S;
+        JOURNAL_PAGES.forEach(function(_, i) {
+            ctx.fillStyle = i === _journalPage ? COL_CYAN : COL_DIM;
+            ctx.fillText(i === _journalPage ? '◆' : '◇', dotX + i*14*S, 34*S);
+        });
+
+        // Stats table y=48
+        var stats = JOURNAL_PAGES[_journalPage].stats();
+        ctx.font = (7*S)+'px monospace';
+        stats.forEach(function(row, i) {
+            var y = 48*S + i * 14*S;
+            if (y > 110*S) return;
+            ctx.fillStyle = COL_DIM;
+            ctx.fillText(String(row[0]), 8*S, y);
+            ctx.fillStyle = COL_TEXT;
+            var val = String(row[1]);
+            var vw = ctx.measureText(val).width;
+            ctx.fillText(val, 232*S - vw, y);
+        });
+
+        // Trainer info strip at y=112
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(0, 112*S, GBA_W, 48*S);
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillRect(0, 112*S, GBA_W, 2);
+
+        ctx.font = (7*S)+'px monospace';
+        ctx.fillStyle = COL_TEXT;
+        ctx.fillText(_playerName(), 8*S, 116*S);
+        ctx.fillText('ID: '+_trainerId(), 90*S, 116*S);
+        ctx.fillText('₱'+_money().toLocaleString(), 170*S, 116*S);
     }
 
     function _buildAchievements(el) {
