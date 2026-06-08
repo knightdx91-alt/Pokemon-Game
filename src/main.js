@@ -150,21 +150,21 @@
         // Check NPC
         const npc = GameMap.getNpcAt(fx, fy);
         if (npc && npc.script && npc.script !== '0x0') {
-            if (window.GameDialogue) GameDialogue.showScript(mapName, npc.script);
+            if (window.GameScript) GameScript.run(mapName, npc.script);
             return;
         }
 
         // Check sign at that tile
         const sign = GameMap.getSign(fx, fy);
         if (sign && sign.script) {
-            if (window.GameDialogue) GameDialogue.showScript(mapName, sign.script);
+            if (window.GameScript) GameScript.run(mapName, sign.script);
             return;
         }
 
         // Also check sign AT player position (some signs are on the same tile)
         const signHere = GameMap.getSign(player.x, player.y);
         if (signHere && signHere.script) {
-            if (window.GameDialogue) GameDialogue.showScript(mapName, signHere.script);
+            if (window.GameScript) GameScript.run(mapName, signHere.script);
         }
     }
 
@@ -187,7 +187,8 @@
             else if (jp.b)     GameStartMenu.back();
         }
 
-        const dialogueOpen = window.GameDialogue && GameDialogue.isOpen();
+        const dialogueOpen = (window.GameDialogue && GameDialogue.isOpen()) ||
+                             (window.GameScript && GameScript.isRunning());
 
         if (!_transitioning && !menuOpen && !dialogueOpen) {
             const elapsed = timestamp - lastMoveTime;
@@ -235,9 +236,11 @@
             }
         }
 
-        // A button — dialogue advance OR interact with NPC/sign in front of player
+        // A button — advance script/dialogue OR interact with NPC/sign in front of player
         if (GameInput.justPressed.a) {
-            if (window.GameDialogue && GameDialogue.isOpen()) {
+            if (window.GameScript && GameScript.isRunning()) {
+                GameScript.advanceDialogue();
+            } else if (window.GameDialogue && GameDialogue.isOpen()) {
                 GameDialogue.advance();
             } else if (!menuOpen) {
                 _tryInteract();

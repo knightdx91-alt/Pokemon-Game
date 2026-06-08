@@ -4,6 +4,14 @@
    Supports all 4 orientations via CSS + JS orientation class on body.
    =================================================================== */
 
+/* --- GBA bitmap font (converted from Emerald Enhanced font1_latin.png) --- */
+@font-face {
+    font-family: 'PokemonGBA';
+    src: url('src/assets/fonts/gba_font.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 /* --- Reset & base -------------------------------------------------- */
 *, *::before, *::after {
     box-sizing: border-box;
@@ -17,7 +25,7 @@ html, body {
     overflow: hidden;
     background: #0d0d0d;
     color: #e0e0e0;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'PokemonGBA', 'Courier New', Courier, monospace;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
 }
@@ -599,7 +607,7 @@ body.orient-reverse-landscape #controls-layer {
     border: 1px solid #444;
     border-radius: 4px;
     padding: 4px 10px;
-    font-size: 12px;
+    font-size: 16px;
     color: #ccc;
     pointer-events: none;
     line-height: 1.7;
@@ -614,7 +622,7 @@ body.orient-reverse-landscape #controls-layer {
     border: 1px solid #555;
     border-radius: 4px;
     padding: 2px 10px;
-    font-size: 13px;
+    font-size: 16px;
     font-family: monospace;
     color: #fff;
     pointer-events: none;
@@ -630,7 +638,7 @@ body.orient-reverse-landscape #controls-layer {
     border-radius: 4px;
     padding: 5px 10px;
     color: #ccc;
-    font-size: 13px;
+    font-size: 16px;
     cursor: pointer;
     pointer-events: all;
     font-family: inherit;
@@ -730,7 +738,7 @@ body.orient-reverse-landscape #controls-layer {
 
 /* Item name label */
 .sm-label-bar {
-    font-size: 10px;
+    font-size: 14px;
     font-family: "Courier New", Courier, monospace;
     letter-spacing: 0.05em;
     color: #d0e8f0;
@@ -753,7 +761,7 @@ body.orient-reverse-landscape #controls-layer {
     border: 1px solid #000;
     box-shadow: 0 0 0 3px #18b8c8, 0 0 0 4px #000, inset 0 0 0 1px #002830;
     padding: 4px 10px 5px;
-    font-size: 9px;
+    font-size: 13px;
     pointer-events: none;
     margin: 3px;
 }
@@ -846,7 +854,7 @@ body.orient-reverse-landscape #controls-layer {
     background: #0a1830;
     border-bottom: 1px solid #18b8c8;
     padding: 4px 6px 4px 8px;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: bold;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -860,7 +868,7 @@ body.orient-reverse-landscape #controls-layer {
 
 .sm-back-btn {
     font-family: "Courier New", Courier, monospace;
-    font-size: 10px;
+    font-size: 14px;
     padding: 2px 7px;
     background: #040c20;
     border: 1px solid #18b8c8;
@@ -895,7 +903,7 @@ body.orient-reverse-landscape #controls-layer {
     justify-content: space-between;
     align-items: center;
     padding: 3px 0;
-    font-size: 11px;
+    font-size: 14px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
     gap: 8px;
     color: #c8d8e8;
@@ -914,17 +922,17 @@ body.orient-reverse-landscape #controls-layer {
     cursor: pointer;
     gap: 4px;
     color: #c8d8e8;
-    font-size: 11px;
+    font-size: 14px;
 }
 .sm-party-row.selected { background: rgba(24,184,200,0.15); }
 .sm-party-info { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.sm-party-name { display: flex; align-items: center; gap: 4px; font-weight: bold; font-size: 11px; }
-.sm-party-lv { font-size: 10px; color: #80d0e8; white-space: nowrap; }
-.sm-party-hp-wrap { display: flex; align-items: center; gap: 3px; font-size: 10px; color: #6090a8; }
+.sm-party-name { display: flex; align-items: center; gap: 4px; font-weight: bold; font-size: 14px; }
+.sm-party-lv { font-size: 14px; color: #80d0e8; white-space: nowrap; }
+.sm-party-hp-wrap { display: flex; align-items: center; gap: 3px; font-size: 14px; color: #6090a8; }
 .sm-party-hp-label { color: #80d0e8; font-weight: bold; }
 .sm-party-hp-bar { flex: 1; height: 5px; background: #1a2a3a; border-radius: 2px; overflow: hidden; }
 .sm-party-hp-num { white-space: nowrap; }
-.sm-party-status { font-size: 8px; padding: 1px 3px; border-radius: 2px; color: #fff; font-weight: bold; }
+.sm-party-status { font-size: 13px; padding: 1px 3px; border-radius: 2px; color: #fff; font-weight: bold; }
 .sm-party-detail { margin: 0 4px 4px 14px; padding: 4px 6px; background: rgba(0,0,0,0.3); border-radius: 3px; border-left: 2px solid rgba(24,184,200,0.3); }
 .sm-win[data-page="pokemon"] { left: 3.3%; top: 5%; width: 90%; height: 90%; }
 
@@ -933,20 +941,20 @@ body.orient-reverse-landscape #controls-layer {
     display: flex;
     align-items: center;
     padding: 5px 0;
-    font-size: 11px;
+    font-size: 14px;
     gap: 4px;
     color: #c8d8e8;
     cursor: pointer;
     line-height: 1.4;
 }
-.sm-row-arrow { width: 12px; color: #18b8c8; flex-shrink: 0; font-size: 11px; }
+.sm-row-arrow { width: 12px; color: #18b8c8; flex-shrink: 0; font-size: 14px; }
 .sm-row.selected { background: rgba(24,184,200,0.15); }
 
 /* ---- Achievement rows ---- */
 .sm-ach-tier-hdr {
     background: #0a1830;
     color: #18b8c8;
-    font-size: 10px;
+    font-size: 14px;
     padding: 2px 6px;
     letter-spacing: 0.06em;
     margin-top: 4px;
@@ -958,20 +966,20 @@ body.orient-reverse-landscape #controls-layer {
     align-items: center;
     gap: 6px;
     padding: 4px 2px;
-    font-size: 11px;
+    font-size: 14px;
     border-bottom: 1px solid rgba(255,255,255,0.05);
     color: #c8d8e8;
 }
 .sm-ach-row.selected { background: rgba(24,184,200,0.15); }
 .sm-ach-row.locked   { opacity: 0.35; filter: grayscale(1); }
 .sm-ach-name { flex: 1; }
-.sm-ach-ap   { color: #407080; white-space: nowrap; font-size: 10px; }
+.sm-ach-ap   { color: #407080; white-space: nowrap; font-size: 14px; }
 
 /* ---- Save page ---- */
 .sm-save-confirm {
     margin-top: 8px;
     color: #20d870;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: bold;
     text-align: center;
 }
@@ -982,7 +990,7 @@ body.orient-reverse-landscape #controls-layer {
     justify-content: space-between;
     align-items: center;
     padding: 6px 0;
-    font-size: 11px;
+    font-size: 14px;
     border-bottom: 1px solid rgba(255,255,255,0.06);
     gap: 6px;
     color: #c8d8e8;
@@ -991,7 +999,7 @@ body.orient-reverse-landscape #controls-layer {
 .sm-opt-btns  { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; justify-content: flex-end; }
 .sm-opt-btn {
     font-family: "Courier New", Courier, monospace;
-    font-size: 10px;
+    font-size: 14px;
     padding: 3px 8px;
     border: 1px solid #183040;
     background: #0a1828;
@@ -1001,11 +1009,11 @@ body.orient-reverse-landscape #controls-layer {
 .sm-opt-btn.active  { background: #18b8c8; color: #000818; border-color: #40d8e8; }
 .sm-opt-btn:active  { background: #0090a0; }
 #sm-size-slider { width: 70px; accent-color: #18b8c8; }
-#sm-size-val    { font-size: 10px; color: #6090a8; min-width: 26px; }
+#sm-size-val    { font-size: 14px; color: #6090a8; min-width: 26px; }
 
 .sm-placeholder {
     color: #304050;
-    font-size: 11px;
+    font-size: 14px;
     padding: 12px 0;
     text-align: center;
 }
@@ -1023,7 +1031,7 @@ body.orient-reverse-landscape #controls-layer {
     border: 2px solid #e8a000;
     color: #fff;
     font-family: monospace;
-    font-size: 10px;
+    font-size: 14px;
     padding: 8px 16px;
     text-align: center;
     z-index: 600;
@@ -1046,13 +1054,13 @@ body.orient-reverse-landscape #controls-layer {
 .ach-toast-title {
     color: #f8c840;
     font-weight: bold;
-    font-size: 9px;
+    font-size: 13px;
     letter-spacing: 0.06em;
     margin-bottom: 3px;
 }
 
 .ach-toast-name {
-    font-size: 10px;
+    font-size: 14px;
     color: #fff;
 }
 
@@ -1067,7 +1075,7 @@ body.orient-reverse-landscape #controls-layer {
     background: rgba(20,20,30,0.85);
     color: #fff;
     font-family: monospace;
-    font-size: 11px;
+    font-size: 14px;
     padding: 5px 14px;
     border-radius: 12px;
     pointer-events: none;
@@ -1132,7 +1140,7 @@ body.orient-reverse-landscape #controls-layer {
 
 .setting-row label {
     min-width: 90px;
-    font-size: 13px;
+    font-size: 16px;
     color: #bbb;
 }
 
@@ -1150,7 +1158,7 @@ body.orient-reverse-landscape #controls-layer {
     border-radius: 4px;
     color: #ccc;
     font-family: inherit;
-    font-size: 12px;
+    font-size: 16px;
     padding: 5px 12px;
     cursor: pointer;
     transition: background 0.1s, border-color 0.1s;
@@ -1173,7 +1181,7 @@ body.orient-reverse-landscape #controls-layer {
 }
 
 #btn-size-value {
-    font-size: 12px;
+    font-size: 16px;
     color: #bbb;
     min-width: 36px;
 }
@@ -1184,7 +1192,7 @@ body.orient-reverse-landscape #controls-layer {
     border-radius: 4px;
     color: #ccc;
     font-family: inherit;
-    font-size: 13px;
+    font-size: 16px;
     padding: 7px 16px;
     cursor: pointer;
     transition: background 0.1s;
@@ -1227,7 +1235,7 @@ body.orient-reverse-landscape #controls-layer {
 }
 #dialogue-text {
     font-family: "Courier New", Courier, monospace;
-    font-size: 11px;
+    font-size: 14px;
     color: #c8d8e8;
     line-height: 1.4;
     white-space: pre-wrap;
@@ -1237,7 +1245,7 @@ body.orient-reverse-landscape #controls-layer {
     position: absolute;
     bottom: 3px;
     right: 6px;
-    font-size: 9px;
+    font-size: 13px;
     color: #18b8c8;
     animation: dlg-bounce 0.5s ease-in-out infinite alternate;
 }

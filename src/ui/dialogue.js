@@ -74,24 +74,26 @@ window.GameDialogue = (function () {
         _typeChar();
     }
 
+    let _onCloseCallback = null;
+
     // --- Public ---
-    function show(lines) {
+    function show(lines, onClose) {
         if (!_boxEl) _build();
-        if (!lines || !lines.length) return;
+        if (!lines || !lines.length) { if (onClose) onClose(); return; }
+        _onCloseCallback = onClose || null;
         _lines = lines;
         _idx   = 0;
         _boxEl.style.display = 'block';
         _showLine(0);
     }
 
-    function showScript(mapName, scriptLabel) {
+    function showScript(mapName, scriptLabel, onClose) {
         _loadDb(function(db) {
             const lines = getLines(mapName, scriptLabel);
             if (lines && lines.length) {
-                show(lines);
+                show(lines, onClose);
             } else {
-                // Fallback generic line
-                show(['...']);
+                show(['...'], onClose);
             }
         });
     }
@@ -121,6 +123,9 @@ window.GameDialogue = (function () {
         _boxEl.style.display = 'none';
         clearTimeout(_typeTimer);
         _lines = []; _idx = 0; _typing = false;
+        const cb = _onCloseCallback;
+        _onCloseCallback = null;
+        if (cb) cb();
     }
 
     function isOpen() {
