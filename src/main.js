@@ -58,7 +58,12 @@
 
             if (returnWarp) {
                 player.x = returnWarp.x;
-                player.y = returnWarp.y + 1;  // one tile south of the door
+                // Indoor maps: exit warp is at the bottom edge — spawn one tile north (inside)
+                // Outdoor maps: exterior door warp — spawn one tile south (outside, facing away)
+                const destType = GameMap.current && GameMap.current.map_type;
+                const isIndoor = destType === 'MAP_TYPE_INDOOR' || destType === 'MAP_TYPE_UNDERGROUND';
+                player.y = isIndoor ? returnWarp.y - 1 : returnWarp.y + 1;
+                player.direction = 'down';
             } else {
                 // Centre of map
                 player.x = Math.floor(GameMap.width  / 2);
