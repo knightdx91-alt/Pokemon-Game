@@ -198,7 +198,13 @@
 
         document.getElementById('screenshot-btn-emu').addEventListener('click', function() {
             var canvas = document.querySelector('#game canvas');
-            if (!canvas) { alert('Emulator not loaded yet.'); return; }
+            var statusText = (document.getElementById('status') || {}).textContent || 'no status';
+            var pageInfo = 'Status: ' + statusText + '\nURL: ' + location.href + '\nUserAgent: ' + navigator.userAgent + '\nCanvases found: ' + document.querySelectorAll('canvas').length;
+            if (!canvas) {
+                // No canvas — still upload status info so we can diagnose
+                _uploadDiag(null, pageInfo);
+                return;
+            }
 
             var token = localStorage.getItem('gh_debug_token');
             if (!token) {
@@ -210,19 +216,33 @@
             var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
             var ext = dataUrl.startsWith('data:image/png') ? 'png' : 'jpg';
             var base64 = dataUrl.replace(/^data:image\/(jpeg|png);base64,/, '');
+            _uploadDiag(base64, pageInfo, ext);
+        });
+
+        function _uploadDiag(base64, pageInfo, ext) {
+            var token = localStorage.getItem('gh_debug_token');
+            if (!token) {
+                token = prompt('Enter your GitHub token (classic, gist scope):');
+                if (!token) return;
+                localStorage.setItem('gh_debug_token', token);
+            }
             var ts = new Date().toISOString().replace(/[:.]/g, '-');
-            var fname = 'ee-shot-' + ts + '.' + ext;
+            var fname = 'ee-shot-' + ts + '.' + (ext || 'txt');
+            var files = {
+                'status.txt': { content: pageInfo || 'no info' }
+            };
+            if (base64) {
+                files['view.html'] = { content: '<!DOCTYPE html><html><body style="margin:0;background:#000"><img src="data:image/' + (ext||'jpg') + ';base64,' + base64 + '" style="max-width:100%;image-rendering:pixelated"><pre style="color:#fff;padding:8px">' + (pageInfo||'') + '</pre></body></html>' };
+                files[fname] = { content: base64 };
+            }
 
             fetch('https://api.github.com/gists', {
                 method: 'POST',
                 headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    description: 'EE screenshot ' + new Date().toISOString(),
+                    description: 'EE diag ' + new Date().toISOString(),
                     public: false,
-                    files: {
-                        'view.html': { content: '<!DOCTYPE html><html><body style="margin:0;background:#000"><img src="data:image/' + ext + ';base64,' + base64 + '" style="max-width:100%;image-rendering:pixelated"></body></html>' },
-                        [fname]: { content: base64 }
-                    }
+                    files: files
                 })
             })
             .then(function(r) {
@@ -231,7 +251,7 @@
             })
             .then(function(gist) { _showGistUrl(gist.html_url); })
             .catch(function(e) { alert('Screenshot error:\n' + e.message); });
-        });
+        }
     </script>
 </body>
 </html>
