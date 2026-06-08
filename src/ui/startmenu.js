@@ -156,7 +156,7 @@ window.GameStartMenu = (function () {
 
         const titles = { journal:'Journal', trainer_card:'Trainer Card',
                          achievements:'Achievement Atlas', pokenav:'Pokénav',
-                         save:'Save', options:'Options' };
+                         save:'Save', options:'Options', bag:'Pack' };
 
         // GBA-style dialog window — positioned over the map, not full-screen
         const win = document.createElement('div');
@@ -185,6 +185,7 @@ window.GameStartMenu = (function () {
         else if (page === 'pokenav')       _buildPokenav(content);
         else if (page === 'save')          _buildSave(content);
         else if (page === 'options')       _buildOptions(content);
+        else if (page === 'bag')           _buildBag(content);
 
         win.appendChild(content);
         subEl.appendChild(win);
@@ -275,6 +276,50 @@ window.GameStartMenu = (function () {
                 el.appendChild(row); ri++;
             });
         });
+    }
+
+    function _buildBag(el) {
+        const inv = (window.GameSave && GameSave.state && GameSave.state.inventory)
+            ? GameSave.state.inventory
+            : { items:[], keyItems:[], pokeBalls:[], tms:[], berries:[] };
+
+        const pockets = [
+            { label: 'Items',      items: inv.items     || [] },
+            { label: 'Key Items',  items: inv.keyItems  || [] },
+            { label: 'Poké Balls', items: inv.pokeBalls || [] },
+            { label: 'TMs & HMs',  items: inv.tms       || [] },
+            { label: 'Berries',    items: inv.berries   || [] },
+        ];
+
+        pockets.forEach(function (pocket, i) {
+            const row = document.createElement('div');
+            row.className = 'sm-row' + (i === _subIdx ? ' selected' : '');
+            const arrow = document.createElement('span');
+            arrow.className = 'sm-row-arrow';
+            arrow.textContent = i === _subIdx ? '▶' : ' ';
+            const name = document.createElement('span');
+            name.textContent = pocket.label;
+            const count = document.createElement('span');
+            count.style.cssText = 'margin-left:auto;color:#6090a8;font-size:10px;';
+            count.textContent = pocket.items.length ? pocket.items.length + ' item' + (pocket.items.length !== 1 ? 's' : '') : 'Empty';
+            row.appendChild(arrow);
+            row.appendChild(name);
+            row.appendChild(count);
+            row.addEventListener('click', function () { _subIdx = i; _render(); });
+            el.appendChild(row);
+        });
+
+        // If the selected pocket has items, list them below
+        const sel = pockets[_subIdx];
+        if (sel && sel.items.length) {
+            const sep = document.createElement('div'); sep.className = 'sm-sep'; el.appendChild(sep);
+            sel.items.forEach(function (entry) {
+                const kv = document.createElement('div'); kv.className = 'sm-kv-row';
+                kv.innerHTML = '<span class="sm-kv-key">' + (entry.itemId || entry.id || '?') + '</span>'
+                    + '<span class="sm-kv-val">×' + (entry.quantity || 1) + '</span>';
+                el.appendChild(kv);
+            });
+        }
     }
 
     function _buildPokenav(el) {
@@ -377,6 +422,7 @@ window.GameStartMenu = (function () {
             case 'JOURNAL': page='journal';      _subIdx=0; _render(); break;
             case 'POKENAV': page='pokenav';      _subIdx=0; _render(); break;
             case 'PLAYER':  page='trainer_card'; _subIdx=0; _render(); break;
+            case 'BAG':     page='bag';           _subIdx=0; _render(); break;
             default: close(); break;
         }
     }
@@ -414,6 +460,7 @@ window.GameStartMenu = (function () {
         if (page==='journal') return 4;
         if (page==='save')    return 2;
         if (page==='pokenav') return 3;
+        if (page==='bag')     return 5;
         if (page==='achievements') return window.GameAchievements ? GameAchievements.getAll().length : 0;
         return 0;
     }
