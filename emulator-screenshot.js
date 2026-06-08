@@ -1,9 +1,11 @@
 // Emulator screenshot — saves to a persistent gist (no SHA conflicts)
 (function() {
     var btn = document.getElementById('screenshot-btn-emu');
-    if (!btn) return;
+    if (!btn || btn.dataset.ssInit) return;
 
+    // Mark button so any duplicate inline script can't re-add a listener
     var newBtn = btn.cloneNode(true);
+    newBtn.dataset.ssInit = '1';
     btn.parentNode.replaceChild(newBtn, btn);
 
     newBtn.addEventListener('click', function() {
@@ -28,33 +30,38 @@
         files[fname] = { content: base64 };
         files['view.html'] = { content: '<!DOCTYPE html><html><body style="margin:0;background:#000"><img src="data:image/' + ext + ';base64,' + base64 + '" style="max-width:100%;image-rendering:pixelated"></body></html>' };
 
-        var gistId = localStorage.getItem('gh_screenshot_gist');
-
-        var req;
-        if (gistId) {
-            // Update existing gist — no SHA needed
-            req = fetch('https://api.github.com/gists/' + gistId, {
-                method: 'PATCH',
-                headers: hdrs,
-                body: JSON.stringify({ files: files })
-            });
-        } else {
-            // Create gist on first use
-            req = fetch('https://api.github.com/gists', {
-                method: 'POST',
-                headers: hdrs,
+        function createGist() {
+            return fetch('https://api.github.com/gists', {
+                method: 'POST', headers: hdrs,
                 body: JSON.stringify({ description: 'Pokemon screenshots', public: false, files: files })
+            }).then(function(r) {
+                if (!r.ok) return r.text().then(function(t) {
+                    var m = t; try { m = JSON.parse(t).message || t; } catch(e) {}
+                    throw new Error(r.status + ': ' + m);
+                });
+                return r.json();
+            }).then(function(gist) {
+                localStorage.setItem('gh_screenshot_gist', gist.id);
+                return gist;
             });
         }
 
-        req.then(function(r) {
-            if (!r.ok) return r.text().then(function(t) {
-                var m = t; try { m = JSON.parse(t).message || t; } catch(e) {}
-                throw new Error(r.status + ': ' + m);
-            });
-            return r.json();
-        })
-        .then(function(gist) {
+        var gistId = localStorage.getItem('gh_screenshot_gist');
+        var req = gistId
+            ? fetch('https://api.github.com/gists/' + gistId, {
+                method: 'PATCH', headers: hdrs,
+                body: JSON.stringify({ files: files })
+              }).then(function(r) {
+                  if (!r.ok) {
+                      // Stale ID — clear it and create fresh
+                      localStorage.removeItem('gh_screenshot_gist');
+                      return createGist();
+                  }
+                  return r.json();
+              })
+            : createGist();
+
+        req.then(function(gist) {
             localStorage.setItem('gh_screenshot_gist', gist.id);
             newBtn.style.color = '#20d840';
             setTimeout(function() { newBtn.style.color = '#18b8c8'; }, 2000);
