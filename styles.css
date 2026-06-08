@@ -905,6 +905,29 @@ body.orient-reverse-landscape #controls-layer {
 
 .sm-sep { height: 1px; background: rgba(24,184,200,0.2); margin: 3px 0; }
 
+/* ---- Party rows ---- */
+.sm-party-row {
+    display: flex;
+    align-items: center;
+    padding: 5px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    cursor: pointer;
+    gap: 4px;
+    color: #c8d8e8;
+    font-size: 11px;
+}
+.sm-party-row.selected { background: rgba(24,184,200,0.15); }
+.sm-party-info { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.sm-party-name { display: flex; align-items: center; gap: 4px; font-weight: bold; font-size: 11px; }
+.sm-party-lv { font-size: 10px; color: #80d0e8; white-space: nowrap; }
+.sm-party-hp-wrap { display: flex; align-items: center; gap: 3px; font-size: 10px; color: #6090a8; }
+.sm-party-hp-label { color: #80d0e8; font-weight: bold; }
+.sm-party-hp-bar { flex: 1; height: 5px; background: #1a2a3a; border-radius: 2px; overflow: hidden; }
+.sm-party-hp-num { white-space: nowrap; }
+.sm-party-status { font-size: 8px; padding: 1px 3px; border-radius: 2px; color: #fff; font-weight: bold; }
+.sm-party-detail { margin: 0 4px 4px 14px; padding: 4px 6px; background: rgba(0,0,0,0.3); border-radius: 3px; border-left: 2px solid rgba(24,184,200,0.3); }
+.sm-win[data-page="pokemon"] { left: 3.3%; top: 5%; width: 90%; height: 90%; }
+
 /* ---- Selectable rows ---- */
 .sm-row {
     display: flex;

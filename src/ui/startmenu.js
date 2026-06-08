@@ -156,7 +156,7 @@ window.GameStartMenu = (function () {
 
         const titles = { journal:'Journal', trainer_card:'Trainer Card',
                          achievements:'Achievement Atlas', pokenav:'Pokénav',
-                         save:'Save', options:'Options', bag:'Pack' };
+                         save:'Save', options:'Options', bag:'Pack', pokemon:'Pokémon' };
 
         // GBA-style dialog window — positioned over the map, not full-screen
         const win = document.createElement('div');
@@ -186,6 +186,7 @@ window.GameStartMenu = (function () {
         else if (page === 'save')          _buildSave(content);
         else if (page === 'options')       _buildOptions(content);
         else if (page === 'bag')           _buildBag(content);
+        else if (page === 'pokemon')       _buildParty(content);
 
         win.appendChild(content);
         subEl.appendChild(win);
@@ -322,6 +323,106 @@ window.GameStartMenu = (function () {
         }
     }
 
+    // --- Party viewer ---
+    var _speciesDb = null;
+    function _getSpeciesDb(cb) {
+        if (_speciesDb) { cb(_speciesDb); return; }
+        fetch('data/pokemon/base_stats.json')
+            .then(function(r){ return r.ok ? r.json() : null; })
+            .then(function(d){ _speciesDb = d || {}; cb(_speciesDb); })
+            .catch(function(){ _speciesDb = {}; cb({}); });
+    }
+
+    function _buildParty(el) {
+        const party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
+        const filled = party.filter(Boolean);
+
+        if (!filled.length) {
+            const empty = document.createElement('div');
+            empty.className = 'sm-kv-row';
+            empty.style.cssText = 'justify-content:center;color:#6090a8;padding:12px 0;';
+            empty.textContent = 'No Pokémon in party';
+            el.appendChild(empty);
+            return;
+        }
+
+        const STATUS_COLOR = { PAR:'#e8c000', BRN:'#e85020', PSN:'#a820e8', FRZ:'#18c8e8', SLP:'#888', FNT:'#e83020' };
+
+        filled.forEach(function(mon, i) {
+            const row = document.createElement('div');
+            row.className = 'sm-party-row' + (i === _subIdx ? ' selected' : '');
+            row.addEventListener('click', function(){ _subIdx = i; _render(); });
+
+            // Cursor
+            const cursor = document.createElement('span');
+            cursor.className = 'sm-row-arrow';
+            cursor.textContent = i === _subIdx ? '▶' : ' ';
+
+            // Species name + nickname
+            const nameEl = document.createElement('div');
+            nameEl.className = 'sm-party-name';
+            const displayName = mon.nickname || mon.speciesId || '???';
+            nameEl.textContent = displayName;
+
+            // Level
+            const lvEl = document.createElement('div');
+            lvEl.className = 'sm-party-lv';
+            lvEl.textContent = 'Lv.' + (mon.level || '?');
+
+            // HP bar
+            const hpWrap = document.createElement('div');
+            hpWrap.className = 'sm-party-hp-wrap';
+            const hpPct = mon.maxHp > 0 ? Math.max(0, Math.min(1, mon.currentHp / mon.maxHp)) : 0;
+            const hpColor = hpPct > 0.5 ? '#20d840' : hpPct > 0.25 ? '#e8c000' : '#e82020';
+            hpWrap.innerHTML =
+                '<span class="sm-party-hp-label">HP</span>'
+              + '<div class="sm-party-hp-bar"><div style="width:' + Math.round(hpPct*100) + '%;background:' + hpColor + ';height:100%;border-radius:2px;"></div></div>'
+              + '<span class="sm-party-hp-num">' + (mon.currentHp||0) + '/' + (mon.maxHp||0) + '</span>';
+
+            // Status badge
+            if (mon.statusCondition) {
+                const badge = document.createElement('span');
+                badge.className = 'sm-party-status';
+                badge.textContent = mon.statusCondition;
+                badge.style.background = STATUS_COLOR[mon.statusCondition] || '#666';
+                nameEl.appendChild(badge);
+            }
+
+            const info = document.createElement('div');
+            info.className = 'sm-party-info';
+            info.appendChild(nameEl);
+            info.appendChild(hpWrap);
+
+            row.appendChild(cursor);
+            row.appendChild(info);
+            row.appendChild(lvEl);
+            el.appendChild(row);
+
+            // Expanded detail for selected slot
+            if (i === _subIdx) {
+                const detail = document.createElement('div');
+                detail.className = 'sm-party-detail';
+                detail.innerHTML =
+                    '<div class="sm-kv-row"><span class="sm-kv-key">Species</span><span class="sm-kv-val">' + (mon.speciesId||'???') + '</span></div>'
+                  + '<div class="sm-kv-row"><span class="sm-kv-key">Nature</span><span class="sm-kv-val">' + (mon.nature||'Hardy') + '</span></div>'
+                  + '<div class="sm-kv-row"><span class="sm-kv-key">EXP</span><span class="sm-kv-val">' + (mon.exp||0) + '</span></div>'
+                  + '<div class="sm-kv-row"><span class="sm-kv-key">Item</span><span class="sm-kv-val">' + (mon.heldItem||'—') + '</span></div>';
+                // Moves
+                const moveList = (mon.moves||[]).filter(Boolean);
+                if (moveList.length) {
+                    const sep = document.createElement('div'); sep.className = 'sm-sep'; detail.appendChild(sep);
+                    const ml = document.createElement('div'); ml.className='sm-kv-row'; ml.innerHTML='<span class="sm-kv-key" style="color:#80d0e8">Moves</span>'; detail.appendChild(ml);
+                    moveList.forEach(function(mv){
+                        const mr = document.createElement('div'); mr.className='sm-kv-row';
+                        mr.innerHTML='<span class="sm-kv-key" style="padding-left:8px">'+mv+'</span>';
+                        detail.appendChild(mr);
+                    });
+                }
+                el.appendChild(detail);
+            }
+        });
+    }
+
     function _buildPokenav(el) {
         ['Map','Condition','Cancel'].forEach(function(label,i){
             const row=document.createElement('div');
@@ -423,6 +524,7 @@ window.GameStartMenu = (function () {
             case 'POKENAV': page='pokenav';      _subIdx=0; _render(); break;
             case 'PLAYER':  page='trainer_card'; _subIdx=0; _render(); break;
             case 'BAG':     page='bag';           _subIdx=0; _render(); break;
+            case 'POKEMON': page='pokemon';       _subIdx=0; _render(); break;
             default: close(); break;
         }
     }
@@ -461,6 +563,10 @@ window.GameStartMenu = (function () {
         if (page==='save')    return 2;
         if (page==='pokenav') return 3;
         if (page==='bag')     return 5;
+        if (page==='pokemon') {
+            const party = window.GameSave && GameSave.state && GameSave.state.party;
+            return party ? party.filter(Boolean).length || 1 : 1;
+        }
         if (page==='achievements') return window.GameAchievements ? GameAchievements.getAll().length : 0;
         return 0;
     }
