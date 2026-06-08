@@ -31,14 +31,31 @@ window.GameStartMenu = (function () {
     let _subIdx     = 0;
 
     // --- Bag state ---
-    var _bagPocket  = 0;   // 0-7: which pocket tab is open
-    var _bagBgImg   = null; // cached Image for bag_bg.png
-    function _loadBagBg(cb) {
-        if (_bagBgImg && _bagBgImg.complete) { cb(_bagBgImg); return; }
-        _bagBgImg = new Image();
-        _bagBgImg.onload = function() { cb(_bagBgImg); };
-        _bagBgImg.onerror = function() { cb(null); };
-        _bagBgImg.src = 'src/assets/bag/bag_bg.png';
+    var _bagPocket   = 0;
+    var _bagAssets   = null; // { bg, icons: [{unsel,sel}×8] }
+    function _loadBagAssets(cb) {
+        if (_bagAssets) { cb(_bagAssets); return; }
+        var assets = { bg: null, icons: [] };
+        var pending = 1 + 16; // bg + 8 unsel + 8 sel
+        function done() { if (--pending === 0) { _bagAssets = assets; cb(assets); } }
+        var bg = new Image();
+        bg.onload = function() { assets.bg = bg; done(); };
+        bg.onerror = function() { done(); };
+        bg.src = 'src/assets/bag/bag_bg.png';
+        for (var i = 0; i < 8; i++) {
+            (function(idx) {
+                var icon = { unsel: null, sel: null };
+                assets.icons.push(icon);
+                var u = new Image();
+                u.onload = function() { icon.unsel = u; done(); };
+                u.onerror = function() { done(); };
+                u.src = 'src/assets/bag/pocket_icon_' + idx + '_unsel.png';
+                var s = new Image();
+                s.onload = function() { icon.sel = s; done(); };
+                s.onerror = function() { done(); };
+                s.src = 'src/assets/bag/pocket_icon_' + idx + '_sel.png';
+            })(i);
+        }
     }
 
     // --- Data helpers ---
@@ -581,115 +598,98 @@ window.GameStartMenu = (function () {
         ];
     }
 
-    // ── Canvas bag renderer (GBA pixel-exact at 240×160) ───────────────────
-    function _drawBagCanvas(ctx, bg) {
+    // ── Canvas bag renderer — 2× internal resolution (480×320) for crisp text ─
+    var BAG_W = 480, BAG_H = 320, BAG_S = 2; // scale factor
+    function _drawBagCanvas(ctx, assets) {
         var POCKETS = _getBagPockets();
         var pocket  = POCKETS[_bagPocket] || POCKETS[0];
         var items   = pocket.items;
+        var S = BAG_S;
 
-        // ── 1. Background image (240×160 assembled from EE tileset+tilemap)
-        ctx.clearRect(0, 0, 240, 160);
+        ctx.clearRect(0, 0, BAG_W, BAG_H);
         ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, 240, 160);
-        if (bg) ctx.drawImage(bg, 0, 0, 240, 160);
+        ctx.fillRect(0, 0, BAG_W, BAG_H);
+        if (assets && assets.bg) {
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(assets.bg, 0, 0, BAG_W, BAG_H);
+        }
 
-        // Reset all canvas state
-        ctx.shadowColor   = 'transparent';
-        ctx.shadowBlur    = 0;
-        ctx.globalAlpha   = 1;
+        ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.globalAlpha = 1;
 
-        // EE dark palette colors (from bag_theme_dark.pal, bank1):
-        var COL_TEXT   = '#ffffff';   // EE bank1[1]
-        var COL_SHADOW = '#20abff';   // EE bank1[3]
-        var COL_DIM    = '#b4b4b4';   // EE bank1[6]
-        var COL_CYAN   = '#5aced6';   // EE bank0[10]
-        var COL_BLUE   = '#4a73c6';   // EE bank0[6]
+        // EE dark palette colors
+        var COL_TEXT = '#ffffff';
+        var COL_DIM  = '#b4b4b4';
+        var COL_CYAN = '#5aced6';
 
-        // ── 2. Pocket indicator squares
-        // EE: InitPocketIndicatorIcons places 8 tiles at (i+3, 2) = px (24+i*8, 16)
-        var POCKET_LABELS = ['ITM','MED','VAL','KEY','POK','TM♥','BRY','FRE'];
+        // ── Pocket indicator icons — 8×8 sprite tiles at (24+i*8, 16) in GBA px
+        ctx.imageSmoothingEnabled = false;
         for (var i = 0; i < 8; i++) {
-            var ix = 24 + i * 8;
-            if (i === _bagPocket) {
-                ctx.fillStyle = COL_CYAN;
-                ctx.fillRect(ix, 16, 7, 7);
-            } else {
-                ctx.strokeStyle = COL_BLUE;
-                ctx.lineWidth = 0.5;
-                ctx.strokeRect(ix + 0.5, 16.5, 6, 6);
+            var ix = (24 + i * 8) * S;
+            var iy = 16 * S;
+            var icon = assets && assets.icons && assets.icons[i];
+            if (icon) {
+                var img = (i === _bagPocket) ? icon.sel : icon.unsel;
+                if (img) ctx.drawImage(img, ix, iy, 8*S, 8*S);
             }
         }
 
-        // ── 3. Pocket name (EE WIN[2]: tilemapLeft=3, tilemapTop=0 → px 24, 0)
-        ctx.font = 'bold 7px "Courier New"';
+        // ── Pocket name at (26, 11) GBA px
+        ctx.font = 'bold ' + (8*S) + 'px monospace';
         ctx.fillStyle = COL_TEXT;
-        ctx.fillText(pocket.label, 26, 11);
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillText(pocket.label, 26*S, 11*S);
 
-        // ── 4. Item list (EE WIN[0]: x=112, y=8, w=120, h=144)
+        // ── Item list — EE WIN[0]: x=112, y=8, w=120, h=144
         var MAX_VIS = 9;
         var scroll  = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), items.length - MAX_VIS));
         if (scroll < 0) scroll = 0;
 
-        ctx.font = '7px "Courier New"';
+        ctx.font = (8*S) + 'px monospace';
         for (var j = 0; j < MAX_VIS; j++) {
             var idx = scroll + j;
             if (idx >= items.length) break;
             var item = items[idx];
-            var iy   = 8 + j * 16;
-            var sel  = (idx === _subIdx);
+            var row_y = (8 + j * 16) * S;
+            var sel   = (idx === _subIdx);
 
             if (sel) {
                 ctx.fillStyle = 'rgba(90,206,214,0.20)';
-                ctx.fillRect(113, iy, 126, 14);
+                ctx.fillRect(113*S, row_y, 127*S, 14*S);
                 ctx.fillStyle = COL_CYAN;
-                ctx.fillRect(113, iy, 2, 14);
+                ctx.fillRect(113*S, row_y, 2*S, 14*S);
             }
 
             ctx.fillStyle = COL_TEXT;
             var name = item.name || item.itemId || item.id || '?';
-            ctx.fillText(name, 122, iy + 10);
+            ctx.fillText(name, 122*S, (row_y + 10*S));
 
             var qty = '\xd7' + (item.quantity || 1);
             var qw  = ctx.measureText(qty).width;
-            ctx.fillText(qty, 238 - qw, iy + 10);
+            ctx.fillText(qty, 238*S - qw, row_y + 10*S);
         }
 
-        // Scroll arrows
-        if (scroll > 0) {
-            ctx.fillStyle = COL_CYAN; ctx.fillText('▲', 231, 13);
-        }
-        if (scroll + MAX_VIS < items.length) {
-            ctx.fillStyle = COL_CYAN; ctx.fillText('▼', 231, 153);
-        }
+        if (scroll > 0) { ctx.fillStyle = COL_CYAN; ctx.fillText('▲', 231*S, 13*S); }
+        if (scroll + MAX_VIS < items.length) { ctx.fillStyle = COL_CYAN; ctx.fillText('▼', 231*S, 153*S); }
 
-        // CANCEL entry
-        var cancelY = 8 + Math.min(MAX_VIS, items.length) * 16;
-        if (cancelY < 152) {
+        var cancelY = (8 + Math.min(MAX_VIS, items.length) * 16) * S;
+        if (cancelY < 152*S) {
             ctx.fillStyle = COL_DIM;
-            ctx.font = '7px "Courier New"';
-            ctx.fillText('CANCEL', 122, cancelY + 10);
+            ctx.fillText('CANCEL', 122*S, cancelY + 10*S);
         }
 
-        // ── 5. Description (EE WIN[1]: tilemapLeft=0, tilemapTop=13 → px 0, 104)
+        // ── Description — EE WIN[1]: x=0, y=104 (tilemapTop=13 × 8)
         var selItem = items[_subIdx];
-        var desc = selItem
-            ? (selItem.desc || selItem.description || 'No description.')
-            : pocket.label + ' pocket is empty.';
+        var desc = selItem ? (selItem.desc || selItem.description || '') : '';
+        if (!desc) desc = pocket.label + ' pocket is empty.';
         ctx.fillStyle = COL_TEXT;
-        ctx.font = '7px "Courier New"';
-        // Simple word-wrap in 108px width at x=4
-        var words = desc.split(' ');
-        var line = '', lx = 4, ly = 122;
+        ctx.font = (8*S) + 'px monospace';
+        var words = desc.split(' '), line = '', lx = 4*S, ly = 122*S, maxW = 104*S;
         for (var w = 0; w < words.length; w++) {
             var test = line ? line + ' ' + words[w] : words[w];
-            if (ctx.measureText(test).width > 104 && line) {
-                ctx.fillText(line, lx, ly);
-                line = words[w];
-                ly += 11;
-                if (ly > 154) break;
-            } else {
-                line = test;
-            }
+            if (ctx.measureText(test).width > maxW && line) {
+                ctx.fillText(line, lx, ly); line = words[w]; ly += 11*S;
+                if (ly > 154*S) break;
+            } else { line = test; }
         }
         if (line) ctx.fillText(line, lx, ly);
     }
@@ -697,7 +697,6 @@ window.GameStartMenu = (function () {
     function _buildBag(el) {
         el.style.cssText = 'padding:0;overflow:hidden;background:none;position:absolute;inset:0;';
 
-        // B/back button overlaid at bottom-right of canvas
         var backBtn = document.createElement('button');
         backBtn.textContent = 'B BACK';
         backBtn.className = 'sm-back-btn';
@@ -706,8 +705,8 @@ window.GameStartMenu = (function () {
         el.appendChild(backBtn);
 
         var canvas = document.createElement('canvas');
-        canvas.width  = 240;
-        canvas.height = 160;
+        canvas.width  = BAG_W;
+        canvas.height = BAG_H;
         canvas.style.cssText = 'width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges;';
         canvas.style.pointerEvents = 'all';
         el.appendChild(canvas);
@@ -741,8 +740,7 @@ window.GameStartMenu = (function () {
             }
         });
 
-        // Store redraw fn for when page re-renders
-        el._redraw = function() { _loadBagBg(function(bg) { _drawBagCanvas(ctx, bg); }); };
+        el._redraw = function() { _loadBagAssets(function(a) { _drawBagCanvas(ctx, a); }); };
         el._redraw();
     }
 
