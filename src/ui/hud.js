@@ -2,6 +2,7 @@
 window.GameHUD = (function () {
     let overlay = null;
     let infoEl = null;
+    let coordsEl = null;
     let settingsBtn = null;
     let settingsPanel = null;
     let mapRef = null;
@@ -105,9 +106,10 @@ window.GameHUD = (function () {
     function update() {
         if (!infoEl) return;
         const mapName = (mapRef && mapRef.current) ? mapRef.current.name : '—';
-        const px = playerRef ? playerRef.x : '?';
-        const py = playerRef ? playerRef.y : '?';
-        infoEl.textContent = `${mapName}  (${px}, ${py})`;
+        infoEl.textContent = mapName;
+        if (coordsEl && playerRef) {
+            coordsEl.textContent = `x: ${playerRef.x}  y: ${playerRef.y}`;
+        }
 
         // Show banner when map changes
         if (mapName !== _lastMapName && mapName !== '—') {
@@ -149,6 +151,11 @@ window.GameHUD = (function () {
         _bannerEl.id = 'map-name-banner';
         _bannerEl.style.display = 'none';
         overlay.appendChild(_bannerEl);
+
+        // Coordinates display — always visible below the banner
+        coordsEl = document.createElement('div');
+        coordsEl.id = 'hud-coords';
+        overlay.appendChild(coordsEl);
 
         initSettings();
         update();
