@@ -168,7 +168,7 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
-    const GAME_VERSION = 'v0.3.19';
+    const GAME_VERSION = 'v0.3.20';
 
     // --- Update display ---
     function update() {
@@ -263,62 +263,6 @@ window.GameHUD = (function () {
     }
 
     // --- Screenshot → GitHub repo ---
-    function _showGistUrl(url) {
-        var existing = document.getElementById('gist-url-overlay');
-        if (existing) existing.remove();
-
-        var ov = document.createElement('div');
-        ov.id = 'gist-url-overlay';
-        ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;';
-
-        var box = document.createElement('div');
-        box.style.cssText = 'background:#0a1830;border:2px solid #18b8c8;border-radius:6px;padding:16px;width:88vw;max-width:360px;font-family:monospace;color:#c8d8e8;';
-
-        var title = document.createElement('div');
-        title.textContent = 'Screenshot saved!';
-        title.style.cssText = 'font-size:14px;font-weight:bold;color:#80d0e8;margin-bottom:10px;';
-
-        var inp = document.createElement('input');
-        inp.type = 'text';
-        inp.value = url;
-        inp.readOnly = true;
-        inp.style.cssText = 'width:100%;box-sizing:border-box;background:#060610;color:#c8d8e8;border:1px solid #18b8c8;border-radius:3px;padding:6px;font-size:11px;margin-bottom:10px;';
-
-        var copyBtn = document.createElement('button');
-        copyBtn.textContent = 'Copy Link';
-        copyBtn.style.cssText = 'background:#0a1830;color:#18b8c8;border:1px solid #18b8c8;border-radius:3px;padding:6px 14px;font-size:13px;cursor:pointer;margin-right:8px;';
-        copyBtn.addEventListener('click', function() {
-            inp.select();
-            try {
-                navigator.clipboard.writeText(url).then(function() {
-                    copyBtn.textContent = '✓ Copied!';
-                }).catch(function() {
-                    document.execCommand('copy');
-                    copyBtn.textContent = '✓ Copied!';
-                });
-            } catch(e) {
-                document.execCommand('copy');
-                copyBtn.textContent = '✓ Copied!';
-            }
-            setTimeout(function(){ copyBtn.textContent = 'Copy Link'; }, 2000);
-        });
-
-        var closeBtn = document.createElement('button');
-        closeBtn.textContent = 'Close';
-        closeBtn.style.cssText = 'background:#0a1830;color:#c8d8e8;border:1px solid #446;border-radius:3px;padding:6px 14px;font-size:13px;cursor:pointer;';
-        closeBtn.addEventListener('click', function(){ ov.remove(); });
-
-        box.appendChild(title);
-        box.appendChild(inp);
-        box.appendChild(copyBtn);
-        box.appendChild(closeBtn);
-        ov.appendChild(box);
-        document.body.appendChild(ov);
-
-        // Select the input so it's easy to manually copy too
-        setTimeout(function(){ inp.select(); }, 100);
-    }
-
     function _takeScreenshot() {
         var screen = document.getElementById('screen-primary');
         var canvas = screen ? screen.querySelector('canvas') : null;
@@ -327,7 +271,6 @@ window.GameHUD = (function () {
         if (!target) { alert('No canvas found to screenshot.'); return; }
 
         var dataUrl = target.toDataURL('image/jpeg', 0.85);
-        // Strip data URI prefix; fall back in case browser returned PNG
         var base64 = dataUrl.replace(/^data:image\/(jpeg|png);base64,/, '');
         var ext = dataUrl.startsWith('data:image/png') ? 'png' : 'jpg';
 
@@ -338,21 +281,16 @@ window.GameHUD = (function () {
         }
 
         var ts = new Date().toISOString().replace(/[:.]/g, '-');
-        var fname = 'shot-' + ts + '.' + ext;
+        var path = 'screenshots/shot-' + ts + '.' + ext;
+        var apiUrl = 'https://api.github.com/repos/knightdx91-alt/pokemon-game/contents/' + path;
 
-        // Use GitHub Gist API — no repo permissions or branch refs needed
-        fetch('https://api.github.com/gists', {
-            method: 'POST',
+        fetch(apiUrl, {
+            method: 'PUT',
             headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                description: 'Pokemon screenshot ' + new Date().toISOString(),
-                public: false,
-                files: {
-                    'view.html': {
-                        content: '<!DOCTYPE html><html><body style="margin:0;background:#000"><img src="data:image/' + ext + ';base64,' + base64 + '" style="max-width:100%;image-rendering:pixelated"></body></html>'
-                    },
-                    [fname]: { content: base64 }
-                }
+                message: 'screenshot ' + ts,
+                content: base64,
+                branch: 'screenshots'
             })
         })
         .then(function(r) {
@@ -362,10 +300,9 @@ window.GameHUD = (function () {
             });
             return r.json();
         })
-        .then(function(gist) {
+        .then(function() {
             var btn = document.getElementById('screenshot-btn');
             if (btn) { btn.style.color = '#20d840'; setTimeout(function(){ btn.style.color = '#18b8c8'; }, 2000); }
-            _showGistUrl(gist.html_url);
         })
         .catch(function(e) { alert('Screenshot error:\n' + e.message); });
     }
