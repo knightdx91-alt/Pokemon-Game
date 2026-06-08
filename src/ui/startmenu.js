@@ -582,28 +582,40 @@ window.GameStartMenu = (function () {
         ctx.clearRect(0, 0, 240, 160);
         if (bg) ctx.drawImage(bg, 0, 0, 240, 160);
 
+        // EE dark palette colors (from bag_theme_dark.pal, bank1):
+        // text = #ffffff (bank1[1]), shadow = #20abff (bank1[3])
+        // pocket-indicator selected = #5aced6 (bank0[10]), unselected outline = #4a73c6 (bank0[6])
+        var COL_TEXT   = '#ffffff';   // item names — EE bank1[1]
+        var COL_SHADOW = '#20abff';   // text shadow  — EE bank1[3]
+        var COL_DIM    = '#b4b4b4';   // dimmed text  — EE bank1[6]
+        var COL_CYAN   = '#5aced6';   // pocket indicator selected — EE bank0[10]
+        var COL_BLUE   = '#4a73c6';   // unselected indicator border — EE bank0[6]
+
         // ── 2. Pocket indicator squares
         // EE: InitPocketIndicatorIcons places 8 tiles at (i+3, 2) = px (24+i*8, 16)
-        // Selected = cyan filled; unselected = dark square
+        var POCKET_LABELS = ['ITM','MED','VAL','KEY','POK','TM♥','BRY','FRE'];
         for (var i = 0; i < 8; i++) {
+            var ix = 24 + i * 8;
             if (i === _bagPocket) {
-                ctx.fillStyle = '#1dc0fe';
+                ctx.fillStyle = COL_CYAN;
+                ctx.fillRect(ix, 16, 7, 7);
             } else {
-                ctx.fillStyle = '#0d2030';
-                ctx.strokeStyle = '#1dc0fe';
+                ctx.strokeStyle = COL_BLUE;
                 ctx.lineWidth = 0.5;
-                ctx.strokeRect(24 + i*8 + 0.5, 16.5, 6, 6);
+                ctx.strokeRect(ix + 0.5, 16.5, 6, 6);
             }
-            if (i === _bagPocket) ctx.fillRect(24 + i*8, 16, 7, 7);
         }
 
-        // ── 3. Pocket name (EE WIN[2]: tilemapLeft=3, tilemapTop=0 → px 24, 0 classic)
-        ctx.font = 'bold 8px "Courier New"';
-        ctx.fillStyle = '#1dc0fe';
+        // ── 3. Pocket name (EE WIN[2]: tilemapLeft=3, tilemapTop=0 → px 24, 0)
+        ctx.font = 'bold 7px "Courier New"';
+        ctx.fillStyle = COL_TEXT;
+        ctx.shadowColor = COL_SHADOW;
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 1;
         ctx.fillText(pocket.label, 26, 11);
+        ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
 
-        // ── 4. Item list (EE WIN[0]: x=112, y=8, w=120, h=144; item_X=8, upText_Y=1)
-        // 9 items visible (144px / 16px per row), scroll to keep cursor visible
+        // ── 4. Item list (EE WIN[0]: x=112, y=8, w=120, h=144)
         var MAX_VIS = 9;
         var scroll  = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), items.length - MAX_VIS));
         if (scroll < 0) scroll = 0;
@@ -617,47 +629,48 @@ window.GameStartMenu = (function () {
             var sel  = (idx === _subIdx);
 
             if (sel) {
-                // EE GPU window highlight bar
-                ctx.fillStyle = 'rgba(29,192,254,0.18)';
+                ctx.fillStyle = 'rgba(90,206,214,0.20)';
                 ctx.fillRect(113, iy, 126, 14);
-                // Left-edge highlight strip
-                ctx.fillStyle = '#1dc0fe';
+                ctx.fillStyle = COL_CYAN;
                 ctx.fillRect(113, iy, 2, 14);
             }
 
-            ctx.fillStyle = sel ? '#ffffff' : '#dbdff0';
+            ctx.fillStyle = COL_TEXT;
+            ctx.shadowColor = COL_SHADOW;
+            ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 1;
             var name = item.name || item.itemId || item.id || '?';
             ctx.fillText(name, 122, iy + 10);
 
-            // Quantity right-aligned at x=232
             var qty = '\xd7' + (item.quantity || 1);
             var qw  = ctx.measureText(qty).width;
             ctx.fillText(qty, 238 - qw, iy + 10);
+            ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
         }
 
-        // Scroll arrows if list overflows
+        // Scroll arrows
         if (scroll > 0) {
-            ctx.fillStyle = '#1dc0fe';
-            ctx.fillText('▲', 231, 13);
+            ctx.fillStyle = COL_CYAN; ctx.fillText('▲', 231, 13);
         }
         if (scroll + MAX_VIS < items.length) {
-            ctx.fillStyle = '#1dc0fe';
-            ctx.fillText('▼', 231, 153);
+            ctx.fillStyle = COL_CYAN; ctx.fillText('▼', 231, 153);
         }
 
-        // CANCEL entry at bottom of right panel (always shown)
+        // CANCEL entry
         var cancelY = 8 + Math.min(MAX_VIS, items.length) * 16;
         if (cancelY < 152) {
-            ctx.fillStyle = '#dbdff0';
+            ctx.fillStyle = COL_DIM;
+            ctx.font = '7px "Courier New"';
             ctx.fillText('CANCEL', 122, cancelY + 10);
         }
 
-        // ── 5. Description (EE WIN[1]: tilemapLeft=0, tilemapTop=14 → px 0, 112 classic)
+        // ── 5. Description (EE WIN[1]: tilemapLeft=0, tilemapTop=13 → px 0, 104)
         var selItem = items[_subIdx];
         var desc = selItem
             ? (selItem.desc || selItem.description || 'No description.')
             : pocket.label + ' pocket is empty.';
-        ctx.fillStyle = '#dbdff0';
+        ctx.fillStyle = COL_TEXT;
+        ctx.shadowColor = COL_SHADOW;
+        ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 1;
         ctx.font = '7px "Courier New"';
         // Simple word-wrap in 108px width at x=4
         var words = desc.split(' ');
@@ -674,6 +687,7 @@ window.GameStartMenu = (function () {
             }
         }
         if (line) ctx.fillText(line, lx, ly);
+        ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
     }
 
     function _buildBag(el) {
