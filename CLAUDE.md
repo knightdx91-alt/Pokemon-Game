@@ -1,4 +1,6 @@
-# Pokémon — Kanto: Codebase Guide
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## CRITICAL RULES — READ FIRST
 - **ALL work goes on `main` branch ONLY. Never create feature branches. Never open PRs. Push directly to `main`.**
@@ -9,7 +11,13 @@
 
 ## What this game is
 A browser-based Pokémon RPG covering Kanto, Johto, Hoenn, and Sinnoh. Deployed to GitHub Pages.  
-The visual and UI style is based on **Pokémon Emerald Enhanced (EE)** — a GBA ROM hack. The game screen is designed to look and feel like a GBA (240×160px logical resolution).
+Visual and UI style is based on **Pokémon Emerald Enhanced (EE)** — a GBA ROM hack. The game screen is designed to look and feel like a GBA (240×160px logical resolution).
+
+---
+
+## Branch & deploy
+- **Branch: `main`** — the only branch. All commits go here.
+- **Deploy: GitHub Pages** — CI runs on every push to `main`, replaces `__CACHE_BUST__` in `index.html` with `${{ github.sha }}` for cache busting.
 
 ---
 
@@ -46,18 +54,12 @@ source/
 
 ---
 
-## Branch & deploy
-- **Branch: `main`** — the only branch. All commits go here.
-- **Deploy: GitHub Pages** — CI runs on every push to `main`, replaces `__CACHE_BUST__` in `index.html` with `${{ github.sha }}` for cache busting.
-
----
-
 ## Architecture key points
 
 ### Input system (`src/engine/input.js`)
 - `GameInput.state` — held keys/touches (boolean, high frequency)
 - `GameInput.justPressed` — latch set on touchstart/keydown, cleared by `consumeJustPressed()` at end of each game loop frame
-- **Always use `justPressed` for menu navigation** — mobile touches fire and clear within one frame so `state` will always be false by the time the game loop reads it
+- **Always use `justPressed` for menu navigation** — mobile touches fire and clear within one frame so `state` will be false by the time the game loop reads it
 - `consumeJustPressed()` MUST be called at the end of every `gameLoop()` tick
 
 ### Game loop (`src/main.js`)
@@ -67,222 +69,135 @@ source/
 - START button toggle uses `justPressed.start`
 
 ### Start menu (`src/ui/startmenu.js`)
-- **Attached to `#screen-primary`** (not `#ui-overlay` or body) — this is what keeps it clipped to the game screen and away from the control buttons
+- **Attached to `#screen-primary`** (not `#ui-overlay` or body) — keeps it clipped to the game screen and away from control buttons
 - Both `menuEl` (`#start-menu`) and `subEl` (`#start-menu-sub .sm-sub-overlay`) are appended to `#screen-primary` in `init()`
 - Uses `position: absolute; inset: 0` so `#screen-primary`'s `overflow: hidden` clips them
-- Main menu: horizontal icon carousel (EE style), transparent middle, info box bottom
-- Sub-menus: GBA-style dialog windows floating over the map (`position: absolute` inside `.sm-sub-overlay`)
+- Main menu: horizontal icon carousel (EE style), `padding-top: 12%` pushes strip down from top edge, transparent middle, info box at bottom
+- Sub-menus: GBA-style `.sm-win` dialog windows with `position: absolute` inside `.sm-sub-overlay`
 
 ### Why menus MUST stay in `#screen-primary`
 - `#controls-layer` (D-pad / joystick) is a **sibling** of `#screen-primary`, not inside it
-- Any menu using `position: fixed` or attached outside `#screen-primary` will visually cover and/or block touch events on the controls
-- `#screen-primary` has `position: relative; overflow: hidden` in default mode
-- In forced orientation modes, `position: relative !important` is set (NOT `static`) to preserve the containing block
+- Any menu using `position: fixed` or attached outside `#screen-primary` will cover/block touch events on the controls
+- `#screen-primary` always has `position: relative` (even in forced orientation modes — use `relative !important`, never `static !important`)
+- The `.sm-sub-overlay` container is `pointer-events: none`; only `.sm-win`, `.sm-back-btn`, and individual `.sm-row`/`.sm-opt-btn` elements re-enable pointer events
 
-### Pointer-events rule for menus
-- The menu container and sub-overlay: `pointer-events: none`
-- Only specific interactive elements re-enable: `.sm-top-strip`, `.sm-back-btn`, `.sm-win`, individual `.sm-row` and `.sm-opt-btn` elements
-- The `sm-sub-content` scroll area itself stays `pointer-events: none` — navigation is via D-pad/game loop, not direct touch on content
+### GBA window visual style (EE dark frame — `1d.png`)
+All menus use the **dark** theme:
+- **Window background**: `#060610` (near-black navy)
+- **Border**: `border: 1px solid #000` + `box-shadow: 0 0 0 3px #18b8c8, 0 0 0 4px #000, inset 0 0 0 1px #002830`
+- **Title bar**: `background: #0a1830`, cyan border-bottom `#18b8c8`, text `#80d0e8`
+- **Body text**: `#c8d8e8` (near-white blue-grey) on dark background
+- **Selected row**: `rgba(24,184,200,0.15)` tint + `▶` cursor
+- **Font**: `"Courier New", Courier, monospace`
+- Reference tile: `source/emerald-enhanced/graphics/text_window/1d.png`
 
-### EE icon sprites (`src/assets/start_menu/`)
-- Source icons are GBA 4bpp palette-mode PNGs from `source/emerald-enhanced/graphics/start_menu/`
-- GBA transparent color = palette index 0 = RGB `(40, 255, 0)` — must be made alpha=0 for web
-- Converted via Python/Pillow: open palette PNG → convert to RGBA → replace index-0 color → save as `*_rgba.png`
-- Each file is 32×64px: top 32px = normal/dark frame, bottom 32px = selected/cyan frame
-- CSS `background-position: 0 0` for normal, `0 -32px` for selected
-
-### GBA window visual style (EE frame 1 — the default)
-All menus must match this exactly:
-- **Background**: `#f0f0e8` (near-white cream)
-- **Border**: `border: 1px solid #101018` + `box-shadow: 0 0 0 4px #7890b0, 0 0 0 5px #101018, inset 0 0 0 1px #b0b8c8`
-- **Title bar**: `background: #4060a0`, white text
-- **Body text**: `#101018` (near-black) on cream background
-- **Selected row**: faint grey tint `rgba(0,0,0,0.07)` + ▶ cursor — no bold highlight
-- **Font**: `"Courier New", Courier, monospace` (closest web approximation to GBA pixel font)
-- Reference tile: `source/emerald-enhanced/graphics/text_window/1.png` (vanilla) and `1d.png` (dark variant)
-
-### Sub-menu window sizes (% of `#screen-primary`, based on EE tile coordinates × 8px)
+### Sub-menu window sizes (% of `#screen-primary`)
 | Page | left | top | width | height |
 |------|------|-----|-------|--------|
 | save | 3.3% | 5% | 53% | 57% |
 | trainer_card | 3.3% | 5% | 53% | 90% |
 | options | 3.3% | 5% | 90% | 90% |
 | journal / achievements | 3.3% | 5% | 90% | 90% |
+| bag | 3.3% | 5% | 90% | 88% |
 | pokenav | 28% | 20% | 44% | 42% |
+
+### Orientation system (`src/ui/layout.js`)
+Real CSS `transform: rotate()` on `<body>` — same approach as EmulatorJS fullscreen.
+- `orient-portrait` / `orient-reverse-portrait`: 0° / 180° rotation on body
+- `orient-landscape` / `orient-reverse-landscape`: body resized to `100vh × 100vw` + rotated ±90°; because body has a transform, all `position:fixed` children use it as containing block — everything rotates as a unit
+- In landscape modes: `#controls-layer` becomes `position:fixed; inset:0` overlay with `opacity: var(--controls-opacity, 0.65)`
+- `auto` = no class, natural device orientation via `@media (orientation: landscape)`
+- Opacity slider in settings only shown when landscape mode is active
+
+### Gamepad shell
+- `.gba-controller` has **no background, no border** — buttons float transparently over the game/map
+- Individual buttons (`.gba-shoulder-l/r`, d-pad bars, action buttons) have their own `background: #252535` styling
 
 ### Map system (`src/engine/map.js`)
 - Maps loaded from `data/maps/{region}/{MapName}.json`
 - `kanto_index.json` indexes all maps by id and name
-- `GameMap.load(name, region)` — load by display name
-- `GameMap.loadById(id, region)` — load by internal map id
 - Warps: `getWarp(x,y)` → `resolveWarp(warp)` → `{mapName, warpIndex}`
 - Connections: `getConnectionAt(x,y)` → `{connection, dir, exitX, exitY, offset}`
 
 ### Save system (`src/data/save.js`)
 - 3 save slots in `localStorage` under key `pokemon_save_v1`
-- `GameSave.state` = currently loaded slot data
-- `GameSave.markDirty()` flags for autosave (runs every 15s via `setInterval` in main.js)
-- Save state includes: player position/inventory/party, visitedMaps (Set), achievements, factions, lifeSkills, meta (playtime, badges, trainerId)
-
-### Achievements (`src/data/achievements.js`)
-- `GameAchievements.unlock(id)` — unlocks achievement, fires `showAchievementToast` on HUD
-- Tiers: bronze (5 AP), silver (15 AP), gold (30 AP), platinum (50 AP)
-- Toast appears bottom-center of screen for 3s
-
-### Factions (`src/data/factions.js`)
-- 7 factions: naturalists, students, nobles, pokefans, outcasts, professionals, pokemonLeague
-- Standing tracked in save state: `GameSave.state.factions.standings[factionId]`
-- Factions have `opposes` lists — raising one lowers opponents
+- `GameSave.state` = currently loaded slot data; `GameSave.markDirty()` flags for autosave
+- Inventory pockets: `state.inventory.items`, `.keyItems`, `.pokeBalls`, `.tms`, `.berries`
 
 ---
 
-## What has been done (completed work)
+## Completed work
 
 ### Engine
-- ✅ Tile-based movement with 150ms cooldown
-- ✅ Warp system (interior/exterior building transitions)
-- ✅ Map-edge connection system (seamless region travel)
-- ✅ Camera following player
-- ✅ Canvas tile renderer with player sprite (4-directional walk animation)
-- ✅ Autosave every 15s
-- ✅ 3-slot save/load system
+- ✅ Tile-based movement (150ms cooldown), warp system, map-edge connections, camera
+- ✅ Canvas tile renderer with 4-directional walk animation
+- ✅ 3-slot save/load system with 15s autosave
 
 ### UI
-- ✅ EE-style start menu — horizontal icon carousel (9 icons)
-- ✅ Sub-menus: Save, Options, Journal, Trainer Card, Achievements, Pokénav
-- ✅ Sub-menus styled as GBA dialog windows (frame 1 visual style), floating over map
-- ✅ D-pad navigation works inside menus (justPressed latch system)
-- ✅ Menus never cover control buttons (all menu DOM in `#screen-primary`)
-- ✅ HUD: map name banner (fades after 2s), coordinate display, settings gear button
-- ✅ Settings panel: D-pad/joystick toggle, button size slider, orientation picker
-- ✅ Orientation picker: Auto / Portrait / Rev. Portrait / Landscape / Rev. Landscape
-- ✅ Draggable/resizable game screen in auto mode
-- ✅ EE icon sprites (RGBA-converted, transparent background, selected frame)
-- ✅ Achievement toast notifications
-- ✅ Faction system
+- ✅ EE-style start menu — horizontal icon carousel, 9 icons
+- ✅ Sub-menus: Save, Options, Journal, Trainer Card, Achievements, Pokénav, **Bag** (all 5 pockets)
+- ✅ All menus styled as GBA dark-theme dialog windows, clipped to game screen
+- ✅ D-pad navigation in menus via `justPressed` latch system
+- ✅ HUD: map name banner, coordinate display, settings gear
+- ✅ Settings panel: D-pad/joystick toggle, button size, orientation picker, controls opacity (landscape)
+- ✅ Real rotation-based orientation: Portrait / Rev. Portrait / Landscape / Rev. Landscape
+- ✅ Gamepad shell is transparent (no background panel behind buttons)
+- ✅ EE icon sprites (RGBA-converted), achievement toast, faction system
 
 ### Data
-- ✅ Kanto maps loaded and navigable (PalletTown as start)
-- ✅ Hoenn, Johto, Sinnoh, HeartGold, Platinum map data present
-- ✅ Achievement definitions (bronze/silver/gold/platinum tiers)
-- ✅ Faction standing system
+- ✅ Kanto maps navigable from PalletTown; Hoenn/Johto/Sinnoh/HeartGold/Platinum map data present
+- ✅ Achievement definitions (bronze/silver/gold/platinum), faction standing system
 
 ---
 
 ## What needs to be done (priority order)
 
-### 1. Player sprite & Pokémon party
-- Render the actual player sprite (Red/Brendan/etc.) on the canvas
-- Implement Pokémon party display in start menu (POKEMON sub-menu)
-- Party data structure exists in save.js but nothing renders it
-
-### 2. Wild encounter system
-- `data/encounters/` has encounter data — wire it up
-- Grass/cave tiles trigger random encounters
-- Battle screen (turn-based combat)
-
-### 3. NPC system
-- NPCs with dialogue boxes (GBA-style message window at bottom of screen)
-- Interaction via A button when facing NPC
-- Dialogue branching
-
-### 4. Battle system
-- Turn-based combat (attack/item/switch/run)
-- Move data exists in data structure, needs a battle scene
-- Wild encounters + trainer battles
-
-### 5. Bag / Items
-- BAG sub-menu currently closes the menu — needs full item list UI
-- Items: usable (potions, etc.), key items, TMs/HMs, berries
-
-### 6. Pokédex
-- POKEDEX icon exists, no sub-menu built yet
-- `data/pokemon/` has species data
-
-### 7. DexNav (EE feature)
-- EE has a DexNav icon — shows nearby Pokémon species with encounter rates
-- Low priority but part of EE's distinctive feature set
-
-### 8. Trainer Card sub-menu
-- Currently shows data from save state
-- Needs player avatar/sprite displayed on the card (like EE's trainer card)
-
-### 9. Pokénav sub-menu  
-- Currently shows placeholder — needs Map, Condition, Match Call tabs
-
-### 10. Map rendering improvements
-- Animated tiles (water, flowers)
-- Second layer / overlay tiles (bridges, cave entrances)
-- Proper tile collision from tileset metadata
-
-### 11. Music / SFX
-- No audio at all currently
-- EE uses GBA music; we'd need MIDI or chiptune web audio
-
-### 12. Region transitions
-- Player can walk to map edges and transition between maps within Kanto
-- Multi-region travel (Kanto → Johto etc.) needs a menu or story trigger
+1. **Player sprite** — render actual player sprite (Red/Brendan) on canvas; `renderer.js` draws a placeholder
+2. **Pokémon party** — POKEMON sub-menu shows nothing; party array exists in `save.js`
+3. **Wild encounters** — `data/encounters/` has data; wire grass/cave tiles to trigger battle screen
+4. **Battle system** — turn-based combat scene (attack/item/switch/run); no battle screen exists yet
+5. **NPC system** — dialogue box at bottom of screen (GBA message window style), A-button interaction
+6. **Pokédex sub-menu** — icon exists; `data/pokemon/` has species data; no sub-menu built
+7. **Pokénav sub-menu** — currently placeholder; needs Map, Condition, Match Call tabs
+8. **Trainer Card** — needs player avatar sprite on card
+9. **Map rendering** — animated tiles (water/flowers), overlay layer (bridges), proper collision from tileset metadata
+10. **Audio** — no sound at all; needs MIDI/chiptune web audio
+11. **Region transitions** — multi-region travel (Kanto→Johto etc.) needs story trigger
 
 ---
 
-## EE source reference paths (never modify these)
+## EE source reference (never modify)
 ```
-source/emerald-enhanced/src/start_menu.c      — icon layout, button coords, info box
+source/emerald-enhanced/src/start_menu.c      — icon layout, button coords
 source/emerald-enhanced/src/option_menu.c     — Options window layout
 source/emerald-enhanced/src/trainer_card.c    — Trainer Card layout
-source/emerald-enhanced/graphics/start_menu/  — icon PNG files (32×64 spritesheets)
-source/emerald-enhanced/graphics/text_window/ — window frame tiles (1.png = default)
-source/emerald-enhanced/gflib/window.h        — WindowTemplate struct
+source/emerald-enhanced/graphics/start_menu/  — icon PNG spritesheets (32×64)
+source/emerald-enhanced/graphics/text_window/ — window frame tiles (1d.png = dark default)
 ```
+Key GBA measurements (240×160px screen, 1 tile = 8px): icon strip at y=22px, spacing 30px, max 7 visible; info box at y=120px; save window 120×80px top-left.
 
-Key EE measurements (GBA: 240×160px, 1 tile = 8px):
-- Icon strip Y position: 22px from top
-- Icon spacing: 30px, max 7 visible
-- Action name window: 240×48px (tiles 0,1 → 30×6)
-- Info box: starts at Y=120px (tile row 15)
-- Save window: 120×80px, top-left (tile 1,1 → 15×10)
-- Options window: 208×112px (tile 2,5 → 26×14)
-
----
-
-## Converting EE palette PNGs to RGBA (for new icons)
+## Converting EE palette PNGs to RGBA
 ```python
 from PIL import Image
 img = Image.open('source/emerald-enhanced/graphics/start_menu/start_icon_X.png')
-palette = img.getpalette()  # flat list: R,G,B,R,G,B,...
-transparent_rgb = tuple(palette[0:3])  # index 0 = GBA transparent color
+transparent_rgb = tuple(img.getpalette()[0:3])  # index 0 = GBA transparent color
 rgba = img.convert('RGBA')
 data = rgba.load()
-w, h = rgba.size
-for y in range(h):
-    for x in range(w):
+for y in range(rgba.size[1]):
+    for x in range(rgba.size[0]):
         if data[x,y][:3] == transparent_rgb:
-            data[x,y] = (0, 0, 0, 0)
+            data[x,y] = (0,0,0,0)
 rgba.save('src/assets/start_menu/start_icon_X_rgba.png')
 ```
 
----
-
-## CSS variable reference
+## CSS variables & localStorage keys
 ```css
---control-scale   /* D-pad / button size multiplier, saved to localStorage */
+--control-scale       /* D-pad button size multiplier */
+--controls-opacity    /* overlay opacity in landscape mode (default 0.65) */
 ```
-
-## Orientation system
-Real CSS `transform: rotate()` on `<body>` — exactly like EmulatorJS fullscreen.
-- `orient-portrait` / `orient-reverse-portrait`: body rotates 0° / 180°
-- `orient-landscape` / `orient-reverse-landscape`: body resized to `100vh×100vw` + rotated ±90°
-  - Because body has a `transform`, all `position:fixed` children (game, controls, menus) use body as containing block — everything rotates together
-  - Controls become a semi-transparent overlay over the game screen
-  - `--controls-opacity` CSS variable (default 0.65) controls transparency
-  - Opacity slider only shown in settings when a landscape mode is active
-- `auto` = no class on body, device's natural orientation handles layout via `@media (orientation: landscape)`
-
-## localStorage keys
 ```
-pokemon_save_v1             /* 3-slot save data (JSON) */
-pokemon_settings_v1         /* settings (currently unused, merged into save) */
-pokemon_control_scale       /* float 0.5–2.0, button size */
+pokemon_save_v1             /* 3-slot save data */
+pokemon_control_scale       /* float 0.5–2.0 */
 pokemon_orientation         /* 'auto'|'portrait'|'reverse-portrait'|'landscape'|'reverse-landscape' */
-pokemon_controls_opacity    /* float 0.1–1.0, overlay opacity in landscape modes */
+pokemon_controls_opacity    /* float 0.1–1.0 */
 ```
