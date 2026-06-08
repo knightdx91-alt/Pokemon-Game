@@ -153,6 +153,18 @@
                 if (statusEl) statusEl.textContent = 'ERROR fetching ROM: ' + e.message;
             });
     </script>
+    <script>
+        // Force WebGL preserveDrawingBuffer so toDataURL() captures a real frame
+        (function() {
+            var _orig = HTMLCanvasElement.prototype.getContext;
+            HTMLCanvasElement.prototype.getContext = function(type, attrs) {
+                if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl') {
+                    attrs = Object.assign({}, attrs || {}, { preserveDrawingBuffer: true });
+                }
+                return _orig.call(this, type, attrs);
+            };
+        })();
+    </script>
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"
             onerror="document.getElementById('status').textContent='ERROR: Failed to load EmulatorJS CDN — check internet connection.'">
     </script>
