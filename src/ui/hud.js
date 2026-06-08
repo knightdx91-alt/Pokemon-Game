@@ -168,7 +168,7 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
-    const GAME_VERSION = 'v0.3.6';
+    const GAME_VERSION = 'v0.3.7';
 
     // --- Update display ---
     function update() {
@@ -231,8 +231,72 @@ window.GameHUD = (function () {
         _toastEl.className = 'ach-toast ach-toast-hide';
         overlay.appendChild(_toastEl);
 
+        // Screenshot button
+        var ssBtn = document.createElement('button');
+        ssBtn.id = 'screenshot-btn';
+        ssBtn.textContent = '📷';
+        ssBtn.title = 'Screenshot → commit to repo';
+        ssBtn.style.cssText = 'position:absolute;top:4px;right:4px;z-index:100;background:#0a1830;color:#18b8c8;border:1px solid #18b8c8;border-radius:3px;padding:2px 5px;font-size:11px;cursor:pointer;pointer-events:all;';
+        ssBtn.addEventListener('click', _takeScreenshot);
+        overlay.appendChild(ssBtn);
+
         initSettings();
         update();
+    }
+
+    // --- Screenshot → GitHub repo ---
+    function _takeScreenshot() {
+        // Capture the game canvas (inside #screen-primary)
+        var screen = document.getElementById('screen-primary');
+        var canvas = screen ? screen.querySelector('canvas') : null;
+
+        // If a sub-menu canvas is open, capture that instead
+        var subCanvas = document.querySelector('#start-menu-sub canvas');
+        var target = subCanvas || canvas;
+
+        if (!target) { alert('No canvas found to screenshot.'); return; }
+
+        var dataUrl = target.toDataURL('image/png');
+        var base64  = dataUrl.replace(/^data:image\/png;base64,/, '');
+
+        var token = localStorage.getItem('gh_debug_token');
+        if (!token) {
+            var t = prompt('Enter GitHub PAT (stored in localStorage, never committed):\n(needs Contents: Write on knightdx91-alt/pokemon-game)');
+            if (!t) return;
+            localStorage.setItem('gh_debug_token', t.trim());
+            token = t.trim();
+        }
+
+        var path = 'screenshots/latest.png';
+        var apiUrl = 'https://api.github.com/repos/knightdx91-alt/pokemon-game/contents/' + path;
+
+        // Get current SHA if file exists (needed for update)
+        fetch(apiUrl, { headers: { Authorization: 'token ' + token } })
+            .then(function(r) { return r.ok ? r.json() : null; })
+            .then(function(existing) {
+                var body = {
+                    message: 'debug: screenshot ' + new Date().toISOString(),
+                    content: base64,
+                    branch: 'main'
+                };
+                if (existing && existing.sha) body.sha = existing.sha;
+                return fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+            })
+            .then(function(r) {
+                if (r.ok) {
+                    console.log('[Screenshot] Committed to repo: screenshots/latest.png');
+                    // Flash button green
+                    var btn = document.getElementById('screenshot-btn');
+                    if (btn) { btn.style.color = '#20d840'; setTimeout(function(){ btn.style.color = '#18b8c8'; }, 1500); }
+                } else {
+                    return r.text().then(function(t){ console.error('[Screenshot] Failed:', t); alert('Screenshot failed — check token/permissions.'); });
+                }
+            })
+            .catch(function(e) { console.error('[Screenshot]', e); alert('Screenshot error: ' + e.message); });
     }
 
     return { init, update, showAchievementToast };
