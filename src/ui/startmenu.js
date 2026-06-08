@@ -967,166 +967,308 @@ window.GameStartMenu = (function () {
             .catch(function(){ _speciesDb = {}; cb({}); });
     }
 
+    // num→name map from pokedex + icon image cache
+    var _pokedexNumMap = null; // { 4: 'charmander', ... }
+    var _monIconCache  = {};   // name → Image|null
+
+    function _getPokedexNumMap(cb) {
+        if (_pokedexNumMap) { cb(_pokedexNumMap); return; }
+        fetch('data/pokemon/pokedex.json')
+            .then(function(r){ return r.ok ? r.json() : {}; })
+            .then(function(d){
+                _pokedexNumMap = {};
+                for (var key in d) {
+                    var num = d[key].num;
+                    if (num) _pokedexNumMap[num] = key.toLowerCase();
+                }
+                cb(_pokedexNumMap);
+            })
+            .catch(function(){ _pokedexNumMap = {}; cb({}); });
+    }
+
+    function _loadMonIcon(speciesId, cb) {
+        _getPokedexNumMap(function(map) {
+            var name = map[speciesId];
+            if (!name) { cb(null); return; }
+            var path = 'data/sprites/pokemon/icons/' + name + '.png';
+            if (_monIconCache[path] !== undefined) { cb(_monIconCache[path]); return; }
+            var img = new Image();
+            img.onload  = function() { _monIconCache[path] = img; cb(img); };
+            img.onerror = function() { _monIconCache[path] = null; cb(null); };
+            img.src = path;
+        });
+    }
+
+    // Party action sub-menu state
+    var _partyActionMon  = null; // mon object being actioned
+    var _partyActionIdx  = -1;   // filled[] index
+    var _partyActionSel  = 0;    // cursor row in action menu
+    var _partyActionOpen = false;
+
+    function _getParty() {
+        var party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
+        if (!party.some(Boolean) && window.GameSave && GameSave.DEFAULT_POKEMON) {
+            party = [Object.assign(GameSave.DEFAULT_POKEMON(), {
+                speciesId: 4, nickname: 'CHARMANDER', level: 5, gender: 'M',
+                currentHp: 19, maxHp: 19, moves: ['Scratch', 'Growl', null, null],
+                caughtLevel: 5, exp: 35
+            }), null, null, null, null, null];
+        }
+        return party;
+    }
+
     function _buildParty(el) {
-        var shell = _makeCanvasShell(el, function(ctx, canvas) {
-            _loadPartyBg(function(bg) {
-                _drawPartyCanvas(ctx, bg);
-            });
+        _partyActionOpen = false;
+        _makeCanvasShell(el, function(ctx, canvas) {
+            var _iconImgs = []; // parallel to filled[], Image|null per slot
+
+            function redraw() {
+                _loadPartyBg(function(bg) {
+                    _drawPartyCanvas(ctx, bg, _iconImgs);
+                });
+            }
+
+            function loadIconsAndDraw() {
+                var filled = _getParty().filter(Boolean);
+                _iconImgs = new Array(filled.length).fill(null);
+                if (!filled.length) { redraw(); return; }
+                var pending = filled.length;
+                filled.forEach(function(mon, i) {
+                    _loadMonIcon(mon.speciesId, function(img) {
+                        _iconImgs[i] = img;
+                        if (--pending === 0) redraw();
+                    });
+                });
+            }
+
+            el._redraw = loadIconsAndDraw;
+            loadIconsAndDraw();
+
             canvas.addEventListener('click', function(e) {
                 var rect = canvas.getBoundingClientRect();
                 var cx = (e.clientX - rect.left) * (240 / rect.width);
                 var cy = (e.clientY - rect.top)  * (160 / rect.height);
-                var party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
-                if (!party.some(Boolean) && window.GameSave && GameSave.DEFAULT_POKEMON) {
-                    party = [Object.assign(GameSave.DEFAULT_POKEMON(), {
-                        speciesId: 4, nickname: 'CHARMANDER', level: 5,
-                        currentHp: 19, maxHp: 19, moves: ['Scratch', 'Growl', null, null],
-                        caughtLevel: 5, exp: 35
-                    }), null, null, null, null, null];
-                }
-                var filled = party.filter(Boolean);
-                // Slot 0: x=8..87, y=24..79
-                if (cx >= 8 && cx < 88 && cy >= 24 && cy < 80) { _subIdx = 0; _render(); return; }
-                // Slots 1-5: x=96..239, y=8/32/56/80/104..+23
-                if (cx >= 96 && cx < 240) {
-                    for (var si = 1; si < 6; si++) {
-                        var sy = 8 + (si - 1) * 24;
-                        if (cy >= sy && cy < sy + 24 && si - 1 < filled.length - 1) {
-                            _subIdx = si; _render(); return;
+                var filled = _getParty().filter(Boolean);
+
+                // If action menu is open, handle its clicks
+                if (_partyActionOpen) {
+                    var opts = ['SUMMARY', 'SWITCH', 'CANCEL'];
+                    var ax = 130, ay = 50, aw = 100, ah = 14;
+                    for (var oi = 0; oi < opts.length; oi++) {
+                        if (cx >= ax && cx < ax+aw && cy >= ay+oi*ah && cy < ay+(oi+1)*ah) {
+                            if (opts[oi] === 'CANCEL') {
+                                _partyActionOpen = false; redraw();
+                            } else if (opts[oi] === 'SUMMARY') {
+                                _partyActionOpen = false;
+                                _openPartySummary(_partyActionMon, _partyActionIdx, filled, loadIconsAndDraw);
+                            }
+                            // SWITCH: placeholder for now
+                            return;
                         }
                     }
+                    _partyActionOpen = false; redraw(); return;
                 }
-                // Cancel: y=120..151
+
+                // Slot 0: x=8..87, y=24..79
+                if (cx >= 8 && cx < 88 && cy >= 24 && cy < 80 && filled[0]) {
+                    _partyActionMon = filled[0]; _partyActionIdx = 0;
+                    _partyActionOpen = true; redraw(); return;
+                }
+                // Slots 1-5: x=96..239
+                for (var si = 1; si < 6; si++) {
+                    var sy = 8 + (si - 1) * 24;
+                    if (cx >= 96 && cx < 240 && cy >= sy && cy < sy+24 && filled[si]) {
+                        _partyActionMon = filled[si]; _partyActionIdx = si;
+                        _partyActionOpen = true; redraw(); return;
+                    }
+                }
+                // Cancel bar
                 if (cy >= 120 && cy < 152) { _goBack(); }
             });
         });
     }
 
-    function _drawPartyCanvas(ctx, bg) {
+    function _openPartySummary(mon, idx, filled, returnCb) {
+        var subEl = document.getElementById('start-menu-sub');
+        if (!subEl) return;
+        var overlay = subEl.querySelector('.sm-sub-overlay');
+        if (!overlay) return;
+        overlay.innerHTML = '';
+        var win = document.createElement('div');
+        win.className = 'sm-win';
+        win.style.cssText = 'position:absolute;left:3.3%;top:5%;width:90%;height:90%;pointer-events:all;overflow:hidden;';
+        overlay.appendChild(win);
+        overlay.style.display = 'block';
+
+        var S = 2;
+        var canvas = document.createElement('canvas');
+        canvas.width = GBA_W * S; canvas.height = GBA_H * S;
+        canvas.style.cssText = 'width:100%;height:100%;image-rendering:pixelated;display:block;';
+        win.appendChild(canvas);
+        var ctx = canvas.getContext('2d');
+
+        var _tc = _getThemeColors();
+        ctx.fillStyle = _tc.bg; ctx.fillRect(0,0,canvas.width,canvas.height);
+        ctx.fillStyle = _tc.titleBg; ctx.fillRect(0,0,canvas.width,20*S);
+        ctx.fillStyle = _tc.hi; ctx.fillRect(0,20*S,canvas.width,2);
+        ctx.font = 'bold '+(7*S)+'px monospace'; ctx.fillStyle = _tc.hi; ctx.textBaseline='top';
+        ctx.fillText('POKEMON INFO', 8*S, 4*S);
+
+        ctx.font = (6*S)+'px monospace'; ctx.fillStyle = _tc.text;
+        var lines = [
+            (mon.nickname||'???') + (mon.gender==='M'?' ♂':mon.gender==='F'?' ♀':''),
+            'No. ' + (mon.speciesId||'?') + '  Lv.' + (mon.level||1),
+            'HP: ' + (mon.currentHp||0) + ' / ' + (mon.maxHp||0),
+            'Exp: ' + (mon.exp||0),
+            'Nature: ' + (mon.nature||'Hardy'),
+            '',
+            'Moves:',
+        ];
+        (mon.moves||[]).filter(Boolean).forEach(function(m){ lines.push('  ' + m); });
+        lines.forEach(function(l,i){ ctx.fillText(l, 8*S, (28+i*14)*S); });
+
+        // Load and draw icon
+        _loadMonIcon(mon.speciesId, function(img) {
+            if (img) { ctx.imageSmoothingEnabled=false; ctx.drawImage(img,180*S,28*S,32*S,32*S); }
+        });
+
+        var backBtn = document.createElement('button');
+        backBtn.textContent = 'B BACK'; backBtn.className = 'sm-back-btn';
+        backBtn.style.cssText = 'position:absolute;bottom:4px;right:4px;z-index:10;pointer-events:all;';
+        backBtn.addEventListener('click', function() {
+            overlay.innerHTML = ''; overlay.style.display = 'none';
+            if (returnCb) returnCb();
+        });
+        win.appendChild(backBtn);
+    }
+
+    function _drawPartyCanvas(ctx, bg, iconImgs) {
         _canvasBg(ctx, bg);
         var S = 2;
         var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
 
-        var party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
-        if (!party.some(Boolean) && window.GameSave && GameSave.DEFAULT_POKEMON) {
-            party = [Object.assign(GameSave.DEFAULT_POKEMON(), {
-                speciesId: 4, nickname: 'CHARMANDER', level: 5,
-                currentHp: 19, maxHp: 19,
-                moves: ['Scratch', 'Growl', null, null],
-                caughtLevel: 5, exp: 35
-            }), null, null, null, null, null];
-        }
+        var party  = _getParty();
         var filled = party.filter(Boolean);
 
         ctx.textBaseline = 'top';
 
-        // Title
-        ctx.fillStyle = _tc.titleBg;
-        ctx.fillRect(0, 0, GBA_W, 20*S);
-        ctx.fillStyle = COL_CYAN;
-        ctx.fillRect(0, 20*S, GBA_W, 2);
-        ctx.font = 'bold '+(7*S)+'px monospace';
-        ctx.fillStyle = _tc.hi;
+        // Title bar
+        ctx.fillStyle = _tc.titleBg; ctx.fillRect(0, 0, GBA_W*S, 20*S);
+        ctx.fillStyle = COL_CYAN;    ctx.fillRect(0, 20*S, GBA_W*S, 2);
+        ctx.font = 'bold '+(7*S)+'px monospace'; ctx.fillStyle = _tc.hi;
         ctx.fillText('POKEMON', 8*S, 5*S);
 
         if (!filled.length) {
-            ctx.fillStyle = COL_DIM;
-            ctx.font = (7*S)+'px monospace';
+            ctx.fillStyle = COL_DIM; ctx.font = (7*S)+'px monospace';
             ctx.fillText('No Pokemon in party', 8*S, 40*S);
-            ctx.fillStyle = _tc.titleBg;
-            ctx.fillRect(0, 120*S, GBA_W, 32*S);
-            ctx.fillStyle = COL_CYAN;
-            ctx.fillRect(0, 120*S, GBA_W, 2);
-            ctx.fillStyle = COL_TEXT;
-            ctx.fillText('CANCEL', GBA_W/2 - 30, 130*S);
+            ctx.fillStyle = _tc.titleBg; ctx.fillRect(0, 120*S, GBA_W*S, 40*S);
+            ctx.fillStyle = COL_CYAN;    ctx.fillRect(0, 120*S, GBA_W*S, 2);
+            ctx.fillStyle = COL_TEXT; ctx.fillText('CANCEL', GBA_W/2*S - 30, 130*S);
             return;
         }
 
         var STATUS_COLOR = { PAR:'#e8c000', BRN:'#e85020', PSN:'#a820e8', FRZ:'#18c8e8', SLP:'#888888', FNT:'#e83020' };
 
         function drawHpBar(x, y, w, h, pct, col) {
-            ctx.fillStyle = '#1a1a2e';
-            ctx.fillRect(x*S, y*S, w*S, h*S);
-            var barW = Math.max(0, Math.round(pct * w));
-            ctx.fillStyle = col;
-            ctx.fillRect(x*S, y*S, barW*S, h*S);
+            ctx.fillStyle = '#1a1a2e'; ctx.fillRect(x*S, y*S, w*S, h*S);
+            ctx.fillStyle = col; ctx.fillRect(x*S, y*S, Math.max(0,Math.round(pct*w))*S, h*S);
         }
 
-        // Slot 0 (large, left col): x=8..87, y=24..79
+        function drawGender(gender, x, y) {
+            if (!gender) return;
+            ctx.font = 'bold '+(6*S)+'px monospace';
+            ctx.fillStyle = gender === 'M' ? '#6890f0' : '#f86888';
+            ctx.fillText(gender === 'M' ? '♂' : '♀', x*S, y*S);
+        }
+
+        // ── Slot 0 (large left): x=8..87, y=24..79
         var mon0 = filled[0];
         var isSel0 = (_subIdx === 0);
         ctx.fillStyle = isSel0 ? 'rgba(90,206,214,0.25)' : '#0c1020';
         ctx.fillRect(8*S, 24*S, 80*S, 56*S);
         if (isSel0) { ctx.fillStyle = COL_CYAN; ctx.fillRect(8*S, 24*S, 2, 56*S); }
-        ctx.font = 'bold '+(6*S)+'px monospace';
-        ctx.fillStyle = COL_TEXT;
-        ctx.fillText((mon0.nickname || mon0.speciesId || '???').slice(0, 8), 12*S, 28*S);
-        ctx.font = (5*S)+'px monospace';
-        ctx.fillStyle = COL_DIM;
-        ctx.fillText('Lv.' + (mon0.level || '?'), 12*S, 38*S);
-        var hp0pct = mon0.maxHp > 0 ? Math.max(0, Math.min(1, (mon0.currentHp || 0) / mon0.maxHp)) : 0;
+
+        // Icon at (16,40) per EE sPartyMenuSpriteCoords
+        var icon0 = iconImgs && iconImgs[0];
+        if (icon0) { ctx.imageSmoothingEnabled=false; ctx.drawImage(icon0, 16*S, 40*S, 32*S, 32*S); }
+
+        ctx.font = 'bold '+(6*S)+'px monospace'; ctx.fillStyle = COL_TEXT;
+        ctx.fillText((mon0.nickname||mon0.speciesId||'???').slice(0,8), 12*S, 28*S);
+        // Gender at x=64,y=20 within window (window top=24), absolute y=44
+        drawGender(mon0.gender, 64, 44);
+        ctx.font = (5*S)+'px monospace'; ctx.fillStyle = COL_DIM;
+        ctx.fillText('Lv.'+(mon0.level||'?'), 12*S, 38*S);
+        var hp0pct = mon0.maxHp > 0 ? Math.max(0, Math.min(1, (mon0.currentHp||0)/mon0.maxHp)) : 0;
         var hp0col = hp0pct > 0.5 ? '#20d840' : hp0pct > 0.25 ? '#e8c000' : '#e82020';
-        ctx.fillStyle = COL_DIM;
-        ctx.fillText('HP', 12*S, 50*S);
+        ctx.fillStyle = COL_DIM; ctx.fillText('HP', 12*S, 50*S);
         drawHpBar(28, 52, 52, 4, hp0pct, hp0col);
         ctx.fillStyle = COL_TEXT;
-        ctx.fillText((mon0.currentHp||0)+'/'+( mon0.maxHp||0), 12*S, 58*S);
+        ctx.fillText((mon0.currentHp||0)+'/'+(mon0.maxHp||0), 12*S, 58*S);
         if (mon0.statusCondition) {
             ctx.fillStyle = STATUS_COLOR[mon0.statusCondition] || '#666666';
             ctx.fillText('['+mon0.statusCondition+']', 12*S, 68*S);
         }
 
-        // Slots 1-5 (compact, right col): x=96..239
+        // ── Slots 1-5 (compact right col): x=96..239
         for (var i = 1; i < 6; i++) {
             var mon = filled[i];
-            var slotY = 8 + (i - 1) * 24;
+            var slotY = 8 + (i-1)*24;
             if (!mon) {
-                ctx.fillStyle = '#080810';
-                ctx.fillRect(96*S, slotY*S, 144*S, 22*S);
-                ctx.fillStyle = '#333344';
-                ctx.fillText('—', 100*S, (slotY + 7)*S);
+                ctx.fillStyle = '#080810'; ctx.fillRect(96*S, slotY*S, 144*S, 22*S);
+                ctx.fillStyle = '#333344'; ctx.font = (5*S)+'px monospace';
+                ctx.fillText('—', 100*S, (slotY+7)*S);
             } else {
                 var isSel = (i === _subIdx);
                 ctx.fillStyle = isSel ? 'rgba(90,206,214,0.25)' : '#0c1020';
                 ctx.fillRect(96*S, slotY*S, 144*S, 22*S);
                 if (isSel) { ctx.fillStyle = COL_CYAN; ctx.fillRect(96*S, slotY*S, 2, 22*S); }
-                ctx.font = 'bold '+(5*S)+'px monospace';
-                ctx.fillStyle = COL_TEXT;
-                ctx.fillText((mon.nickname || mon.speciesId || '???').slice(0, 10), 100*S, (slotY+2)*S);
-                ctx.font = (5*S)+'px monospace';
-                ctx.fillStyle = COL_DIM;
-                ctx.fillText('Lv.'+(mon.level||'?'), 188*S, (slotY+2)*S);
-                var hpPct = mon.maxHp > 0 ? Math.max(0, Math.min(1, (mon.currentHp||0) / mon.maxHp)) : 0;
+
+                // Icon at (104,18/42/66/90/114) per EE coords — offset by slotY
+                var iconI = iconImgs && iconImgs[i];
+                if (iconI) { ctx.imageSmoothingEnabled=false; ctx.drawImage(iconI, 96*S, slotY*S, 20*S, 20*S); }
+
+                ctx.font = 'bold '+(5*S)+'px monospace'; ctx.fillStyle = COL_TEXT;
+                ctx.fillText((mon.nickname||mon.speciesId||'???').slice(0,10), 120*S, (slotY+2)*S);
+                // Gender at x=62,y=12 within window
+                drawGender(mon.gender, 120 + ctx.measureText((mon.nickname||'').slice(0,10)).width/S + 2, slotY+2);
+                ctx.font = (5*S)+'px monospace'; ctx.fillStyle = COL_DIM;
+                ctx.fillText('Lv.'+(mon.level||'?'), 200*S, (slotY+2)*S);
+                var hpPct = mon.maxHp > 0 ? Math.max(0, Math.min(1, (mon.currentHp||0)/mon.maxHp)) : 0;
                 var hpCol = hpPct > 0.5 ? '#20d840' : hpPct > 0.25 ? '#e8c000' : '#e82020';
-                ctx.fillStyle = COL_DIM;
-                ctx.fillText('HP', 100*S, (slotY+12)*S);
-                drawHpBar(114, slotY + 14, 60, 3, hpPct, hpCol);
+                ctx.fillStyle = COL_DIM; ctx.fillText('HP', 120*S, (slotY+12)*S);
+                drawHpBar(134, slotY+14, 60, 3, hpPct, hpCol);
                 ctx.fillStyle = COL_TEXT;
-                ctx.fillText((mon.currentHp||0)+'/'+(mon.maxHp||0), 178*S, (slotY+12)*S);
+                ctx.fillText((mon.currentHp||0)+'/'+(mon.maxHp||0), 196*S, (slotY+12)*S);
             }
         }
 
-        // Detail bar for selected mon (y=112..119)
-        var selMon = filled[_subIdx];
-        if (selMon) {
-            ctx.fillStyle = _tc.titleBg;
-            ctx.fillRect(0, 112*S, GBA_W, 8*S);
-            ctx.fillStyle = COL_CYAN;
-            ctx.fillRect(0, 112*S, GBA_W, 1);
-            ctx.font = (5*S)+'px monospace';
-            ctx.fillStyle = COL_CYAN;
-            var moves = (selMon.moves || []).filter(Boolean).slice(0, 4);
-            ctx.fillText((selMon.speciesId||'???') + (selMon.heldItem ? ' ['+selMon.heldItem+']' : ''), 4*S, 113*S);
-        }
-
         // Cancel bar
-        ctx.fillStyle = _tc.titleBg;
-        ctx.fillRect(0, 120*S, GBA_W, 40*S);
-        ctx.fillStyle = COL_CYAN;
-        ctx.fillRect(0, 120*S, GBA_W, 2);
+        ctx.fillStyle = _tc.titleBg; ctx.fillRect(0, 120*S, GBA_W*S, 40*S);
+        ctx.fillStyle = COL_CYAN;    ctx.fillRect(0, 120*S, GBA_W*S, 2);
         ctx.font = (7*S)+'px monospace';
         ctx.fillStyle = (_subIdx >= filled.length) ? COL_CYAN : COL_TEXT;
-        ctx.fillText('CANCEL', GBA_W/2 - 30, 130*S);
+        ctx.fillText('CANCEL', GBA_W/2*S - 30, 130*S);
+
+        // ── Action sub-menu overlay
+        if (_partyActionOpen && _partyActionMon) {
+            var opts = ['SUMMARY', 'SWITCH', 'CANCEL'];
+            var ax = 130, ay = 50, aw = 100, rowH = 14;
+            ctx.fillStyle = _tc.bg;
+            ctx.fillRect(ax*S, ay*S, aw*S, (opts.length*rowH+4)*S);
+            ctx.strokeStyle = COL_CYAN; ctx.lineWidth = 2;
+            ctx.strokeRect(ax*S, ay*S, aw*S, (opts.length*rowH+4)*S);
+            ctx.font = (6*S)+'px monospace';
+            opts.forEach(function(opt, oi) {
+                var oy = ay + 2 + oi*rowH;
+                if (oi === _partyActionSel) {
+                    ctx.fillStyle = 'rgba(90,206,214,0.20)';
+                    ctx.fillRect(ax*S, oy*S, aw*S, rowH*S);
+                    ctx.fillStyle = COL_CYAN; ctx.fillText('▶', (ax+2)*S, oy*S);
+                }
+                ctx.fillStyle = COL_TEXT;
+                ctx.fillText(opt, (ax+12)*S, oy*S);
+            });
+        }
     }
 
     // --- Pokédex ---
