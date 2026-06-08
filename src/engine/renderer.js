@@ -142,11 +142,8 @@ window.GameRenderer = (function () {
                     ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
                 }
 
-                // Warp/sign overlays (semi-transparent tint on top of tile graphics)
-                if (warpSet.has(`${worldX},${worldY}`)) {
-                    ctx.fillStyle = 'rgba(249,168,37,0.45)';
-                    ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
-                } else if (signSet.has(`${worldX},${worldY}`)) {
+                // Sign overlay only (warps are visually defined by tileset graphics)
+                if (signSet.has(`${worldX},${worldY}`) && !drawnFromSheet) {
                     ctx.fillStyle = 'rgba(141,110,99,0.45)';
                     ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
                 }
