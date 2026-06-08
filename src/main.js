@@ -136,6 +136,39 @@
     }
 
     // ---------------------------------------------------------------
+    // NPC / Sign interaction
+    // ---------------------------------------------------------------
+    function _tryInteract() {
+        // Tile directly in front of the player
+        const DELTAS = { up:[0,-1], down:[0,1], left:[-1,0], right:[1,0] };
+        const d = DELTAS[player.direction] || [0,1];
+        const fx = player.x + d[0];
+        const fy = player.y + d[1];
+
+        const mapName = GameMap.current && GameMap.current.name;
+
+        // Check NPC
+        const npc = GameMap.getNpcAt(fx, fy);
+        if (npc && npc.script && npc.script !== '0x0') {
+            if (window.GameDialogue) GameDialogue.showScript(mapName, npc.script);
+            return;
+        }
+
+        // Check sign at that tile
+        const sign = GameMap.getSign(fx, fy);
+        if (sign && sign.script) {
+            if (window.GameDialogue) GameDialogue.showScript(mapName, sign.script);
+            return;
+        }
+
+        // Also check sign AT player position (some signs are on the same tile)
+        const signHere = GameMap.getSign(player.x, player.y);
+        if (signHere && signHere.script) {
+            if (window.GameDialogue) GameDialogue.showScript(mapName, signHere.script);
+        }
+    }
+
+    // ---------------------------------------------------------------
     // Game loop
     // ---------------------------------------------------------------
     function gameLoop(timestamp) {
@@ -154,7 +187,9 @@
             else if (jp.b)     GameStartMenu.back();
         }
 
-        if (!_transitioning && !menuOpen) {
+        const dialogueOpen = window.GameDialogue && GameDialogue.isOpen();
+
+        if (!_transitioning && !menuOpen && !dialogueOpen) {
             const elapsed = timestamp - lastMoveTime;
             if (elapsed >= MOVE_COOLDOWN_MS) {
                 const inp = GameInput.state;
@@ -200,6 +235,15 @@
             }
         }
 
+        // A button — dialogue advance OR interact with NPC/sign in front of player
+        if (GameInput.justPressed.a) {
+            if (window.GameDialogue && GameDialogue.isOpen()) {
+                GameDialogue.advance();
+            } else if (!menuOpen) {
+                _tryInteract();
+            }
+        }
+
         // START button — rising edge → toggle start menu
         if (GameInput.justPressed.start) {
             if (window.GameStartMenu) GameStartMenu.toggle();
@@ -238,6 +282,9 @@
 
         // Init HUD
         GameHUD.init(GameMap, player);
+
+        // Init dialogue box
+        if (window.GameDialogue) GameDialogue.init();
 
         // Init renderer
         const canvas = document.getElementById('canvas-primary');

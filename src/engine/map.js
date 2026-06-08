@@ -232,6 +232,11 @@ window.GameMap = (function () {
         return current.signs.find(s => s.x === x && s.y === y) || null;
     }
 
+    function getNpcAt(x, y) {
+        if (!current || !current.npcs) return null;
+        return current.npcs.find(n => n.x === x && n.y === y) || null;
+    }
+
     function getTilesetName() {
         return layoutData ? layoutData.tileset : null;
     }
@@ -255,6 +260,7 @@ window.GameMap = (function () {
         isWalkable,
         getWarp,
         getSign,
+        getNpcAt,
         getTilesetName,
     };
 })();

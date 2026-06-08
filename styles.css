@@ -1205,3 +1205,43 @@ body.orient-reverse-landscape #controls-layer {
         height: 100vh;
     }
 }
+
+/* ---- Dialogue box (GBA-style, bottom of screen) ---- */
+#dialogue-box {
+    position: absolute;
+    left: 2%;
+    bottom: 3%;
+    width: 96%;
+    z-index: 50;
+    /* EE dark frame 1d style */
+    background: #060610;
+    border: 1px solid #000;
+    box-shadow: 0 0 0 3px #18b8c8, 0 0 0 4px #000, inset 0 0 0 1px #002830;
+    border-radius: 2px;
+    pointer-events: none;
+}
+#dialogue-inner {
+    padding: 6px 8px 5px;
+    position: relative;
+    min-height: 38px;
+}
+#dialogue-text {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 11px;
+    color: #c8d8e8;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+#dialogue-arrow {
+    position: absolute;
+    bottom: 3px;
+    right: 6px;
+    font-size: 9px;
+    color: #18b8c8;
+    animation: dlg-bounce 0.5s ease-in-out infinite alternate;
+}
+@keyframes dlg-bounce {
+    from { transform: translateY(0); }
+    to   { transform: translateY(2px); }
+}
