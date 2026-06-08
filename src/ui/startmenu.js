@@ -544,129 +544,152 @@ window.GameStartMenu = (function () {
     }
 
     function _buildAchievements(el) {
-        // EE ach_atlas.c layout:
-        // Top: tier tabs (tiles 1,1=px8,8, 21 wide) + total AP (tiles 24,1=px192,8, 5 wide)
-        // List: name col (tiles 1,6=px8,48, 16 wide) + AP col (tiles 19,6=px152,48, 10 wide), 6 rows visible
-        // Bottom: description (tiles 1,15=px8,120, 28×4=224×32px)
-
-        el.style.padding = '0';
-        el.style.gap = '0';
-
-        const all = window.GameAchievements ? GameAchievements.getAll() : [];
-        const totalAP = all.reduce(function(s, a) { return s + (a.unlocked ? a.apReward : 0); }, 0);
-        const maxAP   = all.reduce(function(s, a) { return s + a.apReward; }, 0);
-        const unlockCount = all.filter(function(a) { return a.unlocked; }).length;
-
-        // ── Tier tab bar + total AP
-        const TIERS = ['All', 'Plat', 'Gold', 'Silv', 'Brnz'];
-        const tabBar = document.createElement('div');
-        tabBar.className = 'ach-tab-bar';
-        TIERS.forEach(function(t, i) {
-            const btn = document.createElement('button');
-            btn.className = 'ach-tab-btn' + (_achTier === i ? ' active' : '');
-            btn.textContent = t;
-            btn.style.pointerEvents = 'all';
-            btn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                _achTier = i;
-                _achOffset = 0;
-                _subIdx = 0;
-                _render();
+        var shell = _makeCanvasShell(el, function(ctx, canvas) {
+            _loadApBg(function(bg) {
+                _drawAchievementsCanvas(ctx, bg);
             });
-            tabBar.appendChild(btn);
+
+            // Tier tab buttons overlaid on canvas
+            var TIERS = ['All', 'Plat', 'Gold', 'Silv', 'Brnz'];
+            var tabsEl = document.createElement('div');
+            tabsEl.style.cssText = 'position:absolute;top:2px;left:2px;display:flex;gap:2px;z-index:10;pointer-events:all;';
+            TIERS.forEach(function(t, i) {
+                var btn = document.createElement('button');
+                btn.className = 'sm-back-btn' + (_achTier === i ? ' active' : '');
+                btn.textContent = t;
+                btn.style.cssText = 'pointer-events:all;padding:2px 4px;font-size:10px;' + (_achTier === i ? 'color:#5aced6;' : '');
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    _achTier = i; _achOffset = 0; _subIdx = 0; _render();
+                });
+                tabsEl.appendChild(btn);
+            });
+            el.appendChild(tabsEl);
+
+            // Click on canvas list rows
+            canvas.addEventListener('click', function(e) {
+                var rect = canvas.getBoundingClientRect();
+                var cy = (e.clientY - rect.top) * (160 / rect.height);
+                // List rows start at y=26, each 14px tall, 6 visible
+                if (cy >= 26 && cy < 26 + 6 * 14) {
+                    var row = Math.floor((cy - 26) / 14);
+                    var clickedIdx = _achOffset + row;
+                    var all2 = window.GameAchievements ? GameAchievements.getAll() : [];
+                    var tierKeys2 = [null, 'platinum', 'gold', 'silver', 'bronze'];
+                    var filtered2 = _achTier === 0 ? all2 : all2.filter(function(a){return a.tier===tierKeys2[_achTier];});
+                    if (clickedIdx >= 0 && clickedIdx < filtered2.length) {
+                        _subIdx = clickedIdx; _render();
+                    }
+                }
+            });
         });
-        const apBox = document.createElement('span');
-        apBox.className = 'ach-total-ap';
-        apBox.textContent = totalAP + ' AP';
-        tabBar.appendChild(apBox);
-        el.appendChild(tabBar);
+    }
 
-        // ── Filter list by selected tier
-        const tierKeys = [null, 'platinum', 'gold', 'silver', 'bronze'];
-        const filtered = _achTier === 0
-            ? all
-            : all.filter(function(a) { return a.tier === tierKeys[_achTier]; });
+    function _drawAchievementsCanvas(ctx, bg) {
+        _canvasBg(ctx, bg);
+        var S = 2;
+        var COL_TEXT = '#ffffff';
+        var COL_DIM  = '#b4b4b4';
+        var COL_CYAN = '#5aced6';
 
-        // ── Scrollable list: name (left ~65%) + AP reward (right ~35%)
-        const LIST_ROWS = 6;
-        // Clamp _achOffset so selected is always visible
+        var all = window.GameAchievements ? GameAchievements.getAll() : [];
+        var totalAP = all.reduce(function(s, a) { return s + (a.unlocked ? a.apReward : 0); }, 0);
+        var maxAP   = all.reduce(function(s, a) { return s + a.apReward; }, 0);
+        var unlockCount = all.filter(function(a) { return a.unlocked; }).length;
+
+        // Title bar
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(0, 0, GBA_W, 20*S);
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillRect(0, 20*S, GBA_W, 2);
+
+        ctx.textBaseline = 'top';
+        ctx.font = 'bold '+(7*S)+'px monospace';
+        ctx.fillStyle = '#80d0e8';
+        ctx.fillText('ACHIEVEMENT ATLAS', 8*S, 6*S);
+
+        // Total AP right-aligned
+        ctx.font = (6*S)+'px monospace';
+        ctx.fillStyle = COL_CYAN;
+        var apStr = totalAP + ' / ' + maxAP + ' AP';
+        var apW = ctx.measureText(apStr).width;
+        ctx.fillText(apStr, GBA_W - apW - 4*S, 7*S);
+
+        // Filter list
+        var tierKeys = [null, 'platinum', 'gold', 'silver', 'bronze'];
+        var filtered = _achTier === 0 ? all : all.filter(function(a){return a.tier===tierKeys[_achTier];});
+
+        var LIST_ROWS = 6;
         if (_subIdx < _achOffset) _achOffset = _subIdx;
         if (_subIdx >= _achOffset + LIST_ROWS) _achOffset = _subIdx - LIST_ROWS + 1;
         _achOffset = Math.max(0, Math.min(_achOffset, Math.max(0, filtered.length - LIST_ROWS)));
 
-        const listWrap = document.createElement('div');
-        listWrap.className = 'ach-list-wrap';
-
+        ctx.font = (6*S)+'px monospace';
+        var listY = 26;
         if (!filtered.length) {
-            const empty = document.createElement('div');
-            empty.className = 'ach-empty';
-            empty.textContent = 'No achievements in this tier.';
-            listWrap.appendChild(empty);
+            ctx.fillStyle = COL_DIM;
+            ctx.fillText('No achievements in this tier.', 8*S, listY*S);
         } else {
-            const visible = filtered.slice(_achOffset, _achOffset + LIST_ROWS);
+            var visible = filtered.slice(_achOffset, _achOffset + LIST_ROWS);
             visible.forEach(function(a, vi) {
-                const absIdx = _achOffset + vi;
-                const row = document.createElement('div');
-                row.className = 'ach-list-row'
-                    + (a.unlocked ? '' : ' locked')
-                    + (absIdx === _subIdx ? ' selected' : '');
-                row.style.pointerEvents = 'all';
-                row.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    _subIdx = absIdx;
-                    _render();
-                });
-
-                const icon = document.createElement('span');
-                icon.className = 'ach-list-icon';
-                icon.textContent = a.unlocked ? TIER_ICON[a.tier] : '✗';
-
-                const name = document.createElement('span');
-                name.className = 'ach-list-name';
-                name.textContent = a.name;
-
-                const ap = document.createElement('span');
-                ap.className = 'ach-list-ap';
-                ap.textContent = (a.unlocked ? '✓ ' : '') + a.apReward + 'AP';
-
-                row.appendChild(icon);
-                row.appendChild(name);
-                row.appendChild(ap);
-                listWrap.appendChild(row);
+                var absIdx = _achOffset + vi;
+                var y = (listY + vi * 14) * S;
+                if (absIdx === _subIdx) {
+                    ctx.fillStyle = 'rgba(90,206,214,0.20)';
+                    ctx.fillRect(0, y, GBA_W, 14*S);
+                    ctx.fillStyle = COL_CYAN;
+                    ctx.fillRect(0, y, 2*S, 14*S);
+                }
+                var icon = a.unlocked ? (a.tier === 'platinum' ? 'P' : a.tier === 'gold' ? 'G' : a.tier === 'silver' ? 'S' : 'B') : 'X';
+                ctx.fillStyle = a.unlocked ? COL_CYAN : '#888888';
+                ctx.fillText('[' + icon + ']', 4*S, y + 3*S);
+                ctx.fillStyle = a.unlocked ? COL_TEXT : COL_DIM;
+                var nameStr = a.name || '';
+                if (nameStr.length > 22) nameStr = nameStr.slice(0, 21) + '…';
+                ctx.fillText(nameStr, 24*S, y + 3*S);
+                ctx.fillStyle = COL_DIM;
+                var apVal = (a.unlocked ? '+' : '') + a.apReward + 'AP';
+                var avw = ctx.measureText(apVal).width;
+                ctx.fillText(apVal, GBA_W - avw - 4*S, y + 3*S);
             });
-
-            // scroll hint
-            if (filtered.length > LIST_ROWS) {
-                const hint = document.createElement('div');
-                hint.className = 'ach-scroll-hint';
-                hint.textContent = (_subIdx + 1) + ' / ' + filtered.length;
-                listWrap.appendChild(hint);
-            }
         }
-        el.appendChild(listWrap);
 
-        // ── Description box at bottom — tiles 1,15 = y≈75% of screen
-        const selAch = filtered[_subIdx];
-        const descBox = document.createElement('div');
-        descBox.className = 'ach-desc-box';
+        // Scroll indicators
+        if (_achOffset > 0) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px monospace'; ctx.fillText('▲', GBA_W/2 - 4, (listY - 1)*S); }
+        if (_achOffset + LIST_ROWS < filtered.length) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px monospace'; ctx.fillText('▼', GBA_W/2 - 4, (listY + LIST_ROWS*14)*S); }
+
+        // Desc box at bottom (y=112)
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(0, 112*S, GBA_W, 48*S);
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillRect(0, 112*S, GBA_W, 2);
+
+        ctx.font = (6*S)+'px monospace';
+        var selAch = filtered[_subIdx];
         if (selAch) {
-            const dTitle = document.createElement('div');
-            dTitle.className = 'ach-desc-title';
-            dTitle.textContent = selAch.name + (selAch.unlocked ? ' ✓' : '');
-            const dText = document.createElement('div');
-            dText.className = 'ach-desc-text';
-            dText.textContent = selAch.desc || '';
-            const dMeta = document.createElement('div');
-            dMeta.className = 'ach-desc-meta';
-            dMeta.textContent = (selAch.tier || '').toUpperCase() + '  ' + selAch.apReward + ' AP'
-                + (selAch.unlocked ? '  [EARNED]' : '  [LOCKED]');
-            descBox.appendChild(dTitle);
-            descBox.appendChild(dText);
-            descBox.appendChild(dMeta);
+            ctx.fillStyle = COL_CYAN;
+            var title = selAch.name + (selAch.unlocked ? ' [EARNED]' : ' [LOCKED]');
+            ctx.fillText(title, 4*S, 115*S);
+            ctx.fillStyle = COL_TEXT;
+            var desc = selAch.desc || '';
+            var words = desc.split(' '), line = '', ly = 126*S;
+            ctx.font = (5*S)+'px monospace';
+            for (var w = 0; w < words.length; w++) {
+                var test = line ? line + ' ' + words[w] : words[w];
+                if (ctx.measureText(test).width > (GBA_W - 8*S) && line) {
+                    ctx.fillText(line, 4*S, ly); line = words[w]; ly += 11*S;
+                    if (ly > 154*S) break;
+                } else { line = test; }
+            }
+            if (line) ctx.fillText(line, 4*S, ly);
+            ctx.fillStyle = COL_DIM;
+            ctx.font = (5*S)+'px monospace';
+            var meta = (selAch.tier||'').toUpperCase() + '  ' + selAch.apReward + ' AP';
+            ctx.fillText(meta, 4*S, 148*S);
         } else {
-            descBox.textContent = unlockCount + ' / ' + all.length + ' earned  ·  ' + totalAP + ' / ' + maxAP + ' AP';
+            ctx.fillStyle = COL_DIM;
+            ctx.fillText(unlockCount + ' / ' + all.length + ' earned  ·  ' + totalAP + ' / ' + maxAP + ' AP', 4*S, 120*S);
         }
-        el.appendChild(descBox);
     }
 
     // ── Bag pocket data helper ──────────────────────────────────────────────
@@ -842,128 +865,152 @@ window.GameStartMenu = (function () {
     }
 
     function _buildParty(el) {
-        // EE party_menu.h sSinglePartyMenuWindowTemplate layout:
-        // Slot 0 (left col, large): left=8px, top=24px, 80×56px
-        // Slots 1-5 (right col, compact): left=96px, top=8/32/56/80/104px, 144×24px each
-        // Cancel bar bottom: left=8px, top=120px, 224×32px
-        const party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
-        const filled = party.filter(Boolean);
+        var shell = _makeCanvasShell(el, function(ctx, canvas) {
+            _loadPartyBg(function(bg) {
+                _drawPartyCanvas(ctx, bg);
+            });
+            canvas.addEventListener('click', function(e) {
+                var rect = canvas.getBoundingClientRect();
+                var cx = (e.clientX - rect.left) * (240 / rect.width);
+                var cy = (e.clientY - rect.top)  * (160 / rect.height);
+                var party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
+                var filled = party.filter(Boolean);
+                // Slot 0: x=8..87, y=24..79
+                if (cx >= 8 && cx < 88 && cy >= 24 && cy < 80) { _subIdx = 0; _render(); return; }
+                // Slots 1-5: x=96..239, y=8/32/56/80/104..+23
+                if (cx >= 96 && cx < 240) {
+                    for (var si = 1; si < 6; si++) {
+                        var sy = 8 + (si - 1) * 24;
+                        if (cy >= sy && cy < sy + 24 && si - 1 < filled.length - 1) {
+                            _subIdx = si; _render(); return;
+                        }
+                    }
+                }
+                // Cancel: y=120..151
+                if (cy >= 120 && cy < 152) { _goBack(); }
+            });
+        });
+    }
 
-        const STATUS_COLOR = { PAR:'#e8c000', BRN:'#e85020', PSN:'#a820e8', FRZ:'#18c8e8', SLP:'#888', FNT:'#e83020' };
+    function _drawPartyCanvas(ctx, bg) {
+        _canvasBg(ctx, bg);
+        var S = 2;
+        var COL_TEXT = '#ffffff';
+        var COL_DIM  = '#b4b4b4';
+        var COL_CYAN = '#5aced6';
 
-        el.style.padding = '0';
-        el.style.overflow = 'hidden';
+        var party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
+        var filled = party.filter(Boolean);
+
+        ctx.textBaseline = 'top';
+
+        // Title
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(0, 0, GBA_W, 20*S);
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillRect(0, 20*S, GBA_W, 2);
+        ctx.font = 'bold '+(7*S)+'px monospace';
+        ctx.fillStyle = '#80d0e8';
+        ctx.fillText('POKEMON', 8*S, 5*S);
 
         if (!filled.length) {
-            const empty = document.createElement('div');
-            empty.className = 'pty-empty';
-            empty.textContent = 'No Pokémon in party';
-            el.appendChild(empty);
-            // Cancel bar
-            const bar = document.createElement('div');
-            bar.className = 'pty-cancel-bar';
-            bar.textContent = 'CANCEL';
-            el.appendChild(bar);
+            ctx.fillStyle = COL_DIM;
+            ctx.font = (7*S)+'px monospace';
+            ctx.fillText('No Pokemon in party', 8*S, 40*S);
+            ctx.fillStyle = '#0a1830';
+            ctx.fillRect(0, 120*S, GBA_W, 32*S);
+            ctx.fillStyle = COL_CYAN;
+            ctx.fillRect(0, 120*S, GBA_W, 2);
+            ctx.fillStyle = COL_TEXT;
+            ctx.fillText('CANCEL', GBA_W/2 - 30, 130*S);
             return;
         }
 
-        // ── Two-column layout wrapper
-        const cols = document.createElement('div');
-        cols.className = 'pty-cols';
+        var STATUS_COLOR = { PAR:'#e8c000', BRN:'#e85020', PSN:'#a820e8', FRZ:'#18c8e8', SLP:'#888888', FNT:'#e83020' };
 
-        // ── LEFT COLUMN: slot 0 large box
-        const leftCol = document.createElement('div');
-        leftCol.className = 'pty-left-col';
+        function drawHpBar(x, y, w, h, pct, col) {
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(x*S, y*S, w*S, h*S);
+            var barW = Math.max(0, Math.round(pct * w));
+            ctx.fillStyle = col;
+            ctx.fillRect(x*S, y*S, barW*S, h*S);
+        }
 
-        const mon0 = filled[0];
-        const slot0 = document.createElement('div');
-        slot0.className = 'pty-slot0' + (0 === _subIdx ? ' selected' : '');
-        slot0.style.pointerEvents = 'all';
-        slot0.addEventListener('click', function(e) { e.stopPropagation(); _subIdx = 0; _render(); });
+        // Slot 0 (large, left col): x=8..87, y=24..79
+        var mon0 = filled[0];
+        var isSel0 = (_subIdx === 0);
+        ctx.fillStyle = isSel0 ? 'rgba(90,206,214,0.25)' : '#0c1020';
+        ctx.fillRect(8*S, 24*S, 80*S, 56*S);
+        if (isSel0) { ctx.fillStyle = COL_CYAN; ctx.fillRect(8*S, 24*S, 2, 56*S); }
+        ctx.font = 'bold '+(6*S)+'px monospace';
+        ctx.fillStyle = COL_TEXT;
+        ctx.fillText((mon0.nickname || mon0.speciesId || '???').slice(0, 8), 12*S, 28*S);
+        ctx.font = (5*S)+'px monospace';
+        ctx.fillStyle = COL_DIM;
+        ctx.fillText('Lv.' + (mon0.level || '?'), 12*S, 38*S);
+        var hp0pct = mon0.maxHp > 0 ? Math.max(0, Math.min(1, (mon0.currentHp || 0) / mon0.maxHp)) : 0;
+        var hp0col = hp0pct > 0.5 ? '#20d840' : hp0pct > 0.25 ? '#e8c000' : '#e82020';
+        ctx.fillStyle = COL_DIM;
+        ctx.fillText('HP', 12*S, 50*S);
+        drawHpBar(28, 52, 52, 4, hp0pct, hp0col);
+        ctx.fillStyle = COL_TEXT;
+        ctx.fillText((mon0.currentHp||0)+'/'+( mon0.maxHp||0), 12*S, 58*S);
+        if (mon0.statusCondition) {
+            ctx.fillStyle = STATUS_COLOR[mon0.statusCondition] || '#666666';
+            ctx.fillText('['+mon0.statusCondition+']', 12*S, 68*S);
+        }
 
-        const hp0pct = mon0.maxHp > 0 ? Math.max(0, Math.min(1, mon0.currentHp / mon0.maxHp)) : 0;
-        const hp0col = hp0pct > 0.5 ? '#20d840' : hp0pct > 0.25 ? '#e8c000' : '#e82020';
-
-        slot0.innerHTML =
-            '<div class="pty-slot0-sprite">🟣</div>'
-          + '<div class="pty-slot0-nick">' + (mon0.nickname || mon0.speciesId || '???') + (mon0.statusCondition ? ' <span style="background:' + (STATUS_COLOR[mon0.statusCondition]||'#666') + ';padding:0 2px;font-size:9px;color:#fff">' + mon0.statusCondition + '</span>' : '') + '</div>'
-          + '<div class="pty-slot0-lv">Lv.' + (mon0.level||'?') + '</div>'
-          + '<div class="pty-slot0-hp">'
-          +   '<span class="pty-hp-label">HP</span>'
-          +   '<div class="pty-hp-bar-wrap"><div class="pty-hp-bar-fill" style="width:' + Math.round(hp0pct*100) + '%;background:' + hp0col + '"></div></div>'
-          + '</div>'
-          + '<div class="pty-slot0-hpnum">' + (mon0.currentHp||0) + '/' + (mon0.maxHp||0) + '</div>';
-
-        leftCol.appendChild(slot0);
-
-        // Cancel button below slot 0 in left col
-        const cancelBtn = document.createElement('div');
-        cancelBtn.className = 'pty-cancel-btn';
-        cancelBtn.style.pointerEvents = 'all';
-        cancelBtn.textContent = 'CANCEL';
-        cancelBtn.addEventListener('click', function(e) { e.stopPropagation(); _goBack(); });
-        leftCol.appendChild(cancelBtn);
-
-        cols.appendChild(leftCol);
-
-        // ── RIGHT COLUMN: slots 1-5 compact boxes
-        const rightCol = document.createElement('div');
-        rightCol.className = 'pty-right-col';
-
+        // Slots 1-5 (compact, right col): x=96..239
         for (var i = 1; i < 6; i++) {
-            const mon = filled[i];
-            const slot = document.createElement('div');
-
+            var mon = filled[i];
+            var slotY = 8 + (i - 1) * 24;
             if (!mon) {
-                slot.className = 'pty-slot-compact pty-slot-empty';
-                slot.textContent = '—';
+                ctx.fillStyle = '#080810';
+                ctx.fillRect(96*S, slotY*S, 144*S, 22*S);
+                ctx.fillStyle = '#333344';
+                ctx.fillText('—', 100*S, (slotY + 7)*S);
             } else {
-                slot.className = 'pty-slot-compact' + (i === _subIdx ? ' selected' : '');
-                slot.style.pointerEvents = 'all';
-                (function(idx, m) {
-                    slot.addEventListener('click', function(e) { e.stopPropagation(); _subIdx = idx; _render(); });
-                })(i, mon);
-
-                const hpPct = mon.maxHp > 0 ? Math.max(0, Math.min(1, mon.currentHp / mon.maxHp)) : 0;
-                const hpCol = hpPct > 0.5 ? '#20d840' : hpPct > 0.25 ? '#e8c000' : '#e82020';
-
-                // EE right box: nickname x=22,y=3; level x=30,y=12; HP x=92,y=12; HP bar x=88,y=10
-                slot.innerHTML =
-                    '<span class="pty-compact-nick">' + (mon.nickname || mon.speciesId || '???') + '</span>'
-                  + '<span class="pty-compact-lv">Lv.' + (mon.level||'?') + '</span>'
-                  + '<div class="pty-compact-hprow">'
-                  +   '<span class="pty-hp-label">HP</span>'
-                  +   '<div class="pty-hp-bar-wrap"><div class="pty-hp-bar-fill" style="width:' + Math.round(hpPct*100) + '%;background:' + hpCol + '"></div></div>'
-                  +   '<span class="pty-compact-hpnum">' + (mon.currentHp||0) + '/' + (mon.maxHp||0) + '</span>'
-                  + '</div>';
-
-                if (mon.statusCondition) {
-                    const badge = document.createElement('span');
-                    badge.style.cssText = 'position:absolute;top:1px;right:2px;background:' + (STATUS_COLOR[mon.statusCondition]||'#666') + ';color:#fff;font-size:9px;padding:0 2px;';
-                    badge.textContent = mon.statusCondition;
-                    slot.style.position = 'relative';
-                    slot.appendChild(badge);
-                }
+                var isSel = (i === _subIdx);
+                ctx.fillStyle = isSel ? 'rgba(90,206,214,0.25)' : '#0c1020';
+                ctx.fillRect(96*S, slotY*S, 144*S, 22*S);
+                if (isSel) { ctx.fillStyle = COL_CYAN; ctx.fillRect(96*S, slotY*S, 2, 22*S); }
+                ctx.font = 'bold '+(5*S)+'px monospace';
+                ctx.fillStyle = COL_TEXT;
+                ctx.fillText((mon.nickname || mon.speciesId || '???').slice(0, 10), 100*S, (slotY+2)*S);
+                ctx.font = (5*S)+'px monospace';
+                ctx.fillStyle = COL_DIM;
+                ctx.fillText('Lv.'+(mon.level||'?'), 188*S, (slotY+2)*S);
+                var hpPct = mon.maxHp > 0 ? Math.max(0, Math.min(1, (mon.currentHp||0) / mon.maxHp)) : 0;
+                var hpCol = hpPct > 0.5 ? '#20d840' : hpPct > 0.25 ? '#e8c000' : '#e82020';
+                ctx.fillStyle = COL_DIM;
+                ctx.fillText('HP', 100*S, (slotY+12)*S);
+                drawHpBar(114, slotY + 14, 60, 3, hpPct, hpCol);
+                ctx.fillStyle = COL_TEXT;
+                ctx.fillText((mon.currentHp||0)+'/'+(mon.maxHp||0), 178*S, (slotY+12)*S);
             }
-
-            rightCol.appendChild(slot);
         }
 
-        cols.appendChild(rightCol);
-        el.appendChild(cols);
-
-        // ── Detail panel for selected slot (below cols, if a mon is selected)
-        const selMon = filled[_subIdx];
+        // Detail bar for selected mon (y=112..119)
+        var selMon = filled[_subIdx];
         if (selMon) {
-            const detail = document.createElement('div');
-            detail.className = 'pty-detail-bar';
-            const moves = (selMon.moves || []).filter(Boolean).slice(0, 4);
-            detail.innerHTML =
-                '<span class="pty-detail-species">' + (selMon.speciesId || '???') + '</span>'
-              + '<span class="pty-detail-item">' + (selMon.heldItem ? '♦ ' + selMon.heldItem : '') + '</span>'
-              + (moves.length ? '<span class="pty-detail-moves">' + moves.join(' · ') + '</span>' : '');
-            el.appendChild(detail);
+            ctx.fillStyle = '#0a1830';
+            ctx.fillRect(0, 112*S, GBA_W, 8*S);
+            ctx.fillStyle = COL_CYAN;
+            ctx.fillRect(0, 112*S, GBA_W, 1);
+            ctx.font = (5*S)+'px monospace';
+            ctx.fillStyle = COL_CYAN;
+            var moves = (selMon.moves || []).filter(Boolean).slice(0, 4);
+            ctx.fillText((selMon.speciesId||'???') + (selMon.heldItem ? ' ['+selMon.heldItem+']' : ''), 4*S, 113*S);
         }
+
+        // Cancel bar
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(0, 120*S, GBA_W, 40*S);
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillRect(0, 120*S, GBA_W, 2);
+        ctx.font = (7*S)+'px monospace';
+        ctx.fillStyle = (_subIdx >= filled.length) ? COL_CYAN : COL_TEXT;
+        ctx.fillText('CANCEL', GBA_W/2 - 30, 130*S);
     }
 
     // --- Pokédex ---
@@ -993,358 +1040,469 @@ window.GameStartMenu = (function () {
 
     function _buildPokedex(el) {
         if (!_dexList) {
-            const msg = document.createElement('div');
-            msg.className = 'sm-placeholder';
-            msg.textContent = 'Loading Pokédex...';
-            el.appendChild(msg);
+            _makeCanvasShell(el, function(ctx) {
+                _canvasBg(ctx, null);
+                ctx.textBaseline = 'top';
+                ctx.font = '16px monospace';
+                ctx.fillStyle = '#b4b4b4';
+                ctx.fillText('Loading Pokedex...', 20, 60);
+            });
             _loadDex(function(){ _render(); });
             return;
         }
 
-        // Seen/caught from save
-        const saved = window.GameSave && GameSave.state && GameSave.state.pokedex;
-        const seen   = new Set((saved && saved.seen)   || []);
-        const caught = new Set((saved && saved.caught) || []);
-
-        // Show window of 20 entries around _subIdx
-        const WIN = 20;
-        const start = Math.max(0, _subIdx - Math.floor(WIN/2));
-        const end   = Math.min(_dexList.length, start + WIN);
-
-        _dexList.slice(start, end).forEach(function(entry, relI) {
-            const absI = start + relI;
-            const isSel = absI === _subIdx;
-            const hasSeen   = seen.has(entry.num);
-            const hasCaught = caught.has(entry.num);
-
-            const row = document.createElement('div');
-            row.className = 'sm-dex-row' + (isSel ? ' selected' : '');
-            row.addEventListener('click', function(){ _subIdx = absI; _render(); });
-
-            const cursor = document.createElement('span');
-            cursor.className = 'sm-row-arrow';
-            cursor.textContent = isSel ? '▶' : ' ';
-
-            const numEl = document.createElement('span');
-            numEl.className = 'sm-dex-num';
-            numEl.textContent = String(entry.num).padStart(3,'0');
-
-            // Icon
-            const iconEl = document.createElement('img');
-            iconEl.className = 'sm-dex-icon';
-            if (hasSeen || hasCaught) {
-                iconEl.src = 'data/sprites/pokemon/icons/' + (Object.keys(_dexDb).find(k => _dexDb[k]===entry) || entry.name.toLowerCase()) + '.png';
-                iconEl.onerror = function(){ this.style.display='none'; };
-            } else {
-                iconEl.style.opacity = '0'; // not seen
-            }
-
-            const nameEl = document.createElement('span');
-            nameEl.className = 'sm-dex-name';
-            nameEl.textContent = hasSeen ? entry.name : '???';
-
-            // Type badges
-            const typesEl = document.createElement('span');
-            typesEl.className = 'sm-dex-types';
-            if (hasSeen) {
-                entry.types.forEach(function(t){
-                    const badge = document.createElement('span');
-                    badge.className = 'sm-type-badge';
-                    badge.textContent = t;
-                    badge.style.background = TYPE_COLORS[t] || '#888';
-                    typesEl.appendChild(badge);
-                });
-            }
-
-            row.appendChild(cursor);
-            row.appendChild(numEl);
-            row.appendChild(iconEl);
-            row.appendChild(nameEl);
-            row.appendChild(typesEl);
-            el.appendChild(row);
+        var shell = _makeCanvasShell(el, function(ctx, canvas) {
+            _loadPokedexBg(function(bg) {
+                _drawPokedexCanvas(ctx, bg);
+            });
+            canvas.addEventListener('click', function(e) {
+                var rect = canvas.getBoundingClientRect();
+                var cy = (e.clientY - rect.top) * (160 / rect.height);
+                // rows start at y=24, 14px each, 9 visible
+                if (cy >= 24 && cy < 24 + 9*14 && _dexList) {
+                    var WIN = 9;
+                    var start = Math.max(0, _subIdx - Math.floor(WIN/2));
+                    var row = Math.floor((cy - 24) / 14);
+                    var clickedIdx = start + row;
+                    if (clickedIdx >= 0 && clickedIdx < _dexList.length) {
+                        _subIdx = clickedIdx; _render();
+                    }
+                }
+            });
         });
-
-        // Scroll hint
-        const hint = document.createElement('div');
-        hint.className = 'sm-dex-hint';
-        hint.textContent = (_subIdx+1) + ' / ' + _dexList.length;
-        el.appendChild(hint);
     }
 
-    function _buildPokedexEntry(el) {
-        const entry = _dexEntry;
-        if (!entry) return;
+    function _drawPokedexCanvas(ctx, bg) {
+        _canvasBg(ctx, bg);
+        var S = 2;
+        var COL_TEXT = '#ffffff';
+        var COL_DIM  = '#b4b4b4';
+        var COL_CYAN = '#5aced6';
 
-        // Find the key name for sprite path
-        const keyName = _dexDb ? (Object.keys(_dexDb).find(k => _dexDb[k] === entry) || entry.name.toLowerCase()) : entry.name.toLowerCase();
+        // Title bar
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(0, 0, GBA_W, 20*S);
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillRect(0, 20*S, GBA_W, 2);
+        ctx.textBaseline = 'top';
+        ctx.font = 'bold '+(7*S)+'px monospace';
+        ctx.fillStyle = '#80d0e8';
+        ctx.fillText('POKEDEX', 8*S, 5*S);
 
-        // Header: sprite + name/number/types
-        const header = document.createElement('div');
-        header.className = 'sm-dex-entry-header';
+        if (!_dexList || !_dexList.length) {
+            ctx.fillStyle = COL_DIM;
+            ctx.font = (6*S)+'px monospace';
+            ctx.fillText('No data loaded.', 8*S, 40*S);
+            return;
+        }
 
-        const sprite = document.createElement('img');
-        sprite.className = 'sm-dex-entry-sprite';
-        sprite.src = 'data/sprites/pokemon/front/' + keyName + '.png';
-        sprite.onerror = function(){ this.style.visibility='hidden'; };
+        var saved = window.GameSave && GameSave.state && GameSave.state.pokedex;
+        var seen   = new Set((saved && saved.seen)   || []);
+        var caught = new Set((saved && saved.caught) || []);
 
-        const info = document.createElement('div');
-        info.className = 'sm-dex-entry-info';
-        info.innerHTML = '<div class="sm-dex-entry-num">#' + String(entry.num).padStart(3,'0') + '</div>'
-            + '<div class="sm-dex-entry-name">' + entry.name + '</div>'
-            + '<div class="sm-dex-entry-cat">' + entry.category + '</div>';
+        var WIN = 9;
+        var start = Math.max(0, _subIdx - Math.floor(WIN/2));
+        if (start + WIN > _dexList.length) start = Math.max(0, _dexList.length - WIN);
+        var end = Math.min(_dexList.length, start + WIN);
 
-        const typesRow = document.createElement('div');
-        typesRow.style.cssText = 'display:flex;gap:3px;margin-top:3px;';
-        entry.types.forEach(function(t){
-            const badge = document.createElement('span');
-            badge.className = 'sm-type-badge';
-            badge.textContent = t;
-            badge.style.background = TYPE_COLORS[t] || '#888';
-            typesRow.appendChild(badge);
-        });
-        info.appendChild(typesRow);
+        ctx.font = (6*S)+'px monospace';
+        for (var relI = 0; relI < end - start; relI++) {
+            var absI = start + relI;
+            var entry = _dexList[absI];
+            var y = (24 + relI * 14) * S;
+            var isSel = absI === _subIdx;
+            var hasSeen = seen.has(entry.num);
+            var hasCaught = caught.has(entry.num);
 
-        header.appendChild(sprite);
-        header.appendChild(info);
-        el.appendChild(header);
-
-        // Tab selector
-        const TABS = ['Info','Stats','Moves'];
-        const tabRow = document.createElement('div');
-        tabRow.className = 'sm-dex-tabs';
-        TABS.forEach(function(t, i){
-            const tab = document.createElement('span');
-            tab.className = 'sm-dex-tab' + (i === _subIdx ? ' active' : '');
-            tab.textContent = t;
-            tab.addEventListener('click', function(){ _subIdx = i; _render(); });
-            tabRow.appendChild(tab);
-        });
-        el.appendChild(tabRow);
-
-        const body = document.createElement('div');
-        body.className = 'sm-dex-entry-body';
-
-        if (_subIdx === 0) {
-            // Info tab
-            const h = entry.height_m, w = entry.weight_kg;
-            const ft = Math.floor(h / 0.3048), inch = Math.round((h / 0.3048 - ft) * 12);
-            const lbs = Math.round(w * 2.205 * 10) / 10;
-            body.innerHTML =
-                '<div class="sm-kv-row"><span class="sm-kv-key">Height</span><span class="sm-kv-val">' + h + 'm (' + ft + '\'' + inch + '")</span></div>'
-              + '<div class="sm-kv-row"><span class="sm-kv-key">Weight</span><span class="sm-kv-val">' + w + 'kg (' + lbs + ' lbs)</span></div>'
-              + '<div class="sm-kv-row"><span class="sm-kv-key">Catch Rate</span><span class="sm-kv-val">' + entry.catch_rate + '</span></div>'
-              + '<div class="sm-kv-row"><span class="sm-kv-key">Exp Rate</span><span class="sm-kv-val">' + (entry.exp_rate||'').replace('EXP_RATE_','').toLowerCase().replace(/_/g,' ') + '</span></div>'
-              + '<div class="sm-kv-row"><span class="sm-kv-key">Egg Groups</span><span class="sm-kv-val">' + entry.egg_groups.join(', ') + '</span></div>'
-              + '<div class="sm-sep"></div>'
-              + '<div class="sm-kv-row" style="flex-direction:column;align-items:flex-start;gap:3px;"><span class="sm-kv-key">Pokédex Entry</span><span style="color:#c8d8e8;line-height:1.5">' + entry.entry + '</span></div>';
-        } else if (_subIdx === 1) {
-            // Stats tab
-            const stats = entry.stats;
-            const STAT_NAMES = {hp:'HP',atk:'Attack',def:'Defense',spa:'Sp. Atk',spd:'Sp. Def',spe:'Speed'};
-            const STAT_COLORS = {hp:'#f04040',atk:'#f08030',def:'#f8d030',spa:'#6890f0',spd:'#78c850',spe:'#f85888'};
-            const maxStat = 255;
-            let html = '';
-            let total = 0;
-            for (const [k, label] of Object.entries(STAT_NAMES)) {
-                const val = stats[k] || 0;
-                total += val;
-                const pct = Math.round(val / maxStat * 100);
-                html += '<div class="sm-stat-row">'
-                    + '<span class="sm-stat-name">' + label + '</span>'
-                    + '<span class="sm-stat-val">' + val + '</span>'
-                    + '<div class="sm-stat-bar-wrap"><div class="sm-stat-bar" style="width:' + pct + '%;background:' + STAT_COLORS[k] + '"></div></div>'
-                    + '</div>';
+            if (isSel) {
+                ctx.fillStyle = 'rgba(90,206,214,0.20)';
+                ctx.fillRect(0, y, GBA_W, 14*S);
+                ctx.fillStyle = COL_CYAN;
+                ctx.fillRect(0, y, 2*S, 14*S);
             }
-            html += '<div class="sm-stat-row" style="margin-top:4px;border-top:1px solid rgba(24,184,200,0.2);padding-top:4px;">'
-                  + '<span class="sm-stat-name" style="color:#80d0e8">Total</span>'
-                  + '<span class="sm-stat-val" style="color:#80d0e8">' + total + '</span>'
-                  + '<div class="sm-stat-bar-wrap"></div></div>';
-            body.innerHTML = html;
-        } else {
-            // Moves tab — level-up learnset
-            fetch('data/pokemon/pokedex.json')  // already cached
-                .then(function(){ return null; })
-                .catch(function(){});
-            // Load from dexDb which we already have
-            const fullEntry = _dexDb ? _dexDb[keyName] : null;
-            const learnset = (fullEntry && fullEntry.learnset) ? fullEntry.learnset : null;
 
-            if (!learnset) {
-                // Load it from data.json directly
-                fetch('source/pokeplatinum/res/pokemon/' + keyName + '/data.json')
-                    .then(r => r.ok ? r.json() : null)
-                    .then(d => {
-                        if (!d || !d.learnset) return;
-                        const lvl = d.learnset.level_up || [];
-                        let html = '';
-                        lvl.slice(0, 20).forEach(function(m){
-                            html += '<div class="sm-kv-row"><span class="sm-kv-key">Lv.' + m[0] + '</span><span class="sm-kv-val">' + m[1].replace('MOVE_','').replace(/_/g,' ').toLowerCase().replace(/\b\w/g, c=>c.toUpperCase()) + '</span></div>';
-                        });
-                        if (body.parentNode) body.innerHTML = html || '<div class="sm-placeholder">No move data.</div>';
-                    })
-                    .catch(function(){});
-                body.innerHTML = '<div class="sm-placeholder">Loading moves...</div>';
-            } else {
-                const lvl = learnset.level_up || [];
-                let html = '';
-                lvl.slice(0, 20).forEach(function(m){
-                    html += '<div class="sm-kv-row"><span class="sm-kv-key">Lv.' + m[0] + '</span><span class="sm-kv-val">' + m[1].replace('MOVE_','').replace(/_/g,' ').toLowerCase().replace(/\b\w/g, c=>c.toUpperCase()) + '</span></div>';
-                });
-                body.innerHTML = html || '<div class="sm-placeholder">No move data.</div>';
+            // Arrow
+            ctx.fillStyle = isSel ? COL_CYAN : 'transparent';
+            ctx.fillText(isSel ? '▶' : ' ', 2*S, y + 2*S);
+
+            // Dex num
+            ctx.fillStyle = COL_DIM;
+            ctx.fillText(String(entry.num).padStart(3,'0'), 10*S, y + 2*S);
+
+            // Caught dot
+            if (hasCaught) {
+                ctx.fillStyle = COL_CYAN;
+                ctx.fillText('●', 218*S, y + 2*S);
+            } else if (hasSeen) {
+                ctx.fillStyle = '#555566';
+                ctx.fillText('○', 218*S, y + 2*S);
+            }
+
+            // Name
+            ctx.fillStyle = hasSeen ? COL_TEXT : '#444455';
+            ctx.fillText(hasSeen ? entry.name : '???', 36*S, y + 2*S);
+
+            // Type tags (abbreviated)
+            if (hasSeen && entry.types) {
+                var tx = 110*S;
+                for (var ti = 0; ti < Math.min(2, entry.types.length); ti++) {
+                    var tname = entry.types[ti];
+                    var tcol = TYPE_COLORS[tname] || '#888888';
+                    var tw = ctx.measureText(tname).width + 4*S;
+                    ctx.fillStyle = tcol;
+                    ctx.fillRect(tx, y + 1*S, tw, 10*S);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(tname, tx + 2*S, y + 2*S);
+                    tx += tw + 2*S;
+                }
             }
         }
 
-        el.appendChild(body);
+        // Scroll hint
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(0, 153*S, GBA_W, 7*S);
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillRect(0, 153*S, GBA_W, 1);
+        ctx.font = (5*S)+'px monospace';
+        ctx.fillStyle = COL_DIM;
+        ctx.fillText((_subIdx+1) + ' / ' + _dexList.length, 4*S, 154*S);
+        if (start > 0) { ctx.fillStyle = COL_CYAN; ctx.font=(6*S)+'px monospace'; ctx.fillText('▲', GBA_W-12*S, 22*S); }
+        if (end < _dexList.length) { ctx.fillStyle = COL_CYAN; ctx.font=(6*S)+'px monospace'; ctx.fillText('▼', GBA_W-12*S, 150*S); }
+    }
 
-        // Evolution chain
-        if (_subIdx === 0 && entry.evolutions && entry.evolutions.length) {
-            const sep = document.createElement('div'); sep.className='sm-sep'; el.appendChild(sep);
-            const evoLabel = document.createElement('div');
-            evoLabel.className = 'sm-kv-row';
-            evoLabel.innerHTML = '<span class="sm-kv-key" style="color:#80d0e8">Evolves into</span>';
-            el.appendChild(evoLabel);
-            entry.evolutions.forEach(function(evo){
-                const r = document.createElement('div'); r.className='sm-kv-row';
-                const method = evo.method.replace('EVO_','').replace(/_/g,' ').toLowerCase();
-                r.innerHTML = '<span class="sm-kv-key" style="padding-left:8px">' + evo.into.toUpperCase() + '</span>'
-                    + '<span class="sm-kv-val">' + method + (evo.param ? ' ' + evo.param : '') + '</span>';
-                el.appendChild(r);
+    function _buildPokedexEntry(el) {
+        var entry = _dexEntry;
+        if (!entry) return;
+
+        var keyName = _dexDb ? (Object.keys(_dexDb).find(function(k){ return _dexDb[k] === entry; }) || entry.name.toLowerCase()) : entry.name.toLowerCase();
+
+        var shell = _makeCanvasShell(el, function(ctx, canvas) {
+            _drawPokedexEntryCanvas(ctx, entry, keyName, null);
+
+            // Load front sprite as image for drawing
+            var spriteImg = new Image();
+            spriteImg.onload = function() { _drawPokedexEntryCanvas(ctx, entry, keyName, spriteImg); };
+            spriteImg.onerror = function() { /* no sprite */ };
+            spriteImg.src = 'data/sprites/pokemon/front/' + keyName + '.png';
+
+            // Tab buttons
+            var tabsEl = document.createElement('div');
+            tabsEl.style.cssText = 'position:absolute;top:72px;left:96px;display:flex;gap:2px;z-index:10;pointer-events:all;';
+            ['Info','Stats','Moves'].forEach(function(t, i) {
+                var btn = document.createElement('button');
+                btn.className = 'sm-back-btn' + (_subIdx === i ? ' active' : '');
+                btn.textContent = t;
+                btn.style.cssText = 'pointer-events:all;padding:2px 6px;font-size:10px;' + (_subIdx === i ? 'color:#5aced6;' : '');
+                btn.addEventListener('click', function(e) { e.stopPropagation(); _subIdx = i; _render(); });
+                tabsEl.appendChild(btn);
             });
+            el.appendChild(tabsEl);
+        });
+    }
+
+    function _drawPokedexEntryCanvas(ctx, entry, keyName, spriteImg) {
+        _canvasBg(ctx, null);
+        var S = 2;
+        var COL_TEXT = '#ffffff';
+        var COL_DIM  = '#b4b4b4';
+        var COL_CYAN = '#5aced6';
+
+        ctx.textBaseline = 'top';
+
+        // Title bar
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(0, 0, GBA_W, 20*S);
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillRect(0, 20*S, GBA_W, 2);
+        ctx.font = 'bold '+(7*S)+'px monospace';
+        ctx.fillStyle = '#80d0e8';
+        ctx.fillText('POKEDEX', 8*S, 5*S);
+
+        // Sprite area (left): 0..79, y=22..87 (GBA px: 0..79px, 22..87px)
+        if (spriteImg) {
+            ctx.drawImage(spriteImg, 0, 22*S, 80*S, 66*S);
+        } else {
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 22*S, 80*S, 66*S);
+            ctx.fillStyle = COL_DIM;
+            ctx.font = (5*S)+'px monospace';
+            ctx.fillText('No sprite', 4*S, 50*S);
+        }
+
+        // Info right side: x=82..239, y=22
+        ctx.font = 'bold '+(7*S)+'px monospace';
+        ctx.fillStyle = COL_TEXT;
+        ctx.fillText(entry.name, 84*S, 24*S);
+        ctx.font = (6*S)+'px monospace';
+        ctx.fillStyle = COL_DIM;
+        ctx.fillText('#' + String(entry.num).padStart(3,'0'), 84*S, 34*S);
+        ctx.fillText(entry.category || '', 84*S, 44*S);
+
+        // Types
+        if (entry.types) {
+            var tx = 84*S;
+            entry.types.forEach(function(t) {
+                var tcol = TYPE_COLORS[t] || '#888888';
+                var tw = ctx.measureText(t).width + 4*S;
+                ctx.fillStyle = tcol;
+                ctx.fillRect(tx, 55*S, tw, 10*S);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = (5*S)+'px monospace';
+                ctx.fillText(t, tx + 2*S, 56*S);
+                tx += tw + 2*S;
+            });
+        }
+
+        // Tabs row area at y=74 (buttons overlaid via HTML, just draw separator)
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(80*S, 68*S, GBA_W - 80*S, 22*S);
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillRect(80*S, 90*S, GBA_W - 80*S, 2);
+
+        // Body below y=92
+        var bodyY = 92;
+
+        if (_subIdx === 0) {
+            // Info tab
+            var h = entry.height_m || 0, w = entry.weight_kg || 0;
+            var ft = Math.floor(h / 0.3048), inch = Math.round((h / 0.3048 - ft) * 12);
+            var lbs = Math.round(w * 2.205 * 10) / 10;
+            var rows = [
+                ['Height',     h + 'm (' + ft + '\'' + inch + '")'],
+                ['Weight',     w + 'kg (' + lbs + ' lbs)'],
+                ['Catch Rate', String(entry.catch_rate || 0)],
+                ['Exp Rate',   (entry.exp_rate||'').replace('EXP_RATE_','').toLowerCase().replace(/_/g,' ')],
+                ['Egg Groups', (entry.egg_groups||[]).join(', ')],
+            ];
+            ctx.font = (6*S)+'px monospace';
+            rows.forEach(function(r, i) {
+                var ry = (bodyY + i * 12) * S;
+                ctx.fillStyle = COL_DIM;  ctx.fillText(r[0], 4*S, ry);
+                ctx.fillStyle = COL_TEXT; ctx.fillText(r[1], 80*S, ry);
+            });
+            // Dex entry text wrapped
+            var desc = entry.entry || '';
+            var words = desc.split(' '), line = '', ly = (bodyY + rows.length * 12 + 4) * S;
+            ctx.font = (5*S)+'px monospace';
+            ctx.fillStyle = COL_DIM;
+            for (var wi = 0; wi < words.length; wi++) {
+                var test2 = line ? line + ' ' + words[wi] : words[wi];
+                if (ctx.measureText(test2).width > (GBA_W - 8*S) && line) {
+                    ctx.fillText(line, 4*S, ly); line = words[wi]; ly += 10*S;
+                    if (ly > 154*S) break;
+                } else { line = test2; }
+            }
+            if (line && ly <= 154*S) ctx.fillText(line, 4*S, ly);
+
+            // Evolutions
+            if (entry.evolutions && entry.evolutions.length) {
+                var evoY = Math.min(ly + 14*S, 138*S);
+                ctx.fillStyle = COL_CYAN;
+                ctx.font = (5*S)+'px monospace';
+                ctx.fillText('Evolves into:', 4*S, evoY);
+                entry.evolutions.slice(0, 2).forEach(function(evo, ei) {
+                    var method = (evo.method||'').replace('EVO_','').replace(/_/g,' ').toLowerCase();
+                    ctx.fillStyle = COL_TEXT;
+                    ctx.fillText(evo.into.toUpperCase() + ' — ' + method + (evo.param ? ' '+evo.param : ''), 4*S, evoY + (ei+1)*10*S);
+                });
+            }
+
+        } else if (_subIdx === 1) {
+            // Stats tab
+            var stats = entry.stats || {};
+            var STAT_NAMES = [['hp','HP'],['atk','Attack'],['def','Defense'],['spa','Sp.Atk'],['spd','Sp.Def'],['spe','Speed']];
+            var STAT_COLORS2 = {hp:'#f04040',atk:'#f08030',def:'#f8d030',spa:'#6890f0',spd:'#78c850',spe:'#f85888'};
+            var total = 0;
+            STAT_NAMES.forEach(function(kv, i) {
+                var k = kv[0], label = kv[1];
+                var val = stats[k] || 0;
+                total += val;
+                var ry = (bodyY + i * 10) * S;
+                var pct = Math.min(1, val / 255);
+                ctx.font = (5*S)+'px monospace';
+                ctx.fillStyle = COL_DIM;  ctx.fillText(label, 4*S, ry);
+                ctx.fillStyle = COL_TEXT; ctx.fillText(String(val), 60*S, ry);
+                // bar
+                ctx.fillStyle = '#1a1a2e'; ctx.fillRect(80*S, ry, 150*S, 7*S);
+                ctx.fillStyle = STAT_COLORS2[k]; ctx.fillRect(80*S, ry, Math.round(pct * 150)*S, 7*S);
+            });
+            ctx.fillStyle = COL_CYAN;
+            ctx.font = (5*S)+'px monospace';
+            ctx.fillText('Total: ' + total, 4*S, (bodyY + STAT_NAMES.length * 10 + 4)*S);
+
+        } else {
+            // Moves tab
+            ctx.font = (5*S)+'px monospace';
+            ctx.fillStyle = COL_DIM;
+            ctx.fillText('Loading moves...', 4*S, bodyY*S);
+            var fullEntry2 = _dexDb ? _dexDb[keyName] : null;
+            var learnset2 = fullEntry2 && fullEntry2.learnset;
+            if (learnset2) {
+                ctx.clearRect(0, bodyY*S, GBA_W, (160 - bodyY)*S);
+                ctx.fillStyle = '#060610'; ctx.fillRect(0, bodyY*S, GBA_W, (160 - bodyY)*S);
+                var lvl2 = learnset2.level_up || [];
+                lvl2.slice(0, 10).forEach(function(m, i) {
+                    var ry = (bodyY + i * 10) * S;
+                    ctx.fillStyle = COL_DIM;  ctx.fillText('Lv.'+m[0], 4*S, ry);
+                    ctx.fillStyle = COL_TEXT;
+                    var mname = m[1].replace('MOVE_','').replace(/_/g,' ').toLowerCase().replace(/\b\w/g, function(c){return c.toUpperCase();});
+                    ctx.fillText(mname, 40*S, ry);
+                });
+            }
         }
     }
 
     function _buildPokenav(el) {
-        // EE pokenav_main_menu.c layout:
-        // Left-side animated header (spinning Pokénav device)
-        // 5 menu options as list: Map, Condition, Ribbons, Match Call, Close
-        // Help bar: left=8px, top=176px, 128×16px — bottom hint
-        el.style.padding = '0';
+        var shell = _makeCanvasShell(el, function(ctx, canvas) {
+            _drawPokenavCanvas(ctx);
+            canvas.addEventListener('click', function(e) {
+                var rect = canvas.getBoundingClientRect();
+                var cy = (e.clientY - rect.top) * (160 / rect.height);
+                var OPTIONS = ['Map','Condition','Ribbons','Match Call','Close'];
+                // rows at y=40+i*18, height 16px
+                for (var i = 0; i < OPTIONS.length; i++) {
+                    var ry = 40 + i * 18;
+                    if (cy >= ry && cy < ry + 16) {
+                        _subIdx = i;
+                        if (i === 4) _goBack();
+                        else _render();
+                        return;
+                    }
+                }
+            });
+        });
+    }
 
-        // ── Animated header — left side Pokénav device graphic
-        const hdr = document.createElement('div');
-        hdr.className = 'pnav-header';
-        const logo = document.createElement('div');
-        logo.className = 'pnav-logo';
-        logo.innerHTML = '<span class="pnav-logo-ring">◯</span><span class="pnav-logo-dot">◉</span>';
-        const titleEl = document.createElement('span');
-        titleEl.className = 'pnav-title';
-        titleEl.textContent = 'POKÉNAV';
-        hdr.appendChild(logo);
-        hdr.appendChild(titleEl);
-        el.appendChild(hdr);
+    function _drawPokenavCanvas(ctx) {
+        _canvasBg(ctx, null);
+        var S = 2;
+        var COL_TEXT = '#ffffff';
+        var COL_DIM  = '#b4b4b4';
+        var COL_CYAN = '#5aced6';
 
-        // ── Menu options list
-        const OPTIONS = [
-            { id:'map',        label:'Map',        hint:'View the region map' },
-            { id:'condition',  label:'Condition',  hint:'Check Pokémon condition' },
-            { id:'ribbons',    label:'Ribbons',    hint:'View collected ribbons' },
-            { id:'match_call', label:'Match Call', hint:'Call registered trainers' },
-            { id:'close',      label:'Close',      hint:'Close the Pokénav' },
+        // Title bar
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(0, 0, GBA_W, 36*S);
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillRect(0, 36*S, GBA_W, 2);
+
+        ctx.textBaseline = 'top';
+        ctx.font = 'bold '+(10*S)+'px monospace';
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillText('POKENAV', 8*S, 8*S);
+        ctx.font = (6*S)+'px monospace';
+        ctx.fillStyle = '#80d0e8';
+        ctx.fillText('Navigation System', 8*S, 24*S);
+
+        // Menu options
+        var OPTIONS = [
+            { label:'Map',        hint:'View the region map' },
+            { label:'Condition',  hint:'Check Pokemon condition' },
+            { label:'Ribbons',    hint:'View collected ribbons' },
+            { label:'Match Call', hint:'Call registered trainers' },
+            { label:'Close',      hint:'Close the Pokenav' },
         ];
 
-        const list = document.createElement('div');
-        list.className = 'pnav-list';
+        ctx.font = (7*S)+'px monospace';
         OPTIONS.forEach(function(opt, i) {
-            const row = document.createElement('div');
-            row.className = 'pnav-row' + (i === _subIdx ? ' selected' : '');
-            row.style.pointerEvents = 'all';
-            const arrow = document.createElement('span');
-            arrow.className = 'sm-row-arrow';
-            arrow.textContent = i === _subIdx ? '▶' : ' ';
-            const lbl = document.createElement('span');
-            lbl.className = 'pnav-row-label';
-            lbl.textContent = opt.label;
-            row.appendChild(arrow);
-            row.appendChild(lbl);
-            row.addEventListener('click', function(e) {
-                e.stopPropagation();
-                _subIdx = i;
-                if (opt.id === 'close') _goBack();
-                else _render();
-            });
-            list.appendChild(row);
+            var ry = (40 + i * 18) * S;
+            var isSel = i === _subIdx;
+            if (isSel) {
+                ctx.fillStyle = 'rgba(90,206,214,0.20)';
+                ctx.fillRect(0, ry, GBA_W, 16*S);
+                ctx.fillStyle = COL_CYAN;
+                ctx.fillRect(0, ry, 2*S, 16*S);
+            }
+            ctx.fillStyle = isSel ? COL_CYAN : COL_TEXT;
+            ctx.fillText((isSel ? '▶ ' : '  ') + opt.label, 4*S, ry + 3*S);
         });
-        el.appendChild(list);
 
-        // ── Help bar at bottom — EE WIN_POKENAV_HELP_BAR
-        const help = document.createElement('div');
-        help.className = 'pnav-help-bar';
-        const curOpt = OPTIONS[_subIdx] || OPTIONS[0];
-        help.textContent = curOpt.hint;
-        el.appendChild(help);
+        // Help bar at bottom
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(0, 148*S, GBA_W, 12*S);
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillRect(0, 148*S, GBA_W, 1);
+        ctx.font = (5*S)+'px monospace';
+        ctx.fillStyle = COL_DIM;
+        var curHint = OPTIONS[_subIdx] ? OPTIONS[_subIdx].hint : '';
+        ctx.fillText(curHint, 4*S, 150*S);
     }
 
     function _buildSave(el) {
-        // EE save window: info box (location, name, badges, dex, time) above save/load rows
-        el.style.padding = '0';
-        el.style.gap = '0';
+        var shell = _makeCanvasShell(el, function(ctx, canvas) {
+            _drawSaveCanvas(ctx);
+            canvas.addEventListener('click', function(e) {
+                var rect = canvas.getBoundingClientRect();
+                var cy = (e.clientY - rect.top) * (160 / rect.height);
+                // Save row at y=100..115, Load row at y=118..133
+                if (cy >= 100 && cy < 116) { _subIdx = 0; _doSaveAction('save'); }
+                else if (cy >= 118 && cy < 134) { _subIdx = 1; _doSaveAction('load'); }
+            });
+        });
+    }
 
-        // Info box — matches EE sSaveInfoWindowTemplate content
-        const dexCount = (window.GameSave && GameSave.state && GameSave.state.pokedex)
+    function _drawSaveCanvas(ctx) {
+        _canvasBg(ctx, null);
+        var S = 2;
+        var COL_TEXT = '#ffffff';
+        var COL_DIM  = '#b4b4b4';
+        var COL_CYAN = '#5aced6';
+
+        // Title bar
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(0, 0, GBA_W, 20*S);
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillRect(0, 20*S, GBA_W, 2);
+        ctx.textBaseline = 'top';
+        ctx.font = 'bold '+(7*S)+'px monospace';
+        ctx.fillStyle = '#80d0e8';
+        ctx.fillText('SAVE', 8*S, 5*S);
+
+        // Info box
+        var dexCount = (window.GameSave && GameSave.state && GameSave.state.pokedex)
             ? (GameSave.state.pokedex.caught || []).length : 0;
 
-        const infoBox = document.createElement('div');
-        infoBox.className = 'save-info-box';
+        ctx.font = (7*S)+'px monospace';
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillText(_mapName(), 8*S, 28*S);
 
-        const rows = [
-            { label: null,      val: _mapName(),                   cls: 'save-info-location' },
-            { label: 'Player:',  val: _playerName(),                cls: 'save-info-row' },
-            { label: 'Badges:',  val: String(_badges()),            cls: 'save-info-row' },
-            { label: 'Pokédex:', val: String(dexCount),             cls: 'save-info-row' },
-            { label: 'Time:',    val: _playtime(),                  cls: 'save-info-row' },
+        var infoRows = [
+            ['Player:', _playerName()],
+            ['Badges:', String(_badges())],
+            ['Pokedex:', String(dexCount)],
+            ['Time:', _playtime()],
         ];
-        rows.forEach(function(r) {
-            const row = document.createElement('div');
-            row.className = r.cls;
-            if (r.label) {
-                const lbl = document.createElement('span');
-                lbl.className = 'save-info-lbl';
-                lbl.textContent = r.label;
-                const val = document.createElement('span');
-                val.className = 'save-info-val';
-                val.textContent = r.val;
-                row.appendChild(lbl);
-                row.appendChild(val);
-            } else {
-                row.textContent = r.val;
+        infoRows.forEach(function(r, i) {
+            var ry = (42 + i * 14) * S;
+            ctx.fillStyle = COL_DIM;  ctx.fillText(r[0], 8*S, ry);
+            ctx.fillStyle = COL_TEXT; ctx.fillText(r[1], 80*S, ry);
+        });
+
+        // Divider
+        ctx.fillStyle = COL_CYAN;
+        ctx.fillRect(8*S, 100*S, (GBA_W - 16*S), 1);
+
+        // Action rows
+        var ACTIONS = [['Save Game', 0], ['Load Game', 1]];
+        ACTIONS.forEach(function(a) {
+            var label = a[0], idx = a[1];
+            var ry = (104 + idx * 18) * S;
+            var isSel = idx === _subIdx;
+            if (isSel) {
+                ctx.fillStyle = 'rgba(90,206,214,0.20)';
+                ctx.fillRect(0, ry, GBA_W, 14*S);
+                ctx.fillStyle = COL_CYAN;
+                ctx.fillRect(0, ry, 2*S, 14*S);
             }
-            infoBox.appendChild(row);
+            ctx.font = (7*S)+'px monospace';
+            ctx.fillStyle = isSel ? COL_CYAN : COL_TEXT;
+            ctx.fillText((isSel ? '▶ ' : '  ') + label, 8*S, ry + 2*S);
         });
-        el.appendChild(infoBox);
-
-        // Separator
-        const sep = document.createElement('div');
-        sep.className = 'save-sep';
-        el.appendChild(sep);
-
-        // Save / Load rows
-        const ACTIONS = [
-            { id:'save', label:'Save Game' },
-            { id:'load', label:'Load Game' },
-        ];
-        const actionList = document.createElement('div');
-        actionList.className = 'save-action-list';
-        ACTIONS.forEach(function(a, i) {
-            const row = document.createElement('div');
-            row.className = 'save-action-row' + (i === _subIdx ? ' selected' : '');
-            row.style.pointerEvents = 'all';
-            const arrow = document.createElement('span');
-            arrow.className = 'sm-row-arrow';
-            arrow.textContent = i === _subIdx ? '▶' : ' ';
-            const lbl = document.createElement('span');
-            lbl.textContent = a.label;
-            row.appendChild(arrow);
-            row.appendChild(lbl);
-            row.addEventListener('click', function() { _subIdx = i; _doSaveAction(a.id); });
-            actionList.appendChild(row);
-        });
-        el.appendChild(actionList);
 
         if (_saveDone) {
-            const msg = document.createElement('div');
-            msg.className = 'sm-save-confirm';
-            msg.textContent = '✓ Game saved!';
-            el.appendChild(msg);
+            ctx.fillStyle = '#20d840';
+            ctx.font = (7*S)+'px monospace';
+            ctx.fillText('Game saved!', 8*S, 142*S);
         }
     }
 
@@ -1361,48 +1519,69 @@ window.GameStartMenu = (function () {
     }
 
     function _buildOptions(el) {
-        // EE option_menu.c — exact 18 options, scrollable list, GPU-highlight bar
-        // WIN_TEXT_OPTION: left=16px, top=8px, 208×16px — title already in sm-win-title
-        // WIN_OPTIONS: left=16px, top=40px, 208×112px — 7 rows visible, Y_DIFF=16px
-        const savedScale      = parseFloat(localStorage.getItem('pokemon_control_scale')||'1');
-        const currentOrient   = window.GameLayout ? GameLayout.getOrientationPref() : 'auto';
-        const savedTextSpeed  = localStorage.getItem('pokemon_text_speed')   || 'MED';
-        const savedBScene     = localStorage.getItem('pokemon_battle_scene') || 'ON';
-        const savedForceSet   = localStorage.getItem('pokemon_force_set')    || 'OFF';
-        const savedDmgNums    = localStorage.getItem('pokemon_damage_nums')  || 'ON';
-        const savedThemeUI    = localStorage.getItem('pokemon_theme_ui')     || 'MODERN';
-        const savedTheme      = localStorage.getItem('pokemon_theme')        || 'DARK';
-        const savedFrame      = parseInt(localStorage.getItem('pokemon_frame')    || '1');
-        const savedThemeBall  = parseInt(localStorage.getItem('pokemon_theme_ball')|| '1');
-        const savedRandMusic  = localStorage.getItem('pokemon_random_music') || 'OFF';
-        const savedDisMusic   = localStorage.getItem('pokemon_disable_music')|| 'OFF';
-        const savedBarSpeed   = parseInt(localStorage.getItem('pokemon_bar_speed') || '5');
-        const savedTransition = localStorage.getItem('pokemon_transition')   || 'ON';
-        const savedLvCap      = localStorage.getItem('pokemon_lv_cap')       || 'OFF';
-        const savedAutoRun    = localStorage.getItem('pokemon_auto_run')     || 'OFF';
-        const savedTrSlide    = localStorage.getItem('pokemon_trainer_slide')|| 'ON';
-        const savedAutosave   = localStorage.getItem('pokemon_autosave_int') || '15s';
-        const savedControls   = (window.GameControls && GameControls.getMode && GameControls.getMode()) || 'dpad';
+        // Options uses a canvas background with HTML interactive rows overlaid
+        el.style.cssText = 'padding:0;overflow:hidden;background:none;position:absolute;inset:0;';
 
-        el.style.padding = '0';
+        var backBtn = document.createElement('button');
+        backBtn.textContent = 'B BACK';
+        backBtn.className = 'sm-back-btn';
+        backBtn.style.cssText = 'position:absolute;bottom:4px;right:4px;z-index:10;pointer-events:all;';
+        backBtn.addEventListener('click', _goBack);
+        el.appendChild(backBtn);
 
-        const list = document.createElement('div');
+        // Canvas background
+        var canvas = document.createElement('canvas');
+        canvas.width = GBA_W; canvas.height = GBA_H;
+        canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges;pointer-events:none;';
+        el.appendChild(canvas);
+        var ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+        _drawOptionsCanvasBg(ctx);
+
+        // Scrollable options HTML overlay on top
+        var scrollDiv = document.createElement('div');
+        scrollDiv.style.cssText = 'position:absolute;top:20px;left:0;right:0;bottom:24px;overflow-y:auto;pointer-events:all;';
+        el.appendChild(scrollDiv);
+
+        var savedScale      = parseFloat(localStorage.getItem('pokemon_control_scale')||'1');
+        var currentOrient   = window.GameLayout ? GameLayout.getOrientationPref() : 'auto';
+        var savedTextSpeed  = localStorage.getItem('pokemon_text_speed')   || 'MED';
+        var savedBScene     = localStorage.getItem('pokemon_battle_scene') || 'ON';
+        var savedForceSet   = localStorage.getItem('pokemon_force_set')    || 'OFF';
+        var savedDmgNums    = localStorage.getItem('pokemon_damage_nums')  || 'ON';
+        var savedThemeUI    = localStorage.getItem('pokemon_theme_ui')     || 'MODERN';
+        var savedTheme      = localStorage.getItem('pokemon_theme')        || 'DARK';
+        var savedFrame      = parseInt(localStorage.getItem('pokemon_frame')    || '1');
+        var savedThemeBall  = parseInt(localStorage.getItem('pokemon_theme_ball')|| '1');
+        var savedRandMusic  = localStorage.getItem('pokemon_random_music') || 'OFF';
+        var savedDisMusic   = localStorage.getItem('pokemon_disable_music')|| 'OFF';
+        var savedBarSpeed   = parseInt(localStorage.getItem('pokemon_bar_speed') || '5');
+        var savedTransition = localStorage.getItem('pokemon_transition')   || 'ON';
+        var savedLvCap      = localStorage.getItem('pokemon_lv_cap')       || 'OFF';
+        var savedAutoRun    = localStorage.getItem('pokemon_auto_run')     || 'OFF';
+        var savedTrSlide    = localStorage.getItem('pokemon_trainer_slide')|| 'ON';
+        var savedAutosave   = localStorage.getItem('pokemon_autosave_int') || '15s';
+        var savedControls   = (window.GameControls && GameControls.getMode && GameControls.getMode()) || 'dpad';
+
+        var list = document.createElement('div');
         list.className = 'opt-list';
+        list.style.cssText = 'background:transparent;';
+        scrollDiv.appendChild(list);
 
-        let rowIndex = 0;
+        var rowIndex = 0;
 
         function makeToggleRow(label, opts, currentVal, onChange) {
-            const myIdx = rowIndex++;
-            const row = document.createElement('div');
+            var myIdx = rowIndex++;
+            var row = document.createElement('div');
             row.className = 'opt-row' + (_subIdx === myIdx ? ' selected' : '');
             row.style.pointerEvents = 'all';
-            const lbl = document.createElement('span');
+            var lbl = document.createElement('span');
             lbl.className = 'opt-label';
             lbl.textContent = label;
-            const valWrap = document.createElement('span');
+            var valWrap = document.createElement('span');
             valWrap.className = 'opt-val-wrap';
             opts.forEach(function(o) {
-                const btn = document.createElement('button');
+                var btn = document.createElement('button');
                 btn.className = 'sm-opt-btn' + (o === currentVal ? ' active' : '');
                 btn.textContent = o;
                 btn.style.pointerEvents = 'all';
@@ -1420,30 +1599,30 @@ window.GameStartMenu = (function () {
             return row;
         }
 
-        function makeNumberRow(label, key, cur, min, max) {
-            const myIdx = rowIndex++;
-            const row = document.createElement('div');
+        function makeNumberRow(label, key, cur, min2, max2) {
+            var myIdx = rowIndex++;
+            var row = document.createElement('div');
             row.className = 'opt-row' + (_subIdx === myIdx ? ' selected' : '');
             row.style.pointerEvents = 'all';
-            const lbl = document.createElement('span');
+            var lbl = document.createElement('span');
             lbl.className = 'opt-label';
             lbl.textContent = label;
-            const valWrap = document.createElement('span');
+            var valWrap = document.createElement('span');
             valWrap.className = 'opt-val-wrap';
-            const decBtn = document.createElement('button');
+            var decBtn = document.createElement('button');
             decBtn.className = 'sm-opt-btn';
             decBtn.textContent = '◀';
             decBtn.style.pointerEvents = 'all';
-            const numEl = document.createElement('span');
+            var numEl = document.createElement('span');
             numEl.className = 'opt-num-val';
             numEl.textContent = String(cur);
-            const incBtn = document.createElement('button');
+            var incBtn = document.createElement('button');
             incBtn.className = 'sm-opt-btn';
             incBtn.textContent = '▶';
             incBtn.style.pointerEvents = 'all';
             function updateNum(delta) {
-                let v = parseInt(numEl.textContent) + delta;
-                v = Math.max(min, Math.min(max, v));
+                var v = parseInt(numEl.textContent) + delta;
+                v = Math.max(min2, Math.min(max2, v));
                 numEl.textContent = String(v);
                 localStorage.setItem(key, String(v));
             }
@@ -1467,12 +1646,12 @@ window.GameStartMenu = (function () {
         list.appendChild(makeToggleRow('Theme',           ['DARK','LIGHT','VANILLA','USER'],savedTheme,  function(v){localStorage.setItem('pokemon_theme',v);}));
         // Theme Presets — action row
         (function(){
-            const myIdx = rowIndex++;
-            const row = document.createElement('div');
+            var myIdx = rowIndex++;
+            var row = document.createElement('div');
             row.className = 'opt-row' + (_subIdx === myIdx ? ' selected' : '');
             row.style.pointerEvents = 'all';
-            const lbl = document.createElement('span'); lbl.className = 'opt-label'; lbl.textContent = 'Theme Presets';
-            const val = document.createElement('span'); val.className = 'opt-val-wrap'; val.textContent = '▶ APPLY';
+            var lbl = document.createElement('span'); lbl.className = 'opt-label'; lbl.textContent = 'Theme Presets';
+            var val = document.createElement('span'); val.className = 'opt-val-wrap'; val.textContent = '▶ APPLY';
             row.appendChild(lbl); row.appendChild(val);
             row.addEventListener('click', function(){_subIdx=myIdx;_render();});
             list.appendChild(row);
@@ -1489,31 +1668,29 @@ window.GameStartMenu = (function () {
         list.appendChild(makeToggleRow('Autosave',     ['OFF','15s','30s','1m','2m','5m','10m'],savedAutosave, function(v){localStorage.setItem('pokemon_autosave_int',v);}));
         // SAVE row (last)
         (function(){
-            const myIdx = rowIndex++;
-            const row = document.createElement('div');
+            var myIdx = rowIndex++;
+            var row = document.createElement('div');
             row.className = 'opt-row opt-save-row' + (_subIdx === myIdx ? ' selected' : '');
             row.style.pointerEvents = 'all';
-            const lbl = document.createElement('span'); lbl.className = 'opt-label'; lbl.textContent = 'SAVE';
+            var lbl = document.createElement('span'); lbl.className = 'opt-label'; lbl.textContent = 'SAVE';
             row.appendChild(lbl);
             row.addEventListener('click', function(){_subIdx=myIdx;_render();});
             list.appendChild(row);
         })();
 
-        el.appendChild(list);
-
         // ── Extra controls below the 18 EE options (engine-specific) ──
-        const extraSep = document.createElement('div'); extraSep.className = 'sm-sep'; el.appendChild(extraSep);
+        var extraSep = document.createElement('div'); extraSep.className = 'sm-sep'; list.appendChild(extraSep);
 
         // Controls toggle
-        const ctrlRow = makeToggleRow('Controls', ['D-PAD','STICK'],
+        var ctrlRow = makeToggleRow('Controls', ['D-PAD','STICK'],
             savedControls==='dpad'?'D-PAD':'STICK',
             function(v){if(window.GameControls)GameControls.setMode(v==='D-PAD'?'dpad':'joystick');});
         ctrlRow.style.padding = '4px 8px';
-        el.appendChild(ctrlRow);
+        list.appendChild(ctrlRow);
 
         // Button size slider
-        const sizeIdx = rowIndex++;
-        const sizeRow = document.createElement('div');
+        var sizeIdx = rowIndex++;
+        var sizeRow = document.createElement('div');
         sizeRow.className = 'opt-row' + (_subIdx === sizeIdx ? ' selected' : '');
         sizeRow.innerHTML = '<span class="opt-label">Button Size</span>'
             + '<span class="opt-val-wrap" style="pointer-events:all">'
@@ -1521,14 +1698,14 @@ window.GameStartMenu = (function () {
             + '<span id="sm-size-val" style="font-size:12px;color:#7090a8;min-width:26px">'+savedScale.toFixed(1)+'×</span>'
             + '</span>';
         sizeRow.addEventListener('click', function(){_subIdx=sizeIdx;_render();});
-        el.appendChild(sizeRow);
+        list.appendChild(sizeRow);
 
         // Orientation row
-        const orientIdx = rowIndex++;
-        const orientRow = document.createElement('div');
+        var orientIdx = rowIndex++;
+        var orientRow = document.createElement('div');
         orientRow.className = 'opt-row opt-row-col' + (_subIdx === orientIdx ? ' selected' : '');
-        const orientLbl = document.createElement('span'); orientLbl.className = 'opt-label'; orientLbl.textContent = 'Orientation';
-        const orientBtns = document.createElement('span');
+        var orientLbl = document.createElement('span'); orientLbl.className = 'opt-label'; orientLbl.textContent = 'Orientation';
+        var orientBtns = document.createElement('span');
         orientBtns.className = 'sm-opt-btns sm-orient-btns';
         orientBtns.style.pointerEvents = 'all';
         [
@@ -1538,7 +1715,7 @@ window.GameStartMenu = (function () {
             { val:'landscape',         label:'Land.'  },
             { val:'reverse-landscape', label:'↔ Rev.' },
         ].forEach(function(o){
-            const btn = document.createElement('button');
+            var btn = document.createElement('button');
             btn.className = 'sm-opt-btn sm-orient-btn' + (currentOrient===o.val?' active':'');
             btn.textContent = o.label;
             btn.style.pointerEvents = 'all';
@@ -1553,19 +1730,35 @@ window.GameStartMenu = (function () {
         orientRow.appendChild(orientLbl);
         orientRow.appendChild(orientBtns);
         orientRow.addEventListener('click', function(){_subIdx=orientIdx;_render();});
-        el.appendChild(orientRow);
+        list.appendChild(orientRow);
 
         // Wire size slider
         setTimeout(function(){
-            const sl = document.getElementById('sm-size-slider');
-            const sv = document.getElementById('sm-size-val');
+            var sl = document.getElementById('sm-size-slider');
+            var sv = document.getElementById('sm-size-val');
             if(sl) sl.addEventListener('input', function(){
-                const v = sl.value;
+                var v = sl.value;
                 document.documentElement.style.setProperty('--control-scale', v);
                 if(sv) sv.textContent = parseFloat(v).toFixed(1)+'×';
                 localStorage.setItem('pokemon_control_scale', v);
             });
         }, 0);
+    }
+
+    function _drawOptionsCanvasBg(ctx) {
+        ctx.fillStyle = '#060610';
+        ctx.fillRect(0, 0, GBA_W, GBA_H);
+        var S = 2;
+        // Title bar
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(0, 0, GBA_W, 20*S);
+        ctx.fillStyle = '#5aced6';
+        ctx.fillRect(0, 20*S, GBA_W, 2);
+        ctx.textBaseline = 'top';
+        ctx.font = 'bold '+(7*S)+'px monospace';
+        ctx.fillStyle = '#80d0e8';
+        ctx.fillText('OPTIONS', 8*S, 5*S);
+        ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.globalAlpha = 1;
     }
 
     // --- Navigation ---
