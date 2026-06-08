@@ -54,8 +54,22 @@
             width: 100%;
             max-width: 640px;
             flex: 1;
+            display: flex;
+            flex-direction: column;
         }
-        #game { width: 100%; }
+        #game {
+            width: 100%;
+            min-height: 400px;
+            flex: 1;
+        }
+        #status {
+            padding: 8px 12px;
+            font-size: 11px;
+            color: #80d0e8;
+            background: #0a1830;
+            border-top: 1px solid #18b8c8;
+            min-height: 24px;
+        }
     </style>
 </head>
 <body>
@@ -67,10 +81,8 @@
 
     <div id="emu-wrap">
         <div id="game"></div>
+        <div id="status">Loading emulator…</div>
     </div>
-
-    <!-- GitHub token input (hidden, reuses same localStorage key as main game) -->
-    <div id="gist-url-overlay" style="display:none"></div>
 
     <script>
         // EmulatorJS config
@@ -81,6 +93,16 @@
         window.EJS_color = '#18b8c8';
         window.EJS_backgroundColor = '#060610';
         window.EJS_startOnLoaded = true;
+        window.EJS_onGameStart = function() {
+            var s = document.getElementById('status');
+            if (s) s.textContent = 'Running — Emerald Enhanced';
+        };
+        window.EJS_onLoadState = function() {};
+        // Intercept errors
+        window.addEventListener('error', function(e) {
+            var s = document.getElementById('status');
+            if (s) s.textContent = 'Error: ' + e.message + ' (' + (e.filename||'') + ':' + e.lineno + ')';
+        });
         window.EJS_Buttons = {
             playPause: true,
             restart: true,
@@ -99,7 +121,24 @@
             quickLoad: true,
         };
     </script>
-    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+    <script>
+        // Verify ROM is reachable before loading EmulatorJS
+        var statusEl = document.getElementById('status');
+        fetch('pokeemerald_ee_debug.gba', { method: 'HEAD' })
+            .then(function(r) {
+                if (r.ok) {
+                    if (statusEl) statusEl.textContent = 'ROM found (' + (r.headers.get('content-length')||'?') + ' bytes) — loading emulator…';
+                } else {
+                    if (statusEl) statusEl.textContent = 'ERROR: ROM not found at pokeemerald_ee_debug.gba (HTTP ' + r.status + ')';
+                }
+            })
+            .catch(function(e) {
+                if (statusEl) statusEl.textContent = 'ERROR fetching ROM: ' + e.message;
+            });
+    </script>
+    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"
+            onerror="document.getElementById('status').textContent='ERROR: Failed to load EmulatorJS CDN — check internet connection.'">
+    </script>
 
     <script>
         // Screenshot → Gist (same logic as main game)
