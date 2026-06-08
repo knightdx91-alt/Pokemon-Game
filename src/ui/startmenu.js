@@ -1017,39 +1017,55 @@ window.GameStartMenu = (function () {
         return party;
     }
 
+    var PARTY_W = 480, PARTY_H = 320, PARTY_S = 2;
+
     function _buildParty(el) {
         _partyActionOpen = false;
-        _makeCanvasShell(el, function(ctx, canvas) {
-            var _iconImgs = []; // parallel to filled[], Image|null per slot
+        el.style.cssText = 'padding:0;overflow:hidden;background:none;position:absolute;inset:0;';
 
-            function redraw() {
-                _loadPartyBg(function(bg) {
-                    _drawPartyCanvas(ctx, bg, _iconImgs);
+        var backBtn = document.createElement('button');
+        backBtn.textContent = 'B BACK'; backBtn.className = 'sm-back-btn';
+        backBtn.style.cssText = 'position:absolute;bottom:4px;right:4px;z-index:10;pointer-events:all;';
+        backBtn.addEventListener('click', _goBack);
+        el.appendChild(backBtn);
+
+        var canvas = document.createElement('canvas');
+        canvas.width  = PARTY_W; canvas.height = PARTY_H;
+        canvas.style.cssText = 'width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges;';
+        canvas.style.pointerEvents = 'all';
+        el.appendChild(canvas);
+        var ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+
+        var _iconImgs = [];
+
+        function redraw() {
+            _loadPartyBg(function(bg) {
+                _drawPartyCanvas(ctx, bg, _iconImgs);
+            });
+        }
+
+        function loadIconsAndDraw() {
+            var filled = _getParty().filter(Boolean);
+            _iconImgs = new Array(filled.length).fill(null);
+            if (!filled.length) { redraw(); return; }
+            var pending = filled.length;
+            filled.forEach(function(mon, i) {
+                _loadMonIcon(mon.speciesId, function(img) {
+                    _iconImgs[i] = img;
+                    if (--pending === 0) redraw();
                 });
-            }
+            });
+        }
 
-            function loadIconsAndDraw() {
-                var filled = _getParty().filter(Boolean);
-                _iconImgs = new Array(filled.length).fill(null);
-                if (!filled.length) { redraw(); return; }
-                var pending = filled.length;
-                filled.forEach(function(mon, i) {
-                    _loadMonIcon(mon.speciesId, function(img) {
-                        _iconImgs[i] = img;
-                        if (--pending === 0) redraw();
-                    });
-                });
-            }
+        el._redraw = loadIconsAndDraw;
+        loadIconsAndDraw();
 
-            el._redraw = loadIconsAndDraw;
-            loadIconsAndDraw();
-
-            canvas.addEventListener('click', function(e) {
-                var rect = canvas.getBoundingClientRect();
-                // Map click to GBA coordinates (canvas is drawn at S=2 on 240×160 canvas)
-                var S = 2;
-                var gx = (e.clientX - rect.left) * (240 / rect.width) / S;
-                var gy = (e.clientY - rect.top)  * (160 / rect.height) / S;
+        canvas.addEventListener('click', function(e) {
+            var rect = canvas.getBoundingClientRect();
+            // Map to GBA coords: canvas is 480×320, drawn at S=2 → divide by S
+            var gx = (e.clientX - rect.left) * (PARTY_W / rect.width)  / PARTY_S;
+            var gy = (e.clientY - rect.top)  * (PARTY_H / rect.height) / PARTY_S;
                 var filled = _getParty().filter(Boolean);
 
                 // If action menu is open, handle its clicks
@@ -2032,12 +2048,22 @@ window.GameStartMenu = (function () {
                 _dexEntry = _dexList[_subIdx];
                 page = 'pokedex_entry'; _subIdx = 0; _render();
             } else if (page==='pokemon') {
-                // Open summary screen for selected party member
-                const party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
-                const filled = party.filter(Boolean);
-                if (filled[_subIdx] && window.GameSummary) {
-                    close();
-                    GameSummary.show(_subIdx);
+                var _pFilled = _getParty().filter(Boolean);
+                if (_partyActionOpen) {
+                    var _pOpts = ['SUMMARY', 'SWITCH', 'CANCEL'];
+                    var _pOpt  = _pOpts[_partyActionSel] || 'CANCEL';
+                    if (_pOpt === 'CANCEL') {
+                        _partyActionOpen = false; _render();
+                    } else if (_pOpt === 'SUMMARY') {
+                        _partyActionOpen = false;
+                        _openPartySummary(_partyActionMon, _partyActionIdx, _pFilled, function(){ _render(); });
+                    }
+                } else if (_pFilled[_subIdx]) {
+                    _partyActionMon  = _pFilled[_subIdx];
+                    _partyActionIdx  = _subIdx;
+                    _partyActionSel  = 0;
+                    _partyActionOpen = true;
+                    _render();
                 }
             }
             return;
@@ -2084,10 +2110,16 @@ window.GameStartMenu = (function () {
     }
     function moveUp() {
         if (!isOpen||page==='main') return;
+        if (page==='pokemon' && _partyActionOpen) {
+            _partyActionSel = (_partyActionSel - 1 + 3) % 3; _render(); return;
+        }
         const c=_subCount(); if(c>0){_subIdx=(_subIdx-1+c)%c;_render();}
     }
     function moveDown() {
         if (!isOpen||page==='main') return;
+        if (page==='pokemon' && _partyActionOpen) {
+            _partyActionSel = (_partyActionSel + 1) % 3; _render(); return;
+        }
         const c=_subCount(); if(c>0){_subIdx=(_subIdx+1)%c;_render();}
     }
     function _subCount() {
@@ -2110,7 +2142,11 @@ window.GameStartMenu = (function () {
         return 0;
     }
     function confirm() { if(isOpen) _confirmSelected(); }
-    function back()    { if(isOpen) { if(page==='main') close(); else _goBack(); } }
+    function back()    {
+        if (!isOpen) return;
+        if (page==='pokemon' && _partyActionOpen) { _partyActionOpen=false; _render(); return; }
+        if (page==='main') close(); else _goBack();
+    }
 
     function _onKey(e) {
         if (!isOpen) return;
