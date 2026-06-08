@@ -59,10 +59,14 @@
 
             if (returnWarp) {
                 const rx = returnWarp.x, ry = returnWarp.y;
-                // Search in expanding rings for a walkable non-warp tile.
-                // Search north first (step inside a building away from the door),
-                // then south (step outside), then the warp tile itself as fallback.
-                const candidates = [];
+                // Spawn in the direction the player was already travelling so they
+                // step cleanly away from the warp tile in the same direction.
+                const dir = player.direction;
+                const primary = dir === 'up'    ? [rx, ry - 1] :
+                                dir === 'down'  ? [rx, ry + 1] :
+                                dir === 'left'  ? [rx - 1, ry] :
+                                                  [rx + 1, ry];
+                const candidates = [primary];
                 for (let dist = 1; dist <= 4; dist++) {
                     candidates.push([rx, ry - dist]);
                     candidates.push([rx, ry + dist]);
@@ -83,7 +87,7 @@
                     player.x = rx;
                     player.y = ry;
                 }
-                player.direction = 'down';
+                // Keep the direction the player was facing — don't snap to 'down'
                 player.walkFrame = 0;
             } else {
                 // Centre of map
