@@ -656,6 +656,11 @@ body.reverse-landscape #game-wrapper {
 }
 #start-menu.open {
     display: flex;
+    pointer-events: none; /* don't block D-pad/buttons underneath */
+}
+/* Only the visible strips need to intercept taps */
+#start-menu.open .sm-top-strip,
+#start-menu.open .sm-info-box {
     pointer-events: all;
 }
 
@@ -766,6 +771,11 @@ body.reverse-landscape #game-wrapper {
     flex-direction: column;
     font-family: "Courier New", Courier, monospace;
     color: #e0e0e8;
+    pointer-events: none; /* let D-pad touches pass through */
+}
+.sm-sub-overlay .sm-sub-back-bar,
+.sm-sub-overlay .sm-sub-content {
+    pointer-events: all;
 }
 
 .sm-sub-back-bar {
