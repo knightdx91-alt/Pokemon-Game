@@ -663,7 +663,7 @@ body.reverse-landscape #game-wrapper {
 
 /* Overlay container — covers full screen but only top/bottom are opaque */
 #start-menu {
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: 400;
     display: none;
@@ -799,7 +799,7 @@ body.reverse-landscape #game-wrapper {
 /* ---- SUB-PAGES (Journal, Trainer Card, etc.) ---- */
 /* Sub-pages take over the full overlay with a semi-transparent bg */
 .sm-sub-overlay {
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: 401;
     background: rgba(0,0,0,0.82);

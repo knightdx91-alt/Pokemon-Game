@@ -425,21 +425,22 @@ window.GameStartMenu = (function () {
     }
 
     function init() {
-        const overlay=document.getElementById('ui-overlay');
-        if (!overlay){console.warn('[StartMenu] #ui-overlay not found');return;}
+        // Attach inside #screen-primary so the menu is clipped to the game
+        // screen and never covers the control buttons below it.
+        const screen = document.getElementById('screen-primary');
+        if (!screen) { console.warn('[StartMenu] #screen-primary not found'); return; }
 
-        menuEl=document.createElement('div');
-        menuEl.id='start-menu';
-        overlay.appendChild(menuEl);
+        menuEl = document.createElement('div');
+        menuEl.id = 'start-menu';
+        screen.appendChild(menuEl);
 
-        // Sub-page overlay (sits on top, separate element so it can cover full screen)
-        subEl=document.createElement('div');
-        subEl.id='start-menu-sub';
-        subEl.className='sm-sub-overlay';
-        subEl.style.display='none';
-        overlay.appendChild(subEl);
+        subEl = document.createElement('div');
+        subEl.id = 'start-menu-sub';
+        subEl.className = 'sm-sub-overlay';
+        subEl.style.display = 'none';
+        screen.appendChild(subEl);
 
-        window.addEventListener('keydown',_onKey);
+        window.addEventListener('keydown', _onKey);
     }
 
     document.addEventListener('DOMContentLoaded',init);
