@@ -168,7 +168,7 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
-    const GAME_VERSION = 'v0.3.12';
+    const GAME_VERSION = 'v0.3.13';
 
     // --- Update display ---
     function update() {
@@ -284,37 +284,64 @@ window.GameHUD = (function () {
             return;
         }
 
-        // Use timestamped filename — always a new file, no SHA pre-fetch needed
+        var OWNER = 'knightdx91-alt';
+        var REPO  = 'pokemon-game';
+        var BRANCH = 'screenshots';
         var ts = new Date().toISOString().replace(/[:.]/g, '-');
-        var path = 'screenshots/shot-' + ts + '.jpg';
-        var apiUrl = 'https://api.github.com/repos/knightdx91-alt/pokemon-game/contents/' + path;
+        var filePath = 'screenshots/shot-' + ts + '.jpg';
+        var commitMsg = 'debug: screenshot ' + new Date().toISOString();
+        var base = 'https://api.github.com/repos/' + OWNER + '/' + REPO;
+        var hdrs = { Authorization: 'token ' + token, 'Content-Type': 'application/json' };
 
-        var body = {
-            message: 'debug: screenshot ' + new Date().toISOString(),
-            content: base64,
-            branch: 'screenshots'
-        };
+        function apiErr(label, r) {
+            return r.text().then(function(t){
+                var msg = t; try { msg = JSON.parse(t).message || t; } catch(e){}
+                throw new Error(label + ' ' + r.status + ': ' + msg);
+            });
+        }
 
-        fetch(apiUrl, {
-                method: 'PUT',
-                headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            })
-            .then(function(r) {
-                if (r.ok) {
-                    console.log('[Screenshot] Committed to repo: ' + path);
-                    // Flash button green
-                    var btn = document.getElementById('screenshot-btn');
-                    if (btn) { btn.style.color = '#20d840'; setTimeout(function(){ btn.style.color = '#18b8c8'; }, 1500); }
-                } else {
-                    return r.text().then(function(t){
-                        var msg = t;
-                        try { msg = JSON.parse(t).message || t; } catch(e){}
-                        alert('Screenshot failed (' + r.status + '):\n' + msg);
+        // Git Data API: blob → tree → commit → ref update
+        // Step 1: create blob
+        fetch(base + '/git/blobs', { method:'POST', headers:hdrs,
+                body: JSON.stringify({ content: base64, encoding: 'base64' }) })
+            .then(function(r){ return r.ok ? r.json() : apiErr('blob',r); })
+            .then(function(blob) {
+                // Step 2: get current HEAD
+                return fetch(base + '/git/refs/heads/' + BRANCH, { headers:hdrs })
+                    .then(function(r){ return r.ok ? r.json() : apiErr('ref',r); })
+                    .then(function(ref) {
+                        var headSha = ref.object.sha;
+                        // Step 3: get base tree SHA from HEAD commit
+                        return fetch(base + '/git/commits/' + headSha, { headers:hdrs })
+                            .then(function(r){ return r.ok ? r.json() : apiErr('commit',r); })
+                            .then(function(commit) {
+                                // Step 4: create new tree
+                                return fetch(base + '/git/trees', { method:'POST', headers:hdrs,
+                                        body: JSON.stringify({
+                                            base_tree: commit.tree.sha,
+                                            tree: [{ path: filePath, mode:'100644', type:'blob', sha: blob.sha }]
+                                        }) })
+                                    .then(function(r){ return r.ok ? r.json() : apiErr('tree',r); })
+                                    .then(function(tree) {
+                                        // Step 5: create commit
+                                        return fetch(base + '/git/commits', { method:'POST', headers:hdrs,
+                                                body: JSON.stringify({ message: commitMsg, tree: tree.sha, parents: [headSha] }) })
+                                            .then(function(r){ return r.ok ? r.json() : apiErr('newcommit',r); })
+                                            .then(function(newCommit) {
+                                                // Step 6: update ref
+                                                return fetch(base + '/git/refs/heads/' + BRANCH, { method:'PATCH', headers:hdrs,
+                                                        body: JSON.stringify({ sha: newCommit.sha }) })
+                                                    .then(function(r){ return r.ok ? r.json() : apiErr('updateref',r); });
+                                            });
+                                    });
+                            });
                     });
-                }
             })
-            .catch(function(e) { console.error('[Screenshot]', e); alert('Screenshot error: ' + e.message); });
+            .then(function() {
+                var btn = document.getElementById('screenshot-btn');
+                if (btn) { btn.style.color = '#20d840'; setTimeout(function(){ btn.style.color = '#18b8c8'; }, 1500); }
+            })
+            .catch(function(e) { console.error('[Screenshot]', e); alert('Screenshot error:\n' + e.message); });
     }
 
     return { init, update, showAchievementToast };
