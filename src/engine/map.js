@@ -6,13 +6,30 @@ window.GameMap = (function () {
 
     const REGIONS = { kanto: 'kanto', johto: 'johto', hoenn: 'hoenn', sinnoh: 'sinnoh' };
 
+    // Behavior bytes that require Surf — player cannot walk on these on foot.
+    // Values are consistent across FireRed, Emerald, HeartGold, and Platinum.
+    const WATER_BEHAVIORS = new Set([
+        0x10, // MB_POND_WATER
+        0x11, // MB_FAST_WATER / MB_INTERIOR_DEEP_WATER
+        0x12, // MB_DEEP_WATER
+        0x13, // MB_WATERFALL
+        0x14, // MB_SOOTOPOLIS_DEEP_WATER (Emerald)
+        0x15, // MB_OCEAN_WATER
+        0x16, // MB_PUDDLE (Emerald)
+        0x17, // MB_SHALLOW_WATER
+        0x19, // MB_NO_SURFACING / MB_UNDERWATER_BLOCKED_ABOVE
+        0x1A, // MB_UNUSED_WATER
+        0x1B, // MB_CYCLING_ROAD_WATER / MB_SEAWEED_NO_SURFACING
+    ]);
+
     // Module state
-    let current    = null;   // raw map JSON
-    let layoutData = null;   // layout JSON (width, height, metatiles, collision, tileset)
-    let mapWidth   = DEFAULT_SIZE;
-    let mapHeight  = DEFAULT_SIZE;
-    let _nameIndex = null;   // MAP_CONST -> filename, loaded from kanto_index.json
-    let _region    = 'kanto';
+    let current          = null;   // raw map JSON
+    let layoutData       = null;   // layout JSON (width, height, metatiles, collision, tileset)
+    let tilesetBehaviors = null;   // behavior byte per metatile index from tileset JSON
+    let mapWidth         = DEFAULT_SIZE;
+    let mapHeight        = DEFAULT_SIZE;
+    let _nameIndex       = null;   // MAP_CONST -> filename, loaded from kanto_index.json
+    let _region          = 'kanto';
 
     // ---------------------------------------------------------------
     // Index loading
@@ -44,6 +61,7 @@ window.GameMap = (function () {
 
     async function _loadLayout(data) {
         const layoutId = data.layout;
+        tilesetBehaviors = null;
         if (!layoutId) {
             layoutData = null;
             _fallbackSize(data);
@@ -55,6 +73,18 @@ window.GameMap = (function () {
             layoutData = await lresp.json();
             mapWidth   = layoutData.width;
             mapHeight  = layoutData.height;
+
+            // Load tileset behavior data so isWalkable can block water tiles
+            const tilesetName = layoutData.tileset;
+            if (tilesetName) {
+                try {
+                    const tresp = await fetch(`data/tilesets/${tilesetName}.json`);
+                    if (tresp.ok) {
+                        const tj = await tresp.json();
+                        tilesetBehaviors = tj.behaviors || null;
+                    }
+                } catch (_) { /* behaviors unavailable — fall back to collision-only */ }
+            }
         } catch (e) {
             console.warn(`[Map] Layout not found: ${layoutId}`, e);
             layoutData = null;
@@ -177,10 +207,17 @@ window.GameMap = (function () {
                 if (npc.x === x && npc.y === y) return false;
             }
         }
-        // Warp tiles are always walkable
+        // Warp tiles are always walkable (door/stairs)
         if (getWarp(x, y)) return true;
         if (layoutData && layoutData.collision) {
-            return layoutData.collision[y * mapWidth + x] === 0;
+            if (layoutData.collision[y * mapWidth + x] !== 0) return false;
+        }
+        // Block water tiles — require Surf which isn't implemented yet
+        if (tilesetBehaviors && layoutData && layoutData.metatiles) {
+            const metatileIdx = layoutData.metatiles[y * mapWidth + x];
+            if (metatileIdx !== undefined && WATER_BEHAVIORS.has(tilesetBehaviors[metatileIdx])) {
+                return false;
+            }
         }
         return true;
     }
