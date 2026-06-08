@@ -837,11 +837,11 @@ window.GameStartMenu = (function () {
         ctx.textBaseline = 'alphabetic';
         ctx.fillText(pocket.label, 26*S, 11*S);
 
-        // ── Selected item icon — left panel centre ~(56,60) GBA px
+        // ── Selected item icon — centred inside icon box at x=0..31, y=83..110 GBA px
         if (itemIcon) {
             ctx.imageSmoothingEnabled = false;
             var icSize = 24 * S;
-            ctx.drawImage(itemIcon, 44*S, 48*S, icSize, icSize);
+            ctx.drawImage(itemIcon, 4*S, 86*S, icSize, icSize);
         }
 
         // ── Item list — EE WIN[0]: x=112, y=8, w=120, h=144
