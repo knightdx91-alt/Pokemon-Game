@@ -39,24 +39,24 @@ def tileset_name_to_path(tileset_name: str, kind: str) -> Path:
     """
     # Strip "gTileset_" prefix
     raw = tileset_name.replace("gTileset_", "")
-    # CamelCase → snake_case
+    snake = _camel_to_snake(raw)
+    return SOURCE_ROOT / "data" / "tilesets" / kind / snake
+
+
+def _camel_to_snake(raw: str) -> str:
+    """CamelCase123 → camel_case_123  (inserts _ before uppercase and before digit-runs)"""
     snake = ""
     for i, ch in enumerate(raw):
-        if ch.isupper() and i > 0:
+        if i > 0 and (ch.isupper() or (ch.isdigit() and not raw[i-1].isdigit())):
             snake += "_"
         snake += ch.lower()
-    return SOURCE_ROOT / "data" / "tilesets" / kind / snake
+    return snake
 
 
 def tileset_output_name(secondary_tileset: str) -> str:
     """gTileset_PalletTown → pallet_town"""
     raw = secondary_tileset.replace("gTileset_", "")
-    snake = ""
-    for i, ch in enumerate(raw):
-        if ch.isupper() and i > 0:
-            snake += "_"
-        snake += ch.lower()
-    return snake
+    return _camel_to_snake(raw)
 
 
 # ---------------------------------------------------------------------------
