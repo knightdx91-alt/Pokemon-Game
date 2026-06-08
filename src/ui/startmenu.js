@@ -158,18 +158,23 @@ window.GameStartMenu = (function () {
                          achievements:'Achievement Atlas', pokenav:'Pokénav',
                          save:'Save', options:'Options' };
 
-        const backBar = document.createElement('div');
-        backBar.className = 'sm-sub-back-bar';
+        // GBA-style dialog window — positioned over the map, not full-screen
+        const win = document.createElement('div');
+        win.className = 'sm-win';
+        win.dataset.page = page;
+
+        // Title bar with B/Back button on the right
+        const titleBar = document.createElement('div');
+        titleBar.className = 'sm-win-title';
+        const titleEl = document.createElement('span');
+        titleEl.textContent = titles[page] || page;
         const backBtn = document.createElement('button');
         backBtn.className = 'sm-back-btn';
-        backBtn.textContent = '◀ BACK';
+        backBtn.textContent = 'B BACK';
         backBtn.addEventListener('click', _goBack);
-        const titleEl = document.createElement('span');
-        titleEl.className = 'sm-sub-title';
-        titleEl.textContent = titles[page] || page;
-        backBar.appendChild(backBtn);
-        backBar.appendChild(titleEl);
-        subEl.appendChild(backBar);
+        titleBar.appendChild(titleEl);
+        titleBar.appendChild(backBtn);
+        win.appendChild(titleBar);
 
         const content = document.createElement('div');
         content.className = 'sm-sub-content';
@@ -181,12 +186,13 @@ window.GameStartMenu = (function () {
         else if (page === 'save')          _buildSave(content);
         else if (page === 'options')       _buildOptions(content);
 
-        subEl.appendChild(content);
+        win.appendChild(content);
+        subEl.appendChild(win);
 
-        subEl.style.display = 'flex';
+        subEl.style.display = 'block';
 
         setTimeout(function () {
-            const sel = content.querySelector('.sm-row.selected');
+            const sel = content.querySelector('.sm-row.selected, .sm-ach-row.selected');
             if (sel) sel.scrollIntoView({ block: 'nearest' });
         }, 0);
     }
