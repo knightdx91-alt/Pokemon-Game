@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Emerald Enhanced — GBA</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #000;
+            color: #c8d8e8;
+            font-family: "Courier New", Courier, monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        #top-bar {
+            width: 100%;
+            background: #0a1830;
+            border-bottom: 1px solid #18b8c8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 10px;
+            gap: 8px;
+        }
+        #top-bar a {
+            color: #18b8c8;
+            text-decoration: none;
+            font-size: 12px;
+            border: 1px solid #18b8c8;
+            border-radius: 3px;
+            padding: 4px 8px;
+            touch-action: manipulation;
+        }
+        #top-bar span {
+            font-size: 12px;
+            color: #80d0e8;
+        }
+        #screenshot-btn-emu {
+            background: #0a1830;
+            color: #18b8c8;
+            border: 1px solid #18b8c8;
+            border-radius: 3px;
+            padding: 4px 8px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: "Courier New", Courier, monospace;
+            touch-action: manipulation;
+        }
+        #emu-wrap {
+            width: 100%;
+            max-width: 640px;
+            flex: 1;
+        }
+        #game { width: 100%; }
+    </style>
+</head>
+<body>
+    <div id="top-bar">
+        <a href="index.html">&#8592; Menu</a>
+        <span>Emerald Enhanced</span>
+        <button id="screenshot-btn-emu">&#128247; Screenshot</button>
+    </div>
+
+    <div id="emu-wrap">
+        <div id="game"></div>
+    </div>
+
+    <!-- GitHub token input (hidden, reuses same localStorage key as main game) -->
+    <div id="gist-url-overlay" style="display:none"></div>
+
+    <script>
+        // EmulatorJS config
+        window.EJS_player = '#game';
+        window.EJS_core = 'gba';
+        window.EJS_gameUrl = 'pokeemerald_ee_debug.gba';
+        window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+        window.EJS_color = '#18b8c8';
+        window.EJS_backgroundColor = '#060610';
+        window.EJS_startOnLoaded = true;
+        window.EJS_Buttons = {
+            playPause: true,
+            restart: true,
+            mute: true,
+            settings: true,
+            fullscreen: true,
+            saveState: true,
+            loadState: true,
+            screenRecord: false,
+            gamepad: true,
+            cheat: false,
+            volume: true,
+            saveSavFiles: true,
+            loadSavFiles: true,
+            quickSave: true,
+            quickLoad: true,
+        };
+    </script>
+    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+
+    <script>
+        // Screenshot → Gist (same logic as main game)
+        function _showGistUrl(url) {
+            var existing = document.getElementById('gist-url-overlay');
+            if (existing) existing.remove();
+
+            var ov = document.createElement('div');
+            ov.id = 'gist-url-overlay';
+            ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;';
+
+            var box = document.createElement('div');
+            box.style.cssText = 'background:#0a1830;border:2px solid #18b8c8;border-radius:6px;padding:16px;width:88vw;max-width:360px;font-family:monospace;color:#c8d8e8;';
+
+            var title = document.createElement('div');
+            title.textContent = 'Screenshot saved!';
+            title.style.cssText = 'font-size:14px;font-weight:bold;color:#80d0e8;margin-bottom:10px;';
+
+            var inp = document.createElement('input');
+            inp.type = 'text';
+            inp.value = url;
+            inp.readOnly = true;
+            inp.style.cssText = 'width:100%;box-sizing:border-box;background:#060610;color:#c8d8e8;border:1px solid #18b8c8;border-radius:3px;padding:6px;font-size:11px;margin-bottom:10px;';
+
+            var copyBtn = document.createElement('button');
+            copyBtn.textContent = 'Copy Link';
+            copyBtn.style.cssText = 'background:#0a1830;color:#18b8c8;border:1px solid #18b8c8;border-radius:3px;padding:6px 14px;font-size:13px;cursor:pointer;margin-right:8px;';
+            copyBtn.addEventListener('click', function() {
+                inp.select();
+                try {
+                    navigator.clipboard.writeText(url).then(function() {
+                        copyBtn.textContent = '✓ Copied!';
+                    }).catch(function() {
+                        document.execCommand('copy');
+                        copyBtn.textContent = '✓ Copied!';
+                    });
+                } catch(e) {
+                    document.execCommand('copy');
+                    copyBtn.textContent = '✓ Copied!';
+                }
+                setTimeout(function(){ copyBtn.textContent = 'Copy Link'; }, 2000);
+            });
+
+            var closeBtn = document.createElement('button');
+            closeBtn.textContent = 'Close';
+            closeBtn.style.cssText = 'background:#0a1830;color:#c8d8e8;border:1px solid #446;border-radius:3px;padding:6px 14px;font-size:13px;cursor:pointer;';
+            closeBtn.addEventListener('click', function(){ ov.remove(); });
+
+            box.appendChild(title);
+            box.appendChild(inp);
+            box.appendChild(copyBtn);
+            box.appendChild(closeBtn);
+            ov.appendChild(box);
+            document.body.appendChild(ov);
+            setTimeout(function(){ inp.select(); }, 100);
+        }
+
+        document.getElementById('screenshot-btn-emu').addEventListener('click', function() {
+            var canvas = document.querySelector('#game canvas');
+            if (!canvas) { alert('Emulator not loaded yet.'); return; }
+
+            var token = localStorage.getItem('gh_debug_token');
+            if (!token) {
+                token = prompt('Enter your GitHub token (classic, gist scope):');
+                if (!token) return;
+                localStorage.setItem('gh_debug_token', token);
+            }
+
+            var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+            var ext = dataUrl.startsWith('data:image/png') ? 'png' : 'jpg';
+            var base64 = dataUrl.replace(/^data:image\/(jpeg|png);base64,/, '');
+            var ts = new Date().toISOString().replace(/[:.]/g, '-');
+            var fname = 'ee-shot-' + ts + '.' + ext;
+
+            fetch('https://api.github.com/gists', {
+                method: 'POST',
+                headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    description: 'EE screenshot ' + new Date().toISOString(),
+                    public: false,
+                    files: {
+                        'view.html': { content: '<!DOCTYPE html><html><body style="margin:0;background:#000"><img src="data:image/' + ext + ';base64,' + base64 + '" style="max-width:100%;image-rendering:pixelated"></body></html>' },
+                        [fname]: { content: base64 }
+                    }
+                })
+            })
+            .then(function(r) {
+                if (!r.ok) return r.text().then(function(t){ throw new Error(r.status + ': ' + t); });
+                return r.json();
+            })
+            .then(function(gist) { _showGistUrl(gist.html_url); })
+            .catch(function(e) { alert('Screenshot error:\n' + e.message); });
+        });
+    </script>
+</body>
+</html>
