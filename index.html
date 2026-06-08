@@ -76,6 +76,16 @@
     </style>
 </head>
 <body>
+<script>
+    // Unregister any old broken service workers, then register the current one
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(regs) {
+            regs.forEach(function(reg) { reg.unregister(); });
+        }).then(function() {
+            navigator.serviceWorker.register('sw.js');
+        });
+    }
+</script>
     <h1>&#9679; POKÉMON — KANTO &#9679;</h1>
     <p class="subtitle">Choose a game to launch</p>
     <div class="btn-row">
