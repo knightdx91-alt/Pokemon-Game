@@ -165,9 +165,19 @@ window.GameStartMenu = (function () {
     function _renderSub() {
         subEl.innerHTML = '';
 
+        // Canvas-based full-screen pages bypass the sm-win wrapper entirely
+        if (page === 'bag') {
+            var bagEl = document.createElement('div');
+            bagEl.style.cssText = 'position:absolute;inset:0;pointer-events:all;';
+            _buildBag(bagEl);
+            subEl.appendChild(bagEl);
+            subEl.style.display = 'block';
+            return;
+        }
+
         const titles = { journal:'Journal', trainer_card:'Trainer Card',
                          achievements:'Achievement Atlas', pokenav:'Pokénav',
-                         save:'Save', options:'Options', bag:'Pack', pokemon:'Pokémon',
+                         save:'Save', options:'Options', pokemon:'Pokémon',
                          pokedex:'Pokédex', pokedex_entry:'Pokédex' };
 
         // GBA-style dialog window — positioned over the map, not full-screen
@@ -197,7 +207,6 @@ window.GameStartMenu = (function () {
         else if (page === 'pokenav')       _buildPokenav(content);
         else if (page === 'save')          _buildSave(content);
         else if (page === 'options')       _buildOptions(content);
-        else if (page === 'bag')           _buildBag(content);
         else if (page === 'pokemon')       _buildParty(content);
         else if (page === 'pokedex')       _buildPokedex(content);
         else if (page === 'pokedex_entry') _buildPokedexEntry(content);
@@ -692,6 +701,14 @@ window.GameStartMenu = (function () {
 
     function _buildBag(el) {
         el.style.cssText = 'padding:0;overflow:hidden;background:none;position:absolute;inset:0;';
+
+        // B/back button overlaid at bottom-right of canvas
+        var backBtn = document.createElement('button');
+        backBtn.textContent = 'B BACK';
+        backBtn.className = 'sm-back-btn';
+        backBtn.style.cssText = 'position:absolute;bottom:4px;right:4px;z-index:10;pointer-events:all;';
+        backBtn.addEventListener('click', _goBack);
+        el.appendChild(backBtn);
 
         var canvas = document.createElement('canvas');
         canvas.width  = 240;
