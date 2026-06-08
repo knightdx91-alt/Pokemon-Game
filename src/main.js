@@ -14,6 +14,7 @@
 
     // --- Transition guard ---
     let _transitioning = false;
+    let _warpCooldownUntil = 0;  // timestamp after which warps can fire again
 
     // --- Autosave interval (15 s) ---
     setInterval(function () {
@@ -70,6 +71,8 @@
 
             GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
             if (window.GameSave) GameSave.markDirty();
+            // Block warp re-triggering for 600ms so player doesn't immediately warp back out
+            _warpCooldownUntil = performance.now() + 600;
         } finally {
             _transitioning = false;
         }
@@ -120,6 +123,7 @@
 
             GameCamera.update(player.x, player.y, destW, destH);
             if (window.GameSave) GameSave.markDirty();
+            _warpCooldownUntil = performance.now() + 600;
         } finally {
             _transitioning = false;
         }
@@ -159,9 +163,9 @@
                         player.y = ny;
                         if (window.GameSave) GameSave.markDirty();
 
-                        // Check for warp at new position
+                        // Check for warp at new position (skip if in cooldown after a recent transition)
                         const warp = GameMap.getWarp(nx, ny);
-                        if (warp) {
+                        if (warp && performance.now() >= _warpCooldownUntil) {
                             transitionToWarp(warp);
                         }
                     }
