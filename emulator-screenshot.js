@@ -1,4 +1,18 @@
 // Emulator screenshot — saves to a persistent gist (no SHA conflicts)
+function _ssToast(msg) {
+    var t = document.getElementById('ss-toast');
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'ss-toast';
+        t.style.cssText = 'position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:#0a1830;color:#20d840;border:1px solid #20d840;border-radius:4px;padding:8px 18px;font-family:monospace;font-size:13px;z-index:9999;pointer-events:none;transition:opacity 0.4s;';
+        document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.opacity = '1';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function() { t.style.opacity = '0'; }, 2000);
+}
+
 (function() {
     var btn = document.getElementById('screenshot-btn-emu');
     if (!btn || btn.dataset.ssInit) return;
@@ -65,6 +79,7 @@
             localStorage.setItem('gh_screenshot_gist', gist.id);
             newBtn.style.color = '#20d840';
             setTimeout(function() { newBtn.style.color = '#18b8c8'; }, 2000);
+            _ssToast('Screenshot saved!');
         })
         .catch(function(e) { alert('Screenshot error:\n' + e.message); });
     });
