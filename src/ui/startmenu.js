@@ -238,48 +238,311 @@ window.GameStartMenu = (function () {
         });
     }
 
+    // Journal page index (L/R to flip pages, like EE)
+    var _journalPage = 0;
+    var _achTier = 0;     // 0=all,1=plat,2=gold,3=silver,4=bronze for filter
+    var _achOffset = 0;   // scroll offset in flat list
+
+    // EE journal.c: 6 stat pages navigated with L/R buttons
+    const JOURNAL_PAGES = [
+        {
+            name: 'General Stats',
+            stats: function() {
+                const st = window.GameSave && GameSave.state;
+                const gs = st && st.gameStats || {};
+                const dex = st && st.pokedex || {};
+                const ach = st && st.achievements || {};
+                return [
+                    ['Prestige Level',     st && st.meta && st.meta.ngPlusCount || 0],
+                    ['Achievements',       (ach.unlocked || []).length],
+                    ['Dex Seen',           (dex.seen || []).length],
+                    ['Dex Caught',         (dex.caught || []).length],
+                    ['Legendaries Caught', gs.legendariesCaught || 0],
+                    ['Steps Taken',        gs.steps || 0],
+                    ['Healed Party',       gs.healed || 0],
+                ];
+            }
+        },
+        {
+            name: 'Life Skills',
+            stats: function() {
+                const ls = _lifeSkills();
+                return [
+                    ['Botany Lv',    ls.botany || 0],
+                    ['Botany EXP',   ls.botanyExp || 0],
+                    ['Mining Lv',    ls.mining || 0],
+                    ['Mining EXP',   ls.miningExp || 0],
+                    ['Alchemy Lv',   ls.alchemy || 0],
+                    ['Alchemy EXP',  ls.alchemyExp || 0],
+                    ['Harvest Lv',   ls.harvest || 0],
+                ];
+            }
+        },
+        {
+            name: 'Battle Stats',
+            stats: function() {
+                const gs = (window.GameSave && GameSave.state && GameSave.state.gameStats) || {};
+                return [
+                    ['Total Battles',    gs.totalBattles || 0],
+                    ['Battles Won',      gs.battlesWon || 0],
+                    ['Battles Lost',     gs.battlesLost || 0],
+                    ['Total Captures',   gs.captures || 0],
+                    ['Knockouts',        gs.knockouts || 0],
+                    ['Gym Leaders Fought', gs.gymLeadersFought || 0],
+                    ['Title Defense Wins', gs.titleDefenseWins || 0],
+                ];
+            }
+        },
+        {
+            name: 'Training Stats',
+            stats: function() {
+                const gs = (window.GameSave && GameSave.state && GameSave.state.gameStats) || {};
+                return [
+                    ['EXP Earned',       gs.expEarned || 0],
+                    ['Pokemon Evolved',  gs.evolved || 0],
+                    ['Eggs Hatched',     gs.eggsHatched || 0],
+                    ['Ribbons Received', gs.ribbons || 0],
+                    ['Contests Entered', gs.contestsEntered || 0],
+                    ['Contests Won',     gs.contestsWon || 0],
+                ];
+            }
+        },
+        {
+            name: 'Financial Stats',
+            stats: function() {
+                const st = window.GameSave && GameSave.state;
+                const gs = st && st.gameStats || {};
+                return [
+                    ['Money',            '₽' + (_money()).toLocaleString()],
+                    ['Bank Balance',     '₽' + (gs.bankBalance || 0).toLocaleString()],
+                    ['Net Worth',        '₽' + (gs.netWorth || 0).toLocaleString()],
+                    ['Properties Owned', gs.propertiesOwned || 0],
+                    ['Days Interest',    gs.daysInterest || 0],
+                ];
+            }
+        },
+        {
+            name: 'Social Stats',
+            stats: function() {
+                const gs = (window.GameSave && GameSave.state && GameSave.state.gameStats) || {};
+                return [
+                    ['Pokeblocks Made',  gs.pokeblocksM || 0],
+                    ['Pokeblocks Used',  gs.pokeblocksU || 0],
+                    ['NPCs Talked To',   gs.npcsTalked || 0],
+                    ['Signs Read',       gs.signsRead || 0],
+                ];
+            }
+        },
+    ];
+
     function _buildJournal(el) {
-        [
-            { id:'achievements', label:'🏆  Achievement Atlas' },
-            { id:'factions',     label:'🏴  Factions'          },
-            { id:'skills',       label:'⚗   Life Skills'        },
-            { id:'stats',        label:'📊  Stats'              },
-        ].forEach(function (s, i) {
-            const row = document.createElement('div');
-            row.className = 'sm-row'+(i===_subIdx?' selected':'');
-            row.innerHTML='<span class="sm-row-arrow">'+(i===_subIdx?'▶':' ')+'</span><span>'+s.label+'</span>';
-            row.addEventListener('click', function () {
-                _subIdx = i;
-                if (s.id==='achievements') { page='achievements'; _subIdx=0; _render(); }
+        // EE journal.c layout: full-screen with page-name strip, stat table, trainer info at bottom
+        // We fit this into the .sm-sub-content div which already has padding.
+        // Remove default padding so we can control layout fully.
+        el.style.padding = '0';
+        el.style.gap = '0';
+
+        // ── Page name bar (top) — tiles 1,4 → y=32px in 160px screen = 20%
+        const pageBar = document.createElement('div');
+        pageBar.className = 'jn-page-bar';
+        const leftArrow = document.createElement('button');
+        leftArrow.className = 'jn-page-btn';
+        leftArrow.textContent = '◀ L';
+        leftArrow.style.pointerEvents = 'all';
+        leftArrow.addEventListener('click', function(e) {
+            e.stopPropagation();
+            _journalPage = (_journalPage - 1 + JOURNAL_PAGES.length) % JOURNAL_PAGES.length;
+            _render();
+        });
+        const pageTitle = document.createElement('span');
+        pageTitle.className = 'jn-page-title';
+        pageTitle.textContent = JOURNAL_PAGES[_journalPage].name;
+        const rightArrow = document.createElement('button');
+        rightArrow.className = 'jn-page-btn';
+        rightArrow.textContent = 'R ▶';
+        rightArrow.style.pointerEvents = 'all';
+        rightArrow.addEventListener('click', function(e) {
+            e.stopPropagation();
+            _journalPage = (_journalPage + 1) % JOURNAL_PAGES.length;
+            _render();
+        });
+        pageBar.appendChild(leftArrow);
+        pageBar.appendChild(pageTitle);
+        pageBar.appendChild(rightArrow);
+        el.appendChild(pageBar);
+
+        // ── Stats table (middle) — tiles 1,6 → y=48px, 28×8 tiles = 224×64px
+        // Name left-aligned, value right-aligned at LEFT_MIDDLE=112px (47% of 240)
+        const stats = JOURNAL_PAGES[_journalPage].stats();
+        const table = document.createElement('div');
+        table.className = 'jn-stat-table';
+        stats.forEach(function(row) {
+            const r = document.createElement('div');
+            r.className = 'jn-stat-row';
+            const lbl = document.createElement('span');
+            lbl.className = 'jn-stat-lbl';
+            lbl.textContent = row[0];
+            const val = document.createElement('span');
+            val.className = 'jn-stat-val';
+            val.textContent = row[1];
+            r.appendChild(lbl);
+            r.appendChild(val);
+            table.appendChild(r);
+        });
+        el.appendChild(table);
+
+        // ── Page indicator dots
+        const dots = document.createElement('div');
+        dots.className = 'jn-dots';
+        JOURNAL_PAGES.forEach(function(_, i) {
+            const d = document.createElement('span');
+            d.className = 'jn-dot' + (i === _journalPage ? ' active' : '');
+            d.textContent = i === _journalPage ? '◆' : '◇';
+            d.style.pointerEvents = 'all';
+            d.style.cursor = 'pointer';
+            d.addEventListener('click', function(e) {
+                e.stopPropagation();
+                _journalPage = i;
+                _render();
             });
-            el.appendChild(row);
+            dots.appendChild(d);
         });
-        const ls = _lifeSkills();
-        const sep = document.createElement('div'); sep.className='sm-sep'; el.appendChild(sep);
-        [['Botany',ls.botany||0],['Mining',ls.mining||0],['Alchemy',ls.alchemy||0]].forEach(function(r){
-            const kv=document.createElement('div'); kv.className='sm-kv-row';
-            kv.innerHTML='<span class="sm-kv-key">  '+r[0]+'</span><span class="sm-kv-val">Lv '+r[1]+'</span>';
-            el.appendChild(kv);
-        });
+        el.appendChild(dots);
+
+        // ── Trainer info strip at bottom — tiles 7,14 / 14,14 / 18,14 = y=112px
+        const strip = document.createElement('div');
+        strip.className = 'jn-trainer-strip';
+        strip.innerHTML =
+            '<span class="jn-strip-name">' + _playerName() + '</span>' +
+            '<span class="jn-strip-id">ID: ' + _trainerId() + '</span>' +
+            '<span class="jn-strip-money">₽' + _money().toLocaleString() + '</span>';
+        el.appendChild(strip);
     }
 
     function _buildAchievements(el) {
+        // EE ach_atlas.c layout:
+        // Top: tier tabs (tiles 1,1=px8,8, 21 wide) + total AP (tiles 24,1=px192,8, 5 wide)
+        // List: name col (tiles 1,6=px8,48, 16 wide) + AP col (tiles 19,6=px152,48, 10 wide), 6 rows visible
+        // Bottom: description (tiles 1,15=px8,120, 28×4=224×32px)
+
+        el.style.padding = '0';
+        el.style.gap = '0';
+
         const all = window.GameAchievements ? GameAchievements.getAll() : [];
-        if (!all.length) {
-            const msg=document.createElement('div'); msg.className='sm-placeholder'; msg.textContent='No achievements yet.'; el.appendChild(msg); return;
-        }
-        let ri=0;
-        TIER_ORDER.forEach(function(tier){
-            const ta=all.filter(function(a){return a.tier===tier;});
-            if(!ta.length) return;
-            const hdr=document.createElement('div'); hdr.className='sm-ach-tier-hdr'; hdr.textContent=TIER_ICON[tier]+' '+tier.toUpperCase(); el.appendChild(hdr);
-            ta.forEach(function(a){
-                const row=document.createElement('div');
-                row.className='sm-ach-row'+(a.unlocked?'':' locked')+(ri===_subIdx?' selected':'');
-                row.innerHTML='<span>'+TIER_ICON[a.tier]+'</span><span class="sm-ach-name">'+a.name+'</span><span class="sm-ach-ap">'+a.apReward+' AP</span>';
-                el.appendChild(row); ri++;
+        const totalAP = all.reduce(function(s, a) { return s + (a.unlocked ? a.apReward : 0); }, 0);
+        const maxAP   = all.reduce(function(s, a) { return s + a.apReward; }, 0);
+        const unlockCount = all.filter(function(a) { return a.unlocked; }).length;
+
+        // ── Tier tab bar + total AP
+        const TIERS = ['All', 'Plat', 'Gold', 'Silv', 'Brnz'];
+        const tabBar = document.createElement('div');
+        tabBar.className = 'ach-tab-bar';
+        TIERS.forEach(function(t, i) {
+            const btn = document.createElement('button');
+            btn.className = 'ach-tab-btn' + (_achTier === i ? ' active' : '');
+            btn.textContent = t;
+            btn.style.pointerEvents = 'all';
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                _achTier = i;
+                _achOffset = 0;
+                _subIdx = 0;
+                _render();
             });
+            tabBar.appendChild(btn);
         });
+        const apBox = document.createElement('span');
+        apBox.className = 'ach-total-ap';
+        apBox.textContent = totalAP + ' AP';
+        tabBar.appendChild(apBox);
+        el.appendChild(tabBar);
+
+        // ── Filter list by selected tier
+        const tierKeys = [null, 'platinum', 'gold', 'silver', 'bronze'];
+        const filtered = _achTier === 0
+            ? all
+            : all.filter(function(a) { return a.tier === tierKeys[_achTier]; });
+
+        // ── Scrollable list: name (left ~65%) + AP reward (right ~35%)
+        const LIST_ROWS = 6;
+        // Clamp _achOffset so selected is always visible
+        if (_subIdx < _achOffset) _achOffset = _subIdx;
+        if (_subIdx >= _achOffset + LIST_ROWS) _achOffset = _subIdx - LIST_ROWS + 1;
+        _achOffset = Math.max(0, Math.min(_achOffset, Math.max(0, filtered.length - LIST_ROWS)));
+
+        const listWrap = document.createElement('div');
+        listWrap.className = 'ach-list-wrap';
+
+        if (!filtered.length) {
+            const empty = document.createElement('div');
+            empty.className = 'ach-empty';
+            empty.textContent = 'No achievements in this tier.';
+            listWrap.appendChild(empty);
+        } else {
+            const visible = filtered.slice(_achOffset, _achOffset + LIST_ROWS);
+            visible.forEach(function(a, vi) {
+                const absIdx = _achOffset + vi;
+                const row = document.createElement('div');
+                row.className = 'ach-list-row'
+                    + (a.unlocked ? '' : ' locked')
+                    + (absIdx === _subIdx ? ' selected' : '');
+                row.style.pointerEvents = 'all';
+                row.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    _subIdx = absIdx;
+                    _render();
+                });
+
+                const icon = document.createElement('span');
+                icon.className = 'ach-list-icon';
+                icon.textContent = a.unlocked ? TIER_ICON[a.tier] : '✗';
+
+                const name = document.createElement('span');
+                name.className = 'ach-list-name';
+                name.textContent = a.name;
+
+                const ap = document.createElement('span');
+                ap.className = 'ach-list-ap';
+                ap.textContent = (a.unlocked ? '✓ ' : '') + a.apReward + 'AP';
+
+                row.appendChild(icon);
+                row.appendChild(name);
+                row.appendChild(ap);
+                listWrap.appendChild(row);
+            });
+
+            // scroll hint
+            if (filtered.length > LIST_ROWS) {
+                const hint = document.createElement('div');
+                hint.className = 'ach-scroll-hint';
+                hint.textContent = (_subIdx + 1) + ' / ' + filtered.length;
+                listWrap.appendChild(hint);
+            }
+        }
+        el.appendChild(listWrap);
+
+        // ── Description box at bottom — tiles 1,15 = y≈75% of screen
+        const selAch = filtered[_subIdx];
+        const descBox = document.createElement('div');
+        descBox.className = 'ach-desc-box';
+        if (selAch) {
+            const dTitle = document.createElement('div');
+            dTitle.className = 'ach-desc-title';
+            dTitle.textContent = selAch.name + (selAch.unlocked ? ' ✓' : '');
+            const dText = document.createElement('div');
+            dText.className = 'ach-desc-text';
+            dText.textContent = selAch.desc || '';
+            const dMeta = document.createElement('div');
+            dMeta.className = 'ach-desc-meta';
+            dMeta.textContent = (selAch.tier || '').toUpperCase() + '  ' + selAch.apReward + ' AP'
+                + (selAch.unlocked ? '  [EARNED]' : '  [LOCKED]');
+            descBox.appendChild(dTitle);
+            descBox.appendChild(dText);
+            descBox.appendChild(dMeta);
+        } else {
+            descBox.textContent = unlockCount + ' / ' + all.length + ' earned  ·  ' + totalAP + ' / ' + maxAP + ' AP';
+        }
+        el.appendChild(descBox);
     }
 
     function _buildBag(el) {
@@ -828,7 +1091,7 @@ window.GameStartMenu = (function () {
     function _confirmSelected() {
         if (page!=='main') {
             if (page==='save') { const a=['save','load']; _doSaveAction(a[_subIdx]||'save'); }
-            else if (page==='journal') { if (_subIdx===0) { page='achievements'; _subIdx=0; _render(); } }
+            else if (page==='journal') { page='achievements'; _achTier=0; _achOffset=0; _subIdx=0; _render(); }
             else if (page==='pokedex' && _dexList && _dexList[_subIdx]) {
                 _dexEntry = _dexList[_subIdx];
                 page = 'pokedex_entry'; _subIdx = 0; _render();
@@ -848,7 +1111,7 @@ window.GameStartMenu = (function () {
             case 'EXIT':    close(); break;
             case 'SAVE':    _saveDone=false; page='save';         _subIdx=0; _render(); break;
             case 'OPTIONS': page='options';      _subIdx=0; _render(); break;
-            case 'JOURNAL': page='journal';      _subIdx=0; _render(); break;
+            case 'JOURNAL': page='journal'; _journalPage=0; _subIdx=0; _render(); break;
             case 'POKENAV': page='pokenav';      _subIdx=0; _render(); break;
             case 'PLAYER':  page='trainer_card'; _subIdx=0; _render(); break;
             case 'BAG':     page='bag';           _subIdx=0; _render(); break;
@@ -873,11 +1136,13 @@ window.GameStartMenu = (function () {
 
     function moveLeft() {
         if (!isOpen) return;
-        if (page==='main') { selectedIdx=(selectedIdx-1+ITEMS.length)%ITEMS.length; _render(); }
+        if (page==='main') { selectedIdx=(selectedIdx-1+ITEMS.length)%ITEMS.length; _render(); return; }
+        if (page==='journal') { _journalPage=(_journalPage-1+JOURNAL_PAGES.length)%JOURNAL_PAGES.length; _render(); }
     }
     function moveRight() {
         if (!isOpen) return;
-        if (page==='main') { selectedIdx=(selectedIdx+1)%ITEMS.length; _render(); }
+        if (page==='main') { selectedIdx=(selectedIdx+1)%ITEMS.length; _render(); return; }
+        if (page==='journal') { _journalPage=(_journalPage+1)%JOURNAL_PAGES.length; _render(); }
     }
     function moveUp() {
         if (!isOpen||page==='main') return;
@@ -888,7 +1153,7 @@ window.GameStartMenu = (function () {
         const c=_subCount(); if(c>0){_subIdx=(_subIdx+1)%c;_render();}
     }
     function _subCount() {
-        if (page==='journal') return 4;
+        if (page==='journal') return 0;  // journal uses L/R page flip, not up/down
         if (page==='save')    return 2;
         if (page==='pokenav') return 3;
         if (page==='options') return 8; // 6 toggles + size + orientation
@@ -899,7 +1164,11 @@ window.GameStartMenu = (function () {
         }
         if (page==='pokedex') return _dexList ? _dexList.length : 0;
         if (page==='pokedex_entry') return 3; // tabs: Info / Stats / Moves
-        if (page==='achievements') return window.GameAchievements ? GameAchievements.getAll().length : 0;
+        if (page==='achievements') {
+            const all = window.GameAchievements ? GameAchievements.getAll() : [];
+            const tierKeys = [null, 'platinum', 'gold', 'silver', 'bronze'];
+            return _achTier === 0 ? all.length : all.filter(function(a){return a.tier===tierKeys[_achTier];}).length;
+        }
         return 0;
     }
     function confirm() { if(isOpen) _confirmSelected(); }
