@@ -58,16 +58,18 @@
             }
 
             if (returnWarp) {
-                // Find the best spawn tile: first adjacent tile that is walkable and not itself a warp
                 const rx = returnWarp.x, ry = returnWarp.y;
-                // Prefer: south, north, east, west — matching typical entry direction
-                const candidates = [
-                    [rx, ry - 1], // north (inside a building, step away from exit)
-                    [rx, ry + 1], // south (outside a building)
-                    [rx - 1, ry],
-                    [rx + 1, ry],
-                    [rx, ry]      // last resort: stand on the warp itself
-                ];
+                // Search in expanding rings for a walkable non-warp tile.
+                // Search north first (step inside a building away from the door),
+                // then south (step outside), then the warp tile itself as fallback.
+                const candidates = [];
+                for (let dist = 1; dist <= 4; dist++) {
+                    candidates.push([rx, ry - dist]);
+                    candidates.push([rx, ry + dist]);
+                    candidates.push([rx - dist, ry]);
+                    candidates.push([rx + dist, ry]);
+                }
+                candidates.push([rx, ry]); // absolute last resort
                 let placed = false;
                 for (const [cx, cy] of candidates) {
                     if (GameMap.isWalkable(cx, cy) && !GameMap.getWarp(cx, cy)) {
@@ -96,7 +98,7 @@
             GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
             if (window.GameSave) GameSave.markDirty();
             // Block warp re-triggering for 600ms so player doesn't immediately warp back out
-            _warpCooldownUntil = performance.now() + 600;
+            _warpCooldownUntil = performance.now() + 1500;
         } finally {
             _transitioning = false;
         }
@@ -147,7 +149,7 @@
 
             GameCamera.update(player.x, player.y, destW, destH);
             if (window.GameSave) GameSave.markDirty();
-            _warpCooldownUntil = performance.now() + 600;
+            _warpCooldownUntil = performance.now() + 1500;
         } finally {
             _transitioning = false;
         }

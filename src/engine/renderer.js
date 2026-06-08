@@ -23,7 +23,16 @@ window.GameRenderer = (function () {
 
     // Player sprite state
     let _playerImg    = null;   // HTMLImageElement for data/sprites/player.png
-    const PLAYER_DIR_FRAME = { down: 0, up: 3, left: 6, right: 6 };
+
+    // Actual Emerald frame layout (from object_event_anims.h):
+    //   0=stand-south, 1=stand-north, 2=stand-west/east
+    //   walk-south: 3,0,4,0  walk-north: 5,1,6,1  walk-west/east: 7,2,8,2
+    const WALK_FRAMES = {
+        down:  { stand: 0, step1: 3, step2: 4 },
+        up:    { stand: 1, step1: 5, step2: 6 },
+        left:  { stand: 2, step1: 7, step2: 8 },
+        right: { stand: 2, step1: 7, step2: 8 },
+    };
 
     // Fallback color definitions (used when tileset image not ready)
     const COLORS = {
@@ -173,10 +182,10 @@ window.GameRenderer = (function () {
         const playerSY = (_player.y - camY) * TILE_PX;
         if (_playerImg) {
             const dir = _player.direction || 'down';
-            const baseCol  = PLAYER_DIR_FRAME[dir] !== undefined ? PLAYER_DIR_FRAME[dir] : 0;
-            const walkFrame = _player.walkFrame || 0;  // 0=stand, 1=step1, 2=step2
-            const frameCol  = baseCol + walkFrame;
-            const srcX = frameCol * 16;
+            const wf  = _player.walkFrame || 0;  // 0=stand, 1=step1, 2=step2
+            const wfs = WALK_FRAMES[dir] || WALK_FRAMES.down;
+            const frameIdx = wf === 0 ? wfs.stand : wf === 1 ? wfs.step1 : wfs.step2;
+            const srcX = frameIdx * 16;
             const isRight = (dir === 'right');
             if (isRight) {
                 ctx.save();
