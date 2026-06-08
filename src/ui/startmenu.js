@@ -740,15 +740,25 @@ window.GameStartMenu = (function () {
     function _getBagPockets() {
         const inv = (window.GameSave && GameSave.state && GameSave.state.inventory)
             ? GameSave.state.inventory : {};
+        const FB = {
+            items:     [{ itemId:1, name:'Potion',           quantity:5,  desc:'Restores 20 HP.' }],
+            medicine:  [{ itemId:2, name:'Antidote',         quantity:2,  desc:'Cures poison.' }],
+            valuables: [{ itemId:3, name:'Nugget',           quantity:1,  desc:'A nugget of pure gold.' }],
+            keyItems:  [{ itemId:4, name:'Bicycle',          quantity:1,  desc:'A folding bicycle.' }],
+            pokeBalls: [{ itemId:5, name:'Poké Ball',        quantity:10, desc:'A device for catching Pokémon.' }],
+            tms:       [{ itemId:6, name:'TM01 Focus Punch', quantity:1,  desc:'Teaches Focus Punch.' }],
+            berries:   [{ itemId:7, name:'Oran Berry',       quantity:3,  desc:'Restores 10 HP if held.' }],
+        };
+        function pick(key) { var a = inv[key]; return (a && a.length) ? a : FB[key]; }
         return [
-            { label: 'Items',      items: inv.items     || [] },
-            { label: 'Medicine',   items: inv.medicine  || [] },
-            { label: 'Valuables',  items: inv.valuables || [] },
-            { label: 'Key Items',  items: inv.keyItems  || [] },
-            { label: 'Poké Balls', items: inv.pokeBalls || [] },
-            { label: 'TMs & HMs',  items: inv.tms       || [] },
-            { label: 'Berries',    items: inv.berries   || [] },
-            { label: 'Free Space', items: inv.free      || [] },
+            { label: 'Items',      items: pick('items')     },
+            { label: 'Medicine',   items: pick('medicine')  },
+            { label: 'Valuables',  items: pick('valuables') },
+            { label: 'Key Items',  items: pick('keyItems')  },
+            { label: 'Poké Balls', items: pick('pokeBalls') },
+            { label: 'TMs & HMs',  items: pick('tms')       },
+            { label: 'Berries',    items: pick('berries')   },
+            { label: 'Free Space', items: inv.free || []    },
         ];
     }
 
