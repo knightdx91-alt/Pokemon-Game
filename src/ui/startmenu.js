@@ -622,6 +622,11 @@ window.GameStartMenu = (function () {
         var COL_CYAN = '#5aced6';
 
         // ── Pocket indicator icons — 8×8 sprite tiles at (24+i*8, 16) in GBA px
+        // Dark theme: BG2 pocket icons sit on black (EE overrides BAG_COLOR_BOTTOM_BACKGROUND=BLACK)
+        // Cover the BG0 cyan/blue tiles that show through the icon strip
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(24*S, 16*S, 64*S, 8*S);
+
         ctx.imageSmoothingEnabled = false;
         for (var i = 0; i < 8; i++) {
             var ix = (24 + i * 8) * S;
