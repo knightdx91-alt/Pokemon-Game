@@ -168,7 +168,7 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
-    const GAME_VERSION = 'v0.3.14';
+    const GAME_VERSION = 'v0.3.15';
 
     // --- Update display ---
     function update() {
@@ -231,12 +231,12 @@ window.GameHUD = (function () {
         _toastEl.className = 'ach-toast ach-toast-hide';
         overlay.appendChild(_toastEl);
 
-        // Screenshot button
+        // Screenshot button — sits below #hud-info (top-left area)
         var ssBtn = document.createElement('button');
         ssBtn.id = 'screenshot-btn';
-        ssBtn.textContent = '📷';
-        ssBtn.title = 'Screenshot (JPEG) → commit to repo';
-        ssBtn.style.cssText = 'position:absolute;top:4px;right:4px;z-index:100;background:#0a1830;color:#18b8c8;border:1px solid #18b8c8;border-radius:3px;padding:2px 5px;font-size:11px;cursor:pointer;pointer-events:all;';
+        ssBtn.textContent = '📷 Screenshot';
+        ssBtn.title = 'Screenshot → GitHub Gist';
+        ssBtn.style.cssText = 'position:absolute;top:36px;left:4px;z-index:100;background:#0a1830;color:#18b8c8;border:1px solid #18b8c8;border-radius:3px;padding:4px 8px;font-size:12px;cursor:pointer;pointer-events:all;touch-action:manipulation;';
         ssBtn.addEventListener('click', _takeScreenshot);
         overlay.appendChild(ssBtn);
 
@@ -264,84 +264,55 @@ window.GameHUD = (function () {
 
     // --- Screenshot → GitHub repo ---
     function _takeScreenshot() {
-        // Capture the game canvas (inside #screen-primary)
         var screen = document.getElementById('screen-primary');
         var canvas = screen ? screen.querySelector('canvas') : null;
-
-        // If a sub-menu canvas is open, capture that instead
         var subCanvas = document.querySelector('#start-menu-sub canvas');
         var target = subCanvas || canvas;
-
         if (!target) { alert('No canvas found to screenshot.'); return; }
 
-        // Use JPEG at 0.85 quality to keep file size small (GitHub API limit ~1MB)
         var dataUrl = target.toDataURL('image/jpeg', 0.85);
-        var base64  = dataUrl.replace(/^data:image\/jpeg;base64,/, '');
+        // Strip data URI prefix; fall back in case browser returned PNG
+        var base64 = dataUrl.replace(/^data:image\/(jpeg|png);base64,/, '');
+        var ext = dataUrl.startsWith('data:image/png') ? 'png' : 'jpg';
 
         var token = localStorage.getItem('gh_debug_token');
         if (!token) {
-            alert('No GitHub token set.\nOpen Settings → paste your token in the GitHub Token field → Save, then try again.');
+            alert('No GitHub token set.\nOpen Settings → paste your token → Save, then try again.');
             return;
         }
 
-        var OWNER = 'knightdx91-alt';
-        var REPO  = 'pokemon-game';
-        var BRANCH = 'screenshots';
         var ts = new Date().toISOString().replace(/[:.]/g, '-');
-        var filePath = 'screenshots/shot-' + ts + '.jpg';
-        var commitMsg = 'debug: screenshot ' + new Date().toISOString();
-        var base = 'https://api.github.com/repos/' + OWNER + '/' + REPO;
-        var hdrs = { Authorization: 'token ' + token, 'Content-Type': 'application/json' };
+        var fname = 'shot-' + ts + '.' + ext;
 
-        function apiErr(label, r) {
-            return r.text().then(function(t){
+        // Use GitHub Gist API — no repo permissions or branch refs needed
+        fetch('https://api.github.com/gists', {
+            method: 'POST',
+            headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                description: 'Pokemon screenshot ' + new Date().toISOString(),
+                public: false,
+                files: {
+                    'view.html': {
+                        content: '<!DOCTYPE html><html><body style="margin:0;background:#000"><img src="data:image/' + ext + ';base64,' + base64 + '" style="max-width:100%;image-rendering:pixelated"></body></html>'
+                    },
+                    [fname]: { content: base64 }
+                }
+            })
+        })
+        .then(function(r) {
+            if (!r.ok) return r.text().then(function(t){
                 var msg = t; try { msg = JSON.parse(t).message || t; } catch(e){}
-                throw new Error(label + ' ' + r.status + ': ' + msg);
+                throw new Error(r.status + ': ' + msg);
             });
-        }
-
-        // Git Data API: blob → tree → commit → ref update
-        // Step 1: create blob
-        fetch(base + '/git/blobs', { method:'POST', headers:hdrs,
-                body: JSON.stringify({ content: base64, encoding: 'base64' }) })
-            .then(function(r){ return r.ok ? r.json() : apiErr('blob',r); })
-            .then(function(blob) {
-                // Step 2: get current HEAD
-                return fetch(base + '/git/refs/heads/' + BRANCH, { headers:hdrs })
-                    .then(function(r){ return r.ok ? r.json() : apiErr('ref',r); })
-                    .then(function(ref) {
-                        var headSha = ref.object.sha;
-                        // Step 3: get base tree SHA from HEAD commit
-                        return fetch(base + '/git/commits/' + headSha, { headers:hdrs })
-                            .then(function(r){ return r.ok ? r.json() : apiErr('commit',r); })
-                            .then(function(commit) {
-                                // Step 4: create new tree
-                                return fetch(base + '/git/trees', { method:'POST', headers:hdrs,
-                                        body: JSON.stringify({
-                                            base_tree: commit.tree.sha,
-                                            tree: [{ path: filePath, mode:'100644', type:'blob', sha: blob.sha }]
-                                        }) })
-                                    .then(function(r){ return r.ok ? r.json() : apiErr('tree',r); })
-                                    .then(function(tree) {
-                                        // Step 5: create commit
-                                        return fetch(base + '/git/commits', { method:'POST', headers:hdrs,
-                                                body: JSON.stringify({ message: commitMsg, tree: tree.sha, parents: [headSha] }) })
-                                            .then(function(r){ return r.ok ? r.json() : apiErr('newcommit',r); })
-                                            .then(function(newCommit) {
-                                                // Step 6: update ref
-                                                return fetch(base + '/git/refs/heads/' + BRANCH, { method:'PATCH', headers:hdrs,
-                                                        body: JSON.stringify({ sha: newCommit.sha, force: true }) })
-                                                    .then(function(r){ return r.ok ? r.json() : apiErr('updateref',r); });
-                                            });
-                                    });
-                            });
-                    });
-            })
-            .then(function() {
-                var btn = document.getElementById('screenshot-btn');
-                if (btn) { btn.style.color = '#20d840'; setTimeout(function(){ btn.style.color = '#18b8c8'; }, 1500); }
-            })
-            .catch(function(e) { console.error('[Screenshot]', e); alert('Screenshot error:\n' + e.message); });
+            return r.json();
+        })
+        .then(function(gist) {
+            var btn = document.getElementById('screenshot-btn');
+            if (btn) { btn.style.color = '#20d840'; setTimeout(function(){ btn.style.color = '#18b8c8'; }, 2000); }
+            // Show URL — user can share this with the dev
+            alert('Screenshot saved!\nOpen this URL to view:\n' + gist.html_url + '\n\nShare this URL to show the screenshot.');
+        })
+        .catch(function(e) { alert('Screenshot error:\n' + e.message); });
     }
 
     return { init, update, showAchievementToast };
