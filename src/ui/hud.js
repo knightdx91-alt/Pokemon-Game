@@ -105,8 +105,9 @@ window.GameHUD = (function () {
     function update() {
         if (!infoEl) return;
         const mapName = (mapRef && mapRef.current) ? mapRef.current.name : '—';
-        // Only show map name (no coordinates)
-        infoEl.textContent = mapName;
+        const px = playerRef ? playerRef.x : '?';
+        const py = playerRef ? playerRef.y : '?';
+        infoEl.textContent = `${mapName}  (${px}, ${py})`;
 
         // Show banner when map changes
         if (mapName !== _lastMapName && mapName !== '—') {
