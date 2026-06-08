@@ -108,6 +108,22 @@ window.GameHUD = (function () {
                 if (toggleDpad) toggleDpad.classList.remove('active');
             });
         }
+
+        // Orientation buttons
+        const orientBtns = document.querySelectorAll('.orient-btn');
+        if (orientBtns.length) {
+            // Restore saved orientation
+            const savedOrient = window.GameLayout ? GameLayout.getOrientationPref() : 'auto';
+            orientBtns.forEach(btn => {
+                if (btn.dataset.orient === savedOrient) btn.classList.add('active');
+                else btn.classList.remove('active');
+                btn.addEventListener('click', () => {
+                    orientBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    if (window.GameLayout) GameLayout.setOrientation(btn.dataset.orient);
+                });
+            });
+        }
     }
 
     // --- Map name banner ---

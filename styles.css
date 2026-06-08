@@ -675,9 +675,8 @@ body.reverse-landscape #game-wrapper {
     display: flex;
     pointer-events: none; /* don't block D-pad/buttons underneath */
 }
-/* Only the visible strips need to intercept taps */
-#start-menu.open .sm-top-strip,
-#start-menu.open .sm-info-box {
+/* Only the icon strip needs to intercept taps (info box is read-only) */
+#start-menu.open .sm-top-strip {
     pointer-events: all;
 }
 
@@ -1059,6 +1058,9 @@ body.reverse-landscape #game-wrapper {
 .toggle-group {
     display: flex;
     gap: 6px;
+}
+.orient-group {
+    flex-wrap: wrap;
 }
 
 .toggle-btn {
