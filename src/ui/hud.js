@@ -109,10 +109,27 @@ window.GameHUD = (function () {
             });
         }
 
+        // Controls opacity slider (only visible in landscape modes)
+        const opacitySlider = document.getElementById('controls-opacity-slider');
+        const opacityValue  = document.getElementById('controls-opacity-value');
+        if (opacitySlider) {
+            const savedOpacity = localStorage.getItem('pokemon_controls_opacity');
+            if (savedOpacity) {
+                opacitySlider.value = savedOpacity;
+                document.documentElement.style.setProperty('--controls-opacity', savedOpacity);
+                if (opacityValue) opacityValue.textContent = Math.round(parseFloat(savedOpacity) * 100) + '%';
+            }
+            opacitySlider.addEventListener('input', function () {
+                const v = opacitySlider.value;
+                document.documentElement.style.setProperty('--controls-opacity', v);
+                if (opacityValue) opacityValue.textContent = Math.round(parseFloat(v) * 100) + '%';
+                localStorage.setItem('pokemon_controls_opacity', v);
+            });
+        }
+
         // Orientation buttons
         const orientBtns = document.querySelectorAll('.orient-btn');
         if (orientBtns.length) {
-            // Restore saved orientation
             const savedOrient = window.GameLayout ? GameLayout.getOrientationPref() : 'auto';
             orientBtns.forEach(btn => {
                 if (btn.dataset.orient === savedOrient) btn.classList.add('active');

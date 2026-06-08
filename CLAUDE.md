@@ -268,10 +268,21 @@ rgba.save('src/assets/start_menu/start_icon_X_rgba.png')
 --control-scale   /* D-pad / button size multiplier, saved to localStorage */
 ```
 
+## Orientation system
+Real CSS `transform: rotate()` on `<body>` — exactly like EmulatorJS fullscreen.
+- `orient-portrait` / `orient-reverse-portrait`: body rotates 0° / 180°
+- `orient-landscape` / `orient-reverse-landscape`: body resized to `100vh×100vw` + rotated ±90°
+  - Because body has a `transform`, all `position:fixed` children (game, controls, menus) use body as containing block — everything rotates together
+  - Controls become a semi-transparent overlay over the game screen
+  - `--controls-opacity` CSS variable (default 0.65) controls transparency
+  - Opacity slider only shown in settings when a landscape mode is active
+- `auto` = no class on body, device's natural orientation handles layout via `@media (orientation: landscape)`
+
 ## localStorage keys
 ```
-pokemon_save_v1          /* 3-slot save data (JSON) */
-pokemon_settings_v1      /* settings (currently unused, merged into save) */
-pokemon_control_scale    /* float 0.5–2.0, button size */
-pokemon_orientation      /* 'auto'|'portrait'|'reverse-portrait'|'landscape'|'reverse-landscape' */
+pokemon_save_v1             /* 3-slot save data (JSON) */
+pokemon_settings_v1         /* settings (currently unused, merged into save) */
+pokemon_control_scale       /* float 0.5–2.0, button size */
+pokemon_orientation         /* 'auto'|'portrait'|'reverse-portrait'|'landscape'|'reverse-landscape' */
+pokemon_controls_opacity    /* float 0.1–1.0, overlay opacity in landscape modes */
 ```

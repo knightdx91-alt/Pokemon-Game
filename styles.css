@@ -132,93 +132,78 @@ html, body {
 }
 
 /* ===================================================================
-   FORCED ORIENTATION — body.force-portrait / force-landscape override
-   the device media query so the user's chosen layout is always applied.
+   ORIENTATION — real CSS rotation on <body>, like EmulatorJS fullscreen.
+   All orient-* classes rotate everything (game + controls + menus).
    =================================================================== */
-body.force-portrait #game-wrapper           { flex-direction: column; }
-body.force-portrait #screen-primary         { width: 100vw; height: 55vh; flex-shrink: 0; position: relative !important; top: auto !important; left: auto !important; }
-body.force-portrait #screen-secondary       { width: 100vw; height: 30vh; flex-shrink: 0; }
-body.force-portrait .drag-handle            { display: flex; align-items: center; justify-content: center; }
-body.force-portrait #controls-layer         { position: fixed; bottom: 0; left: 0; width: 100%; height: 42vh; right: auto; top: auto; }
 
-body.force-landscape #game-wrapper          { flex-direction: row; align-items: stretch; }
-body.force-landscape #screen-primary        { flex: 1 1 auto; position: relative !important; top: auto !important; left: auto !important; width: auto !important; height: auto !important; }
-body.force-landscape #screen-secondary      { width: 256px; height: 100vh; flex-shrink: 0; }
-body.force-landscape .drag-handle           { display: none; }
-body.force-landscape .resize-handle         { display: none; }
-body.force-landscape #controls-layer        { position: fixed; right: 0; top: 0; width: 280px; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+/* Portrait: normal, no transform */
+/* body.orient-portrait — no rules needed */
 
-/* ===================================================================
-   REVERSE PORTRAIT  — body gets class "reverse-portrait" from JS
-   CSS rotates content 180°; game screen above, controls below (same)
-   =================================================================== */
-body.reverse-portrait #game-wrapper {
+/* Reverse Portrait: flip 180° — gamepad ends up at top, game at bottom */
+body.orient-reverse-portrait {
     transform: rotate(180deg);
     transform-origin: center center;
 }
 
-/* ===================================================================
-   LANDSCAPE  (primary orientation)
-   Game screen fills width minus right controls panel.
-   Screens NOT draggable/resizable (CSS controls layout).
-   =================================================================== */
-@media (orientation: landscape) {
-    #game-wrapper {
-        flex-direction: row;
-        align-items: stretch;
-    }
-
-    #screen-primary {
-        flex: 1 1 auto;
-        height: 100vh;
-        /* override any portrait-saved inline position */
-        position: relative !important;
-        top: auto !important;
-        left: auto !important;
-        width: auto !important;
-        height: auto !important;
-    }
-
-    #screen-primary canvas {
-        width: 100%;
-        height: 100%;
-    }
-
-    #screen-secondary {
-        width: 256px;
-        height: 100vh;
-        flex-shrink: 0;
-    }
-
-    .drag-handle {
-        display: none;
-    }
-
-    .resize-handle {
-        display: none;
-    }
-
-    #controls-layer {
-        position: fixed;
-        right: 0;
-        top: 0;
-        width: 280px;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 16px;
-    }
-}
-
-/* ===================================================================
-   REVERSE LANDSCAPE — body gets class "reverse-landscape" from JS
-   =================================================================== */
-body.reverse-landscape #game-wrapper {
-    transform: rotate(180deg);
+/*
+ * Landscape: rotate body 90° clockwise.
+ * Body is resized to 100vh×100vw (swapped) and re-centered so after
+ * rotation it fills the original viewport exactly.
+ * Because body has a transform, all position:fixed children use body
+ * as their containing block — so they all rotate with it.
+ */
+body.orient-landscape {
+    width: 100vh;
+    height: 100vw;
+    position: fixed;
+    top:  calc((100vh - 100vw) / 2);
+    left: calc((100vw - 100vh) / 2);
+    transform: rotate(90deg);
     transform-origin: center center;
+    overflow: hidden;
 }
+
+/* Reverse Landscape: 90° counter-clockwise */
+body.orient-reverse-landscape {
+    width: 100vh;
+    height: 100vw;
+    position: fixed;
+    top:  calc((100vh - 100vw) / 2);
+    left: calc((100vw - 100vh) / 2);
+    transform: rotate(-90deg);
+    transform-origin: center center;
+    overflow: hidden;
+}
+
+/* In landscape modes, game screen fills the full rotated viewport */
+body.orient-landscape #game-wrapper,
+body.orient-reverse-landscape #game-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+}
+body.orient-landscape #screen-primary,
+body.orient-reverse-landscape #screen-primary {
+    flex: 1 1 auto;
+    width: 100% !important;
+    position: relative !important;
+    top: auto !important; left: auto !important;
+}
+/* Controls become a semi-transparent overlay on the game screen */
+body.orient-landscape #controls-layer,
+body.orient-reverse-landscape #controls-layer {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: var(--controls-opacity, 0.65);
+    z-index: 100;
+    pointer-events: none; /* children re-enable as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Remove old force-portrait / force-landscape / media-query orientation rules */
 
 /* ===================================================================
    CONTROLS LAYER
@@ -682,14 +667,13 @@ body.reverse-landscape #game-wrapper {
 }
 
 /* ===================================================
-   TOP STRIP — EE action-name window (GBA frame 1 style)
-   White-cream bg, blue-grey border, black text
+   TOP STRIP — EE action-name window (dark / frame 1d style)
    =================================================== */
 .sm-top-strip {
     flex-shrink: 0;
-    background: #f0f0e8;
-    border: 1px solid #101018;
-    box-shadow: 0 0 0 4px #7890b0, 0 0 0 5px #101018, inset 0 0 0 1px #b0b8c8;
+    background: #060610;
+    border: 1px solid #000;
+    box-shadow: 0 0 0 3px #18b8c8, 0 0 0 4px #000, inset 0 0 0 1px #002830;
     padding: 6px 4px 5px;
     display: flex;
     flex-direction: column;
@@ -748,7 +732,7 @@ body.reverse-landscape #game-wrapper {
     font-size: 10px;
     font-family: "Courier New", Courier, monospace;
     letter-spacing: 0.05em;
-    color: #101018;
+    color: #d0e8f0;
     text-align: center;
     min-height: 14px;
     padding: 0 8px;
@@ -761,12 +745,12 @@ body.reverse-landscape #game-wrapper {
     pointer-events: none;
 }
 
-/* BOTTOM INFO BOX — matches EE info window (same frame style as top strip) */
+/* BOTTOM INFO BOX — dark frame, same style as top strip */
 .sm-info-box {
     flex-shrink: 0;
-    background: #f0f0e8;
-    border: 1px solid #101018;
-    box-shadow: 0 0 0 4px #7890b0, 0 0 0 5px #101018, inset 0 0 0 1px #b0b8c8;
+    background: #060610;
+    border: 1px solid #000;
+    box-shadow: 0 0 0 3px #18b8c8, 0 0 0 4px #000, inset 0 0 0 1px #002830;
     padding: 4px 10px 5px;
     font-size: 9px;
     pointer-events: none;
@@ -775,7 +759,7 @@ body.reverse-landscape #game-wrapper {
 .sm-info-line1 {
     display: flex;
     justify-content: space-between;
-    color: #101018;
+    color: #c0d8e8;
     margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
@@ -784,15 +768,15 @@ body.reverse-landscape #game-wrapper {
 .sm-info-line2 {
     display: flex;
     gap: 5px;
-    color: #404858;
+    color: #7090a8;
     white-space: nowrap;
 }
-.sm-info-ver { color: #506080; }
+.sm-info-ver { color: #5080a0; }
 .sm-tod { font-weight: bold; }
-.tod-dawn  { color: #c07020; }
-.tod-day   { color: #806000; }
-.tod-dusk  { color: #904060; }
-.tod-night { color: #304080; }
+.tod-dawn  { color: #e09050; }
+.tod-day   { color: #d0c050; }
+.tod-dusk  { color: #c07090; }
+.tod-night { color: #6090d0; }
 
 
 /* ===================================================================
@@ -808,29 +792,27 @@ body.reverse-landscape #game-wrapper {
 }
 
 /*
- * GBA window chrome — mirrors frame 1 tile (1.png):
- *   outermost: 1px #101018 (black)
- *   border:    3px #7890b0 (medium blue-grey, the "frame" color)
- *   inner edge:1px #101018
- *   fill:      #f0f0e8  (near-white cream, same as Pokemon Emerald)
+ * GBA window chrome — dark variant (1d.png):
+ *   outermost: 1px black
+ *   border:    3px bright cyan #18b8c8
+ *   inner:     1px black
+ *   fill:      #060610 (near-black navy)
  *
- * Text is black/dark on white — exactly like the GBA game.
+ * Text is near-white on dark — matches EE dark theme.
  */
 .sm-win {
     position: absolute;
     display: flex;
     flex-direction: column;
-    background: #f0f0e8;
-    /* 3-layer border: outer dark → blue-grey frame → inner dark edge */
-    border: 1px solid #101018;
+    background: #060610;
+    border: 1px solid #000;
     box-shadow:
-        0 0 0 4px #7890b0,
-        0 0 0 5px #101018,
-        inset 0 0 0 1px #b0b8c8;
-    color: #101018;
+        0 0 0 3px #18b8c8,
+        0 0 0 4px #000,
+        inset 0 0 0 1px #002830;
+    color: #e0e8f8;
     overflow: hidden;
     pointer-events: all;
-    image-rendering: pixelated;
 }
 
 /*
@@ -855,16 +837,16 @@ body.reverse-landscape #game-wrapper {
     left: 28%; top: 20%; width: 44%; height: 42%;
 }
 
-/* Title bar: darker blue strip at top (like EE's win title row) */
+/* Title bar: dark with cyan accent */
 .sm-win-title {
-    background: #4060a0;
-    border-bottom: 1px solid #101018;
+    background: #0a1830;
+    border-bottom: 1px solid #18b8c8;
     padding: 3px 6px 3px 8px;
     font-size: 9px;
     font-weight: bold;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #ffffff;
+    color: #80d0e8;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -872,19 +854,18 @@ body.reverse-landscape #game-wrapper {
     pointer-events: none;
 }
 
-/* B-button back label (right side of title bar, no real button chrome) */
 .sm-back-btn {
     font-family: "Courier New", Courier, monospace;
     font-size: 8px;
     padding: 1px 5px;
-    background: #2a4888;
-    border: 1px solid #8090c0;
-    color: #d8e8ff;
+    background: #040c20;
+    border: 1px solid #18b8c8;
+    color: #80d0e8;
     cursor: pointer;
     pointer-events: all;
     letter-spacing: 0;
 }
-.sm-back-btn:active { background: #1a3070; }
+.sm-back-btn:active { background: #0a2040; }
 
 /* Content area — pointer-events:none; only rows re-enable it */
 .sm-sub-content {
@@ -894,7 +875,7 @@ body.reverse-landscape #game-wrapper {
     display: flex;
     flex-direction: column;
     scrollbar-width: thin;
-    scrollbar-color: #7890b0 #d8d8d0;
+    scrollbar-color: #18b8c8 #040810;
     pointer-events: none;
 }
 .sm-sub-content .sm-row,
@@ -904,48 +885,46 @@ body.reverse-landscape #game-wrapper {
     pointer-events: all;
 }
 
-/* ---- Key-value rows (Trainer Card, Save info) ---- */
+/* ---- Key-value rows ---- */
 .sm-kv-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 3px 0;
     font-size: 9px;
-    border-bottom: 1px solid rgba(0,0,0,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
     gap: 8px;
-    color: #101018;
+    color: #c8d8e8;
 }
-.sm-kv-key { color: #404858; white-space: nowrap; }
-.sm-kv-val { color: #101018; font-weight: bold; text-align: right; }
+.sm-kv-key { color: #6090a8; white-space: nowrap; }
+.sm-kv-val { color: #e0e8f8; font-weight: bold; text-align: right; }
 
-.sm-sep { height: 1px; background: rgba(0,0,0,0.15); margin: 3px 0; }
+.sm-sep { height: 1px; background: rgba(24,184,200,0.2); margin: 3px 0; }
 
-/* ---- Selectable rows (Journal, Save actions, Pokénav) ---- */
-/* Uses ▶ cursor exactly like GBA Pokemon menus — no background highlight */
+/* ---- Selectable rows ---- */
 .sm-row {
     display: flex;
     align-items: center;
     padding: 4px 0;
     font-size: 9px;
     gap: 4px;
-    color: #101018;
+    color: #c8d8e8;
     cursor: pointer;
     line-height: 1.4;
 }
-.sm-row-arrow { width: 10px; color: #101018; flex-shrink: 0; font-size: 9px; }
-/* Selected: arrow shows ▶, subtle grey background strip */
-.sm-row.selected            { background: rgba(0,0,0,0.07); }
-.sm-row.selected .sm-row-arrow { color: #101018; }
+.sm-row-arrow { width: 10px; color: #18b8c8; flex-shrink: 0; font-size: 9px; }
+.sm-row.selected { background: rgba(24,184,200,0.15); }
 
 /* ---- Achievement rows ---- */
 .sm-ach-tier-hdr {
-    background: #4060a0;
-    color: #ffffff;
+    background: #0a1830;
+    color: #18b8c8;
     font-size: 8px;
     padding: 2px 6px;
     letter-spacing: 0.06em;
     margin-top: 4px;
     text-transform: uppercase;
+    border-left: 2px solid #18b8c8;
 }
 .sm-ach-row {
     display: flex;
@@ -953,18 +932,18 @@ body.reverse-landscape #game-wrapper {
     gap: 6px;
     padding: 3px 2px;
     font-size: 9px;
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-    color: #101018;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: #c8d8e8;
 }
-.sm-ach-row.selected { background: rgba(0,0,0,0.07); }
-.sm-ach-row.locked   { opacity: 0.4; }
+.sm-ach-row.selected { background: rgba(24,184,200,0.15); }
+.sm-ach-row.locked   { opacity: 0.35; filter: grayscale(1); }
 .sm-ach-name { flex: 1; }
-.sm-ach-ap   { color: #506080; white-space: nowrap; font-size: 8px; }
+.sm-ach-ap   { color: #407080; white-space: nowrap; font-size: 8px; }
 
 /* ---- Save page ---- */
 .sm-save-confirm {
     margin-top: 8px;
-    color: #186020;
+    color: #20d870;
     font-size: 9px;
     font-weight: bold;
     text-align: center;
@@ -977,28 +956,28 @@ body.reverse-landscape #game-wrapper {
     align-items: center;
     padding: 5px 0;
     font-size: 9px;
-    border-bottom: 1px solid rgba(0,0,0,0.08);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
     gap: 6px;
-    color: #101018;
+    color: #c8d8e8;
 }
-.sm-opt-label { color: #404858; white-space: nowrap; }
+.sm-opt-label { color: #6090a8; white-space: nowrap; }
 .sm-opt-btns  { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; justify-content: flex-end; }
 .sm-opt-btn {
     font-family: "Courier New", Courier, monospace;
     font-size: 8px;
     padding: 2px 6px;
-    border: 1px solid #9090a8;
-    background: #d8d8d0;
+    border: 1px solid #183040;
+    background: #0a1828;
     cursor: pointer;
-    color: #101018;
+    color: #7090a8;
 }
-.sm-opt-btn.active  { background: #4060a0; color: #ffffff; border-color: #101018; }
-.sm-opt-btn:active  { background: #2a4080; }
-#sm-size-slider { width: 55px; accent-color: #4060a0; }
-#sm-size-val    { font-size: 8px; color: #404858; min-width: 22px; }
+.sm-opt-btn.active  { background: #18b8c8; color: #000818; border-color: #40d8e8; }
+.sm-opt-btn:active  { background: #0090a0; }
+#sm-size-slider { width: 55px; accent-color: #18b8c8; }
+#sm-size-val    { font-size: 8px; color: #6090a8; min-width: 22px; }
 
 .sm-placeholder {
-    color: #606878;
+    color: #304050;
     font-size: 9px;
     padding: 12px 0;
     text-align: center;

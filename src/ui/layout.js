@@ -217,32 +217,42 @@ window.GameLayout = (function () {
         reflow();
     }
 
-    // --- Forced orientation (user preference) ---
+    // --- Orientation (real CSS rotation, like EmulatorJS fullscreen) ---
     const ORIENT_KEY = 'pokemon_orientation';
-    const ORIENT_CLASSES = ['force-portrait', 'force-landscape', 'reverse-portrait', 'reverse-landscape'];
+    const ORIENT_CLASSES = [
+        'orient-portrait', 'orient-reverse-portrait',
+        'orient-landscape', 'orient-reverse-landscape'
+    ];
 
     function setOrientation(mode) {
-        // mode: 'auto' | 'portrait' | 'reverse-portrait' | 'landscape' | 'reverse-landscape'
+        // Remove all orientation classes first
         ORIENT_CLASSES.forEach(function (c) { document.body.classList.remove(c); });
 
-        if (mode === 'portrait') {
-            document.body.classList.add('force-portrait');
-        } else if (mode === 'reverse-portrait') {
-            document.body.classList.add('force-portrait');
-            document.body.classList.add('reverse-portrait');
-        } else if (mode === 'landscape') {
-            document.body.classList.add('force-landscape');
-        } else if (mode === 'reverse-landscape') {
-            document.body.classList.add('force-landscape');
-            document.body.classList.add('reverse-landscape');
+        // In landscape modes we also need to reset any saved inline position
+        // on #screen-primary so the flex layout takes over cleanly
+        const primary = document.getElementById('screen-primary');
+        if (primary) {
+            primary.style.left = '';
+            primary.style.top  = '';
+            primary.style.width  = '';
+            primary.style.height = '';
+            primary.style.position = '';
         }
-        // 'auto' = no forced class, device orientation takes over
 
         if (mode && mode !== 'auto') {
+            document.body.classList.add('orient-' + mode);
             localStorage.setItem(ORIENT_KEY, mode);
         } else {
             localStorage.removeItem(ORIENT_KEY);
         }
+
+        // Show/hide the controls-opacity slider row
+        const opacityRow = document.getElementById('controls-opacity-row');
+        if (opacityRow) {
+            const isLandscape = mode === 'landscape' || mode === 'reverse-landscape';
+            opacityRow.style.display = isLandscape ? '' : 'none';
+        }
+
         reflow();
     }
 
