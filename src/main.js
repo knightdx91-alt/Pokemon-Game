@@ -143,6 +143,19 @@
     function gameLoop(timestamp) {
         // Process input — move one tile per keypress with cooldown
         const menuOpen = window.GameStartMenu && GameStartMenu.isOpen;
+
+        // Route D-pad / buttons into the menu when it's open
+        if (menuOpen) {
+            const elapsed = timestamp - lastMoveTime;
+            if (elapsed >= MOVE_COOLDOWN_MS) {
+                const inp = GameInput.state;
+                if      (inp.up)    { GameStartMenu.moveUp();   lastMoveTime = timestamp; }
+                else if (inp.down)  { GameStartMenu.moveDown(); lastMoveTime = timestamp; }
+                else if (inp.a)     { GameStartMenu.confirm();  lastMoveTime = timestamp; }
+                else if (inp.b)     { GameStartMenu.back();     lastMoveTime = timestamp; }
+            }
+        }
+
         if (!_transitioning && !menuOpen) {
             const elapsed = timestamp - lastMoveTime;
             if (elapsed >= MOVE_COOLDOWN_MS) {

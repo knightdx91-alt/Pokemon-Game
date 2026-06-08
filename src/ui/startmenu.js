@@ -552,5 +552,34 @@ window.GameStartMenu = (function () {
 
     document.addEventListener('DOMContentLoaded', init);
 
-    return { toggle, open, close, get isOpen() { return isOpen; } };
+    function moveUp() {
+        if (!isOpen) return;
+        const count = _itemCount();
+        if (page === 'main' || page === 'achievements') {
+            selectedIdx = (selectedIdx - 1 + count) % count;
+            _render();
+        }
+    }
+
+    function moveDown() {
+        if (!isOpen) return;
+        const count = _itemCount();
+        if (page === 'main' || page === 'achievements') {
+            selectedIdx = (selectedIdx + 1) % count;
+            _render();
+        }
+    }
+
+    function confirm() {
+        if (!isOpen) return;
+        _confirmSelected();
+    }
+
+    function back() {
+        if (!isOpen) return;
+        if (page === 'main') close();
+        else _navBack();
+    }
+
+    return { toggle, open, close, moveUp, moveDown, confirm, back, get isOpen() { return isOpen; } };
 })();
