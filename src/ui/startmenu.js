@@ -1,492 +1,334 @@
-// GameStartMenu — Emerald Enhanced-style start menu
+// GameStartMenu — Emerald Enhanced-style full-screen tab overlay
 window.GameStartMenu = (function () {
     'use strict';
 
     // -----------------------------------------------------------------------
-    // Constants
+    // Tab definitions
     // -----------------------------------------------------------------------
-    const TIER_ICON = { platinum: '💎', gold: '🥇', silver: '🥈', bronze: '🥉' };
-    const TIER_ORDER = ['platinum', 'gold', 'silver', 'bronze'];
-
-    // Main menu items — matches Emerald Enhanced layout
-    // Player name replaces TRAINER CARD as its own item (as in the original)
-    function _mainItems() {
-        const name = _playerName();
-        return [
-            { id: 'POKEMON',      label: 'POKéMON'      },
-            { id: 'BAG',          label: 'PACK'          },
-            { id: 'TRAINER_CARD', label: name            },
-            { id: 'POKENAV',      label: 'POKéNAV'      },
-            { id: 'SAVE',         label: 'SAVE'          },
-            { id: 'OPTIONS',      label: 'OPTIONS'       },
-            { id: 'EXIT',         label: 'CLOSE'         },
-        ];
-    }
-    // Keep a static reference for item count; items are built fresh each render
-    const MAIN_ITEMS_STATIC = [
-        'POKEMON','BAG','TRAINER_CARD','POKENAV','SAVE','OPTIONS','EXIT'
+    const TABS = [
+        { id: 'journal',      icon: '📋', label: 'Journal'      },
+        { id: 'pokemon',      icon: '🔴', label: 'POKéMON'      },
+        { id: 'bag',          icon: '🎒', label: 'Bag'           },
+        { id: 'achievements', icon: '✅', label: 'Achievements'  },
+        { id: 'save',         icon: '💾', label: 'Save'          },
+        { id: 'options',      icon: '⚙',  label: 'Options'       },
+        { id: 'exit',         icon: '✖',  label: 'Exit'          },
     ];
+
+    const TIER_ICON  = { platinum: '💎', gold: '🥇', silver: '🥈', bronze: '🥉' };
+    const TIER_ORDER = ['platinum', 'gold', 'silver', 'bronze'];
 
     // -----------------------------------------------------------------------
     // State
     // -----------------------------------------------------------------------
-    let menuEl      = null;   // #start-menu
+    let menuEl      = null;
     let isOpen      = false;
-    let page        = 'main'; // 'main' | 'trainer_card' | 'achievements' | 'factions' | 'save' | 'options'
-    let selectedIdx = 0;
-    let scrollTop   = 0;      // for scrollable sub-pages
+    let tabIdx      = 0;       // which tab is active
+    let selectedIdx = 0;       // cursor within tab content
+    let _saveDone   = false;
 
     // -----------------------------------------------------------------------
-    // Helpers
+    // Data helpers
     // -----------------------------------------------------------------------
     function _playtime() {
         const secs = (window.GameSave && GameSave.state && GameSave.state.meta)
-            ? (GameSave.state.meta.playtimeSeconds || 0)
-            : 0;
+            ? (GameSave.state.meta.playtimeSeconds || 0) : 0;
         const h = Math.floor(secs / 3600);
         const m = Math.floor((secs % 3600) / 60);
-        return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+        const s = secs % 60;
+        return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
     }
 
     function _playerName() {
         return (window.GameSave && GameSave.state && GameSave.state.player)
-            ? (GameSave.state.player.name || 'TRAINER')
-            : 'TRAINER';
+            ? (GameSave.state.player.name || 'TRAINER') : 'TRAINER';
     }
 
     function _money() {
         return (window.GameSave && GameSave.state && GameSave.state.player)
-            ? (GameSave.state.player.money || 0)
-            : 0;
+            ? (GameSave.state.player.money || 0) : 0;
     }
 
     function _badges() {
         return (window.GameSave && GameSave.state && GameSave.state.meta)
-            ? (GameSave.state.meta.badgeCount || 0)
-            : 0;
+            ? (GameSave.state.meta.badgeCount || 0) : 0;
     }
 
     function _ap() {
         return (window.GameSave && GameSave.state && GameSave.state.achievements)
-            ? (GameSave.state.achievements.totalAP || 0)
-            : 0;
+            ? (GameSave.state.achievements.totalAP || 0) : 0;
     }
 
     function _achCount() {
         return (window.GameSave && GameSave.state && GameSave.state.achievements)
-            ? ((GameSave.state.achievements.unlocked || []).length)
-            : 0;
+            ? ((GameSave.state.achievements.unlocked || []).length) : 0;
     }
 
     function _trainerId() {
         return (window.GameSave && GameSave.state && GameSave.state.meta)
-            ? String(GameSave.state.meta.trainerId || 0).padStart(6, '0')
-            : '000000';
+            ? String(GameSave.state.meta.trainerId || 0).padStart(6,'0') : '000000';
     }
 
-    function _lifeSkills() {
-        if (window.GameSave && GameSave.state && GameSave.state.lifeSkills) {
-            return GameSave.state.lifeSkills;
-        }
-        return { alchemy: 0, botany: 0, mining: 0 };
+    function _mapName() {
+        return (window.GameMap && GameMap.current) ? (GameMap.current.name || '—') : '—';
     }
 
-    function _topFaction() {
-        if (!window.GameFactions) return null;
-        let best = null, bestVal = -1;
-        for (const id of Object.keys(GameFactions.FACTIONS)) {
-            const val = GameFactions.getStanding(id);
-            if (val > bestVal) { bestVal = val; best = id; }
-        }
-        if (!best) return null;
-        return {
-            name: GameFactions.FACTIONS[best].name,
-            rank: GameFactions.getRank(best)
-        };
+    function _timeLabel() {
+        // Rough day/night based on real clock for now
+        const h = new Date().getHours();
+        if (h >= 5  && h < 8)  return { label: 'Dawn',  cls: 'time-dawn'  };
+        if (h >= 8  && h < 18) return { label: 'Day',   cls: 'time-day'   };
+        if (h >= 18 && h < 21) return { label: 'Dusk',  cls: 'time-dusk'  };
+        return                         { label: 'Night', cls: 'time-night' };
+    }
+
+    function _clockStr() {
+        const d = new Date();
+        const h = d.getHours();
+        const m = String(d.getMinutes()).padStart(2,'0');
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        const hh = h % 12 || 12;
+        return hh + ':' + m + ' ' + ampm;
     }
 
     // -----------------------------------------------------------------------
-    // Render helpers — build DOM for each page
+    // Render
     // -----------------------------------------------------------------------
-
-    /** Shared header row (name + play time) */
-    function _makeHeader() {
-        const hdr = document.createElement('div');
-        hdr.className = 'sm-header';
-        const nameEl = document.createElement('span');
-        nameEl.className = 'sm-header-name';
-        nameEl.textContent = _playerName();
-        const timeEl = document.createElement('span');
-        timeEl.className = 'sm-header-time';
-        timeEl.textContent = _playtime();
-        hdr.appendChild(nameEl);
-        hdr.appendChild(timeEl);
-        return hdr;
-    }
-
-    /** Back button item rendered as first item in sub-pages */
-    function _makeBackRow() {
-        const row = document.createElement('div');
-        row.className = 'sm-item' + (selectedIdx === 0 ? ' selected' : '');
-        row.innerHTML = '<span class="sm-arrow">' + (selectedIdx === 0 ? '►' : ' ') + '</span>'
-                      + '<span class="sm-label">← BACK</span>';
-        row.addEventListener('click', function () { _navBack(); });
-        return row;
-    }
-
-    function _renderMain() {
+    function _render() {
+        if (!menuEl) return;
         menuEl.innerHTML = '';
-        menuEl.appendChild(_makeHeader());
 
-        _mainItems().forEach(function (item, i) {
-            const row = document.createElement('div');
-            row.className = 'sm-item' + (i === selectedIdx ? ' selected' : '');
-            row.innerHTML = '<span class="sm-arrow">' + (i === selectedIdx ? '►' : ' ') + '</span>'
-                          + '<span class="sm-label">' + item.label + '</span>';
-            row.addEventListener('click', function () {
-                selectedIdx = i;
-                _confirmSelected();
+        // Tab bar
+        const tabBar = document.createElement('div');
+        tabBar.className = 'sm-tab-bar';
+        TABS.forEach(function (tab, i) {
+            const btn = document.createElement('button');
+            btn.className = 'sm-tab-btn' + (i === tabIdx ? ' active' : '');
+            btn.innerHTML = '<span class="sm-tab-icon">' + tab.icon + '</span>';
+            btn.title = tab.label;
+            btn.addEventListener('click', function () {
+                tabIdx = i;
+                selectedIdx = 0;
+                _render();
             });
-            menuEl.appendChild(row);
+            tabBar.appendChild(btn);
         });
+        menuEl.appendChild(tabBar);
+
+        // Section title
+        const titleBar = document.createElement('div');
+        titleBar.className = 'sm-title-bar';
+        titleBar.textContent = TABS[tabIdx].label;
+        menuEl.appendChild(titleBar);
+
+        // Content area
+        const content = document.createElement('div');
+        content.className = 'sm-content';
+
+        const tab = TABS[tabIdx];
+        if      (tab.id === 'journal')      _buildJournal(content);
+        else if (tab.id === 'pokemon')      _buildPokemon(content);
+        else if (tab.id === 'bag')          _buildBag(content);
+        else if (tab.id === 'achievements') _buildAchievements(content);
+        else if (tab.id === 'save')         _buildSave(content);
+        else if (tab.id === 'options')      _buildOptions(content);
+        else if (tab.id === 'exit')         { close(); return; }
+
+        menuEl.appendChild(content);
+
+        // Status bar at bottom
+        const statusBar = document.createElement('div');
+        statusBar.className = 'sm-status-bar';
+
+        const timeInfo = _timeLabel();
+        statusBar.innerHTML =
+            '<span class="sm-status-item">📍 ' + _mapName() + '</span>'
+          + '<span class="sm-status-item sm-status-time ' + timeInfo.cls + '">'
+          +   '🕐 ' + _clockStr() + ' <em>(' + timeInfo.label + ')</em>'
+          + '</span>'
+          + '<span class="sm-status-item">⏱ ' + _playtime() + '</span>'
+          + '<span class="sm-status-pokeball">🔴</span>';
+
+        menuEl.appendChild(statusBar);
+
+        // Scroll selected item into view
+        const sel = content.querySelector('.sm-row.selected');
+        if (sel) sel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
 
-    function _renderTrainerCard() {
-        menuEl.innerHTML = '';
-        menuEl.appendChild(_makeHeader());
+    // -----------------------------------------------------------------------
+    // Tab content builders
+    // -----------------------------------------------------------------------
 
-        const body = document.createElement('div');
-        body.className = 'sm-subpage';
-
-        const topFaction = _topFaction();
-        const ls = _lifeSkills();
-
+    function _buildJournal(el) {
         const rows = [
-            ['← BACK', null],
-            null, // separator
-            ['NAME',       _playerName()],
-            ['TRAINER ID', _trainerId()],
-            ['MONEY',      '$' + _money().toLocaleString()],
-            ['PLAY TIME',  _playtime()],
-            ['BADGES',     _badges() + ' / 8'],
-            ['ACH POINTS', _ap() + ' AP  (' + _achCount() + ' unlocked)'],
-            ['TOP FACTION', topFaction ? topFaction.name + ' — ' + topFaction.rank : '—'],
-            null,
-            ['LIFE SKILLS', ''],
-            ['  Alchemy',  'Lv ' + (ls.alchemy || 0)],
-            ['  Botany',   'Lv ' + (ls.botany  || 0)],
-            ['  Mining',   'Lv ' + (ls.mining  || 0)],
-            null,
-            ['ACHIEVEMENTS', '→']
+            { key: 'Name',       val: _playerName()                    },
+            { key: 'Trainer ID', val: _trainerId()                     },
+            { key: 'Money',      val: '₽' + _money().toLocaleString() },
+            { key: 'Location',   val: _mapName()                       },
+            { sep: true },
+            { key: 'Badges',     val: _badges() + ' / 8'              },
+            { key: 'Ach Points', val: _ap() + ' AP (' + _achCount() + ' unlocked)' },
+            { sep: true },
+            { key: 'Play Time',  val: _playtime()                      },
         ];
 
-        // Build flat items list (nulls = separators)
-        let itemIdx = 0;
         rows.forEach(function (r) {
-            if (r === null) {
+            if (r.sep) {
                 const sep = document.createElement('div');
                 sep.className = 'sm-sep';
-                body.appendChild(sep);
+                el.appendChild(sep);
                 return;
             }
-            const [key, val] = r;
             const row = document.createElement('div');
-            const isSelectable = (key === '← BACK' || key === 'ACHIEVEMENTS →' || key === 'ACHIEVEMENTS');
-            const rowData = { key, val, selectable: isSelectable, idx: itemIdx };
-            itemIdx++;
-
-            row.className = 'sm-card-row' + (isSelectable ? ' sm-selectable' : '');
-            if (isSelectable) {
-                const myIdx = rowData.idx;
-                row.addEventListener('click', function () {
-                    if (key === '← BACK') { _navBack(); }
-                    else { page = 'achievements'; selectedIdx = 0; scrollTop = 0; _render(); }
-                });
-            }
-            const kEl = document.createElement('span');
-            kEl.className = 'sm-card-key';
-            kEl.textContent = key;
-            row.appendChild(kEl);
-            if (val !== '' && val !== null) {
-                const vEl = document.createElement('span');
-                vEl.className = 'sm-card-val';
-                vEl.textContent = val;
-                row.appendChild(vEl);
-            }
-            body.appendChild(row);
+            row.className = 'sm-kv-row';
+            row.innerHTML = '<span class="sm-kv-key">' + r.key + '</span>'
+                          + '<span class="sm-kv-val">' + r.val + '</span>';
+            el.appendChild(row);
         });
-
-        menuEl.appendChild(body);
-
-        // Keyboard on trainer card: only BACK and ACHIEVEMENTS are "selectable"
-        menuEl.dataset.page = 'trainer_card';
     }
 
-    function _renderAchievements() {
-        menuEl.innerHTML = '';
-        menuEl.appendChild(_makeHeader());
+    function _buildPokemon(el) {
+        const msg = document.createElement('div');
+        msg.className = 'sm-placeholder';
+        msg.textContent = 'No Pokémon in party.';
+        el.appendChild(msg);
+    }
 
-        const body = document.createElement('div');
-        body.className = 'sm-subpage sm-scroll';
+    function _buildBag(el) {
+        const msg = document.createElement('div');
+        msg.className = 'sm-placeholder';
+        msg.textContent = 'Bag is empty.';
+        el.appendChild(msg);
+    }
 
-        // Back row
-        const backRow = document.createElement('div');
-        backRow.className = 'sm-item' + (selectedIdx === 0 ? ' selected' : '');
-        backRow.innerHTML = '<span class="sm-arrow">' + (selectedIdx === 0 ? '►' : ' ') + '</span>'
-                          + '<span class="sm-label">← BACK</span>';
-        backRow.addEventListener('click', function () { _navBack(); });
-        body.appendChild(backRow);
-
+    function _buildAchievements(el) {
         const all = window.GameAchievements ? GameAchievements.getAll() : [];
-        let listIdx = 1;
+        if (!all.length) {
+            const msg = document.createElement('div');
+            msg.className = 'sm-placeholder';
+            msg.textContent = 'No achievements yet.';
+            el.appendChild(msg);
+            return;
+        }
 
+        let rowIdx = 0;
         TIER_ORDER.forEach(function (tier) {
             const tierAchs = all.filter(function (a) { return a.tier === tier; });
             if (!tierAchs.length) return;
 
-            const tierHdr = document.createElement('div');
-            tierHdr.className = 'sm-ach-tier-hdr';
-            tierHdr.textContent = TIER_ICON[tier] + ' ' + tier.toUpperCase();
-            body.appendChild(tierHdr);
+            const hdr = document.createElement('div');
+            hdr.className = 'sm-ach-tier-hdr';
+            hdr.textContent = TIER_ICON[tier] + ' ' + tier.toUpperCase();
+            el.appendChild(hdr);
 
             tierAchs.forEach(function (a) {
                 const row = document.createElement('div');
-                row.className = 'sm-ach-row' + (a.unlocked ? '' : ' locked') + (listIdx === selectedIdx ? ' selected' : '');
+                row.className = 'sm-row sm-ach-row'
+                              + (a.unlocked ? '' : ' locked')
+                              + (rowIdx === selectedIdx ? ' selected' : '');
                 row.innerHTML = '<span class="sm-ach-icon">' + TIER_ICON[a.tier] + '</span>'
                               + '<span class="sm-ach-name">' + a.name + '</span>'
                               + '<span class="sm-ach-ap">' + a.apReward + ' AP</span>';
-                listIdx++;
-                body.appendChild(row);
+                el.appendChild(row);
+                rowIdx++;
             });
         });
-
-        menuEl.appendChild(body);
-        menuEl.dataset.page = 'achievements';
-        // Scroll to keep selection visible
-        _scrollToSelected(body);
     }
 
-    function _renderFactions() {
-        menuEl.innerHTML = '';
-        menuEl.appendChild(_makeHeader());
+    function _buildSave(el) {
+        const items = [
+            { id: 'save',       label: '💾  Save Game'     },
+            { id: 'load',       label: '📂  Load Game'     },
+            { id: 'newsave',    label: '🆕  New Game'      },
+        ];
 
-        const body = document.createElement('div');
-        body.className = 'sm-subpage sm-scroll';
-
-        // Back row
-        const backRow = document.createElement('div');
-        backRow.className = 'sm-item' + (selectedIdx === 0 ? ' selected' : '');
-        backRow.innerHTML = '<span class="sm-arrow">' + (selectedIdx === 0 ? '►' : ' ') + '</span>'
-                          + '<span class="sm-label">← BACK</span>';
-        backRow.addEventListener('click', function () { _navBack(); });
-        body.appendChild(backRow);
-
-        const factions = window.GameFactions ? Object.keys(GameFactions.FACTIONS) : [];
-        factions.forEach(function (id) {
-            const def = GameFactions.FACTIONS[id];
-            const standing = GameFactions.getStanding(id);
-            const rank = GameFactions.getRank(id);
-            const pct = Math.round((standing / 200) * 100);
-
+        items.forEach(function (item, i) {
             const row = document.createElement('div');
-            row.className = 'sm-faction-row';
-
-            const nameSpan = document.createElement('span');
-            nameSpan.className = 'sm-faction-name';
-            nameSpan.textContent = def.name;
-
-            const rankSpan = document.createElement('span');
-            rankSpan.className = 'sm-faction-rank';
-            rankSpan.textContent = rank;
-
-            const barWrap = document.createElement('div');
-            barWrap.className = 'sm-faction-bar-wrap';
-            const barFill = document.createElement('div');
-            barFill.className = 'sm-faction-bar-fill';
-            barFill.style.width = pct + '%';
-            barWrap.appendChild(barFill);
-
-            row.appendChild(nameSpan);
-            row.appendChild(rankSpan);
-            row.appendChild(barWrap);
-            body.appendChild(row);
+            row.className = 'sm-row sm-menu-row' + (i === selectedIdx ? ' selected' : '');
+            row.innerHTML = '<span class="sm-row-arrow">' + (i === selectedIdx ? '▶' : ' ') + '</span>'
+                          + '<span class="sm-row-label">' + item.label + '</span>';
+            row.addEventListener('click', function () {
+                selectedIdx = i;
+                _confirmSelected();
+            });
+            el.appendChild(row);
         });
 
-        menuEl.appendChild(body);
-        menuEl.dataset.page = 'factions';
-    }
-
-    function _renderSave() {
-        menuEl.innerHTML = '';
-        menuEl.appendChild(_makeHeader());
-
-        const body = document.createElement('div');
-        body.className = 'sm-subpage';
-
-        const backRow = document.createElement('div');
-        backRow.className = 'sm-item' + (selectedIdx === 0 ? ' selected' : '');
-        backRow.innerHTML = '<span class="sm-arrow">' + (selectedIdx === 0 ? '►' : ' ') + '</span>'
-                          + '<span class="sm-label">← BACK</span>';
-        backRow.addEventListener('click', function () { _navBack(); });
-        body.appendChild(backRow);
-
-        const msgEl = document.createElement('div');
-        msgEl.className = 'sm-save-msg';
-        msgEl.textContent = 'Saving…';
-        body.appendChild(msgEl);
-
-        menuEl.appendChild(body);
-        menuEl.dataset.page = 'save';
-
-        // Perform save
-        if (window.GameSave) {
-            GameSave.save(GameSave.currentSlot || 0);
+        if (_saveDone) {
+            const msg = document.createElement('div');
+            msg.className = 'sm-save-confirm';
+            msg.textContent = '✓ Game saved!';
+            el.appendChild(msg);
         }
-        setTimeout(function () {
-            msgEl.textContent = '✓ Saved!';
-            msgEl.classList.add('done');
-        }, 600);
     }
 
-    function _renderOptions() {
-        menuEl.innerHTML = '';
-        menuEl.appendChild(_makeHeader());
+    function _buildOptions(el) {
+        const savedScale = parseFloat(localStorage.getItem('pokemon_control_scale') || '1');
 
-        const body = document.createElement('div');
-        body.className = 'sm-subpage';
+        const controlRow = document.createElement('div');
+        controlRow.className = 'sm-opt-row';
+        controlRow.innerHTML =
+            '<span class="sm-opt-label">Controls</span>'
+          + '<span class="sm-opt-btns">'
+          + '<button class="sm-opt-btn" id="sm-dpad-btn">D-Pad</button>'
+          + '<button class="sm-opt-btn" id="sm-joy-btn">Joystick</button>'
+          + '</span>';
+        el.appendChild(controlRow);
 
-        const backRow = document.createElement('div');
-        backRow.className = 'sm-item' + (selectedIdx === 0 ? ' selected' : '');
-        backRow.innerHTML = '<span class="sm-arrow">' + (selectedIdx === 0 ? '►' : ' ') + '</span>'
-                          + '<span class="sm-label">← BACK</span>';
-        backRow.addEventListener('click', function () { _navBack(); });
-        body.appendChild(backRow);
-
-        // Control mode toggle
-        const modeRow = document.createElement('div');
-        modeRow.className = 'sm-opt-row';
-        modeRow.innerHTML = '<span class="sm-opt-label">Controls</span>'
-                          + '<span class="sm-opt-btns">'
-                          + '<button class="sm-opt-btn" id="sm-dpad-btn">D-Pad</button>'
-                          + '<button class="sm-opt-btn" id="sm-joy-btn">Joystick</button>'
-                          + '</span>';
-        body.appendChild(modeRow);
-
-        // Button size slider
         const sizeRow = document.createElement('div');
         sizeRow.className = 'sm-opt-row';
-        const savedScale = parseFloat(localStorage.getItem('pokemon_control_scale') || '1');
-        sizeRow.innerHTML = '<span class="sm-opt-label">Button Size</span>'
-                          + '<span class="sm-opt-btns">'
-                          + '<input type="range" id="sm-size-slider" min="0.5" max="2" step="0.1" value="' + savedScale + '">'
-                          + '<span id="sm-size-val">' + savedScale.toFixed(1) + '×</span>'
-                          + '</span>';
-        body.appendChild(sizeRow);
+        sizeRow.innerHTML =
+            '<span class="sm-opt-label">Button Size</span>'
+          + '<span class="sm-opt-btns">'
+          + '<input type="range" id="sm-size-slider" min="0.5" max="2" step="0.1" value="' + savedScale + '">'
+          + '<span id="sm-size-val">' + savedScale.toFixed(1) + '×</span>'
+          + '</span>';
+        el.appendChild(sizeRow);
 
-        menuEl.appendChild(body);
-        menuEl.dataset.page = 'options';
-
-        // Wire controls
         const dpadBtn = document.getElementById('sm-dpad-btn');
         const joyBtn  = document.getElementById('sm-joy-btn');
         const slider  = document.getElementById('sm-size-slider');
         const sizeVal = document.getElementById('sm-size-val');
 
-        if (dpadBtn) {
-            dpadBtn.addEventListener('click', function () {
-                if (window.GameControls) GameControls.setMode('dpad');
-                dpadBtn.classList.add('active');
-                if (joyBtn) joyBtn.classList.remove('active');
-            });
-        }
-        if (joyBtn) {
-            joyBtn.addEventListener('click', function () {
-                if (window.GameControls) GameControls.setMode('joystick');
-                joyBtn.classList.add('active');
-                if (dpadBtn) dpadBtn.classList.remove('active');
-            });
-        }
-        if (slider) {
-            slider.addEventListener('input', function () {
-                const v = slider.value;
-                document.documentElement.style.setProperty('--control-scale', v);
-                if (sizeVal) sizeVal.textContent = parseFloat(v).toFixed(1) + '×';
-                localStorage.setItem('pokemon_control_scale', v);
-            });
-        }
+        if (dpadBtn) dpadBtn.addEventListener('click', function () {
+            if (window.GameControls) GameControls.setMode('dpad');
+            dpadBtn.classList.add('active');
+            if (joyBtn) joyBtn.classList.remove('active');
+        });
+        if (joyBtn) joyBtn.addEventListener('click', function () {
+            if (window.GameControls) GameControls.setMode('joystick');
+            joyBtn.classList.add('active');
+            if (dpadBtn) dpadBtn.classList.remove('active');
+        });
+        if (slider) slider.addEventListener('input', function () {
+            const v = slider.value;
+            document.documentElement.style.setProperty('--control-scale', v);
+            if (sizeVal) sizeVal.textContent = parseFloat(v).toFixed(1) + '×';
+            localStorage.setItem('pokemon_control_scale', v);
+        });
     }
 
     // -----------------------------------------------------------------------
-    // Scroll helper
+    // Confirm action for current tab/selection
     // -----------------------------------------------------------------------
-    function _scrollToSelected(container) {
-        const sel = container.querySelector('.selected');
-        if (sel) {
-            sel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        }
-    }
-
-    // -----------------------------------------------------------------------
-    // Number of selectable items per page (for cursor wrap)
-    // -----------------------------------------------------------------------
-    function _itemCount() {
-        if (page === 'main') return MAIN_ITEMS_STATIC.length;
-        if (page === 'achievements') {
-            const all = window.GameAchievements ? GameAchievements.getAll() : [];
-            return 1 + all.length; // back + each achievement
-        }
-        if (page === 'factions') return 1; // only back is keyboard-navigable
-        if (page === 'trainer_card') return 1; // back + achievements link
-        if (page === 'save') return 1;
-        if (page === 'options') return 1;
-        return 1;
-    }
-
-    // -----------------------------------------------------------------------
-    // Render dispatcher
-    // -----------------------------------------------------------------------
-    function _render() {
-        if (!menuEl) return;
-        if (page === 'main')          _renderMain();
-        else if (page === 'trainer_card') _renderTrainerCard();
-        else if (page === 'achievements') _renderAchievements();
-        else if (page === 'factions')     _renderFactions();
-        else if (page === 'save')         _renderSave();
-        else if (page === 'options')      _renderOptions();
-    }
-
-    // -----------------------------------------------------------------------
-    // Navigation
-    // -----------------------------------------------------------------------
-    function _navBack() {
-        // Achievements can be reached from trainer_card or pokenav
-        if (page === 'achievements' && _prevPage === 'trainer_card') {
-            page = 'trainer_card';
-        } else {
-            page = 'main';
-        }
-        selectedIdx = 0;
-        _render();
-    }
-
-    let _prevPage = 'main';
-
     function _confirmSelected() {
-        if (page === 'main') {
-            const item = _mainItems()[selectedIdx];
-            if (!item) return;
-            if (item.id === 'EXIT') { close(); return; }
-            if (item.id === 'SAVE') { _prevPage = 'main'; page = 'save'; selectedIdx = 0; _render(); return; }
-            if (item.id === 'OPTIONS') { _prevPage = 'main'; page = 'options'; selectedIdx = 0; _render(); return; }
-            if (item.id === 'TRAINER_CARD') { _prevPage = 'main'; page = 'trainer_card'; selectedIdx = 0; _render(); return; }
-            if (item.id === 'POKENAV') { _prevPage = 'main'; page = 'factions'; selectedIdx = 0; _render(); return; }
-            // Other items (POKEDEX, POKEMON, BAG) — close menu for now
-            close();
-            return;
+        const tab = TABS[tabIdx];
+        if (tab.id === 'exit') { close(); return; }
+
+        if (tab.id === 'save') {
+            const items = ['save', 'load', 'newsave'];
+            const action = items[selectedIdx];
+            if (action === 'save') {
+                _saveDone = false;
+                if (window.GameSave) GameSave.save(GameSave.currentSlot || 0);
+                setTimeout(function () { _saveDone = true; _render(); }, 600);
+                _render();
+            } else if (action === 'load') {
+                if (window.GameSave) GameSave.load(GameSave.currentSlot || 0);
+                close();
+            }
         }
-        // Sub-pages: only index 0 = BACK is cursor-navigable via keyboard
-        if (selectedIdx === 0) { _navBack(); return; }
-        // Achievements list items: nothing to "confirm" — just visual browsing
     }
 
     // -----------------------------------------------------------------------
@@ -494,8 +336,9 @@ window.GameStartMenu = (function () {
     // -----------------------------------------------------------------------
     function open() {
         if (!menuEl) return;
-        page = 'main';
+        tabIdx = 0;
         selectedIdx = 0;
+        _saveDone = false;
         isOpen = true;
         menuEl.classList.add('open');
         _render();
@@ -508,73 +351,49 @@ window.GameStartMenu = (function () {
     }
 
     function toggle() {
-        if (isOpen) close();
-        else open();
+        if (isOpen) close(); else open();
     }
-
-    // -----------------------------------------------------------------------
-    // Keyboard handler
-    // -----------------------------------------------------------------------
-    function _onKey(e) {
-        if (!isOpen) return;
-        const count = _itemCount();
-        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
-            e.preventDefault();
-            if (page === 'main' || page === 'achievements') {
-                selectedIdx = (selectedIdx - 1 + count) % count;
-                _render();
-            }
-        } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
-            e.preventDefault();
-            if (page === 'main' || page === 'achievements') {
-                selectedIdx = (selectedIdx + 1) % count;
-                _render();
-            }
-        } else if (e.key === 'Enter' || e.key === 'z' || e.key === 'Z') {
-            e.preventDefault();
-            _confirmSelected();
-        } else if (e.key === 'Escape' || e.key === 'x' || e.key === 'X' || e.key === 'b' || e.key === 'B') {
-            e.preventDefault();
-            if (page === 'main') close();
-            else _navBack();
-        }
-    }
-
-    // -----------------------------------------------------------------------
-    // Init
-    // -----------------------------------------------------------------------
-    function init() {
-        const overlay = document.getElementById('ui-overlay');
-        if (!overlay) {
-            console.warn('[StartMenu] #ui-overlay not found');
-            return;
-        }
-        menuEl = document.createElement('div');
-        menuEl.id = 'start-menu';
-        menuEl.className = 'pokemon-menu';
-        overlay.appendChild(menuEl);
-
-        window.addEventListener('keydown', _onKey);
-    }
-
-    document.addEventListener('DOMContentLoaded', init);
 
     function moveUp() {
         if (!isOpen) return;
-        const count = _itemCount();
-        if (page === 'main' || page === 'achievements') {
-            selectedIdx = (selectedIdx - 1 + count) % count;
+        const tab = TABS[tabIdx];
+        if (tab.id === 'achievements') {
+            const all = window.GameAchievements ? GameAchievements.getAll() : [];
+            const count = all.length;
+            if (count > 0) { selectedIdx = (selectedIdx - 1 + count) % count; _render(); }
+        } else if (tab.id === 'save') {
+            selectedIdx = (selectedIdx - 1 + 3) % 3;
             _render();
         }
     }
 
     function moveDown() {
         if (!isOpen) return;
-        const count = _itemCount();
-        if (page === 'main' || page === 'achievements') {
-            selectedIdx = (selectedIdx + 1) % count;
+        const tab = TABS[tabIdx];
+        if (tab.id === 'achievements') {
+            const all = window.GameAchievements ? GameAchievements.getAll() : [];
+            const count = all.length;
+            if (count > 0) { selectedIdx = (selectedIdx + 1) % count; _render(); }
+        } else if (tab.id === 'save') {
+            selectedIdx = (selectedIdx + 1) % 3;
             _render();
         }
+    }
+
+    function moveLeft() {
+        if (!isOpen) return;
+        tabIdx = (tabIdx - 1 + TABS.length) % TABS.length;
+        selectedIdx = 0;
+        _saveDone = false;
+        _render();
+    }
+
+    function moveRight() {
+        if (!isOpen) return;
+        tabIdx = (tabIdx + 1) % TABS.length;
+        selectedIdx = 0;
+        _saveDone = false;
+        _render();
     }
 
     function confirm() {
@@ -584,9 +403,38 @@ window.GameStartMenu = (function () {
 
     function back() {
         if (!isOpen) return;
-        if (page === 'main') close();
-        else _navBack();
+        close();
     }
 
-    return { toggle, open, close, moveUp, moveDown, confirm, back, get isOpen() { return isOpen; } };
+    // -----------------------------------------------------------------------
+    // Keyboard handler (desktop)
+    // -----------------------------------------------------------------------
+    function _onKey(e) {
+        if (!isOpen) return;
+        if (e.key === 'ArrowLeft'  || e.key === 'q') { e.preventDefault(); moveLeft();  return; }
+        if (e.key === 'ArrowRight' || e.key === 'e') { e.preventDefault(); moveRight(); return; }
+        if (e.key === 'ArrowUp'    || e.key === 'w') { e.preventDefault(); moveUp();    return; }
+        if (e.key === 'ArrowDown'  || e.key === 's') { e.preventDefault(); moveDown();  return; }
+        if (e.key === 'Enter' || e.key === 'z' || e.key === 'Z') { e.preventDefault(); confirm(); return; }
+        if (e.key === 'Escape' || e.key === 'x' || e.key === 'X' || e.key === 'b' || e.key === 'B') {
+            e.preventDefault(); close(); return;
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Init
+    // -----------------------------------------------------------------------
+    function init() {
+        const overlay = document.getElementById('ui-overlay');
+        if (!overlay) { console.warn('[StartMenu] #ui-overlay not found'); return; }
+        menuEl = document.createElement('div');
+        menuEl.id = 'start-menu';
+        overlay.appendChild(menuEl);
+        window.addEventListener('keydown', _onKey);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+
+    return { toggle, open, close, moveUp, moveDown, moveLeft, moveRight, confirm, back,
+             get isOpen() { return isOpen; } };
 })();

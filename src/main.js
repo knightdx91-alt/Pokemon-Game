@@ -149,10 +149,12 @@
             const elapsed = timestamp - lastMoveTime;
             if (elapsed >= MOVE_COOLDOWN_MS) {
                 const inp = GameInput.state;
-                if      (inp.up)    { GameStartMenu.moveUp();   lastMoveTime = timestamp; }
-                else if (inp.down)  { GameStartMenu.moveDown(); lastMoveTime = timestamp; }
-                else if (inp.a)     { GameStartMenu.confirm();  lastMoveTime = timestamp; }
-                else if (inp.b)     { GameStartMenu.back();     lastMoveTime = timestamp; }
+                if      (inp.up)    { GameStartMenu.moveUp();    lastMoveTime = timestamp; }
+                else if (inp.down)  { GameStartMenu.moveDown();  lastMoveTime = timestamp; }
+                else if (inp.left)  { GameStartMenu.moveLeft();  lastMoveTime = timestamp; }
+                else if (inp.right) { GameStartMenu.moveRight(); lastMoveTime = timestamp; }
+                else if (inp.a)     { GameStartMenu.confirm();   lastMoveTime = timestamp; }
+                else if (inp.b)     { GameStartMenu.back();      lastMoveTime = timestamp; }
             }
         }
 
