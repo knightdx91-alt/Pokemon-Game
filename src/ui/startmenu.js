@@ -546,47 +546,101 @@ window.GameStartMenu = (function () {
     }
 
     function _buildBag(el) {
+        // EE item_menu.c sDefaultBagWindows layout:
+        // WIN[0] item list:    right side  — left=112px, top=8px,  120×144px
+        // WIN[1] description:  bottom-left — left=0px,   top=104px, 112×48px
+        // WIN[2] pocket name:  top-center of left area   left=32px, top=8px,  64×16px
+        // Left panel: pocket icon/selector; Right panel: item list for selected pocket
         const inv = (window.GameSave && GameSave.state && GameSave.state.inventory)
             ? GameSave.state.inventory
-            : { items:[], keyItems:[], pokeBalls:[], tms:[], berries:[] };
+            : { items:[], medicine:[], valuables:[], keyItems:[], pokeBalls:[], tms:[], berries:[] };
 
-        const pockets = [
-            { label: 'Items',      items: inv.items     || [] },
-            { label: 'Key Items',  items: inv.keyItems  || [] },
-            { label: 'Poké Balls', items: inv.pokeBalls || [] },
-            { label: 'TMs & HMs',  items: inv.tms       || [] },
-            { label: 'Berries',    items: inv.berries   || [] },
+        const POCKETS = [
+            { id:'items',     label:'Items',      icon:'🎒', items: inv.items     || [] },
+            { id:'medicine',  label:'Medicine',   icon:'💊', items: inv.medicine  || inv.items || [] },
+            { id:'valuables', label:'Valuables',  icon:'💰', items: inv.valuables || [] },
+            { id:'keyItems',  label:'Key Items',  icon:'🔑', items: inv.keyItems  || [] },
+            { id:'pokeBalls', label:'Poké Balls', icon:'⚪', items: inv.pokeBalls || [] },
+            { id:'tms',       label:'TMs/HMs',    icon:'💿', items: inv.tms       || [] },
+            { id:'berries',   label:'Berries',    icon:'🍒', items: inv.berries   || [] },
         ];
 
-        pockets.forEach(function (pocket, i) {
-            const row = document.createElement('div');
-            row.className = 'sm-row' + (i === _subIdx ? ' selected' : '');
-            const arrow = document.createElement('span');
-            arrow.className = 'sm-row-arrow';
-            arrow.textContent = i === _subIdx ? '▶' : ' ';
-            const name = document.createElement('span');
-            name.textContent = pocket.label;
-            const count = document.createElement('span');
-            count.style.cssText = 'margin-left:auto;color:#6090a8;font-size:10px;';
-            count.textContent = pocket.items.length ? pocket.items.length + ' item' + (pocket.items.length !== 1 ? 's' : '') : 'Empty';
-            row.appendChild(arrow);
-            row.appendChild(name);
-            row.appendChild(count);
-            row.addEventListener('click', function () { _subIdx = i; _render(); });
-            el.appendChild(row);
+        el.style.padding = '0';
+        el.style.flexDirection = 'column';
+
+        // ── Pocket name bar (top of left area — EE WIN[2])
+        const pocketBar = document.createElement('div');
+        pocketBar.className = 'bag-pocket-bar';
+        const pocketName = document.createElement('span');
+        pocketName.className = 'bag-pocket-name';
+        pocketName.textContent = POCKETS[_subIdx] ? POCKETS[_subIdx].label : 'Items';
+        pocketBar.appendChild(pocketName);
+        el.appendChild(pocketBar);
+
+        // ── Two-column body
+        const body = document.createElement('div');
+        body.className = 'bag-body';
+
+        // LEFT: pocket selector column
+        const leftCol = document.createElement('div');
+        leftCol.className = 'bag-left-col';
+
+        POCKETS.forEach(function(pocket, i) {
+            const btn = document.createElement('div');
+            btn.className = 'bag-pocket-btn' + (i === _subIdx ? ' selected' : '');
+            btn.style.pointerEvents = 'all';
+            btn.innerHTML = '<span class="bag-pocket-icon">' + pocket.icon + '</span>'
+                + '<span class="bag-pocket-lbl">' + pocket.label + '</span>';
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                _subIdx = i;
+                _render();
+            });
+            leftCol.appendChild(btn);
         });
 
-        // If the selected pocket has items, list them below
-        const sel = pockets[_subIdx];
-        if (sel && sel.items.length) {
-            const sep = document.createElement('div'); sep.className = 'sm-sep'; el.appendChild(sep);
-            sel.items.forEach(function (entry) {
-                const kv = document.createElement('div'); kv.className = 'sm-kv-row';
-                kv.innerHTML = '<span class="sm-kv-key">' + (entry.itemId || entry.id || '?') + '</span>'
-                    + '<span class="sm-kv-val">×' + (entry.quantity || 1) + '</span>';
-                el.appendChild(kv);
+        body.appendChild(leftCol);
+
+        // RIGHT: item list (EE WIN[0])
+        const rightCol = document.createElement('div');
+        rightCol.className = 'bag-right-col';
+
+        const sel = POCKETS[_subIdx] || POCKETS[0];
+        if (!sel.items.length) {
+            const empty = document.createElement('div');
+            empty.className = 'bag-item-empty';
+            empty.textContent = 'Empty';
+            rightCol.appendChild(empty);
+        } else {
+            const itemList = document.createElement('div');
+            itemList.className = 'bag-item-list';
+            sel.items.forEach(function(entry, ii) {
+                const row = document.createElement('div');
+                row.className = 'bag-item-row';
+                const iname = document.createElement('span');
+                iname.className = 'bag-item-name';
+                iname.textContent = entry.name || entry.itemId || entry.id || '?';
+                const qty = document.createElement('span');
+                qty.className = 'bag-item-qty';
+                qty.textContent = '×' + (entry.quantity || 1);
+                row.appendChild(iname);
+                row.appendChild(qty);
+                itemList.appendChild(row);
             });
+            rightCol.appendChild(itemList);
         }
+
+        body.appendChild(rightCol);
+        el.appendChild(body);
+
+        // ── Description bar (bottom-left — EE WIN[1])
+        const desc = document.createElement('div');
+        desc.className = 'bag-desc-bar';
+        const selItem = sel.items[0]; // show first item desc, or pocket summary
+        desc.textContent = selItem
+            ? (selItem.desc || selItem.description || ('Select an item to use or toss.'))
+            : (sel.label + ' pocket is empty.');
+        el.appendChild(desc);
     }
 
     // --- Party viewer ---
@@ -600,93 +654,128 @@ window.GameStartMenu = (function () {
     }
 
     function _buildParty(el) {
+        // EE party_menu.h sSinglePartyMenuWindowTemplate layout:
+        // Slot 0 (left col, large): left=8px, top=24px, 80×56px
+        // Slots 1-5 (right col, compact): left=96px, top=8/32/56/80/104px, 144×24px each
+        // Cancel bar bottom: left=8px, top=120px, 224×32px
         const party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
         const filled = party.filter(Boolean);
 
+        const STATUS_COLOR = { PAR:'#e8c000', BRN:'#e85020', PSN:'#a820e8', FRZ:'#18c8e8', SLP:'#888', FNT:'#e83020' };
+
+        el.style.padding = '0';
+        el.style.overflow = 'hidden';
+
         if (!filled.length) {
             const empty = document.createElement('div');
-            empty.className = 'sm-kv-row';
-            empty.style.cssText = 'justify-content:center;color:#6090a8;padding:12px 0;';
+            empty.className = 'pty-empty';
             empty.textContent = 'No Pokémon in party';
             el.appendChild(empty);
+            // Cancel bar
+            const bar = document.createElement('div');
+            bar.className = 'pty-cancel-bar';
+            bar.textContent = 'CANCEL';
+            el.appendChild(bar);
             return;
         }
 
-        const STATUS_COLOR = { PAR:'#e8c000', BRN:'#e85020', PSN:'#a820e8', FRZ:'#18c8e8', SLP:'#888', FNT:'#e83020' };
+        // ── Two-column layout wrapper
+        const cols = document.createElement('div');
+        cols.className = 'pty-cols';
 
-        filled.forEach(function(mon, i) {
-            const row = document.createElement('div');
-            row.className = 'sm-party-row' + (i === _subIdx ? ' selected' : '');
-            row.addEventListener('click', function(){ _subIdx = i; _render(); });
+        // ── LEFT COLUMN: slot 0 large box
+        const leftCol = document.createElement('div');
+        leftCol.className = 'pty-left-col';
 
-            // Cursor
-            const cursor = document.createElement('span');
-            cursor.className = 'sm-row-arrow';
-            cursor.textContent = i === _subIdx ? '▶' : ' ';
+        const mon0 = filled[0];
+        const slot0 = document.createElement('div');
+        slot0.className = 'pty-slot0' + (0 === _subIdx ? ' selected' : '');
+        slot0.style.pointerEvents = 'all';
+        slot0.addEventListener('click', function(e) { e.stopPropagation(); _subIdx = 0; _render(); });
 
-            // Species name + nickname
-            const nameEl = document.createElement('div');
-            nameEl.className = 'sm-party-name';
-            const displayName = mon.nickname || mon.speciesId || '???';
-            nameEl.textContent = displayName;
+        const hp0pct = mon0.maxHp > 0 ? Math.max(0, Math.min(1, mon0.currentHp / mon0.maxHp)) : 0;
+        const hp0col = hp0pct > 0.5 ? '#20d840' : hp0pct > 0.25 ? '#e8c000' : '#e82020';
 
-            // Level
-            const lvEl = document.createElement('div');
-            lvEl.className = 'sm-party-lv';
-            lvEl.textContent = 'Lv.' + (mon.level || '?');
+        slot0.innerHTML =
+            '<div class="pty-slot0-sprite">🟣</div>'
+          + '<div class="pty-slot0-nick">' + (mon0.nickname || mon0.speciesId || '???') + (mon0.statusCondition ? ' <span style="background:' + (STATUS_COLOR[mon0.statusCondition]||'#666') + ';padding:0 2px;font-size:9px;color:#fff">' + mon0.statusCondition + '</span>' : '') + '</div>'
+          + '<div class="pty-slot0-lv">Lv.' + (mon0.level||'?') + '</div>'
+          + '<div class="pty-slot0-hp">'
+          +   '<span class="pty-hp-label">HP</span>'
+          +   '<div class="pty-hp-bar-wrap"><div class="pty-hp-bar-fill" style="width:' + Math.round(hp0pct*100) + '%;background:' + hp0col + '"></div></div>'
+          + '</div>'
+          + '<div class="pty-slot0-hpnum">' + (mon0.currentHp||0) + '/' + (mon0.maxHp||0) + '</div>';
 
-            // HP bar
-            const hpWrap = document.createElement('div');
-            hpWrap.className = 'sm-party-hp-wrap';
-            const hpPct = mon.maxHp > 0 ? Math.max(0, Math.min(1, mon.currentHp / mon.maxHp)) : 0;
-            const hpColor = hpPct > 0.5 ? '#20d840' : hpPct > 0.25 ? '#e8c000' : '#e82020';
-            hpWrap.innerHTML =
-                '<span class="sm-party-hp-label">HP</span>'
-              + '<div class="sm-party-hp-bar"><div style="width:' + Math.round(hpPct*100) + '%;background:' + hpColor + ';height:100%;border-radius:2px;"></div></div>'
-              + '<span class="sm-party-hp-num">' + (mon.currentHp||0) + '/' + (mon.maxHp||0) + '</span>';
+        leftCol.appendChild(slot0);
 
-            // Status badge
-            if (mon.statusCondition) {
-                const badge = document.createElement('span');
-                badge.className = 'sm-party-status';
-                badge.textContent = mon.statusCondition;
-                badge.style.background = STATUS_COLOR[mon.statusCondition] || '#666';
-                nameEl.appendChild(badge);
-            }
+        // Cancel button below slot 0 in left col
+        const cancelBtn = document.createElement('div');
+        cancelBtn.className = 'pty-cancel-btn';
+        cancelBtn.style.pointerEvents = 'all';
+        cancelBtn.textContent = 'CANCEL';
+        cancelBtn.addEventListener('click', function(e) { e.stopPropagation(); _goBack(); });
+        leftCol.appendChild(cancelBtn);
 
-            const info = document.createElement('div');
-            info.className = 'sm-party-info';
-            info.appendChild(nameEl);
-            info.appendChild(hpWrap);
+        cols.appendChild(leftCol);
 
-            row.appendChild(cursor);
-            row.appendChild(info);
-            row.appendChild(lvEl);
-            el.appendChild(row);
+        // ── RIGHT COLUMN: slots 1-5 compact boxes
+        const rightCol = document.createElement('div');
+        rightCol.className = 'pty-right-col';
 
-            // Expanded detail for selected slot
-            if (i === _subIdx) {
-                const detail = document.createElement('div');
-                detail.className = 'sm-party-detail';
-                detail.innerHTML =
-                    '<div class="sm-kv-row"><span class="sm-kv-key">Species</span><span class="sm-kv-val">' + (mon.speciesId||'???') + '</span></div>'
-                  + '<div class="sm-kv-row"><span class="sm-kv-key">Nature</span><span class="sm-kv-val">' + (mon.nature||'Hardy') + '</span></div>'
-                  + '<div class="sm-kv-row"><span class="sm-kv-key">EXP</span><span class="sm-kv-val">' + (mon.exp||0) + '</span></div>'
-                  + '<div class="sm-kv-row"><span class="sm-kv-key">Item</span><span class="sm-kv-val">' + (mon.heldItem||'—') + '</span></div>';
-                // Moves
-                const moveList = (mon.moves||[]).filter(Boolean);
-                if (moveList.length) {
-                    const sep = document.createElement('div'); sep.className = 'sm-sep'; detail.appendChild(sep);
-                    const ml = document.createElement('div'); ml.className='sm-kv-row'; ml.innerHTML='<span class="sm-kv-key" style="color:#80d0e8">Moves</span>'; detail.appendChild(ml);
-                    moveList.forEach(function(mv){
-                        const mr = document.createElement('div'); mr.className='sm-kv-row';
-                        mr.innerHTML='<span class="sm-kv-key" style="padding-left:8px">'+mv+'</span>';
-                        detail.appendChild(mr);
-                    });
+        for (var i = 1; i < 6; i++) {
+            const mon = filled[i];
+            const slot = document.createElement('div');
+
+            if (!mon) {
+                slot.className = 'pty-slot-compact pty-slot-empty';
+                slot.textContent = '—';
+            } else {
+                slot.className = 'pty-slot-compact' + (i === _subIdx ? ' selected' : '');
+                slot.style.pointerEvents = 'all';
+                (function(idx, m) {
+                    slot.addEventListener('click', function(e) { e.stopPropagation(); _subIdx = idx; _render(); });
+                })(i, mon);
+
+                const hpPct = mon.maxHp > 0 ? Math.max(0, Math.min(1, mon.currentHp / mon.maxHp)) : 0;
+                const hpCol = hpPct > 0.5 ? '#20d840' : hpPct > 0.25 ? '#e8c000' : '#e82020';
+
+                // EE right box: nickname x=22,y=3; level x=30,y=12; HP x=92,y=12; HP bar x=88,y=10
+                slot.innerHTML =
+                    '<span class="pty-compact-nick">' + (mon.nickname || mon.speciesId || '???') + '</span>'
+                  + '<span class="pty-compact-lv">Lv.' + (mon.level||'?') + '</span>'
+                  + '<div class="pty-compact-hprow">'
+                  +   '<span class="pty-hp-label">HP</span>'
+                  +   '<div class="pty-hp-bar-wrap"><div class="pty-hp-bar-fill" style="width:' + Math.round(hpPct*100) + '%;background:' + hpCol + '"></div></div>'
+                  +   '<span class="pty-compact-hpnum">' + (mon.currentHp||0) + '/' + (mon.maxHp||0) + '</span>'
+                  + '</div>';
+
+                if (mon.statusCondition) {
+                    const badge = document.createElement('span');
+                    badge.style.cssText = 'position:absolute;top:1px;right:2px;background:' + (STATUS_COLOR[mon.statusCondition]||'#666') + ';color:#fff;font-size:9px;padding:0 2px;';
+                    badge.textContent = mon.statusCondition;
+                    slot.style.position = 'relative';
+                    slot.appendChild(badge);
                 }
-                el.appendChild(detail);
             }
-        });
+
+            rightCol.appendChild(slot);
+        }
+
+        cols.appendChild(rightCol);
+        el.appendChild(cols);
+
+        // ── Detail panel for selected slot (below cols, if a mon is selected)
+        const selMon = filled[_subIdx];
+        if (selMon) {
+            const detail = document.createElement('div');
+            detail.className = 'pty-detail-bar';
+            const moves = (selMon.moves || []).filter(Boolean).slice(0, 4);
+            detail.innerHTML =
+                '<span class="pty-detail-species">' + (selMon.speciesId || '???') + '</span>'
+              + '<span class="pty-detail-item">' + (selMon.heldItem ? '♦ ' + selMon.heldItem : '') + '</span>'
+              + (moves.length ? '<span class="pty-detail-moves">' + moves.join(' · ') + '</span>' : '');
+            el.appendChild(detail);
+        }
     }
 
     // --- Pokédex ---
@@ -937,25 +1026,137 @@ window.GameStartMenu = (function () {
     }
 
     function _buildPokenav(el) {
-        ['Map','Condition','Cancel'].forEach(function(label,i){
-            const row=document.createElement('div');
-            row.className='sm-row'+(i===_subIdx?' selected':'');
-            row.innerHTML='<span class="sm-row-arrow">'+(i===_subIdx?'▶':' ')+'</span><span>'+label+'</span>';
-            el.appendChild(row);
+        // EE pokenav_main_menu.c layout:
+        // Left-side animated header (spinning Pokénav device)
+        // 5 menu options as list: Map, Condition, Ribbons, Match Call, Close
+        // Help bar: left=8px, top=176px, 128×16px — bottom hint
+        el.style.padding = '0';
+
+        // ── Animated header — left side Pokénav device graphic
+        const hdr = document.createElement('div');
+        hdr.className = 'pnav-header';
+        const logo = document.createElement('div');
+        logo.className = 'pnav-logo';
+        logo.innerHTML = '<span class="pnav-logo-ring">◯</span><span class="pnav-logo-dot">◉</span>';
+        const titleEl = document.createElement('span');
+        titleEl.className = 'pnav-title';
+        titleEl.textContent = 'POKÉNAV';
+        hdr.appendChild(logo);
+        hdr.appendChild(titleEl);
+        el.appendChild(hdr);
+
+        // ── Menu options list
+        const OPTIONS = [
+            { id:'map',        label:'Map',        hint:'View the region map' },
+            { id:'condition',  label:'Condition',  hint:'Check Pokémon condition' },
+            { id:'ribbons',    label:'Ribbons',    hint:'View collected ribbons' },
+            { id:'match_call', label:'Match Call', hint:'Call registered trainers' },
+            { id:'close',      label:'Close',      hint:'Close the Pokénav' },
+        ];
+
+        const list = document.createElement('div');
+        list.className = 'pnav-list';
+        OPTIONS.forEach(function(opt, i) {
+            const row = document.createElement('div');
+            row.className = 'pnav-row' + (i === _subIdx ? ' selected' : '');
+            row.style.pointerEvents = 'all';
+            const arrow = document.createElement('span');
+            arrow.className = 'sm-row-arrow';
+            arrow.textContent = i === _subIdx ? '▶' : ' ';
+            const lbl = document.createElement('span');
+            lbl.className = 'pnav-row-label';
+            lbl.textContent = opt.label;
+            row.appendChild(arrow);
+            row.appendChild(lbl);
+            row.addEventListener('click', function(e) {
+                e.stopPropagation();
+                _subIdx = i;
+                if (opt.id === 'close') _goBack();
+                else _render();
+            });
+            list.appendChild(row);
         });
-        const msg=document.createElement('div'); msg.className='sm-placeholder'; msg.style.marginTop='16px'; msg.textContent='Pokénav features coming soon.'; el.appendChild(msg);
+        el.appendChild(list);
+
+        // ── Help bar at bottom — EE WIN_POKENAV_HELP_BAR
+        const help = document.createElement('div');
+        help.className = 'pnav-help-bar';
+        const curOpt = OPTIONS[_subIdx] || OPTIONS[0];
+        help.textContent = curOpt.hint;
+        el.appendChild(help);
     }
 
     function _buildSave(el) {
-        [{id:'save',label:'💾  Save Game'},{id:'load',label:'📂  Load Game'}].forEach(function(a,i){
-            const row=document.createElement('div');
-            row.className='sm-row'+(i===_subIdx?' selected':'');
-            row.innerHTML='<span class="sm-row-arrow">'+(i===_subIdx?'▶':' ')+'</span><span>'+a.label+'</span>';
-            row.addEventListener('click',function(){_subIdx=i;_doSaveAction(a.id);});
-            el.appendChild(row);
+        // EE save window: info box (location, name, badges, dex, time) above save/load rows
+        el.style.padding = '0';
+        el.style.gap = '0';
+
+        // Info box — matches EE sSaveInfoWindowTemplate content
+        const dexCount = (window.GameSave && GameSave.state && GameSave.state.pokedex)
+            ? (GameSave.state.pokedex.caught || []).length : 0;
+
+        const infoBox = document.createElement('div');
+        infoBox.className = 'save-info-box';
+
+        const rows = [
+            { label: null,      val: _mapName(),                   cls: 'save-info-location' },
+            { label: 'Player:',  val: _playerName(),                cls: 'save-info-row' },
+            { label: 'Badges:',  val: String(_badges()),            cls: 'save-info-row' },
+            { label: 'Pokédex:', val: String(dexCount),             cls: 'save-info-row' },
+            { label: 'Time:',    val: _playtime(),                  cls: 'save-info-row' },
+        ];
+        rows.forEach(function(r) {
+            const row = document.createElement('div');
+            row.className = r.cls;
+            if (r.label) {
+                const lbl = document.createElement('span');
+                lbl.className = 'save-info-lbl';
+                lbl.textContent = r.label;
+                const val = document.createElement('span');
+                val.className = 'save-info-val';
+                val.textContent = r.val;
+                row.appendChild(lbl);
+                row.appendChild(val);
+            } else {
+                row.textContent = r.val;
+            }
+            infoBox.appendChild(row);
         });
+        el.appendChild(infoBox);
+
+        // Separator
+        const sep = document.createElement('div');
+        sep.className = 'save-sep';
+        el.appendChild(sep);
+
+        // Save / Load rows
+        const ACTIONS = [
+            { id:'save', label:'Save Game' },
+            { id:'load', label:'Load Game' },
+        ];
+        const actionList = document.createElement('div');
+        actionList.className = 'save-action-list';
+        ACTIONS.forEach(function(a, i) {
+            const row = document.createElement('div');
+            row.className = 'save-action-row' + (i === _subIdx ? ' selected' : '');
+            row.style.pointerEvents = 'all';
+            const arrow = document.createElement('span');
+            arrow.className = 'sm-row-arrow';
+            arrow.textContent = i === _subIdx ? '▶' : ' ';
+            const lbl = document.createElement('span');
+            lbl.textContent = a.label;
+            row.appendChild(arrow);
+            row.appendChild(lbl);
+            row.addEventListener('click', function() { _subIdx = i; _doSaveAction(a.id); });
+            actionList.appendChild(row);
+        });
+        el.appendChild(actionList);
+
         if (_saveDone) {
-            const msg=document.createElement('div'); msg.className='sm-save-confirm'; msg.textContent='✓ Game saved!'; el.appendChild(msg);
+            const msg = document.createElement('div');
+            msg.className = 'sm-save-confirm';
+            msg.textContent = '✓ Game saved!';
+            el.appendChild(msg);
         }
     }
 
@@ -972,83 +1173,182 @@ window.GameStartMenu = (function () {
     }
 
     function _buildOptions(el) {
-        const savedScale = parseFloat(localStorage.getItem('pokemon_control_scale')||'1');
-        const currentOrient = window.GameLayout ? GameLayout.getOrientationPref() : 'auto';
-        const savedTextSpeed = localStorage.getItem('pokemon_text_speed')||'MED';
-        const savedBattleScene = localStorage.getItem('pokemon_battle_scene')||'ON';
-        const savedBattleStyle = localStorage.getItem('pokemon_battle_style')||'SHIFT';
-        const savedAutoRun = localStorage.getItem('pokemon_auto_run')||'OFF';
-        const savedAutosave = localStorage.getItem('pokemon_autosave_int')||'15s';
-        const savedControls = (window.GameControls && GameControls.getMode && GameControls.getMode()) || 'dpad';
+        // EE option_menu.c — exact 18 options, scrollable list, GPU-highlight bar
+        // WIN_TEXT_OPTION: left=16px, top=8px, 208×16px — title already in sm-win-title
+        // WIN_OPTIONS: left=16px, top=40px, 208×112px — 7 rows visible, Y_DIFF=16px
+        const savedScale      = parseFloat(localStorage.getItem('pokemon_control_scale')||'1');
+        const currentOrient   = window.GameLayout ? GameLayout.getOrientationPref() : 'auto';
+        const savedTextSpeed  = localStorage.getItem('pokemon_text_speed')   || 'MED';
+        const savedBScene     = localStorage.getItem('pokemon_battle_scene') || 'ON';
+        const savedForceSet   = localStorage.getItem('pokemon_force_set')    || 'OFF';
+        const savedDmgNums    = localStorage.getItem('pokemon_damage_nums')  || 'ON';
+        const savedThemeUI    = localStorage.getItem('pokemon_theme_ui')     || 'MODERN';
+        const savedTheme      = localStorage.getItem('pokemon_theme')        || 'DARK';
+        const savedFrame      = parseInt(localStorage.getItem('pokemon_frame')    || '1');
+        const savedThemeBall  = parseInt(localStorage.getItem('pokemon_theme_ball')|| '1');
+        const savedRandMusic  = localStorage.getItem('pokemon_random_music') || 'OFF';
+        const savedDisMusic   = localStorage.getItem('pokemon_disable_music')|| 'OFF';
+        const savedBarSpeed   = parseInt(localStorage.getItem('pokemon_bar_speed') || '5');
+        const savedTransition = localStorage.getItem('pokemon_transition')   || 'ON';
+        const savedLvCap      = localStorage.getItem('pokemon_lv_cap')       || 'OFF';
+        const savedAutoRun    = localStorage.getItem('pokemon_auto_run')     || 'OFF';
+        const savedTrSlide    = localStorage.getItem('pokemon_trainer_slide')|| 'ON';
+        const savedAutosave   = localStorage.getItem('pokemon_autosave_int') || '15s';
+        const savedControls   = (window.GameControls && GameControls.getMode && GameControls.getMode()) || 'dpad';
 
-        // EE-style: 18 options, 7 visible, scrollable, GPU highlight bar (no arrow cursor)
+        el.style.padding = '0';
+
         const list = document.createElement('div');
-        list.className = 'sm-opt-list';
-        list.style.cssText = 'flex:1;overflow-y:auto;';
-        el.style.padding = '0';  // remove inner padding — rows have their own
+        list.className = 'opt-list';
 
-        function makeToggleRow(label, key, opts, currentVal, onChange) {
+        let rowIndex = 0;
+
+        function makeToggleRow(label, opts, currentVal, onChange) {
+            const myIdx = rowIndex++;
             const row = document.createElement('div');
-            const myIdx = el._ri;
-            row.className = 'sm-opt-row' + (_subIdx === myIdx ? ' selected' : '');
-            el._ri = (el._ri || 0) + 1;
+            row.className = 'opt-row' + (_subIdx === myIdx ? ' selected' : '');
+            row.style.pointerEvents = 'all';
             const lbl = document.createElement('span');
-            lbl.className = 'sm-opt-label';
+            lbl.className = 'opt-label';
             lbl.textContent = label;
-            const val = document.createElement('span');
-            val.className = 'sm-opt-val-wrap';
+            const valWrap = document.createElement('span');
+            valWrap.className = 'opt-val-wrap';
             opts.forEach(function(o) {
                 const btn = document.createElement('button');
                 btn.className = 'sm-opt-btn' + (o === currentVal ? ' active' : '');
                 btn.textContent = o;
+                btn.style.pointerEvents = 'all';
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
-                    val.querySelectorAll('.sm-opt-btn').forEach(function(b){b.classList.remove('active');});
+                    valWrap.querySelectorAll('.sm-opt-btn').forEach(function(b){b.classList.remove('active');});
                     btn.classList.add('active');
                     onChange(o);
                 });
-                val.appendChild(btn);
+                valWrap.appendChild(btn);
             });
             row.appendChild(lbl);
-            row.appendChild(val);
+            row.appendChild(valWrap);
             row.addEventListener('click', function(){_subIdx=myIdx;_render();});
             return row;
         }
 
-        el._ri = 0;
-        // EE option order (18 total):
-        list.appendChild(makeToggleRow('Text Speed',    'pokemon_text_speed',   ['SLOW','MED','FAST'],   savedTextSpeed,  function(v){localStorage.setItem('pokemon_text_speed',v);}));
-        list.appendChild(makeToggleRow('Battle Scene',  'pokemon_battle_scene', ['ON','OFF'],             savedBattleScene,function(v){localStorage.setItem('pokemon_battle_scene',v);}));
-        list.appendChild(makeToggleRow('Battle Style',  'pokemon_battle_style', ['SHIFT','SET'],          savedBattleStyle,function(v){localStorage.setItem('pokemon_battle_style',v);}));
-        list.appendChild(makeToggleRow('Auto Run',       'pokemon_auto_run',     ['OFF','ON'],             savedAutoRun,    function(v){localStorage.setItem('pokemon_auto_run',v);}));
-        list.appendChild(makeToggleRow('Autosave',       'pokemon_autosave_int', ['OFF','15s','30s','60s'],savedAutosave,   function(v){localStorage.setItem('pokemon_autosave_int',v);}));
-        list.appendChild(makeToggleRow('Controls',       '_ctrl',                ['D-PAD','STICK'],        savedControls==='dpad'?'D-PAD':'STICK', function(v){if(window.GameControls)GameControls.setMode(v==='D-PAD'?'dpad':'joystick');}));
+        function makeNumberRow(label, key, cur, min, max) {
+            const myIdx = rowIndex++;
+            const row = document.createElement('div');
+            row.className = 'opt-row' + (_subIdx === myIdx ? ' selected' : '');
+            row.style.pointerEvents = 'all';
+            const lbl = document.createElement('span');
+            lbl.className = 'opt-label';
+            lbl.textContent = label;
+            const valWrap = document.createElement('span');
+            valWrap.className = 'opt-val-wrap';
+            const decBtn = document.createElement('button');
+            decBtn.className = 'sm-opt-btn';
+            decBtn.textContent = '◀';
+            decBtn.style.pointerEvents = 'all';
+            const numEl = document.createElement('span');
+            numEl.className = 'opt-num-val';
+            numEl.textContent = String(cur);
+            const incBtn = document.createElement('button');
+            incBtn.className = 'sm-opt-btn';
+            incBtn.textContent = '▶';
+            incBtn.style.pointerEvents = 'all';
+            function updateNum(delta) {
+                let v = parseInt(numEl.textContent) + delta;
+                v = Math.max(min, Math.min(max, v));
+                numEl.textContent = String(v);
+                localStorage.setItem(key, String(v));
+            }
+            decBtn.addEventListener('click', function(e){e.stopPropagation();updateNum(-1);});
+            incBtn.addEventListener('click', function(e){e.stopPropagation();updateNum(1);});
+            valWrap.appendChild(decBtn);
+            valWrap.appendChild(numEl);
+            valWrap.appendChild(incBtn);
+            row.appendChild(lbl);
+            row.appendChild(valWrap);
+            row.addEventListener('click', function(){_subIdx=myIdx;_render();});
+            return row;
+        }
 
-        // Button size row
+        // EE option_menu.c: 18 items in order
+        list.appendChild(makeToggleRow('Text Speed',      ['SLOW','MED','FAST'],         savedTextSpeed, function(v){localStorage.setItem('pokemon_text_speed',v);}));
+        list.appendChild(makeToggleRow('Battle Scene',    ['ON','OFF'],                  savedBScene,    function(v){localStorage.setItem('pokemon_battle_scene',v);}));
+        list.appendChild(makeToggleRow('Force Set Battle',['ON','OFF'],                  savedForceSet,  function(v){localStorage.setItem('pokemon_force_set',v);}));
+        list.appendChild(makeToggleRow('Damage Numbers',  ['ON','OFF'],                  savedDmgNums,   function(v){localStorage.setItem('pokemon_damage_nums',v);}));
+        list.appendChild(makeToggleRow('Theme UI',        ['MODERN','CLASSIC','VANILLA'],savedThemeUI,   function(v){localStorage.setItem('pokemon_theme_ui',v);}));
+        list.appendChild(makeToggleRow('Theme',           ['DARK','LIGHT','VANILLA','USER'],savedTheme,  function(v){localStorage.setItem('pokemon_theme',v);}));
+        // Theme Presets — action row
+        (function(){
+            const myIdx = rowIndex++;
+            const row = document.createElement('div');
+            row.className = 'opt-row' + (_subIdx === myIdx ? ' selected' : '');
+            row.style.pointerEvents = 'all';
+            const lbl = document.createElement('span'); lbl.className = 'opt-label'; lbl.textContent = 'Theme Presets';
+            const val = document.createElement('span'); val.className = 'opt-val-wrap'; val.textContent = '▶ APPLY';
+            row.appendChild(lbl); row.appendChild(val);
+            row.addEventListener('click', function(){_subIdx=myIdx;_render();});
+            list.appendChild(row);
+        })();
+        list.appendChild(makeNumberRow('Frame',       'pokemon_frame',      savedFrame,    1, 20));
+        list.appendChild(makeNumberRow('Theme Ball',  'pokemon_theme_ball', savedThemeBall,1, 31));
+        list.appendChild(makeToggleRow('Random Music', ['ON','OFF'],                  savedRandMusic, function(v){localStorage.setItem('pokemon_random_music',v);}));
+        list.appendChild(makeToggleRow('Disable Music',['ON','OFF'],                  savedDisMusic,  function(v){localStorage.setItem('pokemon_disable_music',v);}));
+        list.appendChild(makeNumberRow('Bar Speed',   'pokemon_bar_speed',  savedBarSpeed, 1, 11));
+        list.appendChild(makeToggleRow('Transition',   ['ON','OFF'],                  savedTransition,function(v){localStorage.setItem('pokemon_transition',v);}));
+        list.appendChild(makeToggleRow('Lv Cap 100',   ['ON','OFF'],                  savedLvCap,     function(v){localStorage.setItem('pokemon_lv_cap',v);}));
+        list.appendChild(makeToggleRow('Auto Run',     ['OFF','ON'],                  savedAutoRun,   function(v){localStorage.setItem('pokemon_auto_run',v);}));
+        list.appendChild(makeToggleRow('Trainer Slide',['ON','OFF'],                  savedTrSlide,   function(v){localStorage.setItem('pokemon_trainer_slide',v);}));
+        list.appendChild(makeToggleRow('Autosave',     ['OFF','15s','30s','1m','2m','5m','10m'],savedAutosave, function(v){localStorage.setItem('pokemon_autosave_int',v);}));
+        // SAVE row (last)
+        (function(){
+            const myIdx = rowIndex++;
+            const row = document.createElement('div');
+            row.className = 'opt-row opt-save-row' + (_subIdx === myIdx ? ' selected' : '');
+            row.style.pointerEvents = 'all';
+            const lbl = document.createElement('span'); lbl.className = 'opt-label'; lbl.textContent = 'SAVE';
+            row.appendChild(lbl);
+            row.addEventListener('click', function(){_subIdx=myIdx;_render();});
+            list.appendChild(row);
+        })();
+
+        el.appendChild(list);
+
+        // ── Extra controls below the 18 EE options (engine-specific) ──
+        const extraSep = document.createElement('div'); extraSep.className = 'sm-sep'; el.appendChild(extraSep);
+
+        // Controls toggle
+        const ctrlRow = makeToggleRow('Controls', ['D-PAD','STICK'],
+            savedControls==='dpad'?'D-PAD':'STICK',
+            function(v){if(window.GameControls)GameControls.setMode(v==='D-PAD'?'dpad':'joystick');});
+        ctrlRow.style.padding = '4px 8px';
+        el.appendChild(ctrlRow);
+
+        // Button size slider
+        const sizeIdx = rowIndex++;
         const sizeRow = document.createElement('div');
-        const sizeIdx = el._ri;
-        sizeRow.className = 'sm-opt-row' + (_subIdx === sizeIdx ? ' selected' : '');
-        el._ri++;
-        sizeRow.innerHTML = '<span class="sm-opt-label">Button Size</span><span class="sm-opt-val-wrap"><input type="range" id="sm-size-slider" min="0.5" max="2" step="0.1" value="'+savedScale+'" style="pointer-events:all"><span id="sm-size-val">'+savedScale.toFixed(1)+'×</span></span>';
+        sizeRow.className = 'opt-row' + (_subIdx === sizeIdx ? ' selected' : '');
+        sizeRow.innerHTML = '<span class="opt-label">Button Size</span>'
+            + '<span class="opt-val-wrap" style="pointer-events:all">'
+            + '<input type="range" id="sm-size-slider" min="0.5" max="2" step="0.1" value="'+savedScale+'" style="pointer-events:all;width:60px;accent-color:#1dc0fe">'
+            + '<span id="sm-size-val" style="font-size:12px;color:#7090a8;min-width:26px">'+savedScale.toFixed(1)+'×</span>'
+            + '</span>';
         sizeRow.addEventListener('click', function(){_subIdx=sizeIdx;_render();});
-        list.appendChild(sizeRow);
+        el.appendChild(sizeRow);
 
         // Orientation row
+        const orientIdx = rowIndex++;
         const orientRow = document.createElement('div');
-        const orientIdx = el._ri;
-        orientRow.className = 'sm-opt-row sm-opt-row-col' + (_subIdx === orientIdx ? ' selected' : '');
-        el._ri++;
-        const orientLabel = document.createElement('span');
-        orientLabel.className = 'sm-opt-label';
-        orientLabel.textContent = 'Orientation';
+        orientRow.className = 'opt-row opt-row-col' + (_subIdx === orientIdx ? ' selected' : '');
+        const orientLbl = document.createElement('span'); orientLbl.className = 'opt-label'; orientLbl.textContent = 'Orientation';
         const orientBtns = document.createElement('span');
         orientBtns.className = 'sm-opt-btns sm-orient-btns';
+        orientBtns.style.pointerEvents = 'all';
         [
-            { val:'auto',             label:'Auto'   },
-            { val:'portrait',         label:'Port.'  },
-            { val:'reverse-portrait', label:'↕ Rev.' },
-            { val:'landscape',        label:'Land.'  },
-            { val:'reverse-landscape',label:'↔ Rev.' },
+            { val:'auto',              label:'Auto'   },
+            { val:'portrait',          label:'Port.'  },
+            { val:'reverse-portrait',  label:'↕ Rev.' },
+            { val:'landscape',         label:'Land.'  },
+            { val:'reverse-landscape', label:'↔ Rev.' },
         ].forEach(function(o){
             const btn = document.createElement('button');
             btn.className = 'sm-opt-btn sm-orient-btn' + (currentOrient===o.val?' active':'');
@@ -1062,12 +1362,10 @@ window.GameStartMenu = (function () {
             });
             orientBtns.appendChild(btn);
         });
-        orientRow.appendChild(orientLabel);
+        orientRow.appendChild(orientLbl);
         orientRow.appendChild(orientBtns);
         orientRow.addEventListener('click', function(){_subIdx=orientIdx;_render();});
-        list.appendChild(orientRow);
-
-        el.appendChild(list);
+        el.appendChild(orientRow);
 
         // Wire size slider
         setTimeout(function(){
@@ -1155,9 +1453,9 @@ window.GameStartMenu = (function () {
     function _subCount() {
         if (page==='journal') return 0;  // journal uses L/R page flip, not up/down
         if (page==='save')    return 2;
-        if (page==='pokenav') return 3;
-        if (page==='options') return 8; // 6 toggles + size + orientation
-        if (page==='bag')     return 5;
+        if (page==='pokenav') return 5;  // Map, Condition, Ribbons, Match Call, Close
+        if (page==='options') return 21; // 18 EE options + 3 engine extras
+        if (page==='bag')     return 7;  // 7 pockets in EE
         if (page==='pokemon') {
             const party = window.GameSave && GameSave.state && GameSave.state.party;
             return party ? party.filter(Boolean).length || 1 : 1;

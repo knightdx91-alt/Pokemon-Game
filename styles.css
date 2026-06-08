@@ -737,7 +737,7 @@ body.orient-reverse-landscape #controls-layer {
  * Pokénav:      centered small        (28%, 20%, 44%, 42%)
  */
 .sm-win[data-page="save"] {
-    left: 3.3%; top: 5%; width: 50%; height: 50%;
+    left: 3.3%; top: 5%; width: 53%; height: 57%;
 }
 .sm-win[data-page="trainer_card"] {
     left: 3.3%; top: 5%; width: 53%; height: 90%;
@@ -810,11 +810,19 @@ body.orient-reverse-landscape #controls-layer {
 .sm-sub-content .sm-row,
 .sm-sub-content .sm-opt-btn,
 .sm-sub-content .sm-opt-row,
+.sm-sub-content .opt-row,
 .sm-sub-content input[type=range],
 .sm-sub-content .jn-page-btn,
 .sm-sub-content .jn-dot,
 .sm-sub-content .ach-tab-btn,
-.sm-sub-content .ach-list-row {
+.sm-sub-content .ach-list-row,
+.sm-sub-content .bag-pocket-btn,
+.sm-sub-content .bag-item-row,
+.sm-sub-content .pty-slot0,
+.sm-sub-content .pty-slot-compact,
+.sm-sub-content .pty-cancel-btn,
+.sm-sub-content .pnav-row,
+.sm-sub-content .save-action-row {
     pointer-events: all;
 }
 
@@ -906,15 +914,19 @@ body.orient-reverse-landscape #controls-layer {
 }
 
 /* ---- Options page — EE-accurate scrollable rows with GPU-highlight bar ---- */
+/* opt-* are aliases used by _buildOptions; sm-opt-* are the canonical names */
+.opt-list,
 .sm-opt-list {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
     scrollbar-width: none;
 }
+.opt-list::-webkit-scrollbar,
 .sm-opt-list::-webkit-scrollbar { display: none; }
 
 /* EE: label at x=8 (left), value at x=104/198 (right) — 43% / 82% of 240px */
+.opt-row,
 .sm-opt-row {
     display: flex;
     align-items: center;
@@ -927,16 +939,19 @@ body.orient-reverse-landscape #controls-layer {
     border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 /* GPU-style full-width highlight bar (no arrow cursor — EE uses hardware window) */
+.opt-row.selected,
 .sm-opt-row.selected {
     background: rgba(29,192,254,0.18);
     box-shadow: inset 2px 0 0 #1dc0fe;
 }
+.opt-label,
 .sm-opt-label {
     flex: 0 0 45%;
     color: #dbdff0;
     white-space: nowrap;
     font-size: 13px;
 }
+.opt-val-wrap,
 .sm-opt-val-wrap {
     flex: 1;
     display: flex;
@@ -944,7 +959,10 @@ body.orient-reverse-landscape #controls-layer {
     justify-content: flex-end;
     align-items: center;
 }
+.opt-row-col,
 .sm-opt-row-col { flex-direction: column; align-items: flex-start; gap: 4px; padding-bottom: 8px; }
+.opt-num-val    { font-size: 12px; color: #dbdff0; min-width: 20px; text-align: center; }
+.opt-save-row   { border-top: 1px solid rgba(29,192,254,0.3); margin-top: 2px; }
 .sm-opt-btns  { display: flex; align-items: center; gap: 3px; flex-wrap: wrap; justify-content: flex-end; }
 .sm-opt-btn {
     font-family: "Courier New", Courier, monospace;
@@ -1170,6 +1188,401 @@ body.orient-reverse-landscape #controls-layer {
     color: #406080;
     font-size: 10px;
     text-align: right;
+}
+
+/* ===================================================================
+   SAVE PAGE  (EE sSaveInfoWindowTemplate)
+   =================================================================== */
+.save-info-box {
+    background: #040c1a;
+    border-bottom: 1px solid rgba(29,192,254,0.3);
+    padding: 5px 8px;
+    flex-shrink: 0;
+}
+.save-info-location {
+    color: #20c850;   /* EE green text for map name */
+    font-size: 13px;
+    font-weight: bold;
+    padding: 2px 0;
+}
+.save-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 0;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.save-info-lbl { color: #7090a8; }
+.save-info-val { color: #dbdff0; font-weight: bold; }
+.save-sep { height: 1px; background: rgba(29,192,254,0.2); margin: 3px 0; flex-shrink: 0; }
+.save-action-list { display: flex; flex-direction: column; padding: 3px 0; }
+.save-action-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 8px;
+    font-size: 14px;
+    cursor: pointer;
+    color: #dbdff0;
+}
+.save-action-row.selected { background: rgba(24,184,200,0.15); }
+
+/* ===================================================================
+   BAG  (EE sDefaultBagWindows — two-column item menu)
+   =================================================================== */
+.sm-win[data-page="bag"] .sm-sub-content {
+    padding: 0;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+/* Pocket name bar — EE WIN[2]: top-center of left area */
+.bag-pocket-bar {
+    background: #0a1830;
+    border-bottom: 1px solid #1dc0fe;
+    padding: 3px 8px;
+    flex-shrink: 0;
+    text-align: center;
+}
+.bag-pocket-name {
+    color: #1dc0fe;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* Two-column body */
+.bag-body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* LEFT: pocket selector — ~47% width (112/240 = 47%) */
+.bag-left-col {
+    flex: 0 0 47%;
+    border-right: 1px solid rgba(29,192,254,0.3);
+    overflow-y: auto;
+    scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    background: #040c18;
+}
+.bag-left-col::-webkit-scrollbar { display: none; }
+
+.bag-pocket-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 6px;
+    font-size: 12px;
+    color: #7090a8;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    pointer-events: all;
+}
+.bag-pocket-btn.selected {
+    background: rgba(29,192,254,0.18);
+    color: #dbdff0;
+    box-shadow: inset 2px 0 0 #1dc0fe;
+}
+.bag-pocket-icon { font-size: 14px; flex-shrink: 0; }
+.bag-pocket-lbl  { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* RIGHT: item list — EE WIN[0]: left=112px, 120×144px */
+.bag-right-col {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #1dc0fe #040810;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+.bag-item-list {
+    display: flex;
+    flex-direction: column;
+    padding: 2px 0;
+}
+.bag-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 6px;
+    font-size: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: #dbdff0;
+}
+.bag-item-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bag-item-qty  { color: #7090a8; white-space: nowrap; margin-left: 4px; font-size: 11px; }
+.bag-item-empty {
+    color: #304050;
+    font-size: 12px;
+    padding: 12px 8px;
+    text-align: center;
+}
+
+/* Description bar — EE WIN[1]: bottom-left, left=0, top=104px, 112×48px */
+.bag-desc-bar {
+    background: #040c18;
+    border-top: 1px solid rgba(29,192,254,0.3);
+    padding: 4px 8px;
+    flex-shrink: 0;
+    font-size: 11px;
+    color: #7090a8;
+    min-height: 32px;
+    line-height: 1.5;
+}
+
+/* ===================================================================
+   POKÉMON PARTY  (EE sSinglePartyMenuWindowTemplate)
+   =================================================================== */
+.sm-win[data-page="pokemon"] .sm-sub-content {
+    padding: 0;
+    overflow: hidden;
+    flex-direction: column;
+}
+
+.pty-empty {
+    text-align: center;
+    color: #406080;
+    font-size: 13px;
+    padding: 16px 8px;
+    flex: 1;
+}
+.pty-cols {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* LEFT COLUMN: slot 0 large box — EE tiles 1,3: 80×56px ≈ 33% w */
+.pty-left-col {
+    flex: 0 0 38%;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(29,192,254,0.25);
+    background: #040c18;
+}
+
+/* Slot 0 large box */
+.pty-slot0 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 6px 6px 4px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(29,192,254,0.2);
+    gap: 2px;
+    min-height: 0;
+}
+.pty-slot0.selected {
+    background: rgba(29,192,254,0.15);
+    box-shadow: inset 2px 0 0 #1dc0fe;
+}
+.pty-slot0-sprite { font-size: 22px; align-self: center; margin-bottom: 2px; }
+.pty-slot0-nick {
+    font-size: 12px;
+    font-weight: bold;
+    color: #dbdff0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+.pty-slot0-lv { font-size: 11px; color: #80d0e8; }
+.pty-slot0-hp { display: flex; align-items: center; gap: 3px; width: 100%; }
+.pty-slot0-hpnum { font-size: 10px; color: #7090a8; white-space: nowrap; }
+
+/* Cancel button at bottom of left col */
+.pty-cancel-btn {
+    background: #0a1830;
+    color: #1dc0fe;
+    font-size: 12px;
+    text-align: center;
+    padding: 5px 4px;
+    cursor: pointer;
+    border-top: 1px solid #1dc0fe;
+    flex-shrink: 0;
+    pointer-events: all;
+}
+.pty-cancel-btn:active { background: #142848; }
+
+/* RIGHT COLUMN: slots 1-5 compact boxes — EE tiles 12,1/4/7/10/13: 144×24px */
+.pty-right-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.pty-right-col::-webkit-scrollbar { display: none; }
+
+.pty-slot-compact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 4px 6px;
+    font-size: 11px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    cursor: pointer;
+    color: #dbdff0;
+    gap: 2px;
+    min-height: 28px;
+}
+.pty-slot-compact.selected {
+    background: rgba(29,192,254,0.15);
+    box-shadow: inset 2px 0 0 #1dc0fe;
+}
+.pty-slot-compact.pty-slot-empty {
+    color: #283848;
+    font-size: 12px;
+    justify-content: center;
+    cursor: default;
+}
+
+.pty-compact-nick {
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1 1 60%;
+    max-width: 60%;
+}
+.pty-compact-lv {
+    color: #80d0e8;
+    white-space: nowrap;
+    font-size: 10px;
+    flex: 0 0 auto;
+}
+.pty-compact-hprow {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    width: 100%;
+    margin-top: 1px;
+}
+.pty-compact-hpnum { font-size: 10px; color: #7090a8; white-space: nowrap; }
+
+/* Shared HP bar components */
+.pty-hp-label { color: #80d0e8; font-size: 10px; font-weight: bold; flex-shrink: 0; }
+.pty-hp-bar-wrap {
+    flex: 1;
+    height: 4px;
+    background: #1a2a3a;
+    border-radius: 2px;
+    overflow: hidden;
+    min-width: 20px;
+}
+.pty-hp-bar-fill { height: 100%; border-radius: 2px; }
+
+/* Detail bar at bottom — shows species/held item/moves for selected slot */
+.pty-detail-bar {
+    background: #040c18;
+    border-top: 1px solid rgba(29,192,254,0.3);
+    padding: 4px 8px;
+    flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 11px;
+}
+.pty-detail-species { color: #1dc0fe; font-weight: bold; }
+.pty-detail-item    { color: #7090a8; }
+.pty-detail-moves   { color: #aabbd0; width: 100%; }
+
+/* Cancel bar (when party is empty) */
+.pty-cancel-bar {
+    background: #0a1830;
+    color: #1dc0fe;
+    font-size: 13px;
+    text-align: center;
+    padding: 6px;
+    border-top: 1px solid #1dc0fe;
+    flex-shrink: 0;
+}
+
+/* ===================================================================
+   POKÉNAV  (EE pokenav_main_menu.c)
+   =================================================================== */
+.sm-win[data-page="pokenav"] .sm-sub-content {
+    padding: 0;
+}
+
+/* Animated header — spinning Pokénav device on the left */
+.pnav-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #0a1830;
+    border-bottom: 1px solid #1dc0fe;
+    padding: 5px 8px;
+    flex-shrink: 0;
+}
+.pnav-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    font-size: 16px;
+    animation: pnav-spin 3s linear infinite;
+    flex-shrink: 0;
+}
+.pnav-logo-ring { color: #1dc0fe; font-size: 18px; line-height: 1; }
+.pnav-logo-dot  { color: #fff; font-size: 10px; margin-top: -12px; }
+@keyframes pnav-spin {
+    0%   { transform: rotate(0deg);   }
+    100% { transform: rotate(360deg); }
+}
+.pnav-title {
+    color: #1dc0fe;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* Menu options list */
+.pnav-list {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 2px 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.pnav-list::-webkit-scrollbar { display: none; }
+
+.pnav-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 8px;
+    font-size: 13px;
+    color: #dbdff0;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.pnav-row.selected {
+    background: rgba(29,192,254,0.18);
+    box-shadow: inset 2px 0 0 #1dc0fe;
+}
+.pnav-row-label { flex: 1; }
+
+/* Help bar — EE WIN_POKENAV_HELP_BAR */
+.pnav-help-bar {
+    background: #040c18;
+    border-top: 1px solid rgba(29,192,254,0.3);
+    color: #7090a8;
+    font-size: 10px;
+    padding: 3px 6px;
+    flex-shrink: 0;
+    text-align: center;
 }
 
 /* ===================================================================
