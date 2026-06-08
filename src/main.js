@@ -46,16 +46,18 @@
             const { mapName, warpIndex } = resolved;
             console.log(`[Warp] -> ${mapName} (warp ${warpIndex})`);
 
+            // Remember source map id before we load the destination
+            const sourceMapId = GameMap.current && GameMap.current.id;
+
             // Load destination map
             await GameMap.load(mapName, currentRegion);
 
-            // Find return warp: warp whose local array index === dest_warp_id
+            // Find return warp: prefer the warp that points back to our source map.
+            // Falling back to array index is unreliable after deduplication, so we
+            // always try the back-reference first.
             const destWarps = (GameMap.current && GameMap.current.warps) || [];
-            let returnWarp  = destWarps[warpIndex] || null;
-            // Fallback: find first warp that points back to our source map
-            if (!returnWarp && destWarps.length > 0) {
-                returnWarp = destWarps[0];
-            }
+            let returnWarp = destWarps.find(w => w.dest_map === sourceMapId) || null;
+            if (!returnWarp) returnWarp = destWarps[warpIndex] || destWarps[0] || null;
 
             if (returnWarp) {
                 const rx = returnWarp.x, ry = returnWarp.y;
@@ -102,7 +104,7 @@
             GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
             if (window.GameSave) GameSave.markDirty();
             // Block warp re-triggering for 600ms so player doesn't immediately warp back out
-            _warpCooldownUntil = performance.now() + 1500;
+            _warpCooldownUntil = performance.now() + 600;
         } finally {
             _transitioning = false;
         }
@@ -153,7 +155,7 @@
 
             GameCamera.update(player.x, player.y, destW, destH);
             if (window.GameSave) GameSave.markDirty();
-            _warpCooldownUntil = performance.now() + 1500;
+            _warpCooldownUntil = performance.now() + 600;
         } finally {
             _transitioning = false;
         }
