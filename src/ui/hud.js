@@ -168,7 +168,7 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
-    const GAME_VERSION = 'v0.3.10';
+    const GAME_VERSION = 'v0.3.11';
 
     // --- Update display ---
     function update() {
@@ -284,32 +284,25 @@ window.GameHUD = (function () {
             return;
         }
 
-        var path = 'screenshots/latest.jpg';
+        // Use timestamped filename — always a new file, no SHA pre-fetch needed
+        var ts = new Date().toISOString().replace(/[:.]/g, '-');
+        var path = 'screenshots/shot-' + ts + '.jpg';
         var apiUrl = 'https://api.github.com/repos/knightdx91-alt/pokemon-game/contents/' + path;
 
-        // Get current SHA if file exists (needed for update)
-        fetch(apiUrl, { headers: { Authorization: 'token ' + token } })
-            .then(function(r) {
-                if (r.status === 404) return null;
-                if (!r.ok) return r.text().then(function(t){ throw new Error('GET SHA failed ' + r.status + ': ' + t); });
-                return r.json();
-            })
-            .then(function(existing) {
-                var body = {
-                    message: 'debug: screenshot ' + new Date().toISOString(),
-                    content: base64,
-                    branch: 'main'
-                };
-                if (existing && existing.sha) body.sha = existing.sha;
-                return fetch(apiUrl, {
-                    method: 'PUT',
-                    headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
+        var body = {
+            message: 'debug: screenshot ' + new Date().toISOString(),
+            content: base64,
+            branch: 'main'
+        };
+
+        fetch(apiUrl, {
+                method: 'PUT',
+                headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
             })
             .then(function(r) {
                 if (r.ok) {
-                    console.log('[Screenshot] Committed to repo: screenshots/latest.jpg');
+                    console.log('[Screenshot] Committed to repo: ' + path);
                     // Flash button green
                     var btn = document.getElementById('screenshot-btn');
                     if (btn) { btn.style.color = '#20d840'; setTimeout(function(){ btn.style.color = '#18b8c8'; }, 1500); }
