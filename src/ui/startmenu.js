@@ -156,7 +156,8 @@ window.GameStartMenu = (function () {
 
         const titles = { journal:'Journal', trainer_card:'Trainer Card',
                          achievements:'Achievement Atlas', pokenav:'Pokénav',
-                         save:'Save', options:'Options', bag:'Pack', pokemon:'Pokémon' };
+                         save:'Save', options:'Options', bag:'Pack', pokemon:'Pokémon',
+                         pokedex:'Pokédex', pokedex_entry:'Pokédex' };
 
         // GBA-style dialog window — positioned over the map, not full-screen
         const win = document.createElement('div');
@@ -187,6 +188,8 @@ window.GameStartMenu = (function () {
         else if (page === 'options')       _buildOptions(content);
         else if (page === 'bag')           _buildBag(content);
         else if (page === 'pokemon')       _buildParty(content);
+        else if (page === 'pokedex')       _buildPokedex(content);
+        else if (page === 'pokedex_entry') _buildPokedexEntry(content);
 
         win.appendChild(content);
         subEl.appendChild(win);
@@ -423,6 +426,253 @@ window.GameStartMenu = (function () {
         });
     }
 
+    // --- Pokédex ---
+    var _dexDb   = null;   // full pokedex.json
+    var _dexList = null;   // array of entries sorted by num
+    var _dexEntry = null;  // currently viewed entry
+
+    var TYPE_COLORS = {
+        Normal:'#a8a878',Fire:'#f08030',Water:'#6890f0',Electric:'#f8d030',
+        Grass:'#78c850',Ice:'#98d8d8',Fighting:'#c03028',Poison:'#a040a0',
+        Ground:'#e0c068',Flying:'#a890f0',Psychic:'#f85888',Bug:'#a8b820',
+        Rock:'#b8a038',Ghost:'#705898',Dragon:'#7038f8',Dark:'#705848',
+        Steel:'#b8b8d0',
+    };
+
+    function _loadDex(cb) {
+        if (_dexDb) { cb(_dexDb); return; }
+        fetch('data/pokemon/pokedex.json')
+            .then(function(r){ return r.ok ? r.json() : {}; })
+            .then(function(d){
+                _dexDb = d;
+                _dexList = Object.values(d).sort(function(a,b){ return a.num - b.num; });
+                cb(_dexDb);
+            })
+            .catch(function(){ _dexDb = {}; _dexList = []; cb({}); });
+    }
+
+    function _buildPokedex(el) {
+        if (!_dexList) {
+            const msg = document.createElement('div');
+            msg.className = 'sm-placeholder';
+            msg.textContent = 'Loading Pokédex...';
+            el.appendChild(msg);
+            _loadDex(function(){ _render(); });
+            return;
+        }
+
+        // Seen/caught from save
+        const saved = window.GameSave && GameSave.state && GameSave.state.pokedex;
+        const seen   = new Set((saved && saved.seen)   || []);
+        const caught = new Set((saved && saved.caught) || []);
+
+        // Show window of 20 entries around _subIdx
+        const WIN = 20;
+        const start = Math.max(0, _subIdx - Math.floor(WIN/2));
+        const end   = Math.min(_dexList.length, start + WIN);
+
+        _dexList.slice(start, end).forEach(function(entry, relI) {
+            const absI = start + relI;
+            const isSel = absI === _subIdx;
+            const hasSeen   = seen.has(entry.num);
+            const hasCaught = caught.has(entry.num);
+
+            const row = document.createElement('div');
+            row.className = 'sm-dex-row' + (isSel ? ' selected' : '');
+            row.addEventListener('click', function(){ _subIdx = absI; _render(); });
+
+            const cursor = document.createElement('span');
+            cursor.className = 'sm-row-arrow';
+            cursor.textContent = isSel ? '▶' : ' ';
+
+            const numEl = document.createElement('span');
+            numEl.className = 'sm-dex-num';
+            numEl.textContent = String(entry.num).padStart(3,'0');
+
+            // Icon
+            const iconEl = document.createElement('img');
+            iconEl.className = 'sm-dex-icon';
+            if (hasSeen || hasCaught) {
+                iconEl.src = 'data/sprites/pokemon/icons/' + (Object.keys(_dexDb).find(k => _dexDb[k]===entry) || entry.name.toLowerCase()) + '.png';
+                iconEl.onerror = function(){ this.style.display='none'; };
+            } else {
+                iconEl.style.opacity = '0'; // not seen
+            }
+
+            const nameEl = document.createElement('span');
+            nameEl.className = 'sm-dex-name';
+            nameEl.textContent = hasSeen ? entry.name : '???';
+
+            // Type badges
+            const typesEl = document.createElement('span');
+            typesEl.className = 'sm-dex-types';
+            if (hasSeen) {
+                entry.types.forEach(function(t){
+                    const badge = document.createElement('span');
+                    badge.className = 'sm-type-badge';
+                    badge.textContent = t;
+                    badge.style.background = TYPE_COLORS[t] || '#888';
+                    typesEl.appendChild(badge);
+                });
+            }
+
+            row.appendChild(cursor);
+            row.appendChild(numEl);
+            row.appendChild(iconEl);
+            row.appendChild(nameEl);
+            row.appendChild(typesEl);
+            el.appendChild(row);
+        });
+
+        // Scroll hint
+        const hint = document.createElement('div');
+        hint.className = 'sm-dex-hint';
+        hint.textContent = (_subIdx+1) + ' / ' + _dexList.length;
+        el.appendChild(hint);
+    }
+
+    function _buildPokedexEntry(el) {
+        const entry = _dexEntry;
+        if (!entry) return;
+
+        // Find the key name for sprite path
+        const keyName = _dexDb ? (Object.keys(_dexDb).find(k => _dexDb[k] === entry) || entry.name.toLowerCase()) : entry.name.toLowerCase();
+
+        // Header: sprite + name/number/types
+        const header = document.createElement('div');
+        header.className = 'sm-dex-entry-header';
+
+        const sprite = document.createElement('img');
+        sprite.className = 'sm-dex-entry-sprite';
+        sprite.src = 'data/sprites/pokemon/front/' + keyName + '.png';
+        sprite.onerror = function(){ this.style.visibility='hidden'; };
+
+        const info = document.createElement('div');
+        info.className = 'sm-dex-entry-info';
+        info.innerHTML = '<div class="sm-dex-entry-num">#' + String(entry.num).padStart(3,'0') + '</div>'
+            + '<div class="sm-dex-entry-name">' + entry.name + '</div>'
+            + '<div class="sm-dex-entry-cat">' + entry.category + '</div>';
+
+        const typesRow = document.createElement('div');
+        typesRow.style.cssText = 'display:flex;gap:3px;margin-top:3px;';
+        entry.types.forEach(function(t){
+            const badge = document.createElement('span');
+            badge.className = 'sm-type-badge';
+            badge.textContent = t;
+            badge.style.background = TYPE_COLORS[t] || '#888';
+            typesRow.appendChild(badge);
+        });
+        info.appendChild(typesRow);
+
+        header.appendChild(sprite);
+        header.appendChild(info);
+        el.appendChild(header);
+
+        // Tab selector
+        const TABS = ['Info','Stats','Moves'];
+        const tabRow = document.createElement('div');
+        tabRow.className = 'sm-dex-tabs';
+        TABS.forEach(function(t, i){
+            const tab = document.createElement('span');
+            tab.className = 'sm-dex-tab' + (i === _subIdx ? ' active' : '');
+            tab.textContent = t;
+            tab.addEventListener('click', function(){ _subIdx = i; _render(); });
+            tabRow.appendChild(tab);
+        });
+        el.appendChild(tabRow);
+
+        const body = document.createElement('div');
+        body.className = 'sm-dex-entry-body';
+
+        if (_subIdx === 0) {
+            // Info tab
+            const h = entry.height_m, w = entry.weight_kg;
+            const ft = Math.floor(h / 0.3048), inch = Math.round((h / 0.3048 - ft) * 12);
+            const lbs = Math.round(w * 2.205 * 10) / 10;
+            body.innerHTML =
+                '<div class="sm-kv-row"><span class="sm-kv-key">Height</span><span class="sm-kv-val">' + h + 'm (' + ft + '\'' + inch + '")</span></div>'
+              + '<div class="sm-kv-row"><span class="sm-kv-key">Weight</span><span class="sm-kv-val">' + w + 'kg (' + lbs + ' lbs)</span></div>'
+              + '<div class="sm-kv-row"><span class="sm-kv-key">Catch Rate</span><span class="sm-kv-val">' + entry.catch_rate + '</span></div>'
+              + '<div class="sm-kv-row"><span class="sm-kv-key">Exp Rate</span><span class="sm-kv-val">' + (entry.exp_rate||'').replace('EXP_RATE_','').toLowerCase().replace(/_/g,' ') + '</span></div>'
+              + '<div class="sm-kv-row"><span class="sm-kv-key">Egg Groups</span><span class="sm-kv-val">' + entry.egg_groups.join(', ') + '</span></div>'
+              + '<div class="sm-sep"></div>'
+              + '<div class="sm-kv-row" style="flex-direction:column;align-items:flex-start;gap:3px;"><span class="sm-kv-key">Pokédex Entry</span><span style="color:#c8d8e8;line-height:1.5">' + entry.entry + '</span></div>';
+        } else if (_subIdx === 1) {
+            // Stats tab
+            const stats = entry.stats;
+            const STAT_NAMES = {hp:'HP',atk:'Attack',def:'Defense',spa:'Sp. Atk',spd:'Sp. Def',spe:'Speed'};
+            const STAT_COLORS = {hp:'#f04040',atk:'#f08030',def:'#f8d030',spa:'#6890f0',spd:'#78c850',spe:'#f85888'};
+            const maxStat = 255;
+            let html = '';
+            let total = 0;
+            for (const [k, label] of Object.entries(STAT_NAMES)) {
+                const val = stats[k] || 0;
+                total += val;
+                const pct = Math.round(val / maxStat * 100);
+                html += '<div class="sm-stat-row">'
+                    + '<span class="sm-stat-name">' + label + '</span>'
+                    + '<span class="sm-stat-val">' + val + '</span>'
+                    + '<div class="sm-stat-bar-wrap"><div class="sm-stat-bar" style="width:' + pct + '%;background:' + STAT_COLORS[k] + '"></div></div>'
+                    + '</div>';
+            }
+            html += '<div class="sm-stat-row" style="margin-top:4px;border-top:1px solid rgba(24,184,200,0.2);padding-top:4px;">'
+                  + '<span class="sm-stat-name" style="color:#80d0e8">Total</span>'
+                  + '<span class="sm-stat-val" style="color:#80d0e8">' + total + '</span>'
+                  + '<div class="sm-stat-bar-wrap"></div></div>';
+            body.innerHTML = html;
+        } else {
+            // Moves tab — level-up learnset
+            fetch('data/pokemon/pokedex.json')  // already cached
+                .then(function(){ return null; })
+                .catch(function(){});
+            // Load from dexDb which we already have
+            const fullEntry = _dexDb ? _dexDb[keyName] : null;
+            const learnset = (fullEntry && fullEntry.learnset) ? fullEntry.learnset : null;
+
+            if (!learnset) {
+                // Load it from data.json directly
+                fetch('source/pokeplatinum/res/pokemon/' + keyName + '/data.json')
+                    .then(r => r.ok ? r.json() : null)
+                    .then(d => {
+                        if (!d || !d.learnset) return;
+                        const lvl = d.learnset.level_up || [];
+                        let html = '';
+                        lvl.slice(0, 20).forEach(function(m){
+                            html += '<div class="sm-kv-row"><span class="sm-kv-key">Lv.' + m[0] + '</span><span class="sm-kv-val">' + m[1].replace('MOVE_','').replace(/_/g,' ').toLowerCase().replace(/\b\w/g, c=>c.toUpperCase()) + '</span></div>';
+                        });
+                        if (body.parentNode) body.innerHTML = html || '<div class="sm-placeholder">No move data.</div>';
+                    })
+                    .catch(function(){});
+                body.innerHTML = '<div class="sm-placeholder">Loading moves...</div>';
+            } else {
+                const lvl = learnset.level_up || [];
+                let html = '';
+                lvl.slice(0, 20).forEach(function(m){
+                    html += '<div class="sm-kv-row"><span class="sm-kv-key">Lv.' + m[0] + '</span><span class="sm-kv-val">' + m[1].replace('MOVE_','').replace(/_/g,' ').toLowerCase().replace(/\b\w/g, c=>c.toUpperCase()) + '</span></div>';
+                });
+                body.innerHTML = html || '<div class="sm-placeholder">No move data.</div>';
+            }
+        }
+
+        el.appendChild(body);
+
+        // Evolution chain
+        if (_subIdx === 0 && entry.evolutions && entry.evolutions.length) {
+            const sep = document.createElement('div'); sep.className='sm-sep'; el.appendChild(sep);
+            const evoLabel = document.createElement('div');
+            evoLabel.className = 'sm-kv-row';
+            evoLabel.innerHTML = '<span class="sm-kv-key" style="color:#80d0e8">Evolves into</span>';
+            el.appendChild(evoLabel);
+            entry.evolutions.forEach(function(evo){
+                const r = document.createElement('div'); r.className='sm-kv-row';
+                const method = evo.method.replace('EVO_','').replace(/_/g,' ').toLowerCase();
+                r.innerHTML = '<span class="sm-kv-key" style="padding-left:8px">' + evo.into.toUpperCase() + '</span>'
+                    + '<span class="sm-kv-val">' + method + (evo.param ? ' ' + evo.param : '') + '</span>';
+                el.appendChild(r);
+            });
+        }
+    }
+
     function _buildPokenav(el) {
         ['Map','Condition','Cancel'].forEach(function(label,i){
             const row=document.createElement('div');
@@ -507,12 +757,19 @@ window.GameStartMenu = (function () {
     }
 
     // --- Navigation ---
-    function _goBack() { page='main'; _subIdx=0; _render(); }
+    function _goBack() {
+        if (page==='pokedex_entry') { page='pokedex'; _render(); return; }
+        page='main'; _subIdx=0; _render();
+    }
 
     function _confirmSelected() {
         if (page!=='main') {
             if (page==='save') { const a=['save','load']; _doSaveAction(a[_subIdx]||'save'); }
             else if (page==='journal') { if (_subIdx===0) { page='achievements'; _subIdx=0; _render(); } }
+            else if (page==='pokedex' && _dexList && _dexList[_subIdx]) {
+                _dexEntry = _dexList[_subIdx];
+                page = 'pokedex_entry'; _subIdx = 0; _render();
+            }
             return;
         }
         const item=ITEMS[selectedIdx]; if(!item) return;
@@ -525,6 +782,7 @@ window.GameStartMenu = (function () {
             case 'PLAYER':  page='trainer_card'; _subIdx=0; _render(); break;
             case 'BAG':     page='bag';           _subIdx=0; _render(); break;
             case 'POKEMON': page='pokemon';       _subIdx=0; _render(); break;
+            case 'POKEDEX': page='pokedex';       _subIdx=0; _render(); break;
             default: close(); break;
         }
     }
@@ -567,6 +825,8 @@ window.GameStartMenu = (function () {
             const party = window.GameSave && GameSave.state && GameSave.state.party;
             return party ? party.filter(Boolean).length || 1 : 1;
         }
+        if (page==='pokedex') return _dexList ? _dexList.length : 0;
+        if (page==='pokedex_entry') return 3; // tabs: Info / Stats / Moves
         if (page==='achievements') return window.GameAchievements ? GameAchievements.getAll().length : 0;
         return 0;
     }
