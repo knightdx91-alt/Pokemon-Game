@@ -3,9 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>Pokémon Black — NDS</title>
     <!-- v__CACHE_BUST__ -->
     <style>
@@ -18,7 +15,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
         }
         #top-bar {
             width: 100%;
@@ -31,57 +27,46 @@
             gap: 8px;
         }
         #top-bar a {
-            color: #18b8c8;
-            text-decoration: none;
-            font-size: 12px;
-            border: 1px solid #18b8c8;
-            border-radius: 3px;
-            padding: 4px 8px;
+            color: #18b8c8; text-decoration: none; font-size: 12px;
+            border: 1px solid #18b8c8; border-radius: 3px; padding: 4px 8px;
             touch-action: manipulation;
         }
         #top-bar span { font-size: 12px; color: #80d0e8; }
         #screenshot-btn-emu {
-            background: #0a1830;
-            color: #18b8c8;
-            border: 1px solid #18b8c8;
-            border-radius: 3px;
-            padding: 4px 8px;
-            font-size: 12px;
-            cursor: pointer;
-            font-family: "Courier New", Courier, monospace;
-            touch-action: manipulation;
+            background: #0a1830; color: #18b8c8; border: 1px solid #18b8c8;
+            border-radius: 3px; padding: 4px 8px; font-size: 12px; cursor: pointer;
+            font-family: "Courier New", Courier, monospace; touch-action: manipulation;
         }
         #emu-wrap { width: 100%; max-width: 800px; flex: 1; display: flex; flex-direction: column; }
         #game { width: 100%; min-height: 500px; flex: 1; }
         #status {
-            padding: 8px 12px;
-            font-size: 11px;
-            color: #80d0e8;
-            background: #0a1830;
-            border-top: 1px solid #18b8c8;
-            min-height: 24px;
-            word-break: break-all;
+            padding: 8px 12px; font-size: 11px; color: #80d0e8;
+            background: #0a1830; border-top: 1px solid #18b8c8;
+            min-height: 24px; word-break: break-all;
         }
+        #progress-wrap {
+            width: 100%; max-width: 800px;
+            background: #060610; border-top: 1px solid #222;
+            padding: 6px 10px; display: none;
+        }
+        #progress-bar-bg {
+            background: #0a1830; border: 1px solid #18b8c8; border-radius: 3px;
+            height: 12px; overflow: hidden;
+        }
+        #progress-bar-fill {
+            height: 100%; background: #18b8c8; width: 0%; transition: width 0.3s;
+        }
+        #progress-label { font-size: 10px; color: #80d0e8; margin-top: 3px; }
         #debug-bar {
-            width: 100%;
-            max-width: 800px;
-            background: #060610;
-            border-top: 1px solid #222;
-            padding: 5px 10px;
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
+            width: 100%; max-width: 800px; background: #060610;
+            border-top: 1px solid #222; padding: 5px 10px;
+            display: flex; gap: 6px; flex-wrap: wrap;
         }
         .dbg-btn {
-            background: #0a1830;
-            color: #e8c000;
-            border: 1px solid #e8c000;
-            border-radius: 3px;
-            padding: 3px 9px;
-            font-size: 11px;
+            background: #0a1830; color: #e8c000; border: 1px solid #e8c000;
+            border-radius: 3px; padding: 3px 9px; font-size: 11px;
             font-family: "Courier New", Courier, monospace;
-            cursor: pointer;
-            touch-action: manipulation;
+            cursor: pointer; touch-action: manipulation;
         }
     </style>
 </head>
@@ -95,12 +80,17 @@
         <div id="game"></div>
         <div id="status">Initialising…</div>
     </div>
+    <div id="progress-wrap">
+        <div id="progress-bar-bg"><div id="progress-bar-fill"></div></div>
+        <div id="progress-label">Downloading ROM…</div>
+    </div>
     <div id="debug-bar">
         <button class="dbg-btn" id="btn-clear-cache">🗑 Clear ROM Cache &amp; Retry</button>
         <button class="dbg-btn" id="btn-reset-token">🔑 Reset Token</button>
     </div>
 
     <script>
+        // Preserve WebGL buffer so screenshots work
         (function() {
             var _orig = HTMLCanvasElement.prototype.getContext;
             HTMLCanvasElement.prototype.getContext = function(type, attrs) {
@@ -113,109 +103,196 @@
     </script>
 
     <script>
-        // SW intercepts /pokemon-black-rom.zip, fetches from GitHub API (CORS-safe),
-        // and caches — so EmulatorJS core and ROM download in parallel.
         (function() {
-            var statusEl = document.getElementById('status');
+            var statusEl   = document.getElementById('status');
+            var progressWrap  = document.getElementById('progress-wrap');
+            var progressFill  = document.getElementById('progress-bar-fill');
+            var progressLabel = document.getElementById('progress-label');
+
+            var ROM_ASSET_URL = 'https://api.github.com/repos/knightdx91-alt/Pokemon-Game/releases/assets/442307397';
+            var IDB_DB = 'pokemon-black-rom';
+            var IDB_STORE = 'rom';
+            var IDB_KEY = 'blob';
+
             function setStatus(msg, color) {
-                if (statusEl) { statusEl.textContent = msg; if (color) statusEl.style.color = color; }
+                statusEl.textContent = msg;
+                statusEl.style.color = color || '#80d0e8';
             }
 
-            function launch(token) {
-                window.EJS_player = '#game';
-                window.EJS_core = 'nds';
-                window.EJS_gameUrl = '/pokemon-black-rom.zip?t=' + encodeURIComponent(token);
-                window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-                window.EJS_color = '#18b8c8';
+            function setProgress(pct, label) {
+                progressWrap.style.display = 'block';
+                progressFill.style.width = pct + '%';
+                progressLabel.textContent = label || '';
+            }
+
+            function hideProgress() { progressWrap.style.display = 'none'; }
+
+            // ── IndexedDB helpers ──────────────────────────────────────────
+            function openDB() {
+                return new Promise(function(resolve, reject) {
+                    var req = indexedDB.open(IDB_DB, 1);
+                    req.onupgradeneeded = function(e) {
+                        e.target.result.createObjectStore(IDB_STORE);
+                    };
+                    req.onsuccess = function(e) { resolve(e.target.result); };
+                    req.onerror   = function(e) { reject(e.target.error); };
+                });
+            }
+
+            function getROMBlob(db) {
+                return new Promise(function(resolve, reject) {
+                    var tx  = db.transaction(IDB_STORE, 'readonly');
+                    var req = tx.objectStore(IDB_STORE).get(IDB_KEY);
+                    req.onsuccess = function(e) { resolve(e.target.result || null); };
+                    req.onerror   = function(e) { reject(e.target.error); };
+                });
+            }
+
+            function putROMBlob(db, blob) {
+                return new Promise(function(resolve, reject) {
+                    var tx  = db.transaction(IDB_STORE, 'readwrite');
+                    var req = tx.objectStore(IDB_STORE).put(blob, IDB_KEY);
+                    req.onsuccess = function() { resolve(); };
+                    req.onerror   = function(e) { reject(e.target.error); };
+                });
+            }
+
+            function clearROMBlob(db) {
+                return new Promise(function(resolve, reject) {
+                    var tx  = db.transaction(IDB_STORE, 'readwrite');
+                    var req = tx.objectStore(IDB_STORE).delete(IDB_KEY);
+                    req.onsuccess = function() { resolve(); };
+                    req.onerror   = function(e) { reject(e.target.error); };
+                });
+            }
+
+            // ── ROM download with progress ─────────────────────────────────
+            function downloadROM(token) {
+                setStatus('Downloading ROM — first run only (~106 MB)…', '#e8c000');
+                setProgress(0, 'Connecting to GitHub…');
+
+                return fetch(ROM_ASSET_URL, {
+                    headers: {
+                        'Authorization': 'token ' + token,
+                        'Accept': 'application/octet-stream'
+                    }
+                }).then(function(response) {
+                    if (!response.ok) {
+                        return response.text().then(function(t) {
+                            throw new Error('GitHub ' + response.status + ': ' + t.slice(0, 200));
+                        });
+                    }
+
+                    var total = parseInt(response.headers.get('content-length') || '0', 10);
+                    var loaded = 0;
+                    var reader = response.body.getReader();
+                    var chunks = [];
+
+                    function pump() {
+                        return reader.read().then(function(result) {
+                            if (result.done) {
+                                var blob = new Blob(chunks, { type: 'application/zip' });
+                                return blob;
+                            }
+                            chunks.push(result.value);
+                            loaded += result.value.length;
+                            if (total) {
+                                var pct = Math.round(loaded / total * 100);
+                                var mb = (loaded / 1048576).toFixed(1);
+                                var tot = (total / 1048576).toFixed(0);
+                                setProgress(pct, 'Downloading ' + mb + ' / ' + tot + ' MB (' + pct + '%)');
+                            } else {
+                                var mb2 = (loaded / 1048576).toFixed(1);
+                                setProgress(50, 'Downloading ' + mb2 + ' MB…');
+                            }
+                            return pump();
+                        });
+                    }
+
+                    return pump();
+                });
+            }
+
+            // ── Launch EmulatorJS with a blob URL ──────────────────────────
+            function launchEJS(blobUrl) {
+                hideProgress();
+                setStatus('Loading emulator core…');
+
+                window.EJS_player          = '#game';
+                window.EJS_core            = 'nds';
+                window.EJS_gameUrl         = blobUrl;
+                window.EJS_pathtodata      = 'https://cdn.emulatorjs.org/stable/data/';
+                window.EJS_color           = '#18b8c8';
                 window.EJS_backgroundColor = '#060610';
-                window.EJS_startOnLoaded = true;
-                window.EJS_onGameStart = function() { setStatus('Running — Pokémon Black'); };
-                window.EJS_onLoadState = function() {};
+                window.EJS_startOnLoaded   = true;
+                window.EJS_onGameStart     = function() { setStatus('Running — Pokémon Black'); };
                 window.EJS_Buttons = {
                     playPause: true, restart: true, mute: true, settings: true,
                     fullscreen: true, saveState: true, loadState: true,
                     screenRecord: false, gamepad: true, cheat: false, volume: true,
                     saveSavFiles: true, loadSavFiles: true, quickSave: true, quickLoad: true,
                 };
-                setStatus('Loading emulator core + ROM (first run: ~106 MB download)…');
+
                 var s = document.createElement('script');
                 s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
                 s.onerror = function() { setStatus('ERROR: Failed to load EmulatorJS — check internet.', '#e84040'); };
                 document.body.appendChild(s);
             }
 
+            // ── Main flow ──────────────────────────────────────────────────
             function start() {
-                if (!('serviceWorker' in navigator)) {
-                    setStatus('ERROR: Service Workers not supported in this browser.', '#e84040');
-                    return;
-                }
                 var token = localStorage.getItem('gh_debug_token');
                 if (!token) {
                     token = prompt('Enter your GitHub token to load the ROM\n(same token used for screenshots — stored locally only):');
                     if (!token) { setStatus('Token required to load ROM.', '#e8c000'); return; }
                     localStorage.setItem('gh_debug_token', token);
                 }
-                navigator.serviceWorker.register('sw.js').then(function(reg) {
-                    if (reg.active) { launch(token); return; }
-                    setStatus('Installing service worker…');
-                    var pending = reg.installing || reg.waiting;
-                    if (pending) {
-                        pending.addEventListener('statechange', function(e) {
-                            if (e.target.state === 'activated') launch(token);
+
+                openDB().then(function(db) {
+                    return getROMBlob(db).then(function(cached) {
+                        if (cached) {
+                            setStatus('ROM loaded from cache.');
+                            var url = URL.createObjectURL(cached);
+                            launchEJS(url);
+                            return;
+                        }
+                        // Not cached — download it
+                        return downloadROM(token).then(function(blob) {
+                            setStatus('Saving ROM to cache…', '#e8c000');
+                            return putROMBlob(db, blob).then(function() {
+                                var url = URL.createObjectURL(blob);
+                                launchEJS(url);
+                            });
                         });
-                    }
-                    var poll = setInterval(function() {
-                        if (reg.active) { clearInterval(poll); launch(token); }
-                    }, 200);
-                }).catch(function(e) {
-                    setStatus('ERROR: Service worker failed: ' + e.message, '#e84040');
+                    });
+                }).catch(function(err) {
+                    setStatus('ERROR: ' + err.message, '#e84040');
+                    console.error('[ROM]', err);
                 });
             }
 
-            // Listen for error messages posted back from the SW
-            navigator.serviceWorker && navigator.serviceWorker.addEventListener('message', function(e) {
-                if (e.data && e.data.type === 'ROM_FETCH_ERROR') {
-                    setStatus('ROM fetch failed — ' + e.data.msg, '#e84040');
-                }
-            });
-
-            // Clear ROM cache button — wipes cached ROM and reloads
+            // ── Debug buttons ──────────────────────────────────────────────
             document.getElementById('btn-clear-cache').addEventListener('click', function() {
-                setStatus('Clearing ROM cache…', '#e8c000');
-                if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-                    navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_ROM_CACHE' });
-                    navigator.serviceWorker.addEventListener('message', function handler(e) {
-                        if (e.data && e.data.type === 'ROM_CACHE_CLEARED') {
-                            navigator.serviceWorker.removeEventListener('message', handler);
-                            setStatus('Cache cleared — reloading…', '#20d840');
-                            setTimeout(function() { location.reload(); }, 800);
-                        }
-                    });
-                } else {
-                    // Fallback: delete via caches API directly
-                    caches.delete('pokemon-black-rom-v1').then(function() {
-                        setStatus('Cache cleared — reloading…', '#20d840');
-                        setTimeout(function() { location.reload(); }, 800);
-                    });
-                }
+                openDB().then(function(db) {
+                    return clearROMBlob(db);
+                }).then(function() {
+                    setStatus('ROM cache cleared — reloading…', '#20d840');
+                    setTimeout(function() { location.reload(); }, 800);
+                }).catch(function(e) {
+                    setStatus('Clear failed: ' + e.message, '#e84040');
+                });
             });
 
-            // Reset token button
             document.getElementById('btn-reset-token').addEventListener('click', function() {
                 localStorage.removeItem('gh_debug_token');
                 setStatus('Token cleared — reloading…', '#e8c000');
                 setTimeout(function() { location.reload(); }, 600);
             });
 
-            window.addEventListener('error', function(e) {
-                setStatus('Error: ' + e.message + ' (' + (e.filename || '') + ':' + e.lineno + ')');
-            });
-
             start();
         })();
     </script>
 
-    <script src="emulator-screenshot.js?v=__CACHE_BUST__"></script>
     <script src="emulator-saves.js?v=__CACHE_BUST__"></script>
     <script>
         document.getElementById('screenshot-btn-emu').addEventListener('click', function() {
