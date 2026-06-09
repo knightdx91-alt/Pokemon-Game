@@ -28,7 +28,6 @@
             display: flex; flex-direction: column; align-items: center; gap: 20px;
         }
         .load-title { font-size: 16px; color: #18b8c8; letter-spacing: 2px; }
-        .load-sub   { font-size: 12px; color: #6090a8; text-align: center; line-height: 1.6; }
         #progress-wrap { width: 100%; max-width: 400px; }
         #progress-bar-bg { background: #060610; border: 1px solid #18b8c8; border-radius: 3px; height: 12px; overflow: hidden; }
         #progress-bar-fill { height: 100%; background: #18b8c8; width: 0%; transition: width 0.3s; }
@@ -46,10 +45,9 @@
 
     <div id="loading-screen">
         <div class="load-title">POKÉMON BLACK</div>
-        <div class="load-sub" id="load-msg">Checking local cache…</div>
-        <div id="progress-wrap" style="display:none">
+        <div id="progress-wrap">
             <div id="progress-bar-bg"><div id="progress-bar-fill"></div></div>
-            <div id="dl-status"></div>
+            <div id="dl-status">Checking local cache…</div>
         </div>
     </div>
 
@@ -61,9 +59,11 @@
         <button class="dbg-btn" id="btn-clear-cache">&#128465; Clear ROM Cache</button>
     </div>
 
+    <!-- fflate: fast in-browser unzip (MIT, ~17KB gzipped) -->
+    <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
+
     <script>
         (function() {
-            // Preserve drawing buffer so screenshots work
             var _orig = HTMLCanvasElement.prototype.getContext;
             HTMLCanvasElement.prototype.getContext = function(type, attrs) {
                 if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl') {
@@ -76,25 +76,24 @@
 
     <script>
     (function() {
-        var ROM_URL  = 'https://github.com/knightdx91-alt/Pokemon-Game/releases/download/roms-v1/pokemon-black.zip';
-        var IDB_DB   = 'pokemon-black-rom';
+        var ROM_ZIP_URL = 'https://github.com/knightdx91-alt/Pokemon-Game/releases/download/roms-v1/pokemon-black.zip';
+
+        // IndexedDB stores the unzipped NDS blob so we never unzip again
+        var IDB_DB    = 'pokemon-black-rom-v2';
         var IDB_STORE = 'rom';
-        var IDB_KEY  = 'blob';
+        var IDB_KEY   = 'nds';
 
-        var loadingEl  = document.getElementById('loading-screen');
-        var emuEl      = document.getElementById('emu-wrap');
-        var statusEl   = document.getElementById('status');
-        var loadMsgEl  = document.getElementById('load-msg');
-        var progressWrap = document.getElementById('progress-wrap');
-        var progFill   = document.getElementById('progress-bar-fill');
-        var dlStatus   = document.getElementById('dl-status');
+        var loadingEl = document.getElementById('loading-screen');
+        var emuEl     = document.getElementById('emu-wrap');
+        var statusEl  = document.getElementById('status');
+        var progFill  = document.getElementById('progress-bar-fill');
+        var dlStatus  = document.getElementById('dl-status');
 
-        function setStatus(msg) { statusEl.textContent = msg; }
-        function setMsg(msg)    { loadMsgEl.textContent = msg; }
+        function setStatus(msg) { if (statusEl) statusEl.textContent = msg; }
         function setDl(msg, color) { dlStatus.textContent = msg; dlStatus.style.color = color || '#e8c000'; }
-        function setProgress(pct) { progressWrap.style.display = 'block'; progFill.style.width = pct + '%'; }
+        function setProgress(pct) { progFill.style.width = Math.min(100, pct) + '%'; }
 
-        // ── IndexedDB ───────────────────────────────────────────────────────
+        // ── IndexedDB ──────────────────────────────────────────────────────
         function openDB() {
             return new Promise(function(res, rej) {
                 var r = indexedDB.open(IDB_DB, 1);
@@ -125,7 +124,30 @@
             });
         }
 
-        // ── EmulatorJS launch ───────────────────────────────────────────────
+        // ── Unzip: extract first .nds file from zip bytes ──────────────────
+        function unzipNDS(zipBytes) {
+            return new Promise(function(res, rej) {
+                if (typeof fflate === 'undefined') {
+                    rej(new Error('fflate not loaded'));
+                    return;
+                }
+                setDl('Extracting ROM…');
+                setProgress(95);
+                try {
+                    var files = fflate.unzipSync(new Uint8Array(zipBytes));
+                    var ndsKey = Object.keys(files).find(function(k) {
+                        return k.toLowerCase().endsWith('.nds');
+                    });
+                    if (!ndsKey) { rej(new Error('No .nds file found in zip')); return; }
+                    var blob = new Blob([files[ndsKey]], { type: 'application/octet-stream' });
+                    res(blob);
+                } catch(e) {
+                    rej(e);
+                }
+            });
+        }
+
+        // ── Launch EmulatorJS ──────────────────────────────────────────────
         function launchEJS(blobUrl) {
             loadingEl.style.display = 'none';
             emuEl.style.display = 'flex';
@@ -147,17 +169,16 @@
             };
             var s = document.createElement('script');
             s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
-            s.onerror = function() { setStatus('ERROR: Failed to load EmulatorJS.', '#e84040'); };
+            s.onerror = function() { setStatus('ERROR: Failed to load EmulatorJS.'); };
             document.body.appendChild(s);
         }
 
-        // ── Download with streaming progress ───────────────────────────────
-        function downloadROM() {
-            setMsg('Downloading Pokémon Black…');
-            setProgress(2);
+        // ── Download zip → unzip → cache NDS blob ─────────────────────────
+        function downloadAndUnzip() {
             setDl('Connecting to GitHub…');
+            setProgress(2);
 
-            fetch(ROM_URL).then(function(resp) {
+            fetch(ROM_ZIP_URL).then(function(resp) {
                 if (!resp.ok) throw new Error('HTTP ' + resp.status);
 
                 var total = parseInt(resp.headers.get('content-length') || '0', 10);
@@ -168,10 +189,16 @@
                     var loaded = 0;
                     function pump() {
                         return reader.read().then(function(r) {
-                            if (r.done) return new Blob(chunks, { type: 'application/zip' });
+                            if (r.done) {
+                                // Combine all chunks into one ArrayBuffer
+                                var combined = new Uint8Array(loaded);
+                                var offset = 0;
+                                chunks.forEach(function(c) { combined.set(c, offset); offset += c.length; });
+                                return combined.buffer;
+                            }
                             chunks.push(r.value);
                             loaded += r.value.length;
-                            var pct = Math.round(loaded / total * 100);
+                            var pct = Math.round(loaded / total * 85); // download = 0-85%
                             var mb  = (loaded  / 1048576).toFixed(1);
                             var tot = (total   / 1048576).toFixed(0);
                             setProgress(pct);
@@ -182,42 +209,42 @@
                     return pump();
                 }
 
-                // Fallback: no streaming
                 setDl('Downloading (~106 MB) — please wait…');
                 setProgress(50);
-                return resp.blob();
+                return resp.arrayBuffer();
 
-            }).then(function(blob) {
+            }).then(function(zipBuffer) {
+                return unzipNDS(zipBuffer);
+            }).then(function(ndsBlob) {
                 setDl('Saving to local cache…', '#20d840');
                 setProgress(100);
                 return openDB().then(function(db) {
-                    return idbPut(db, blob).then(function() {
-                        launchEJS(URL.createObjectURL(blob));
+                    return idbPut(db, ndsBlob).then(function() {
+                        launchEJS(URL.createObjectURL(ndsBlob));
                     });
                 });
             }).catch(function(err) {
-                setMsg('Download failed');
-                setDl('Error: ' + err.message + '\n\nTry refreshing the page.', '#e84040');
-                console.error('[ROM] Download failed:', err);
+                setDl('Error: ' + err.message, '#e84040');
+                console.error('[ROM]', err);
             });
         }
 
-        // ── Boot: check cache, then download ───────────────────────────────
+        // ── Boot ───────────────────────────────────────────────────────────
         openDB().then(function(db) {
             return idbGet(db).then(function(cached) {
                 if (cached) {
-                    setMsg('Loading from cache…');
+                    setDl('Loading from cache…', '#20d840');
+                    setProgress(100);
                     launchEJS(URL.createObjectURL(cached));
                 } else {
-                    downloadROM();
+                    downloadAndUnzip();
                 }
             });
-        }).catch(function(err) {
-            console.warn('[ROM] IndexedDB error, downloading directly:', err);
-            downloadROM();
+        }).catch(function() {
+            downloadAndUnzip();
         });
 
-        // ── Clear cache ─────────────────────────────────────────────────────
+        // ── Clear cache ────────────────────────────────────────────────────
         document.getElementById('btn-clear-cache').addEventListener('click', function() {
             openDB().then(function(db) { return idbDel(db); })
                 .then(function() { location.reload(); })
