@@ -74,6 +74,19 @@
             border-top: 1px solid #18b8c8;
             min-height: 24px;
         }
+        #progress-bar-wrap {
+            width: 100%;
+            background: #0a1830;
+            padding: 0 12px 8px;
+            display: none;
+        }
+        #progress-bar {
+            height: 6px;
+            background: #18b8c8;
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.2s;
+        }
     </style>
 </head>
 <body>
@@ -85,27 +98,28 @@
 
     <div id="emu-wrap">
         <div id="game"></div>
-        <div id="status">Loading emulator…</div>
+        <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+        <div id="status">Initialising…</div>
     </div>
 
     <script>
-        // Register service worker for caching ROM + EmulatorJS assets
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(function(reg) {
-                var s = document.getElementById('status');
-                if (reg.installing) {
-                    if (s) s.textContent = 'Downloading game data (cached after first run)…';
-                } else if (reg.active) {
-                    if (s) s.textContent = 'Loading from cache…';
+        // Force WebGL preserveDrawingBuffer so screenshots work
+        (function() {
+            var _orig = HTMLCanvasElement.prototype.getContext;
+            HTMLCanvasElement.prototype.getContext = function(type, attrs) {
+                if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl') {
+                    attrs = Object.assign({}, attrs || {}, { preserveDrawingBuffer: true });
                 }
-            });
-        }
+                return _orig.call(this, type, attrs);
+            };
+        })();
     </script>
+
     <script>
         // EmulatorJS config — NDS core (melonDS)
+        // EJS_gameUrl is set dynamically below after ROM is fetched/cached
         window.EJS_player = '#game';
         window.EJS_core = 'nds';
-        window.EJS_gameUrl = 'https://github.com/knightdx91-alt/Pokemon-Game/releases/download/roms-v1/pokemon-black.zip';
         window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
         window.EJS_color = '#18b8c8';
         window.EJS_backgroundColor = '#060610';
@@ -137,42 +151,119 @@
             quickLoad: true,
         };
     </script>
+
     <script>
-        // Check ROM URL is set before trying to load
-        var statusEl = document.getElementById('status');
-        if (window.EJS_gameUrl === 'YOUR_ROM_URL_HERE') {
-            statusEl.textContent = 'ROM URL not set — edit pokemon-black.html and replace YOUR_ROM_URL_HERE with your ROM URL.';
-            statusEl.style.color = '#e8c000';
-        } else {
-            fetch(window.EJS_gameUrl, { method: 'HEAD' })
-                .then(function(r) {
-                    if (r.ok) {
-                        var mb = r.headers.get('content-length');
-                        mb = mb ? ' (' + (mb / 1024 / 1024).toFixed(1) + ' MB)' : '';
-                        if (statusEl) statusEl.textContent = 'ROM found' + mb + ' — loading emulator…';
-                    } else {
-                        if (statusEl) statusEl.textContent = 'ERROR: ROM not reachable (HTTP ' + r.status + ')';
-                    }
-                })
-                .catch(function(e) {
-                    if (statusEl) statusEl.textContent = 'ERROR fetching ROM: ' + e.message;
-                });
-        }
-    </script>
-    <script>
-        // Force WebGL preserveDrawingBuffer so screenshots work
+        // ROM loader — fetches via GitHub API (CORS-safe) and caches in CacheStorage
+        // so the 106 MB download only happens once.
         (function() {
-            var _orig = HTMLCanvasElement.prototype.getContext;
-            HTMLCanvasElement.prototype.getContext = function(type, attrs) {
-                if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl') {
-                    attrs = Object.assign({}, attrs || {}, { preserveDrawingBuffer: true });
-                }
-                return _orig.call(this, type, attrs);
-            };
+            var CACHE_NAME  = 'pokemon-black-rom-v1';
+            var CACHE_KEY   = 'pokemon-black-rom';
+            var ASSET_ID    = 442307397; // release asset id
+            var statusEl    = document.getElementById('status');
+            var progressWrap = document.getElementById('progress-bar-wrap');
+            var progressBar  = document.getElementById('progress-bar');
+
+            function setStatus(msg, color) {
+                if (statusEl) { statusEl.textContent = msg; if (color) statusEl.style.color = color; }
+            }
+            function setProgress(pct) {
+                if (progressWrap) progressWrap.style.display = 'block';
+                if (progressBar)  progressBar.style.width = pct + '%';
+            }
+            function launchEmulator(blobUrl) {
+                window.EJS_gameUrl = blobUrl;
+                if (progressWrap) progressWrap.style.display = 'none';
+                setStatus('ROM ready — loading emulator…');
+                var s = document.createElement('script');
+                s.onerror = function() { setStatus('ERROR: Failed to load EmulatorJS CDN — check internet connection.'); };
+                s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+                document.body.appendChild(s);
+            }
+
+            function fetchAndCache(token) {
+                setStatus('Downloading ROM (106 MB) — first time only, will be cached…');
+                setProgress(0);
+
+                fetch('https://api.github.com/repos/knightdx91-alt/Pokemon-Game/releases/assets/' + ASSET_ID, {
+                    headers: {
+                        'Authorization': 'token ' + token,
+                        'Accept': 'application/octet-stream'
+                    }
+                }).then(function(r) {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    var total = parseInt(r.headers.get('content-length') || '0', 10);
+                    var loaded = 0;
+                    var reader = r.body.getReader();
+                    var chunks = [];
+                    function pump() {
+                        return reader.read().then(function(d) {
+                            if (d.done) {
+                                var blob = new Blob(chunks, { type: 'application/zip' });
+                                // Cache it so next visit is instant
+                                caches.open(CACHE_NAME).then(function(cache) {
+                                    cache.put(CACHE_KEY, new Response(blob, {
+                                        headers: { 'Content-Type': 'application/zip' }
+                                    }));
+                                });
+                                var url = URL.createObjectURL(blob);
+                                launchEmulator(url);
+                                return;
+                            }
+                            chunks.push(d.value);
+                            loaded += d.value.length;
+                            if (total) {
+                                var pct = Math.round(loaded / total * 100);
+                                setProgress(pct);
+                                setStatus('Downloading ROM… ' + pct + '% (' + (loaded/1024/1024).toFixed(1) + ' / ' + (total/1024/1024).toFixed(1) + ' MB)');
+                            }
+                            return pump();
+                        });
+                    }
+                    return pump();
+                }).catch(function(e) {
+                    setStatus('ERROR downloading ROM: ' + e.message, '#e84040');
+                });
+            }
+
+            function start() {
+                // 1. Check cache first
+                caches.open(CACHE_NAME).then(function(cache) {
+                    cache.match(CACHE_KEY).then(function(cached) {
+                        if (cached) {
+                            setStatus('Loading ROM from cache…');
+                            cached.blob().then(function(blob) {
+                                launchEmulator(URL.createObjectURL(blob));
+                            });
+                            return;
+                        }
+                        // 2. Not cached — need token to fetch via API
+                        var token = localStorage.getItem('gh_debug_token');
+                        if (!token) {
+                            token = prompt('Enter your GitHub token to download the ROM\n(same token used for screenshots — stored locally only):');
+                            if (!token) { setStatus('Token required to download ROM.', '#e8c000'); return; }
+                            localStorage.setItem('gh_debug_token', token);
+                        }
+                        fetchAndCache(token);
+                    });
+                }).catch(function() {
+                    // CacheStorage not available (e.g. private mode) — fetch directly
+                    var token = localStorage.getItem('gh_debug_token');
+                    if (!token) {
+                        token = prompt('Enter your GitHub token to download the ROM:');
+                        if (!token) { setStatus('Token required to download ROM.', '#e8c000'); return; }
+                        localStorage.setItem('gh_debug_token', token);
+                    }
+                    fetchAndCache(token);
+                });
+            }
+
+            // Register SW for EmulatorJS asset caching, then start ROM load
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').then(start);
+            } else {
+                start();
+            }
         })();
-    </script>
-    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"
-            onerror="document.getElementById('status').textContent='ERROR: Failed to load EmulatorJS CDN — check internet connection.'">
     </script>
 
     <script src="emulator-screenshot.js?v=__CACHE_BUST__"></script>
