@@ -17,63 +17,24 @@
             display: flex; align-items: center; justify-content: space-between;
             padding: 6px 10px; gap: 8px;
         }
-        #top-bar a {
-            color: #18b8c8; text-decoration: none; font-size: 12px;
-            border: 1px solid #18b8c8; border-radius: 3px; padding: 4px 8px;
-            touch-action: manipulation;
-        }
+        #top-bar a { color: #18b8c8; text-decoration: none; font-size: 12px; border: 1px solid #18b8c8; border-radius: 3px; padding: 4px 8px; touch-action: manipulation; }
         #top-bar span { font-size: 12px; color: #80d0e8; }
-        #screenshot-btn-emu {
-            background: #0a1830; color: #18b8c8; border: 1px solid #18b8c8;
-            border-radius: 3px; padding: 4px 8px; font-size: 12px; cursor: pointer;
-            font-family: "Courier New", Courier, monospace; touch-action: manipulation;
-        }
+        #screenshot-btn-emu { background: #0a1830; color: #18b8c8; border: 1px solid #18b8c8; border-radius: 3px; padding: 4px 8px; font-size: 12px; cursor: pointer; font-family: "Courier New", Courier, monospace; touch-action: manipulation; }
         #emu-wrap { width: 100%; max-width: 800px; flex: 1; display: flex; flex-direction: column; }
         #game { width: 100%; min-height: 500px; flex: 1; }
-        #status {
-            padding: 8px 12px; font-size: 11px; color: #80d0e8;
-            background: #0a1830; border-top: 1px solid #18b8c8;
-            min-height: 24px; word-break: break-all;
+        #status { padding: 8px 12px; font-size: 11px; color: #80d0e8; background: #0a1830; border-top: 1px solid #18b8c8; min-height: 24px; word-break: break-all; }
+        #loading-screen {
+            width: 100%; max-width: 800px; padding: 40px 20px;
+            display: flex; flex-direction: column; align-items: center; gap: 20px;
         }
-        #setup-screen {
-            width: 100%; max-width: 800px; padding: 20px 16px;
-            display: flex; flex-direction: column; gap: 16px;
-        }
-        .setup-card {
-            background: #0a1830; border: 1px solid #18b8c8; border-radius: 6px;
-            padding: 14px 16px;
-        }
-        .setup-card h2 { font-size: 13px; color: #18b8c8; margin-bottom: 8px; }
-        .setup-card p  { font-size: 11px; color: #c8d8e8; line-height: 1.5; margin-bottom: 10px; }
-        #dl-status {
-            font-size: 11px; color: #e8c000; margin-top: 8px; min-height: 16px;
-            word-break: break-all;
-        }
-        #progress-bar-bg {
-            background: #060610; border: 1px solid #18b8c8; border-radius: 3px;
-            height: 10px; overflow: hidden; margin-top: 6px; display: none;
-        }
-        #progress-bar-fill { height: 100%; background: #18b8c8; width: 0%; transition: width 0.4s; }
-        .big-btn {
-            display: block; width: 100%; padding: 10px;
-            background: #060610; color: #18b8c8;
-            border: 1px solid #18b8c8; border-radius: 4px;
-            font-size: 13px; font-family: "Courier New", Courier, monospace;
-            cursor: pointer; touch-action: manipulation; text-align: center;
-            text-decoration: none; margin-bottom: 6px;
-        }
-        .big-btn.green  { border-color: #20d840; color: #20d840; }
-        #debug-bar {
-            width: 100%; max-width: 800px; background: #060610;
-            border-top: 1px solid #222; padding: 5px 10px;
-            display: flex; gap: 6px; flex-wrap: wrap;
-        }
-        .dbg-btn {
-            background: #0a1830; color: #e8c000; border: 1px solid #e8c000;
-            border-radius: 3px; padding: 3px 9px; font-size: 11px;
-            font-family: "Courier New", Courier, monospace;
-            cursor: pointer; touch-action: manipulation;
-        }
+        .load-title { font-size: 16px; color: #18b8c8; letter-spacing: 2px; }
+        .load-sub   { font-size: 12px; color: #6090a8; text-align: center; line-height: 1.6; }
+        #progress-wrap { width: 100%; max-width: 400px; }
+        #progress-bar-bg { background: #060610; border: 1px solid #18b8c8; border-radius: 3px; height: 12px; overflow: hidden; }
+        #progress-bar-fill { height: 100%; background: #18b8c8; width: 0%; transition: width 0.3s; }
+        #dl-status { font-size: 11px; color: #e8c000; margin-top: 8px; min-height: 16px; text-align: center; word-break: break-all; }
+        #debug-bar { width: 100%; max-width: 800px; background: #060610; border-top: 1px solid #222; padding: 5px 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+        .dbg-btn { background: #0a1830; color: #e8c000; border: 1px solid #e8c000; border-radius: 3px; padding: 3px 9px; font-size: 11px; font-family: "Courier New", Courier, monospace; cursor: pointer; touch-action: manipulation; }
     </style>
 </head>
 <body>
@@ -83,11 +44,10 @@
         <button id="screenshot-btn-emu">&#128247; Screenshot</button>
     </div>
 
-    <div id="setup-screen">
-        <div class="setup-card">
-            <h2>&#9654; Load ROM from Google Drive</h2>
-            <p>Tap below to open your Google Drive and select <strong>pokemon-black.nds</strong>. Downloaded once and saved locally — future visits load instantly.</p>
-            <button class="big-btn" id="btn-picker">&#9729; Open Google Drive Picker</button>
+    <div id="loading-screen">
+        <div class="load-title">POKÉMON BLACK</div>
+        <div class="load-sub" id="load-msg">Checking local cache…</div>
+        <div id="progress-wrap" style="display:none">
             <div id="progress-bar-bg"><div id="progress-bar-fill"></div></div>
             <div id="dl-status"></div>
         </div>
@@ -101,12 +61,9 @@
         <button class="dbg-btn" id="btn-clear-cache">&#128465; Clear ROM Cache</button>
     </div>
 
-    <!-- Google APIs -->
-    <script src="https://apis.google.com/js/api.js"></script>
-    <script src="https://accounts.google.com/gsi/client"></script>
-
     <script>
         (function() {
+            // Preserve drawing buffer so screenshots work
             var _orig = HTMLCanvasElement.prototype.getContext;
             HTMLCanvasElement.prototype.getContext = function(type, attrs) {
                 if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl') {
@@ -118,241 +75,158 @@
     </script>
 
     <script>
-        (function() {
-            var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
-            var SCOPE     = 'https://www.googleapis.com/auth/drive.readonly';
+    (function() {
+        var ROM_URL  = 'https://github.com/knightdx91-alt/Pokemon-Game/releases/download/roms-v1/pokemon-black.zip';
+        var IDB_DB   = 'pokemon-black-rom';
+        var IDB_STORE = 'rom';
+        var IDB_KEY  = 'blob';
 
-            var IDB_DB    = 'pokemon-black-rom';
-            var IDB_STORE = 'rom';
-            var IDB_KEY   = 'blob';
+        var loadingEl  = document.getElementById('loading-screen');
+        var emuEl      = document.getElementById('emu-wrap');
+        var statusEl   = document.getElementById('status');
+        var loadMsgEl  = document.getElementById('load-msg');
+        var progressWrap = document.getElementById('progress-wrap');
+        var progFill   = document.getElementById('progress-bar-fill');
+        var dlStatus   = document.getElementById('dl-status');
 
-            var setupEl  = document.getElementById('setup-screen');
-            var emuEl    = document.getElementById('emu-wrap');
-            var statusEl = document.getElementById('status');
-            var dlStatus = document.getElementById('dl-status');
-            var progBg   = document.getElementById('progress-bar-bg');
-            var progFill = document.getElementById('progress-bar-fill');
-            var pickerBtn = document.getElementById('btn-picker');
+        function setStatus(msg) { statusEl.textContent = msg; }
+        function setMsg(msg)    { loadMsgEl.textContent = msg; }
+        function setDl(msg, color) { dlStatus.textContent = msg; dlStatus.style.color = color || '#e8c000'; }
+        function setProgress(pct) { progressWrap.style.display = 'block'; progFill.style.width = pct + '%'; }
 
-            var _accessToken = null;
+        // ── IndexedDB ───────────────────────────────────────────────────────
+        function openDB() {
+            return new Promise(function(res, rej) {
+                var r = indexedDB.open(IDB_DB, 1);
+                r.onupgradeneeded = function(e) { e.target.result.createObjectStore(IDB_STORE); };
+                r.onsuccess = function(e) { res(e.target.result); };
+                r.onerror   = function(e) { rej(e.target.error); };
+            });
+        }
+        function idbGet(db) {
+            return new Promise(function(res, rej) {
+                var r = db.transaction(IDB_STORE,'readonly').objectStore(IDB_STORE).get(IDB_KEY);
+                r.onsuccess = function(e) { res(e.target.result || null); };
+                r.onerror   = function(e) { rej(e.target.error); };
+            });
+        }
+        function idbPut(db, blob) {
+            return new Promise(function(res, rej) {
+                var r = db.transaction(IDB_STORE,'readwrite').objectStore(IDB_STORE).put(blob, IDB_KEY);
+                r.onsuccess = function() { res(); };
+                r.onerror   = function(e) { rej(e.target.error); };
+            });
+        }
+        function idbDel(db) {
+            return new Promise(function(res, rej) {
+                var r = db.transaction(IDB_STORE,'readwrite').objectStore(IDB_STORE).delete(IDB_KEY);
+                r.onsuccess = function() { res(); };
+                r.onerror   = function(e) { rej(e.target.error); };
+            });
+        }
 
-            function setStatus(msg, color) {
-                statusEl.textContent = msg;
-                statusEl.style.color = color || '#80d0e8';
-            }
-            function setDlStatus(msg, color) {
-                dlStatus.textContent = msg;
-                dlStatus.style.color = color || '#e8c000';
-            }
-            function setProgress(pct) {
-                progBg.style.display = 'block';
-                progFill.style.width = pct + '%';
-            }
+        // ── EmulatorJS launch ───────────────────────────────────────────────
+        function launchEJS(blobUrl) {
+            loadingEl.style.display = 'none';
+            emuEl.style.display = 'flex';
+            setStatus('Loading emulator core…');
 
-            // ── IndexedDB ──────────────────────────────────────────────────
-            function openDB() {
-                return new Promise(function(res, rej) {
-                    var r = indexedDB.open(IDB_DB, 1);
-                    r.onupgradeneeded = function(e) { e.target.result.createObjectStore(IDB_STORE); };
-                    r.onsuccess = function(e) { res(e.target.result); };
-                    r.onerror   = function(e) { rej(e.target.error); };
-                });
-            }
-            function idbGet(db) {
-                return new Promise(function(res, rej) {
-                    var r = db.transaction(IDB_STORE,'readonly').objectStore(IDB_STORE).get(IDB_KEY);
-                    r.onsuccess = function(e) { res(e.target.result||null); };
-                    r.onerror   = function(e) { rej(e.target.error); };
-                });
-            }
-            function idbPut(db, blob) {
-                return new Promise(function(res, rej) {
-                    var r = db.transaction(IDB_STORE,'readwrite').objectStore(IDB_STORE).put(blob, IDB_KEY);
-                    r.onsuccess = function() { res(); };
-                    r.onerror   = function(e) { rej(e.target.error); };
-                });
-            }
-            function idbDel(db) {
-                return new Promise(function(res, rej) {
-                    var r = db.transaction(IDB_STORE,'readwrite').objectStore(IDB_STORE).delete(IDB_KEY);
-                    r.onsuccess = function() { res(); };
-                    r.onerror   = function(e) { rej(e.target.error); };
-                });
-            }
+            window.EJS_player          = '#game';
+            window.EJS_core            = 'nds';
+            window.EJS_gameUrl         = blobUrl;
+            window.EJS_pathtodata      = 'https://cdn.emulatorjs.org/stable/data/';
+            window.EJS_color           = '#18b8c8';
+            window.EJS_backgroundColor = '#060610';
+            window.EJS_startOnLoaded   = true;
+            window.EJS_onGameStart     = function() { setStatus('Running — Pokémon Black'); };
+            window.EJS_Buttons = {
+                playPause:true, restart:true, mute:true, settings:true,
+                fullscreen:true, saveState:true, loadState:true,
+                screenRecord:false, gamepad:true, cheat:false, volume:true,
+                saveSavFiles:true, loadSavFiles:true, quickSave:true, quickLoad:true,
+            };
+            var s = document.createElement('script');
+            s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+            s.onerror = function() { setStatus('ERROR: Failed to load EmulatorJS.', '#e84040'); };
+            document.body.appendChild(s);
+        }
 
-            // ── Launch EmulatorJS ──────────────────────────────────────────
-            function launchEJS(blobUrl) {
-                setupEl.style.display = 'none';
-                emuEl.style.display   = 'flex';
-                setStatus('Loading emulator core…');
+        // ── Download with streaming progress ───────────────────────────────
+        function downloadROM() {
+            setMsg('Downloading Pokémon Black…');
+            setProgress(2);
+            setDl('Connecting to GitHub…');
 
-                window.EJS_player          = '#game';
-                window.EJS_core            = 'nds';
-                window.EJS_gameUrl         = blobUrl;
-                window.EJS_pathtodata      = 'https://cdn.emulatorjs.org/stable/data/';
-                window.EJS_color           = '#18b8c8';
-                window.EJS_backgroundColor = '#060610';
-                window.EJS_startOnLoaded   = true;
-                window.EJS_onGameStart     = function() { setStatus('Running — Pokémon Black'); };
-                window.EJS_Buttons = {
-                    playPause:true, restart:true, mute:true, settings:true,
-                    fullscreen:true, saveState:true, loadState:true,
-                    screenRecord:false, gamepad:true, cheat:false, volume:true,
-                    saveSavFiles:true, loadSavFiles:true, quickSave:true, quickLoad:true,
-                };
-                var s = document.createElement('script');
-                s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
-                s.onerror = function() { setStatus('ERROR: Failed to load EmulatorJS.', '#e84040'); };
-                document.body.appendChild(s);
-            }
+            fetch(ROM_URL).then(function(resp) {
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
 
-            // ── Download selected file from Drive ──────────────────────────
-            function downloadDriveFile(fileId, fileName) {
-                setDlStatus('Downloading ' + fileName + '…');
-                setProgress(5);
-                pickerBtn.disabled = true;
+                var total = parseInt(resp.headers.get('content-length') || '0', 10);
 
-                fetch('https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media', {
-                    headers: { 'Authorization': 'Bearer ' + _accessToken }
-                }).then(function(resp) {
-                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-
-                    var total = parseInt(resp.headers.get('content-length') || '0', 10);
-
-                    if (resp.body && resp.body.getReader && total) {
-                        var reader = resp.body.getReader();
-                        var chunks = [];
-                        var loaded = 0;
-                        function pump() {
-                            return reader.read().then(function(r) {
-                                if (r.done) return new Blob(chunks, { type: 'application/octet-stream' });
-                                chunks.push(r.value);
-                                loaded += r.value.length;
-                                var pct = Math.round(loaded / total * 100);
-                                var mb  = (loaded / 1048576).toFixed(1);
-                                var tot = (total  / 1048576).toFixed(0);
-                                setProgress(pct);
-                                setDlStatus('Downloading ' + mb + ' / ' + tot + ' MB (' + pct + '%)');
-                                return pump();
-                            });
-                        }
-                        return pump();
-                    }
-
-                    setDlStatus('Downloading (~256 MB) — please wait…');
-                    setProgress(50);
-                    return resp.blob();
-
-                }).then(function(blob) {
-                    setDlStatus('Saving to local cache…', '#20d840');
-                    setProgress(100);
-                    return openDB().then(function(db) {
-                        return idbPut(db, blob).then(function() {
-                            launchEJS(URL.createObjectURL(blob));
+                if (resp.body && resp.body.getReader && total) {
+                    var reader = resp.body.getReader();
+                    var chunks = [];
+                    var loaded = 0;
+                    function pump() {
+                        return reader.read().then(function(r) {
+                            if (r.done) return new Blob(chunks, { type: 'application/zip' });
+                            chunks.push(r.value);
+                            loaded += r.value.length;
+                            var pct = Math.round(loaded / total * 100);
+                            var mb  = (loaded  / 1048576).toFixed(1);
+                            var tot = (total   / 1048576).toFixed(0);
+                            setProgress(pct);
+                            setDl('Downloading ' + mb + ' / ' + tot + ' MB (' + pct + '%)');
+                            return pump();
                         });
+                    }
+                    return pump();
+                }
+
+                // Fallback: no streaming
+                setDl('Downloading (~106 MB) — please wait…');
+                setProgress(50);
+                return resp.blob();
+
+            }).then(function(blob) {
+                setDl('Saving to local cache…', '#20d840');
+                setProgress(100);
+                return openDB().then(function(db) {
+                    return idbPut(db, blob).then(function() {
+                        launchEJS(URL.createObjectURL(blob));
                     });
-                }).catch(function(err) {
-                    setDlStatus('Download failed: ' + err.message, '#e84040');
-                    pickerBtn.disabled = false;
                 });
-            }
-
-            // ── Google Picker ──────────────────────────────────────────────
-            function openPicker(token) {
-                gapi.load('picker', function() {
-                    var picker = new google.picker.PickerBuilder()
-                        .addView(new google.picker.DocsView(google.picker.ViewId.DOCS)
-                            .setMimeTypes('application/octet-stream,application/x-nintendo-ds-rom')
-                            .setQuery('pokemon-black'))
-                        .setOAuthToken(token)
-                        .setCallback(function(data) {
-                            if (data[google.picker.Response.ACTION] === google.picker.Action.PICKED) {
-                                var doc = data[google.picker.Response.DOCUMENTS][0];
-                                downloadDriveFile(doc[google.picker.Document.ID], doc[google.picker.Document.NAME]);
-                            }
-                        })
-                        .build();
-                    picker.setVisible(true);
-                });
-            }
-
-            // ── OAuth2 token via GIS ───────────────────────────────────────
-            function getTokenAndOpenPicker() {
-                var client = google.accounts.oauth2.initTokenClient({
-                    client_id: CLIENT_ID,
-                    scope: SCOPE,
-                    callback: function(resp) {
-                        if (resp.error) {
-                            setDlStatus('Sign-in failed: ' + resp.error, '#e84040');
-                            return;
-                        }
-                        _accessToken = resp.access_token;
-                        openPicker(_accessToken);
-                    }
-                });
-                client.requestAccessToken();
-            }
-
-            // ── Picker button ──────────────────────────────────────────────
-            pickerBtn.addEventListener('click', function() {
-                setDlStatus('Opening Google sign-in…');
-                gapi.load('client', function() {
-                    getTokenAndOpenPicker();
-                });
+            }).catch(function(err) {
+                setMsg('Download failed');
+                setDl('Error: ' + err.message + '\n\nTry refreshing the page.', '#e84040');
+                console.error('[ROM] Download failed:', err);
             });
+        }
 
-            // ── On load: check cache ───────────────────────────────────────
-            openDB().then(function(db) {
-                return idbGet(db).then(function(cached) {
-                    if (cached) {
-                        launchEJS(URL.createObjectURL(cached));
-                    }
-                });
-            }).catch(function() {});
-
-            // ── Clear cache ────────────────────────────────────────────────
-            document.getElementById('btn-clear-cache').addEventListener('click', function() {
-                openDB().then(function(db) { return idbDel(db); })
-                    .then(function() { location.reload(); })
-                    .catch(function(e) { alert('Clear failed: ' + e.message); });
+        // ── Boot: check cache, then download ───────────────────────────────
+        openDB().then(function(db) {
+            return idbGet(db).then(function(cached) {
+                if (cached) {
+                    setMsg('Loading from cache…');
+                    launchEJS(URL.createObjectURL(cached));
+                } else {
+                    downloadROM();
+                }
             });
-        })();
+        }).catch(function(err) {
+            console.warn('[ROM] IndexedDB error, downloading directly:', err);
+            downloadROM();
+        });
+
+        // ── Clear cache ─────────────────────────────────────────────────────
+        document.getElementById('btn-clear-cache').addEventListener('click', function() {
+            openDB().then(function(db) { return idbDel(db); })
+                .then(function() { location.reload(); })
+                .catch(function(e) { alert('Clear failed: ' + e.message); });
+        });
+    })();
     </script>
 
     <script src="emulator-saves.js?v=__CACHE_BUST__"></script>
-    <script>
-        document.getElementById('screenshot-btn-emu').addEventListener('click', function() {
-            var canvas = document.querySelector('#game canvas');
-            if (!canvas) { alert('Emulator not loaded yet.'); return; }
-            var token = localStorage.getItem('gh_debug_token');
-            if (!token) {
-                token = prompt('Enter your GitHub token (public_repo scope):');
-                if (!token) return;
-                localStorage.setItem('gh_debug_token', token);
-            }
-            var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-            var ext = dataUrl.startsWith('data:image/png') ? 'png' : 'jpg';
-            var base64 = dataUrl.replace(/^data:image\/(jpeg|png);base64,/, '');
-            var ts = new Date().toISOString().replace(/[:.]/g, '-');
-            var files = {};
-            files['black-shot-' + ts + '.' + ext] = { content: base64 };
-            files['view.html'] = { content: '<!DOCTYPE html><html><body style="margin:0;background:#000"><img src="data:image/' + ext + ';base64,' + base64 + '" style="max-width:100%;image-rendering:pixelated"></body></html>' };
-            fetch('https://api.github.com/gists', {
-                method: 'POST',
-                headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ description: 'Pokemon Black screenshot ' + ts, public: false, files: files })
-            })
-            .then(function(r) {
-                if (!r.ok) return r.text().then(function(t){ var m=t; try{m=JSON.parse(t).message||t;}catch(e){} throw new Error(r.status+': '+m); });
-                return r.json();
-            })
-            .then(function(g) {
-                var btn = document.getElementById('screenshot-btn-emu');
-                if (btn) { btn.style.color='#20d840'; setTimeout(function(){ btn.style.color='#18b8c8'; },2000); }
-                prompt('Screenshot saved — link:', g.html_url);
-            })
-            .catch(function(e) { alert('Screenshot error:\n' + e.message); });
-        });
-    </script>
+    <script src="emulator-screenshot.js?v=__CACHE_BUST__"></script>
 </body>
 </html>
