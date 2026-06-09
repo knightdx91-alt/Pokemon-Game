@@ -47,7 +47,27 @@
 
         #emu-wrap { width: 100%; max-width: 800px; flex: 1; display: flex; flex-direction: column; }
         #game { width: 100%; min-height: 500px; flex: 1; }
-        #status { padding: 8px 12px; font-size: 11px; color: #80d0e8; background: #0a1830; border-top: 1px solid #18b8c8; min-height: 24px; word-break: break-all; }
+        #status {
+            padding: 8px 12px; font-size: 11px; color: #80d0e8;
+            background: #0a1830; border-top: 1px solid #18b8c8;
+            min-height: 24px; word-break: break-all;
+        }
+        #status.loading {
+            color: #e8c000;
+        }
+        @keyframes blink-dot {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.2; }
+        }
+        #status-dot {
+            display: inline-block;
+            width: 6px; height: 6px;
+            background: #18b8c8;
+            border-radius: 50%;
+            margin-left: 6px;
+            vertical-align: middle;
+            animation: blink-dot 1s ease-in-out infinite;
+        }
 
         #debug-bar { width: 100%; max-width: 800px; background: #060610; border-top: 1px solid #222; padding: 5px 10px; display: flex; gap: 6px; flex-wrap: wrap; }
         .dbg-btn { background: #0a1830; color: #e8c000; border: 1px solid #e8c000; border-radius: 3px; padding: 3px 9px; font-size: 11px; font-family: "Courier New", Courier, monospace; cursor: pointer; touch-action: manipulation; }
@@ -173,9 +193,7 @@
                     function pump() {
                         return reader.read().then(function(r) {
                             if (r.done) {
-                                var out = new Uint8Array(loaded), off = 0;
-                                chunks.forEach(function(c) { out.set(c, off); off += c.length; });
-                                return out.buffer;
+                                return new Blob(chunks, { type: 'application/octet-stream' });
                             }
                             chunks.push(r.value);
                             loaded += r.value.length;
@@ -196,22 +214,24 @@
                 }
                 setDl((label || 'Downloading') + '…  please wait');
                 setProgress(50);
-                return resp.arrayBuffer();
+                return resp.blob();
             });
         }
 
         // ── Unzip NDS from zip bytes ───────────────────────────────────────
-        function unzipNDS(buf) {
-            return new Promise(function(res, rej) {
-                if (typeof fflate === 'undefined') { rej(new Error('fflate not loaded')); return; }
-                setDl('Extracting .nds from zip…');
-                setProgress(93);
-                try {
-                    var files = fflate.unzipSync(new Uint8Array(buf));
-                    var key = Object.keys(files).find(function(k) { return k.toLowerCase().endsWith('.nds'); });
-                    if (!key) { rej(new Error('No .nds file found in zip')); return; }
-                    res(new Blob([files[key]], { type: 'application/octet-stream' }));
-                } catch(e) { rej(e); }
+        function unzipNDS(blob) {
+            return blob.arrayBuffer().then(function(buf) {
+                return new Promise(function(res, rej) {
+                    if (typeof fflate === 'undefined') { rej(new Error('fflate not loaded')); return; }
+                    setDl('Extracting .nds from zip…');
+                    setProgress(93);
+                    fflate.unzip(new Uint8Array(buf), function(err, files) {
+                        if (err) { rej(err); return; }
+                        var key = Object.keys(files).find(function(k) { return k.toLowerCase().endsWith('.nds'); });
+                        if (!key) { rej(new Error('No .nds file found in zip')); return; }
+                        res(new Blob([files[key]], { type: 'application/octet-stream' }));
+                    });
+                });
             });
         }
 
@@ -219,7 +239,24 @@
         function launchEJS(blobUrl) {
             loadingEl.style.display = 'none';
             emuEl.style.display = 'flex';
-            setStatus('Loading emulator core…');
+
+            // Inject a blinking dot and start elapsed-time counter
+            var dot = document.createElement('span');
+            dot.id = 'status-dot';
+            statusEl.textContent = 'Loading / decompressing NDS ROM… ';
+            statusEl.classList.add('loading');
+            statusEl.appendChild(dot);
+
+            var startTime = Date.now();
+            var _timer = setInterval(function() {
+                var elapsed = Math.floor((Date.now() - startTime) / 1000);
+                var mins = Math.floor(elapsed / 60);
+                var secs = ('0' + (elapsed % 60)).slice(-2);
+                var timeStr = mins > 0 ? mins + 'm ' + secs + 's' : elapsed + 's';
+                statusEl.textContent = 'Loading / decompressing NDS ROM… ' + timeStr;
+                statusEl.appendChild(dot);
+            }, 1000);
+
             window.EJS_player          = '#game';
             window.EJS_core            = 'nds';
             window.EJS_gameUrl         = blobUrl;
@@ -227,7 +264,13 @@
             window.EJS_color           = '#18b8c8';
             window.EJS_backgroundColor = '#060610';
             window.EJS_startOnLoaded   = true;
-            window.EJS_onGameStart     = function() { setStatus('Running — Pokémon Black'); };
+            window.EJS_onGameStart     = function() {
+                clearInterval(_timer);
+                statusEl.classList.remove('loading');
+                var d = document.getElementById('status-dot');
+                if (d) d.remove();
+                setStatus('Running — Pokémon Black');
+            };
             window.EJS_Buttons = {
                 playPause:true, restart:true, mute:true, settings:true, fullscreen:true,
                 saveState:true, loadState:true, screenRecord:false, gamepad:true,
@@ -236,7 +279,10 @@
             };
             var s = document.createElement('script');
             s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
-            s.onerror = function() { setStatus('ERROR: Failed to load EmulatorJS.'); };
+            s.onerror = function() {
+                clearInterval(_timer);
+                setStatus('ERROR: Failed to load EmulatorJS.');
+            };
             document.body.appendChild(s);
         }
 
@@ -280,8 +326,6 @@
                 if (!obj || !obj.actions || !obj.actions.download) throw new Error('No LFS download action');
                 var dl = obj.actions.download;
                 return streamFetch(dl.href, dl.header || {}, 'Downloading');
-            }).then(function(buf) {
-                return new Blob([buf], { type: 'application/octet-stream' });
             });
         }
 
@@ -317,12 +361,12 @@
             setProgress(2);
             var url = 'https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media';
             streamFetch(url, { 'Authorization': 'Bearer ' + token }, 'Downloading ' + fileName)
-                .then(function(buf) {
+                .then(function(blob) {
                     var lower = fileName.toLowerCase();
                     if (lower.endsWith('.zip')) {
-                        return unzipNDS(buf);
+                        return unzipNDS(blob);
                     } else {
-                        return new Blob([buf], { type: 'application/octet-stream' });
+                        return blob;
                     }
                 })
                 .then(cacheAndLaunch)
