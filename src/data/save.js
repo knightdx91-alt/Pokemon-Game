@@ -71,12 +71,19 @@
             },
 
             // Party — up to 6 Pokemon (null = empty slot)
-            party: [Object.assign(DEFAULT_POKEMON(), {
-                speciesId: 4, nickname: 'CHARMANDER', level: 5,
-                currentHp: 19, maxHp: 19,
-                moves: ['Scratch', 'Growl', null, null],
-                caughtLevel: 5, exp: 35
-            }), null, null, null, null, null],
+            party: Array.from({ length: 6 }, () => Object.assign(DEFAULT_POKEMON(), {
+                speciesId: 6, nickname: 'CHARIZARD', level: 100,
+                currentHp: 360, maxHp: 360,
+                atk: 293, def: 240, spAtk: 317, spDef: 240, speed: 299,
+                moves: [
+                    { name: 'Flamethrower', type: 'Fire',   pp: 15, maxPp: 15 },
+                    { name: 'Air Slash',    type: 'Flying',  pp: 20, maxPp: 20 },
+                    { name: 'Dragon Claw',  type: 'Dragon',  pp: 15, maxPp: 15 },
+                    { name: 'Earthquake',   type: 'Ground',  pp: 10, maxPp: 10 },
+                ],
+                caughtLevel: 5, exp: 1059860, nature: 'Adamant', type: 'Fire/Flying',
+                ability: 'Blaze', otName: 'PLAYER', otId: '00001'
+            })),
 
             // PC Boxes — 20 boxes × 30 slots
             pcBoxes: Array.from({ length: 20 }, (_, i) => DEFAULT_BOX('Box ' + (i + 1))),
@@ -292,14 +299,21 @@
             for (const [pocket, seed] of Object.entries(SEEDS)) {
                 if (!Array.isArray(inv[pocket]) || inv[pocket].length === 0) inv[pocket] = [seed];
             }
-            // Backfill test Charmander if party is completely empty
+            // Backfill test Charizards if party is completely empty
             if (!Array.isArray(data.party) || data.party.every(s => s === null)) {
-                data.party = [Object.assign(DEFAULT_POKEMON(), {
-                    speciesId: 4, nickname: 'CHARMANDER', level: 5,
-                    currentHp: 19, maxHp: 19,
-                    moves: ['Scratch', 'Growl', null, null],
-                    caughtLevel: 5, exp: 35
-                }), null, null, null, null, null];
+                data.party = Array.from({ length: 6 }, () => Object.assign(DEFAULT_POKEMON(), {
+                    speciesId: 6, nickname: 'CHARIZARD', level: 100,
+                    currentHp: 360, maxHp: 360,
+                    atk: 293, def: 240, spAtk: 317, spDef: 240, speed: 299,
+                    moves: [
+                        { name: 'Flamethrower', type: 'Fire',   pp: 15, maxPp: 15 },
+                        { name: 'Air Slash',    type: 'Flying',  pp: 20, maxPp: 20 },
+                        { name: 'Dragon Claw',  type: 'Dragon',  pp: 15, maxPp: 15 },
+                        { name: 'Earthquake',   type: 'Ground',  pp: 10, maxPp: 10 },
+                    ],
+                    caughtLevel: 5, exp: 1059860, nature: 'Adamant', type: 'Fire/Flying',
+                    ability: 'Blaze', otName: 'PLAYER', otId: '00001'
+                }));
             }
             this.currentSlot = slotIndex;
             this.state = data;

@@ -1315,13 +1315,24 @@ window.GameStartMenu = (function () {
     function _getParty() {
         var party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
         if (!party.some(Boolean)) {
-            // Fallback starter so the party screen always shows something
-            var base = (window.GameSave && GameSave.DEFAULT_POKEMON) ? GameSave.DEFAULT_POKEMON() : {};
-            party = [Object.assign(base, {
-                speciesId: 4, nickname: 'CHARMANDER', level: 5, gender: 'M',
-                currentHp: 19, maxHp: 19, moves: ['Scratch', 'Growl', null, null],
-                caughtLevel: 5, exp: 35
-            }), null, null, null, null, null];
+            // Fallback so party screen always shows something
+            var _mk = function() {
+                var base = (window.GameSave && GameSave.DEFAULT_POKEMON) ? GameSave.DEFAULT_POKEMON() : {};
+                return Object.assign(base, {
+                    speciesId: 6, nickname: 'CHARIZARD', level: 100, gender: 'M',
+                    currentHp: 360, maxHp: 360,
+                    atk: 293, def: 240, spAtk: 317, spDef: 240, speed: 299,
+                    moves: [
+                        { name: 'Flamethrower', type: 'Fire',   pp: 15, maxPp: 15 },
+                        { name: 'Air Slash',    type: 'Flying',  pp: 20, maxPp: 20 },
+                        { name: 'Dragon Claw',  type: 'Dragon',  pp: 15, maxPp: 15 },
+                        { name: 'Earthquake',   type: 'Ground',  pp: 10, maxPp: 10 },
+                    ],
+                    caughtLevel: 5, exp: 1059860, nature: 'Adamant', type: 'Fire/Flying',
+                    ability: 'Blaze', otName: 'PLAYER', otId: '00001'
+                });
+            };
+            party = Array.from({ length: 6 }, _mk);
         }
         return party;
     }
