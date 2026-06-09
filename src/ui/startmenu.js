@@ -300,6 +300,7 @@ window.GameStartMenu = (function () {
     // --- Render sub-page overlay ---
     function _renderSub() {
         subEl.innerHTML = '';
+        subEl._pageEl = null;
 
         // Canvas-based full-screen pages bypass the sm-win wrapper entirely
         var CANVAS_PAGES = ['bag','journal','achievements','trainer_card','options','pokemon','pokedex','pokedex_entry','pokenav','save'];
@@ -317,6 +318,7 @@ window.GameStartMenu = (function () {
             else if (page === 'pokenav')      _buildPokenav(pageEl);
             else if (page === 'save')         _buildSave(pageEl);
             subEl.appendChild(pageEl);
+            subEl._pageEl = pageEl;
             subEl.style.display = 'block';
             return;
         }
@@ -554,26 +556,28 @@ window.GameStartMenu = (function () {
     ];
 
     function _buildJournal(el) {
-        _makeCanvasShell(el, function(ctx, canvas) {
+        var shell = _makeCanvasShell(el, function(ctx, canvas) {
             _loadJournalBg(function(bg) { _drawJournalCanvas(ctx, bg); });
+        });
+        var ctx = shell.ctx, canvas = shell.canvas;
+        el._redraw = function() { _loadJournalBg(function(bg) { _drawJournalCanvas(ctx, bg); }); };
 
-            // Tab clicks
-            canvas.addEventListener('click', function(e) {
-                var rect = canvas.getBoundingClientRect();
-                var cx = (e.clientX - rect.left) / rect.width  * GBA_W;
-                var cy = (e.clientY - rect.top)  / rect.height * GBA_H;
-                // Tab row y=0..18 GBA, each tab ~60px wide
-                if (cy < 18) {
-                    var t = Math.floor(cx / 60);
-                    if (t >= 0 && t < 4) { _journalTab = t; _journalPage = 0; _render(); }
-                    return;
-                }
-                // Factions sub-page: tap left/right halves of sub-nav row (y=18..30)
-                if (_journalTab === 0 && cy >= 18 && cy < 30) {
-                    if (cx < 120) { _journalPage = (_journalPage - 1 + JOURNAL_PAGES.length) % JOURNAL_PAGES.length; _render(); }
-                    else          { _journalPage = (_journalPage + 1) % JOURNAL_PAGES.length; _render(); }
-                }
-            });
+        // Tab clicks
+        canvas.addEventListener('click', function(e) {
+            var rect = canvas.getBoundingClientRect();
+            var cx = (e.clientX - rect.left) / rect.width  * GBA_W;
+            var cy = (e.clientY - rect.top)  / rect.height * GBA_H;
+            // Tab row y=0..18 GBA, each tab ~60px wide
+            if (cy < 18) {
+                var t = Math.floor(cx / 60);
+                if (t >= 0 && t < 4) { _journalTab = t; _journalPage = 0; _achTier = 0; _powersPage = 0; el._redraw(); }
+                return;
+            }
+            // Factions sub-page: tap left/right halves of sub-nav row (y=18..30)
+            if (_journalTab === 0 && cy >= 18 && cy < 30) {
+                if (cx < 120) { _journalPage = (_journalPage - 1 + JOURNAL_PAGES.length) % JOURNAL_PAGES.length; el._redraw(); }
+                else          { _journalPage = (_journalPage + 1) % JOURNAL_PAGES.length; el._redraw(); }
+            }
         });
     }
 
@@ -2423,17 +2427,22 @@ window.GameStartMenu = (function () {
     }
     function toggle() { if(isOpen) close(); else open(); }
 
+    function _redrawPageEl() {
+        var el = subEl && subEl._pageEl;
+        if (el && typeof el._redraw === 'function') { el._redraw(); return true; }
+        return false;
+    }
     function moveLeft() {
         if (!isOpen) return;
         if (page==='main') { selectedIdx=(selectedIdx-1+ITEMS.length)%ITEMS.length; _render(); return; }
-        if (page==='journal') { _journalPage=(_journalPage-1+JOURNAL_PAGES.length)%JOURNAL_PAGES.length; _render(); return; }
-        if (page==='bag') { _bagPocket=(_bagPocket-1+8)%8; _subIdx=0; _render(); return; }
+        if (page==='journal') { _journalTab=(_journalTab-1+4)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
+        if (page==='bag') { _bagPocket=(_bagPocket-1+8)%8; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
     }
     function moveRight() {
         if (!isOpen) return;
         if (page==='main') { selectedIdx=(selectedIdx+1)%ITEMS.length; _render(); return; }
-        if (page==='journal') { _journalPage=(_journalPage+1)%JOURNAL_PAGES.length; _render(); return; }
-        if (page==='bag') { _bagPocket=(_bagPocket+1)%8; _subIdx=0; _render(); return; }
+        if (page==='journal') { _journalTab=(_journalTab+1)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
+        if (page==='bag') { _bagPocket=(_bagPocket+1)%8; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
     }
     function moveUp() {
         if (!isOpen||page==='main') return;
