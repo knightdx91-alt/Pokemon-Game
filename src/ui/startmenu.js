@@ -1394,13 +1394,13 @@ window.GameStartMenu = (function () {
 
                 // If action menu is open, handle its clicks
                 if (_partyActionOpen) {
-                    var opts = ['SUMMARY', 'SWITCH', 'CANCEL'];
+                    var opts = ['Details', 'Item', 'Cancel'];
                     var ax = 130, ay = 50, aw = 100, ah = 14;
                     for (var oi = 0; oi < opts.length; oi++) {
                         if (gx >= ax && gx < ax+aw && gy >= ay+oi*ah && gy < ay+(oi+1)*ah) {
-                            if (opts[oi] === 'CANCEL') {
+                            if (opts[oi] === 'Cancel') {
                                 _partyActionOpen = false; redraw();
-                            } else if (opts[oi] === 'SUMMARY') {
+                            } else if (opts[oi] === 'Details') {
                                 _partyActionOpen = false;
                                 _openPartySummary(_partyActionMon, _partyActionIdx, filled, loadIconsAndDraw);
                             }
@@ -1446,31 +1446,154 @@ window.GameStartMenu = (function () {
         canvas.style.cssText = 'width:100%;height:100%;image-rendering:pixelated;display:block;';
         win.appendChild(canvas);
         var ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
 
-        var _tc = _getThemeColors();
-        ctx.fillStyle = _tc.bg; ctx.fillRect(0,0,canvas.width,canvas.height);
-        ctx.fillStyle = _tc.titleBg; ctx.fillRect(0,0,canvas.width,20*S);
-        ctx.fillStyle = _tc.hi; ctx.fillRect(0,20*S,canvas.width,2);
-        ctx.font = 'bold '+(7*S)+'px monospace'; ctx.fillStyle = _tc.hi; ctx.textBaseline='top';
-        ctx.fillText('POKEMON INFO', 8*S, 4*S);
+        var TABS = ['Profile', 'Skills', 'Battle Moves'];
+        var _tab = 0;
+        var _frontImg = null;
 
-        ctx.font = (6*S)+'px monospace'; ctx.fillStyle = _tc.text;
-        var lines = [
-            (mon.nickname||'???') + (mon.gender==='M'?' ♂':mon.gender==='F'?' ♀':''),
-            'No. ' + (mon.speciesId||'?') + '  Lv.' + (mon.level||1),
-            'HP: ' + (mon.currentHp||0) + ' / ' + (mon.maxHp||0),
-            'Exp: ' + (mon.exp||0),
-            'Nature: ' + (mon.nature||'Hardy'),
-            '',
-            'Moves:',
-        ];
-        (mon.moves||[]).filter(Boolean).forEach(function(m){ lines.push('  ' + m); });
-        lines.forEach(function(l,i){ ctx.fillText(l, 8*S, (28+i*14)*S); });
-
-        // Load and draw icon
-        _loadMonIcon(mon.speciesId, function(img) {
-            if (img) { ctx.imageSmoothingEnabled=false; ctx.drawImage(img,180*S,28*S,32*S,32*S); }
+        // Load front sprite
+        _getPokedexNumMap(function(map) {
+            var name = map[mon.speciesId];
+            if (!name) { drawSummary(); return; }
+            var img = new Image();
+            img.onload = function() { _frontImg = img; drawSummary(); };
+            img.onerror = function() { drawSummary(); };
+            img.src = 'data/sprites/pokemon/front/' + name + '.png';
         });
+
+        function drawSummary() {
+            var _tc = _getThemeColors();
+            var BG = _tc.bg, TITLEBG = _tc.titleBg, CYAN = _tc.hi, TEXT = _tc.text, DIM = _tc.dim;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = BG; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Title bar
+            ctx.fillStyle = TITLEBG; ctx.fillRect(0, 0, canvas.width, 20*S);
+            ctx.fillStyle = CYAN; ctx.fillRect(0, 20*S, canvas.width, S);
+            ctx.font = 'bold '+(7*S)+'px monospace'; ctx.fillStyle = CYAN; ctx.textBaseline = 'top';
+            ctx.fillText(TABS[_tab].toUpperCase(), 8*S, 4*S);
+
+            // Tab strip (L/R hint)
+            ctx.font = (5*S)+'px monospace'; ctx.fillStyle = DIM;
+            ctx.fillText('◀ L', 2*S, 4*S);
+            ctx.fillText('R ▶', (GBA_W-18)*S, 4*S);
+
+            // Mon name + level bar (top section)
+            var barH = 18;
+            ctx.fillStyle = '#0a1820'; ctx.fillRect(0, 21*S, canvas.width, barH*S);
+            ctx.fillStyle = CYAN; ctx.fillRect(0, (21+barH)*S, canvas.width, S);
+            ctx.font = 'bold '+(7*S)+'px monospace'; ctx.fillStyle = TEXT; ctx.textBaseline = 'top';
+            var gStr = mon.gender==='M' ? ' ♂' : mon.gender==='F' ? ' ♀' : '';
+            ctx.fillText((mon.nickname||'???')+gStr, 8*S, 23*S);
+            ctx.font = (6*S)+'px monospace'; ctx.fillStyle = DIM;
+            ctx.fillText('No. '+(mon.speciesId||'?'), (GBA_W-60)*S, 23*S);
+            ctx.fillStyle = TEXT;
+            ctx.fillText('Lv.'+(mon.level||1), (GBA_W-28)*S, 23*S);
+
+            // Front sprite (right side all tabs)
+            if (_frontImg) {
+                ctx.drawImage(_frontImg, (GBA_W-72)*S, 42*S, 64*S, 64*S);
+            }
+
+            var lx = 8, ty = 42;
+            if (_tab === 0) {
+                // Profile: OT / ID / Type / Ability / Nature
+                var rows = [
+                    ['OT/',       (mon.otName || 'Player')],
+                    ['ID No.',    String(mon.otId||'00000').padStart(5,'0')],
+                    ['Type',      (mon.type||'Normal')],
+                    ['Ability',   (mon.ability||'—')],
+                    ['Nature',    (mon.nature||'Hardy')],
+                    ['Item',      (mon.heldItem||'None')],
+                ];
+                ctx.font = (6*S)+'px monospace'; ctx.textBaseline = 'top';
+                rows.forEach(function(r, i) {
+                    var ry = ty + i*14;
+                    ctx.fillStyle = DIM; ctx.fillText(r[0], lx*S, ry*S);
+                    ctx.fillStyle = TEXT; ctx.fillText(r[1], (lx+40)*S, ry*S);
+                });
+                // Caught level
+                ctx.fillStyle = DIM; ctx.fillText('Met Lv.', lx*S, (ty+6*14)*S);
+                ctx.fillStyle = TEXT; ctx.fillText(String(mon.caughtLevel||mon.level||1), (lx+40)*S, (ty+6*14)*S);
+            } else if (_tab === 1) {
+                // Skills: Stats + Item/Ribbon/Exp
+                var stats = [
+                    ['HP',    mon.maxHp||0],
+                    ['Atk',   mon.atk||0],
+                    ['Def',   mon.def||0],
+                    ['Sp.Atk',mon.spAtk||0],
+                    ['Sp.Def',mon.spDef||0],
+                    ['Speed', mon.speed||0],
+                ];
+                ctx.font = (6*S)+'px monospace'; ctx.textBaseline = 'top';
+                stats.forEach(function(st, i) {
+                    var ry = ty + i*13;
+                    ctx.fillStyle = DIM; ctx.fillText(st[0], lx*S, ry*S);
+                    ctx.fillStyle = TEXT; ctx.fillText(String(st[1]), (lx+36)*S, ry*S);
+                    // Small stat bar
+                    var barW = 48, barMax = 255;
+                    var pct = Math.min(1, st[1]/barMax);
+                    var col = st[1] >= 100 ? '#20c840' : st[1] >= 50 ? '#e8c000' : '#e82020';
+                    ctx.fillStyle = '#111122'; ctx.fillRect((lx+52)*S, (ry+1)*S, barW*S, 4*S);
+                    ctx.fillStyle = col; ctx.fillRect((lx+52)*S, (ry+1)*S, Math.round(pct*barW)*S, 4*S);
+                });
+                var ey = ty + 6*13 + 4;
+                ctx.fillStyle = DIM; ctx.fillText('Exp.', lx*S, ey*S);
+                ctx.fillStyle = TEXT; ctx.fillText(String(mon.exp||0), (lx+36)*S, ey*S);
+                ctx.fillStyle = DIM; ctx.fillText('Item', lx*S, (ey+13)*S);
+                ctx.fillStyle = TEXT; ctx.fillText(mon.heldItem||'None', (lx+36)*S, (ey+13)*S);
+            } else {
+                // Battle Moves
+                ctx.font = 'bold '+(6*S)+'px monospace'; ctx.textBaseline = 'top';
+                ctx.fillStyle = DIM; ctx.fillText('MOVES', lx*S, ty*S);
+                var moves = (mon.moves||[]).slice(0,4);
+                var moveColors = { Normal:'#a8a878',Fire:'#f08030',Water:'#6890f0',Electric:'#f8d030',
+                    Grass:'#78c850',Ice:'#98d8d8',Fighting:'#c03028',Poison:'#a040a0',Psychic:'#f85888' };
+                ctx.font = (6*S)+'px monospace';
+                moves.forEach(function(mv, i) {
+                    var ry = ty + 12 + i*20;
+                    if (!mv) {
+                        ctx.fillStyle = '#223344';
+                        ctx.fillRect(lx*S, ry*S, 110*S, 18*S);
+                        ctx.fillStyle = DIM; ctx.fillText('—', (lx+4)*S, (ry+4)*S);
+                        return;
+                    }
+                    var mCol = moveColors[mv.type||'Normal'] || '#a8a878';
+                    ctx.fillStyle = '#101828'; ctx.fillRect(lx*S, ry*S, 110*S, 18*S);
+                    ctx.strokeStyle = mCol; ctx.lineWidth = S;
+                    ctx.strokeRect(lx*S+S/2, ry*S+S/2, 110*S-S, 18*S-S);
+                    // Type badge
+                    ctx.fillStyle = mCol; ctx.fillRect(lx*S, ry*S, 28*S, 18*S);
+                    ctx.fillStyle = '#050510';
+                    ctx.fillText(mv.type||'NRM', (lx+2)*S, (ry+4)*S);
+                    // Move name
+                    ctx.fillStyle = TEXT;
+                    ctx.fillText(typeof mv==='string' ? mv : (mv.name||'???'), (lx+32)*S, (ry+4)*S);
+                    // PP
+                    var pp = typeof mv === 'object' ? ((mv.pp||'?')+'/'+( mv.maxPp||'?')) : '';
+                    if (pp) { ctx.fillStyle = DIM; ctx.fillText('PP '+pp, (lx+32)*S, (ry+12)*S); }
+                });
+            }
+
+            // Bottom hint bar
+            ctx.fillStyle = TITLEBG; ctx.fillRect(0, (GBA_H-12)*S, canvas.width, 12*S);
+            ctx.fillStyle = CYAN; ctx.fillRect(0, (GBA_H-12)*S, canvas.width, S);
+            ctx.font = (5*S)+'px monospace'; ctx.fillStyle = DIM; ctx.textBaseline = 'top';
+            ctx.fillText('B: Back   L/R: Tab', 8*S, (GBA_H-10)*S);
+        }
+
+        // Tab navigation via click
+        canvas.addEventListener('click', function(e) {
+            var rect = canvas.getBoundingClientRect();
+            var gx = (e.clientX - rect.left) * (GBA_W / rect.width);
+            if (gx < 30) { _tab = (_tab-1+3)%3; drawSummary(); }
+            else if (gx > GBA_W-30) { _tab = (_tab+1)%3; drawSummary(); }
+        });
+
+        // Expose tab navigation so L/R can be wired if needed
+        win._tabLeft  = function() { _tab = (_tab-1+3)%3; drawSummary(); };
+        win._tabRight = function() { _tab = (_tab+1)%3; drawSummary(); };
 
         var backBtn = document.createElement('button');
         backBtn.textContent = 'B BACK'; backBtn.className = 'sm-back-btn';
@@ -1649,8 +1772,19 @@ window.GameStartMenu = (function () {
 
         // ── Action sub-menu overlay  (GBA coords: x=130, y=50, w=100, rowH=14)
         if (_partyActionOpen && _partyActionMon) {
-            var opts = ['SUMMARY', 'SWITCH', 'CANCEL'];
+            var opts = ['Details', 'Item', 'Cancel'];
             var ax = 130, ay = 48, aw = 102, rowH = 14;
+            // "Do what with this [Name]?" bar in message area
+            ctx.fillStyle = _tc.titleBg;
+            ctx.fillRect(0, 120*S, 240*S, 40*S);
+            ctx.fillStyle = COL_CYAN;
+            ctx.fillRect(0, 120*S, 240*S, S);
+            ctx.font = (6*S)+'px monospace';
+            ctx.fillStyle = COL_TEXT;
+            ctx.textBaseline = 'top';
+            ctx.fillText('Do what with this', 8*S, 124*S);
+            ctx.fillText((_partyActionMon.nickname||'???') + '?', 8*S, 134*S);
+
             ctx.fillStyle = _tc.bg;
             ctx.fillRect(ax*S, ay*S, aw*S, (opts.length*rowH+6)*S);
             ctx.strokeStyle = COL_CYAN; ctx.lineWidth = S;
@@ -2427,11 +2561,11 @@ window.GameStartMenu = (function () {
             } else if (page==='pokemon') {
                 var _pFilled = _getParty().filter(Boolean);
                 if (_partyActionOpen) {
-                    var _pOpts = ['SUMMARY', 'SWITCH', 'CANCEL'];
-                    var _pOpt  = _pOpts[_partyActionSel] || 'CANCEL';
-                    if (_pOpt === 'CANCEL') {
+                    var _pOpts = ['Details', 'Item', 'Cancel'];
+                    var _pOpt  = _pOpts[_partyActionSel] || 'Cancel';
+                    if (_pOpt === 'Cancel') {
                         _partyActionOpen = false; _render();
-                    } else if (_pOpt === 'SUMMARY') {
+                    } else if (_pOpt === 'Details') {
                         _partyActionOpen = false;
                         _openPartySummary(_partyActionMon, _partyActionIdx, _pFilled, function(){ _render(); });
                     }
