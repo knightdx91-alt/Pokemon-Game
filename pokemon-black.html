@@ -180,6 +180,16 @@
                 document.body.appendChild(s);
             }
 
+            function getToken() {
+                var token = localStorage.getItem('gh_debug_token');
+                if (!token) {
+                    token = prompt('Enter your GitHub token to download the ROM\n(same token used for screenshots — stored locally only):');
+                    if (!token) { setStatus('Token required to download ROM.', '#e8c000'); return null; }
+                    localStorage.setItem('gh_debug_token', token);
+                }
+                return token;
+            }
+
             function fetchAndCache(token) {
                 setStatus('Downloading ROM (106 MB) — first time only, will be cached…');
                 setProgress(0);
@@ -199,13 +209,15 @@
                         return reader.read().then(function(d) {
                             if (d.done) {
                                 var blob = new Blob(chunks, { type: 'application/zip' });
-                                // Cache it so next visit is instant
-                                caches.open(CACHE_NAME).then(function(cache) {
-                                    cache.put(CACHE_KEY, new Response(blob, {
-                                        headers: { 'Content-Type': 'application/zip' }
-                                    }));
-                                });
                                 var url = URL.createObjectURL(blob);
+                                // Cache for future visits
+                                try {
+                                    caches.open(CACHE_NAME).then(function(cache) {
+                                        cache.put(CACHE_KEY, new Response(blob, {
+                                            headers: { 'Content-Type': 'application/zip' }
+                                        }));
+                                    });
+                                } catch(e) { /* cache unavailable, proceed anyway */ }
                                 launchEmulator(url);
                                 return;
                             }
@@ -226,43 +238,37 @@
             }
 
             function start() {
-                // 1. Check cache first
-                caches.open(CACHE_NAME).then(function(cache) {
-                    cache.match(CACHE_KEY).then(function(cached) {
+                // Register SW in background for EmulatorJS asset caching (don't wait)
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('sw.js').catch(function() {});
+                }
+
+                // Check CacheStorage for previously downloaded ROM
+                if (typeof caches !== 'undefined') {
+                    caches.open(CACHE_NAME).then(function(cache) {
+                        return cache.match(CACHE_KEY);
+                    }).then(function(cached) {
                         if (cached) {
                             setStatus('Loading ROM from cache…');
-                            cached.blob().then(function(blob) {
+                            return cached.blob().then(function(blob) {
                                 launchEmulator(URL.createObjectURL(blob));
                             });
-                            return;
                         }
-                        // 2. Not cached — need token to fetch via API
-                        var token = localStorage.getItem('gh_debug_token');
-                        if (!token) {
-                            token = prompt('Enter your GitHub token to download the ROM\n(same token used for screenshots — stored locally only):');
-                            if (!token) { setStatus('Token required to download ROM.', '#e8c000'); return; }
-                            localStorage.setItem('gh_debug_token', token);
-                        }
-                        fetchAndCache(token);
+                        var token = getToken();
+                        if (token) fetchAndCache(token);
+                    }).catch(function(e) {
+                        setStatus('Cache error: ' + e.message + ' — downloading fresh…');
+                        var token = getToken();
+                        if (token) fetchAndCache(token);
                     });
-                }).catch(function() {
-                    // CacheStorage not available (e.g. private mode) — fetch directly
-                    var token = localStorage.getItem('gh_debug_token');
-                    if (!token) {
-                        token = prompt('Enter your GitHub token to download the ROM:');
-                        if (!token) { setStatus('Token required to download ROM.', '#e8c000'); return; }
-                        localStorage.setItem('gh_debug_token', token);
-                    }
-                    fetchAndCache(token);
-                });
+                } else {
+                    // No CacheStorage (private mode etc) — fetch directly every time
+                    var token = getToken();
+                    if (token) fetchAndCache(token);
+                }
             }
 
-            // Register SW for EmulatorJS asset caching, then start ROM load
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('sw.js').then(start);
-            } else {
-                start();
-            }
+            start();
         })();
     </script>
 
