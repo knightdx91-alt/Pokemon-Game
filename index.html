@@ -77,7 +77,6 @@
 </head>
 <body>
 <script>
-    // Unregister any old broken service workers, then register the current one
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(function(regs) {
             regs.forEach(function(reg) { reg.unregister(); });
@@ -93,13 +92,17 @@
             <span class="btn-title">&#127918; Pokémon RPG</span>
             <span class="btn-sub">Browser-based Kanto adventure</span>
         </a>
-        <a class="launch-btn" href="emulator.html?v=__CACHE_BUST__">
+        <a class="launch-btn" href="emerald.html?v=__CACHE_BUST__">
             <span class="btn-title">&#127381; Emerald Enhanced</span>
-            <span class="btn-sub">GBA ROM — reference build</span>
+            <span class="btn-sub">GBA ROM — loads from repo</span>
         </a>
         <a class="launch-btn" href="pokemon-black.html?v=__CACHE_BUST__">
             <span class="btn-title">&#9899; Pokémon Black</span>
             <span class="btn-sub">NDS ROM — melonDS</span>
+        </a>
+        <a class="launch-btn" href="emulator.html?v=__CACHE_BUST__">
+            <span class="btn-title">&#127074; Emulator</span>
+            <span class="btn-sub">All systems — load from Google Drive</span>
         </a>
     </div>
 </body>

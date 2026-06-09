@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Emerald Enhanced — GBA</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #000;
+            color: #c8d8e8;
+            font-family: "Courier New", Courier, monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        #top-bar {
+            width: 100%;
+            background: #0a1830;
+            border-bottom: 1px solid #18b8c8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 10px;
+            gap: 8px;
+        }
+        #top-bar a {
+            color: #18b8c8;
+            text-decoration: none;
+            font-size: 12px;
+            border: 1px solid #18b8c8;
+            border-radius: 3px;
+            padding: 4px 8px;
+        }
+        #top-bar span { font-size: 12px; color: #80d0e8; }
+        #emu-wrap {
+            width: 100%;
+            max-width: 640px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        #game { width: 100%; min-height: 400px; flex: 1; }
+        #status {
+            padding: 8px 12px;
+            font-size: 11px;
+            color: #80d0e8;
+            background: #0a1830;
+            border-top: 1px solid #18b8c8;
+            min-height: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div id="top-bar">
+        <a href="index.html">&#8592; Menu</a>
+        <span>Emerald Enhanced</span>
+        <span style="font-size:10px;color:#4870a0;">GBA</span>
+    </div>
+
+    <div id="emu-wrap">
+        <div id="game"></div>
+        <div id="status">Loading emulator…</div>
+    </div>
+
+    <script>
+        (function () {
+            var _orig = HTMLCanvasElement.prototype.getContext;
+            HTMLCanvasElement.prototype.getContext = function (type, attrs) {
+                if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl') {
+                    attrs = Object.assign({}, attrs || {}, { preserveDrawingBuffer: true });
+                }
+                return _orig.call(this, type, attrs);
+            };
+        })();
+    </script>
+    <script>
+        var statusEl = document.getElementById('status');
+        fetch('pokeemerald_ee_debug.gba', { method: 'HEAD' })
+            .then(function (r) {
+                if (r.ok) {
+                    statusEl.textContent = 'ROM found (' + (r.headers.get('content-length') || '?') + ' bytes) — loading emulator…';
+                } else {
+                    statusEl.textContent = 'ERROR: ROM not found (HTTP ' + r.status + ')';
+                }
+            })
+            .catch(function (e) { statusEl.textContent = 'ERROR fetching ROM: ' + e.message; });
+
+        window.EJS_player          = '#game';
+        window.EJS_core            = 'mgba';
+        window.EJS_gameUrl         = 'pokeemerald_ee_debug.gba';
+        window.EJS_pathtodata      = 'https://cdn.emulatorjs.org/stable/data/';
+        window.EJS_color           = '#18b8c8';
+        window.EJS_backgroundColor = '#060610';
+        window.EJS_startOnLoaded   = true;
+        window.EJS_onGameStart     = function () {
+            document.getElementById('status').textContent = 'Running — Emerald Enhanced';
+        };
+        window.EJS_Buttons = {
+            playPause: true, restart: true, mute: true, settings: true, fullscreen: true,
+            saveState: true, loadState: true, screenRecord: false, gamepad: true,
+            cheat: false, volume: true, saveSavFiles: true, loadSavFiles: true,
+            quickSave: true, quickLoad: true,
+        };
+    </script>
+    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"
+            onerror="document.getElementById('status').textContent='ERROR: Failed to load EmulatorJS CDN.'">
+    </script>
+</body>
+</html>
