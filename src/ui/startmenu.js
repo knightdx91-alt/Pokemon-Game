@@ -1470,14 +1470,15 @@ window.GameStartMenu = (function () {
     function _openPartySummary(mon, idx, filled, returnCb) {
         var subEl = document.getElementById('start-menu-sub');
         if (!subEl) return;
-        var overlay = subEl.querySelector('.sm-sub-overlay');
-        if (!overlay) return;
-        overlay.innerHTML = '';
+        // Canvas-full-screen pages replace .sm-sub-overlay, so overlay directly onto subEl
+        var overlay = subEl.querySelector('.sm-sub-overlay') || subEl;
+        // Remove any existing summary overlay
+        var existing = subEl.querySelector('.party-summary-overlay');
+        if (existing) existing.remove();
         var win = document.createElement('div');
-        win.className = 'sm-win';
-        win.style.cssText = 'position:absolute;left:3.3%;top:5%;width:90%;height:90%;pointer-events:all;overflow:hidden;';
-        overlay.appendChild(win);
-        overlay.style.display = 'block';
+        win.className = 'sm-win party-summary-overlay';
+        win.style.cssText = 'position:absolute;left:3.3%;top:5%;width:90%;height:90%;pointer-events:all;overflow:hidden;z-index:20;';
+        subEl.appendChild(win);
 
         var S = 2;
         var canvas = document.createElement('canvas');
@@ -1638,7 +1639,7 @@ window.GameStartMenu = (function () {
         backBtn.textContent = 'B BACK'; backBtn.className = 'sm-back-btn';
         backBtn.style.cssText = 'position:absolute;bottom:4px;right:4px;z-index:10;pointer-events:all;';
         backBtn.addEventListener('click', function() {
-            overlay.innerHTML = ''; overlay.style.display = 'none';
+            win.remove();
             if (returnCb) returnCb();
         });
         win.appendChild(backBtn);
