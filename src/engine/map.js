@@ -39,14 +39,23 @@ window.GameMap = (function () {
     // ---------------------------------------------------------------
     // Index loading
     // ---------------------------------------------------------------
-    async function init() {
+    // Region -> index file mapping
+    const INDEX_FILES = {
+        kanto:     'data/maps/kanto_index.json',
+        hoenn:     'data/maps/hoenn_index.json',
+        heartgold: 'data/maps/heartgold_index.json',
+        sinnoh:    'data/maps/sinnoh_index.json',
+    };
+
+    async function init(region) {
+        const indexFile = INDEX_FILES[region || 'kanto'] || INDEX_FILES.kanto;
         try {
-            const resp = await fetch('data/maps/kanto_index.json');
+            const resp = await fetch(indexFile);
             if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
             _nameIndex = await resp.json();
-            console.log(`[Map] Loaded index: ${Object.keys(_nameIndex).length} entries`);
+            console.log(`[Map] Loaded index (${region}): ${Object.keys(_nameIndex).length} entries`);
         } catch (e) {
-            console.error('[Map] Failed to load kanto_index.json:', e);
+            console.error(`[Map] Failed to load index for ${region}:`, e);
             _nameIndex = {};
         }
     }
@@ -104,6 +113,8 @@ window.GameMap = (function () {
     /** Load by filename (e.g. "PalletTown"). Region defaults to 'kanto'. */
     async function load(mapName, region) {
         region = region || 'kanto';
+        // Reload index when region changes
+        if (region !== _region || !_nameIndex) await init(region);
         _region = region;
         const url = `data/maps/${region}/${mapName}.json`;
         try {
@@ -126,7 +137,7 @@ window.GameMap = (function () {
     async function loadById(mapId, region) {
         // Skip special/invalid constants
         if (!mapId || mapId === 'MAP_DYNAMIC' || mapId === 'MAP_NONE') return null;
-        if (!_nameIndex) await init();
+        if (!_nameIndex) await init(region || _region);
         const mapName = _nameIndex[mapId];
         if (!mapName) {
             console.warn(`[Map] Unknown map id: ${mapId}`);
