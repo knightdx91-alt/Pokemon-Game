@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>EmulatorJS — System Picker</title>
+    <title>Emulator — RetroPlay</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            background: #060610;
-            color: #c8d8e8;
-            font-family: "Courier New", Courier, monospace;
+            background: #0d0d0f;
+            color: #e8e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -19,205 +20,325 @@
         /* ── Top bar ── */
         #top-bar {
             width: 100%;
-            background: #0a1830;
-            border-bottom: 2px solid #18b8c8;
+            background: #0d0d0f;
+            border-bottom: 1px solid #1e1e24;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 6px 12px;
+            padding: 0 16px;
+            height: 48px;
             position: sticky;
             top: 0;
             z-index: 10;
-            gap: 8px;
+            gap: 12px;
         }
-        #top-bar a, #btn-open-cache {
-            color: #18b8c8;
+        .nav-back {
+            color: #6b6b80;
             text-decoration: none;
-            font-size: 12px;
-            border: 1px solid #18b8c8;
-            border-radius: 3px;
-            padding: 4px 8px;
-            background: none;
-            cursor: pointer;
-            font-family: "Courier New", Courier, monospace;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 10px;
+            border: 1px solid #2a2a35;
+            border-radius: 8px;
+            transition: color 0.1s, border-color 0.1s;
         }
-        #top-bar span { font-size: 13px; color: #80d0e8; flex: 1; text-align: center; }
-        .legend { font-size: 10px; color: #20d840; flex: none !important; text-align: right !important; }
+        .nav-back:hover { color: #e8e8f0; border-color: #3a3a4a; }
+        .nav-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e8e8f0;
+            flex: 1;
+        }
+        .nav-cache-btn {
+            background: none;
+            color: #6b6b80;
+            border: 1px solid #2a2a35;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: color 0.1s, border-color 0.1s;
+        }
+        .nav-cache-btn:hover { color: #e8e8f0; border-color: #3a3a4a; }
 
         /* ── Picker screen ── */
         #picker-screen {
             width: 100%;
-            max-width: 860px;
-            padding: 12px 12px 90px 12px;
+            max-width: 720px;
+            padding: 24px 16px 120px 16px;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 28px;
         }
-        .group-section { display: flex; flex-direction: column; gap: 6px; }
+
+        .group-section { display: flex; flex-direction: column; gap: 10px; }
         .group-label {
             font-size: 10px;
-            color: #18b8c8;
-            letter-spacing: 2px;
+            color: #4a4a5a;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            padding-bottom: 4px;
-            border-bottom: 1px solid #18b8c8;
         }
-        .system-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+        .system-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 6px;
+        }
         .sys-card {
-            background: #0a1830;
-            border: 1px solid #1a3050;
-            border-radius: 4px;
-            padding: 8px 10px;
+            background: #16161a;
+            border: 1px solid #2a2a35;
+            border-radius: 10px;
+            padding: 10px 8px;
             cursor: pointer;
-            flex: 1 1 130px;
-            max-width: 200px;
-            min-width: 110px;
-            transition: border-color 0.1s, background 0.1s;
+            text-align: center;
+            transition: border-color 0.12s, background 0.12s, box-shadow 0.12s;
+            user-select: none;
         }
-        .sys-card:hover    { border-color: #18b8c8; background: #0d1f3a; }
-        .sys-card.selected { border-color: #18b8c8; background: #0d2440; box-shadow: 0 0 0 1px #18b8c8; }
-        .sys-card.has-cache .sys-name::after { content: ' \25CF'; color: #20d840; font-size: 9px; }
-        .sys-name { font-size: 12px; color: #c8d8e8; font-weight: bold; margin-bottom: 3px; }
-        .sys-exts { font-size: 10px; color: #4870a0; }
+        .sys-card:hover {
+            border-color: #3a3a4a;
+            background: #1a1a20;
+        }
+        .sys-card.selected {
+            border-color: #7c6af7;
+            background: #16142a;
+            box-shadow: 0 0 0 1px #7c6af7, 0 0 12px rgba(124,106,247,0.15);
+        }
+        .sys-card.has-cache .sys-name::after {
+            content: ' ·';
+            color: #7c6af7;
+        }
+        .sys-name {
+            font-size: 11px;
+            font-weight: 600;
+            color: #c8c8d8;
+            margin-bottom: 3px;
+            line-height: 1.2;
+        }
+        .sys-exts {
+            font-size: 9px;
+            color: #3a3a4a;
+            line-height: 1.3;
+        }
 
-        /* ── Sticky action bar ── */
+        /* ── Action bar ── */
         #action-bar {
             position: fixed;
             bottom: 0; left: 0; right: 0;
-            background: #0a1830;
-            border-top: 2px solid #18b8c8;
-            padding: 10px 16px;
+            background: rgba(13,13,15,0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid #1e1e24;
+            padding: 12px 16px 20px 16px;
             display: none;
             flex-direction: column;
-            gap: 6px;
+            gap: 10px;
             z-index: 20;
+            align-items: center;
         }
         #action-bar.visible { display: flex; }
-        #action-sys-name { font-size: 12px; color: #18b8c8; }
-        .action-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-        .act-btn {
-            background: #0a1830;
-            color: #18b8c8;
-            border: 1px solid #18b8c8;
-            border-radius: 3px;
-            padding: 6px 14px;
-            font-size: 12px;
-            cursor: pointer;
-            font-family: "Courier New", Courier, monospace;
-            touch-action: manipulation;
-        }
-        .act-btn:hover    { background: #0d2440; }
-        .act-btn:disabled { opacity: 0.4; cursor: default; }
-        .act-btn.play     { color: #20d840; border-color: #20d840; }
-        .act-btn.danger   { color: #e84040; border-color: #e84040; }
-        #dl-status { font-size: 11px; color: #e8c000; min-height: 14px; }
-        #progress-wrap { width: 100%; height: 5px; background: #1a2a40; border-radius: 3px; overflow: hidden; }
-        #progress-fill { height: 100%; width: 0%; background: #18b8c8; border-radius: 3px; transition: width 0.08s linear; }
 
-        /* ── Cache manager overlay ── */
+        #action-inner {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        #action-sys-name {
+            font-size: 12px;
+            color: #6b6b80;
+            text-align: center;
+        }
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn-primary {
+            background: #7c6af7;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.1s, opacity 0.1s;
+            white-space: nowrap;
+        }
+        .btn-primary:hover { background: #9080ff; }
+        .btn-primary:disabled { opacity: 0.4; cursor: default; }
+
+        .btn-ghost {
+            background: none;
+            color: #6b6b80;
+            border: 1px solid #2a2a35;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: color 0.1s, border-color 0.1s;
+            white-space: nowrap;
+        }
+        .btn-ghost:hover { color: #e8e8f0; border-color: #3a3a4a; }
+        .btn-ghost.danger { color: #e05a5a; border-color: #3a2a2a; }
+        .btn-ghost.danger:hover { border-color: #e05a5a; }
+        .btn-ghost.play { color: #7c6af7; border-color: #3a3260; }
+        .btn-ghost.play:hover { border-color: #7c6af7; }
+
+        #dl-status { font-size: 11px; color: #6b6b80; text-align: center; min-height: 14px; }
+        #progress-wrap {
+            width: 100%;
+            height: 3px;
+            background: #1e1e24;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        #progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #7c6af7;
+            border-radius: 2px;
+            transition: width 0.08s linear;
+        }
+
+        /* ── Cache overlay ── */
         #cache-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.75);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
             z-index: 100;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
-            padding: 20px 12px;
+            padding: 20px;
         }
         #cache-overlay.visible { display: flex; }
         #cache-panel {
-            background: #0a1830;
-            border: 1px solid #000;
-            box-shadow: 0 0 0 3px #18b8c8, 0 0 0 4px #000;
-            border-radius: 4px;
+            background: #16161a;
+            border: 1px solid #2a2a35;
+            border-radius: 16px;
             width: 100%;
-            max-width: 560px;
-            max-height: 80vh;
+            max-width: 480px;
+            max-height: 75vh;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
-        #cache-panel-header {
-            background: #060f20;
-            border-bottom: 1px solid #18b8c8;
-            padding: 8px 12px;
+        #cache-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #1e1e24;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-        #cache-panel-header span { font-size: 13px; color: #80d0e8; }
+        #cache-header span { font-size: 14px; font-weight: 600; color: #e8e8f0; }
         #btn-close-cache {
             background: none;
-            color: #18b8c8;
-            border: 1px solid #18b8c8;
-            border-radius: 3px;
-            padding: 3px 10px;
-            font-size: 11px;
+            color: #6b6b80;
+            border: 1px solid #2a2a35;
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-size: 12px;
             cursor: pointer;
-            font-family: "Courier New", Courier, monospace;
+            font-family: inherit;
         }
-        #cache-list { overflow-y: auto; flex: 1; padding: 8px 0; }
+        #btn-close-cache:hover { color: #e8e8f0; }
+        #cache-list { overflow-y: auto; flex: 1; }
         .cache-row {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-bottom: 1px solid #0d2040;
+            gap: 12px;
+            padding: 12px 20px;
+            border-bottom: 1px solid #1a1a20;
         }
         .cache-row:last-child { border-bottom: none; }
         .cache-info { flex: 1; min-width: 0; }
-        .cache-sys  { font-size: 12px; color: #c8d8e8; font-weight: bold; }
-        .cache-file { font-size: 10px; color: #4870a0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .cache-size { font-size: 10px; color: #18b8c8; white-space: nowrap; }
+        .cache-sys { font-size: 13px; font-weight: 600; color: #e8e8f0; }
+        .cache-file { font-size: 11px; color: #4a4a5a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+        .cache-size { font-size: 11px; color: #6b6b80; white-space: nowrap; }
         .btn-del-row {
             background: none;
-            color: #e84040;
-            border: 1px solid #e84040;
-            border-radius: 3px;
-            padding: 3px 8px;
+            color: #4a4a5a;
+            border: 1px solid #2a2a35;
+            border-radius: 6px;
+            padding: 4px 8px;
             font-size: 11px;
             cursor: pointer;
-            font-family: "Courier New", Courier, monospace;
+            font-family: inherit;
             flex-shrink: 0;
+            transition: color 0.1s, border-color 0.1s;
         }
-        #cache-empty { padding: 24px; text-align: center; font-size: 12px; color: #4870a0; }
+        .btn-del-row:hover { color: #e05a5a; border-color: #e05a5a; }
+        #cache-empty { padding: 32px; text-align: center; font-size: 13px; color: #4a4a5a; }
 
         /* ── Emulator screen ── */
         #emu-screen { display: none; width: 100%; max-width: 640px; flex-direction: column; flex: 1; }
         #emu-screen.visible { display: flex; }
-        #emu-top { background: #0a1830; border-bottom: 1px solid #18b8c8; padding: 6px 12px; display: flex; align-items: center; gap: 10px; }
-        #emu-top button { background: none; color: #18b8c8; border: 1px solid #18b8c8; border-radius: 3px; padding: 4px 10px; font-size: 12px; cursor: pointer; font-family: "Courier New", Courier, monospace; }
-        #emu-game-label { font-size: 11px; color: #80d0e8; }
+        #emu-top {
+            background: #0d0d0f;
+            border-bottom: 1px solid #1e1e24;
+            padding: 0 16px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        #btn-back-emu {
+            background: none;
+            color: #6b6b80;
+            border: 1px solid #2a2a35;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        #btn-back-emu:hover { color: #e8e8f0; }
+        #emu-game-label { font-size: 13px; color: #6b6b80; }
         #game { width: 100%; min-height: 400px; flex: 1; }
-        #emu-status { padding: 6px 12px; font-size: 11px; color: #80d0e8; background: #0a1830; border-top: 1px solid #18b8c8; }
+        #emu-status {
+            padding: 8px 16px;
+            font-size: 11px;
+            color: #4a4a5a;
+            background: #0d0d0f;
+            border-top: 1px solid #1e1e24;
+        }
     </style>
 </head>
 <body>
 
 <div id="top-bar">
-    <a href="index.html">&#8592; Menu</a>
-    <span>EmulatorJS</span>
-    <button id="btn-open-cache">&#128190; Cache</button>
+    <a class="nav-back" href="index.html">← Back</a>
+    <span class="nav-title">Emulator</span>
+    <button class="nav-cache-btn" id="btn-open-cache">Cache</button>
 </div>
 
 <div id="picker-screen"></div>
 
 <div id="action-bar">
-    <div id="action-sys-name">No system selected</div>
-    <div class="action-row">
-        <button class="act-btn play" id="btn-play-cached" style="display:none">&#9654; Play (cached)</button>
-        <button class="act-btn" id="btn-drive">&#9729; Open from Google Drive</button>
-        <button class="act-btn danger" id="btn-clear-cache" style="display:none">&#128465; Clear cache</button>
+    <div id="action-inner">
+        <div id="action-sys-name">Select a system above</div>
+        <div class="action-btns">
+            <button class="btn-ghost play" id="btn-play-cached" style="display:none">▶ Play cached</button>
+            <button class="btn-primary" id="btn-drive">Open from Google Drive</button>
+            <button class="btn-ghost danger" id="btn-clear-cache" style="display:none">Delete cache</button>
+        </div>
+        <div id="dl-status"></div>
+        <div id="progress-wrap"><div id="progress-fill"></div></div>
     </div>
-    <div id="dl-status"></div>
-    <div id="progress-wrap"><div id="progress-fill"></div></div>
 </div>
 
 <div id="cache-overlay">
     <div id="cache-panel">
-        <div id="cache-panel-header">
-            <span>&#128190; Cached ROMs</span>
-            <button id="btn-close-cache">&#10005; Close</button>
+        <div id="cache-header">
+            <span>Cached ROMs</span>
+            <button id="btn-close-cache">✕ Close</button>
         </div>
         <div id="cache-list"></div>
     </div>
@@ -225,7 +346,7 @@
 
 <div id="emu-screen">
     <div id="emu-top">
-        <button id="btn-back-emu">&#8592; Systems</button>
+        <button id="btn-back-emu">← Systems</button>
         <span id="emu-game-label"></span>
     </div>
     <div id="game"></div>
@@ -257,7 +378,7 @@
         { id: 'pokemini',  label: 'Pokemon Mini',         core: 'pokemini',         exts: ['.min'],                                group: 'Nintendo' },
         { id: 'sms',       label: 'Master System',        core: 'genesis_plus_gx',  exts: ['.sms'],                                group: 'Sega' },
         { id: 'gg',        label: 'Game Gear',            core: 'genesis_plus_gx',  exts: ['.gg'],                                 group: 'Sega' },
-        { id: 'genesis',   label: 'Mega Drive / Genesis', core: 'genesis_plus_gx',  exts: ['.md', '.gen', '.bin'],                 group: 'Sega' },
+        { id: 'genesis',   label: 'Mega Drive',           core: 'genesis_plus_gx',  exts: ['.md', '.gen', '.bin'],                 group: 'Sega' },
         { id: 'segacd',    label: 'Sega CD',              core: 'genesis_plus_gx',  exts: ['.bin', '.iso', '.cue', '.chd'],        group: 'Sega' },
         { id: 'sega32x',   label: '32X',                  core: 'picodrive',        exts: ['.32x', '.bin'],                        group: 'Sega' },
         { id: 'saturn',    label: 'Saturn',               core: 'yabause',          exts: ['.bin', '.iso', '.chd'],                group: 'Sega' },
@@ -269,7 +390,7 @@
         { id: 'a7800',     label: 'Atari 7800',           core: 'prosystem',        exts: ['.a78', '.bin'],                        group: 'Atari' },
         { id: 'lynx',      label: 'Atari Lynx',           core: 'beetle_lynx',      exts: ['.lnx'],                                group: 'Atari' },
         { id: 'jaguar',    label: 'Atari Jaguar',         core: 'virtualjaguar',    exts: ['.j64', '.jag', '.bin'],                group: 'Atari' },
-        { id: 'pce',       label: 'PC Engine / TG-16',    core: 'beetle_pce',       exts: ['.pce', '.bin', '.cue', '.chd'],        group: 'NEC' },
+        { id: 'pce',       label: 'PC Engine',            core: 'beetle_pce',       exts: ['.pce', '.bin', '.cue', '.chd'],        group: 'NEC' },
         { id: 'pcfx',      label: 'PC-FX',                core: 'beetle_pcfx',      exts: ['.iso', '.bin', '.chd', '.cue'],        group: 'NEC' },
         { id: 'ngp',       label: 'Neo Geo Pocket',       core: 'beetle_ngp',       exts: ['.ngp', '.ngc'],                        group: 'SNK' },
         { id: 'neocd',     label: 'Neo Geo CD',           core: 'neocd',            exts: ['.chd', '.cue'],                        group: 'SNK' },
@@ -282,7 +403,7 @@
         { id: 'dos',       label: 'DOS',                  core: 'dosbox_pure',      exts: ['.zip', '.exe', '.com'],                group: 'Computers' },
         { id: 'intv',      label: 'Intellivision',        core: 'freeintv',         exts: ['.int', '.bin'],                        group: 'Other' },
         { id: 'vectrex',   label: 'Vectrex',              core: 'vecx',             exts: ['.vec', '.bin'],                        group: 'Other' },
-        { id: 'o2em',      label: 'Odyssey2 / Videopac',  core: 'o2em',             exts: ['.bin'],                                group: 'Other' },
+        { id: 'o2em',      label: 'Odyssey2',             core: 'o2em',             exts: ['.bin'],                                group: 'Other' },
     ];
 
     var SYS_BY_ID = {};
@@ -313,7 +434,7 @@
     var cacheOverlay  = document.getElementById('cache-overlay');
     var cacheList     = document.getElementById('cache-list');
 
-    function setDl(msg, color) { dlStatus.textContent = msg; dlStatus.style.color = color || '#e8c000'; }
+    function setDl(msg, color) { dlStatus.textContent = msg; dlStatus.style.color = color || '#6b6b80'; }
     function setProgress(pct)  { progressFill.style.width = Math.min(100, Math.max(0, pct)) + '%'; }
     function fmtMB(bytes)      { return (bytes / 1048576).toFixed(1) + ' MB'; }
 
@@ -392,16 +513,16 @@
                         if (total) {
                             var tot = (total / 1048576).toFixed(1);
                             setProgress(Math.round(loaded / total * 92));
-                            setDl((label || 'Downloading') + '   ' + mb + ' MB / ' + tot + ' MB');
+                            setDl((label || 'Downloading') + ' · ' + mb + ' MB / ' + tot + ' MB');
                         } else {
-                            setDl((label || 'Downloading') + '   ' + mb + ' MB received…');
+                            setDl((label || 'Downloading') + ' · ' + mb + ' MB');
                         }
                         return pump();
                     });
                 }
                 return pump();
             }
-            setDl((label || 'Downloading') + '…  please wait');
+            setDl('Downloading…');
             setProgress(50);
             return resp.blob();
         });
@@ -412,15 +533,15 @@
         actionBar.classList.remove('visible');
         emuScreen.classList.add('visible');
         emuGameLabel.textContent   = label || sys.label;
-        emuStatus.textContent      = 'Loading emulator core…';
+        emuStatus.textContent      = 'Loading core…';
         window.EJS_player          = '#game';
         window.EJS_core            = sys.core;
         window.EJS_gameUrl         = blobUrl;
         window.EJS_pathtodata      = 'https://cdn.emulatorjs.org/stable/data/';
-        window.EJS_color           = '#18b8c8';
-        window.EJS_backgroundColor = '#060610';
+        window.EJS_color           = '#7c6af7';
+        window.EJS_backgroundColor = '#0d0d0f';
         window.EJS_startOnLoaded   = true;
-        window.EJS_onGameStart     = function () { emuStatus.textContent = 'Running — ' + (label || sys.label); };
+        window.EJS_onGameStart     = function () { emuStatus.textContent = 'Running · ' + (label || sys.label); };
         window.EJS_Buttons = {
             playPause: true, restart: true, mute: true, settings: true, fullscreen: true,
             saveState: true, loadState: true, screenRecord: false, gamepad: true,
@@ -429,12 +550,12 @@
         };
         var s = document.createElement('script');
         s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
-        s.onerror = function () { emuStatus.textContent = 'ERROR: Failed to load EmulatorJS CDN.'; };
+        s.onerror = function () { emuStatus.textContent = 'Failed to load EmulatorJS CDN.'; };
         document.body.appendChild(s);
     }
 
     function cacheAndLaunch(sys, blob, fileName) {
-        setDl('Saving to cache…', '#20d840');
+        setDl('Saving to cache…', '#7c6af7');
         setProgress(100);
         var meta = { sysId: sys.id, label: sys.label, filename: fileName || sys.label, size: blob.size };
         openDB().then(function (db) {
@@ -471,13 +592,16 @@
 
     function downloadFromDrive(sys, fileId, fileName, token) {
         btnDrive.disabled = true;
-        setDl('Starting download: ' + fileName + '…');
+        setDl('Starting · ' + fileName);
         setProgress(2);
-        var url = 'https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media';
-        streamFetch(url, { 'Authorization': 'Bearer ' + token }, 'Downloading ' + fileName)
+        streamFetch(
+            'https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media',
+            { 'Authorization': 'Bearer ' + token },
+            fileName
+        )
             .then(function (blob) { cacheAndLaunch(sys, blob, fileName); })
             .catch(function (err) {
-                setDl('Drive download failed: ' + err.message, '#e84040');
+                setDl('Download failed · ' + err.message, '#e05a5a');
                 btnDrive.disabled = false;
             });
     }
@@ -490,7 +614,7 @@
                 client_id: CLIENT_ID,
                 scope: SCOPE,
                 callback: function (resp) {
-                    if (resp.error) { setDl('Sign-in failed: ' + resp.error, '#e84040'); return; }
+                    if (resp.error) { setDl('Sign-in failed · ' + resp.error, '#e05a5a'); return; }
                     _accessToken = resp.access_token;
                     openDrivePicker(_selectedSys, _accessToken);
                 },
@@ -513,10 +637,10 @@
                 row.innerHTML =
                     '<div class="cache-info">' +
                         '<div class="cache-sys">' + (meta.label || sys.label || id) + '</div>' +
-                        '<div class="cache-file">' + (meta.filename || 'unknown file') + '</div>' +
+                        '<div class="cache-file">' + (meta.filename || 'unknown') + '</div>' +
                     '</div>' +
-                    '<div class="cache-size">' + (meta.size ? fmtMB(meta.size) : '?') + '</div>' +
-                    '<button class="btn-del-row">&#128465;</button>';
+                    '<div class="cache-size">' + (meta.size ? fmtMB(meta.size) : '—') + '</div>' +
+                    '<button class="btn-del-row">Delete</button>';
                 row.querySelector('.btn-del-row').addEventListener('click', function () {
                     openDB().then(function (db) { return idbDel(db, id); }).then(function () {
                         delete _cachedIds[id];
@@ -552,7 +676,7 @@
         if (card) card.classList.add('selected');
         _selectedSys = sys;
         actionBar.classList.add('visible');
-        actionSysName.textContent = sys.label + '  (' + sys.exts.join(', ') + ')';
+        actionSysName.textContent = sys.label + ' · ' + sys.exts.join(', ');
         var cached = !!_cachedIds[sys.id];
         btnPlayCached.style.display = cached ? '' : 'none';
         btnClear.style.display      = cached ? '' : 'none';
@@ -582,7 +706,9 @@
                 var card = document.createElement('div');
                 card.className = 'sys-card' + (_cachedIds[sys.id] ? ' has-cache' : '');
                 card.dataset.id = sys.id;
-                card.innerHTML = '<div class="sys-name">' + sys.label + '</div><div class="sys-exts">' + sys.exts.join('  ') + '</div>';
+                card.innerHTML =
+                    '<div class="sys-name">' + sys.label + '</div>' +
+                    '<div class="sys-exts">' + sys.exts.join(' ') + '</div>';
                 card.addEventListener('click', function () { selectSystem(sys); });
                 grid.appendChild(card);
             });
@@ -596,9 +722,9 @@
 
     btnPlayCached.addEventListener('click', function () {
         if (!_selectedSys) return;
-        setDl('Loading from cache…', '#20d840');
+        setDl('Loading from cache…', '#7c6af7');
         openDB().then(function (db) { return idbGet(db, ROM_STORE, _selectedSys.id); }).then(function (blob) {
-            if (!blob) { setDl('Cache miss — please re-download.', '#e84040'); return; }
+            if (!blob) { setDl('Cache miss — please re-download.', '#e05a5a'); return; }
             var meta = _metaMap[_selectedSys.id] || {};
             launchEJS(_selectedSys, URL.createObjectURL(blob), meta.filename || _selectedSys.label);
         });
@@ -612,7 +738,7 @@
             refreshCard(_selectedSys.id);
             btnPlayCached.style.display = 'none';
             btnClear.style.display      = 'none';
-            setDl('Cache cleared.', '#80d0e8');
+            setDl('Cache deleted.', '#6b6b80');
             setProgress(0);
         });
     });
