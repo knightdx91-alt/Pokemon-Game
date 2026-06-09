@@ -148,7 +148,7 @@
 
     // PC tile positions per map (tile the player faces to use the PC)
     const BEDROOM_PC_TILES = {
-        'PalletTown_PlayersHouse_2F':          { x: 11, y: 1 },
+        'PalletTown_PlayersHouse_2F':          { x: 1,  y: 1 },
         '059_T20R0102':                        { x: 7,  y: 1 },
         'LittlerootTown_BrendansHouse_2F':     { x: 6,  y: 1 },
         'twinleaf_town_player_house_2f':       { x: 7,  y: 1 },

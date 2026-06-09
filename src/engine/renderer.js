@@ -145,10 +145,20 @@ window.GameRenderer = (function () {
 
         // Draw NPCs
         if (_map.current && _map.current.npcs) {
+            const savedFlags = window.GameSave && GameSave.state && GameSave.state.worldFlags;
             for (const npc of _map.current.npcs) {
+                // Hide if flag is set (item obtained, character hidden, etc.)
+                if (npc.flag && npc.flag !== '0' && savedFlags && savedFlags.has && savedFlags.has(npc.flag)) continue;
+
                 if (npc.x < camX || npc.x >= camX + vw || npc.y < camY || npc.y >= camY + vh) continue;
                 const sx = (npc.x - camX) * TILE_PX;
                 const sy = (npc.y - camY) * TILE_PX;
+
+                // Item-type NPCs rendered as static icons, not walking characters
+                if (_isItemGfx(npc.graphics_id)) {
+                    _drawItemNpc(ctx, npc.graphics_id, sx, sy);
+                    continue;
+                }
 
                 const stem = _gfxToStem(npc.graphics_id);
                 const img  = stem ? _getNpcImg(stem) : null;
@@ -227,6 +237,59 @@ window.GameRenderer = (function () {
         img.onerror = () => { _npcImgCache.set(stem, 'error'); };
         img.src = _npcIndex[stem];
         return null;
+    }
+
+    const ITEM_GFX_IDS = new Set([
+        'OBJ_EVENT_GFX_ITEM_BALL',
+        'OBJ_EVENT_GFX_TOWN_MAP',
+        'OBJ_EVENT_GFX_POKEDEX',
+        'OBJ_EVENT_GFX_ITEMFINDER',
+        'OBJ_EVENT_GFX_OLD_ROD',
+        'OBJ_EVENT_GFX_GOOD_ROD',
+        'OBJ_EVENT_GFX_SUPER_ROD',
+        'OBJ_EVENT_GFX_BICYCLE',
+        'OBJ_EVENT_GFX_COIN_CASE',
+        'OBJ_EVENT_GFX_BIKE_VOUCHER',
+    ]);
+
+    function _isItemGfx(graphicsId) {
+        return graphicsId && ITEM_GFX_IDS.has(graphicsId);
+    }
+
+    function _drawItemNpc(ctx, graphicsId, sx, sy) {
+        const half = Math.floor(TILE_PX / 2);
+        const pad  = 3;
+        if (graphicsId === 'OBJ_EVENT_GFX_ITEM_BALL') {
+            // Poké Ball: red top, white bottom, black band
+            ctx.fillStyle = '#e84040';
+            ctx.fillRect(sx + pad, sy + pad, TILE_PX - pad * 2, half - 1);
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(sx + pad, sy + half, TILE_PX - pad * 2, half - pad);
+            ctx.fillStyle = '#222';
+            ctx.fillRect(sx + pad, sy + half - 1, TILE_PX - pad * 2, 2);
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(sx + half - 2, sy + half - 2, 4, 4);
+        } else if (graphicsId === 'OBJ_EVENT_GFX_TOWN_MAP') {
+            // Folded map icon: tan with grid lines
+            ctx.fillStyle = '#c8a840';
+            ctx.fillRect(sx + pad, sy + pad, TILE_PX - pad * 2, TILE_PX - pad * 2);
+            ctx.fillStyle = '#80640a';
+            ctx.fillRect(sx + half, sy + pad, 1, TILE_PX - pad * 2);
+            ctx.fillRect(sx + pad, sy + half, TILE_PX - pad * 2, 1);
+        } else if (graphicsId === 'OBJ_EVENT_GFX_POKEDEX') {
+            // Pokédex: red rectangle with screen
+            ctx.fillStyle = '#c02020';
+            ctx.fillRect(sx + pad, sy + pad, TILE_PX - pad * 2, TILE_PX - pad * 2);
+            ctx.fillStyle = '#40a8f0';
+            ctx.fillRect(sx + pad + 2, sy + pad + 2, 5, 4);
+        } else {
+            // Generic item: yellow diamond
+            ctx.fillStyle = '#e8c000';
+            ctx.fillRect(sx + half - 2, sy + pad, 4, 4);
+            ctx.fillRect(sx + pad, sy + half - 2, 4, 4);
+            ctx.fillRect(sx + half - 2, sy + TILE_PX - pad - 4, 4, 4);
+            ctx.fillRect(sx + TILE_PX - pad - 4, sy + half - 2, 4, 4);
+        }
     }
 
     // Convert OBJ_EVENT_GFX_WOMAN_1 -> woman_1
