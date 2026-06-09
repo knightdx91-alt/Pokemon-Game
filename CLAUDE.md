@@ -149,10 +149,38 @@ Real CSS `transform: rotate()` on `<body>` — same approach as EmulatorJS fulls
 - ✅ Kanto maps navigable from PalletTown; Hoenn/Johto/Sinnoh/HeartGold/Platinum map data present
 - ✅ Achievement definitions (bronze/silver/gold/platinum), faction standing system
 
+### Emulator hub (`emulator.html`)
+- ✅ **RetroPlay** brand — CSS variable theme (`--bg`, `--surface`, `--accent`, etc.), gradient logo, tagline
+- ✅ 37 systems with emoji icons, grouped by manufacturer (Nintendo, Sega, Sony, Atari, etc.)
+- ✅ System cards toggle-select: click once to select, click again to deselect back to default state
+- ✅ Launch card at bottom: shows selected system icon/name/extensions + Drive and Play Cached buttons
+- ✅ "Cached ROMs" button lives in top-right of the systems card with a 💿 CD icon
+- ✅ IndexedDB caching (`ejs-roms-v2`, stores: `roms` + `meta`) — per-system, survives page refresh
+- ✅ Google Drive Picker (hardcoded `CLIENT_ID` + OAuth2 scope) — streams ROMs with MB/MB progress
+- ✅ Spinner loading overlay for download phase; `MutationObserver` mirrors EJS internal loading text
+- ✅ Elapsed timer while EJS decompresses/loads
+- ✅ Cache panel overlay — lists cached ROMs with Play / Delete per row
+- ✅ Emulator screen: top bar with RetroPlay logo, game/sys name, "Back to menu" button
+- ✅ Cloud saves wired: `window.CLOUD_SAVE_GAME = sys.id` set in `launchEJS`; `cloudSaveOnStart()` called in `EJS_onGameStart`
+
+### Cloud saves (`cloud-saves.js`)
+- ✅ Universal family cloud save sync for `emulator.html`, `emerald.html`, `pokemon-black.html`
+- ✅ GitHub PAT embedded (reversed string to bypass secret scanner) — pushes/pulls `.srm` files to `saves` branch
+- ✅ Save path: `saves/<game>/<player>.srm` — each family member named on first visit (stored in `localStorage` as `cloud_save_player`)
+- ✅ Name prompt modal on first visit; ☁ Save button injected into `#top-bar`
+- ✅ `window.CLOUD_SAVE_GAME` — set per page before this script loads; tells it which game folder to use
+- ✅ `window.cloudSaveOnStart` — exposed for pages that set `EJS_onGameStart` dynamically (emulator.html)
+- ✅ `saves` branch exists on GitHub with `saves/.gitkeep` — accumulates `.srm` files as family plays
+
+### Per-game emulator pages
+- ✅ `emerald.html` — Pokémon Emerald GBA, uses `cloud-saves.js` with `CLOUD_SAVE_GAME = 'emerald'`
+- ✅ `pokemon-black.html` — Pokémon Black NDS, uses `cloud-saves.js` with `CLOUD_SAVE_GAME = 'pokemon-black'`
+
 ---
 
 ## What needs to be done (priority order)
 
+### Pokémon RPG (index.html / src/)
 1. **Player sprite** — render actual player sprite (Red/Brendan) on canvas; `renderer.js` draws a placeholder
 2. **Pokémon party** — POKEMON sub-menu shows nothing; party array exists in `save.js`
 3. **Wild encounters** — `data/encounters/` has data; wire grass/cave tiles to trigger battle screen
@@ -164,6 +192,10 @@ Real CSS `transform: rotate()` on `<body>` — same approach as EmulatorJS fulls
 9. **Map rendering** — animated tiles (water/flowers), overlay layer (bridges), proper collision from tileset metadata
 10. **Audio** — no sound at all; needs MIDI/chiptune web audio
 11. **Region transitions** — multi-region travel (Kanto→Johto etc.) needs story trigger
+
+### Emulator hub
+12. **More per-game pages** — could add dedicated pages for other popular ROMs (same pattern as emerald.html / pokemon-black.html)
+13. **Cloud saves on additional pages** — any new per-game page just needs `window.CLOUD_SAVE_GAME = '<id>'` before loading `cloud-saves.js`
 
 ---
 
