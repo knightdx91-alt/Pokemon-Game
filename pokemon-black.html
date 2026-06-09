@@ -166,50 +166,36 @@
                 });
             }
 
-            // ── ROM download with progress ─────────────────────────────────
+            // ── ROM download ───────────────────────────────────────────────
             function downloadROM(token) {
                 setStatus('Downloading ROM — first run only (~106 MB)…', '#e8c000');
-                setProgress(0, 'Connecting to GitHub…');
+                setProgress(30, 'Downloading from GitHub… (this takes a minute)');
 
-                return fetch(ROM_ASSET_URL, {
-                    headers: {
-                        'Authorization': 'token ' + token,
-                        'Accept': 'application/octet-stream'
-                    }
-                }).then(function(response) {
-                    if (!response.ok) {
-                        return response.text().then(function(t) {
-                            throw new Error('GitHub ' + response.status + ': ' + t.slice(0, 200));
-                        });
-                    }
+                // Try GitHub API with auth first; fall back to public browser_download_url
+                function tryFetch(url, headers) {
+                    return fetch(url, { headers: headers }).then(function(response) {
+                        if (!response.ok) {
+                            return response.text().then(function(t) {
+                                throw new Error('HTTP ' + response.status + ': ' + t.slice(0, 200));
+                            });
+                        }
+                        setProgress(60, 'Download complete — processing…');
+                        return response.blob();
+                    });
+                }
 
-                    var total = parseInt(response.headers.get('content-length') || '0', 10);
-                    var loaded = 0;
-                    var reader = response.body.getReader();
-                    var chunks = [];
-
-                    function pump() {
-                        return reader.read().then(function(result) {
-                            if (result.done) {
-                                var blob = new Blob(chunks, { type: 'application/zip' });
-                                return blob;
-                            }
-                            chunks.push(result.value);
-                            loaded += result.value.length;
-                            if (total) {
-                                var pct = Math.round(loaded / total * 100);
-                                var mb = (loaded / 1048576).toFixed(1);
-                                var tot = (total / 1048576).toFixed(0);
-                                setProgress(pct, 'Downloading ' + mb + ' / ' + tot + ' MB (' + pct + '%)');
-                            } else {
-                                var mb2 = (loaded / 1048576).toFixed(1);
-                                setProgress(50, 'Downloading ' + mb2 + ' MB…');
-                            }
-                            return pump();
-                        });
-                    }
-
-                    return pump();
+                // Primary: GitHub API with auth token
+                return tryFetch(ROM_ASSET_URL, {
+                    'Authorization': 'token ' + token,
+                    'Accept': 'application/octet-stream'
+                }).catch(function(err1) {
+                    // Fallback: public browser_download_url (no auth needed for public repos)
+                    console.warn('[ROM] API fetch failed (' + err1.message + '), trying public URL…');
+                    setProgress(10, 'Retrying via public download…');
+                    return tryFetch(
+                        'https://github.com/knightdx91-alt/Pokemon-Game/releases/download/roms-v1/pokemon-black.zip',
+                        {}
+                    );
                 });
             }
 
