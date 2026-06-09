@@ -26,46 +26,32 @@
             display: flex; flex-direction: column; align-items: center; gap: 18px;
         }
         .load-title { font-size: 16px; color: #18b8c8; letter-spacing: 2px; }
-
         #progress-wrap { width: 100%; }
         #progress-bar-bg { background: #060610; border: 1px solid #18b8c8; border-radius: 3px; height: 12px; overflow: hidden; }
         #progress-bar-fill { height: 100%; background: #18b8c8; width: 0%; transition: width 0.25s; }
         #dl-status { font-size: 11px; color: #e8c000; margin-top: 6px; min-height: 16px; text-align: center; }
 
-        #picker-section {
-            width: 100%; display: none; flex-direction: column; align-items: center; gap: 12px;
-        }
+        #picker-section { width: 100%; display: none; flex-direction: column; align-items: center; gap: 12px; }
         #picker-section p { font-size: 12px; color: #80d0e8; text-align: center; line-height: 1.6; }
         .big-btn {
             display: block; width: 100%; max-width: 320px; padding: 11px;
-            background: #060610; color: #18b8c8;
-            border: 1px solid #18b8c8; border-radius: 4px;
+            background: #060610; color: #18b8c8; border: 1px solid #18b8c8; border-radius: 4px;
             font-size: 13px; font-family: "Courier New", Courier, monospace;
             cursor: pointer; touch-action: manipulation; text-align: center;
         }
         .big-btn:disabled { opacity: 0.5; cursor: default; }
 
         #emu-wrap { width: 100%; max-width: 800px; flex: 1; display: flex; flex-direction: column; }
-        #game { width: 100%; min-height: 500px; flex: 1; }
-
-        /* EJS loading progress bar */
-        #emu-progress-wrap {
-            width: 100%; height: 4px;
-            background: #060610;
-            border-top: 1px solid #18b8c8;
+        #game {
+            width: 100%; min-height: 500px; flex: 1;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
         }
-        #emu-progress-fill {
-            height: 100%;
-            width: 0%;
-            background: #18b8c8;
-            transition: width 0.3s ease;
-        }
-
-        #status {
-            padding: 6px 12px; font-size: 11px; color: #80d0e8;
-            background: #0a1830; border-top: 1px solid #1a3048;
-            min-height: 24px; word-break: break-all;
-        }
+        #emu-progress-wrap { width: 100%; height: 4px; background: #060610; border-top: 1px solid #18b8c8; }
+        #emu-progress-fill { height: 100%; width: 0%; background: #18b8c8; transition: width 0.3s ease; }
+        #status { padding: 6px 12px; font-size: 11px; color: #80d0e8; background: #0a1830; border-top: 1px solid #1a3048; min-height: 24px; word-break: break-all; }
         #status.loading { color: #e8c000; }
 
         #debug-bar { width: 100%; max-width: 800px; background: #060610; border-top: 1px solid #222; padding: 5px 10px; display: flex; gap: 6px; flex-wrap: wrap; }
@@ -86,10 +72,8 @@
             <div id="dl-status">Checking local cache…</div>
         </div>
         <div id="picker-section">
-            <p>
-                Auto-download failed (GitHub CDN blocks cross-origin requests).<br>
-                Load <strong>pokemon-black.nds</strong> from your Google Drive instead.
-            </p>
+            <p>Auto-download failed (GitHub CDN blocks cross-origin requests).<br>
+            Load <strong>pokemon-black.nds</strong> from your Google Drive instead.</p>
             <button class="big-btn" id="btn-picker">&#9729; Open Google Drive Picker</button>
         </div>
     </div>
@@ -184,8 +168,7 @@
                     function pump() {
                         return reader.read().then(function(r) {
                             if (r.done) return new Blob(chunks, { type: 'application/octet-stream' });
-                            chunks.push(r.value);
-                            loaded += r.value.length;
+                            chunks.push(r.value); loaded += r.value.length;
                             if (total) {
                                 setProgress(Math.round(loaded / total * 90));
                                 setDl((label||'Downloading') + '   ' + (loaded/1048576).toFixed(1) + ' / ' + (total/1048576).toFixed(1) + ' MB');
@@ -221,12 +204,17 @@
             loadingEl.style.display = 'none';
             emuEl.style.display = 'flex';
 
-            var gameDiv    = document.getElementById('game');
-            var startTime  = Date.now();
-            var _lastMsg   = 'Loading emulator…';
-            var _lastPct   = 0;
+            var gameDiv   = document.getElementById('game');
+            var startTime = Date.now();
+            var _lastMsg  = 'Loading emulator…';
 
-            // Watch EJS's loading overlay — read whatever text it renders
+            // Block long-press context menu
+            gameDiv.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+
+            emuStatus = statusEl;
+            statusEl.classList.add('loading');
+            setEmuProgress(0);
+
             var _observer = new MutationObserver(function() {
                 var walker = document.createTreeWalker(gameDiv, NodeFilter.SHOW_TEXT, null, false);
                 var node;
@@ -234,33 +222,26 @@
                     var txt = node.textContent.trim();
                     if (txt.length > 3 && txt.length < 120) { _lastMsg = txt; break; }
                 }
-                // Parse percentage if EJS reports one (e.g. "Decompressing game data... 42%")
                 var m = _lastMsg.match(/(\d+(?:\.\d+)?)\s*%/);
-                if (m) {
-                    _lastPct = Math.min(99, parseFloat(m[1]));
-                    setEmuProgress(_lastPct);
-                }
+                if (m) setEmuProgress(Math.min(99, parseFloat(m[1])));
             });
             _observer.observe(gameDiv, { childList: true, subtree: true, characterData: true });
 
-            // Tick every second: mirror EJS text + elapsed time
             var _timer = setInterval(function() {
                 var elapsed = Math.floor((Date.now() - startTime) / 1000);
                 var mins = Math.floor(elapsed / 60);
-                var secs = ('0' + (elapsed % 60)).slice(-2);
-                var timeStr = mins > 0 ? mins + 'm ' + secs + 's' : elapsed + 's';
-                statusEl.textContent = _lastMsg + '  ·  ' + timeStr;
-                statusEl.classList.add('loading');
+                statusEl.textContent = _lastMsg + '  ·  ' + (mins > 0 ? mins + 'm ' + ('0'+(elapsed%60)).slice(-2) + 's' : elapsed + 's');
             }, 1000);
 
-            window.EJS_player          = '#game';
-            window.EJS_core            = 'nds';
-            window.EJS_gameUrl         = blobUrl;
-            window.EJS_pathtodata      = 'https://cdn.emulatorjs.org/stable/data/';
-            window.EJS_color           = '#18b8c8';
-            window.EJS_backgroundColor = '#060610';
-            window.EJS_startOnLoaded   = true;
-            window.EJS_onGameStart     = function() {
+            window.EJS_player             = '#game';
+            window.EJS_core               = 'nds';
+            window.EJS_gameUrl            = blobUrl;
+            window.EJS_pathtodata         = 'https://cdn.emulatorjs.org/stable/data/';
+            window.EJS_color              = '#18b8c8';
+            window.EJS_backgroundColor    = '#060610';
+            window.EJS_startOnLoaded      = true;
+            window.EJS_disableContextMenu = true;
+            window.EJS_onGameStart        = function() {
                 clearInterval(_timer);
                 _observer.disconnect();
                 statusEl.classList.remove('loading');

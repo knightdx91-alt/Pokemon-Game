@@ -86,7 +86,6 @@
         #progress-wrap { width: 100%; height: 3px; background: #1e1e24; border-radius: 2px; overflow: hidden; }
         #progress-fill { height: 100%; width: 0%; background: #7c6af7; border-radius: 2px; transition: width 0.08s linear; }
 
-        /* Cache overlay */
         #cache-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
@@ -130,7 +129,6 @@
         .btn-del-row:hover { color: #e05a5a; border-color: #e05a5a; }
         #cache-empty { padding: 32px; text-align: center; font-size: 13px; color: #4a4a5a; }
 
-        /* Emulator screen */
         #emu-screen { display: none; width: 100%; max-width: 640px; flex-direction: column; flex: 1; }
         #emu-screen.visible { display: flex; }
         #emu-top {
@@ -143,8 +141,13 @@
         }
         #btn-back-emu:hover { color: #e8e8f0; }
         #emu-game-label { font-size: 13px; color: #6b6b80; }
-        #game { width: 100%; min-height: 400px; flex: 1; }
-        /* EJS loading progress bar */
+        #game {
+            width: 100%; min-height: 400px; flex: 1;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+        }
         #emu-progress-wrap { width: 100%; height: 4px; background: #1a1a20; }
         #emu-progress-fill { height: 100%; width: 0%; background: #7c6af7; transition: width 0.3s ease; }
         #emu-status {
@@ -208,6 +211,12 @@
             attrs = Object.assign({}, attrs || {}, { preserveDrawingBuffer: true });
         return _origGetCtx.call(this, type, attrs);
     };
+
+    // Block long-press context menu on game canvas
+    document.addEventListener('DOMContentLoaded', function () {
+        var g = document.getElementById('game');
+        g.addEventListener('contextmenu', function (e) { e.preventDefault(); return false; });
+    });
 
     var SYSTEMS = [
         { id: 'nes',       label: 'NES',                  core: 'fceumm',           exts: ['.nes', '.fds'],                        group: 'Nintendo' },
@@ -377,11 +386,13 @@
         var startTime = Date.now();
         var _lastMsg  = 'Loading core…';
 
+        // Block long-press on the game canvas once EJS creates it
+        gameDiv.addEventListener('contextmenu', function (e) { e.preventDefault(); return false; });
+
         emuStatus.textContent = _lastMsg;
         emuStatus.classList.add('loading');
         setEmuProgress(0);
 
-        // Watch EJS's internal loading overlay and mirror its text + any percentage
         var _observer = new MutationObserver(function () {
             var walker = document.createTreeWalker(gameDiv, NodeFilter.SHOW_TEXT, null, false);
             var node;
@@ -398,18 +409,18 @@
             var elapsed = Math.floor((Date.now() - startTime) / 1000);
             var mins = Math.floor(elapsed / 60);
             var secs = ('0' + (elapsed % 60)).slice(-2);
-            var timeStr = mins > 0 ? mins + 'm ' + secs + 's' : elapsed + 's';
-            emuStatus.textContent = _lastMsg + '  ·  ' + timeStr;
+            emuStatus.textContent = _lastMsg + '  ·  ' + (mins > 0 ? mins + 'm ' + secs + 's' : elapsed + 's');
         }, 1000);
 
-        window.EJS_player          = '#game';
-        window.EJS_core            = sys.core;
-        window.EJS_gameUrl         = blobUrl;
-        window.EJS_pathtodata      = 'https://cdn.emulatorjs.org/stable/data/';
-        window.EJS_color           = '#7c6af7';
-        window.EJS_backgroundColor = '#0d0d0f';
-        window.EJS_startOnLoaded   = true;
-        window.EJS_onGameStart     = function () {
+        window.EJS_player             = '#game';
+        window.EJS_core               = sys.core;
+        window.EJS_gameUrl            = blobUrl;
+        window.EJS_pathtodata         = 'https://cdn.emulatorjs.org/stable/data/';
+        window.EJS_color              = '#7c6af7';
+        window.EJS_backgroundColor    = '#0d0d0f';
+        window.EJS_startOnLoaded      = true;
+        window.EJS_disableContextMenu = true;
+        window.EJS_onGameStart        = function () {
             clearInterval(_timer);
             _observer.disconnect();
             emuStatus.classList.remove('loading');
