@@ -452,12 +452,16 @@ window.GameStartMenu = (function () {
         });
     }
 
-    // Journal page index (L/R to flip pages, like EE)
-    var _journalPage = 0;
-    var _achTier = 0;     // 0=all,1=plat,2=gold,3=silver,4=bronze for filter
-    var _achOffset = 0;   // scroll offset in flat list
+    // Journal state
+    var _journalTab  = 0;  // 0=Factions, 1=Ach.Atlas, 2=Powers, 3=Quests
+    var _journalPage = 0;  // sub-page within Factions (L/R)
+    var _achTier = 0;      // 0=all,1=plat,2=gold,3=silver,4=bronze
+    var _achOffset = 0;    // scroll offset in flat ach list
+    var _powersPage = 0;   // 0=Platinum,1=Gold,2=Silver,3=Copper
 
-    // EE journal.c: 6 stat pages navigated with L/R buttons
+    var JOURNAL_TABS = ['Factions', 'Ach. Atlas', 'Powers', 'Quests'];
+
+    // EE journal.c: 6 stat sub-pages navigated with L/R buttons (within Factions tab)
     const JOURNAL_PAGES = [
         {
             name: 'General Stats',
@@ -550,87 +554,303 @@ window.GameStartMenu = (function () {
     ];
 
     function _buildJournal(el) {
-        var shell = _makeCanvasShell(el, function(ctx, canvas) {
-            _loadJournalBg(function(bg) {
-                _drawJournalCanvas(ctx, bg);
+        _makeCanvasShell(el, function(ctx, canvas) {
+            _loadJournalBg(function(bg) { _drawJournalCanvas(ctx, bg); });
+
+            // Tab clicks
+            canvas.addEventListener('click', function(e) {
+                var rect = canvas.getBoundingClientRect();
+                var cx = (e.clientX - rect.left) / rect.width  * GBA_W;
+                var cy = (e.clientY - rect.top)  / rect.height * GBA_H;
+                // Tab row y=0..18 GBA, each tab ~60px wide
+                if (cy < 18) {
+                    var t = Math.floor(cx / 60);
+                    if (t >= 0 && t < 4) { _journalTab = t; _journalPage = 0; _render(); }
+                    return;
+                }
+                // Factions sub-page: tap left/right halves of sub-nav row (y=18..30)
+                if (_journalTab === 0 && cy >= 18 && cy < 30) {
+                    if (cx < 120) { _journalPage = (_journalPage - 1 + JOURNAL_PAGES.length) % JOURNAL_PAGES.length; _render(); }
+                    else          { _journalPage = (_journalPage + 1) % JOURNAL_PAGES.length; _render(); }
+                }
             });
-            // L/R nav buttons overlaid on canvas
-            var lBtn = document.createElement('button');
-            lBtn.textContent = '◀ L';
-            lBtn.className = 'sm-back-btn';
-            lBtn.style.cssText = 'position:absolute;bottom:4px;left:4px;z-index:10;pointer-events:all;';
-            lBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                _journalPage = (_journalPage - 1 + JOURNAL_PAGES.length) % JOURNAL_PAGES.length;
-                _render();
-            });
-            el.appendChild(lBtn);
-            var rBtn = document.createElement('button');
-            rBtn.textContent = 'R ▶';
-            rBtn.className = 'sm-back-btn';
-            rBtn.style.cssText = 'position:absolute;bottom:4px;left:56px;z-index:10;pointer-events:all;';
-            rBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                _journalPage = (_journalPage + 1) % JOURNAL_PAGES.length;
-                _render();
-            });
-            el.appendChild(rBtn);
         });
     }
 
     function _drawJournalCanvas(ctx, bg) {
-        _canvasBg(ctx, bg);
         var S = 2;
-        var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
+        var CYAN  = '#5aced6';
+        var TEXT  = '#ffffff';
+        var DIM   = '#888899';
+        var BG    = '#000000';
+        var TITLEBG = '#0a1830';
 
-        // Title bar area (y=8..30)
-        ctx.fillStyle = _tc.titleBg;
-        ctx.fillRect(0, 0, GBA_W, 28*S);
-        ctx.fillStyle = COL_CYAN;
-        ctx.fillRect(0, 28*S, GBA_W, 2);
-
+        ctx.imageSmoothingEnabled = false;
+        ctx.fillStyle = BG;
+        ctx.fillRect(0, 0, GBA_W, GBA_H);
         ctx.textBaseline = 'top';
-        ctx.font = 'bold '+(8*S)+'px monospace';
-        ctx.fillStyle = _tc.hi;
-        ctx.fillText('JOURNAL', 8*S, 8*S);
 
-        // Page name
-        ctx.font = (7*S)+'px monospace';
-        ctx.fillStyle = COL_CYAN;
-        ctx.fillText(JOURNAL_PAGES[_journalPage].name, 8*S, 34*S);
-
-        // Page dots
-        var dotX = GBA_W - (JOURNAL_PAGES.length * 14 * S) - 4*S;
-        JOURNAL_PAGES.forEach(function(_, i) {
-            ctx.fillStyle = i === _journalPage ? COL_CYAN : COL_DIM;
-            ctx.fillText(i === _journalPage ? '◆' : '◇', dotX + i*14*S, 34*S);
+        // ── 4 main tabs (y=0..17 GBA) ───────────────────────────────────────
+        ctx.font = (7*S) + 'px monospace';
+        var tabW = 60;
+        JOURNAL_TABS.forEach(function(label, i) {
+            var tx = i * tabW * S, tw = tabW * S, ty = 0, th = 17 * S;
+            var sel = (i === _journalTab);
+            if (sel) {
+                ctx.fillStyle = TITLEBG;
+                ctx.fillRect(tx, ty, tw, th);
+                ctx.strokeStyle = CYAN;
+                ctx.lineWidth = S;
+                ctx.strokeRect(tx + 1, ty + 1, tw - 2, th - 2);
+                ctx.fillStyle = CYAN;
+            } else {
+                ctx.fillStyle = DIM;
+            }
+            var lw = ctx.measureText(label).width;
+            ctx.fillText(label, tx + (tw - lw) / 2, ty + 5*S);
         });
+        // separator line
+        ctx.fillStyle = CYAN;
+        ctx.fillRect(0, 17*S, GBA_W, S);
 
-        // Stats table y=48
-        var stats = JOURNAL_PAGES[_journalPage].stats();
-        ctx.font = (7*S)+'px monospace';
-        stats.forEach(function(row, i) {
-            var y = 48*S + i * 14*S;
-            if (y > 110*S) return;
-            ctx.fillStyle = COL_DIM;
-            ctx.fillText(String(row[0]), 8*S, y);
-            ctx.fillStyle = COL_TEXT;
-            var val = String(row[1]);
-            var vw = ctx.measureText(val).width;
-            ctx.fillText(val, 232*S - vw, y);
-        });
+        // ── Tab content ──────────────────────────────────────────────────────
+        if (_journalTab === 0) {
+            _drawJournalFactions(ctx, S, CYAN, TEXT, DIM, BG, TITLEBG);
+        } else if (_journalTab === 1) {
+            _drawJournalAchAtlas(ctx, S, CYAN, TEXT, DIM);
+        } else if (_journalTab === 2) {
+            _drawJournalPowers(ctx, S, CYAN, TEXT, DIM, BG, TITLEBG);
+        } else if (_journalTab === 3) {
+            _drawJournalQuests(ctx, S, CYAN, TEXT, DIM);
+        }
 
-        // Trainer info strip at y=112
-        ctx.fillStyle = _tc.titleBg;
+        // ── Bottom bar (y=112..159 GBA) ──────────────────────────────────────
+        ctx.fillStyle = TITLEBG;
         ctx.fillRect(0, 112*S, GBA_W, 48*S);
-        ctx.fillStyle = COL_CYAN;
-        ctx.fillRect(0, 112*S, GBA_W, 2);
+        ctx.fillStyle = CYAN;
+        ctx.fillRect(0, 112*S, GBA_W, S);
 
-        ctx.font = (7*S)+'px monospace';
-        ctx.fillStyle = COL_TEXT;
-        ctx.fillText(_playerName(), 8*S, 116*S);
-        ctx.fillText('ID: '+_trainerId(), 90*S, 116*S);
-        ctx.fillText('₱'+_money().toLocaleString(), 170*S, 116*S);
+        ctx.font = (7*S) + 'px monospace';
+        ctx.textBaseline = 'top';
+        // Row 1: Name  ID: XXXXX  Money
+        ctx.fillStyle = TEXT;
+        ctx.fillText(_playerName(), 4*S, 114*S);
+        ctx.fillText('ID: ' + _trainerId(), 82*S, 114*S);
+        var moneyStr = '₱' + _money().toLocaleString();
+        var mw = ctx.measureText(moneyStr).width;
+        ctx.fillText(moneyStr, GBA_W - mw - 4*S, 114*S);
+        // Row 2: party dots left + Stamina right
+        var st = window.GameSave && GameSave.state;
+        var party = st && st.party || [];
+        for (var pi = 0; pi < 6; pi++) {
+            var px = (4 + pi * 10) * S;
+            var hasMon = pi < party.length;
+            ctx.fillStyle = hasMon ? '#20d840' : '#442244';
+            ctx.fillRect(px, 128*S, 8*S, 8*S);
+        }
+        ctx.fillStyle = TEXT;
+        ctx.fillText('Stamina: 100', 82*S, 128*S);
+    }
+
+    function _drawJournalFactions(ctx, S, CYAN, TEXT, DIM, BG, TITLEBG) {
+        var page = JOURNAL_PAGES[_journalPage];
+
+        // Sub-page nav row (y=18..29 GBA)
+        ctx.fillStyle = TITLEBG;
+        ctx.fillRect(0, 18*S, GBA_W, 11*S);
+        ctx.font = (7*S) + 'px monospace';
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = CYAN;
+        ctx.fillText('< (L)', 4*S, 19*S);
+        var nameW = ctx.measureText(page.name).width;
+        ctx.fillStyle = TEXT;
+        ctx.fillText(page.name, (GBA_W/2 - nameW/2), 19*S);
+        ctx.fillStyle = CYAN;
+        var rStr = '(R) >';
+        ctx.fillText(rStr, GBA_W - ctx.measureText(rStr).width - 4*S, 19*S);
+        ctx.fillStyle = CYAN;
+        ctx.fillRect(0, 29*S, GBA_W, S);
+
+        // Stats in 2-column layout (y=30..111 GBA, 4 rows visible)
+        var stats = page.stats();
+        ctx.font = (7*S) + 'px monospace';
+        var ROW_H = 20, COL_MID = 120;
+        for (var i = 0; i < stats.length; i++) {
+            var col  = i % 2;
+            var row  = Math.floor(i / 2);
+            var ry   = (32 + row * ROW_H) * S;
+            if (ry > 110*S) break;
+            var colX = col * COL_MID * S;
+            // Background stripe on even rows
+            if (row % 2 === 0) {
+                ctx.fillStyle = 'rgba(10,24,48,0.6)';
+                ctx.fillRect(colX, ry - S, COL_MID*S, ROW_H*S);
+            }
+            ctx.fillStyle = DIM;
+            ctx.fillText(String(stats[i][0]), colX + 4*S, ry);
+            ctx.fillStyle = TEXT;
+            var val = String(stats[i][1]);
+            var vw = ctx.measureText(val).width;
+            ctx.fillText(val, colX + (COL_MID - 4)*S - vw, ry);
+            // Column divider
+            ctx.fillStyle = 'rgba(90,206,214,0.2)';
+            ctx.fillRect(COL_MID*S - S, 30*S, S, 82*S);
+        }
+    }
+
+    function _drawJournalAchAtlas(ctx, S, CYAN, TEXT, DIM) {
+        // AP counter top-right
+        var ap = _ap();
+        ctx.font = (7*S) + 'px monospace';
+        ctx.textBaseline = 'top';
+        var apStr = ap + ' / ' + _maxAP() + ' AP';
+        var apW = ctx.measureText(apStr).width;
+        ctx.fillStyle = CYAN;
+        ctx.fillText(apStr, GBA_W - apW - 4*S, 19*S);
+
+        // Tier filter tabs
+        var TIERS = ['All', 'Plat', 'Gold', 'Silv', 'Brnz'];
+        var tw = 48 * S;
+        TIERS.forEach(function(t, i) {
+            var sel = i === _achTier;
+            ctx.fillStyle = sel ? CYAN : DIM;
+            var lw = ctx.measureText(t).width;
+            ctx.fillText(t, 4*S + i * tw + (tw - lw)/2, 19*S);
+        });
+        ctx.fillStyle = CYAN;
+        ctx.fillRect(0, 29*S, GBA_W, S);
+
+        // Achievement list
+        var allAchs = _achList();
+        var TIER_NAMES = [null,'platinum','gold','silver','bronze'];
+        var filtered = _achTier === 0 ? allAchs : allAchs.filter(function(a){ return a.tier === TIER_NAMES[_achTier]; });
+        var LIST_ROWS = 5;
+        var listY = 31;
+        for (var j = 0; j < LIST_ROWS; j++) {
+            var idx = _achOffset + j;
+            if (idx >= filtered.length) break;
+            var ach = filtered[idx];
+            var sel2 = (idx === _subIdx);
+            var ry2 = (listY + j * 14) * S;
+            if (sel2) { ctx.fillStyle = 'rgba(90,206,214,0.2)'; ctx.fillRect(0, ry2 - S, GBA_W, 14*S); }
+            ctx.fillStyle = ach.unlocked ? TEXT : DIM;
+            ctx.font = (7*S) + 'px monospace';
+            ctx.fillText((ach.unlocked ? '[+]' : '[X]') + ' ' + (ach.name||''), 4*S, ry2);
+            var apVal = (ach.apReward || 0) + 'AP';
+            var avw = ctx.measureText(apVal).width;
+            ctx.fillText(apVal, GBA_W - avw - 4*S, ry2);
+        }
+
+        // Selected ach description
+        var selAch = filtered[_subIdx];
+        if (selAch) {
+            ctx.fillStyle = 'rgba(10,24,48,0.8)';
+            ctx.fillRect(0, 102*S, GBA_W, 10*S);
+            ctx.fillStyle = CYAN;
+            ctx.fillRect(0, 102*S, GBA_W, S);
+            ctx.fillStyle = selAch.unlocked ? TEXT : DIM;
+            ctx.font = (7*S) + 'px monospace';
+            ctx.fillText((selAch.name||'') + (selAch.unlocked ? ' [EARNED]' : ' [LOCKED]'), 4*S, 103*S);
+            ctx.fillStyle = DIM;
+            ctx.fillText((selAch.desc||''), 4*S, 103*S + 9*S);
+        }
+    }
+
+    function _drawJournalPowers(ctx, S, CYAN, TEXT, DIM, BG, TITLEBG) {
+        var TIERS = ['Platinum', 'Gold', 'Silver', 'Copper'];
+        var ap = _ap();
+
+        // Tier tabs + AP counter
+        ctx.font = (7*S) + 'px monospace';
+        ctx.textBaseline = 'top';
+        var tw = 55 * S;
+        TIERS.forEach(function(t, i) {
+            var sel = (i === _powersPage);
+            ctx.fillStyle = sel ? CYAN : DIM;
+            var lw = ctx.measureText(t).width;
+            ctx.fillText(t, 4*S + i * tw + (tw - lw)/2, 19*S);
+        });
+        var apStr = ap + ' AP';
+        ctx.fillStyle = CYAN;
+        ctx.fillText(apStr, GBA_W - ctx.measureText(apStr).width - 4*S, 19*S);
+        ctx.fillStyle = CYAN;
+        ctx.fillRect(0, 29*S, GBA_W, S);
+
+        // Column headers
+        ctx.fillStyle = DIM;
+        ctx.fillText('Powers', 20*S, 32*S);
+        ctx.fillText('Cost', GBA_W - ctx.measureText('Cost').width - 4*S, 32*S);
+        ctx.fillStyle = CYAN;
+        ctx.fillRect(0, 40*S, GBA_W, S);
+
+        // Power list (placeholder)
+        var TIER_COSTS = [51, 30, 15, 5];
+        var TIER_POWERS = [
+            ['Sprint Boost','Global Repel','Trainer Repel','Double EV Gain'],
+            ['Exp Share All','Lucky Egg Boost','Pickup Up','Pickup Boost'],
+            ['Repel Boost','Amulet Boost','Potion Boost','Berry Boost'],
+            ['Map Reveal','Fast Text','Auto Run','Extended HMs'],
+        ];
+        var powers = TIER_POWERS[_powersPage] || [];
+        var cost   = TIER_COSTS[_powersPage];
+        powers.forEach(function(p, i) {
+            var ry = (44 + i * 14) * S;
+            // pink = locked (not enough AP), grey = available
+            ctx.fillStyle = ap >= cost ? DIM : '#ff80b0';
+            ctx.fillText(p, 8*S, ry);
+            ctx.fillStyle = DIM;
+            var cStr = cost + 'AP';
+            ctx.fillText(cStr, GBA_W - ctx.measureText(cStr).width - 4*S, ry);
+        });
+
+        // Description placeholder
+        ctx.fillStyle = CYAN;
+        ctx.fillRect(0, 102*S, GBA_W, S);
+        ctx.fillStyle = DIM;
+        ctx.font = (7*S) + 'px monospace';
+        ctx.fillText('Select a power to view its description.', 4*S, 104*S);
+    }
+
+    function _drawJournalQuests(ctx, S, CYAN, TEXT, DIM) {
+        ctx.font = (7*S) + 'px monospace';
+        ctx.textBaseline = 'top';
+
+        // Header
+        ctx.fillStyle = TEXT;
+        ctx.fillText('Select a Quest', 4*S, 20*S);
+        ctx.fillStyle = CYAN;
+        ctx.fillText('Current', GBA_W - ctx.measureText('Current').width - 4*S, 20*S);
+        ctx.fillStyle = CYAN;
+        ctx.fillRect(0, 29*S, GBA_W, S);
+
+        var st = window.GameSave && GameSave.state;
+        var quests = (st && st.quests) || {};
+        var QUEST_LIST = [
+            { name: 'Corporate Life',    key: 'corporateLife'  },
+            { name: 'Weather Theorem',   key: 'weatherTheorem' },
+            { name: 'Fiery Enterprise',  key: 'fieryEnterprise'},
+            { name: 'Sail the High Seas',key: 'highSeas'       },
+            { name: 'Delivery System',   key: 'delivery'       },
+            { name: 'Faction Daily Quest', key: 'factionDaily' },
+        ];
+
+        QUEST_LIST.forEach(function(q, i) {
+            var ry = (32 + i * 13) * S;
+            var val = quests[q.key] || 0;
+            var sel = (i === _subIdx);
+            if (sel) { ctx.fillStyle='rgba(90,206,214,0.2)'; ctx.fillRect(0,ry-S,GBA_W,13*S); }
+            ctx.fillStyle = sel ? CYAN : TEXT;
+            ctx.fillText(q.name, 8*S, ry);
+            ctx.fillStyle = TEXT;
+            var vs = String(val);
+            ctx.fillText(vs, GBA_W - ctx.measureText(vs).width - 4*S, ry);
+        });
+
+        // Description box
+        ctx.fillStyle = CYAN;
+        ctx.fillRect(0, 102*S, GBA_W, S);
+        ctx.fillStyle = DIM;
+        ctx.fillText('Select a quest to view progress.', 4*S, 104*S);
     }
 
     function _buildAchievements(el) {
