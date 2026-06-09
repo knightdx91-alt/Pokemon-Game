@@ -76,7 +76,10 @@
 
     <script>
     (function() {
-        var ROM_ZIP_URL = 'https://github.com/knightdx91-alt/Pokemon-Game/releases/download/roms-v1/pokemon-black.zip';
+        // LFS object info — from the pointer file in the repo
+        var LFS_OID  = '2e40416b8e8183d936084c7be0adeaab4fa3f786a68f90d7291ab77d340f0c1d';
+        var LFS_SIZE = 268435456;
+        var LFS_BATCH_URL = 'https://github.com/knightdx91-alt/Pokemon-Game.git/info/lfs/objects/batch';
 
         // IndexedDB stores the unzipped NDS blob so we never unzip again
         var IDB_DB    = 'pokemon-black-rom-v2';
@@ -173,59 +176,92 @@
             document.body.appendChild(s);
         }
 
-        // ── Download zip → unzip → cache NDS blob ─────────────────────────
-        function downloadAndUnzip() {
-            setDl('Connecting to GitHub…');
-            setProgress(2);
-
-            fetch(ROM_ZIP_URL).then(function(resp) {
+        // ── Stream-download a URL, returning ArrayBuffer ──────────────────
+        function streamDownload(url, headers, label) {
+            return fetch(url, { headers: headers || {} }).then(function(resp) {
                 if (!resp.ok) throw new Error('HTTP ' + resp.status);
-
                 var total = parseInt(resp.headers.get('content-length') || '0', 10);
-
                 if (resp.body && resp.body.getReader && total) {
                     var reader = resp.body.getReader();
-                    var chunks = [];
-                    var loaded = 0;
+                    var chunks = [], loaded = 0;
                     function pump() {
                         return reader.read().then(function(r) {
                             if (r.done) {
-                                // Combine all chunks into one ArrayBuffer
-                                var combined = new Uint8Array(loaded);
-                                var offset = 0;
-                                chunks.forEach(function(c) { combined.set(c, offset); offset += c.length; });
-                                return combined.buffer;
+                                var out = new Uint8Array(loaded), off = 0;
+                                chunks.forEach(function(c) { out.set(c, off); off += c.length; });
+                                return out.buffer;
                             }
                             chunks.push(r.value);
                             loaded += r.value.length;
-                            var pct = Math.round(loaded / total * 85); // download = 0-85%
-                            var mb  = (loaded  / 1048576).toFixed(1);
-                            var tot = (total   / 1048576).toFixed(0);
+                            var pct = Math.round(loaded / total * 85);
+                            var mb  = (loaded / 1048576).toFixed(1);
+                            var tot = (total  / 1048576).toFixed(0);
                             setProgress(pct);
-                            setDl('Downloading ' + mb + ' / ' + tot + ' MB (' + pct + '%)');
+                            setDl((label || 'Downloading') + ' ' + mb + ' / ' + tot + ' MB (' + pct + '%)');
                             return pump();
                         });
                     }
                     return pump();
                 }
-
-                setDl('Downloading (~106 MB) — please wait…');
+                setDl((label || 'Downloading') + ' (~256 MB) — please wait…');
                 setProgress(50);
                 return resp.arrayBuffer();
+            });
+        }
 
-            }).then(function(zipBuffer) {
-                return unzipNDS(zipBuffer);
-            }).then(function(ndsBlob) {
-                setDl('Saving to local cache…', '#20d840');
-                setProgress(100);
-                return openDB().then(function(db) {
-                    return idbPut(db, ndsBlob).then(function() {
-                        launchEJS(URL.createObjectURL(ndsBlob));
-                    });
+        // ── Get LFS download URL via Batch API, then stream ───────────────
+        function downloadViaLFS() {
+            setDl('Resolving LFS download URL…');
+            setProgress(2);
+            return fetch(LFS_BATCH_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/vnd.git-lfs+json',
+                    'Accept':       'application/vnd.git-lfs+json',
+                },
+                body: JSON.stringify({
+                    operation: 'download',
+                    transfers: ['basic'],
+                    refs: { name: 'refs/heads/main' },
+                    objects: [{ oid: LFS_OID, size: LFS_SIZE }]
+                })
+            }).then(function(r) {
+                if (!r.ok) throw new Error('LFS batch API: HTTP ' + r.status);
+                return r.json();
+            }).then(function(data) {
+                var obj = data.objects && data.objects[0];
+                if (!obj || !obj.actions || !obj.actions.download) {
+                    throw new Error('No download action in LFS response');
+                }
+                var dl = obj.actions.download;
+                setDl('Downloading NDS ROM via LFS…');
+                return streamDownload(dl.href, dl.header || {}, 'Downloading');
+            }).then(function(buf) {
+                // LFS gives us the raw NDS file — no unzipping needed
+                var blob = new Blob([buf], { type: 'application/octet-stream' });
+                return blob;
+            });
+        }
+
+        // ── Fallback: download zip from release and unzip ─────────────────
+        var ROM_ZIP_URL = 'https://github.com/knightdx91-alt/Pokemon-Game/releases/download/roms-v1/pokemon-black.zip';
+
+        function downloadViaZip() {
+            setDl('Downloading release zip…');
+            setProgress(2);
+            return streamDownload(ROM_ZIP_URL, {}, 'Downloading').then(function(buf) {
+                return unzipNDS(buf);
+            });
+        }
+
+        // ── Save blob to IDB and launch ────────────────────────────────────
+        function cacheAndLaunch(ndsBlob) {
+            setDl('Saving to local cache…', '#20d840');
+            setProgress(100);
+            return openDB().then(function(db) {
+                return idbPut(db, ndsBlob).then(function() {
+                    launchEJS(URL.createObjectURL(ndsBlob));
                 });
-            }).catch(function(err) {
-                setDl('Error: ' + err.message, '#e84040');
-                console.error('[ROM]', err);
             });
         }
 
@@ -236,12 +272,26 @@
                     setDl('Loading from cache…', '#20d840');
                     setProgress(100);
                     launchEJS(URL.createObjectURL(cached));
-                } else {
-                    downloadAndUnzip();
+                    return;
                 }
+                // Try LFS first, fall back to release zip
+                downloadViaLFS().then(function(blob) {
+                    return cacheAndLaunch(blob);
+                }).catch(function(lfsErr) {
+                    console.warn('[ROM] LFS download failed, trying release zip:', lfsErr);
+                    setDl('Trying release zip…');
+                    return downloadViaZip().then(function(blob) {
+                        return cacheAndLaunch(blob);
+                    });
+                }).catch(function(err) {
+                    setDl('Download failed: ' + err.message, '#e84040');
+                    console.error('[ROM]', err);
+                });
             });
         }).catch(function() {
-            downloadAndUnzip();
+            downloadViaLFS().catch(function() { return downloadViaZip(); }).then(cacheAndLaunch).catch(function(e) {
+                setDl('Download failed: ' + e.message, '#e84040');
+            });
         });
 
         // ── Clear cache ────────────────────────────────────────────────────
