@@ -46,7 +46,6 @@
             width: 100%;
             min-height: 400px;
             flex: 1;
-            /* Prevent long-press context menu on touch screens */
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             user-select: none;
@@ -71,7 +70,7 @@
 
     <div id="emu-wrap">
         <div id="game"></div>
-        <div id="status">Loading emulator…</div>
+        <div id="status">Loading emulator&hellip;</div>
     </div>
 
     <script>
@@ -83,8 +82,6 @@
                 }
                 return _orig.call(this, type, attrs);
             };
-
-            // Block long-press context menu on the game div
             document.addEventListener('DOMContentLoaded', function () {
                 var g = document.getElementById('game');
                 g.addEventListener('contextmenu', function (e) { e.preventDefault(); return false; });
@@ -125,6 +122,7 @@
     <script src="https://cdn.emulatorjs.org/stable/data/loader.js"
             onerror="document.getElementById('status').textContent='ERROR: Failed to load EmulatorJS CDN.'">
     </script>
-    <script src="emulator-saves.js?v=__CACHE_BUST__"></script>
+    <script>window.CLOUD_SAVE_GAME = 'emerald';</script>
+    <script src="cloud-saves.js?v=__CACHE_BUST__"></script>
 </body>
 </html>

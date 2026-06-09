@@ -212,7 +212,6 @@
         return _origGetCtx.call(this, type, attrs);
     };
 
-    // Block long-press context menu on game canvas
     document.addEventListener('DOMContentLoaded', function () {
         var g = document.getElementById('game');
         g.addEventListener('contextmenu', function (e) { e.preventDefault(); return false; });
@@ -381,12 +380,12 @@
         actionBar.classList.remove('visible');
         emuScreen.classList.add('visible');
         emuGameLabel.textContent = label || sys.label;
+        window.CLOUD_SAVE_GAME = sys.id;
 
         var gameDiv   = document.getElementById('game');
         var startTime = Date.now();
         var _lastMsg  = 'Loading core…';
 
-        // Block long-press on the game canvas once EJS creates it
         gameDiv.addEventListener('contextmenu', function (e) { e.preventDefault(); return false; });
 
         emuStatus.textContent = _lastMsg;
@@ -427,6 +426,7 @@
             setEmuProgress(100);
             setTimeout(function () { setEmuProgress(0); }, 800);
             emuStatus.textContent = 'Running · ' + (label || sys.label);
+            if (window.cloudSaveOnStart) window.cloudSaveOnStart();
         };
         window.EJS_Buttons = {
             playPause: true, restart: true, mute: true, settings: true, fullscreen: true,
@@ -628,5 +628,6 @@
 
 })();
 </script>
+<script src="cloud-saves.js?v=__CACHE_BUST__"></script>
 </body>
 </html>
