@@ -155,8 +155,9 @@ window.GameRenderer = (function () {
                 const sy = (npc.y - camY) * TILE_PX;
 
                 // Item-type NPCs rendered as static icons, not walking characters
+                // +TILE_PX: NPC coords point to the tile above the visual position (interaction tile)
                 if (_isItemGfx(npc.graphics_id)) {
-                    _drawItemNpc(ctx, npc.graphics_id, sx, sy);
+                    _drawItemNpc(ctx, npc.graphics_id, sx, sy + TILE_PX);
                     continue;
                 }
 
