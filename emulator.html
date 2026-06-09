@@ -3,32 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>Emerald Enhanced — GBA</title>
-    <!-- v__CACHE_BUST__ -->
+    <title>EmulatorJS — System Picker</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background: #000;
+            background: #060610;
             color: #c8d8e8;
             font-family: "Courier New", Courier, monospace;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
         }
+
+        /* ── Top bar ── */
         #top-bar {
             width: 100%;
             background: #0a1830;
-            border-bottom: 1px solid #18b8c8;
+            border-bottom: 2px solid #18b8c8;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 6px 10px;
-            gap: 8px;
+            padding: 6px 12px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         #top-bar a {
             color: #18b8c8;
@@ -37,170 +36,513 @@
             border: 1px solid #18b8c8;
             border-radius: 3px;
             padding: 4px 8px;
-            touch-action: manipulation;
         }
-        #top-bar span {
-            font-size: 12px;
-            color: #80d0e8;
+        #top-bar span { font-size: 13px; color: #80d0e8; }
+        .legend { font-size: 10px; color: #20d840; }
+
+        /* ── Picker screen ── */
+        #picker-screen {
+            width: 100%;
+            max-width: 860px;
+            padding: 12px 12px 80px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
         }
-        #screenshot-btn-emu {
+
+        .group-section { display: flex; flex-direction: column; gap: 6px; }
+        .group-label {
+            font-size: 10px;
+            color: #18b8c8;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #18b8c8;
+        }
+        .system-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .sys-card {
+            background: #0a1830;
+            border: 1px solid #1a3050;
+            border-radius: 4px;
+            padding: 8px 10px;
+            cursor: pointer;
+            flex: 1 1 130px;
+            max-width: 200px;
+            min-width: 110px;
+            transition: border-color 0.1s, background 0.1s;
+            position: relative;
+        }
+        .sys-card:hover  { border-color: #18b8c8; background: #0d1f3a; }
+        .sys-card.selected {
+            border-color: #18b8c8;
+            background: #0d2440;
+            box-shadow: 0 0 0 1px #18b8c8;
+        }
+        .sys-card.has-cache .sys-name::after {
+            content: ' \25CF';
+            color: #20d840;
+            font-size: 9px;
+        }
+        .sys-name { font-size: 12px; color: #c8d8e8; font-weight: bold; margin-bottom: 3px; }
+        .sys-exts { font-size: 10px; color: #4870a0; }
+
+        /* ── Sticky action bar ── */
+        #action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0; right: 0;
+            background: #0a1830;
+            border-top: 2px solid #18b8c8;
+            padding: 10px 16px;
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            z-index: 20;
+        }
+        #action-bar.visible { display: flex; }
+        #action-sys-name { font-size: 12px; color: #18b8c8; }
+        .action-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .act-btn {
             background: #0a1830;
             color: #18b8c8;
             border: 1px solid #18b8c8;
             border-radius: 3px;
-            padding: 4px 8px;
+            padding: 6px 14px;
             font-size: 12px;
             cursor: pointer;
             font-family: "Courier New", Courier, monospace;
             touch-action: manipulation;
         }
-        #emu-wrap {
+        .act-btn:hover    { background: #0d2440; }
+        .act-btn:disabled { opacity: 0.4; cursor: default; }
+        .act-btn.play     { color: #20d840; border-color: #20d840; }
+        .act-btn.danger   { color: #e84040; border-color: #e84040; }
+
+        #dl-status {
+            font-size: 11px;
+            color: #e8c000;
+            min-height: 14px;
+        }
+        #progress-wrap {
+            width: 100%;
+            height: 5px;
+            background: #1a2a40;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        #progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #18b8c8;
+            border-radius: 3px;
+            transition: width 0.08s linear;
+        }
+
+        /* ── Emulator screen ── */
+        #emu-screen {
+            display: none;
             width: 100%;
             max-width: 640px;
-            flex: 1;
-            display: flex;
             flex-direction: column;
-        }
-        #game {
-            width: 100%;
-            min-height: 400px;
             flex: 1;
         }
-        #status {
-            padding: 8px 12px;
+        #emu-screen.visible { display: flex; }
+        #emu-top {
+            background: #0a1830;
+            border-bottom: 1px solid #18b8c8;
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #emu-top button {
+            background: none;
+            color: #18b8c8;
+            border: 1px solid #18b8c8;
+            border-radius: 3px;
+            padding: 4px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: "Courier New", Courier, monospace;
+        }
+        #emu-game-label { font-size: 11px; color: #80d0e8; }
+        #game { width: 100%; min-height: 400px; flex: 1; }
+        #emu-status {
+            padding: 6px 12px;
             font-size: 11px;
             color: #80d0e8;
             background: #0a1830;
             border-top: 1px solid #18b8c8;
-            min-height: 24px;
         }
     </style>
 </head>
 <body>
-    <div id="top-bar">
-        <a href="index.html">&#8592; Menu</a>
-        <span>Emerald Enhanced</span>
-        <button id="screenshot-btn-emu">&#128247; Screenshot</button>
-    </div>
 
-    <div id="emu-wrap">
-        <div id="game"></div>
-        <div id="status">Loading emulator…</div>
-    </div>
+<div id="top-bar">
+    <a href="index.html">&#8592; Menu</a>
+    <span>EmulatorJS</span>
+    <span class="legend">&#9679; = cached</span>
+</div>
 
-    <script>
-        // Register service worker for caching ROM + EmulatorJS assets
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(function(reg) {
-                var s = document.getElementById('status');
-                if (reg.installing) {
-                    if (s) s.textContent = 'Downloading game data (cached after first run)…';
-                } else if (reg.active) {
-                    if (s) s.textContent = 'Loading from cache…';
-                }
-            });
+<!-- System Picker -->
+<div id="picker-screen"></div>
+
+<!-- Sticky action bar -->
+<div id="action-bar">
+    <div id="action-sys-name">No system selected</div>
+    <div class="action-row">
+        <button class="act-btn play" id="btn-play-cached" style="display:none">&#9654; Play (cached)</button>
+        <button class="act-btn" id="btn-drive">&#9729; Open from Google Drive</button>
+        <button class="act-btn danger" id="btn-clear-cache" style="display:none">&#128465; Clear cache</button>
+    </div>
+    <div id="dl-status"></div>
+    <div id="progress-wrap"><div id="progress-fill"></div></div>
+</div>
+
+<!-- Emulator -->
+<div id="emu-screen">
+    <div id="emu-top">
+        <button id="btn-back-emu">&#8592; Systems</button>
+        <span id="emu-game-label"></span>
+    </div>
+    <div id="game"></div>
+    <div id="emu-status">Loading emulator…</div>
+</div>
+
+<!-- Google APIs -->
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://accounts.google.com/gsi/client"></script>
+
+<script>
+(function () {
+    var _origGetCtx = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function (type, attrs) {
+        if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl') {
+            attrs = Object.assign({}, attrs || {}, { preserveDrawingBuffer: true });
         }
-    </script>
-    <script>
-        // EmulatorJS config
-        window.EJS_player = '#game';
-        window.EJS_core = 'gba';
-        window.EJS_gameUrl = 'pokeemerald_ee_debug.gba';
-        window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-        window.EJS_color = '#18b8c8';
-        window.EJS_backgroundColor = '#060610';
-        window.EJS_startOnLoaded = true;
-        window.EJS_onGameStart = function() {
-            var s = document.getElementById('status');
-            if (s) s.textContent = 'Running — Emerald Enhanced';
-        };
-        window.EJS_onLoadState = function() {};
-        // Intercept errors
-        window.addEventListener('error', function(e) {
-            var s = document.getElementById('status');
-            if (s) s.textContent = 'Error: ' + e.message + ' (' + (e.filename||'') + ':' + e.lineno + ')';
+        return _origGetCtx.call(this, type, attrs);
+    };
+
+    var SYSTEMS = [
+        { id: 'nes',       label: 'NES',                  core: 'fceumm',           exts: ['.nes', '.fds'],                        group: 'Nintendo' },
+        { id: 'snes',      label: 'SNES',                 core: 'snes9x',           exts: ['.sfc', '.smc', '.fig'],                group: 'Nintendo' },
+        { id: 'n64',       label: 'Nintendo 64',          core: 'mupen64plus_next', exts: ['.n64', '.z64', '.v64'],                group: 'Nintendo' },
+        { id: 'gb',        label: 'Game Boy',             core: 'gambatte',         exts: ['.gb'],                                 group: 'Nintendo' },
+        { id: 'gbc',       label: 'Game Boy Color',       core: 'gambatte',         exts: ['.gbc'],                                group: 'Nintendo' },
+        { id: 'gba',       label: 'Game Boy Advance',     core: 'mgba',             exts: ['.gba'],                                group: 'Nintendo' },
+        { id: 'nds',       label: 'Nintendo DS',          core: 'melonds',          exts: ['.nds'],                                group: 'Nintendo' },
+        { id: 'vb',        label: 'Virtual Boy',          core: 'beetle_vb',        exts: ['.vb', '.vboy'],                        group: 'Nintendo' },
+        { id: 'pokemini',  label: 'Pokemon Mini',         core: 'pokemini',         exts: ['.min'],                                group: 'Nintendo' },
+        { id: 'sms',       label: 'Master System',        core: 'genesis_plus_gx',  exts: ['.sms'],                                group: 'Sega' },
+        { id: 'gg',        label: 'Game Gear',            core: 'genesis_plus_gx',  exts: ['.gg'],                                 group: 'Sega' },
+        { id: 'genesis',   label: 'Mega Drive / Genesis', core: 'genesis_plus_gx',  exts: ['.md', '.gen', '.bin'],                 group: 'Sega' },
+        { id: 'segacd',    label: 'Sega CD',              core: 'genesis_plus_gx',  exts: ['.bin', '.iso', '.cue', '.chd'],        group: 'Sega' },
+        { id: 'sega32x',   label: '32X',                  core: 'picodrive',        exts: ['.32x', '.bin'],                        group: 'Sega' },
+        { id: 'saturn',    label: 'Saturn',               core: 'yabause',          exts: ['.bin', '.iso', '.chd'],                group: 'Sega' },
+        { id: 'dc',        label: 'Dreamcast',            core: 'flycast',          exts: ['.cdi', '.gdi', '.chd', '.cue'],        group: 'Sega' },
+        { id: 'psx',       label: 'PlayStation',          core: 'pcsx_rearmed',     exts: ['.bin', '.cue', '.iso', '.pbp', '.chd'],group: 'Sony' },
+        { id: 'psp',       label: 'PSP',                  core: 'ppsspp',           exts: ['.iso', '.cso', '.pbp'],                group: 'Sony' },
+        { id: 'a2600',     label: 'Atari 2600',           core: 'stella',           exts: ['.a26', '.bin'],                        group: 'Atari' },
+        { id: 'a5200',     label: 'Atari 5200',           core: 'a5200',            exts: ['.a52', '.rom', '.bin'],                group: 'Atari' },
+        { id: 'a7800',     label: 'Atari 7800',           core: 'prosystem',        exts: ['.a78', '.bin'],                        group: 'Atari' },
+        { id: 'lynx',      label: 'Atari Lynx',           core: 'beetle_lynx',      exts: ['.lnx'],                                group: 'Atari' },
+        { id: 'jaguar',    label: 'Atari Jaguar',         core: 'virtualjaguar',    exts: ['.j64', '.jag', '.bin'],                group: 'Atari' },
+        { id: 'pce',       label: 'PC Engine / TG-16',    core: 'beetle_pce',       exts: ['.pce', '.bin', '.cue', '.chd'],        group: 'NEC' },
+        { id: 'pcfx',      label: 'PC-FX',                core: 'beetle_pcfx',      exts: ['.iso', '.bin', '.chd', '.cue'],        group: 'NEC' },
+        { id: 'ngp',       label: 'Neo Geo Pocket',       core: 'beetle_ngp',       exts: ['.ngp', '.ngc'],                        group: 'SNK' },
+        { id: 'neocd',     label: 'Neo Geo CD',           core: 'neocd',            exts: ['.chd', '.cue'],                        group: 'SNK' },
+        { id: 'wswan',     label: 'WonderSwan',           core: 'beetle_wswan',     exts: ['.ws', '.wsc'],                         group: 'Bandai' },
+        { id: 'fbneo',     label: 'Arcade (FBNeo)',        core: 'fbneo',            exts: ['.zip'],                                group: 'Arcade' },
+        { id: 'mame2003',  label: 'MAME 2003',            core: 'mame2003',         exts: ['.zip'],                                group: 'Arcade' },
+        { id: 'c64',       label: 'Commodore 64',         core: 'vice_x64',         exts: ['.d64', '.t64', '.prg', '.crt'],        group: 'Computers' },
+        { id: 'msx',       label: 'MSX',                  core: 'fmsx',             exts: ['.rom', '.mx1', '.mx2', '.dsk'],        group: 'Computers' },
+        { id: 'amiga',     label: 'Amiga',                core: 'puae',             exts: ['.adf', '.hdf', '.zip'],                group: 'Computers' },
+        { id: 'dos',       label: 'DOS',                  core: 'dosbox_pure',      exts: ['.zip', '.exe', '.com'],                group: 'Computers' },
+        { id: 'intv',      label: 'Intellivision',        core: 'freeintv',         exts: ['.int', '.bin'],                        group: 'Other' },
+        { id: 'vectrex',   label: 'Vectrex',              core: 'vecx',             exts: ['.vec', '.bin'],                        group: 'Other' },
+        { id: 'o2em',      label: 'Odyssey2 / Videopac',  core: 'o2em',             exts: ['.bin'],                                group: 'Other' },
+    ];
+
+    var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
+    var SCOPE     = 'https://www.googleapis.com/auth/drive.readonly';
+    var IDB_DB    = 'ejs-roms-v1';
+    var IDB_STORE = 'roms';
+
+    var _accessToken = null;
+    var _selectedSys = null;
+    var _cachedIds   = {};
+
+    var pickerScreen  = document.getElementById('picker-screen');
+    var emuScreen     = document.getElementById('emu-screen');
+    var actionBar     = document.getElementById('action-bar');
+    var actionSysName = document.getElementById('action-sys-name');
+    var btnPlayCached = document.getElementById('btn-play-cached');
+    var btnDrive      = document.getElementById('btn-drive');
+    var btnClear      = document.getElementById('btn-clear-cache');
+    var dlStatus      = document.getElementById('dl-status');
+    var progressFill  = document.getElementById('progress-fill');
+    var emuStatus     = document.getElementById('emu-status');
+    var emuGameLabel  = document.getElementById('emu-game-label');
+
+    function setDl(msg, color) {
+        dlStatus.textContent  = msg;
+        dlStatus.style.color  = color || '#e8c000';
+    }
+    function setProgress(pct) {
+        progressFill.style.width = Math.min(100, Math.max(0, pct)) + '%';
+    }
+
+    function openDB() {
+        return new Promise(function (res, rej) {
+            var r = indexedDB.open(IDB_DB, 1);
+            r.onupgradeneeded = function (e) { e.target.result.createObjectStore(IDB_STORE); };
+            r.onsuccess = function (e) { res(e.target.result); };
+            r.onerror   = function (e) { rej(e.target.error); };
         });
-        window.EJS_Buttons = {
-            playPause: true,
-            restart: true,
-            mute: true,
-            settings: true,
-            fullscreen: true,
-            saveState: true,
-            loadState: true,
-            screenRecord: false,
-            gamepad: true,
-            cheat: false,
-            volume: true,
-            saveSavFiles: true,
-            loadSavFiles: true,
-            quickSave: true,
-            quickLoad: true,
-        };
-    </script>
-    <script>
-        // Verify ROM is reachable before loading EmulatorJS
-        var statusEl = document.getElementById('status');
-        fetch('pokeemerald_ee_debug.gba', { method: 'HEAD' })
-            .then(function(r) {
-                if (r.ok) {
-                    if (statusEl) statusEl.textContent = 'ROM found (' + (r.headers.get('content-length')||'?') + ' bytes) — loading emulator…';
-                } else {
-                    if (statusEl) statusEl.textContent = 'ERROR: ROM not found at pokeemerald_ee_debug.gba (HTTP ' + r.status + ')';
-                }
-            })
-            .catch(function(e) {
-                if (statusEl) statusEl.textContent = 'ERROR fetching ROM: ' + e.message;
-            });
-    </script>
-    <script>
-        // Force WebGL preserveDrawingBuffer so toDataURL() captures a real frame
-        (function() {
-            var _orig = HTMLCanvasElement.prototype.getContext;
-            HTMLCanvasElement.prototype.getContext = function(type, attrs) {
-                if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl') {
-                    attrs = Object.assign({}, attrs || {}, { preserveDrawingBuffer: true });
-                }
-                return _orig.call(this, type, attrs);
-            };
-        })();
-    </script>
-    <script src="https://cdn.emulatorjs.org/stable/data/loader.js"
-            onerror="document.getElementById('status').textContent='ERROR: Failed to load EmulatorJS CDN — check internet connection.'">
-    </script>
+    }
+    function idbGet(db, key) {
+        return new Promise(function (res, rej) {
+            var r = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(key);
+            r.onsuccess = function (e) { res(e.target.result || null); };
+            r.onerror   = function (e) { rej(e.target.error); };
+        });
+    }
+    function idbPut(db, key, blob) {
+        return new Promise(function (res, rej) {
+            var r = db.transaction(IDB_STORE, 'readwrite').objectStore(IDB_STORE).put(blob, key);
+            r.onsuccess = function () { res(); };
+            r.onerror   = function (e) { rej(e.target.error); };
+        });
+    }
+    function idbDel(db, key) {
+        return new Promise(function (res, rej) {
+            var r = db.transaction(IDB_STORE, 'readwrite').objectStore(IDB_STORE).delete(key);
+            r.onsuccess = function () { res(); };
+            r.onerror   = function (e) { rej(e.target.error); };
+        });
+    }
+    function idbAllKeys(db) {
+        return new Promise(function (res, rej) {
+            var r = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).getAllKeys();
+            r.onsuccess = function (e) { res(e.target.result || []); };
+            r.onerror   = function (e) { rej(e.target.error); };
+        });
+    }
 
-    <script src="emulator-screenshot.js?v=__CACHE_BUST__"></script>
-    <script src="emulator-saves.js?v=__CACHE_BUST__"></script>
-    <script>
-        document.getElementById('screenshot-btn-emu').addEventListener('click', function() {
-            var canvas = document.querySelector('#game canvas');
-            if (!canvas) { alert('Emulator not loaded yet.'); return; }
-
-            var token = localStorage.getItem('gh_debug_token');
-            if (!token) {
-                token = prompt('Enter your GitHub token (public_repo scope):');
-                if (!token) return;
-                localStorage.setItem('gh_debug_token', token);
+    function streamFetch(url, headers, label) {
+        return fetch(url, { headers: headers || {} }).then(function (resp) {
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            var total = parseInt(resp.headers.get('content-length') || '0', 10);
+            if (resp.body && resp.body.getReader) {
+                var reader = resp.body.getReader();
+                var chunks = [], loaded = 0;
+                function pump() {
+                    return reader.read().then(function (r) {
+                        if (r.done) {
+                            var out = new Uint8Array(loaded), off = 0;
+                            chunks.forEach(function (c) { out.set(c, off); off += c.length; });
+                            return out.buffer;
+                        }
+                        chunks.push(r.value);
+                        loaded += r.value.length;
+                        var mb = (loaded / 1048576).toFixed(1);
+                        if (total) {
+                            var tot = (total / 1048576).toFixed(1);
+                            setProgress(Math.round(loaded / total * 92));
+                            setDl((label || 'Downloading') + '   ' + mb + ' MB / ' + tot + ' MB');
+                        } else {
+                            setDl((label || 'Downloading') + '   ' + mb + ' MB received…');
+                        }
+                        return pump();
+                    });
+                }
+                return pump();
             }
-
-            var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-            var ext = dataUrl.startsWith('data:image/png') ? 'png' : 'jpg';
-            var base64 = dataUrl.replace(/^data:image\/(jpeg|png);base64,/, '');
-            var ts = new Date().toISOString().replace(/[:.]/g, '-');
-            var path = 'screenshots/ee-shot-' + ts + '.' + ext;
-
-            fetch('https://api.github.com/repos/knightdx91-alt/pokemon-game/contents/' + path, {
-                method: 'PUT',
-                headers: { Authorization: 'token ' + token, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: 'ee screenshot ' + ts, content: base64, branch: 'screenshots' })
-            })
-            .then(function(r) {
-                if (!r.ok) return r.text().then(function(t){ var m=t; try{m=JSON.parse(t).message||t;}catch(e){} throw new Error(r.status+': '+m); });
-                var btn = document.getElementById('screenshot-btn-emu');
-                if (btn) { btn.style.color = '#20d840'; setTimeout(function(){ btn.style.color = '#18b8c8'; }, 2000); }
-            })
-            .catch(function(e) { alert('Screenshot error:\n' + e.message); });
+            setDl((label || 'Downloading') + '…  please wait');
+            setProgress(50);
+            return resp.arrayBuffer();
         });
-    </script>
+    }
+
+    function launchEJS(sys, blobUrl, label) {
+        pickerScreen.style.display  = 'none';
+        actionBar.classList.remove('visible');
+        emuScreen.classList.add('visible');
+        emuGameLabel.textContent    = label || sys.label;
+        emuStatus.textContent       = 'Loading emulator core…';
+        window.EJS_player          = '#game';
+        window.EJS_core            = sys.core;
+        window.EJS_gameUrl         = blobUrl;
+        window.EJS_pathtodata      = 'https://cdn.emulatorjs.org/stable/data/';
+        window.EJS_color           = '#18b8c8';
+        window.EJS_backgroundColor = '#060610';
+        window.EJS_startOnLoaded   = true;
+        window.EJS_onGameStart     = function () { emuStatus.textContent = 'Running — ' + (label || sys.label); };
+        window.EJS_Buttons = {
+            playPause: true, restart: true, mute: true, settings: true, fullscreen: true,
+            saveState: true, loadState: true, screenRecord: false, gamepad: true,
+            cheat: false, volume: true, saveSavFiles: true, loadSavFiles: true,
+            quickSave: true, quickLoad: true,
+        };
+        var s = document.createElement('script');
+        s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+        s.onerror = function () { emuStatus.textContent = 'ERROR: Failed to load EmulatorJS CDN.'; };
+        document.body.appendChild(s);
+    }
+
+    function cacheAndLaunch(sys, blob, label) {
+        setDl('Saving to cache…', '#20d840');
+        setProgress(100);
+        openDB().then(function (db) {
+            idbPut(db, sys.id, blob).then(function () {
+                _cachedIds[sys.id] = true;
+                refreshCard(sys.id);
+                launchEJS(sys, URL.createObjectURL(blob), label);
+            });
+        });
+    }
+
+    function openDrivePicker(sys, token) {
+        gapi.load('picker', function () {
+            var picker = new google.picker.PickerBuilder()
+                .addView(
+                    new google.picker.DocsView(google.picker.ViewId.DOCS)
+                        .setMimeTypes('application/octet-stream,application/x-unknown')
+                        .setQuery(sys.exts[0])
+                )
+                .setOAuthToken(token)
+                .setCallback(function (data) {
+                    if (data[google.picker.Response.ACTION] === google.picker.Action.PICKED) {
+                        var doc = data[google.picker.Response.DOCUMENTS][0];
+                        downloadFromDrive(sys, doc[google.picker.Document.ID], doc[google.picker.Document.NAME], token);
+                    }
+                })
+                .build();
+            picker.setVisible(true);
+        });
+    }
+
+    function downloadFromDrive(sys, fileId, fileName, token) {
+        btnDrive.disabled = true;
+        setDl('Starting download: ' + fileName + '…');
+        setProgress(2);
+        var url = 'https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media';
+        streamFetch(url, { 'Authorization': 'Bearer ' + token }, 'Downloading ' + fileName)
+            .then(function (buf) { return new Blob([buf], { type: 'application/octet-stream' }); })
+            .then(function (blob) { cacheAndLaunch(sys, blob, fileName); })
+            .catch(function (err) {
+                setDl('Drive download failed: ' + err.message, '#e84040');
+                btnDrive.disabled = false;
+            });
+    }
+
+    function startDrivePicker() {
+        if (!_selectedSys) return;
+        setDl('Opening Google sign-in…');
+        gapi.load('client', function () {
+            var client = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPE,
+                callback: function (resp) {
+                    if (resp.error) { setDl('Sign-in failed: ' + resp.error, '#e84040'); return; }
+                    _accessToken = resp.access_token;
+                    openDrivePicker(_selectedSys, _accessToken);
+                },
+            });
+            client.requestAccessToken();
+        });
+    }
+
+    function refreshCard(sysId) {
+        var card = document.querySelector('.sys-card[data-id="' + sysId + '"]');
+        if (!card) return;
+        if (_cachedIds[sysId]) card.classList.add('has-cache');
+        else card.classList.remove('has-cache');
+    }
+
+    function selectSystem(sys) {
+        document.querySelectorAll('.sys-card.selected').forEach(function (c) { c.classList.remove('selected'); });
+        var card = document.querySelector('.sys-card[data-id="' + sys.id + '"]');
+        if (card) card.classList.add('selected');
+        _selectedSys = sys;
+        actionBar.classList.add('visible');
+        actionSysName.textContent = sys.label + '  (' + sys.exts.join(', ') + ')';
+        var cached = !!_cachedIds[sys.id];
+        btnPlayCached.style.display = cached ? '' : 'none';
+        btnClear.style.display      = cached ? '' : 'none';
+        btnDrive.disabled           = false;
+        setDl('');
+        setProgress(0);
+        card && card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function buildGrid() {
+        var groups = [], groupMap = {};
+        SYSTEMS.forEach(function (sys) {
+            if (!groupMap[sys.group]) { groupMap[sys.group] = []; groups.push(sys.group); }
+            groupMap[sys.group].push(sys);
+        });
+        var frag = document.createDocumentFragment();
+        groups.forEach(function (g) {
+            var section = document.createElement('div');
+            section.className = 'group-section';
+            var lbl = document.createElement('div');
+            lbl.className = 'group-label';
+            lbl.textContent = g;
+            section.appendChild(lbl);
+            var grid = document.createElement('div');
+            grid.className = 'system-grid';
+            groupMap[g].forEach(function (sys) {
+                var card = document.createElement('div');
+                card.className = 'sys-card' + (_cachedIds[sys.id] ? ' has-cache' : '');
+                card.dataset.id = sys.id;
+                card.innerHTML = '<div class="sys-name">' + sys.label + '</div><div class="sys-exts">' + sys.exts.join('  ') + '</div>';
+                card.addEventListener('click', function () { selectSystem(sys); });
+                grid.appendChild(card);
+            });
+            section.appendChild(grid);
+            frag.appendChild(section);
+        });
+        pickerScreen.appendChild(frag);
+    }
+
+    btnDrive.addEventListener('click', startDrivePicker);
+
+    btnPlayCached.addEventListener('click', function () {
+        if (!_selectedSys) return;
+        setDl('Loading from cache…', '#20d840');
+        openDB().then(function (db) { return idbGet(db, _selectedSys.id); }).then(function (blob) {
+            if (!blob) { setDl('Cache miss — please re-download.', '#e84040'); return; }
+            launchEJS(_selectedSys, URL.createObjectURL(blob), _selectedSys.label + ' (cached)');
+        });
+    });
+
+    btnClear.addEventListener('click', function () {
+        if (!_selectedSys) return;
+        openDB().then(function (db) { return idbDel(db, _selectedSys.id); }).then(function () {
+            delete _cachedIds[_selectedSys.id];
+            refreshCard(_selectedSys.id);
+            btnPlayCached.style.display = 'none';
+            btnClear.style.display      = 'none';
+            setDl('Cache cleared.', '#80d0e8');
+            setProgress(0);
+        });
+    });
+
+    document.getElementById('btn-back-emu').addEventListener('click', function () { location.reload(); });
+
+    openDB().then(function (db) {
+        return idbAllKeys(db).then(function (keys) {
+            keys.forEach(function (k) { _cachedIds[k] = true; });
+            buildGrid();
+        });
+    }).catch(function () { buildGrid(); });
+
+})();
+</script>
 </body>
 </html>
