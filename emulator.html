@@ -17,7 +17,6 @@
             align-items: center;
         }
 
-        /* ── Top bar ── */
         #top-bar {
             width: 100%;
             background: #0d0d0f;
@@ -63,7 +62,6 @@
         }
         .nav-cache-btn:hover { color: #e8e8f0; border-color: #3a3a4a; }
 
-        /* ── Picker screen ── */
         #picker-screen {
             width: 100%;
             max-width: 720px;
@@ -95,33 +93,16 @@
             transition: border-color 0.12s, background 0.12s, box-shadow 0.12s;
             user-select: none;
         }
-        .sys-card:hover {
-            border-color: #3a3a4a;
-            background: #1a1a20;
-        }
+        .sys-card:hover { border-color: #3a3a4a; background: #1a1a20; }
         .sys-card.selected {
             border-color: #7c6af7;
             background: #16142a;
             box-shadow: 0 0 0 1px #7c6af7, 0 0 12px rgba(124,106,247,0.15);
         }
-        .sys-card.has-cache .sys-name::after {
-            content: ' ·';
-            color: #7c6af7;
-        }
-        .sys-name {
-            font-size: 11px;
-            font-weight: 600;
-            color: #c8c8d8;
-            margin-bottom: 3px;
-            line-height: 1.2;
-        }
-        .sys-exts {
-            font-size: 9px;
-            color: #3a3a4a;
-            line-height: 1.3;
-        }
+        .sys-card.has-cache .sys-name::after { content: ' ·'; color: #7c6af7; }
+        .sys-name { font-size: 11px; font-weight: 600; color: #c8c8d8; margin-bottom: 3px; line-height: 1.2; }
+        .sys-exts { font-size: 9px; color: #3a3a4a; line-height: 1.3; }
 
-        /* ── Action bar ── */
         #action-bar {
             position: fixed;
             bottom: 0; left: 0; right: 0;
@@ -137,7 +118,6 @@
             align-items: center;
         }
         #action-bar.visible { display: flex; }
-
         #action-inner {
             width: 100%;
             max-width: 480px;
@@ -145,184 +125,102 @@
             flex-direction: column;
             gap: 8px;
         }
-        #action-sys-name {
-            font-size: 12px;
-            color: #6b6b80;
-            text-align: center;
-        }
-        .action-btns {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+        #action-sys-name { font-size: 12px; color: #6b6b80; text-align: center; }
+        .action-btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
         .btn-primary {
-            background: #7c6af7;
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 10px 20px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            transition: background 0.1s, opacity 0.1s;
-            white-space: nowrap;
+            background: #7c6af7; color: #fff; border: none;
+            border-radius: 10px; padding: 10px 20px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            font-family: inherit; transition: background 0.1s, opacity 0.1s; white-space: nowrap;
         }
         .btn-primary:hover { background: #9080ff; }
         .btn-primary:disabled { opacity: 0.4; cursor: default; }
-
         .btn-ghost {
-            background: none;
-            color: #6b6b80;
-            border: 1px solid #2a2a35;
-            border-radius: 10px;
-            padding: 10px 16px;
-            font-size: 13px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: color 0.1s, border-color 0.1s;
-            white-space: nowrap;
+            background: none; color: #6b6b80; border: 1px solid #2a2a35;
+            border-radius: 10px; padding: 10px 16px; font-size: 13px;
+            cursor: pointer; font-family: inherit;
+            transition: color 0.1s, border-color 0.1s; white-space: nowrap;
         }
         .btn-ghost:hover { color: #e8e8f0; border-color: #3a3a4a; }
         .btn-ghost.danger { color: #e05a5a; border-color: #3a2a2a; }
         .btn-ghost.danger:hover { border-color: #e05a5a; }
         .btn-ghost.play { color: #7c6af7; border-color: #3a3260; }
         .btn-ghost.play:hover { border-color: #7c6af7; }
-
         #dl-status { font-size: 11px; color: #6b6b80; text-align: center; min-height: 14px; }
-        #progress-wrap {
-            width: 100%;
-            height: 3px;
-            background: #1e1e24;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        #progress-fill {
-            height: 100%;
-            width: 0%;
-            background: #7c6af7;
-            border-radius: 2px;
-            transition: width 0.08s linear;
-        }
+        #progress-wrap { width: 100%; height: 3px; background: #1e1e24; border-radius: 2px; overflow: hidden; }
+        #progress-fill { height: 100%; width: 0%; background: #7c6af7; border-radius: 2px; transition: width 0.08s linear; }
 
-        /* ── Cache overlay ── */
         #cache-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            z-index: 100; align-items: center; justify-content: center; padding: 20px;
         }
         #cache-overlay.visible { display: flex; }
         #cache-panel {
-            background: #16161a;
-            border: 1px solid #2a2a35;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 480px;
-            max-height: 75vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            background: #16161a; border: 1px solid #2a2a35; border-radius: 16px;
+            width: 100%; max-width: 480px; max-height: 75vh;
+            display: flex; flex-direction: column; overflow: hidden;
         }
         #cache-header {
-            padding: 16px 20px;
-            border-bottom: 1px solid #1e1e24;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            padding: 16px 20px; border-bottom: 1px solid #1e1e24;
+            display: flex; align-items: center; justify-content: space-between;
         }
         #cache-header span { font-size: 14px; font-weight: 600; color: #e8e8f0; }
         #btn-close-cache {
-            background: none;
-            color: #6b6b80;
-            border: 1px solid #2a2a35;
-            border-radius: 8px;
-            padding: 4px 10px;
-            font-size: 12px;
-            cursor: pointer;
-            font-family: inherit;
+            background: none; color: #6b6b80; border: 1px solid #2a2a35;
+            border-radius: 8px; padding: 4px 10px; font-size: 12px;
+            cursor: pointer; font-family: inherit;
         }
         #btn-close-cache:hover { color: #e8e8f0; }
         #cache-list { overflow-y: auto; flex: 1; }
         .cache-row {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 12px 16px;
+            gap: 10px;
+            padding: 10px 16px;
             border-bottom: 1px solid #1a1a20;
         }
         .cache-row:last-child { border-bottom: none; }
-        .cache-info { flex: 1; min-width: 0; }
-        .cache-sys { font-size: 13px; font-weight: 600; color: #e8e8f0; }
-        .cache-file { font-size: 11px; color: #4a4a5a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
-        .cache-size { font-size: 11px; color: #6b6b80; white-space: nowrap; }
+        /* Play is first child (left), info stretches middle, size + delete on right */
         .btn-play-row {
-            background: #7c6af7;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            padding: 5px 10px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: inherit;
-            flex-shrink: 0;
+            background: #7c6af7; color: #fff; border: none;
+            border-radius: 8px; padding: 8px 12px;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            font-family: inherit; flex-shrink: 0;
             transition: background 0.1s;
             white-space: nowrap;
         }
         .btn-play-row:hover { background: #9080ff; }
+        .cache-info { flex: 1; min-width: 0; }
+        .cache-sys { font-size: 13px; font-weight: 600; color: #e8e8f0; }
+        .cache-file { font-size: 11px; color: #4a4a5a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+        .cache-size { font-size: 11px; color: #6b6b80; white-space: nowrap; }
         .btn-del-row {
-            background: none;
-            color: #4a4a5a;
-            border: 1px solid #2a2a35;
-            border-radius: 6px;
-            padding: 4px 8px;
-            font-size: 11px;
-            cursor: pointer;
-            font-family: inherit;
-            flex-shrink: 0;
+            background: none; color: #4a4a5a; border: 1px solid #2a2a35;
+            border-radius: 6px; padding: 4px 8px; font-size: 11px;
+            cursor: pointer; font-family: inherit; flex-shrink: 0;
             transition: color 0.1s, border-color 0.1s;
         }
         .btn-del-row:hover { color: #e05a5a; border-color: #e05a5a; }
         #cache-empty { padding: 32px; text-align: center; font-size: 13px; color: #4a4a5a; }
 
-        /* ── Emulator screen ── */
         #emu-screen { display: none; width: 100%; max-width: 640px; flex-direction: column; flex: 1; }
         #emu-screen.visible { display: flex; }
         #emu-top {
-            background: #0d0d0f;
-            border-bottom: 1px solid #1e1e24;
-            padding: 0 16px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            background: #0d0d0f; border-bottom: 1px solid #1e1e24;
+            padding: 0 16px; height: 48px; display: flex; align-items: center; gap: 12px;
         }
         #btn-back-emu {
-            background: none;
-            color: #6b6b80;
-            border: 1px solid #2a2a35;
-            border-radius: 8px;
-            padding: 6px 10px;
-            font-size: 12px;
-            cursor: pointer;
-            font-family: inherit;
+            background: none; color: #6b6b80; border: 1px solid #2a2a35;
+            border-radius: 8px; padding: 6px 10px; font-size: 12px;
+            cursor: pointer; font-family: inherit;
         }
         #btn-back-emu:hover { color: #e8e8f0; }
         #emu-game-label { font-size: 13px; color: #6b6b80; }
         #game { width: 100%; min-height: 400px; flex: 1; }
         #emu-status {
-            padding: 8px 16px;
-            font-size: 11px;
-            color: #4a4a5a;
-            background: #0d0d0f;
-            border-top: 1px solid #1e1e24;
+            padding: 8px 16px; font-size: 11px; color: #4a4a5a;
+            background: #0d0d0f; border-top: 1px solid #1e1e24;
         }
     </style>
 </head>
@@ -519,9 +417,7 @@
                 var chunks = [], loaded = 0;
                 function pump() {
                     return reader.read().then(function (r) {
-                        if (r.done) {
-                            return new Blob(chunks, { type: 'application/octet-stream' });
-                        }
+                        if (r.done) { return new Blob(chunks, { type: 'application/octet-stream' }); }
                         chunks.push(r.value);
                         loaded += r.value.length;
                         var mb = (loaded / 1048576).toFixed(1);
@@ -537,8 +433,7 @@
                 }
                 return pump();
             }
-            setDl('Downloading…');
-            setProgress(50);
+            setDl('Downloading…'); setProgress(50);
             return resp.blob();
         });
     }
@@ -644,7 +539,7 @@
         if (!sys) return;
         cacheOverlay.classList.remove('visible');
         openDB().then(function (db) { return idbGet(db, ROM_STORE, id); }).then(function (blob) {
-            if (!blob) { alert('Cache miss for ' + (meta.label || id) + ' — please re-download.'); return; }
+            if (!blob) { alert('Cache miss — please re-download.'); return; }
             launchEJS(sys, URL.createObjectURL(blob), meta.filename || sys.label);
         });
     }
@@ -660,13 +555,14 @@
                 var sys  = SYS_BY_ID[id] || {};
                 var row  = document.createElement('div');
                 row.className = 'cache-row';
+                // Layout: [▶ Play] [name/file — stretches] [size] [Delete]
                 row.innerHTML =
+                    '<button class="btn-play-row">▶ Play</button>' +
                     '<div class="cache-info">' +
                         '<div class="cache-sys">' + (meta.label || sys.label || id) + '</div>' +
                         '<div class="cache-file">' + (meta.filename || 'unknown') + '</div>' +
                     '</div>' +
                     '<div class="cache-size">' + (meta.size ? fmtMB(meta.size) : '—') + '</div>' +
-                    '<button class="btn-play-row">▶ Play</button>' +
                     '<button class="btn-del-row">Delete</button>';
                 row.querySelector('.btn-play-row').addEventListener('click', function () {
                     playFromCache(id);
