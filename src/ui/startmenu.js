@@ -2564,17 +2564,17 @@ window.GameStartMenu = (function () {
                     var _pOpts = ['Details', 'Item', 'Cancel'];
                     var _pOpt  = _pOpts[_partyActionSel] || 'Cancel';
                     if (_pOpt === 'Cancel') {
-                        _partyActionOpen = false; _render();
+                        _partyActionOpen = false; _redrawPageEl();
                     } else if (_pOpt === 'Details') {
                         _partyActionOpen = false;
-                        _openPartySummary(_partyActionMon, _partyActionIdx, _pFilled, function(){ _render(); });
+                        _openPartySummary(_partyActionMon, _partyActionIdx, _pFilled, function(){ _redrawPageEl(); });
                     }
                 } else if (_pFilled[_subIdx]) {
                     _partyActionMon  = _pFilled[_subIdx];
                     _partyActionIdx  = _subIdx;
                     _partyActionSel  = 0;
                     _partyActionOpen = true;
-                    _render();
+                    _redrawPageEl();
                 }
             }
             return;
@@ -2627,16 +2627,16 @@ window.GameStartMenu = (function () {
     function moveUp() {
         if (!isOpen||page==='main') return;
         if (page==='pokemon' && _partyActionOpen) {
-            _partyActionSel = (_partyActionSel - 1 + 3) % 3; _render(); return;
+            _partyActionSel = (_partyActionSel - 1 + 3) % 3; _redrawPageEl(); return;
         }
-        const c=_subCount(); if(c>0){_subIdx=(_subIdx-1+c)%c; if(page==='journal'){_redrawPageEl();}else{_render();}}
+        const c=_subCount(); if(c>0){_subIdx=(_subIdx-1+c)%c; if(page==='journal'||page==='pokemon'){_redrawPageEl();}else{_render();}}
     }
     function moveDown() {
         if (!isOpen||page==='main') return;
         if (page==='pokemon' && _partyActionOpen) {
-            _partyActionSel = (_partyActionSel + 1) % 3; _render(); return;
+            _partyActionSel = (_partyActionSel + 1) % 3; _redrawPageEl(); return;
         }
-        const c=_subCount(); if(c>0){_subIdx=(_subIdx+1)%c; if(page==='journal'){_redrawPageEl();}else{_render();}}
+        const c=_subCount(); if(c>0){_subIdx=(_subIdx+1)%c; if(page==='journal'||page==='pokemon'){_redrawPageEl();}else{_render();}}
     }
     function _subCount() {
         if (page==='journal') {
@@ -2673,7 +2673,7 @@ window.GameStartMenu = (function () {
     function confirm() { if(isOpen) _confirmSelected(); }
     function back()    {
         if (!isOpen) return;
-        if (page==='pokemon' && _partyActionOpen) { _partyActionOpen=false; _render(); return; }
+        if (page==='pokemon' && _partyActionOpen) { _partyActionOpen=false; _redrawPageEl(); return; }
         if (page==='main') close(); else _goBack();
     }
 
