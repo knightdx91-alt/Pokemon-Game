@@ -1314,8 +1314,10 @@ window.GameStartMenu = (function () {
 
     function _getParty() {
         var party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
-        if (!party.some(Boolean) && window.GameSave && GameSave.DEFAULT_POKEMON) {
-            party = [Object.assign(GameSave.DEFAULT_POKEMON(), {
+        if (!party.some(Boolean)) {
+            // Fallback starter so the party screen always shows something
+            var base = (window.GameSave && GameSave.DEFAULT_POKEMON) ? GameSave.DEFAULT_POKEMON() : {};
+            party = [Object.assign(base, {
                 speciesId: 4, nickname: 'CHARMANDER', level: 5, gender: 'M',
                 currentHp: 19, maxHp: 19, moves: ['Scratch', 'Growl', null, null],
                 caughtLevel: 5, exp: 35
@@ -1345,23 +1347,38 @@ window.GameStartMenu = (function () {
         ctx.imageSmoothingEnabled = false;
 
         var _iconImgs = [];
+        var _frontImg = null; // front sprite for slot 0
 
         function redraw() {
             _loadPartyBg(function(bg) {
-                _drawPartyCanvas(ctx, bg, _iconImgs);
+                _drawPartyCanvas(ctx, bg, _iconImgs, _frontImg);
+            });
+        }
+
+        function _loadFrontSprite(speciesId, cb) {
+            _getPokedexNumMap(function(map) {
+                var name = map[speciesId];
+                if (!name) { cb(null); return; }
+                var path = 'data/sprites/pokemon/front/' + name + '.png';
+                var img = new Image();
+                img.onload = function() { cb(img); };
+                img.onerror = function() { cb(null); };
+                img.src = path;
             });
         }
 
         function loadIconsAndDraw() {
-            var filled = _getParty().filter(Boolean);
+            var party = _getParty();
+            var filled = party.filter(Boolean);
             _iconImgs = new Array(filled.length).fill(null);
+            _frontImg = null;
             if (!filled.length) { redraw(); return; }
-            var pending = filled.length;
+            var pending = filled.length + 1; // +1 for front sprite
+            function done() { if (--pending === 0) redraw(); }
+            // Load front sprite for slot 0
+            _loadFrontSprite(filled[0].speciesId, function(img) { _frontImg = img; done(); });
             filled.forEach(function(mon, i) {
-                _loadMonIcon(mon.speciesId, function(img) {
-                    _iconImgs[i] = img;
-                    if (--pending === 0) redraw();
-                });
+                _loadMonIcon(mon.speciesId, function(img) { _iconImgs[i] = img; done(); });
             });
         }
 
@@ -1465,36 +1482,45 @@ window.GameStartMenu = (function () {
         win.appendChild(backBtn);
     }
 
-    function _drawPartyCanvas(ctx, bg, iconImgs) {
+    function _drawPartyCanvas(ctx, bg, iconImgs, frontImg) {
         var S = PARTY_S; // 2
         var _tc = _getThemeColors();
         var COL_TEXT = _tc.text, COL_DIM = _tc.dim, COL_CYAN = _tc.hi;
-        var COL_BOX  = '#0c1020', COL_SEL = 'rgba(24,184,200,0.22)';
+        var COL_SLOT0  = '#1a3a1a'; // green card for lead Pokémon (EE style)
+        var COL_SLOT0S = '#2a5a2a'; // selected lead
+        var COL_BOX    = '#101828'; // grey-blue for slots 1-5
+        var COL_BOXS   = '#182840'; // selected slot 1-5
         var STATUS_COLOR = { PAR:'#e8c000', BRN:'#e85020', PSN:'#a820e8', FRZ:'#18c8e8', SLP:'#888888', FNT:'#e83020' };
 
-        // Clear to dark background
-        ctx.fillStyle = '#050510';
+        // Green-tinted background (EE party screen is outdoorsy/green)
+        ctx.fillStyle = '#0a180a';
         ctx.fillRect(0, 0, PARTY_W, PARTY_H);
+        // subtle green gradient overlay on left panel
+        var grad = ctx.createLinearGradient(0, 0, 0, PARTY_H);
+        grad.addColorStop(0, 'rgba(20,60,20,0.6)');
+        grad.addColorStop(1, 'rgba(10,30,10,0.3)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 88*S, PARTY_H);
 
         var party  = _getParty();
         var filled = party.filter(Boolean);
         ctx.textBaseline = 'top';
         ctx.imageSmoothingEnabled = false;
 
-        // ── Helper: draw a GBA-style slot box (cyan border on dark bg)
-        function drawBox(x, y, w, h, selected) {
-            ctx.fillStyle = selected ? COL_SEL : COL_BOX;
+        // ── Helper: draw a GBA-style slot box
+        function drawBox(x, y, w, h, selected, isLead) {
+            var bg = isLead ? (selected ? COL_SLOT0S : COL_SLOT0) : (selected ? COL_BOXS : COL_BOX);
+            ctx.fillStyle = bg;
             ctx.fillRect(x*S, y*S, w*S, h*S);
-            // Outer border
-            ctx.strokeStyle = selected ? COL_CYAN : '#1a3050';
+            ctx.strokeStyle = selected ? COL_CYAN : (isLead ? '#2a6030' : '#1a3050');
             ctx.lineWidth = S;
             ctx.strokeRect(x*S + S/2, y*S + S/2, w*S - S, h*S - S);
             if (selected) {
-                // Left accent bar
                 ctx.fillStyle = COL_CYAN;
                 ctx.fillRect(x*S, y*S, 2*S, h*S);
             }
         }
+
 
         // ── Helper: HP bar  (EE: 48px wide, 3px tall, trough + fill)
         function drawHpBar(x, y, w, pct) {
@@ -1518,12 +1544,12 @@ window.GameStartMenu = (function () {
 
         // ── Helper: draw one party slot (reused for all 6)
         function drawSlot(mon, iconImg, winX, winY, winW, winH, nickX, nickY, lvX, lvY, genX, genY, hpBarX, hpBarY, hpNumX, hpNumY, iconX, iconY, isLarge, isSel) {
-            drawBox(winX, winY, winW, winH, isSel);
+            drawBox(winX, winY, winW, winH, isSel, isLarge);
 
             if (!mon) {
-                ctx.fillStyle = '#333355';
-                ctx.font = (6*S)+'px monospace';
-                ctx.fillText('—', (winX+4)*S, (winY+winH/2-3)*S);
+                ctx.fillStyle = '#223322';
+                ctx.font = (5*S)+'px monospace';
+                ctx.fillText('Empty', (winX+4)*S, (winY+winH/2-3)*S);
                 return;
             }
 
@@ -1561,27 +1587,23 @@ window.GameStartMenu = (function () {
                 ctx.fillText('['+mon.statusCondition+']', (winX+2)*S, (winY+winH-8)*S);
             }
 
-            // Pokémon icon — drawn last (on top) per EE OBJ layer order
+            // Pokémon sprite — front sprite for lead (larger), icon for others
             if (iconImg) {
-                ctx.drawImage(iconImg, iconX*S, iconY*S, 32*S, 32*S);
+                var sprSz = isLarge ? 40 : 32; // front sprite drawn larger in lead slot
+                ctx.drawImage(iconImg, iconX*S, iconY*S, sprSz*S, sprSz*S);
             }
         }
 
-        // ── SLOT 0  (large left box)
-        // Window:  GBA (8, 24, 80, 56)
-        // Text fields from EE sPartyBoxInfoRects[LEFT_COLUMN] + window origin (8,24):
-        //   Nickname abs (32, 35)  Level abs (40, 44)  Gender abs (72, 44)
-        //   HP bar abs (32, 59) w=48  HP numbers abs (36, 61) / (56, 61)
-        // Icon sprite: EE sPartyMenuSpriteCoords[0] = center (16, 40) → 32×32 top-left (0, 24)
+        // ── SLOT 0  (large left box) — use front sprite
         var mon0 = filled[0] || null;
-        drawSlot(mon0, iconImgs && iconImgs[0],
-            /*win*/  8, 24, 80, 56,
-            /*nick*/ 32, 35,
-            /*lv*/   40, 44,
-            /*gen*/  72, 44,
-            /*hpBar*/32, 59,
-            /*hpNum*/36, 61,
-            /*icon*/ 0, 24,   // top-left of 32×32 = center(16,40) − 16
+        drawSlot(mon0, frontImg || (iconImgs && iconImgs[0]),
+            /*win*/  8, 8, 80, 104,
+            /*nick*/ 14, 10,
+            /*lv*/   14, 22,
+            /*gen*/  60, 22,
+            /*hpBar*/14, 34,
+            /*hpNum*/14, 40,
+            /*icon*/ 4, 52,   // front sprite in lower half of tall slot
             true, _subIdx === 0);
 
         // ── SLOTS 1–5  (right column strips)
