@@ -60,6 +60,28 @@
             background: #0a1830;
             border-top: 1px solid #18b8c8;
             min-height: 24px;
+            word-break: break-all;
+        }
+        #debug-bar {
+            width: 100%;
+            max-width: 800px;
+            background: #060610;
+            border-top: 1px solid #222;
+            padding: 5px 10px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .dbg-btn {
+            background: #0a1830;
+            color: #e8c000;
+            border: 1px solid #e8c000;
+            border-radius: 3px;
+            padding: 3px 9px;
+            font-size: 11px;
+            font-family: "Courier New", Courier, monospace;
+            cursor: pointer;
+            touch-action: manipulation;
         }
     </style>
 </head>
@@ -72,6 +94,10 @@
     <div id="emu-wrap">
         <div id="game"></div>
         <div id="status">Initialising…</div>
+    </div>
+    <div id="debug-bar">
+        <button class="dbg-btn" id="btn-clear-cache">🗑 Clear ROM Cache &amp; Retry</button>
+        <button class="dbg-btn" id="btn-reset-token">🔑 Reset Token</button>
     </div>
 
     <script>
@@ -145,6 +171,41 @@
                     setStatus('ERROR: Service worker failed: ' + e.message, '#e84040');
                 });
             }
+
+            // Listen for error messages posted back from the SW
+            navigator.serviceWorker && navigator.serviceWorker.addEventListener('message', function(e) {
+                if (e.data && e.data.type === 'ROM_FETCH_ERROR') {
+                    setStatus('ROM fetch failed — ' + e.data.msg, '#e84040');
+                }
+            });
+
+            // Clear ROM cache button — wipes cached ROM and reloads
+            document.getElementById('btn-clear-cache').addEventListener('click', function() {
+                setStatus('Clearing ROM cache…', '#e8c000');
+                if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_ROM_CACHE' });
+                    navigator.serviceWorker.addEventListener('message', function handler(e) {
+                        if (e.data && e.data.type === 'ROM_CACHE_CLEARED') {
+                            navigator.serviceWorker.removeEventListener('message', handler);
+                            setStatus('Cache cleared — reloading…', '#20d840');
+                            setTimeout(function() { location.reload(); }, 800);
+                        }
+                    });
+                } else {
+                    // Fallback: delete via caches API directly
+                    caches.delete('pokemon-black-rom-v1').then(function() {
+                        setStatus('Cache cleared — reloading…', '#20d840');
+                        setTimeout(function() { location.reload(); }, 800);
+                    });
+                }
+            });
+
+            // Reset token button
+            document.getElementById('btn-reset-token').addEventListener('click', function() {
+                localStorage.removeItem('gh_debug_token');
+                setStatus('Token cleared — reloading…', '#e8c000');
+                setTimeout(function() { location.reload(); }, 600);
+            });
 
             window.addEventListener('error', function(e) {
                 setStatus('Error: ' + e.message + ' (' + (e.filename || '') + ':' + e.lineno + ')');
