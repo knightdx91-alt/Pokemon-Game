@@ -2374,7 +2374,7 @@ window.GameStartMenu = (function () {
     function _confirmSelected() {
         if (page!=='main') {
             if (page==='save') { const a=['save','load']; _doSaveAction(a[_subIdx]||'save'); }
-            else if (page==='journal') { page='achievements'; _achTier=0; _achOffset=0; _subIdx=0; _render(); }
+            else if (page==='journal') { /* A does nothing in journal — navigate with L/R and up/down */ }
             else if (page==='pokedex' && _dexList && _dexList[_subIdx]) {
                 _dexEntry = _dexList[_subIdx];
                 page = 'pokedex_entry'; _subIdx = 0; _render();
@@ -2449,17 +2449,30 @@ window.GameStartMenu = (function () {
         if (page==='pokemon' && _partyActionOpen) {
             _partyActionSel = (_partyActionSel - 1 + 3) % 3; _render(); return;
         }
-        const c=_subCount(); if(c>0){_subIdx=(_subIdx-1+c)%c;_render();}
+        const c=_subCount(); if(c>0){_subIdx=(_subIdx-1+c)%c; if(page==='journal'){_redrawPageEl();}else{_render();}}
     }
     function moveDown() {
         if (!isOpen||page==='main') return;
         if (page==='pokemon' && _partyActionOpen) {
             _partyActionSel = (_partyActionSel + 1) % 3; _render(); return;
         }
-        const c=_subCount(); if(c>0){_subIdx=(_subIdx+1)%c;_render();}
+        const c=_subCount(); if(c>0){_subIdx=(_subIdx+1)%c; if(page==='journal'){_redrawPageEl();}else{_render();}}
     }
     function _subCount() {
-        if (page==='journal') return 0;  // journal uses L/R page flip, not up/down
+        if (page==='journal') {
+            if (_journalTab === 1) { // Ach. Atlas — scroll list
+                var all = window.GameAchievements ? GameAchievements.getAll() : [];
+                var tierKeys = [null,'platinum','gold','silver','bronze'];
+                return _achTier === 0 ? all.length : all.filter(function(a){return a.tier===tierKeys[_achTier];}).length;
+            }
+            if (_journalTab === 2) { // Powers — scroll list
+                if (!window.GameAchievements) return 0;
+                var tierName = ['platinum','gold','silver','copper'][_powersPage] || 'platinum';
+                return GameAchievements.getAll().filter(function(a){return a.tier===tierName;}).length;
+            }
+            if (_journalTab === 3) return 0; // Quests (no scroll yet)
+            return 0; // Factions uses L/R
+        }
         if (page==='save')    return 2;
         if (page==='pokenav') return 5;  // Map, Condition, Ribbons, Match Call, Close
         if (page==='options') return 21; // 18 EE options + 3 engine extras
