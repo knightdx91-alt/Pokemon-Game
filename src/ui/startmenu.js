@@ -1358,12 +1358,40 @@ window.GameStartMenu = (function () {
         ctx.imageSmoothingEnabled = false;
 
         var _iconImgs = [];
-        var _frontImg = null; // front sprite for slot 0
+        var _frontImg = null; // front sprite for slot 0 (transparency-processed)
+        var _bgImg    = null; // cached background
 
+        // Strip the top-left corner colour (GBA transparent index) from a sprite image.
+        // Returns a canvas element usable with drawImage.
+        function _stripBg(img) {
+            if (!img) return null;
+            var oc = document.createElement('canvas');
+            oc.width = img.width; oc.height = img.height;
+            var ox = oc.getContext('2d');
+            ox.imageSmoothingEnabled = false;
+            ox.drawImage(img, 0, 0);
+            var d = ox.getImageData(0, 0, oc.width, oc.height);
+            // Sample top-left pixel as the transparent colour
+            var tr = d.data[0], tg = d.data[1], tb = d.data[2];
+            // Only strip if the corner is actually opaque (not already transparent)
+            if (d.data[3] > 0) {
+                for (var i = 0; i < d.data.length; i += 4) {
+                    if (d.data[i] === tr && d.data[i+1] === tg && d.data[i+2] === tb) {
+                        d.data[i+3] = 0;
+                    }
+                }
+                ox.putImageData(d, 0, 0);
+            }
+            return oc;
+        }
+
+        // Fast redraw — uses already-loaded images, no async. Use for action menu / cursor changes.
         function redraw() {
-            _loadPartyBg(function(bg) {
-                _drawPartyCanvas(ctx, bg, _iconImgs, _frontImg);
-            });
+            if (_bgImg !== undefined) {
+                _drawPartyCanvas(ctx, _bgImg, _iconImgs, _frontImg);
+            } else {
+                _loadPartyBg(function(bg) { _bgImg = bg; _drawPartyCanvas(ctx, bg, _iconImgs, _frontImg); });
+            }
         }
 
         function _loadFrontSprite(speciesId, cb) {
@@ -1372,7 +1400,7 @@ window.GameStartMenu = (function () {
                 if (!name) { cb(null); return; }
                 var path = 'data/sprites/pokemon/front/' + name + '.png';
                 var img = new Image();
-                img.onload = function() { cb(img); };
+                img.onload = function() { cb(_stripBg(img)); };
                 img.onerror = function() { cb(null); };
                 img.src = path;
             });
@@ -1386,57 +1414,62 @@ window.GameStartMenu = (function () {
             if (!filled.length) { redraw(); return; }
             var pending = filled.length + 1; // +1 for front sprite
             function done() { if (--pending === 0) redraw(); }
-            // Load front sprite for slot 0
+            // Load front sprite for slot 0 (with transparency strip)
             _loadFrontSprite(filled[0].speciesId, function(img) { _frontImg = img; done(); });
+            // Load icons — also strip background
             filled.forEach(function(mon, i) {
-                _loadMonIcon(mon.speciesId, function(img) { _iconImgs[i] = img; done(); });
+                _loadMonIcon(mon.speciesId, function(img) { _iconImgs[i] = _stripBg(img); done(); });
             });
         }
 
         el._redraw = loadIconsAndDraw;
+        // Expose fast redraw for action-menu state changes (no image reload needed)
+        el._redrawFast = redraw;
         loadIconsAndDraw();
 
         canvas.addEventListener('click', function(e) {
             var rect = canvas.getBoundingClientRect();
-            // Map to GBA coords: canvas is 480×320, drawn at S=2 → divide by S
+            // Map to GBA coords
             var gx = (e.clientX - rect.left) * (PARTY_W / rect.width)  / PARTY_S;
             var gy = (e.clientY - rect.top)  * (PARTY_H / rect.height) / PARTY_S;
-                var filled = _getParty().filter(Boolean);
+            var filled = _getParty().filter(Boolean);
 
-                // If action menu is open, handle its clicks
-                if (_partyActionOpen) {
-                    var opts = ['Details', 'Item', 'Cancel'];
-                    var ax = 130, ay = 50, aw = 100, ah = 14;
-                    for (var oi = 0; oi < opts.length; oi++) {
-                        if (gx >= ax && gx < ax+aw && gy >= ay+oi*ah && gy < ay+(oi+1)*ah) {
-                            if (opts[oi] === 'Cancel') {
-                                _partyActionOpen = false; redraw();
-                            } else if (opts[oi] === 'Details') {
-                                _partyActionOpen = false;
-                                _openPartySummary(_partyActionMon, _partyActionIdx, filled, loadIconsAndDraw);
-                            }
-                            return;
+            // Action menu open — handle its clicks
+            if (_partyActionOpen) {
+                // Menu is drawn at ax=130, ay=48, rowH=14, 3 rows with 3px top padding
+                var ax = 130, ay = 51, aw = 102, rowH = 14;
+                var opts = ['Details', 'Item', 'Cancel'];
+                for (var oi = 0; oi < opts.length; oi++) {
+                    var ry = ay + oi * rowH;
+                    if (gx >= ax && gx < ax+aw && gy >= ry && gy < ry+rowH) {
+                        if (opts[oi] === 'Cancel') {
+                            _partyActionOpen = false; redraw();
+                        } else if (opts[oi] === 'Details') {
+                            _partyActionOpen = false;
+                            _openPartySummary(_partyActionMon, _partyActionIdx, filled, loadIconsAndDraw);
                         }
+                        return;
                     }
-                    _partyActionOpen = false; redraw(); return;
                 }
+                _partyActionOpen = false; redraw(); return;
+            }
 
-                // Slot 0: GBA x=8..87, y=24..79
-                if (gx >= 8 && gx < 88 && gy >= 24 && gy < 80 && filled[0]) {
-                    _partyActionMon = filled[0]; _partyActionIdx = 0;
+            // Slot 0 large box: GBA x=8..87, y=8..111
+            if (gx >= 8 && gx < 88 && gy >= 8 && gy < 112 && filled[0]) {
+                _partyActionMon = filled[0]; _partyActionIdx = 0;
+                _partyActionOpen = true; redraw(); return;
+            }
+            // Slots 1-5 right column: GBA x=96..239
+            for (var si = 1; si < 6; si++) {
+                var sy = 8 + (si - 1) * 24;
+                if (gx >= 96 && gx < 240 && gy >= sy && gy < sy+24 && filled[si]) {
+                    _partyActionMon = filled[si]; _partyActionIdx = si;
                     _partyActionOpen = true; redraw(); return;
                 }
-                // Slots 1-5: GBA x=96..239
-                for (var si = 1; si < 6; si++) {
-                    var sy = 8 + (si - 1) * 24;
-                    if (gx >= 96 && gx < 240 && gy >= sy && gy < sy+24 && filled[si]) {
-                        _partyActionMon = filled[si]; _partyActionIdx = si;
-                        _partyActionOpen = true; redraw(); return;
-                    }
-                }
-                // Cancel bar: GBA y=120..151
-                if (gy >= 120 && gy < 152) { _goBack(); }
-            });
+            }
+            // Cancel bar: GBA y=120..159
+            if (gy >= 120) { _goBack(); }
+        });
     }
 
     function _openPartySummary(mon, idx, filled, returnCb) {
@@ -2575,7 +2608,7 @@ window.GameStartMenu = (function () {
                     var _pOpts = ['Details', 'Item', 'Cancel'];
                     var _pOpt  = _pOpts[_partyActionSel] || 'Cancel';
                     if (_pOpt === 'Cancel') {
-                        _partyActionOpen = false; _redrawPageEl();
+                        _partyActionOpen = false; _redrawPageEl(true);
                     } else if (_pOpt === 'Details') {
                         _partyActionOpen = false;
                         _openPartySummary(_partyActionMon, _partyActionIdx, _pFilled, function(){ _redrawPageEl(); });
@@ -2585,7 +2618,7 @@ window.GameStartMenu = (function () {
                     _partyActionIdx  = _subIdx;
                     _partyActionSel  = 0;
                     _partyActionOpen = true;
-                    _redrawPageEl();
+                    _redrawPageEl(true);
                 }
             }
             return;
@@ -2618,9 +2651,11 @@ window.GameStartMenu = (function () {
     }
     function toggle() { if(isOpen) close(); else open(); }
 
-    function _redrawPageEl() {
+    function _redrawPageEl(fast) {
         var el = subEl && subEl._pageEl;
-        if (el && typeof el._redraw === 'function') { el._redraw(); return true; }
+        if (!el) return false;
+        if (fast && typeof el._redrawFast === 'function') { el._redrawFast(); return true; }
+        if (typeof el._redraw === 'function') { el._redraw(); return true; }
         return false;
     }
     function moveLeft() {
@@ -2638,16 +2673,16 @@ window.GameStartMenu = (function () {
     function moveUp() {
         if (!isOpen||page==='main') return;
         if (page==='pokemon' && _partyActionOpen) {
-            _partyActionSel = (_partyActionSel - 1 + 3) % 3; _redrawPageEl(); return;
+            _partyActionSel = (_partyActionSel - 1 + 3) % 3; _redrawPageEl(true); return;
         }
-        const c=_subCount(); if(c>0){_subIdx=(_subIdx-1+c)%c; if(page==='journal'||page==='pokemon'){_redrawPageEl();}else{_render();}}
+        const c=_subCount(); if(c>0){_subIdx=(_subIdx-1+c)%c; if(page==='journal'||page==='pokemon'){_redrawPageEl(true);}else{_render();}}
     }
     function moveDown() {
         if (!isOpen||page==='main') return;
         if (page==='pokemon' && _partyActionOpen) {
-            _partyActionSel = (_partyActionSel + 1) % 3; _redrawPageEl(); return;
+            _partyActionSel = (_partyActionSel + 1) % 3; _redrawPageEl(true); return;
         }
-        const c=_subCount(); if(c>0){_subIdx=(_subIdx+1)%c; if(page==='journal'||page==='pokemon'){_redrawPageEl();}else{_render();}}
+        const c=_subCount(); if(c>0){_subIdx=(_subIdx+1)%c; if(page==='journal'||page==='pokemon'){_redrawPageEl(true);}else{_render();}}
     }
     function _subCount() {
         if (page==='journal') {
@@ -2684,7 +2719,7 @@ window.GameStartMenu = (function () {
     function confirm() { if(isOpen) _confirmSelected(); }
     function back()    {
         if (!isOpen) return;
-        if (page==='pokemon' && _partyActionOpen) { _partyActionOpen=false; _redrawPageEl(); return; }
+        if (page==='pokemon' && _partyActionOpen) { _partyActionOpen=false; _redrawPageEl(true); return; }
         if (page==='main') close(); else _goBack();
     }
 
