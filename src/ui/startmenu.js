@@ -720,9 +720,11 @@ window.GameStartMenu = (function () {
     function _drawJournalAchAtlas(ctx, S, CYAN, TEXT, DIM) {
         // AP counter top-right
         var ap = _ap();
+        var allForAP = window.GameAchievements ? GameAchievements.getAll() : [];
+        var maxAP = allForAP.reduce(function(s,a){ return s + (a.apReward||0); }, 0);
         ctx.font = (7*S) + 'px monospace';
         ctx.textBaseline = 'top';
-        var apStr = ap + ' / ' + _maxAP() + ' AP';
+        var apStr = ap + ' / ' + maxAP + ' AP';
         var apW = ctx.measureText(apStr).width;
         ctx.fillStyle = CYAN;
         ctx.fillText(apStr, GBA_W - apW - 4*S, 19*S);
