@@ -39,9 +39,18 @@ window.GameStartMenu = (function () {
 
     function _loadSimpleBg(src, storeRef, cb) {
         if (storeRef.val !== undefined) { cb(storeRef.val); return; }
+        // Queue callback if already loading to prevent concurrent loads firing twice
+        if (storeRef.loading) { (storeRef.queue = storeRef.queue || []).push(cb); return; }
+        storeRef.loading = true;
         var img = new Image();
-        img.onload  = function() { storeRef.val = img; cb(img); };
-        img.onerror = function() { storeRef.val = null; cb(null); };
+        var _done = function(v) {
+            storeRef.val = v; storeRef.loading = false;
+            cb(v);
+            (storeRef.queue || []).forEach(function(f){ f(v); });
+            storeRef.queue = [];
+        };
+        img.onload  = function() { _done(img); };
+        img.onerror = function() { _done(null); };
         img.src = src;
     }
     // Wrapper objects so we can pass by reference
@@ -589,7 +598,13 @@ window.GameStartMenu = (function () {
         var BG    = '#000000';
         var TITLEBG = '#0a1830';
 
+        // Hard reset canvas state before every draw
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.shadowBlur = 0;
+        ctx.shadowColor = 'transparent';
         ctx.imageSmoothingEnabled = false;
+        ctx.clearRect(0, 0, GBA_W, GBA_H);
         ctx.fillStyle = BG;
         ctx.fillRect(0, 0, GBA_W, GBA_H);
         ctx.textBaseline = 'top';
