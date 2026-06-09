@@ -136,6 +136,125 @@
     }
 
     // ---------------------------------------------------------------
+    // ---------------------------------------------------------------
+    // Region travel via bedroom PC
+    // ---------------------------------------------------------------
+    const REGION_DESTINATIONS = [
+        { label: 'Kanto',  region: 'kanto',  map: 'PalletTown_PlayersHouse_2F',          x: 6, y: 7 },
+        { label: 'Hoenn',  region: 'hoenn',  map: 'LittlerootTown_BrendansHouse_2F',      x: 4, y: 7 },
+        { label: 'Sinnoh', region: 'sinnoh', map: 'twinleaf_town_player_house_2f',        x: 4, y: 6 },
+    ];
+
+    // PC tile positions per map (tile the player faces to use the PC)
+    const BEDROOM_PC_TILES = {
+        'PalletTown_PlayersHouse_2F':          { x: 11, y: 1 },
+        'LittlerootTown_BrendansHouse_2F':     { x: 6,  y: 1 },
+        'twinleaf_town_player_house_2f':       { x: 7,  y: 1 },
+    };
+
+    let _regionMenuOpen = false;
+    let _regionMenuSel  = 0;
+
+    function _openRegionMenu() {
+        if (_regionMenuOpen) return;
+        _regionMenuOpen = true;
+        _regionMenuSel  = 0;
+
+        var screen = document.getElementById('screen-primary');
+        if (!screen) { _regionMenuOpen = false; return; }
+
+        var ov = document.createElement('div');
+        ov.id = 'region-select-overlay';
+        ov.style.cssText = 'position:absolute;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;pointer-events:all;';
+
+        var win = document.createElement('div');
+        win.style.cssText = [
+            'background:#060610',
+            'border:1px solid #000',
+            'box-shadow:0 0 0 3px #18b8c8,0 0 0 4px #000,inset 0 0 0 1px #002830',
+            'border-radius:4px',
+            'width:54%',
+            'font-family:"Courier New",Courier,monospace',
+            'font-size:11px',
+            'color:#c8d8e8',
+            'overflow:hidden',
+        ].join(';');
+
+        var title = document.createElement('div');
+        title.textContent = 'PC — REGION TRAVEL';
+        title.style.cssText = 'background:#0a1830;color:#80d0e8;border-bottom:1px solid #18b8c8;padding:4px 8px;font-size:10px;letter-spacing:1px;';
+        win.appendChild(title);
+
+        function renderRows() {
+            var body = win.querySelector('.rg-body');
+            if (!body) { body = document.createElement('div'); body.className = 'rg-body'; win.appendChild(body); }
+            body.innerHTML = '';
+            REGION_DESTINATIONS.forEach(function(dest, i) {
+                var row = document.createElement('div');
+                var isCurrent = dest.region === currentRegion;
+                row.style.cssText = 'padding:5px 10px;display:flex;align-items:center;gap:6px;cursor:pointer;' +
+                    (i === _regionMenuSel ? 'background:rgba(24,184,200,0.15);' : '');
+                row.innerHTML = (i === _regionMenuSel ? '<span style="color:#18b8c8">▶</span>' : '<span style="opacity:0">▶</span>') +
+                    '<span>' + dest.label + '</span>' +
+                    (isCurrent ? '<span style="color:#446;font-size:9px;margin-left:auto">HERE</span>' : '');
+                row.addEventListener('click', function() { _regionMenuSel = i; _confirmRegion(); });
+                body.appendChild(row);
+            });
+            var cancel = document.createElement('div');
+            cancel.style.cssText = 'padding:5px 10px;display:flex;align-items:center;gap:6px;cursor:pointer;border-top:1px solid #0a1830;' +
+                (_regionMenuSel === REGION_DESTINATIONS.length ? 'background:rgba(24,184,200,0.15);' : '');
+            cancel.innerHTML = (_regionMenuSel === REGION_DESTINATIONS.length ? '<span style="color:#18b8c8">▶</span>' : '<span style="opacity:0">▶</span>') +
+                '<span style="color:#80d0e8">Cancel</span>';
+            cancel.addEventListener('click', _closeRegionMenu);
+            body.appendChild(cancel);
+        }
+
+        renderRows();
+        ov.appendChild(win);
+        screen.appendChild(ov);
+        ov._renderRows = renderRows;
+    }
+
+    function _closeRegionMenu() {
+        _regionMenuOpen = false;
+        var ov = document.getElementById('region-select-overlay');
+        if (ov) ov.remove();
+    }
+
+    async function _confirmRegion() {
+        if (_regionMenuSel >= REGION_DESTINATIONS.length) { _closeRegionMenu(); return; }
+        var dest = REGION_DESTINATIONS[_regionMenuSel];
+        _closeRegionMenu();
+        currentRegion = dest.region;
+        _transitioning = true;
+        try {
+            await GameMap.load(dest.map, dest.region);
+            player.x = dest.x;
+            player.y = dest.y;
+            player.direction = 'down';
+            const w = GameMap.width, h = GameMap.height;
+            GameCamera.update(player.x, player.y, w, h);
+            if (window.GameRenderer) GameRenderer.drawMap();
+            if (window.GameHUD) GameHUD.update();
+            if (window.GameSave) GameSave.markDirty();
+            _warpCooldownUntil = performance.now() + 800;
+        } finally {
+            _transitioning = false;
+        }
+    }
+
+    function _handleRegionMenuInput() {
+        const ip = GameInput.justPressed;
+        const total = REGION_DESTINATIONS.length + 1; // +1 for Cancel
+        if (ip.up)    { _regionMenuSel = (_regionMenuSel - 1 + total) % total; }
+        if (ip.down)  { _regionMenuSel = (_regionMenuSel + 1) % total; }
+        if (ip.a || ip.confirm) { _confirmRegion(); }
+        if (ip.b || ip.back)   { _closeRegionMenu(); }
+        var ov = document.getElementById('region-select-overlay');
+        if (ov && ov._renderRows) ov._renderRows();
+    }
+
+    // ---------------------------------------------------------------
     // NPC / Sign interaction
     // ---------------------------------------------------------------
     function _tryInteract() {
@@ -146,6 +265,13 @@
         const fy = player.y + d[1];
 
         const mapName = GameMap.current && GameMap.current.name;
+
+        // Check for bedroom PC
+        const pcTile = mapName && BEDROOM_PC_TILES[mapName];
+        if (pcTile && fx === pcTile.x && fy === pcTile.y) {
+            _openRegionMenu();
+            return;
+        }
 
         // Check NPC
         const npc = GameMap.getNpcAt(fx, fy);
@@ -209,6 +335,16 @@
         if (window.GameSummary && GameSummary.isOpen()) {
             GameSummary.handleInput(GameInput.justPressed);
             GameInput.consumeJustPressed();
+            requestAnimationFrame(gameLoop);
+            return;
+        }
+
+        // Region select menu intercepts all input when open
+        if (_regionMenuOpen) {
+            _handleRegionMenuInput();
+            GameInput.consumeJustPressed();
+            GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
+            GameHUD.update();
             requestAnimationFrame(gameLoop);
             return;
         }
