@@ -1359,7 +1359,6 @@ window.GameStartMenu = (function () {
 
         var _iconImgs = [];
         var _frontImg = null; // front sprite for slot 0 (transparency-processed)
-        var _bgImg    = null; // cached background
 
         // Strip the top-left corner colour (GBA transparent index) from a sprite image.
         // Returns a canvas element usable with drawImage.
@@ -1385,13 +1384,9 @@ window.GameStartMenu = (function () {
             return oc;
         }
 
-        // Fast redraw — uses already-loaded images, no async. Use for action menu / cursor changes.
+        // Fast redraw — reuses already-loaded images. _loadPartyBg is synchronous once cached.
         function redraw() {
-            if (_bgImg !== undefined) {
-                _drawPartyCanvas(ctx, _bgImg, _iconImgs, _frontImg);
-            } else {
-                _loadPartyBg(function(bg) { _bgImg = bg; _drawPartyCanvas(ctx, bg, _iconImgs, _frontImg); });
-            }
+            _loadPartyBg(function(bg) { _drawPartyCanvas(ctx, bg, _iconImgs, _frontImg); });
         }
 
         function _loadFrontSprite(speciesId, cb) {
@@ -1657,6 +1652,7 @@ window.GameStartMenu = (function () {
         var COL_SLOT0S = '#2a5a2a'; // selected lead
         var COL_BOX    = '#101828'; // grey-blue for slots 1-5
         var COL_BOXS   = '#182840'; // selected slot 1-5
+        var COL_SEL    = 'rgba(24,184,200,0.15)'; // selection highlight
         var STATUS_COLOR = { PAR:'#e8c000', BRN:'#e85020', PSN:'#a820e8', FRZ:'#18c8e8', SLP:'#888888', FNT:'#e83020' };
 
         // Green-tinted background (EE party screen is outdoorsy/green)
