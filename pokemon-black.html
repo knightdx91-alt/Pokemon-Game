@@ -8,23 +8,14 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background: #000;
-            color: #c8d8e8;
+            background: #000; color: #c8d8e8;
             font-family: "Courier New", Courier, monospace;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
         #top-bar {
-            width: 100%;
-            background: #0a1830;
-            border-bottom: 1px solid #18b8c8;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 6px 10px;
-            gap: 8px;
+            width: 100%; background: #0a1830; border-bottom: 1px solid #18b8c8;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 6px 10px; gap: 8px;
         }
         #top-bar a {
             color: #18b8c8; text-decoration: none; font-size: 12px;
@@ -44,19 +35,28 @@
             background: #0a1830; border-top: 1px solid #18b8c8;
             min-height: 24px; word-break: break-all;
         }
-        #progress-wrap {
-            width: 100%; max-width: 800px;
-            background: #060610; border-top: 1px solid #222;
-            padding: 6px 10px; display: none;
+
+        /* Setup screen shown before ROM is loaded */
+        #setup-screen {
+            width: 100%; max-width: 800px; padding: 20px 16px;
+            display: flex; flex-direction: column; gap: 16px;
         }
-        #progress-bar-bg {
-            background: #0a1830; border: 1px solid #18b8c8; border-radius: 3px;
-            height: 12px; overflow: hidden;
+        .setup-card {
+            background: #0a1830; border: 1px solid #18b8c8; border-radius: 6px;
+            padding: 14px 16px;
         }
-        #progress-bar-fill {
-            height: 100%; background: #18b8c8; width: 0%; transition: width 0.3s;
+        .setup-card h2 { font-size: 13px; color: #18b8c8; margin-bottom: 8px; }
+        .setup-card p  { font-size: 11px; color: #c8d8e8; line-height: 1.5; margin-bottom: 10px; }
+        .setup-card a  { color: #18b8c8; }
+        .big-btn {
+            display: block; width: 100%; padding: 10px;
+            background: #060610; color: #18b8c8;
+            border: 1px solid #18b8c8; border-radius: 4px;
+            font-size: 13px; font-family: "Courier New", Courier, monospace;
+            cursor: pointer; touch-action: manipulation; text-align: center;
+            text-decoration: none;
         }
-        #progress-label { font-size: 10px; color: #80d0e8; margin-top: 3px; }
+        .big-btn.green { border-color: #20d840; color: #20d840; }
         #debug-bar {
             width: 100%; max-width: 800px; background: #060610;
             border-top: 1px solid #222; padding: 5px 10px;
@@ -68,6 +68,7 @@
             font-family: "Courier New", Courier, monospace;
             cursor: pointer; touch-action: manipulation;
         }
+        #file-input { display: none; }
     </style>
 </head>
 <body>
@@ -76,21 +77,31 @@
         <span>Pokémon Black</span>
         <button id="screenshot-btn-emu">&#128247; Screenshot</button>
     </div>
-    <div id="emu-wrap">
-        <div id="game"></div>
-        <div id="status">Initialising…</div>
+
+    <!-- Setup screen (shown until ROM is cached) -->
+    <div id="setup-screen">
+        <div class="setup-card">
+            <h2>Step 1 — Download the ROM file</h2>
+            <p>GitHub's CDN blocks direct browser downloads. You need to download the file to your device first, then load it below. It's saved locally after the first time.</p>
+            <a class="big-btn" href="https://github.com/knightdx91-alt/Pokemon-Game/releases/download/roms-v1/pokemon-black.zip" download>⬇ Download pokemon-black.zip (~106 MB)</a>
+        </div>
+        <div class="setup-card">
+            <h2>Step 2 — Load the file</h2>
+            <p>Once downloaded, tap below and pick <strong>pokemon-black.zip</strong> from your Downloads folder. It will be saved so you only need to do this once.</p>
+            <button class="big-btn green" id="btn-pick-file">📂 Pick ROM file…</button>
+        </div>
+        <input type="file" id="file-input" accept=".zip,.nds">
     </div>
-    <div id="progress-wrap">
-        <div id="progress-bar-bg"><div id="progress-bar-fill"></div></div>
-        <div id="progress-label">Downloading ROM…</div>
+
+    <div id="emu-wrap" style="display:none">
+        <div id="game"></div>
+        <div id="status">Loading…</div>
     </div>
     <div id="debug-bar">
-        <button class="dbg-btn" id="btn-clear-cache">🗑 Clear ROM Cache &amp; Retry</button>
-        <button class="dbg-btn" id="btn-reset-token">🔑 Reset Token</button>
+        <button class="dbg-btn" id="btn-clear-cache">🗑 Clear ROM Cache</button>
     </div>
 
     <script>
-        // Preserve WebGL buffer so screenshots work
         (function() {
             var _orig = HTMLCanvasElement.prototype.getContext;
             HTMLCanvasElement.prototype.getContext = function(type, attrs) {
@@ -104,104 +115,54 @@
 
     <script>
         (function() {
-            var statusEl   = document.getElementById('status');
-            var progressWrap  = document.getElementById('progress-wrap');
-            var progressFill  = document.getElementById('progress-bar-fill');
-            var progressLabel = document.getElementById('progress-label');
-
-            var ROM_ASSET_URL = 'https://api.github.com/repos/knightdx91-alt/Pokemon-Game/releases/assets/442307397';
             var IDB_DB = 'pokemon-black-rom';
             var IDB_STORE = 'rom';
             var IDB_KEY = 'blob';
+
+            var setupEl = document.getElementById('setup-screen');
+            var emuEl   = document.getElementById('emu-wrap');
+            var statusEl = document.getElementById('status');
 
             function setStatus(msg, color) {
                 statusEl.textContent = msg;
                 statusEl.style.color = color || '#80d0e8';
             }
 
-            function setProgress(pct, label) {
-                progressWrap.style.display = 'block';
-                progressFill.style.width = pct + '%';
-                progressLabel.textContent = label || '';
-            }
-
-            function hideProgress() { progressWrap.style.display = 'none'; }
-
-            // ── IndexedDB helpers ──────────────────────────────────────────
+            // ── IndexedDB ──────────────────────────────────────────────────
             function openDB() {
                 return new Promise(function(resolve, reject) {
                     var req = indexedDB.open(IDB_DB, 1);
-                    req.onupgradeneeded = function(e) {
-                        e.target.result.createObjectStore(IDB_STORE);
-                    };
+                    req.onupgradeneeded = function(e) { e.target.result.createObjectStore(IDB_STORE); };
                     req.onsuccess = function(e) { resolve(e.target.result); };
                     req.onerror   = function(e) { reject(e.target.error); };
                 });
             }
-
-            function getROMBlob(db) {
+            function getBlob(db) {
                 return new Promise(function(resolve, reject) {
-                    var tx  = db.transaction(IDB_STORE, 'readonly');
-                    var req = tx.objectStore(IDB_STORE).get(IDB_KEY);
+                    var req = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(IDB_KEY);
                     req.onsuccess = function(e) { resolve(e.target.result || null); };
                     req.onerror   = function(e) { reject(e.target.error); };
                 });
             }
-
-            function putROMBlob(db, blob) {
+            function putBlob(db, blob) {
                 return new Promise(function(resolve, reject) {
-                    var tx  = db.transaction(IDB_STORE, 'readwrite');
-                    var req = tx.objectStore(IDB_STORE).put(blob, IDB_KEY);
+                    var req = db.transaction(IDB_STORE, 'readwrite').objectStore(IDB_STORE).put(blob, IDB_KEY);
+                    req.onsuccess = function() { resolve(); };
+                    req.onerror   = function(e) { reject(e.target.error); };
+                });
+            }
+            function clearBlob(db) {
+                return new Promise(function(resolve, reject) {
+                    var req = db.transaction(IDB_STORE, 'readwrite').objectStore(IDB_STORE).delete(IDB_KEY);
                     req.onsuccess = function() { resolve(); };
                     req.onerror   = function(e) { reject(e.target.error); };
                 });
             }
 
-            function clearROMBlob(db) {
-                return new Promise(function(resolve, reject) {
-                    var tx  = db.transaction(IDB_STORE, 'readwrite');
-                    var req = tx.objectStore(IDB_STORE).delete(IDB_KEY);
-                    req.onsuccess = function() { resolve(); };
-                    req.onerror   = function(e) { reject(e.target.error); };
-                });
-            }
-
-            // ── ROM download ───────────────────────────────────────────────
-            function downloadROM(token) {
-                setStatus('Downloading ROM — first run only (~106 MB)…', '#e8c000');
-                setProgress(30, 'Downloading from GitHub… (this takes a minute)');
-
-                // Try GitHub API with auth first; fall back to public browser_download_url
-                function tryFetch(url, headers) {
-                    return fetch(url, { headers: headers }).then(function(response) {
-                        if (!response.ok) {
-                            return response.text().then(function(t) {
-                                throw new Error('HTTP ' + response.status + ': ' + t.slice(0, 200));
-                            });
-                        }
-                        setProgress(60, 'Download complete — processing…');
-                        return response.blob();
-                    });
-                }
-
-                // Primary: GitHub API with auth token
-                return tryFetch(ROM_ASSET_URL, {
-                    'Authorization': 'token ' + token,
-                    'Accept': 'application/octet-stream'
-                }).catch(function(err1) {
-                    // Fallback: public browser_download_url (no auth needed for public repos)
-                    console.warn('[ROM] API fetch failed (' + err1.message + '), trying public URL…');
-                    setProgress(10, 'Retrying via public download…');
-                    return tryFetch(
-                        'https://github.com/knightdx91-alt/Pokemon-Game/releases/download/roms-v1/pokemon-black.zip',
-                        {}
-                    );
-                });
-            }
-
-            // ── Launch EmulatorJS with a blob URL ──────────────────────────
+            // ── Launch EmulatorJS ──────────────────────────────────────────
             function launchEJS(blobUrl) {
-                hideProgress();
+                setupEl.style.display = 'none';
+                emuEl.style.display   = 'flex';
                 setStatus('Loading emulator core…');
 
                 window.EJS_player          = '#game';
@@ -218,64 +179,54 @@
                     screenRecord: false, gamepad: true, cheat: false, volume: true,
                     saveSavFiles: true, loadSavFiles: true, quickSave: true, quickLoad: true,
                 };
-
                 var s = document.createElement('script');
                 s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
                 s.onerror = function() { setStatus('ERROR: Failed to load EmulatorJS — check internet.', '#e84040'); };
                 document.body.appendChild(s);
             }
 
-            // ── Main flow ──────────────────────────────────────────────────
-            function start() {
-                var token = localStorage.getItem('gh_debug_token');
-                if (!token) {
-                    token = prompt('Enter your GitHub token to load the ROM\n(same token used for screenshots — stored locally only):');
-                    if (!token) { setStatus('Token required to load ROM.', '#e8c000'); return; }
-                    localStorage.setItem('gh_debug_token', token);
-                }
-
+            // ── File picker ────────────────────────────────────────────────
+            document.getElementById('btn-pick-file').addEventListener('click', function() {
+                document.getElementById('file-input').click();
+            });
+            document.getElementById('file-input').addEventListener('change', function(e) {
+                var file = e.target.files[0];
+                if (!file) return;
+                setStatus('Saving ROM to cache…', '#e8c000');
                 openDB().then(function(db) {
-                    return getROMBlob(db).then(function(cached) {
-                        if (cached) {
-                            setStatus('ROM loaded from cache.');
-                            var url = URL.createObjectURL(cached);
-                            launchEJS(url);
-                            return;
-                        }
-                        // Not cached — download it
-                        return downloadROM(token).then(function(blob) {
-                            setStatus('Saving ROM to cache…', '#e8c000');
-                            return putROMBlob(db, blob).then(function() {
-                                var url = URL.createObjectURL(blob);
-                                launchEJS(url);
-                            });
-                        });
+                    return putBlob(db, file).then(function() {
+                        var url = URL.createObjectURL(file);
+                        launchEJS(url);
                     });
                 }).catch(function(err) {
-                    setStatus('ERROR: ' + err.message, '#e84040');
-                    console.error('[ROM]', err);
+                    setStatus('ERROR saving ROM: ' + err.message, '#e84040');
                 });
-            }
+            });
 
-            // ── Debug buttons ──────────────────────────────────────────────
+            // ── On load: check cache ───────────────────────────────────────
+            openDB().then(function(db) {
+                return getBlob(db).then(function(cached) {
+                    if (cached) {
+                        var url = URL.createObjectURL(cached);
+                        launchEJS(url);
+                    }
+                    // else: show setup screen (already visible by default)
+                });
+            }).catch(function(err) {
+                console.warn('[ROM] IDB error:', err);
+                // IDB unavailable — just show setup screen
+            });
+
+            // ── Clear cache button ─────────────────────────────────────────
             document.getElementById('btn-clear-cache').addEventListener('click', function() {
                 openDB().then(function(db) {
-                    return clearROMBlob(db);
+                    return clearBlob(db);
                 }).then(function() {
-                    setStatus('ROM cache cleared — reloading…', '#20d840');
-                    setTimeout(function() { location.reload(); }, 800);
-                }).catch(function(e) {
-                    setStatus('Clear failed: ' + e.message, '#e84040');
+                    location.reload();
+                }).catch(function(err) {
+                    alert('Clear failed: ' + err.message);
                 });
             });
-
-            document.getElementById('btn-reset-token').addEventListener('click', function() {
-                localStorage.removeItem('gh_debug_token');
-                setStatus('Token cleared — reloading…', '#e8c000');
-                setTimeout(function() { location.reload(); }, 600);
-            });
-
-            start();
         })();
     </script>
 
