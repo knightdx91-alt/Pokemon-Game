@@ -168,7 +168,7 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
-    const GAME_VERSION = 'v0.3.54';
+    const GAME_VERSION = 'v0.3.55';
 
     // --- Update display ---
     function update() {
