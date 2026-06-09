@@ -35,8 +35,6 @@
             background: #0a1830; border-top: 1px solid #18b8c8;
             min-height: 24px; word-break: break-all;
         }
-
-        /* Setup screen shown before ROM is loaded */
         #setup-screen {
             width: 100%; max-width: 800px; padding: 20px 16px;
             display: flex; flex-direction: column; gap: 16px;
@@ -47,16 +45,25 @@
         }
         .setup-card h2 { font-size: 13px; color: #18b8c8; margin-bottom: 8px; }
         .setup-card p  { font-size: 11px; color: #c8d8e8; line-height: 1.5; margin-bottom: 10px; }
-        .setup-card a  { color: #18b8c8; }
+        #dl-status {
+            font-size: 11px; color: #e8c000; margin-top: 8px; min-height: 16px;
+            word-break: break-all;
+        }
+        #progress-bar-bg {
+            background: #060610; border: 1px solid #18b8c8; border-radius: 3px;
+            height: 10px; overflow: hidden; margin-top: 6px; display: none;
+        }
+        #progress-bar-fill { height: 100%; background: #18b8c8; width: 0%; transition: width 0.4s; }
         .big-btn {
             display: block; width: 100%; padding: 10px;
             background: #060610; color: #18b8c8;
             border: 1px solid #18b8c8; border-radius: 4px;
             font-size: 13px; font-family: "Courier New", Courier, monospace;
             cursor: pointer; touch-action: manipulation; text-align: center;
-            text-decoration: none;
+            text-decoration: none; margin-bottom: 6px;
         }
-        .big-btn.green { border-color: #20d840; color: #20d840; }
+        .big-btn.green  { border-color: #20d840; color: #20d840; }
+        .big-btn.yellow { border-color: #e8c000; color: #e8c000; }
         #debug-bar {
             width: 100%; max-width: 800px; background: #060610;
             border-top: 1px solid #222; padding: 5px 10px;
@@ -78,19 +85,20 @@
         <button id="screenshot-btn-emu">&#128247; Screenshot</button>
     </div>
 
-    <!-- Setup screen (shown until ROM is cached) -->
     <div id="setup-screen">
         <div class="setup-card">
-            <h2>Step 1 — Download the ROM file</h2>
-            <p>GitHub's CDN blocks direct browser downloads. You need to download the file to your device first, then load it below. It's saved locally after the first time.</p>
-            <a class="big-btn" href="https://github.com/knightdx91-alt/Pokemon-Game/releases/download/roms-v1/pokemon-black.zip" download>⬇ Download pokemon-black.zip (~106 MB)</a>
+            <h2>&#9654; Auto-load from Google Drive</h2>
+            <p>Tap below to download the ROM directly from your Google Drive. First run downloads ~256 MB and saves it locally — future visits load instantly.</p>
+            <button class="big-btn" id="btn-gdrive">&#9729; Load from Google Drive</button>
+            <div id="progress-bar-bg"><div id="progress-bar-fill"></div></div>
+            <div id="dl-status"></div>
         </div>
         <div class="setup-card">
-            <h2>Step 2 — Load the file</h2>
-            <p>Once downloaded, tap below and pick <strong>pokemon-black.zip</strong> from your Downloads folder. It will be saved so you only need to do this once.</p>
-            <button class="big-btn green" id="btn-pick-file">📂 Pick ROM file…</button>
+            <h2>&#128193; Or load a local file</h2>
+            <p>If Google Drive download fails, download the file to your device first then pick it here.</p>
+            <button class="big-btn green" id="btn-pick-file">&#128194; Pick ROM file (.nds or .zip)…</button>
         </div>
-        <input type="file" id="file-input" accept=".zip,.nds">
+        <input type="file" id="file-input" accept=".nds,.zip">
     </div>
 
     <div id="emu-wrap" style="display:none">
@@ -98,7 +106,7 @@
         <div id="status">Loading…</div>
     </div>
     <div id="debug-bar">
-        <button class="dbg-btn" id="btn-clear-cache">🗑 Clear ROM Cache</button>
+        <button class="dbg-btn" id="btn-clear-cache">&#128465; Clear ROM Cache</button>
     </div>
 
     <script>
@@ -115,47 +123,68 @@
 
     <script>
         (function() {
-            var IDB_DB = 'pokemon-black-rom';
+            var IDB_DB    = 'pokemon-black-rom';
             var IDB_STORE = 'rom';
-            var IDB_KEY = 'blob';
+            var IDB_KEY   = 'blob';
 
-            var setupEl = document.getElementById('setup-screen');
-            var emuEl   = document.getElementById('emu-wrap');
-            var statusEl = document.getElementById('status');
+            // Google Drive file ID for pokemon-black.nds (owned by user)
+            var GDRIVE_FILE_ID = '1uog4J8pUbTiNYptaoWAbdrY0E5HMEqwD';
+
+            // Google Drive usercontent CDN — supports CORS for direct downloads
+            var GDRIVE_URLS = [
+                'https://drive.usercontent.google.com/download?id=' + GDRIVE_FILE_ID + '&export=download&confirm=t',
+                'https://drive.usercontent.google.com/uc?id=' + GDRIVE_FILE_ID + '&export=download&confirm=t',
+                'https://drive.google.com/uc?id=' + GDRIVE_FILE_ID + '&export=download&confirm=t',
+            ];
+
+            var setupEl   = document.getElementById('setup-screen');
+            var emuEl     = document.getElementById('emu-wrap');
+            var statusEl  = document.getElementById('status');
+            var dlStatus  = document.getElementById('dl-status');
+            var progBg    = document.getElementById('progress-bar-bg');
+            var progFill  = document.getElementById('progress-bar-fill');
 
             function setStatus(msg, color) {
                 statusEl.textContent = msg;
                 statusEl.style.color = color || '#80d0e8';
             }
+            function setDlStatus(msg, color) {
+                dlStatus.textContent = msg;
+                dlStatus.style.color = color || '#e8c000';
+            }
+            function setProgress(pct) {
+                progBg.style.display = 'block';
+                progFill.style.width = pct + '%';
+            }
 
             // ── IndexedDB ──────────────────────────────────────────────────
             function openDB() {
-                return new Promise(function(resolve, reject) {
-                    var req = indexedDB.open(IDB_DB, 1);
-                    req.onupgradeneeded = function(e) { e.target.result.createObjectStore(IDB_STORE); };
-                    req.onsuccess = function(e) { resolve(e.target.result); };
-                    req.onerror   = function(e) { reject(e.target.error); };
+                return new Promise(function(res, rej) {
+                    var r = indexedDB.open(IDB_DB, 1);
+                    r.onupgradeneeded = function(e) { e.target.result.createObjectStore(IDB_STORE); };
+                    r.onsuccess = function(e) { res(e.target.result); };
+                    r.onerror   = function(e) { rej(e.target.error); };
                 });
             }
-            function getBlob(db) {
-                return new Promise(function(resolve, reject) {
-                    var req = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(IDB_KEY);
-                    req.onsuccess = function(e) { resolve(e.target.result || null); };
-                    req.onerror   = function(e) { reject(e.target.error); };
+            function idbGet(db) {
+                return new Promise(function(res, rej) {
+                    var r = db.transaction(IDB_STORE,'readonly').objectStore(IDB_STORE).get(IDB_KEY);
+                    r.onsuccess = function(e) { res(e.target.result||null); };
+                    r.onerror   = function(e) { rej(e.target.error); };
                 });
             }
-            function putBlob(db, blob) {
-                return new Promise(function(resolve, reject) {
-                    var req = db.transaction(IDB_STORE, 'readwrite').objectStore(IDB_STORE).put(blob, IDB_KEY);
-                    req.onsuccess = function() { resolve(); };
-                    req.onerror   = function(e) { reject(e.target.error); };
+            function idbPut(db, blob) {
+                return new Promise(function(res, rej) {
+                    var r = db.transaction(IDB_STORE,'readwrite').objectStore(IDB_STORE).put(blob, IDB_KEY);
+                    r.onsuccess = function() { res(); };
+                    r.onerror   = function(e) { rej(e.target.error); };
                 });
             }
-            function clearBlob(db) {
-                return new Promise(function(resolve, reject) {
-                    var req = db.transaction(IDB_STORE, 'readwrite').objectStore(IDB_STORE).delete(IDB_KEY);
-                    req.onsuccess = function() { resolve(); };
-                    req.onerror   = function(e) { reject(e.target.error); };
+            function idbDel(db) {
+                return new Promise(function(res, rej) {
+                    var r = db.transaction(IDB_STORE,'readwrite').objectStore(IDB_STORE).delete(IDB_KEY);
+                    r.onsuccess = function() { res(); };
+                    r.onerror   = function(e) { rej(e.target.error); };
                 });
             }
 
@@ -174,16 +203,97 @@
                 window.EJS_startOnLoaded   = true;
                 window.EJS_onGameStart     = function() { setStatus('Running — Pokémon Black'); };
                 window.EJS_Buttons = {
-                    playPause: true, restart: true, mute: true, settings: true,
-                    fullscreen: true, saveState: true, loadState: true,
-                    screenRecord: false, gamepad: true, cheat: false, volume: true,
-                    saveSavFiles: true, loadSavFiles: true, quickSave: true, quickLoad: true,
+                    playPause:true, restart:true, mute:true, settings:true,
+                    fullscreen:true, saveState:true, loadState:true,
+                    screenRecord:false, gamepad:true, cheat:false, volume:true,
+                    saveSavFiles:true, loadSavFiles:true, quickSave:true, quickLoad:true,
                 };
                 var s = document.createElement('script');
                 s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
-                s.onerror = function() { setStatus('ERROR: Failed to load EmulatorJS — check internet.', '#e84040'); };
+                s.onerror = function() { setStatus('ERROR: Failed to load EmulatorJS.', '#e84040'); };
                 document.body.appendChild(s);
             }
+
+            // ── Save blob + launch ─────────────────────────────────────────
+            function saveAndLaunch(blob) {
+                setDlStatus('Saving to local cache…');
+                openDB().then(function(db) {
+                    return idbPut(db, blob).then(function() {
+                        var url = URL.createObjectURL(blob);
+                        launchEJS(url);
+                    });
+                }).catch(function(err) {
+                    // IDB save failed — still launch from blob URL (won't persist)
+                    console.warn('[ROM] IDB save failed:', err);
+                    var url = URL.createObjectURL(blob);
+                    launchEJS(url);
+                });
+            }
+
+            // ── Google Drive download (tries multiple URL formats) ─────────
+            function tryGDriveUrl(urls, idx) {
+                if (idx >= urls.length) {
+                    return Promise.reject(new Error('All Google Drive URLs failed'));
+                }
+                var url = urls[idx];
+                setDlStatus('Downloading… (attempt ' + (idx+1) + ')');
+                setProgress(10 + idx * 10);
+
+                return fetch(url).then(function(resp) {
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+
+                    // Stream with progress if Content-Length available
+                    var total = parseInt(resp.headers.get('content-length') || '0', 10);
+                    if (resp.body && resp.body.getReader && total) {
+                        var reader = resp.body.getReader();
+                        var chunks = [];
+                        var loaded = 0;
+                        function pump() {
+                            return reader.read().then(function(r) {
+                                if (r.done) {
+                                    var blob = new Blob(chunks, { type: 'application/octet-stream' });
+                                    return blob;
+                                }
+                                chunks.push(r.value);
+                                loaded += r.value.length;
+                                var pct = Math.round(loaded / total * 100);
+                                var mb  = (loaded / 1048576).toFixed(1);
+                                var tot = (total  / 1048576).toFixed(0);
+                                setProgress(pct);
+                                setDlStatus('Downloading ' + mb + ' / ' + tot + ' MB (' + pct + '%)');
+                                return pump();
+                            });
+                        }
+                        return pump();
+                    }
+                    // Fallback: no streaming
+                    setDlStatus('Downloading 256 MB — please wait…');
+                    setProgress(50);
+                    return resp.blob();
+                }).catch(function(err) {
+                    console.warn('[ROM] URL ' + idx + ' failed:', err.message);
+                    return tryGDriveUrl(urls, idx + 1);
+                });
+            }
+
+            // ── Google Drive button ────────────────────────────────────────
+            document.getElementById('btn-gdrive').addEventListener('click', function() {
+                this.disabled = true;
+                this.textContent = 'Downloading…';
+                setDlStatus('Connecting to Google Drive…');
+                setProgress(5);
+
+                tryGDriveUrl(GDRIVE_URLS, 0).then(function(blob) {
+                    setDlStatus('Download complete! (' + (blob.size / 1048576).toFixed(0) + ' MB)', '#20d840');
+                    setProgress(100);
+                    saveAndLaunch(blob);
+                }).catch(function(err) {
+                    setDlStatus('Google Drive download failed: ' + err.message + ' — try the file picker below.', '#e84040');
+                    progBg.style.display = 'none';
+                    document.getElementById('btn-gdrive').disabled = false;
+                    document.getElementById('btn-gdrive').textContent = '⟳ Retry Google Drive';
+                });
+            });
 
             // ── File picker ────────────────────────────────────────────────
             document.getElementById('btn-pick-file').addEventListener('click', function() {
@@ -192,40 +302,24 @@
             document.getElementById('file-input').addEventListener('change', function(e) {
                 var file = e.target.files[0];
                 if (!file) return;
-                setStatus('Saving ROM to cache…', '#e8c000');
-                openDB().then(function(db) {
-                    return putBlob(db, file).then(function() {
-                        var url = URL.createObjectURL(file);
-                        launchEJS(url);
-                    });
-                }).catch(function(err) {
-                    setStatus('ERROR saving ROM: ' + err.message, '#e84040');
-                });
+                saveAndLaunch(file);
             });
 
             // ── On load: check cache ───────────────────────────────────────
             openDB().then(function(db) {
-                return getBlob(db).then(function(cached) {
+                return idbGet(db).then(function(cached) {
                     if (cached) {
                         var url = URL.createObjectURL(cached);
                         launchEJS(url);
                     }
-                    // else: show setup screen (already visible by default)
                 });
-            }).catch(function(err) {
-                console.warn('[ROM] IDB error:', err);
-                // IDB unavailable — just show setup screen
-            });
+            }).catch(function() { /* show setup screen */ });
 
-            // ── Clear cache button ─────────────────────────────────────────
+            // ── Clear cache ────────────────────────────────────────────────
             document.getElementById('btn-clear-cache').addEventListener('click', function() {
-                openDB().then(function(db) {
-                    return clearBlob(db);
-                }).then(function() {
-                    location.reload();
-                }).catch(function(err) {
-                    alert('Clear failed: ' + err.message);
-                });
+                openDB().then(function(db) { return idbDel(db); })
+                    .then(function() { location.reload(); })
+                    .catch(function(e) { alert('Clear failed: ' + e.message); });
             });
         })();
     </script>
@@ -259,7 +353,7 @@
             })
             .then(function(g) {
                 var btn = document.getElementById('screenshot-btn-emu');
-                if (btn) { btn.style.color = '#20d840'; setTimeout(function(){ btn.style.color = '#18b8c8'; }, 2000); }
+                if (btn) { btn.style.color='#20d840'; setTimeout(function(){ btn.style.color='#18b8c8'; },2000); }
                 prompt('Screenshot saved — link:', g.html_url);
             })
             .catch(function(e) { alert('Screenshot error:\n' + e.message); });
