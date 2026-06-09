@@ -140,14 +140,16 @@
     // Region travel via bedroom PC
     // ---------------------------------------------------------------
     const REGION_DESTINATIONS = [
-        { label: 'Kanto',  region: 'kanto',  map: 'PalletTown_PlayersHouse_2F',          x: 6, y: 7 },
-        { label: 'Hoenn',  region: 'hoenn',  map: 'LittlerootTown_BrendansHouse_2F',      x: 4, y: 7 },
-        { label: 'Sinnoh', region: 'sinnoh', map: 'twinleaf_town_player_house_2f',        x: 4, y: 6 },
+        { label: 'Kanto',  region: 'kanto',      map: 'PalletTown_PlayersHouse_2F',      x: 6, y: 7 },
+        { label: 'Johto',  region: 'heartgold',  map: '059_T20R0102',                    x: 4, y: 4 },
+        { label: 'Hoenn',  region: 'hoenn',      map: 'LittlerootTown_BrendansHouse_2F', x: 4, y: 7 },
+        { label: 'Sinnoh', region: 'sinnoh',     map: 'twinleaf_town_player_house_2f',   x: 4, y: 6 },
     ];
 
     // PC tile positions per map (tile the player faces to use the PC)
     const BEDROOM_PC_TILES = {
         'PalletTown_PlayersHouse_2F':          { x: 11, y: 1 },
+        '059_T20R0102':                        { x: 7,  y: 1 },
         'LittlerootTown_BrendansHouse_2F':     { x: 6,  y: 1 },
         'twinleaf_town_player_house_2f':       { x: 7,  y: 1 },
     };
