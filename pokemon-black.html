@@ -47,27 +47,26 @@
 
         #emu-wrap { width: 100%; max-width: 800px; flex: 1; display: flex; flex-direction: column; }
         #game { width: 100%; min-height: 500px; flex: 1; }
+
+        /* EJS loading progress bar */
+        #emu-progress-wrap {
+            width: 100%; height: 4px;
+            background: #060610;
+            border-top: 1px solid #18b8c8;
+        }
+        #emu-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #18b8c8;
+            transition: width 0.3s ease;
+        }
+
         #status {
-            padding: 8px 12px; font-size: 11px; color: #80d0e8;
-            background: #0a1830; border-top: 1px solid #18b8c8;
+            padding: 6px 12px; font-size: 11px; color: #80d0e8;
+            background: #0a1830; border-top: 1px solid #1a3048;
             min-height: 24px; word-break: break-all;
         }
-        #status.loading {
-            color: #e8c000;
-        }
-        @keyframes blink-dot {
-            0%, 100% { opacity: 1; }
-            50%       { opacity: 0.2; }
-        }
-        #status-dot {
-            display: inline-block;
-            width: 6px; height: 6px;
-            background: #18b8c8;
-            border-radius: 50%;
-            margin-left: 6px;
-            vertical-align: middle;
-            animation: blink-dot 1s ease-in-out infinite;
-        }
+        #status.loading { color: #e8c000; }
 
         #debug-bar { width: 100%; max-width: 800px; background: #060610; border-top: 1px solid #222; padding: 5px 10px; display: flex; gap: 6px; flex-wrap: wrap; }
         .dbg-btn { background: #0a1830; color: #e8c000; border: 1px solid #e8c000; border-radius: 3px; padding: 3px 9px; font-size: 11px; font-family: "Courier New", Courier, monospace; cursor: pointer; touch-action: manipulation; }
@@ -82,12 +81,10 @@
 
     <div id="loading-screen">
         <div class="load-title">POKÉMON BLACK</div>
-
         <div id="progress-wrap">
             <div id="progress-bar-bg"><div id="progress-bar-fill"></div></div>
             <div id="dl-status">Checking local cache…</div>
         </div>
-
         <div id="picker-section">
             <p>
                 Auto-download failed (GitHub CDN blocks cross-origin requests).<br>
@@ -99,15 +96,14 @@
 
     <div id="emu-wrap" style="display:none">
         <div id="game"></div>
+        <div id="emu-progress-wrap"><div id="emu-progress-fill"></div></div>
         <div id="status">Loading…</div>
     </div>
     <div id="debug-bar">
         <button class="dbg-btn" id="btn-clear-cache">&#128465; Clear ROM Cache</button>
     </div>
 
-    <!-- fflate for unzipping release zip fallback -->
     <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
-    <!-- Google APIs for Drive Picker -->
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="https://accounts.google.com/gsi/client"></script>
 
@@ -115,9 +111,8 @@
         (function() {
             var _orig = HTMLCanvasElement.prototype.getContext;
             HTMLCanvasElement.prototype.getContext = function(type, attrs) {
-                if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl') {
+                if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl')
                     attrs = Object.assign({}, attrs || {}, { preserveDrawingBuffer: true });
-                }
                 return _orig.call(this, type, attrs);
             };
         })();
@@ -125,32 +120,31 @@
 
     <script>
     (function() {
-        var CLIENT_ID    = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
-        var SCOPE        = 'https://www.googleapis.com/auth/drive.readonly';
-        var LFS_OID      = '2e40416b8e8183d936084c7be0adeaab4fa3f786a68f90d7291ab77d340f0c1d';
-        var LFS_SIZE     = 268435456;
-        var LFS_BATCH    = 'https://github.com/knightdx91-alt/Pokemon-Game.git/info/lfs/objects/batch';
-        var ZIP_URL      = 'https://github.com/knightdx91-alt/Pokemon-Game/releases/download/roms-v1/pokemon-black.zip';
-
+        var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
+        var SCOPE     = 'https://www.googleapis.com/auth/drive.readonly';
+        var LFS_OID   = '2e40416b8e8183d936084c7be0adeaab4fa3f786a68f90d7291ab77d340f0c1d';
+        var LFS_SIZE  = 268435456;
+        var LFS_BATCH = 'https://github.com/knightdx91-alt/Pokemon-Game.git/info/lfs/objects/batch';
+        var ZIP_URL   = 'https://github.com/knightdx91-alt/Pokemon-Game/releases/download/roms-v1/pokemon-black.zip';
         var IDB_DB    = 'pokemon-black-rom-v2';
         var IDB_STORE = 'rom';
         var IDB_KEY   = 'nds';
 
-        var loadingEl    = document.getElementById('loading-screen');
-        var emuEl        = document.getElementById('emu-wrap');
-        var statusEl     = document.getElementById('status');
-        var progFill     = document.getElementById('progress-bar-fill');
-        var dlStatusEl   = document.getElementById('dl-status');
+        var loadingEl     = document.getElementById('loading-screen');
+        var emuEl         = document.getElementById('emu-wrap');
+        var statusEl      = document.getElementById('status');
+        var emuProgFill   = document.getElementById('emu-progress-fill');
+        var progFill      = document.getElementById('progress-bar-fill');
+        var dlStatusEl    = document.getElementById('dl-status');
         var pickerSection = document.getElementById('picker-section');
-        var pickerBtn    = document.getElementById('btn-picker');
+        var pickerBtn     = document.getElementById('btn-picker');
+        var _accessToken  = null;
 
-        var _accessToken = null;
-
-        function setStatus(msg) { if (statusEl) statusEl.textContent = msg; }
+        function setStatus(msg) { statusEl.textContent = msg; }
         function setDl(msg, color) { dlStatusEl.textContent = msg; dlStatusEl.style.color = color || '#e8c000'; }
         function setProgress(pct) { progFill.style.width = Math.min(100, Math.max(0, pct)) + '%'; }
+        function setEmuProgress(pct) { emuProgFill.style.width = Math.min(100, Math.max(0, pct)) + '%'; }
 
-        // ── IndexedDB ──────────────────────────────────────────────────────
         function openDB() {
             return new Promise(function(res, rej) {
                 var r = indexedDB.open(IDB_DB, 1);
@@ -181,80 +175,82 @@
             });
         }
 
-        // ── Stream download with MB/MB progress ───────────────────────────
         function streamFetch(url, headers, label) {
             return fetch(url, { headers: headers || {} }).then(function(resp) {
                 if (!resp.ok) throw new Error('HTTP ' + resp.status);
                 var total = parseInt(resp.headers.get('content-length') || '0', 10);
-
                 if (resp.body && resp.body.getReader) {
-                    var reader = resp.body.getReader();
-                    var chunks = [], loaded = 0;
+                    var reader = resp.body.getReader(), chunks = [], loaded = 0;
                     function pump() {
                         return reader.read().then(function(r) {
-                            if (r.done) {
-                                return new Blob(chunks, { type: 'application/octet-stream' });
-                            }
+                            if (r.done) return new Blob(chunks, { type: 'application/octet-stream' });
                             chunks.push(r.value);
                             loaded += r.value.length;
                             if (total) {
-                                var pct = Math.round(loaded / total * 90);
-                                var mb  = (loaded / 1048576).toFixed(1);
-                                var tot = (total  / 1048576).toFixed(1);
-                                setProgress(pct);
-                                setDl((label || 'Downloading') + '   ' + mb + ' / ' + tot + ' MB');
+                                setProgress(Math.round(loaded / total * 90));
+                                setDl((label||'Downloading') + '   ' + (loaded/1048576).toFixed(1) + ' / ' + (total/1048576).toFixed(1) + ' MB');
                             } else {
-                                var mb2 = (loaded / 1048576).toFixed(1);
-                                setDl((label || 'Downloading') + '   ' + mb2 + ' MB received…');
+                                setDl((label||'Downloading') + '   ' + (loaded/1048576).toFixed(1) + ' MB received…');
                             }
                             return pump();
                         });
                     }
                     return pump();
                 }
-                setDl((label || 'Downloading') + '…  please wait');
-                setProgress(50);
+                setDl((label||'Downloading') + '…  please wait'); setProgress(50);
                 return resp.blob();
             });
         }
 
-        // ── Unzip NDS from zip bytes ───────────────────────────────────────
         function unzipNDS(blob) {
             return blob.arrayBuffer().then(function(buf) {
                 return new Promise(function(res, rej) {
                     if (typeof fflate === 'undefined') { rej(new Error('fflate not loaded')); return; }
-                    setDl('Extracting .nds from zip…');
-                    setProgress(93);
+                    setDl('Extracting .nds from zip…'); setProgress(93);
                     fflate.unzip(new Uint8Array(buf), function(err, files) {
                         if (err) { rej(err); return; }
                         var key = Object.keys(files).find(function(k) { return k.toLowerCase().endsWith('.nds'); });
-                        if (!key) { rej(new Error('No .nds file found in zip')); return; }
+                        if (!key) { rej(new Error('No .nds in zip')); return; }
                         res(new Blob([files[key]], { type: 'application/octet-stream' }));
                     });
                 });
             });
         }
 
-        // ── EmulatorJS launch ──────────────────────────────────────────────
         function launchEJS(blobUrl) {
             loadingEl.style.display = 'none';
             emuEl.style.display = 'flex';
 
-            // Inject a blinking dot and start elapsed-time counter
-            var dot = document.createElement('span');
-            dot.id = 'status-dot';
-            statusEl.textContent = 'Loading / decompressing NDS ROM… ';
-            statusEl.classList.add('loading');
-            statusEl.appendChild(dot);
+            var gameDiv    = document.getElementById('game');
+            var startTime  = Date.now();
+            var _lastMsg   = 'Loading emulator…';
+            var _lastPct   = 0;
 
-            var startTime = Date.now();
+            // Watch EJS's loading overlay — read whatever text it renders
+            var _observer = new MutationObserver(function() {
+                var walker = document.createTreeWalker(gameDiv, NodeFilter.SHOW_TEXT, null, false);
+                var node;
+                while ((node = walker.nextNode())) {
+                    var txt = node.textContent.trim();
+                    if (txt.length > 3 && txt.length < 120) { _lastMsg = txt; break; }
+                }
+                // Parse percentage if EJS reports one (e.g. "Decompressing game data... 42%")
+                var m = _lastMsg.match(/(\d+(?:\.\d+)?)\s*%/);
+                if (m) {
+                    _lastPct = Math.min(99, parseFloat(m[1]));
+                    setEmuProgress(_lastPct);
+                }
+            });
+            _observer.observe(gameDiv, { childList: true, subtree: true, characterData: true });
+
+            // Tick every second: mirror EJS text + elapsed time
             var _timer = setInterval(function() {
                 var elapsed = Math.floor((Date.now() - startTime) / 1000);
                 var mins = Math.floor(elapsed / 60);
                 var secs = ('0' + (elapsed % 60)).slice(-2);
                 var timeStr = mins > 0 ? mins + 'm ' + secs + 's' : elapsed + 's';
-                statusEl.textContent = 'Loading / decompressing NDS ROM… ' + timeStr;
-                statusEl.appendChild(dot);
+                statusEl.textContent = _lastMsg + '  ·  ' + timeStr;
+                statusEl.classList.add('loading');
             }, 1000);
 
             window.EJS_player          = '#game';
@@ -266,9 +262,10 @@
             window.EJS_startOnLoaded   = true;
             window.EJS_onGameStart     = function() {
                 clearInterval(_timer);
+                _observer.disconnect();
                 statusEl.classList.remove('loading');
-                var d = document.getElementById('status-dot');
-                if (d) d.remove();
+                setEmuProgress(100);
+                setTimeout(function() { setEmuProgress(0); }, 800);
                 setStatus('Running — Pokémon Black');
             };
             window.EJS_Buttons = {
@@ -279,67 +276,43 @@
             };
             var s = document.createElement('script');
             s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
-            s.onerror = function() {
-                clearInterval(_timer);
-                setStatus('ERROR: Failed to load EmulatorJS.');
-            };
+            s.onerror = function() { clearInterval(_timer); setStatus('ERROR: Failed to load EmulatorJS.'); };
             document.body.appendChild(s);
         }
 
-        // ── Cache blob and launch ──────────────────────────────────────────
         function cacheAndLaunch(blob) {
-            setDl('Saving to cache…', '#20d840');
-            setProgress(100);
+            setDl('Saving to cache…', '#20d840'); setProgress(100);
             return openDB().then(function(db) {
-                return idbPut(db, blob).then(function() {
-                    launchEJS(URL.createObjectURL(blob));
-                });
+                return idbPut(db, blob).then(function() { launchEJS(URL.createObjectURL(blob)); });
             });
         }
 
-        // ── Show Google Drive picker option ────────────────────────────────
-        function showPickerOption() {
-            pickerSection.style.display = 'flex';
-            setProgress(0);
-        }
+        function showPickerOption() { pickerSection.style.display = 'flex'; setProgress(0); }
 
-        // ── Try LFS Batch API ──────────────────────────────────────────────
         function tryLFS() {
-            setDl('Trying LFS download…');
-            setProgress(2);
+            setDl('Trying LFS download…'); setProgress(2);
             return fetch(LFS_BATCH, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/vnd.git-lfs+json',
-                    'Accept':       'application/vnd.git-lfs+json',
-                },
-                body: JSON.stringify({
-                    operation: 'download', transfers: ['basic'],
-                    refs: { name: 'refs/heads/main' },
-                    objects: [{ oid: LFS_OID, size: LFS_SIZE }]
-                })
+                headers: { 'Content-Type': 'application/vnd.git-lfs+json', 'Accept': 'application/vnd.git-lfs+json' },
+                body: JSON.stringify({ operation:'download', transfers:['basic'], refs:{name:'refs/heads/main'}, objects:[{oid:LFS_OID,size:LFS_SIZE}] })
             }).then(function(r) {
                 if (!r.ok) throw new Error('LFS API HTTP ' + r.status);
                 return r.json();
             }).then(function(data) {
                 var obj = data.objects && data.objects[0];
                 if (!obj || !obj.actions || !obj.actions.download) throw new Error('No LFS download action');
-                var dl = obj.actions.download;
-                return streamFetch(dl.href, dl.header || {}, 'Downloading');
+                return streamFetch(obj.actions.download.href, obj.actions.download.header || {}, 'Downloading');
             });
         }
 
-        // ── Try release zip ────────────────────────────────────────────────
         function tryZip() {
-            setDl('Trying release zip…');
-            setProgress(2);
+            setDl('Trying release zip…'); setProgress(2);
             return streamFetch(ZIP_URL, {}, 'Downloading').then(unzipNDS);
         }
 
-        // ── Google Drive Picker ────────────────────────────────────────────
         function openDrivePicker(token) {
             gapi.load('picker', function() {
-                var picker = new google.picker.PickerBuilder()
+                new google.picker.PickerBuilder()
                     .addView(new google.picker.DocsView(google.picker.ViewId.DOCS)
                         .setMimeTypes('application/octet-stream,application/x-nintendo-ds-rom')
                         .setQuery('pokemon black'))
@@ -350,79 +323,49 @@
                             downloadFromDrive(doc[google.picker.Document.ID], doc[google.picker.Document.NAME], token);
                         }
                     })
-                    .build();
-                picker.setVisible(true);
+                    .build().setVisible(true);
             });
         }
 
         function downloadFromDrive(fileId, fileName, token) {
             pickerBtn.disabled = true;
-            setDl('Starting download: ' + fileName + '…');
-            setProgress(2);
-            var url = 'https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media';
-            streamFetch(url, { 'Authorization': 'Bearer ' + token }, 'Downloading ' + fileName)
-                .then(function(blob) {
-                    var lower = fileName.toLowerCase();
-                    if (lower.endsWith('.zip')) {
-                        return unzipNDS(blob);
-                    } else {
-                        return blob;
-                    }
-                })
+            setDl('Starting: ' + fileName + '…'); setProgress(2);
+            streamFetch('https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media',
+                { 'Authorization': 'Bearer ' + token }, 'Downloading ' + fileName)
+                .then(function(blob) { return fileName.toLowerCase().endsWith('.zip') ? unzipNDS(blob) : blob; })
                 .then(cacheAndLaunch)
-                .catch(function(err) {
-                    setDl('Drive download failed: ' + err.message, '#e84040');
-                    pickerBtn.disabled = false;
-                });
+                .catch(function(err) { setDl('Drive download failed: ' + err.message, '#e84040'); pickerBtn.disabled = false; });
         }
 
         function startDrivePicker() {
             setDl('Opening Google sign-in…');
             gapi.load('client', function() {
-                var client = google.accounts.oauth2.initTokenClient({
-                    client_id: CLIENT_ID,
-                    scope: SCOPE,
+                google.accounts.oauth2.initTokenClient({
+                    client_id: CLIENT_ID, scope: SCOPE,
                     callback: function(resp) {
                         if (resp.error) { setDl('Sign-in failed: ' + resp.error, '#e84040'); return; }
                         _accessToken = resp.access_token;
                         openDrivePicker(_accessToken);
                     }
-                });
-                client.requestAccessToken();
+                }).requestAccessToken();
             });
         }
 
         pickerBtn.addEventListener('click', startDrivePicker);
 
-        // ── Boot ───────────────────────────────────────────────────────────
         openDB().then(function(db) {
             return idbGet(db).then(function(cached) {
-                if (cached) {
-                    setDl('Loading from cache…', '#20d840');
-                    setProgress(100);
-                    launchEJS(URL.createObjectURL(cached));
-                    return;
-                }
-                // Try LFS, then zip, then show Drive picker
-                tryLFS()
-                    .then(cacheAndLaunch)
-                    .catch(function() {
-                        return tryZip()
-                            .then(cacheAndLaunch)
-                            .catch(function() { showPickerOption(); });
-                    });
+                if (cached) { setDl('Loading from cache…', '#20d840'); setProgress(100); launchEJS(URL.createObjectURL(cached)); return; }
+                tryLFS().then(cacheAndLaunch).catch(function() {
+                    tryZip().then(cacheAndLaunch).catch(function() { showPickerOption(); });
+                });
             });
         }).catch(function() {
-            tryLFS()
-                .then(cacheAndLaunch)
-                .catch(function() {
-                    return tryZip()
-                        .then(cacheAndLaunch)
-                        .catch(function() { showPickerOption(); });
-                });
+            tryLFS().then(cacheAndLaunch).catch(function() {
+                tryZip().then(cacheAndLaunch).catch(function() { showPickerOption(); });
+            });
         });
 
-        // ── Clear cache ────────────────────────────────────────────────────
         document.getElementById('btn-clear-cache').addEventListener('click', function() {
             openDB().then(function(db) { return idbDel(db); })
                 .then(function() { location.reload(); })

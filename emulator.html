@@ -8,138 +8,74 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background: #0d0d0f;
-            color: #e8e8f0;
+            background: #0d0d0f; color: #e8e8f0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center;
         }
 
         #top-bar {
-            width: 100%;
-            background: #0d0d0f;
-            border-bottom: 1px solid #1e1e24;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            height: 48px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            gap: 12px;
+            width: 100%; background: #0d0d0f; border-bottom: 1px solid #1e1e24;
+            display: flex; align-items: center; padding: 0 16px;
+            height: 48px; position: sticky; top: 0; z-index: 10; gap: 12px;
         }
         .nav-back {
-            color: #6b6b80;
-            text-decoration: none;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 6px 10px;
-            border: 1px solid #2a2a35;
-            border-radius: 8px;
+            color: #6b6b80; text-decoration: none; font-size: 13px;
+            display: flex; align-items: center; gap: 4px;
+            padding: 6px 10px; border: 1px solid #2a2a35; border-radius: 8px;
             transition: color 0.1s, border-color 0.1s;
         }
         .nav-back:hover { color: #e8e8f0; border-color: #3a3a4a; }
-        .nav-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: #e8e8f0;
-            flex: 1;
-        }
+        .nav-title { font-size: 13px; font-weight: 600; color: #e8e8f0; flex: 1; }
         .nav-cache-btn {
-            background: none;
-            color: #6b6b80;
-            border: 1px solid #2a2a35;
-            border-radius: 8px;
-            padding: 6px 10px;
-            font-size: 12px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: color 0.1s, border-color 0.1s;
+            background: none; color: #6b6b80; border: 1px solid #2a2a35;
+            border-radius: 8px; padding: 6px 10px; font-size: 12px;
+            cursor: pointer; font-family: inherit; transition: color 0.1s, border-color 0.1s;
         }
         .nav-cache-btn:hover { color: #e8e8f0; border-color: #3a3a4a; }
 
         #picker-screen {
-            width: 100%;
-            max-width: 720px;
+            width: 100%; max-width: 720px;
             padding: 24px 16px 120px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
+            display: flex; flex-direction: column; gap: 28px;
         }
 
         .group-section { display: flex; flex-direction: column; gap: 10px; }
-        .group-label {
-            font-size: 10px;
-            color: #4a4a5a;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-        .system-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-            gap: 6px;
-        }
+        .group-label { font-size: 10px; color: #4a4a5a; letter-spacing: 3px; text-transform: uppercase; }
+        .system-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 6px; }
         .sys-card {
-            background: #16161a;
-            border: 1px solid #2a2a35;
-            border-radius: 10px;
-            padding: 10px 8px;
-            cursor: pointer;
-            text-align: center;
-            transition: border-color 0.12s, background 0.12s, box-shadow 0.12s;
-            user-select: none;
+            background: #16161a; border: 1px solid #2a2a35; border-radius: 10px;
+            padding: 10px 8px; cursor: pointer; text-align: center;
+            transition: border-color 0.12s, background 0.12s, box-shadow 0.12s; user-select: none;
         }
         .sys-card:hover { border-color: #3a3a4a; background: #1a1a20; }
-        .sys-card.selected {
-            border-color: #7c6af7;
-            background: #16142a;
-            box-shadow: 0 0 0 1px #7c6af7, 0 0 12px rgba(124,106,247,0.15);
-        }
+        .sys-card.selected { border-color: #7c6af7; background: #16142a; box-shadow: 0 0 0 1px #7c6af7, 0 0 12px rgba(124,106,247,0.15); }
         .sys-card.has-cache .sys-name::after { content: ' ·'; color: #7c6af7; }
         .sys-name { font-size: 11px; font-weight: 600; color: #c8c8d8; margin-bottom: 3px; line-height: 1.2; }
         .sys-exts { font-size: 9px; color: #3a3a4a; line-height: 1.3; }
 
         #action-bar {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
+            position: fixed; bottom: 0; left: 0; right: 0;
             background: rgba(13,13,15,0.92);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border-top: 1px solid #1e1e24;
             padding: 12px 16px 20px 16px;
-            display: none;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 20;
-            align-items: center;
+            display: none; flex-direction: column; gap: 10px; z-index: 20; align-items: center;
         }
         #action-bar.visible { display: flex; }
-        #action-inner {
-            width: 100%;
-            max-width: 480px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        #action-inner { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 8px; }
         #action-sys-name { font-size: 12px; color: #6b6b80; text-align: center; }
         .action-btns { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
         .btn-primary {
-            background: #7c6af7; color: #fff; border: none;
-            border-radius: 10px; padding: 10px 20px;
-            font-size: 13px; font-weight: 600; cursor: pointer;
-            font-family: inherit; transition: background 0.1s, opacity 0.1s; white-space: nowrap;
+            background: #7c6af7; color: #fff; border: none; border-radius: 10px;
+            padding: 10px 20px; font-size: 13px; font-weight: 600;
+            cursor: pointer; font-family: inherit; transition: background 0.1s, opacity 0.1s; white-space: nowrap;
         }
         .btn-primary:hover { background: #9080ff; }
         .btn-primary:disabled { opacity: 0.4; cursor: default; }
         .btn-ghost {
             background: none; color: #6b6b80; border: 1px solid #2a2a35;
             border-radius: 10px; padding: 10px 16px; font-size: 13px;
-            cursor: pointer; font-family: inherit;
-            transition: color 0.1s, border-color 0.1s; white-space: nowrap;
+            cursor: pointer; font-family: inherit; transition: color 0.1s, border-color 0.1s; white-space: nowrap;
         }
         .btn-ghost:hover { color: #e8e8f0; border-color: #3a3a4a; }
         .btn-ghost.danger { color: #e05a5a; border-color: #3a2a2a; }
@@ -150,6 +86,7 @@
         #progress-wrap { width: 100%; height: 3px; background: #1e1e24; border-radius: 2px; overflow: hidden; }
         #progress-fill { height: 100%; width: 0%; background: #7c6af7; border-radius: 2px; transition: width 0.08s linear; }
 
+        /* Cache overlay */
         #cache-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
@@ -168,27 +105,17 @@
         #cache-header span { font-size: 14px; font-weight: 600; color: #e8e8f0; }
         #btn-close-cache {
             background: none; color: #6b6b80; border: 1px solid #2a2a35;
-            border-radius: 8px; padding: 4px 10px; font-size: 12px;
-            cursor: pointer; font-family: inherit;
+            border-radius: 8px; padding: 4px 10px; font-size: 12px; cursor: pointer; font-family: inherit;
         }
         #btn-close-cache:hover { color: #e8e8f0; }
         #cache-list { overflow-y: auto; flex: 1; }
-        .cache-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 16px;
-            border-bottom: 1px solid #1a1a20;
-        }
+        .cache-row { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid #1a1a20; }
         .cache-row:last-child { border-bottom: none; }
-        /* Play is first child (left), info stretches middle, size + delete on right */
         .btn-play-row {
             background: #7c6af7; color: #fff; border: none;
             border-radius: 8px; padding: 8px 12px;
             font-size: 13px; font-weight: 600; cursor: pointer;
-            font-family: inherit; flex-shrink: 0;
-            transition: background 0.1s;
-            white-space: nowrap;
+            font-family: inherit; flex-shrink: 0; transition: background 0.1s; white-space: nowrap;
         }
         .btn-play-row:hover { background: #9080ff; }
         .cache-info { flex: 1; min-width: 0; }
@@ -198,12 +125,12 @@
         .btn-del-row {
             background: none; color: #4a4a5a; border: 1px solid #2a2a35;
             border-radius: 6px; padding: 4px 8px; font-size: 11px;
-            cursor: pointer; font-family: inherit; flex-shrink: 0;
-            transition: color 0.1s, border-color 0.1s;
+            cursor: pointer; font-family: inherit; flex-shrink: 0; transition: color 0.1s, border-color 0.1s;
         }
         .btn-del-row:hover { color: #e05a5a; border-color: #e05a5a; }
         #cache-empty { padding: 32px; text-align: center; font-size: 13px; color: #4a4a5a; }
 
+        /* Emulator screen */
         #emu-screen { display: none; width: 100%; max-width: 640px; flex-direction: column; flex: 1; }
         #emu-screen.visible { display: flex; }
         #emu-top {
@@ -212,16 +139,19 @@
         }
         #btn-back-emu {
             background: none; color: #6b6b80; border: 1px solid #2a2a35;
-            border-radius: 8px; padding: 6px 10px; font-size: 12px;
-            cursor: pointer; font-family: inherit;
+            border-radius: 8px; padding: 6px 10px; font-size: 12px; cursor: pointer; font-family: inherit;
         }
         #btn-back-emu:hover { color: #e8e8f0; }
         #emu-game-label { font-size: 13px; color: #6b6b80; }
         #game { width: 100%; min-height: 400px; flex: 1; }
+        /* EJS loading progress bar */
+        #emu-progress-wrap { width: 100%; height: 4px; background: #1a1a20; }
+        #emu-progress-fill { height: 100%; width: 0%; background: #7c6af7; transition: width 0.3s ease; }
         #emu-status {
-            padding: 8px 16px; font-size: 11px; color: #4a4a5a;
+            padding: 6px 16px; font-size: 11px; color: #4a4a5a;
             background: #0d0d0f; border-top: 1px solid #1e1e24;
         }
+        #emu-status.loading { color: #a090ff; }
     </style>
 </head>
 <body>
@@ -263,6 +193,7 @@
         <span id="emu-game-label"></span>
     </div>
     <div id="game"></div>
+    <div id="emu-progress-wrap"><div id="emu-progress-fill"></div></div>
     <div id="emu-status">Loading emulator…</div>
 </div>
 
@@ -273,9 +204,8 @@
 (function () {
     var _origGetCtx = HTMLCanvasElement.prototype.getContext;
     HTMLCanvasElement.prototype.getContext = function (type, attrs) {
-        if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl') {
+        if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl')
             attrs = Object.assign({}, attrs || {}, { preserveDrawingBuffer: true });
-        }
         return _origGetCtx.call(this, type, attrs);
     };
 
@@ -344,11 +274,13 @@
     var progressFill  = document.getElementById('progress-fill');
     var emuStatus     = document.getElementById('emu-status');
     var emuGameLabel  = document.getElementById('emu-game-label');
+    var emuProgFill   = document.getElementById('emu-progress-fill');
     var cacheOverlay  = document.getElementById('cache-overlay');
     var cacheList     = document.getElementById('cache-list');
 
     function setDl(msg, color) { dlStatus.textContent = msg; dlStatus.style.color = color || '#6b6b80'; }
     function setProgress(pct)  { progressFill.style.width = Math.min(100, Math.max(0, pct)) + '%'; }
+    function setEmuProgress(pct) { emuProgFill.style.width = Math.min(100, Math.max(0, pct)) + '%'; }
     function fmtMB(bytes)      { return (bytes / 1048576).toFixed(1) + ' MB'; }
 
     function openDB() {
@@ -413,20 +345,17 @@
             if (!resp.ok) throw new Error('HTTP ' + resp.status);
             var total = parseInt(resp.headers.get('content-length') || '0', 10);
             if (resp.body && resp.body.getReader) {
-                var reader = resp.body.getReader();
-                var chunks = [], loaded = 0;
+                var reader = resp.body.getReader(), chunks = [], loaded = 0;
                 function pump() {
                     return reader.read().then(function (r) {
-                        if (r.done) { return new Blob(chunks, { type: 'application/octet-stream' }); }
-                        chunks.push(r.value);
-                        loaded += r.value.length;
+                        if (r.done) return new Blob(chunks, { type: 'application/octet-stream' });
+                        chunks.push(r.value); loaded += r.value.length;
                         var mb = (loaded / 1048576).toFixed(1);
                         if (total) {
-                            var tot = (total / 1048576).toFixed(1);
                             setProgress(Math.round(loaded / total * 92));
-                            setDl((label || 'Downloading') + ' · ' + mb + ' MB / ' + tot + ' MB');
+                            setDl((label||'Downloading') + ' · ' + mb + ' MB / ' + (total/1048576).toFixed(1) + ' MB');
                         } else {
-                            setDl((label || 'Downloading') + ' · ' + mb + ' MB');
+                            setDl((label||'Downloading') + ' · ' + mb + ' MB');
                         }
                         return pump();
                     });
@@ -442,8 +371,37 @@
         pickerScreen.style.display = 'none';
         actionBar.classList.remove('visible');
         emuScreen.classList.add('visible');
-        emuGameLabel.textContent   = label || sys.label;
-        emuStatus.textContent      = 'Loading core…';
+        emuGameLabel.textContent = label || sys.label;
+
+        var gameDiv   = document.getElementById('game');
+        var startTime = Date.now();
+        var _lastMsg  = 'Loading core…';
+
+        emuStatus.textContent = _lastMsg;
+        emuStatus.classList.add('loading');
+        setEmuProgress(0);
+
+        // Watch EJS's internal loading overlay and mirror its text + any percentage
+        var _observer = new MutationObserver(function () {
+            var walker = document.createTreeWalker(gameDiv, NodeFilter.SHOW_TEXT, null, false);
+            var node;
+            while ((node = walker.nextNode())) {
+                var txt = node.textContent.trim();
+                if (txt.length > 3 && txt.length < 120) { _lastMsg = txt; break; }
+            }
+            var m = _lastMsg.match(/(\d+(?:\.\d+)?)\s*%/);
+            if (m) setEmuProgress(Math.min(99, parseFloat(m[1])));
+        });
+        _observer.observe(gameDiv, { childList: true, subtree: true, characterData: true });
+
+        var _timer = setInterval(function () {
+            var elapsed = Math.floor((Date.now() - startTime) / 1000);
+            var mins = Math.floor(elapsed / 60);
+            var secs = ('0' + (elapsed % 60)).slice(-2);
+            var timeStr = mins > 0 ? mins + 'm ' + secs + 's' : elapsed + 's';
+            emuStatus.textContent = _lastMsg + '  ·  ' + timeStr;
+        }, 1000);
+
         window.EJS_player          = '#game';
         window.EJS_core            = sys.core;
         window.EJS_gameUrl         = blobUrl;
@@ -451,7 +409,14 @@
         window.EJS_color           = '#7c6af7';
         window.EJS_backgroundColor = '#0d0d0f';
         window.EJS_startOnLoaded   = true;
-        window.EJS_onGameStart     = function () { emuStatus.textContent = 'Running · ' + (label || sys.label); };
+        window.EJS_onGameStart     = function () {
+            clearInterval(_timer);
+            _observer.disconnect();
+            emuStatus.classList.remove('loading');
+            setEmuProgress(100);
+            setTimeout(function () { setEmuProgress(0); }, 800);
+            emuStatus.textContent = 'Running · ' + (label || sys.label);
+        };
         window.EJS_Buttons = {
             playPause: true, restart: true, mute: true, settings: true, fullscreen: true,
             saveState: true, loadState: true, screenRecord: false, gamepad: true,
@@ -460,13 +425,12 @@
         };
         var s = document.createElement('script');
         s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
-        s.onerror = function () { emuStatus.textContent = 'Failed to load EmulatorJS CDN.'; };
+        s.onerror = function () { clearInterval(_timer); emuStatus.textContent = 'Failed to load EmulatorJS CDN.'; };
         document.body.appendChild(s);
     }
 
     function cacheAndLaunch(sys, blob, fileName) {
-        setDl('Saving to cache…', '#7c6af7');
-        setProgress(100);
+        setDl('Saving to cache…', '#7c6af7'); setProgress(100);
         var meta = { sysId: sys.id, label: sys.label, filename: fileName || sys.label, size: blob.size };
         openDB().then(function (db) {
             return idbPut(db, ROM_STORE, sys.id, blob).then(function () {
@@ -482,12 +446,10 @@
 
     function openDrivePicker(sys, token) {
         gapi.load('picker', function () {
-            var picker = new google.picker.PickerBuilder()
-                .addView(
-                    new google.picker.DocsView(google.picker.ViewId.DOCS)
-                        .setMimeTypes('application/octet-stream,application/x-unknown')
-                        .setQuery(sys.exts[0])
-                )
+            new google.picker.PickerBuilder()
+                .addView(new google.picker.DocsView(google.picker.ViewId.DOCS)
+                    .setMimeTypes('application/octet-stream,application/x-unknown')
+                    .setQuery(sys.exts[0]))
                 .setOAuthToken(token)
                 .setCallback(function (data) {
                     if (data[google.picker.Response.ACTION] === google.picker.Action.PICKED) {
@@ -495,41 +457,31 @@
                         downloadFromDrive(sys, doc[google.picker.Document.ID], doc[google.picker.Document.NAME], token);
                     }
                 })
-                .build();
-            picker.setVisible(true);
+                .build().setVisible(true);
         });
     }
 
     function downloadFromDrive(sys, fileId, fileName, token) {
         btnDrive.disabled = true;
-        setDl('Starting · ' + fileName);
-        setProgress(2);
-        streamFetch(
-            'https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media',
-            { 'Authorization': 'Bearer ' + token },
-            fileName
-        )
+        setDl('Starting · ' + fileName); setProgress(2);
+        streamFetch('https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media',
+            { 'Authorization': 'Bearer ' + token }, fileName)
             .then(function (blob) { cacheAndLaunch(sys, blob, fileName); })
-            .catch(function (err) {
-                setDl('Download failed · ' + err.message, '#e05a5a');
-                btnDrive.disabled = false;
-            });
+            .catch(function (err) { setDl('Download failed · ' + err.message, '#e05a5a'); btnDrive.disabled = false; });
     }
 
     function startDrivePicker() {
         if (!_selectedSys) return;
         setDl('Opening Google sign-in…');
         gapi.load('client', function () {
-            var client = google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID,
-                scope: SCOPE,
+            google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID, scope: SCOPE,
                 callback: function (resp) {
                     if (resp.error) { setDl('Sign-in failed · ' + resp.error, '#e05a5a'); return; }
                     _accessToken = resp.access_token;
                     openDrivePicker(_selectedSys, _accessToken);
                 },
-            });
-            client.requestAccessToken();
+            }).requestAccessToken();
         });
     }
 
@@ -555,7 +507,6 @@
                 var sys  = SYS_BY_ID[id] || {};
                 var row  = document.createElement('div');
                 row.className = 'cache-row';
-                // Layout: [▶ Play] [name/file — stretches] [size] [Delete]
                 row.innerHTML =
                     '<button class="btn-play-row">▶ Play</button>' +
                     '<div class="cache-info">' +
@@ -564,18 +515,14 @@
                     '</div>' +
                     '<div class="cache-size">' + (meta.size ? fmtMB(meta.size) : '—') + '</div>' +
                     '<button class="btn-del-row">Delete</button>';
-                row.querySelector('.btn-play-row').addEventListener('click', function () {
-                    playFromCache(id);
-                });
+                row.querySelector('.btn-play-row').addEventListener('click', function () { playFromCache(id); });
                 row.querySelector('.btn-del-row').addEventListener('click', function () {
                     openDB().then(function (db) { return idbDel(db, id); }).then(function () {
-                        delete _cachedIds[id];
-                        delete _metaMap[id];
-                        refreshCard(id);
-                        openCachePanel();
+                        delete _cachedIds[id]; delete _metaMap[id];
+                        refreshCard(id); openCachePanel();
                         if (_selectedSys && _selectedSys.id === id) {
                             btnPlayCached.style.display = 'none';
-                            btnClear.style.display      = 'none';
+                            btnClear.style.display = 'none';
                         }
                     });
                 });
@@ -606,9 +553,8 @@
         var cached = !!_cachedIds[sys.id];
         btnPlayCached.style.display = cached ? '' : 'none';
         btnClear.style.display      = cached ? '' : 'none';
-        btnDrive.disabled           = false;
-        setDl('');
-        setProgress(0);
+        btnDrive.disabled = false;
+        setDl(''); setProgress(0);
         card && card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
@@ -620,26 +566,19 @@
         });
         var frag = document.createDocumentFragment();
         groups.forEach(function (g) {
-            var section = document.createElement('div');
-            section.className = 'group-section';
-            var lbl = document.createElement('div');
-            lbl.className = 'group-label';
-            lbl.textContent = g;
+            var section = document.createElement('div'); section.className = 'group-section';
+            var lbl = document.createElement('div'); lbl.className = 'group-label'; lbl.textContent = g;
             section.appendChild(lbl);
-            var grid = document.createElement('div');
-            grid.className = 'system-grid';
+            var grid = document.createElement('div'); grid.className = 'system-grid';
             groupMap[g].forEach(function (sys) {
                 var card = document.createElement('div');
                 card.className = 'sys-card' + (_cachedIds[sys.id] ? ' has-cache' : '');
                 card.dataset.id = sys.id;
-                card.innerHTML =
-                    '<div class="sys-name">' + sys.label + '</div>' +
-                    '<div class="sys-exts">' + sys.exts.join(' ') + '</div>';
+                card.innerHTML = '<div class="sys-name">' + sys.label + '</div><div class="sys-exts">' + sys.exts.join(' ') + '</div>';
                 card.addEventListener('click', function () { selectSystem(sys); });
                 grid.appendChild(card);
             });
-            section.appendChild(grid);
-            frag.appendChild(section);
+            section.appendChild(grid); frag.appendChild(section);
         });
         pickerScreen.appendChild(frag);
     }
@@ -659,13 +598,10 @@
     btnClear.addEventListener('click', function () {
         if (!_selectedSys) return;
         openDB().then(function (db) { return idbDel(db, _selectedSys.id); }).then(function () {
-            delete _cachedIds[_selectedSys.id];
-            delete _metaMap[_selectedSys.id];
+            delete _cachedIds[_selectedSys.id]; delete _metaMap[_selectedSys.id];
             refreshCard(_selectedSys.id);
-            btnPlayCached.style.display = 'none';
-            btnClear.style.display      = 'none';
-            setDl('Cache deleted.', '#6b6b80');
-            setProgress(0);
+            btnPlayCached.style.display = 'none'; btnClear.style.display = 'none';
+            setDl('Cache deleted.', '#6b6b80'); setProgress(0);
         });
     });
 
@@ -673,11 +609,8 @@
 
     openDB().then(function (db) {
         return Promise.all([idbAllKeys(db), idbAllMeta(db), idbAllMetaKeys(db)]).then(function (results) {
-            var keys  = results[0];
-            var metas = results[1];
-            var mkeys = results[2];
-            keys.forEach(function (k) { _cachedIds[k] = true; });
-            mkeys.forEach(function (k, i) { _metaMap[k] = metas[i]; });
+            results[0].forEach(function (k) { _cachedIds[k] = true; });
+            results[2].forEach(function (k, i) { _metaMap[k] = results[1][i]; });
             buildGrid();
         });
     }).catch(function () { buildGrid(); });
