@@ -39,10 +39,7 @@
             padding: 4px 8px;
             touch-action: manipulation;
         }
-        #top-bar span {
-            font-size: 12px;
-            color: #80d0e8;
-        }
+        #top-bar span { font-size: 12px; color: #80d0e8; }
         #screenshot-btn-emu {
             background: #0a1830;
             color: #18b8c8;
@@ -54,18 +51,8 @@
             font-family: "Courier New", Courier, monospace;
             touch-action: manipulation;
         }
-        #emu-wrap {
-            width: 100%;
-            max-width: 800px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        #game {
-            width: 100%;
-            min-height: 500px;
-            flex: 1;
-        }
+        #emu-wrap { width: 100%; max-width: 800px; flex: 1; display: flex; flex-direction: column; }
+        #game { width: 100%; min-height: 500px; flex: 1; }
         #status {
             padding: 8px 12px;
             font-size: 11px;
@@ -73,19 +60,6 @@
             background: #0a1830;
             border-top: 1px solid #18b8c8;
             min-height: 24px;
-        }
-        #progress-bar-wrap {
-            width: 100%;
-            background: #0a1830;
-            padding: 0 12px 8px;
-            display: none;
-        }
-        #progress-bar {
-            height: 6px;
-            background: #18b8c8;
-            border-radius: 3px;
-            width: 0%;
-            transition: width 0.2s;
         }
     </style>
 </head>
@@ -95,15 +69,12 @@
         <span>Pokémon Black</span>
         <button id="screenshot-btn-emu">&#128247; Screenshot</button>
     </div>
-
     <div id="emu-wrap">
         <div id="game"></div>
-        <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
         <div id="status">Initialising…</div>
     </div>
 
     <script>
-        // Force WebGL preserveDrawingBuffer so screenshots work
         (function() {
             var _orig = HTMLCanvasElement.prototype.getContext;
             HTMLCanvasElement.prototype.getContext = function(type, attrs) {
@@ -116,157 +87,68 @@
     </script>
 
     <script>
-        // EmulatorJS config — NDS core (melonDS)
-        // EJS_gameUrl is set dynamically below after ROM is fetched/cached
-        window.EJS_player = '#game';
-        window.EJS_core = 'nds';
-        window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-        window.EJS_color = '#18b8c8';
-        window.EJS_backgroundColor = '#060610';
-        window.EJS_startOnLoaded = true;
-        window.EJS_onGameStart = function() {
-            var s = document.getElementById('status');
-            if (s) s.textContent = 'Running — Pokémon Black';
-        };
-        window.EJS_onLoadState = function() {};
-        window.addEventListener('error', function(e) {
-            var s = document.getElementById('status');
-            if (s) s.textContent = 'Error: ' + e.message + ' (' + (e.filename||'') + ':' + e.lineno + ')';
-        });
-        window.EJS_Buttons = {
-            playPause: true,
-            restart: true,
-            mute: true,
-            settings: true,
-            fullscreen: true,
-            saveState: true,
-            loadState: true,
-            screenRecord: false,
-            gamepad: true,
-            cheat: false,
-            volume: true,
-            saveSavFiles: true,
-            loadSavFiles: true,
-            quickSave: true,
-            quickLoad: true,
-        };
-    </script>
-
-    <script>
-        // ROM loader — fetches via GitHub API (CORS-safe) and caches in CacheStorage
-        // so the 106 MB download only happens once.
+        // SW intercepts /pokemon-black-rom.zip, fetches from GitHub API (CORS-safe),
+        // and caches — so EmulatorJS core and ROM download in parallel.
         (function() {
-            var CACHE_NAME  = 'pokemon-black-rom-v1';
-            var CACHE_KEY   = 'pokemon-black-rom';
-            var ASSET_ID    = 442307397; // release asset id
-            var statusEl    = document.getElementById('status');
-            var progressWrap = document.getElementById('progress-bar-wrap');
-            var progressBar  = document.getElementById('progress-bar');
-
+            var statusEl = document.getElementById('status');
             function setStatus(msg, color) {
                 if (statusEl) { statusEl.textContent = msg; if (color) statusEl.style.color = color; }
             }
-            function setProgress(pct) {
-                if (progressWrap) progressWrap.style.display = 'block';
-                if (progressBar)  progressBar.style.width = pct + '%';
-            }
-            function launchEmulator(blobUrl) {
-                window.EJS_gameUrl = blobUrl;
-                if (progressWrap) progressWrap.style.display = 'none';
-                setStatus('ROM ready — loading emulator…');
+
+            function launch(token) {
+                window.EJS_player = '#game';
+                window.EJS_core = 'nds';
+                window.EJS_gameUrl = '/pokemon-black-rom.zip?t=' + encodeURIComponent(token);
+                window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+                window.EJS_color = '#18b8c8';
+                window.EJS_backgroundColor = '#060610';
+                window.EJS_startOnLoaded = true;
+                window.EJS_onGameStart = function() { setStatus('Running — Pokémon Black'); };
+                window.EJS_onLoadState = function() {};
+                window.EJS_Buttons = {
+                    playPause: true, restart: true, mute: true, settings: true,
+                    fullscreen: true, saveState: true, loadState: true,
+                    screenRecord: false, gamepad: true, cheat: false, volume: true,
+                    saveSavFiles: true, loadSavFiles: true, quickSave: true, quickLoad: true,
+                };
+                setStatus('Loading emulator core + ROM (first run: ~106 MB download)…');
                 var s = document.createElement('script');
-                s.onerror = function() { setStatus('ERROR: Failed to load EmulatorJS CDN — check internet connection.'); };
                 s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+                s.onerror = function() { setStatus('ERROR: Failed to load EmulatorJS — check internet.', '#e84040'); };
                 document.body.appendChild(s);
             }
 
-            function getToken() {
+            function start() {
+                if (!('serviceWorker' in navigator)) {
+                    setStatus('ERROR: Service Workers not supported in this browser.', '#e84040');
+                    return;
+                }
                 var token = localStorage.getItem('gh_debug_token');
                 if (!token) {
-                    token = prompt('Enter your GitHub token to download the ROM\n(same token used for screenshots — stored locally only):');
-                    if (!token) { setStatus('Token required to download ROM.', '#e8c000'); return null; }
+                    token = prompt('Enter your GitHub token to load the ROM\n(same token used for screenshots — stored locally only):');
+                    if (!token) { setStatus('Token required to load ROM.', '#e8c000'); return; }
                     localStorage.setItem('gh_debug_token', token);
                 }
-                return token;
-            }
-
-            function fetchAndCache(token) {
-                setStatus('Downloading ROM (106 MB) — first time only, will be cached…');
-                setProgress(0);
-
-                fetch('https://api.github.com/repos/knightdx91-alt/Pokemon-Game/releases/assets/' + ASSET_ID, {
-                    headers: {
-                        'Authorization': 'token ' + token,
-                        'Accept': 'application/octet-stream'
-                    }
-                }).then(function(r) {
-                    if (!r.ok) throw new Error('HTTP ' + r.status);
-                    var total = parseInt(r.headers.get('content-length') || '0', 10);
-                    var loaded = 0;
-                    var reader = r.body.getReader();
-                    var chunks = [];
-                    function pump() {
-                        return reader.read().then(function(d) {
-                            if (d.done) {
-                                var blob = new Blob(chunks, { type: 'application/zip' });
-                                var url = URL.createObjectURL(blob);
-                                // Cache for future visits
-                                try {
-                                    caches.open(CACHE_NAME).then(function(cache) {
-                                        cache.put(CACHE_KEY, new Response(blob, {
-                                            headers: { 'Content-Type': 'application/zip' }
-                                        }));
-                                    });
-                                } catch(e) { /* cache unavailable, proceed anyway */ }
-                                launchEmulator(url);
-                                return;
-                            }
-                            chunks.push(d.value);
-                            loaded += d.value.length;
-                            if (total) {
-                                var pct = Math.round(loaded / total * 100);
-                                setProgress(pct);
-                                setStatus('Downloading ROM… ' + pct + '% (' + (loaded/1024/1024).toFixed(1) + ' / ' + (total/1024/1024).toFixed(1) + ' MB)');
-                            }
-                            return pump();
+                navigator.serviceWorker.register('sw.js').then(function(reg) {
+                    if (reg.active) { launch(token); return; }
+                    setStatus('Installing service worker…');
+                    var pending = reg.installing || reg.waiting;
+                    if (pending) {
+                        pending.addEventListener('statechange', function(e) {
+                            if (e.target.state === 'activated') launch(token);
                         });
                     }
-                    return pump();
+                    var poll = setInterval(function() {
+                        if (reg.active) { clearInterval(poll); launch(token); }
+                    }, 200);
                 }).catch(function(e) {
-                    setStatus('ERROR downloading ROM: ' + e.message, '#e84040');
+                    setStatus('ERROR: Service worker failed: ' + e.message, '#e84040');
                 });
             }
 
-            function start() {
-                // Register SW in background for EmulatorJS asset caching (don't wait)
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register('sw.js').catch(function() {});
-                }
-
-                // Check CacheStorage for previously downloaded ROM
-                if (typeof caches !== 'undefined') {
-                    caches.open(CACHE_NAME).then(function(cache) {
-                        return cache.match(CACHE_KEY);
-                    }).then(function(cached) {
-                        if (cached) {
-                            setStatus('Loading ROM from cache…');
-                            return cached.blob().then(function(blob) {
-                                launchEmulator(URL.createObjectURL(blob));
-                            });
-                        }
-                        var token = getToken();
-                        if (token) fetchAndCache(token);
-                    }).catch(function(e) {
-                        setStatus('Cache error: ' + e.message + ' — downloading fresh…');
-                        var token = getToken();
-                        if (token) fetchAndCache(token);
-                    });
-                } else {
-                    // No CacheStorage (private mode etc) — fetch directly every time
-                    var token = getToken();
-                    if (token) fetchAndCache(token);
-                }
-            }
+            window.addEventListener('error', function(e) {
+                setStatus('Error: ' + e.message + ' (' + (e.filename || '') + ':' + e.lineno + ')');
+            });
 
             start();
         })();
