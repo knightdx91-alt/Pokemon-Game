@@ -741,11 +741,15 @@ window.GameStartMenu = (function () {
         ctx.fillStyle = CYAN;
         ctx.fillRect(0, 29*S, GBA_W, S);
 
-        // Achievement list
-        var allAchs = _achList();
+        // Achievement list — use full objects from GameAchievements
+        var allAchs = window.GameAchievements ? GameAchievements.getAll() : [];
         var TIER_NAMES = [null,'platinum','gold','silver','bronze'];
         var filtered = _achTier === 0 ? allAchs : allAchs.filter(function(a){ return a.tier === TIER_NAMES[_achTier]; });
         var LIST_ROWS = 5;
+        // Keep _achOffset in sync with _subIdx
+        if (_subIdx < _achOffset) _achOffset = _subIdx;
+        if (_subIdx >= _achOffset + LIST_ROWS) _achOffset = _subIdx - LIST_ROWS + 1;
+        _achOffset = Math.max(0, Math.min(_achOffset, Math.max(0, filtered.length - LIST_ROWS)));
         var listY = 31;
         for (var j = 0; j < LIST_ROWS; j++) {
             var idx = _achOffset + j;
@@ -761,6 +765,9 @@ window.GameStartMenu = (function () {
             var avw = ctx.measureText(apVal).width;
             ctx.fillText(apVal, GBA_W - avw - 4*S, ry2);
         }
+        // Scroll indicators
+        if (_achOffset > 0) { ctx.fillStyle = CYAN; ctx.font=(7*S)+'px monospace'; ctx.fillText('▲', GBA_W/2-4, (listY-2)*S); }
+        if (_achOffset + LIST_ROWS < filtered.length) { ctx.fillStyle = CYAN; ctx.font=(7*S)+'px monospace'; ctx.fillText('▼', GBA_W/2-4, (listY+LIST_ROWS*14)*S); }
 
         // Selected ach description
         var selAch = filtered[_subIdx];

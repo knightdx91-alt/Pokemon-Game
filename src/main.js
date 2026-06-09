@@ -222,8 +222,8 @@
             const jp = GameInput.justPressed;
             if      (jp.up)    GameStartMenu.moveUp();
             else if (jp.down)  GameStartMenu.moveDown();
-            else if (jp.left)  GameStartMenu.moveLeft();
-            else if (jp.right) GameStartMenu.moveRight();
+            else if (jp.left  || jp.l) GameStartMenu.moveLeft();
+            else if (jp.right || jp.r) GameStartMenu.moveRight();
             else if (jp.a)     GameStartMenu.confirm();
             else if (jp.b)     GameStartMenu.back();
         }
