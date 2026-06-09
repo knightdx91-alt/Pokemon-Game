@@ -55,12 +55,18 @@
             max-width: 680px;
             margin-bottom: 1.5rem;
         }
+        .systems-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
         .systems-card h2 {
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             color: var(--muted);
-            margin-bottom: 1.25rem;
+            margin-bottom: 0;
         }
         .category-label {
             font-size: 0.7rem;
@@ -158,13 +164,27 @@
         .btn-ghost.danger         { color: var(--danger); border-color: #3a2a2a; }
         .btn-ghost.danger:hover   { border-color: var(--danger); }
 
-        .cache-view-btn {
-            background: none; border: none;
-            color: #555; font-size: 0.78rem;
-            cursor: pointer; font-family: inherit;
-            text-decoration: underline; padding: 4px;
+        /* cache badge in systems card header */
+        .cache-badge-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--muted);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.78rem;
+            padding: 0.4rem 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.15s, border-color 0.15s;
+            white-space: nowrap;
         }
-        .cache-view-btn:hover { color: var(--accent2); }
+        .cache-badge-btn:hover { color: var(--accent2); border-color: var(--accent); }
+        .cache-badge-btn .cd-icon {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
 
         /* ── CACHE OVERLAY ── */
         #cache-overlay {
@@ -284,7 +304,12 @@
     <p class="tagline">Your ROMs, every system, one page.</p>
 
     <div class="systems-card">
-        <h2>&#127918; Pick a system</h2>
+        <div class="systems-card-header">
+            <h2>&#127918; Pick a system</h2>
+            <button class="cache-badge-btn" id="btn-open-cache">
+                <span class="cd-icon">💿</span> Cached ROMs
+            </button>
+        </div>
         <div id="picker-screen"></div>
     </div>
 
@@ -305,7 +330,7 @@
         </div>
     </div>
 
-    <button class="cache-view-btn" id="btn-open-cache">View cached ROMs</button>
+
 </div>
 
 <!-- CACHE OVERLAY -->
@@ -698,7 +723,19 @@
     }
 
     /* ── System selection + grid ── */
+    function deselectSystem() {
+        document.querySelectorAll('.sys-card.selected').forEach(function (c) { c.classList.remove('selected'); });
+        _selectedSys = null;
+        document.getElementById('sel-icon-txt').textContent = '❓';
+        document.getElementById('sel-name-txt').textContent = 'No system selected';
+        document.getElementById('sel-ext-txt').textContent  = 'Choose a system above';
+        btnPlayCached.style.display = 'none';
+        btnClear.style.display      = 'none';
+        btnDrive.disabled = true;
+    }
+
     function selectSystem(sys) {
+        if (_selectedSys && _selectedSys.id === sys.id) { deselectSystem(); return; }
         document.querySelectorAll('.sys-card.selected').forEach(function (c) { c.classList.remove('selected'); });
         var card = document.querySelector('.sys-card[data-id="' + sys.id + '"]');
         if (card) { card.classList.add('selected'); card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
