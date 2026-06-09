@@ -63,7 +63,6 @@
             text-decoration: none; margin-bottom: 6px;
         }
         .big-btn.green  { border-color: #20d840; color: #20d840; }
-        .big-btn.yellow { border-color: #e8c000; color: #e8c000; }
         #debug-bar {
             width: 100%; max-width: 800px; background: #060610;
             border-top: 1px solid #222; padding: 5px 10px;
@@ -75,7 +74,6 @@
             font-family: "Courier New", Courier, monospace;
             cursor: pointer; touch-action: manipulation;
         }
-        #file-input { display: none; }
     </style>
 </head>
 <body>
@@ -87,18 +85,12 @@
 
     <div id="setup-screen">
         <div class="setup-card">
-            <h2>&#9654; Auto-load from Google Drive</h2>
-            <p>Tap below to download the ROM directly from your Google Drive. First run downloads ~256 MB and saves it locally — future visits load instantly.</p>
-            <button class="big-btn" id="btn-gdrive">&#9729; Load from Google Drive</button>
+            <h2>&#9654; Load ROM from Google Drive</h2>
+            <p>Tap below to open your Google Drive and select <strong>pokemon-black.nds</strong>. Downloaded once and saved locally — future visits load instantly.</p>
+            <button class="big-btn" id="btn-picker">&#9729; Open Google Drive Picker</button>
             <div id="progress-bar-bg"><div id="progress-bar-fill"></div></div>
             <div id="dl-status"></div>
         </div>
-        <div class="setup-card">
-            <h2>&#128193; Or load a local file</h2>
-            <p>If Google Drive download fails, download the file to your device first then pick it here.</p>
-            <button class="big-btn green" id="btn-pick-file">&#128194; Pick ROM file (.nds or .zip)…</button>
-        </div>
-        <input type="file" id="file-input" accept=".nds,.zip">
     </div>
 
     <div id="emu-wrap" style="display:none">
@@ -108,6 +100,10 @@
     <div id="debug-bar">
         <button class="dbg-btn" id="btn-clear-cache">&#128465; Clear ROM Cache</button>
     </div>
+
+    <!-- Google APIs -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
 
     <script>
         (function() {
@@ -123,26 +119,22 @@
 
     <script>
         (function() {
+            var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
+            var SCOPE     = 'https://www.googleapis.com/auth/drive.readonly';
+
             var IDB_DB    = 'pokemon-black-rom';
             var IDB_STORE = 'rom';
             var IDB_KEY   = 'blob';
 
-            // Google Drive file ID for pokemon-black.nds (owned by user)
-            var GDRIVE_FILE_ID = '1uog4J8pUbTiNYptaoWAbdrY0E5HMEqwD';
+            var setupEl  = document.getElementById('setup-screen');
+            var emuEl    = document.getElementById('emu-wrap');
+            var statusEl = document.getElementById('status');
+            var dlStatus = document.getElementById('dl-status');
+            var progBg   = document.getElementById('progress-bar-bg');
+            var progFill = document.getElementById('progress-bar-fill');
+            var pickerBtn = document.getElementById('btn-picker');
 
-            // Google Drive usercontent CDN — supports CORS for direct downloads
-            var GDRIVE_URLS = [
-                'https://drive.usercontent.google.com/download?id=' + GDRIVE_FILE_ID + '&export=download&confirm=t',
-                'https://drive.usercontent.google.com/uc?id=' + GDRIVE_FILE_ID + '&export=download&confirm=t',
-                'https://drive.google.com/uc?id=' + GDRIVE_FILE_ID + '&export=download&confirm=t',
-            ];
-
-            var setupEl   = document.getElementById('setup-screen');
-            var emuEl     = document.getElementById('emu-wrap');
-            var statusEl  = document.getElementById('status');
-            var dlStatus  = document.getElementById('dl-status');
-            var progBg    = document.getElementById('progress-bar-bg');
-            var progFill  = document.getElementById('progress-bar-fill');
+            var _accessToken = null;
 
             function setStatus(msg, color) {
                 statusEl.textContent = msg;
@@ -214,46 +206,26 @@
                 document.body.appendChild(s);
             }
 
-            // ── Save blob + launch ─────────────────────────────────────────
-            function saveAndLaunch(blob) {
-                setDlStatus('Saving to local cache…');
-                openDB().then(function(db) {
-                    return idbPut(db, blob).then(function() {
-                        var url = URL.createObjectURL(blob);
-                        launchEJS(url);
-                    });
-                }).catch(function(err) {
-                    // IDB save failed — still launch from blob URL (won't persist)
-                    console.warn('[ROM] IDB save failed:', err);
-                    var url = URL.createObjectURL(blob);
-                    launchEJS(url);
-                });
-            }
+            // ── Download selected file from Drive ──────────────────────────
+            function downloadDriveFile(fileId, fileName) {
+                setDlStatus('Downloading ' + fileName + '…');
+                setProgress(5);
+                pickerBtn.disabled = true;
 
-            // ── Google Drive download (tries multiple URL formats) ─────────
-            function tryGDriveUrl(urls, idx) {
-                if (idx >= urls.length) {
-                    return Promise.reject(new Error('All Google Drive URLs failed'));
-                }
-                var url = urls[idx];
-                setDlStatus('Downloading… (attempt ' + (idx+1) + ')');
-                setProgress(10 + idx * 10);
-
-                return fetch(url).then(function(resp) {
+                fetch('https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media', {
+                    headers: { 'Authorization': 'Bearer ' + _accessToken }
+                }).then(function(resp) {
                     if (!resp.ok) throw new Error('HTTP ' + resp.status);
 
-                    // Stream with progress if Content-Length available
                     var total = parseInt(resp.headers.get('content-length') || '0', 10);
+
                     if (resp.body && resp.body.getReader && total) {
                         var reader = resp.body.getReader();
                         var chunks = [];
                         var loaded = 0;
                         function pump() {
                             return reader.read().then(function(r) {
-                                if (r.done) {
-                                    var blob = new Blob(chunks, { type: 'application/octet-stream' });
-                                    return blob;
-                                }
+                                if (r.done) return new Blob(chunks, { type: 'application/octet-stream' });
                                 chunks.push(r.value);
                                 loaded += r.value.length;
                                 var pct = Math.round(loaded / total * 100);
@@ -266,54 +238,77 @@
                         }
                         return pump();
                     }
-                    // Fallback: no streaming
-                    setDlStatus('Downloading 256 MB — please wait…');
+
+                    setDlStatus('Downloading (~256 MB) — please wait…');
                     setProgress(50);
                     return resp.blob();
+
+                }).then(function(blob) {
+                    setDlStatus('Saving to local cache…', '#20d840');
+                    setProgress(100);
+                    return openDB().then(function(db) {
+                        return idbPut(db, blob).then(function() {
+                            launchEJS(URL.createObjectURL(blob));
+                        });
+                    });
                 }).catch(function(err) {
-                    console.warn('[ROM] URL ' + idx + ' failed:', err.message);
-                    return tryGDriveUrl(urls, idx + 1);
+                    setDlStatus('Download failed: ' + err.message, '#e84040');
+                    pickerBtn.disabled = false;
                 });
             }
 
-            // ── Google Drive button ────────────────────────────────────────
-            document.getElementById('btn-gdrive').addEventListener('click', function() {
-                this.disabled = true;
-                this.textContent = 'Downloading…';
-                setDlStatus('Connecting to Google Drive…');
-                setProgress(5);
-
-                tryGDriveUrl(GDRIVE_URLS, 0).then(function(blob) {
-                    setDlStatus('Download complete! (' + (blob.size / 1048576).toFixed(0) + ' MB)', '#20d840');
-                    setProgress(100);
-                    saveAndLaunch(blob);
-                }).catch(function(err) {
-                    setDlStatus('Google Drive download failed: ' + err.message + ' — try the file picker below.', '#e84040');
-                    progBg.style.display = 'none';
-                    document.getElementById('btn-gdrive').disabled = false;
-                    document.getElementById('btn-gdrive').textContent = '⟳ Retry Google Drive';
+            // ── Google Picker ──────────────────────────────────────────────
+            function openPicker(token) {
+                gapi.load('picker', function() {
+                    var picker = new google.picker.PickerBuilder()
+                        .addView(new google.picker.DocsView(google.picker.ViewId.DOCS)
+                            .setMimeTypes('application/octet-stream,application/x-nintendo-ds-rom')
+                            .setQuery('pokemon-black'))
+                        .setOAuthToken(token)
+                        .setCallback(function(data) {
+                            if (data[google.picker.Response.ACTION] === google.picker.Action.PICKED) {
+                                var doc = data[google.picker.Response.DOCUMENTS][0];
+                                downloadDriveFile(doc[google.picker.Document.ID], doc[google.picker.Document.NAME]);
+                            }
+                        })
+                        .build();
+                    picker.setVisible(true);
                 });
-            });
+            }
 
-            // ── File picker ────────────────────────────────────────────────
-            document.getElementById('btn-pick-file').addEventListener('click', function() {
-                document.getElementById('file-input').click();
-            });
-            document.getElementById('file-input').addEventListener('change', function(e) {
-                var file = e.target.files[0];
-                if (!file) return;
-                saveAndLaunch(file);
+            // ── OAuth2 token via GIS ───────────────────────────────────────
+            function getTokenAndOpenPicker() {
+                var client = google.accounts.oauth2.initTokenClient({
+                    client_id: CLIENT_ID,
+                    scope: SCOPE,
+                    callback: function(resp) {
+                        if (resp.error) {
+                            setDlStatus('Sign-in failed: ' + resp.error, '#e84040');
+                            return;
+                        }
+                        _accessToken = resp.access_token;
+                        openPicker(_accessToken);
+                    }
+                });
+                client.requestAccessToken();
+            }
+
+            // ── Picker button ──────────────────────────────────────────────
+            pickerBtn.addEventListener('click', function() {
+                setDlStatus('Opening Google sign-in…');
+                gapi.load('client', function() {
+                    getTokenAndOpenPicker();
+                });
             });
 
             // ── On load: check cache ───────────────────────────────────────
             openDB().then(function(db) {
                 return idbGet(db).then(function(cached) {
                     if (cached) {
-                        var url = URL.createObjectURL(cached);
-                        launchEJS(url);
+                        launchEJS(URL.createObjectURL(cached));
                     }
                 });
-            }).catch(function() { /* show setup screen */ });
+            }).catch(function() {});
 
             // ── Clear cache ────────────────────────────────────────────────
             document.getElementById('btn-clear-cache').addEventListener('click', function() {
