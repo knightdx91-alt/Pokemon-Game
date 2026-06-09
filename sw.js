@@ -1,5 +1,5 @@
 // Service Worker — cache-on-demand for ROM and EmulatorJS assets
-const CACHE = 'pokemon-emu-v2';
+const CACHE = 'pokemon-emu-v3';
 
 self.addEventListener('install', function(e) {
     // Nothing to pre-cache — just activate immediately
@@ -22,6 +22,7 @@ self.addEventListener('fetch', function(e) {
     var url = e.request.url;
 
     var shouldCache = url.includes('pokeemerald_ee_debug.gba') ||
+                      url.includes('.nds')                     ||
                       url.includes('cdn.emulatorjs.org');
 
     if (!shouldCache) return;
