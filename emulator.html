@@ -253,8 +253,8 @@
         .cache-row {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px 20px;
+            gap: 8px;
+            padding: 12px 16px;
             border-bottom: 1px solid #1a1a20;
         }
         .cache-row:last-child { border-bottom: none; }
@@ -262,6 +262,21 @@
         .cache-sys { font-size: 13px; font-weight: 600; color: #e8e8f0; }
         .cache-file { font-size: 11px; color: #4a4a5a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
         .cache-size { font-size: 11px; color: #6b6b80; white-space: nowrap; }
+        .btn-play-row {
+            background: #7c6af7;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            flex-shrink: 0;
+            transition: background 0.1s;
+            white-space: nowrap;
+        }
+        .btn-play-row:hover { background: #9080ff; }
         .btn-del-row {
             background: none;
             color: #4a4a5a;
@@ -623,6 +638,17 @@
         });
     }
 
+    function playFromCache(id) {
+        var sys  = SYS_BY_ID[id];
+        var meta = _metaMap[id] || {};
+        if (!sys) return;
+        cacheOverlay.classList.remove('visible');
+        openDB().then(function (db) { return idbGet(db, ROM_STORE, id); }).then(function (blob) {
+            if (!blob) { alert('Cache miss for ' + (meta.label || id) + ' — please re-download.'); return; }
+            launchEJS(sys, URL.createObjectURL(blob), meta.filename || sys.label);
+        });
+    }
+
     function openCachePanel() {
         cacheList.innerHTML = '';
         var keys = Object.keys(_cachedIds);
@@ -640,7 +666,11 @@
                         '<div class="cache-file">' + (meta.filename || 'unknown') + '</div>' +
                     '</div>' +
                     '<div class="cache-size">' + (meta.size ? fmtMB(meta.size) : '—') + '</div>' +
+                    '<button class="btn-play-row">▶ Play</button>' +
                     '<button class="btn-del-row">Delete</button>';
+                row.querySelector('.btn-play-row').addEventListener('click', function () {
+                    playFromCache(id);
+                });
                 row.querySelector('.btn-del-row').addEventListener('click', function () {
                     openDB().then(function (db) { return idbDel(db, id); }).then(function () {
                         delete _cachedIds[id];
