@@ -330,6 +330,14 @@
                 document.documentElement.style.setProperty('--control-scale', savedScale);
             }
 
+            // Initialize save state — load slot 0 or create fresh data
+            if (window.GameSave) {
+                if (!GameSave.load(0)) {
+                    GameSave.state = GameSave.DEFAULT_SLOT_DATA();
+                    GameSave.currentSlot = 0;
+                }
+            }
+
             GameInput.init();
             GameLayout.init();
             GameControls.init();
