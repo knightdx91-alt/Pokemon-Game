@@ -76,7 +76,10 @@ window.GameRenderer = (function () {
                     console.warn(`[Renderer] Failed to load tileset image: ${name}`);
                     _tilesetLoadingName = null; // allow retry next render
                 };
-                img.src = `data/tilesets/${name}.png`;
+                // Cache-bust the PNG using metatile count so browsers reload
+                // when tilesets are regenerated (JSON is always fetched fresh).
+                const v = (meta.total_metatiles || 0) + '_' + (meta.primary_count || 0);
+                img.src = `data/tilesets/${name}.png?v=${v}`;
             })
             .catch(e => {
                 console.warn(`[Renderer] Failed to load tileset JSON for ${name}:`, e);
