@@ -25,7 +25,6 @@
             min-height: 100vh;
         }
 
-        /* ── SETUP SCREEN ── */
         #setup-screen {
             min-height: 100vh;
             display: flex;
@@ -45,7 +44,6 @@
         }
         .tagline { color: var(--muted); font-size: 0.95rem; margin-bottom: 2.5rem; }
 
-        /* Systems card */
         .systems-card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -101,7 +99,6 @@
         .sys-icon { font-size: 1.3rem; }
         .sys-name { font-size: 0.75rem; font-weight: 600; line-height: 1.2; }
 
-        /* Launch card */
         .launch-card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -126,6 +123,31 @@
         .sel-name { font-size: 1rem; font-weight: 600; }
         .sel-ext  { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
         .launch-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        /* URL input row */
+        .url-row {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+        }
+        .url-row input {
+            flex: 1;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 0.65rem 0.9rem;
+            outline: none;
+            transition: border-color 0.15s;
+            min-width: 0;
+        }
+        .url-row input::placeholder { color: #555; }
+        .url-row input:focus { border-color: var(--accent); }
+        .url-row input:disabled { opacity: 0.5; }
 
         .btn-primary {
             background: var(--accent);
@@ -164,7 +186,6 @@
         .btn-ghost.danger         { color: var(--danger); border-color: #3a2a2a; }
         .btn-ghost.danger:hover   { border-color: var(--danger); }
 
-        /* cache badge in systems card header */
         .cache-badge-btn {
             background: var(--surface2);
             border: 1px solid var(--border);
@@ -181,12 +202,8 @@
             white-space: nowrap;
         }
         .cache-badge-btn:hover { color: var(--accent2); border-color: var(--accent); }
-        .cache-badge-btn .cd-icon {
-            font-size: 1.1rem;
-            line-height: 1;
-        }
+        .cache-badge-btn .cd-icon { font-size: 1.1rem; line-height: 1; }
 
-        /* ── CACHE OVERLAY ── */
         #cache-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
@@ -229,7 +246,6 @@
         .btn-del-row:hover { color: var(--danger); border-color: var(--danger); }
         #cache-empty { padding: 32px; text-align: center; font-size: 13px; color: #4a4a5a; }
 
-        /* ── EMULATOR SCREEN ── */
         #emu-screen { display: none; flex-direction: column; height: 100vh; }
         #emu-screen.visible { display: flex; }
         .emu-topbar {
@@ -275,7 +291,6 @@
         }
         #emu-status.loading { color: var(--accent2); }
 
-        /* ── LOADING OVERLAY ── */
         .loading-overlay {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,0.88); z-index: 999;
@@ -294,11 +309,17 @@
         .loading-text { color: var(--muted); font-size: 0.9rem; text-align: center; max-width: 280px; }
         .loading-prog-wrap { width: 220px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
         .loading-prog-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.08s linear; border-radius: 2px; }
+
+        .url-hint {
+            font-size: 0.72rem;
+            color: #555;
+            line-height: 1.5;
+        }
+        .url-hint a { color: var(--accent2); text-decoration: none; }
     </style>
 </head>
 <body>
 
-<!-- SETUP SCREEN -->
 <div id="setup-screen">
     <div class="logo">RetroPlay</div>
     <p class="tagline">Your ROMs, every system, one page.</p>
@@ -323,17 +344,24 @@
                 </div>
             </div>
             <div class="launch-btns">
-                <button class="btn-ghost play"   id="btn-play-cached" style="display:none">&#9654; Play cached</button>
-                <button class="btn-primary"       id="btn-drive" disabled>&#128194; Pick ROM from Drive</button>
-                <button class="btn-ghost danger"  id="btn-clear-cache" style="display:none">Delete cache</button>
+                <button class="btn-ghost play"  id="btn-play-cached" style="display:none">&#9654; Play cached</button>
+                <button class="btn-primary"      id="btn-drive" disabled>&#128194; Pick from Drive</button>
+                <button class="btn-ghost danger" id="btn-clear-cache" style="display:none">Delete cache</button>
             </div>
         </div>
+
+        <!-- Direct URL row -->
+        <div class="url-row">
+            <input type="url" id="url-input" placeholder="Paste direct download URL (no file picker needed)" />
+            <button class="btn-primary" id="btn-url-load" disabled>&#9654; Load</button>
+        </div>
+        <div class="url-hint">
+            Google Drive: open file → Share → copy link, then change
+            <code>/file/d/ID/view</code> to <code>/uc?export=download&amp;id=ID</code>
+        </div>
     </div>
-
-
 </div>
 
-<!-- CACHE OVERLAY -->
 <div id="cache-overlay">
     <div id="cache-panel">
         <div id="cache-header">
@@ -344,7 +372,6 @@
     </div>
 </div>
 
-<!-- EMULATOR SCREEN -->
 <div id="emu-screen">
     <div class="emu-topbar">
         <span class="logo-small">RetroPlay</span>
@@ -359,7 +386,6 @@
     <div id="emu-status">Loading emulator…</div>
 </div>
 
-<!-- LOADING OVERLAY -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
     <div class="loading-text" id="loadingText">Loading…</div>
@@ -450,6 +476,8 @@
     var loadingOverlay = document.getElementById('loadingOverlay');
     var loadingText    = document.getElementById('loadingText');
     var loadingProg    = document.getElementById('loadingProgFill');
+    var urlInput       = document.getElementById('url-input');
+    var btnUrlLoad     = document.getElementById('btn-url-load');
 
     function setDl(msg, color) {
         if (loadingText) { loadingText.textContent = msg || ''; loadingText.style.color = color || 'var(--muted)'; }
@@ -461,6 +489,58 @@
     function fmtMB(bytes)        { return (bytes / 1048576).toFixed(1) + ' MB'; }
     function showLoading(msg)    { setDl(msg); setProgress(0); loadingOverlay.classList.add('visible'); }
     function hideLoading()       { loadingOverlay.classList.remove('visible'); setProgress(0); }
+
+    /* ── URL input enable/disable ── */
+    urlInput.addEventListener('input', function () {
+        btnUrlLoad.disabled = !urlInput.value.trim() || !_selectedSys;
+    });
+
+    /* ── Guess system from URL file extension ── */
+    function guessSysFromUrl(url) {
+        var lower = url.toLowerCase().split('?')[0];
+        for (var i = 0; i < SYSTEMS.length; i++) {
+            var sys = SYSTEMS[i];
+            for (var j = 0; j < sys.exts.length; j++) {
+                if (lower.endsWith(sys.exts[j])) return sys;
+            }
+        }
+        return null;
+    }
+
+    /* ── Rewrite Google Drive share links to direct download ── */
+    function rewriteGDriveUrl(url) {
+        var m = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+        if (m) return 'https://drive.google.com/uc?export=download&id=' + m[1];
+        return url;
+    }
+
+    /* ── Load from URL ── */
+    btnUrlLoad.addEventListener('click', function () {
+        var raw = urlInput.value.trim();
+        if (!raw) return;
+        var url = rewriteGDriveUrl(raw);
+
+        var sys = _selectedSys;
+        if (!sys) {
+            sys = guessSysFromUrl(url);
+            if (!sys) { alert('Please select a system first.'); return; }
+        }
+
+        var fileName = decodeURIComponent(url.split('/').pop().split('?')[0]) || 'rom';
+        btnUrlLoad.disabled = true;
+        showLoading('Connecting…');
+
+        streamFetch(url, {}, fileName)
+            .then(function (blob) {
+                btnUrlLoad.disabled = false;
+                cacheAndLaunch(sys, blob, fileName);
+            })
+            .catch(function (err) {
+                hideLoading();
+                btnUrlLoad.disabled = false;
+                alert('Download failed: ' + err.message + '\n\nIf using Google Drive, make sure the file is shared publicly (Anyone with the link).');
+            });
+    });
 
     /* ── IDB helpers ── */
     function openDB() {
@@ -732,6 +812,7 @@
         btnPlayCached.style.display = 'none';
         btnClear.style.display      = 'none';
         btnDrive.disabled = true;
+        btnUrlLoad.disabled = true;
     }
 
     function selectSystem(sys) {
@@ -747,6 +828,7 @@
         btnPlayCached.style.display = cached ? '' : 'none';
         btnClear.style.display      = cached ? '' : 'none';
         btnDrive.disabled = false;
+        btnUrlLoad.disabled = !urlInput.value.trim();
     }
 
     function refreshCard(sysId) {
@@ -788,9 +870,7 @@
     document.getElementById('btn-open-cache').addEventListener('click', openCachePanel);
     document.getElementById('btn-close-cache').addEventListener('click', function () { cacheOverlay.classList.remove('visible'); });
     cacheOverlay.addEventListener('click', function (e) { if (e.target === cacheOverlay) cacheOverlay.classList.remove('visible'); });
-
     btnDrive.addEventListener('click', startDrivePicker);
-
     btnPlayCached.addEventListener('click', function () {
         if (!_selectedSys) return;
         openDB().then(function (db) { return idbGet(db, ROM_STORE, _selectedSys.id); }).then(function (blob) {
@@ -799,7 +879,6 @@
             launchEJS(_selectedSys, URL.createObjectURL(blob), meta.filename || _selectedSys.label);
         });
     });
-
     btnClear.addEventListener('click', function () {
         if (!_selectedSys) return;
         openDB().then(function (db) { return idbDel(db, _selectedSys.id); }).then(function () {
@@ -808,7 +887,6 @@
             btnPlayCached.style.display = 'none'; btnClear.style.display = 'none';
         });
     });
-
     document.getElementById('btn-back-emu').addEventListener('click', function () { location.reload(); });
 
     /* ── Init ── */
