@@ -2820,7 +2820,9 @@ window.GameStartMenu = (function () {
         if (!menuEl) return;
         isOpen=false; menuEl.classList.remove('open');
         menuEl.style.visibility = 'visible';
-        if (subEl) subEl.style.display='none';
+        // Restore z-index after battle bag use
+        menuEl.style.zIndex = '';
+        if (subEl) { subEl.style.display='none'; subEl.style.zIndex = ''; }
         // If closed without using a battle item, fire cancel callback
         if (_battleBagCancel) { var cb = _battleBagCancel; _battleItemCallback = null; _battleBagCancel = null; cb(); }
     }
@@ -2830,6 +2832,9 @@ window.GameStartMenu = (function () {
         _battleItemCallback = onUse;
         _battleBagCancel    = onCancel || null;
         selectedIdx = 0; page = 'bag'; _bagPocket = 0; _subIdx = 0; isOpen = true;
+        // Lift above battle overlay (z-index 80) so it's visible
+        menuEl.style.zIndex = '90';
+        if (subEl) subEl.style.zIndex = '90';
         menuEl.classList.add('open'); _render();
     }
     function toggle() { if(isOpen) close(); else open(); }
