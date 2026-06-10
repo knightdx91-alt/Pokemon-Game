@@ -6,7 +6,7 @@
     const MOVE_COOLDOWN_MS  = 150;
     const WARP_COOLDOWN_MS  = 400;
     // Encounter roll: 1-in-N chance per step in grass/cave (matches Gen 3 ~10% grass feel)
-    const ENCOUNTER_CHANCE  = 1.00; // TODO: restore to 0.10 after battle testing
+    const ENCOUNTER_CHANCE  = 0.10;
 
     const player = {
         x: 7,
@@ -75,11 +75,11 @@
     // ---------------------------------------------------------------
     async function _checkEncounter() {
         if (!window.GameBattle || GameBattle.isActive()) return;
-        const terrain = GameMap.getTileTerrainType(player.x, player.y);
-        if (terrain !== 'grass' && terrain !== 'cave') return;
+        await GameMap.loadEncounterData(currentRegion);
+        const enc = GameMap.getEncounterData();
+        if (!enc || !enc.land_mons) return;   // map has no land encounters
         if (Math.random() > ENCOUNTER_CHANCE) return;
 
-        await GameMap.loadEncounterData(currentRegion);
         const entry = GameBattle.rollEncounter(currentRegion);
         if (!entry) return;
 
