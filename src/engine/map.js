@@ -312,6 +312,13 @@ window.GameMap = (function () {
     // ---------------------------------------------------------------
     // Public API
     // ---------------------------------------------------------------
+    function getTileDebug(x, y) {
+        if (!layoutData || !layoutData.metatiles) return { metatile: null, behavior: null, hasBehaviors: !!tilesetBehaviors };
+        const metatileIdx = layoutData.metatiles[y * mapWidth + x];
+        const b = tilesetBehaviors ? tilesetBehaviors[metatileIdx] : null;
+        return { metatile: metatileIdx, behavior: b, hasBehaviors: !!tilesetBehaviors };
+    }
+
     return {
         get current()  { return current; },
         get layout()   { return layoutData; },
@@ -331,6 +338,7 @@ window.GameMap = (function () {
         getNpcAt,
         getTilesetName,
         getTileTerrainType,
+        getTileDebug,
         loadEncounterData,
         getEncounterData,
     };
