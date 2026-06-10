@@ -25,7 +25,7 @@ window.GameStartMenu = (function () {
     let menuEl      = null;
     let subEl       = null;   // sub-page overlay element
     let isOpen      = false;
-    let selectedIdx = 0;
+    let selectedIdx = 1; // start on POKEMON
     let page        = 'main';
     let _saveDone   = false;
     let _subIdx     = 0;
@@ -278,6 +278,16 @@ window.GameStartMenu = (function () {
             carousel.appendChild(wrap);
         });
         top.appendChild(carousel);
+
+        // Scroll selected icon into view (centred)
+        requestAnimationFrame(function() {
+            var ICON_W = 56 + 4; // width + gap
+            var selEl = carousel.children[selectedIdx];
+            if (selEl) {
+                var targetScroll = selEl.offsetLeft - (carousel.clientWidth / 2) + (ICON_W / 2);
+                carousel.scrollLeft = Math.max(0, targetScroll);
+            }
+        });
 
         // Label below icons (EE shows item name at y=32 inside the top window)
         const label = document.createElement('div');
@@ -2856,7 +2866,7 @@ window.GameStartMenu = (function () {
     // --- Public API ---
     function open() {
         if (!menuEl) return;
-        selectedIdx=0; page='main'; _subIdx=0; _saveDone=false; isOpen=true;
+        selectedIdx=1; page='main'; _subIdx=0; _saveDone=false; isOpen=true;
         menuEl.classList.add('open'); _render();
     }
     function close() {

@@ -430,10 +430,12 @@ html, body {
 .sm-carousel {
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    gap: 2px;
+    justify-content: flex-start;
+    gap: 4px;
     overflow-x: auto;
     scrollbar-width: none;
+    scroll-behavior: smooth;
+    padding: 0 4px;
 }
 .sm-carousel::-webkit-scrollbar { display: none; }
 .sm-icon-wrap {
