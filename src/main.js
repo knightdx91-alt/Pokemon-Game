@@ -336,11 +336,7 @@
             console.log('[Main] Game started. Map:', GameMap.current && GameMap.current.name);
         } catch (e) {
             console.error('[Main] init() error:', e);
-            // Show error on screen so it's visible without devtools
-            const errDiv = document.createElement('div');
-            errDiv.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#800;color:#fff;padding:8px;font-size:12px;z-index:9999;word-break:break-all;';
-            errDiv.textContent = 'Init error: ' + (e && e.message ? e.message : String(e));
-            document.body.appendChild(errDiv);
+            window._initError = e && e.message ? e.message : String(e);
         }
         // Game loop starts unconditionally so input/HUD always work
         requestAnimationFrame(gameLoop);
