@@ -51,6 +51,15 @@ html, body {
     overflow: hidden;
 }
 
+/* Default (auto / portrait phone): game screen full width, height from aspect ratio */
+#screen-primary {
+    width: 100vw;
+    height: auto;
+    aspect-ratio: 240 / 208;
+    flex-shrink: 0;
+    max-height: 60vh;
+}
+
 #screen-primary canvas,
 #screen-secondary canvas {
     display: block;
@@ -515,50 +524,99 @@ html, body {
     border-radius: 2px;
 }
 
-body.portrait .drag-handle {
+body.orient-portrait .drag-handle,
+body:not([class*="orient-"]) .drag-handle {
     display: block;
 }
 
 /* ===================================================================
-   ORIENTATION — PORTRAIT
+   ORIENTATION — PORTRAIT  (body.orient-portrait or default auto)
    =================================================================== */
-body.portrait #game-wrapper {
+body.orient-portrait #game-wrapper,
+body:not([class*="orient-"]) #game-wrapper {
     flex-direction: column;
 }
 
-body.portrait #screen-primary {
+body.orient-portrait #screen-primary,
+body:not([class*="orient-"]) #screen-primary {
     width: 100vw;
     height: auto;
+    max-height: 60vh;
     aspect-ratio: 240 / 208;
     flex-shrink: 0;
 }
 
-body.portrait #screen-secondary {
+body.orient-portrait #screen-secondary,
+body:not([class*="orient-"]) #screen-secondary {
     width: 100vw;
     flex: 1;
     min-height: 60px;
 }
 
 /* ===================================================================
-   ORIENTATION — LANDSCAPE
+   ORIENTATION — REVERSE PORTRAIT  (180° flip)
    =================================================================== */
-body.landscape #game-wrapper {
-    flex-direction: row;
-    justify-content: center;
-    align-items: stretch;
+body.orient-reverse-portrait {
+    transform: rotate(180deg);
+    transform-origin: center center;
 }
 
-body.landscape #screen-primary {
-    height: 100vh;
-    width: auto;
+body.orient-reverse-portrait #screen-primary {
+    width: 100vw;
+    height: auto;
+    max-height: 60vh;
     aspect-ratio: 240 / 208;
     flex-shrink: 0;
 }
 
-body.landscape #screen-secondary {
+/* ===================================================================
+   ORIENTATION — LANDSCAPE
+   =================================================================== */
+body.orient-landscape #game-wrapper {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+body.orient-landscape #screen-primary {
+    height: 100vh;
+    width: auto;
+    max-height: none;
+    aspect-ratio: 240 / 208;
+    flex-shrink: 0;
+}
+
+body.orient-landscape #screen-secondary {
     flex: 1;
     height: 100vh;
     min-width: 80px;
+}
+
+/* In landscape, controls layer is a right-side panel */
+body.orient-landscape #controls-layer {
+    opacity: var(--controls-opacity, 0.85);
+}
+
+/* ===================================================================
+   ORIENTATION — REVERSE LANDSCAPE  (upside-down landscape)
+   =================================================================== */
+body.orient-reverse-landscape {
+    transform: rotate(180deg);
+    transform-origin: center center;
+}
+
+body.orient-reverse-landscape #game-wrapper {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+body.orient-reverse-landscape #screen-primary {
+    height: 100vh;
+    width: auto;
+    max-height: none;
+    aspect-ratio: 240 / 208;
+    flex-shrink: 0;
 }
 
 /* ===================================================================
