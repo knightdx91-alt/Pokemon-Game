@@ -377,7 +377,6 @@
     <div class="loading-prog-wrap"><div class="loading-prog-fill" id="loadingProgFill"></div></div>
 </div>
 
-<!-- fflate for in-browser ZIP extraction -->
 <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
 <script src="https://apis.google.com/js/api.js"></script>
 <script src="https://accounts.google.com/gsi/client"></script>
@@ -392,46 +391,46 @@
     };
 
     var SYSTEMS = [
-        { id:'nes',      label:'NES',             core:'fceumm',           exts:['.nes','.fds'],                       group:'Nintendo', icon:'🎮' },
-        { id:'snes',     label:'SNES',            core:'snes9x',           exts:['.sfc','.smc','.fig'],                group:'Nintendo', icon:'🕹️' },
-        { id:'n64',      label:'Nintendo 64',     core:'mupen64plus_next', exts:['.n64','.z64','.v64'],                group:'Nintendo', icon:'🎯' },
-        { id:'gb',       label:'Game Boy',        core:'gambatte',         exts:['.gb'],                              group:'Nintendo', icon:'🎲' },
-        { id:'gbc',      label:'Game Boy Color',  core:'gambatte',         exts:['.gbc'],                             group:'Nintendo', icon:'🌈' },
-        { id:'gba',      label:'GBA',             core:'mgba',             exts:['.gba'],                             group:'Nintendo', icon:'🎪' },
-        { id:'nds',      label:'Nintendo DS',     core:'desmume',          exts:['.nds'],                             group:'Nintendo', icon:'📱' },
-        { id:'vb',       label:'Virtual Boy',     core:'beetle_vb',        exts:['.vb','.vboy'],                      group:'Nintendo', icon:'🥽' },
-        { id:'pokemini', label:'Pokémon Mini',    core:'pokemini',         exts:['.min'],                             group:'Nintendo', icon:'⭐' },
-        { id:'sms',      label:'Master System',   core:'genesis_plus_gx',  exts:['.sms'],                             group:'Sega',     icon:'📟' },
-        { id:'gg',       label:'Game Gear',       core:'genesis_plus_gx',  exts:['.gg'],                              group:'Sega',     icon:'🂴' },
-        { id:'genesis',  label:'Mega Drive',      core:'genesis_plus_gx',  exts:['.md','.gen','.bin'],                group:'Sega',     icon:'⚡' },
-        { id:'segacd',   label:'Sega CD',         core:'genesis_plus_gx',  exts:['.bin','.iso','.cue','.chd'],        group:'Sega',     icon:'💿' },
-        { id:'sega32x',  label:'32X',             core:'picodrive',        exts:['.32x','.bin'],                      group:'Sega',     icon:'🔺' },
-        { id:'saturn',   label:'Saturn',          core:'yabause',          exts:['.bin','.iso','.chd'],               group:'Sega',     icon:'🪐' },
-        { id:'dc',       label:'Dreamcast',       core:'flycast',          exts:['.cdi','.gdi','.chd','.cue'],        group:'Sega',     icon:'🌀' },
-        { id:'psx',      label:'PlayStation',     core:'pcsx_rearmed',     exts:['.bin','.cue','.iso','.pbp','.chd'], group:'Sony',     icon:'🎮' },
-        { id:'psp',      label:'PSP',             core:'ppsspp',           exts:['.iso','.cso','.pbp'],               group:'Sony',     icon:'📺' },
-        { id:'a2600',    label:'Atari 2600',      core:'stella',           exts:['.a26','.bin'],                      group:'Atari',    icon:'👾' },
-        { id:'a5200',    label:'Atari 5200',      core:'a5200',            exts:['.a52','.rom','.bin'],               group:'Atari',    icon:'🕹️' },
-        { id:'a7800',    label:'Atari 7800',      core:'prosystem',        exts:['.a78','.bin'],                      group:'Atari',    icon:'🎯' },
-        { id:'lynx',     label:'Atari Lynx',      core:'beetle_lynx',      exts:['.lnx'],                             group:'Atari',    icon:'🂴' },
-        { id:'jaguar',   label:'Atari Jaguar',    core:'virtualjaguar',    exts:['.j64','.jag','.bin'],               group:'Atari',    icon:'🐆' },
-        { id:'pce',      label:'PC Engine',       core:'beetle_pce',       exts:['.pce','.bin','.cue','.chd'],        group:'NEC',      icon:'💽' },
-        { id:'pcfx',     label:'PC-FX',           core:'beetle_pcfx',      exts:['.iso','.bin','.chd','.cue'],        group:'NEC',      icon:'💾' },
-        { id:'ngp',      label:'Neo Geo Pocket',  core:'beetle_ngp',       exts:['.ngp','.ngc'],                      group:'SNK',      icon:'🎰' },
-        { id:'neocd',    label:'Neo Geo CD',      core:'neocd',            exts:['.chd','.cue'],                      group:'SNK',      icon:'📀' },
-        { id:'wswan',    label:'WonderSwan',      core:'beetle_wswan',     exts:['.ws','.wsc'],                       group:'Bandai',   icon:'🦢' },
-        { id:'fbneo',    label:'Arcade (FBNeo)',   core:'fbneo',            exts:['.zip'],                             group:'Arcade',   icon:'🕹️' },
-        { id:'mame2003', label:'MAME 2003',       core:'mame2003',         exts:['.zip'],                             group:'Arcade',   icon:'🎰' },
-        { id:'c64',      label:'Commodore 64',    core:'vice_x64',         exts:['.d64','.t64','.prg','.crt'],        group:'Computers',icon:'💻' },
-        { id:'msx',      label:'MSX',             core:'fmsx',             exts:['.rom','.mx1','.mx2','.dsk'],        group:'Computers',icon:'🖥️' },
-        { id:'amiga',    label:'Amiga',           core:'puae',             exts:['.adf','.hdf','.zip'],               group:'Computers',icon:'🖱️' },
-        { id:'dos',      label:'DOS',             core:'dosbox_pure',      exts:['.zip','.exe','.com'],               group:'Computers',icon:'📟' },
-        { id:'intv',     label:'Intellivision',   core:'freeintv',         exts:['.int','.bin'],                      group:'Other',    icon:'📺' },
-        { id:'vectrex',  label:'Vectrex',         core:'vecx',             exts:['.vec','.bin'],                      group:'Other',    icon:'📐' },
-        { id:'o2em',     label:'Odyssey2',        core:'o2em',             exts:['.bin'],                             group:'Other',    icon:'🎱' },
+        { id:'nes',      label:'NES',             core:'fceumm',           exts:['.nes','.fds','.zip'],                          group:'Nintendo', icon:'🎮' },
+        { id:'snes',     label:'SNES',            core:'snes9x',           exts:['.sfc','.smc','.fig','.zip'],                   group:'Nintendo', icon:'🕹️' },
+        { id:'n64',      label:'Nintendo 64',     core:'mupen64plus_next', exts:['.n64','.z64','.v64','.zip'],                   group:'Nintendo', icon:'🎯' },
+        { id:'gb',       label:'Game Boy',        core:'gambatte',         exts:['.gb','.zip'],                                  group:'Nintendo', icon:'🎲' },
+        { id:'gbc',      label:'Game Boy Color',  core:'gambatte',         exts:['.gbc','.zip'],                                 group:'Nintendo', icon:'🌈' },
+        { id:'gba',      label:'GBA',             core:'mgba',             exts:['.gba','.zip'],                                 group:'Nintendo', icon:'🎪' },
+        { id:'nds',      label:'Nintendo DS',     core:'desmume',          exts:['.nds','.zip'],                                 group:'Nintendo', icon:'📱' },
+        { id:'vb',       label:'Virtual Boy',     core:'beetle_vb',        exts:['.vb','.vboy','.zip'],                          group:'Nintendo', icon:'🥽' },
+        { id:'pokemini', label:'Pokémon Mini',    core:'pokemini',         exts:['.min','.zip'],                                 group:'Nintendo', icon:'⭐' },
+        { id:'sms',      label:'Master System',   core:'genesis_plus_gx',  exts:['.sms','.zip'],                                 group:'Sega',     icon:'📟' },
+        { id:'gg',       label:'Game Gear',       core:'genesis_plus_gx',  exts:['.gg','.zip'],                                  group:'Sega',     icon:'🂴' },
+        { id:'genesis',  label:'Mega Drive',      core:'genesis_plus_gx',  exts:['.md','.gen','.bin','.zip'],                    group:'Sega',     icon:'⚡' },
+        { id:'segacd',   label:'Sega CD',         core:'genesis_plus_gx',  exts:['.bin','.iso','.cue','.chd','.zip'],            group:'Sega',     icon:'💿' },
+        { id:'sega32x',  label:'32X',             core:'picodrive',        exts:['.32x','.bin','.zip'],                          group:'Sega',     icon:'🔺' },
+        { id:'saturn',   label:'Saturn',          core:'yabause',          exts:['.bin','.iso','.chd','.zip'],                   group:'Sega',     icon:'🪐' },
+        { id:'dc',       label:'Dreamcast',       core:'flycast',          exts:['.cdi','.gdi','.chd','.cue','.zip'],            group:'Sega',     icon:'🌀' },
+        { id:'psx',      label:'PlayStation',     core:'pcsx_rearmed',     exts:['.bin','.cue','.iso','.pbp','.chd','.zip'],     group:'Sony',     icon:'🎮' },
+        { id:'psp',      label:'PSP',             core:'ppsspp',           exts:['.iso','.cso','.pbp','.zip'],                   group:'Sony',     icon:'📺' },
+        { id:'a2600',    label:'Atari 2600',      core:'stella',           exts:['.a26','.bin','.zip'],                          group:'Atari',    icon:'👾' },
+        { id:'a5200',    label:'Atari 5200',      core:'a5200',            exts:['.a52','.rom','.bin','.zip'],                   group:'Atari',    icon:'🕹️' },
+        { id:'a7800',    label:'Atari 7800',      core:'prosystem',        exts:['.a78','.bin','.zip'],                          group:'Atari',    icon:'🎯' },
+        { id:'lynx',     label:'Atari Lynx',      core:'beetle_lynx',      exts:['.lnx','.zip'],                                 group:'Atari',    icon:'🂴' },
+        { id:'jaguar',   label:'Atari Jaguar',    core:'virtualjaguar',    exts:['.j64','.jag','.bin','.zip'],                   group:'Atari',    icon:'🐆' },
+        { id:'pce',      label:'PC Engine',       core:'beetle_pce',       exts:['.pce','.bin','.cue','.chd','.zip'],            group:'NEC',      icon:'💽' },
+        { id:'pcfx',     label:'PC-FX',           core:'beetle_pcfx',      exts:['.iso','.bin','.chd','.cue','.zip'],            group:'NEC',      icon:'💾' },
+        { id:'ngp',      label:'Neo Geo Pocket',  core:'beetle_ngp',       exts:['.ngp','.ngc','.zip'],                          group:'SNK',      icon:'🎰' },
+        { id:'neocd',    label:'Neo Geo CD',      core:'neocd',            exts:['.chd','.cue','.zip'],                          group:'SNK',      icon:'📀' },
+        { id:'wswan',    label:'WonderSwan',      core:'beetle_wswan',     exts:['.ws','.wsc','.zip'],                           group:'Bandai',   icon:'🦢' },
+        { id:'fbneo',    label:'Arcade (FBNeo)',   core:'fbneo',            exts:['.zip'],                                        group:'Arcade',   icon:'🕹️' },
+        { id:'mame2003', label:'MAME 2003',       core:'mame2003',         exts:['.zip'],                                        group:'Arcade',   icon:'🎰' },
+        { id:'c64',      label:'Commodore 64',    core:'vice_x64',         exts:['.d64','.t64','.prg','.crt','.zip'],            group:'Computers',icon:'💻' },
+        { id:'msx',      label:'MSX',             core:'fmsx',             exts:['.rom','.mx1','.mx2','.dsk','.zip'],            group:'Computers',icon:'🖥️' },
+        { id:'amiga',    label:'Amiga',           core:'puae',             exts:['.adf','.hdf','.zip'],                          group:'Computers',icon:'🖱️' },
+        { id:'dos',      label:'DOS',             core:'dosbox_pure',      exts:['.zip','.exe','.com'],                          group:'Computers',icon:'📟' },
+        { id:'intv',     label:'Intellivision',   core:'freeintv',         exts:['.int','.bin','.zip'],                          group:'Other',    icon:'📺' },
+        { id:'vectrex',  label:'Vectrex',         core:'vecx',             exts:['.vec','.bin','.zip'],                          group:'Other',    icon:'📐' },
+        { id:'o2em',     label:'Odyssey2',        core:'o2em',             exts:['.bin','.zip'],                                 group:'Other',    icon:'🎱' },
     ];
 
-    /* Systems that use ZIP natively — don't extract from these */
+    /* Systems that pass ZIP directly to the core without extraction */
     var ZIP_NATIVE = { fbneo: true, mame2003: true, amiga: true, dos: true };
 
     var SYS_BY_ID = {};
@@ -480,9 +479,8 @@
     /* ── ZIP detection and extraction ── */
     function isZipBlob(blob) {
         return blob.slice(0, 4).arrayBuffer().then(function (buf) {
-            var bytes = new Uint8Array(buf);
-            /* ZIP magic: PK\x03\x04 */
-            return bytes[0] === 0x50 && bytes[1] === 0x4B && bytes[2] === 0x03 && bytes[3] === 0x04;
+            var b = new Uint8Array(buf);
+            return b[0] === 0x50 && b[1] === 0x4B && b[2] === 0x03 && b[3] === 0x04;
         });
     }
 
@@ -494,63 +492,47 @@
                 fflate.unzip(new Uint8Array(buf), function (err, files) {
                     if (err) { rej(err); return; }
                     var keys = Object.keys(files);
-                    /* Try to find a file matching the system's extensions */
-                    var match = null;
-                    var matchName = null;
-                    for (var i = 0; i < sys.exts.length && !match; i++) {
-                        var ext = sys.exts[i];
+                    var match = null, matchName = null;
+                    /* Find first file matching a non-zip extension for this system */
+                    var searchExts = sys.exts.filter(function (e) { return e !== '.zip'; });
+                    for (var i = 0; i < searchExts.length && !match; i++) {
                         for (var j = 0; j < keys.length; j++) {
-                            if (keys[j].toLowerCase().endsWith(ext)) {
+                            if (keys[j].toLowerCase().endsWith(searchExts[i])) {
                                 match = files[keys[j]];
                                 matchName = keys[j].split('/').pop();
                                 break;
                             }
                         }
                     }
-                    /* Fallback: largest file in the ZIP */
+                    /* Fallback: largest file */
                     if (!match) {
-                        var biggest = null, biggestName = null, biggestSize = 0;
+                        var biggestSize = 0;
                         keys.forEach(function (k) {
                             if (files[k].length > biggestSize) {
                                 biggestSize = files[k].length;
-                                biggest = files[k];
-                                biggestName = k.split('/').pop();
+                                match = files[k];
+                                matchName = k.split('/').pop();
                             }
                         });
-                        match = biggest;
-                        matchName = biggestName;
                     }
-                    if (!match) { rej(new Error('ZIP appears to be empty')); return; }
+                    if (!match) { rej(new Error('ZIP is empty')); return; }
                     res({ blob: new Blob([match], { type: 'application/octet-stream' }), name: matchName });
                 });
             });
         });
     }
 
-    /* ── Main handler: unzip if needed, then launch ── */
     function prepareAndLaunch(sys, blob, fileName) {
-        if (ZIP_NATIVE[sys.id]) {
-            /* This system uses ZIP natively — pass it straight through */
-            cacheAndLaunch(sys, blob, fileName);
-            return;
-        }
+        if (ZIP_NATIVE[sys.id]) { cacheAndLaunch(sys, blob, fileName); return; }
         isZipBlob(blob).then(function (isZip) {
-            if (!isZip) {
-                cacheAndLaunch(sys, blob, fileName);
-                return;
-            }
+            if (!isZip) { cacheAndLaunch(sys, blob, fileName); return; }
             extractFromZip(blob, sys)
-                .then(function (result) {
-                    cacheAndLaunch(sys, result.blob, result.name);
-                })
-                .catch(function (err) {
-                    hideLoading();
-                    alert('ZIP extraction failed: ' + err.message);
-                });
+                .then(function (r) { cacheAndLaunch(sys, r.blob, r.name); })
+                .catch(function (err) { hideLoading(); alert('ZIP extraction failed: ' + err.message); });
         });
     }
 
-    /* ── URL helpers ── */
+    /* ── URL input ── */
     urlInput.addEventListener('input', function () {
         btnUrlLoad.disabled = !urlInput.value.trim() || !_selectedSys;
     });
@@ -569,13 +551,9 @@
         btnUrlLoad.disabled = true;
         showLoading('Connecting…');
         streamFetch(url, {}, fileName)
-            .then(function (blob) {
-                btnUrlLoad.disabled = false;
-                prepareAndLaunch(_selectedSys, blob, fileName);
-            })
+            .then(function (blob) { btnUrlLoad.disabled = false; prepareAndLaunch(_selectedSys, blob, fileName); })
             .catch(function (err) {
-                hideLoading();
-                btnUrlLoad.disabled = false;
+                hideLoading(); btnUrlLoad.disabled = false;
                 alert('Download failed: ' + err.message + '\n\nIf using Google Drive, make sure sharing is set to "Anyone with the link".');
             });
     });
@@ -766,10 +744,9 @@
 
     function openDrivePicker(sys, token) {
         gapi.load('picker', function () {
+            /* No MIME filter — show all files so ZIPs and any ROM format are visible */
             new google.picker.PickerBuilder()
-                .addView(new google.picker.DocsView(google.picker.ViewId.DOCS)
-                    .setMimeTypes('application/octet-stream,application/x-unknown,application/zip')
-                    .setQuery(sys.label))
+                .addView(new google.picker.DocsView(google.picker.ViewId.DOCS))
                 .setOAuthToken(token)
                 .setCallback(function (data) {
                     if (data[google.picker.Response.ACTION] === google.picker.Action.PICKED) {
@@ -786,15 +763,8 @@
         showLoading('Downloading · ' + fileName);
         streamFetch('https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media',
             { 'Authorization': 'Bearer ' + token }, fileName)
-            .then(function (blob) {
-                btnDrive.disabled = false;
-                prepareAndLaunch(sys, blob, fileName);
-            })
-            .catch(function (err) {
-                hideLoading();
-                btnDrive.disabled = false;
-                alert('Download failed: ' + err.message);
-            });
+            .then(function (blob) { btnDrive.disabled = false; prepareAndLaunch(sys, blob, fileName); })
+            .catch(function (err) { hideLoading(); btnDrive.disabled = false; alert('Download failed: ' + err.message); });
     }
 
     /* ── Play from cache ── */
@@ -867,7 +837,7 @@
         _selectedSys = sys;
         document.getElementById('sel-icon-txt').textContent = sys.icon || '🎮';
         document.getElementById('sel-name-txt').textContent = sys.label;
-        document.getElementById('sel-ext-txt').textContent  = sys.exts.join(', ') + ' (or .zip)';
+        document.getElementById('sel-ext-txt').textContent  = sys.exts.join(', ');
         var cached = !!_cachedIds[sys.id];
         btnPlayCached.style.display = cached ? '' : 'none';
         btnClear.style.display      = cached ? '' : 'none';
