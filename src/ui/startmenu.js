@@ -459,6 +459,24 @@ window.GameStartMenu = (function () {
                     ctx.fillText(r.val, 130*S, y);
                     y += 14*S;
                 });
+
+                // Player avatar: standing-down frame from data/sprites/player.png
+                var avatarImg = new Image();
+                avatarImg.onload = function() {
+                    // Frame 0 (standing down) is at srcX=0, 16×32 — scale up 4× for card
+                    var aw = 16*4*S/2, ah = 32*4*S/2; // 64×128 at S=2 canvas → 64×128px
+                    var ax = (240 - 16*4)*S - 8*S;    // right edge with margin
+                    var ay = 20*S;
+                    // Draw silhouette backdrop
+                    ctx.fillStyle = 'rgba(24,184,200,0.08)';
+                    ctx.fillRect(ax - 4*S, ay - 4*S, aw + 8*S, ah + 8*S);
+                    ctx.strokeStyle = '#18b8c8';
+                    ctx.lineWidth = S;
+                    ctx.strokeRect(ax - 4*S, ay - 4*S, aw + 8*S, ah + 8*S);
+                    ctx.imageSmoothingEnabled = false;
+                    ctx.drawImage(avatarImg, 0, 0, 16, 32, ax, ay, aw, ah);
+                };
+                avatarImg.src = 'data/sprites/player.png';
             });
         });
     }
@@ -1309,9 +1327,17 @@ window.GameStartMenu = (function () {
             .catch(function(){ _pokedexNumMap = {}; cb({}); });
     }
 
+    function _speciesName(speciesId, map) {
+        if (!speciesId) return null;
+        // String speciesId (new format) — use directly
+        if (typeof speciesId === 'string') return speciesId.toLowerCase();
+        // Numeric speciesId (legacy) — look up via num map
+        return map[speciesId] || null;
+    }
+
     function _loadMonIcon(speciesId, cb) {
         _getPokedexNumMap(function(map) {
-            var name = map[speciesId];
+            var name = _speciesName(speciesId, map);
             if (!name) { cb(null); return; }
             var path = 'data/sprites/pokemon/icons/' + name + '.png';
             if (_monIconCache[path] !== undefined) { cb(_monIconCache[path]); return; }
@@ -1331,24 +1357,14 @@ window.GameStartMenu = (function () {
     function _getParty() {
         var party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
         if (!party.some(Boolean)) {
-            // Fallback so party screen always shows something
-            var _mk = function() {
-                var base = (window.GameSave && GameSave.DEFAULT_POKEMON) ? GameSave.DEFAULT_POKEMON() : {};
-                return Object.assign(base, {
-                    speciesId: 6, nickname: 'CHARIZARD', level: 100, gender: 'M',
-                    currentHp: 360, maxHp: 360,
-                    atk: 293, def: 240, spAtk: 317, spDef: 240, speed: 299,
-                    moves: [
-                        { name: 'Flamethrower', type: 'Fire',   pp: 15, maxPp: 15 },
-                        { name: 'Air Slash',    type: 'Flying',  pp: 20, maxPp: 20 },
-                        { name: 'Dragon Claw',  type: 'Dragon',  pp: 15, maxPp: 15 },
-                        { name: 'Earthquake',   type: 'Ground',  pp: 10, maxPp: 10 },
-                    ],
-                    caughtLevel: 5, exp: 1059860, nature: 'Adamant', type: 'Fire/Flying',
-                    ability: 'Blaze', otName: 'PLAYER', otId: '00001'
-                });
-            };
-            party = Array.from({ length: 6 }, _mk);
+            var base = (window.GameSave && GameSave.DEFAULT_POKEMON) ? GameSave.DEFAULT_POKEMON() : {};
+            party = [Object.assign({}, base, {
+                speciesId: 'charizard', nickname: 'CHARIZARD', level: 50,
+                currentHp: 153, maxHp: 153, nature: 'adamant',
+                moves: ['flamethrower', 'air_slash', 'dragon_claw', 'earthquake'],
+                ivs: { hp:31, atk:31, def:31, spa:31, spd:31, spe:31 },
+                evs: { hp:0, atk:0, def:0, spa:0, spd:0, spe:0 },
+            }), null, null, null, null, null];
         }
         return party;
     }
@@ -1407,7 +1423,7 @@ window.GameStartMenu = (function () {
 
         function _loadFrontSprite(speciesId, cb) {
             _getPokedexNumMap(function(map) {
-                var name = map[speciesId];
+                var name = _speciesName(speciesId, map);
                 if (!name) { cb(null); return; }
                 var path = 'data/sprites/pokemon/front/' + name + '.png';
                 var img = new Image();
@@ -1510,7 +1526,7 @@ window.GameStartMenu = (function () {
 
         // Load front sprite
         _getPokedexNumMap(function(map) {
-            var name = map[mon.speciesId];
+            var name = _speciesName(mon.speciesId, map);
             if (!name) { drawSummary(); return; }
             var img = new Image();
             img.onload = function() { _frontImg = img; drawSummary(); };
@@ -1543,7 +1559,8 @@ window.GameStartMenu = (function () {
             var gStr = mon.gender==='M' ? ' ♂' : mon.gender==='F' ? ' ♀' : '';
             ctx.fillText((mon.nickname||'???')+gStr, 8*S, 23*S);
             ctx.font = (6*S)+'px monospace'; ctx.fillStyle = DIM;
-            ctx.fillText('No. '+(mon.speciesId||'?'), (GBA_W-60)*S, 23*S);
+            var _dexNum = (typeof mon.speciesId === 'number') ? mon.speciesId : ((_pokedexNumMap && Object.keys(_pokedexNumMap).find(function(k){ return _pokedexNumMap[k] === (mon.speciesId||'').toLowerCase(); })) || '?');
+            ctx.fillText('No. '+_dexNum, (GBA_W-60)*S, 23*S);
             ctx.fillStyle = TEXT;
             ctx.fillText('Lv.'+(mon.level||1), (GBA_W-28)*S, 23*S);
 
@@ -2196,6 +2213,130 @@ window.GameStartMenu = (function () {
         }
     }
 
+    // --- Pokénav Map tab ---
+    var _pokenavMapWin = null;
+
+    function _openPokenavMap() {
+        if (_pokenavMapWin) return;
+        var screen = document.getElementById('screen-primary');
+        if (!screen) return;
+
+        var win = document.createElement('div');
+        win.style.cssText = 'position:absolute;inset:0;z-index:200;background:#060610;display:flex;flex-direction:column;font-family:monospace;';
+        _pokenavMapWin = win;
+        screen.appendChild(win);
+
+        var canvas = document.createElement('canvas');
+        canvas.width  = 480; canvas.height = 320;
+        canvas.style.cssText = 'width:100%;height:100%;display:block;image-rendering:pixelated;';
+        win.appendChild(canvas);
+
+        var ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+
+        function draw() {
+            var S = 2;
+            var st   = window.GameSave && GameSave.state;
+            var region  = (window.GameMap && GameMap.region) || (st && st.currentLocation && st.currentLocation.region) || 'kanto';
+            var mapName = (window.GameMap && GameMap.current && GameMap.current.name) || '—';
+
+            // Background gradient
+            var grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            grad.addColorStop(0, '#060c14');
+            grad.addColorStop(1, '#0a1820');
+            ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Title bar
+            ctx.fillStyle = '#0a1830';
+            ctx.fillRect(0, 0, canvas.width, 20*S);
+            ctx.fillStyle = '#18b8c8';
+            ctx.fillRect(0, 20*S, canvas.width, 2);
+            ctx.textBaseline = 'top'; ctx.fillStyle = '#18b8c8';
+            ctx.font = 'bold '+(7*S)+'px monospace';
+            ctx.fillText('POKENAV — MAP', 8*S, 5*S);
+
+            // Region name
+            ctx.font = 'bold '+(9*S)+'px monospace'; ctx.fillStyle = '#80d0e8';
+            ctx.fillText(region.charAt(0).toUpperCase()+region.slice(1)+' Region', 8*S, 30*S);
+
+            // Map area visualization — draw a simple schematic grid
+            var REGIONS_INFO = {
+                kanto:     { color:'#3a6a3a', label:'KANTO' },
+                hoenn:     { color:'#2a4a6a', label:'HOENN' },
+                johto:     { color:'#5a3a2a', label:'JOHTO' },
+                heartgold: { color:'#5a3a2a', label:'JOHTO' },
+                sinnoh:    { color:'#2a2a5a', label:'SINNOH' },
+            };
+            var ri = REGIONS_INFO[region] || REGIONS_INFO.kanto;
+
+            // Draw region box
+            var bx=8, by=50, bw=140, bh=80;
+            ctx.fillStyle = ri.color+'44';
+            ctx.fillRect(bx*S, by*S, bw*S, bh*S);
+            ctx.strokeStyle = '#18b8c8'; ctx.lineWidth = 2;
+            ctx.strokeRect(bx*S, by*S, bw*S, bh*S);
+
+            // Region label
+            ctx.font = 'bold '+(6*S)+'px monospace'; ctx.fillStyle = '#18b8c8';
+            ctx.fillText(ri.label, (bx+4)*S, (by+4)*S);
+
+            // Player position indicator — pulsing dot in center
+            var px = (bx + bw/2), py = (by + bh/2);
+            ctx.fillStyle = '#ffff40';
+            ctx.beginPath();
+            ctx.arc(px*S, py*S, 5*S, 0, Math.PI*2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = S;
+            ctx.stroke();
+
+            // Current map name below dot
+            ctx.font = (5*S)+'px monospace'; ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.fillText(mapName, px*S, (py+8)*S);
+            ctx.textAlign = 'left';
+
+            // Visited maps count
+            var visited = st && st.visitedMaps ? (st.visitedMaps instanceof Set ? st.visitedMaps.size : st.visitedMaps.length) : 0;
+            ctx.font = (6*S)+'px monospace'; ctx.fillStyle = '#c8d8e8';
+            ctx.fillText('Maps visited: '+visited, 8*S, 140*S);
+
+            // Coordinates
+            if (window.GameMap) {
+                // We don't store player coords in save, but we can read from the game
+                var cLoc = st && st.currentLocation;
+                if (cLoc) ctx.fillText('Area: '+cLoc.region+'  '+cLoc.mapName, 8*S, 152*S);
+            }
+
+            // Bottom bar
+            ctx.fillStyle = '#0a1830'; ctx.fillRect(0, 148*S, canvas.width, 12*S);
+            ctx.fillStyle = '#18b8c8'; ctx.fillRect(0, 148*S, canvas.width, 1);
+            ctx.font = (5*S)+'px monospace'; ctx.fillStyle = '#6090a8';
+            ctx.fillText('B: Back', 8*S, 150*S);
+        }
+
+        draw();
+
+        var backBtn = document.createElement('button');
+        backBtn.className = 'sm-back-btn';
+        backBtn.textContent = 'B BACK';
+        backBtn.style.cssText = 'position:absolute;bottom:4px;right:4px;z-index:10;pointer-events:all;';
+        backBtn.addEventListener('click', function() {
+            win.remove();
+            _pokenavMapWin = null;
+        });
+        win.appendChild(backBtn);
+
+        // B key to close
+        function _onKey(e) {
+            if (e.key === 'Escape' || e.key === 'x' || e.key === 'X' || e.key === 'b' || e.key === 'B') {
+                e.preventDefault();
+                win.remove(); _pokenavMapWin = null;
+                document.removeEventListener('keydown', _onKey);
+            }
+        }
+        document.addEventListener('keydown', _onKey);
+    }
+
     function _buildPokenav(el) {
         var shell = _makeCanvasShell(el, function(ctx, canvas) {
             _drawPokenavCanvas(ctx);
@@ -2612,6 +2753,10 @@ window.GameStartMenu = (function () {
         if (page!=='main') {
             if (page==='save') { const a=['save','load']; _doSaveAction(a[_subIdx]||'save'); }
             else if (page==='journal') { /* A does nothing in journal — navigate with L/R and up/down */ }
+            else if (page==='pokenav') {
+                if (_subIdx === 4) { _goBack(); }
+                else if (_subIdx === 0) { _openPokenavMap(); }
+            }
             else if (page==='pokedex' && _dexList && _dexList[_subIdx]) {
                 _dexEntry = _dexList[_subIdx];
                 page = 'pokedex_entry'; _subIdx = 0; _render();

@@ -662,7 +662,8 @@ window.GameBattle = (function () {
          onerror="this.style.display='none'" alt="${_enemy.name}">
   </div>
   <div id="bt-player-sprite-wrap">
-    <div id="bt-player-sprite-placeholder"></div>
+    <img id="bt-player-sprite" src="data/sprites/pokemon/back/${_player.speciesId || 'charizard'}.png"
+         onerror="this.style.display='none'" alt="player pokemon">
   </div>
   <div id="bt-player-info">
     <div id="bt-player-name-row">

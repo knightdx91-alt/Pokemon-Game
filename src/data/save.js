@@ -76,7 +76,7 @@
             party: [
                 Object.assign(DEFAULT_POKEMON(), {
                     speciesId: 'charizard', nickname: 'CHARIZARD', level: 50,
-                    currentHp: 155, nature: 'adamant',
+                    currentHp: 153, maxHp: 153, nature: 'adamant',
                     moves: ['flamethrower', 'air_slash', 'dragon_claw', 'earthquake'],
                     ivs: { hp:31, atk:31, def:31, spa:31, spd:31, spe:31 },
                     evs: { hp:0, atk:0, def:0, spa:0, spd:0, spe:0 },
@@ -300,7 +300,7 @@
                 data.party = [
                     Object.assign(DEFAULT_POKEMON(), {
                         speciesId: 'charizard', nickname: 'CHARIZARD', level: 50,
-                        currentHp: 155, nature: 'adamant',
+                        currentHp: 153, maxHp: 153, nature: 'adamant',
                         moves: ['flamethrower', 'air_slash', 'dragon_claw', 'earthquake'],
                         ivs: { hp:31, atk:31, def:31, spa:31, spd:31, spe:31 },
                         evs: { hp:0, atk:0, def:0, spa:0, spd:0, spe:0 },

@@ -148,6 +148,7 @@
             GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
             if (window.GameSave) GameSave.markDirty();
             _warpCooldownUntil = performance.now() + WARP_COOLDOWN_MS;
+            GameMap.loadEncounterData(currentRegion);
         } finally {
             _transitioning = false;
         }
@@ -185,6 +186,7 @@
             GameCamera.update(player.x, player.y, destW, destH);
             if (window.GameSave) GameSave.markDirty();
             _warpCooldownUntil = performance.now() + WARP_COOLDOWN_MS;
+            GameMap.loadEncounterData(currentRegion);
         } finally {
             _transitioning = false;
         }
