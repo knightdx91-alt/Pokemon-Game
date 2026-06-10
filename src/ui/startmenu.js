@@ -1573,7 +1573,7 @@ window.GameStartMenu = (function () {
             ctx.fillStyle = CYAN; ctx.fillRect(0, (21+barH)*S, canvas.width, S);
             ctx.font = 'bold '+(5*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = TEXT; ctx.textBaseline = 'top';
             var gStr = mon.gender==='M' ? ' ♂' : mon.gender==='F' ? ' ♀' : '';
-            ctx.fillText((mon.nickname||'???')+gStr, 8*S, 23*S);
+            ctx.fillText(_monDisplayName(mon)+gStr, 8*S, 23*S);
             ctx.font = (4*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = DIM;
             var _dexNum = (typeof mon.speciesId === 'number') ? mon.speciesId : ((_pokedexNumMap && Object.keys(_pokedexNumMap).find(function(k){ return _pokedexNumMap[k] === (mon.speciesId||'').toLowerCase(); })) || '?');
             ctx.fillText('No. '+_dexNum, (GBA_W-60)*S, 23*S);
@@ -1756,6 +1756,12 @@ window.GameStartMenu = (function () {
         }
 
         // ── Helper: draw one party slot (reused for all 6)
+        function _monDisplayName(mon) {
+            if (mon.nickname) return mon.nickname;
+            if (typeof mon.speciesId === 'string') return mon.speciesId.toUpperCase();
+            return '???';
+        }
+
         function drawSlot(mon, iconImg, winX, winY, winW, winH, nickX, nickY, lvX, lvY, genX, genY, hpBarX, hpBarY, hpNumX, hpNumY, iconX, iconY, isLarge, isSel) {
             drawBox(winX, winY, winW, winH, isSel, isLarge);
 
@@ -1771,7 +1777,7 @@ window.GameStartMenu = (function () {
             // Nickname
             ctx.font = 'bold '+(isLarge ? 7 : 6)*S+'px "Press Start 2P", monospace';
             ctx.fillStyle = COL_TEXT;
-            ctx.fillText((mon.nickname||'???').slice(0, isLarge ? 8 : 10), nickX*S, nickY*S);
+            ctx.fillText(_monDisplayName(mon).slice(0, isLarge ? 8 : 10), nickX*S, nickY*S);
 
             // Level  ("Lv" prefix as in EE)
             ctx.font = (4*S)+'px "Press Start 2P", monospace';
@@ -1868,7 +1874,7 @@ window.GameStartMenu = (function () {
             ctx.fillStyle = COL_TEXT;
             ctx.textBaseline = 'top';
             ctx.fillText('Do what with this', 8*S, 124*S);
-            ctx.fillText((_partyActionMon.nickname||'???') + '?', 8*S, 134*S);
+            ctx.fillText((_partyActionMon.nickname || (typeof _partyActionMon.speciesId==='string' ? _partyActionMon.speciesId.toUpperCase() : '???')) + '?', 8*S, 134*S);
 
             ctx.fillStyle = _tc.bg;
             ctx.fillRect(ax*S, ay*S, aw*S, (opts.length*rowH+6)*S);
