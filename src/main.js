@@ -203,7 +203,7 @@
         const jp = GameInput.justPressed;
 
         window._dbgState = 'tr:' + (_transitioning?1:0) +
-            ' sm:' + (window.GameStartMenu && GameStartMenu.isOpen() ? 1 : 0) +
+            ' sm:' + (window.GameStartMenu && GameStartMenu.isOpen ? 1 : 0) +
             ' dlg:' + (window.GameDialogue && GameDialogue.isOpen() ? 1 : 0) +
             ' bat:' + (window.GameBattle && GameBattle.isActive() ? 1 : 0) +
             ' ml:' + (_mapLoading?1:0);
@@ -239,7 +239,7 @@
         }
 
         // Start menu
-        if (window.GameStartMenu && GameStartMenu.isOpen()) {
+        if (window.GameStartMenu && GameStartMenu.isOpen) {
             if (jp.up)    GameStartMenu.moveUp();
             if (jp.down)  GameStartMenu.moveDown();
             if (jp.left)  GameStartMenu.moveLeft();
