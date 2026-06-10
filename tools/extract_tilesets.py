@@ -280,13 +280,20 @@ def process_tileset_pair(primary_name: str, secondary_name: str):
     pri_pals = load_all_palettes(primary_dir)
     sec_pals = load_all_palettes(secondary_dir)
 
-    # Merge: secondary palettes override primary for the same slot index
-    # (GBA FireRed uses palettes 0-5 from primary, 6-11 from secondary — but
-    #  in practice each .pal file is named 00-15 and both tilesets carry all slots.
-    #  We prefer the secondary palette when both define the same index, matching
-    #  how the GBA hardware loads them.)
-    merged_pri_pals  = {**sec_pals, **pri_pals}   # primary wins for primary slots
-    merged_sec_pals  = {**pri_pals, **sec_pals}   # secondary wins for secondary slots
+    # GBA FireRed palette assignment:
+    #   Slots 0-5  → primary tileset palettes
+    #   Slots 6-11 → secondary tileset palettes
+    #   Slots 12-15 → unused (all-black placeholders — never reference these)
+    # Build one correct merged palette used for ALL tiles (both primary and secondary).
+    correct_pals = {}
+    for i in range(6):
+        if i in pri_pals:
+            correct_pals[i] = pri_pals[i]
+    for i in range(6, 12):
+        if i in sec_pals:
+            correct_pals[i] = sec_pals[i]
+    merged_pri_pals = correct_pals
+    merged_sec_pals = correct_pals
 
     # --- Load metatiles ---
     pri_meta_bin = (primary_dir   / "metatiles.bin").read_bytes()
