@@ -117,8 +117,10 @@ window.GameStartMenu = (function () {
     // --- Bag state ---
     var _bagPocket   = 0;
     var _bagAssets   = null; // { bg, icons: [{unsel,sel}×8] }
-    var _battleItemCallback = null; // set when bag is opened from battle
-    var _battleBagCancel    = null; // called when bag is closed without using an item
+    var _battleItemCallback  = null; // set when bag is opened from battle
+    var _battleBagCancel     = null; // called when bag is closed without using an item
+    var _battlePartyCallback = null; // set when party is opened from battle (switch)
+    var _battlePartyCancel   = null; // called when party is closed without switching
     var _bagItemIconCache = {}; // name → Image|null
 
     function _itemIconPath(item) {
@@ -1359,6 +1361,8 @@ window.GameStartMenu = (function () {
     var _partyActionIdx  = -1;   // filled[] index
     var _partyActionSel  = 0;    // cursor row in action menu
     var _partyActionOpen = false;
+    var _battlePartyCallback = null; // set when party is opened from battle
+    var _battlePartyCancel   = null;
 
     function _getParty() {
         var party = (window.GameSave && GameSave.state && GameSave.state.party) || [];
@@ -1469,14 +1473,20 @@ window.GameStartMenu = (function () {
 
             // Action menu open — handle its clicks
             if (_partyActionOpen) {
-                // Menu is drawn at ax=130, ay=48, rowH=14, 3 rows with 3px top padding
+                // Menu is drawn at ax=130, ay=48, rowH=14, rows with 3px top padding
                 var ax = 130, ay = 51, aw = 102, rowH = 14;
-                var opts = ['Details', 'Item', 'Cancel'];
+                var opts = _battlePartyCallback ? ['Switch', 'Cancel'] : ['Details', 'Item', 'Cancel'];
                 for (var oi = 0; oi < opts.length; oi++) {
                     var ry = ay + oi * rowH;
                     if (gx >= ax && gx < ax+aw && gy >= ry && gy < ry+rowH) {
                         if (opts[oi] === 'Cancel') {
                             _partyActionOpen = false; redraw();
+                        } else if (opts[oi] === 'Switch') {
+                            var _pCb2 = _battlePartyCallback;
+                            var _pMon2 = _partyActionMon;
+                            _battlePartyCallback = null; _battlePartyCancel = null;
+                            close();
+                            if (_pCb2) _pCb2(_pMon2);
                         } else if (opts[oi] === 'Details') {
                             _partyActionOpen = false;
                             _openPartySummary(_partyActionMon, _partyActionIdx, filled, loadIconsAndDraw);
@@ -1852,7 +1862,7 @@ window.GameStartMenu = (function () {
 
         // ── Action sub-menu overlay  (GBA coords: x=130, y=50, w=100, rowH=14)
         if (_partyActionOpen && _partyActionMon) {
-            var opts = ['Details', 'Item', 'Cancel'];
+            var opts = _battlePartyCallback ? ['Switch', 'Cancel'] : ['Details', 'Item', 'Cancel'];
             var ax = 130, ay = 48, aw = 102, rowH = 14;
             // "Do what with this [Name]?" bar in message area
             ctx.fillStyle = _tc.titleBg;
@@ -2754,6 +2764,7 @@ window.GameStartMenu = (function () {
         if (page==='pokedex_entry') { page='pokedex'; _render(); return; }
         // In battle bag mode, B/back closes entirely and returns to battle
         if (_battleBagCancel) { close(); return; }
+        if (_battlePartyCancel) { close(); return; }
         page='main'; _subIdx=0; _render();
     }
 
@@ -2787,10 +2798,16 @@ window.GameStartMenu = (function () {
             } else if (page==='pokemon') {
                 var _pFilled = _getParty().filter(Boolean);
                 if (_partyActionOpen) {
-                    var _pOpts = ['Details', 'Item', 'Cancel'];
-                    var _pOpt  = _pOpts[_partyActionSel] || 'Cancel';
+                    var opts = _battlePartyCallback ? ['Switch', 'Cancel'] : ['Details', 'Item', 'Cancel'];
+                    var _pOpt  = opts[_partyActionSel] || 'Cancel';
                     if (_pOpt === 'Cancel') {
                         _partyActionOpen = false; _redrawPageEl(true);
+                    } else if (_pOpt === 'Switch') {
+                        var _pCb = _battlePartyCallback;
+                        var _pMon = _partyActionMon;
+                        _battlePartyCallback = null; _battlePartyCancel = null;
+                        close();
+                        if (_pCb) _pCb(_pMon);
                     } else if (_pOpt === 'Details') {
                         _partyActionOpen = false;
                         _openPartySummary(_partyActionMon, _partyActionIdx, _pFilled, function(){ _redrawPageEl(); });
@@ -2835,6 +2852,7 @@ window.GameStartMenu = (function () {
         if (subEl) { subEl.style.display='none'; subEl.style.zIndex = ''; }
         // If closed without using a battle item, fire cancel callback
         if (_battleBagCancel) { var cb = _battleBagCancel; _battleItemCallback = null; _battleBagCancel = null; cb(); }
+        if (_battlePartyCancel) { var pcb = _battlePartyCancel; _battlePartyCallback = null; _battlePartyCancel = null; pcb(); }
     }
 
     function openBagForBattle(onUse, onCancel) {
@@ -2843,6 +2861,15 @@ window.GameStartMenu = (function () {
         _battleBagCancel    = onCancel || null;
         selectedIdx = 0; page = 'bag'; _bagPocket = 0; _subIdx = 0; isOpen = true;
         // Lift above battle overlay (z-index 80) so it's visible
+        menuEl.style.zIndex = '90';
+        if (subEl) subEl.style.zIndex = '90';
+        menuEl.classList.add('open'); _render();
+    }
+    function openPartyForBattle(onSwitch, onCancel) {
+        if (!menuEl) { if (onCancel) onCancel(); return; }
+        _battlePartyCallback = onSwitch  || null;
+        _battlePartyCancel   = onCancel  || null;
+        selectedIdx = 0; page = 'pokemon'; _subIdx = 0; _partyActionOpen = false; isOpen = true;
         menuEl.style.zIndex = '90';
         if (subEl) subEl.style.zIndex = '90';
         menuEl.classList.add('open'); _render();
@@ -2871,14 +2898,16 @@ window.GameStartMenu = (function () {
     function moveUp() {
         if (!isOpen||page==='main') return;
         if (page==='pokemon' && _partyActionOpen) {
-            _partyActionSel = (_partyActionSel - 1 + 3) % 3; _redrawPageEl(true); return;
+            var _pOptLen = _battlePartyCallback ? 2 : 3;
+            _partyActionSel = (_partyActionSel - 1 + _pOptLen) % _pOptLen; _redrawPageEl(true); return;
         }
         const c=_subCount(); if(c>0){_subIdx=(_subIdx-1+c)%c; if(page==='journal'||page==='pokemon'){_redrawPageEl(true);}else{_render();}}
     }
     function moveDown() {
         if (!isOpen||page==='main') return;
         if (page==='pokemon' && _partyActionOpen) {
-            _partyActionSel = (_partyActionSel + 1) % 3; _redrawPageEl(true); return;
+            var _pOptLen2 = _battlePartyCallback ? 2 : 3;
+            _partyActionSel = (_partyActionSel + 1) % _pOptLen2; _redrawPageEl(true); return;
         }
         const c=_subCount(); if(c>0){_subIdx=(_subIdx+1)%c; if(page==='journal'||page==='pokemon'){_redrawPageEl(true);}else{_render();}}
     }
@@ -2953,6 +2982,6 @@ window.GameStartMenu = (function () {
 
     document.addEventListener('DOMContentLoaded',init);
 
-    return { toggle, open, close, openBagForBattle, moveUp, moveDown, moveLeft, moveRight, confirm, back,
+    return { toggle, open, close, openBagForBattle, openPartyForBattle, moveUp, moveDown, moveLeft, moveRight, confirm, back,
              get isOpen() { return isOpen; } };
 })();

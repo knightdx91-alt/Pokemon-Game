@@ -1111,54 +1111,26 @@ window.GameBattle = (function () {
     // -----------------------------------------------------------------------
     function _showPartySelect(forcedSwitch) {
         _phase = 'party_select';
-        const st = window.GameSave && GameSave.state;
-        const party = (st && st.party) || [];
-
-        const textBox   = document.getElementById('bt-text-box');
-        const actionBox = document.getElementById('bt-action-box');
-        const moveBox   = document.getElementById('bt-move-box');
-        const bagBox    = document.getElementById('bt-bag-box');
-        const partyBox  = document.getElementById('bt-party-box');
-        if (textBox)   textBox.style.display   = 'none';
-        if (actionBox) actionBox.style.display = 'none';
-        if (moveBox)   moveBox.style.display   = 'none';
-        if (bagBox)    bagBox.style.display    = 'none';
-        if (!partyBox) return;
-
-        partyBox.style.display = 'flex';
-        partyBox.innerHTML = '';
-
-        party.forEach((mon, i) => {
-            if (!mon) return;
-            const isCurrent = mon === _player;
-            const isFainted = (mon.currentHp || 0) <= 0;
-            const dex = _pokedexDb && _pokedexDb[mon.speciesId];
-            const maxHp = dex ? calcAllStats(dex, mon.level||1, mon.ivs||randIVs(), mon.evs||{hp:0,atk:0,def:0,spa:0,spd:0,spe:0}, mon.nature||'hardy').hp : 1;
-            const pct = Math.max(0, (mon.currentHp||0) / maxHp);
-
-            const btn = document.createElement('button');
-            btn.className = 'bt-party-btn' + (isCurrent?' party-current':'') + (isFainted?' party-fainted':'');
-            btn.dataset.idx = i;
-            btn.innerHTML = `<span class="party-name">${_getPartyName(mon)}</span>`
-                          + `<span class="party-lv">Lv${mon.level||1}</span>`
-                          + `<span class="party-hp-wrap"><span class="party-hp-bar ${_hpColor(pct)}" style="width:${pct*100}%"></span></span>`
-                          + `<span class="party-hp-txt">${mon.currentHp||0}/${maxHp}</span>`;
-            if (!isFainted && !isCurrent) {
-                btn.addEventListener('click', () => _switchTo(i));
-            }
-            partyBox.appendChild(btn);
-        });
-
-        if (!forcedSwitch) {
-            const back = document.createElement('button');
-            back.className = 'bt-back-btn';
-            back.textContent = '← Back';
-            back.addEventListener('click', () => _showActionMenu());
-            partyBox.appendChild(back);
+        if (window.GameStartMenu) {
+            GameStartMenu.openPartyForBattle(
+                function(mon) {
+                    var party = window.GameSave && GameSave.state && GameSave.state.party;
+                    if (!party) { _showActionMenu(); return; }
+                    var idx = party.indexOf(mon);
+                    if (idx < 0) { _showActionMenu(); return; }
+                    _switchTo(idx, forcedSwitch);
+                },
+                function() {
+                    if (forcedSwitch) {
+                        _showMessage('No backing out!', function() { _showPartySelect(true); });
+                    } else {
+                        _showActionMenu();
+                    }
+                }
+            );
+        } else {
+            _showActionMenu();
         }
-
-        _selectedParty = 0;
-        _highlightParty(0);
     }
 
     function _highlightParty(idx) {
