@@ -6,7 +6,7 @@
     const MOVE_COOLDOWN_MS  = 150;
     const WARP_COOLDOWN_MS  = 400;
     // Encounter roll: 1-in-N chance per step in grass/cave (matches Gen 3 ~10% grass feel)
-    const ENCOUNTER_CHANCE  = 1.00;
+    const ENCOUNTER_CHANCE  = 0.10;
 
     const player = {
         x: 7,
@@ -199,6 +199,32 @@
     }
 
     // ---------------------------------------------------------------
+    // Fly teleport
+    // ---------------------------------------------------------------
+    async function flyTo(dest) {
+        if (_transitioning) return;
+        _transitioning = true;
+        try {
+            await GameMap.load(dest.map, dest.region || currentRegion);
+            currentRegion = dest.region || currentRegion;
+            window._mapName = dest.map;
+            window._mapLoaded = true;
+            player.x = Math.max(0, Math.min(dest.x, GameMap.width  - 1));
+            player.y = Math.max(0, Math.min(dest.y, GameMap.height - 1));
+            player.direction = 'down';
+            player.walkFrame = 0;
+            _snapPlayer();
+            GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
+            GameHUD.update();
+            if (window.GameSave) GameSave.markDirty();
+            _warpCooldownUntil = performance.now() + WARP_COOLDOWN_MS;
+            GameMap.loadEncounterData(currentRegion);
+        } finally {
+            _transitioning = false;
+        }
+    }
+
+    // ---------------------------------------------------------------
     // Game loop
     // ---------------------------------------------------------------
     let _mapLoading = false;
@@ -246,6 +272,17 @@
             return;
         }
 
+        // Fly menu (select button) — navigation
+        if (window.FlyMenu && FlyMenu.isOpen) {
+            if (jp.up)   FlyMenu.moveUp();
+            if (jp.down) FlyMenu.moveDown();
+            if (jp.a)    FlyMenu.confirm();
+            if (jp.b || jp.select) FlyMenu.cancel();
+            GameInput.consumeJustPressed();
+            requestAnimationFrame(gameLoop);
+            return;
+        }
+
         // Start menu
         if (window.GameStartMenu && GameStartMenu.isOpen) {
             if (jp.up)    GameStartMenu.moveUp();
@@ -264,6 +301,11 @@
         // Start menu toggle
         if (jp.start) {
             if (window.GameStartMenu) GameStartMenu.toggle();
+        }
+
+        // Select: open fly menu
+        if (jp.select && window.FlyMenu) {
+            FlyMenu.open(function (dest) { flyTo(dest); });
         }
 
         // A button: interact
