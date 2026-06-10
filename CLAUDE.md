@@ -2,6 +2,31 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Bug history — known fixes (read before debugging input/menu issues)
+
+### 1. Game loop crashing silently every frame (`src/main.js`)
+**Symptom:** Player can't move, no buttons work, menus don't open, HUD coords never change.  
+**Root cause:** `GameStartMenu.isOpen` is a **getter property** (declared as `get isOpen() { return isOpen; }` in `startmenu.js`), not a method. The game loop called `GameStartMenu.isOpen()` — invoking the returned boolean `false` as a function — which threw `TypeError: GameStartMenu.isOpen is not a function` on every single frame. Because the throw happened before `requestAnimationFrame(gameLoop)` was scheduled, the loop died after one tick.  
+**Fix:** Change every `GameStartMenu.isOpen()` call to `GameStartMenu.isOpen` (no parentheses). `GameDialogue.isOpen()` and `GameBattle.isActive()` are regular functions — those are fine with parentheses.  
+**Rule going forward:** If `GameStartMenu` ever adds more getter properties to its public API, call them without `()`.
+
+### 2. On-screen gamepad buttons not firing input (`src/ui/controls.js`)
+**Symptom:** Buttons light up with CSS `:active` but `GameInput.justPressed` is never set.  
+**Root cause:** `setPointerCapture(e.pointerId)` was called *before* `GameInput.state[key] = true`. If `setPointerCapture` threw `InvalidStateError`, it silently aborted the handler before input was ever set.  
+**Fix:** Set `GameInput.state[key]` and `GameInput.justPressed[key]` *first*, then wrap `setPointerCapture` in a `try/catch`. The input write must come before anything that can throw.
+
+### 3. Map name showing "—" in HUD (`src/main.js`, `src/engine/map.js`)
+**Symptom:** HUD always showed "—" instead of the map name.  
+**Root cause:** `GameHUD.update()` read `mapRef.current.name`, but `GameMap.current` is a live getter; if the async `GameMap.load()` promise hadn't resolved yet on the first few frames, it was null.  
+**Fix:** Set `window._mapName = 'PalletTown'` at the very top of `init()` (before any async work). `GameHUD.update()` checks `window._mapName` first, so it always has a value to display.
+
+### 4. Start menu icon strip visible behind sub-menus (`src/ui/startmenu.js`)
+**Symptom:** Opening Bag, Journal, etc. showed the sub-window but the icon carousel remained visible underneath.  
+**Root cause:** `_render()` called `_renderMain()` unconditionally even when `page !== 'main'`, with a comment "keep top/bottom visible behind overlay".  
+**Fix:** When `page !== 'main'`, set `menuEl.style.visibility = 'hidden'` and skip `_renderMain()`. Reset to `'visible'` in `close()` and when returning to `page === 'main'`.
+
+---
+
 ## CRITICAL RULES — READ FIRST
 - **ALL work goes on `main` branch ONLY. Never create feature branches. Never open PRs. Push directly to `main`.**
 - **The EE submodule lives at `source/emerald-enhanced/` — use it as the reference for any UI/visual work.**
