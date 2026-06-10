@@ -298,43 +298,52 @@
     // Startup
     // ---------------------------------------------------------------
     async function init() {
-        const savedScale = localStorage.getItem('pokemon_control_scale');
-        if (savedScale) {
-            document.documentElement.style.setProperty('--control-scale', savedScale);
+        try {
+            const savedScale = localStorage.getItem('pokemon_control_scale');
+            if (savedScale) {
+                document.documentElement.style.setProperty('--control-scale', savedScale);
+            }
+
+            GameInput.init();
+            GameLayout.init();
+            GameControls.init();
+            GameHUD.init(GameMap, player);
+
+            if (window.GameDialogue) GameDialogue.init();
+
+            const canvas = document.getElementById('canvas-primary');
+            GameRenderer.init(canvas);
+
+            await GameMap.init();
+            await GameMap.load('PalletTown', currentRegion);
+
+            player.x    = 7;
+            player.y    = 8;
+            player.prevX = 7;
+            player.prevY = 8;
+            player.direction = 'down';
+            player.moveStartTime = 0;
+            player.x = Math.min(player.x, GameMap.width  - 1);
+            player.y = Math.min(player.y, GameMap.height - 1);
+            player.prevX = player.x;
+            player.prevY = player.y;
+
+            // Pre-load encounter data for starting map
+            GameMap.loadEncounterData(currentRegion);
+
+            GameRenderer.setScene(GameMap, GameCamera, player);
+            GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
+            console.log('[Main] Game started. Map:', GameMap.current && GameMap.current.name);
+        } catch (e) {
+            console.error('[Main] init() error:', e);
+            // Show error on screen so it's visible without devtools
+            const errDiv = document.createElement('div');
+            errDiv.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#800;color:#fff;padding:8px;font-size:12px;z-index:9999;word-break:break-all;';
+            errDiv.textContent = 'Init error: ' + (e && e.message ? e.message : String(e));
+            document.body.appendChild(errDiv);
         }
-
-        GameInput.init();
-        GameLayout.init();
-        GameControls.init();
-        GameHUD.init(GameMap, player);
-
-        if (window.GameDialogue) GameDialogue.init();
-
-        const canvas = document.getElementById('canvas-primary');
-        GameRenderer.init(canvas);
-
-        await GameMap.init();
-        await GameMap.load('PalletTown', currentRegion);
-
-        player.x    = 7;
-        player.y    = 8;
-        player.prevX = 7;
-        player.prevY = 8;
-        player.direction = 'down';
-        player.moveStartTime = 0;
-        player.x = Math.min(player.x, GameMap.width  - 1);
-        player.y = Math.min(player.y, GameMap.height - 1);
-        player.prevX = player.x;
-        player.prevY = player.y;
-
-        // Pre-load encounter data for starting map
-        GameMap.loadEncounterData(currentRegion);
-
-        GameRenderer.setScene(GameMap, GameCamera, player);
-        GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
+        // Game loop starts unconditionally so input/HUD always work
         requestAnimationFrame(gameLoop);
-
-        console.log('[Main] Game started. Map:', GameMap.current && GameMap.current.name);
     }
 
     document.addEventListener('DOMContentLoaded', init);
