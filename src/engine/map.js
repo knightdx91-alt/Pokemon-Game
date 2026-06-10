@@ -234,15 +234,16 @@ window.GameMap = (function () {
         }
         // Warp tiles are always walkable (door/stairs)
         if (getWarp(x, y)) return true;
-        if (layoutData && layoutData.collision) {
-            if (layoutData.collision[y * mapWidth + x] !== 0) return false;
-        }
-        // Block water tiles — require Surf which isn't implemented yet
-        if (tilesetBehaviors && layoutData && layoutData.metatiles) {
+        if (layoutData && layoutData.collision && tilesetBehaviors && layoutData.metatiles) {
             const metatileIdx = layoutData.metatiles[y * mapWidth + x];
-            if (metatileIdx !== undefined && WATER_BEHAVIORS.has(tilesetBehaviors[metatileIdx])) {
-                return false;
-            }
+            const behavior = metatileIdx !== undefined ? tilesetBehaviors[metatileIdx] : 0;
+            // Grass/cave behaviors are walkable even if collision byte is set
+            if (GRASS_BEHAVIORS.has(behavior) || CAVE_BEHAVIORS.has(behavior)) return true;
+            // Water requires Surf — block regardless of collision byte
+            if (WATER_BEHAVIORS.has(behavior)) return false;
+            if (layoutData.collision[y * mapWidth + x] !== 0) return false;
+        } else if (layoutData && layoutData.collision) {
+            if (layoutData.collision[y * mapWidth + x] !== 0) return false;
         }
         return true;
     }

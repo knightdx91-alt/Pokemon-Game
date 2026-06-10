@@ -75,11 +75,11 @@
     // ---------------------------------------------------------------
     async function _checkEncounter() {
         if (!window.GameBattle || GameBattle.isActive()) return;
-        await GameMap.loadEncounterData(currentRegion);
-        const enc = GameMap.getEncounterData();
-        if (!enc || !enc.land_mons) return;   // map has no land encounters
+        const terrain = GameMap.getTileTerrainType(player.x, player.y);
+        if (terrain !== 'grass' && terrain !== 'cave') return;
         if (Math.random() > ENCOUNTER_CHANCE) return;
 
+        await GameMap.loadEncounterData(currentRegion);
         const entry = GameBattle.rollEncounter(currentRegion);
         if (!entry) return;
 
