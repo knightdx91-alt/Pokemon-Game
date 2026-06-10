@@ -342,7 +342,7 @@
             <button class="btn-primary" id="btn-url-load" disabled>&#9654; Load</button>
         </div>
         <div class="url-hint">
-            ZIP files are automatically extracted. Google Drive: Share → copy link and paste as-is.
+            ZIP files are automatically handled. Google Drive: Share → copy link and paste as-is.
         </div>
     </div>
 </div>
@@ -391,47 +391,56 @@
     };
 
     var SYSTEMS = [
-        { id:'nes',      label:'NES',             core:'fceumm',           exts:['.nes','.fds','.zip'],                          group:'Nintendo', icon:'🎮' },
-        { id:'snes',     label:'SNES',            core:'snes9x',           exts:['.sfc','.smc','.fig','.zip'],                   group:'Nintendo', icon:'🕹️' },
-        { id:'n64',      label:'Nintendo 64',     core:'mupen64plus_next', exts:['.n64','.z64','.v64','.zip'],                   group:'Nintendo', icon:'🎯' },
-        { id:'gb',       label:'Game Boy',        core:'gambatte',         exts:['.gb','.zip'],                                  group:'Nintendo', icon:'🎲' },
-        { id:'gbc',      label:'Game Boy Color',  core:'gambatte',         exts:['.gbc','.zip'],                                 group:'Nintendo', icon:'🌈' },
-        { id:'gba',      label:'GBA',             core:'mgba',             exts:['.gba','.zip'],                                 group:'Nintendo', icon:'🎪' },
-        { id:'nds',      label:'Nintendo DS',     core:'desmume',          exts:['.nds','.zip'],                                 group:'Nintendo', icon:'📱' },
-        { id:'vb',       label:'Virtual Boy',     core:'beetle_vb',        exts:['.vb','.vboy','.zip'],                          group:'Nintendo', icon:'🥽' },
-        { id:'pokemini', label:'Pokémon Mini',    core:'pokemini',         exts:['.min','.zip'],                                 group:'Nintendo', icon:'⭐' },
-        { id:'sms',      label:'Master System',   core:'genesis_plus_gx',  exts:['.sms','.zip'],                                 group:'Sega',     icon:'📟' },
-        { id:'gg',       label:'Game Gear',       core:'genesis_plus_gx',  exts:['.gg','.zip'],                                  group:'Sega',     icon:'🂴' },
-        { id:'genesis',  label:'Mega Drive',      core:'genesis_plus_gx',  exts:['.md','.gen','.bin','.zip'],                    group:'Sega',     icon:'⚡' },
-        { id:'segacd',   label:'Sega CD',         core:'genesis_plus_gx',  exts:['.bin','.iso','.cue','.chd','.zip'],            group:'Sega',     icon:'💿' },
-        { id:'sega32x',  label:'32X',             core:'picodrive',        exts:['.32x','.bin','.zip'],                          group:'Sega',     icon:'🔺' },
-        { id:'saturn',   label:'Saturn',          core:'yabause',          exts:['.bin','.iso','.chd','.zip'],                   group:'Sega',     icon:'🪐' },
-        { id:'dc',       label:'Dreamcast',       core:'flycast',          exts:['.cdi','.gdi','.chd','.cue','.zip'],            group:'Sega',     icon:'🌀' },
-        { id:'psx',      label:'PlayStation',     core:'pcsx_rearmed',     exts:['.bin','.cue','.iso','.pbp','.chd','.zip'],     group:'Sony',     icon:'🎮' },
-        { id:'psp',      label:'PSP',             core:'ppsspp',           exts:['.iso','.cso','.pbp','.zip'],                   group:'Sony',     icon:'📺' },
-        { id:'a2600',    label:'Atari 2600',      core:'stella',           exts:['.a26','.bin','.zip'],                          group:'Atari',    icon:'👾' },
-        { id:'a5200',    label:'Atari 5200',      core:'a5200',            exts:['.a52','.rom','.bin','.zip'],                   group:'Atari',    icon:'🕹️' },
-        { id:'a7800',    label:'Atari 7800',      core:'prosystem',        exts:['.a78','.bin','.zip'],                          group:'Atari',    icon:'🎯' },
-        { id:'lynx',     label:'Atari Lynx',      core:'beetle_lynx',      exts:['.lnx','.zip'],                                 group:'Atari',    icon:'🂴' },
-        { id:'jaguar',   label:'Atari Jaguar',    core:'virtualjaguar',    exts:['.j64','.jag','.bin','.zip'],                   group:'Atari',    icon:'🐆' },
-        { id:'pce',      label:'PC Engine',       core:'beetle_pce',       exts:['.pce','.bin','.cue','.chd','.zip'],            group:'NEC',      icon:'💽' },
-        { id:'pcfx',     label:'PC-FX',           core:'beetle_pcfx',      exts:['.iso','.bin','.chd','.cue','.zip'],            group:'NEC',      icon:'💾' },
-        { id:'ngp',      label:'Neo Geo Pocket',  core:'beetle_ngp',       exts:['.ngp','.ngc','.zip'],                          group:'SNK',      icon:'🎰' },
-        { id:'neocd',    label:'Neo Geo CD',      core:'neocd',            exts:['.chd','.cue','.zip'],                          group:'SNK',      icon:'📀' },
-        { id:'wswan',    label:'WonderSwan',      core:'beetle_wswan',     exts:['.ws','.wsc','.zip'],                           group:'Bandai',   icon:'🦢' },
-        { id:'fbneo',    label:'Arcade (FBNeo)',   core:'fbneo',            exts:['.zip'],                                        group:'Arcade',   icon:'🕹️' },
-        { id:'mame2003', label:'MAME 2003',       core:'mame2003',         exts:['.zip'],                                        group:'Arcade',   icon:'🎰' },
-        { id:'c64',      label:'Commodore 64',    core:'vice_x64',         exts:['.d64','.t64','.prg','.crt','.zip'],            group:'Computers',icon:'💻' },
-        { id:'msx',      label:'MSX',             core:'fmsx',             exts:['.rom','.mx1','.mx2','.dsk','.zip'],            group:'Computers',icon:'🖥️' },
-        { id:'amiga',    label:'Amiga',           core:'puae',             exts:['.adf','.hdf','.zip'],                          group:'Computers',icon:'🖱️' },
-        { id:'dos',      label:'DOS',             core:'dosbox_pure',      exts:['.zip','.exe','.com'],                          group:'Computers',icon:'📟' },
-        { id:'intv',     label:'Intellivision',   core:'freeintv',         exts:['.int','.bin','.zip'],                          group:'Other',    icon:'📺' },
-        { id:'vectrex',  label:'Vectrex',         core:'vecx',             exts:['.vec','.bin','.zip'],                          group:'Other',    icon:'📐' },
-        { id:'o2em',     label:'Odyssey2',        core:'o2em',             exts:['.bin','.zip'],                                 group:'Other',    icon:'🎱' },
+        { id:'nes',      label:'NES',             core:'fceumm',           exts:['.nes','.fds','.zip'],                      group:'Nintendo', icon:'🎮' },
+        { id:'snes',     label:'SNES',            core:'snes9x',           exts:['.sfc','.smc','.fig','.zip'],               group:'Nintendo', icon:'🕹️' },
+        { id:'n64',      label:'Nintendo 64',     core:'mupen64plus_next', exts:['.n64','.z64','.v64','.zip'],               group:'Nintendo', icon:'🎯' },
+        { id:'gb',       label:'Game Boy',        core:'gambatte',         exts:['.gb','.zip'],                              group:'Nintendo', icon:'🎲' },
+        { id:'gbc',      label:'Game Boy Color',  core:'gambatte',         exts:['.gbc','.zip'],                             group:'Nintendo', icon:'🌈' },
+        { id:'gba',      label:'GBA',             core:'mgba',             exts:['.gba','.zip'],                             group:'Nintendo', icon:'🎪' },
+        { id:'nds',      label:'Nintendo DS',     core:'desmume',          exts:['.nds','.zip'],                             group:'Nintendo', icon:'📱' },
+        { id:'vb',       label:'Virtual Boy',     core:'beetle_vb',        exts:['.vb','.vboy','.zip'],                      group:'Nintendo', icon:'🥽' },
+        { id:'pokemini', label:'Pokémon Mini',    core:'pokemini',         exts:['.min','.zip'],                             group:'Nintendo', icon:'⭐' },
+        { id:'sms',      label:'Master System',   core:'genesis_plus_gx',  exts:['.sms','.zip'],                             group:'Sega',     icon:'📟' },
+        { id:'gg',       label:'Game Gear',       core:'genesis_plus_gx',  exts:['.gg','.zip'],                              group:'Sega',     icon:'🂴' },
+        { id:'genesis',  label:'Mega Drive',      core:'genesis_plus_gx',  exts:['.md','.gen','.bin','.zip'],                group:'Sega',     icon:'⚡' },
+        { id:'segacd',   label:'Sega CD',         core:'genesis_plus_gx',  exts:['.bin','.iso','.cue','.chd','.zip'],        group:'Sega',     icon:'💿' },
+        { id:'sega32x',  label:'32X',             core:'picodrive',        exts:['.32x','.bin','.zip'],                      group:'Sega',     icon:'🔺' },
+        { id:'saturn',   label:'Saturn',          core:'yabause',          exts:['.bin','.iso','.chd','.zip'],               group:'Sega',     icon:'🪐' },
+        { id:'dc',       label:'Dreamcast',       core:'flycast',          exts:['.cdi','.gdi','.chd','.cue','.zip'],        group:'Sega',     icon:'🌀' },
+        { id:'psx',      label:'PlayStation',     core:'pcsx_rearmed',     exts:['.bin','.cue','.iso','.pbp','.chd','.zip'], group:'Sony',     icon:'🎮' },
+        { id:'psp',      label:'PSP',             core:'ppsspp',           exts:['.iso','.cso','.pbp','.zip'],               group:'Sony',     icon:'📺' },
+        { id:'a2600',    label:'Atari 2600',      core:'stella',           exts:['.a26','.bin','.zip'],                      group:'Atari',    icon:'👾' },
+        { id:'a5200',    label:'Atari 5200',      core:'a5200',            exts:['.a52','.rom','.bin','.zip'],               group:'Atari',    icon:'🕹️' },
+        { id:'a7800',    label:'Atari 7800',      core:'prosystem',        exts:['.a78','.bin','.zip'],                      group:'Atari',    icon:'🎯' },
+        { id:'lynx',     label:'Atari Lynx',      core:'beetle_lynx',      exts:['.lnx','.zip'],                             group:'Atari',    icon:'🂴' },
+        { id:'jaguar',   label:'Atari Jaguar',    core:'virtualjaguar',    exts:['.j64','.jag','.bin','.zip'],               group:'Atari',    icon:'🐆' },
+        { id:'pce',      label:'PC Engine',       core:'beetle_pce',       exts:['.pce','.bin','.cue','.chd','.zip'],        group:'NEC',      icon:'💽' },
+        { id:'pcfx',     label:'PC-FX',           core:'beetle_pcfx',      exts:['.iso','.bin','.chd','.cue','.zip'],        group:'NEC',      icon:'💾' },
+        { id:'ngp',      label:'Neo Geo Pocket',  core:'beetle_ngp',       exts:['.ngp','.ngc','.zip'],                      group:'SNK',      icon:'🎰' },
+        { id:'neocd',    label:'Neo Geo CD',      core:'neocd',            exts:['.chd','.cue','.zip'],                      group:'SNK',      icon:'📀' },
+        { id:'wswan',    label:'WonderSwan',      core:'beetle_wswan',     exts:['.ws','.wsc','.zip'],                       group:'Bandai',   icon:'🦢' },
+        { id:'fbneo',    label:'Arcade (FBNeo)',   core:'fbneo',            exts:['.zip'],                                    group:'Arcade',   icon:'🕹️' },
+        { id:'mame2003', label:'MAME 2003',       core:'mame2003',         exts:['.zip'],                                    group:'Arcade',   icon:'🎰' },
+        { id:'c64',      label:'Commodore 64',    core:'vice_x64',         exts:['.d64','.t64','.prg','.crt','.zip'],        group:'Computers',icon:'💻' },
+        { id:'msx',      label:'MSX',             core:'fmsx',             exts:['.rom','.mx1','.mx2','.dsk','.zip'],        group:'Computers',icon:'🖥️' },
+        { id:'amiga',    label:'Amiga',           core:'puae',             exts:['.adf','.hdf','.zip'],                      group:'Computers',icon:'🖱️' },
+        { id:'dos',      label:'DOS',             core:'dosbox_pure',      exts:['.zip','.exe','.com'],                      group:'Computers',icon:'📟' },
+        { id:'intv',     label:'Intellivision',   core:'freeintv',         exts:['.int','.bin','.zip'],                      group:'Other',    icon:'📺' },
+        { id:'vectrex',  label:'Vectrex',         core:'vecx',             exts:['.vec','.bin','.zip'],                      group:'Other',    icon:'📐' },
+        { id:'o2em',     label:'Odyssey2',        core:'o2em',             exts:['.bin','.zip'],                             group:'Other',    icon:'🎱' },
     ];
 
-    /* Systems that pass ZIP directly to the core without extraction */
-    var ZIP_NATIVE = { fbneo: true, mame2003: true, amiga: true, dos: true };
+    /*
+     * ZIP_NATIVE: these systems receive the ZIP directly without in-browser extraction.
+     * - Arcade cores (fbneo, mame2003) need the ZIP structure intact.
+     * - Large-file systems (psp, psx, saturn, dc, n64) would OOM if we tried to
+     *   decompress multi-GB ISOs into an ArrayBuffer on mobile.
+     * - amiga/dos use ZIP as their native container.
+     */
+    var ZIP_NATIVE = {
+        fbneo:true, mame2003:true, amiga:true, dos:true,
+        psp:true, psx:true, saturn:true, dc:true, n64:true, segacd:true, sega32x:true
+    };
 
     var SYS_BY_ID = {};
     SYSTEMS.forEach(function (s) { SYS_BY_ID[s.id] = s; });
@@ -476,7 +485,7 @@
     function showLoading(msg) { setDl(msg); setProgress(0); loadingOverlay.classList.add('visible'); }
     function hideLoading() { loadingOverlay.classList.remove('visible'); setProgress(0); }
 
-    /* ── ZIP detection and extraction ── */
+    /* ── ZIP detection and extraction (small ROMs only) ── */
     function isZipBlob(blob) {
         return blob.slice(0, 4).arrayBuffer().then(function (buf) {
             var b = new Uint8Array(buf);
@@ -493,7 +502,6 @@
                     if (err) { rej(err); return; }
                     var keys = Object.keys(files);
                     var match = null, matchName = null;
-                    /* Find first file matching a non-zip extension for this system */
                     var searchExts = sys.exts.filter(function (e) { return e !== '.zip'; });
                     for (var i = 0; i < searchExts.length && !match; i++) {
                         for (var j = 0; j < keys.length; j++) {
@@ -504,7 +512,6 @@
                             }
                         }
                     }
-                    /* Fallback: largest file */
                     if (!match) {
                         var biggestSize = 0;
                         keys.forEach(function (k) {
@@ -744,7 +751,6 @@
 
     function openDrivePicker(sys, token) {
         gapi.load('picker', function () {
-            /* No MIME filter — show all files so ZIPs and any ROM format are visible */
             new google.picker.PickerBuilder()
                 .addView(new google.picker.DocsView(google.picker.ViewId.DOCS))
                 .setOAuthToken(token)
