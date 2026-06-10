@@ -268,7 +268,7 @@
         { id:'gb',       label:'Game Boy',        core:'gambatte',         exts:['.gb','.zip'],                              group:'Nintendo', icon:'🎲' },
         { id:'gbc',      label:'Game Boy Color',  core:'gambatte',         exts:['.gbc','.zip'],                             group:'Nintendo', icon:'🌈' },
         { id:'gba',      label:'GBA',             core:'mgba',             exts:['.gba','.zip'],                             group:'Nintendo', icon:'🎪' },
-        { id:'nds',      label:'Nintendo DS',     core:'desmume2015',      exts:['.nds','.zip'],                             group:'Nintendo', icon:'📱' },
+        { id:'nds',      label:'Nintendo DS',     core:'desmume',          exts:['.nds','.zip'],                             group:'Nintendo', icon:'📱' },
         { id:'vb',       label:'Virtual Boy',     core:'beetle_vb',        exts:['.vb','.vboy','.zip'],                      group:'Nintendo', icon:'🥽' },
         { id:'pokemini', label:'Pokémon Mini',    core:'pokemini',         exts:['.min','.zip'],                             group:'Nintendo', icon:'⭐' },
         { id:'sms',      label:'Master System',   core:'genesis_plus_gx',  exts:['.sms','.zip'],                             group:'Sega',     icon:'📟' },
@@ -552,7 +552,7 @@
         window.EJS_pathtodata         = 'https://cdn.emulatorjs.org/stable/data/';
         window.EJS_color              = '#7c6af7';
         window.EJS_backgroundColor    = '#0d0d0f';
-        window.EJS_startOnLoaded      = !HEAVY[sys.id];  /* heavy cores wait for user tap */
+        window.EJS_startOnLoaded      = !HEAVY[sys.id];
         window.EJS_disableContextMenu = true;
         window.EJS_onGameStart        = function () {
             clearInterval(_timer); _observer.disconnect();
