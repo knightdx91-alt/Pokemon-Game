@@ -292,9 +292,10 @@ window.GameStartMenu = (function () {
             var elRight = elLeft + selEl.offsetWidth;
             var visLeft  = carousel.scrollLeft;
             var visRight = visLeft + carousel.clientWidth;
-            if (_dir < 0 && elLeft < visLeft) {
+            // Ensure selected icon is fully visible (no partial clipping)
+            if (elLeft < visLeft) {
                 carousel.scrollLeft = elLeft - 4;
-            } else if (_dir > 0 && elRight > visRight) {
+            } else if (elRight > visRight) {
                 carousel.scrollLeft = elRight - carousel.clientWidth + 4;
             }
             _carouselScroll = carousel.scrollLeft;
