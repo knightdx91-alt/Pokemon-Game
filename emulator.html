@@ -255,7 +255,7 @@
 <script>
 (function () {
     /* Intercept NDS BIOS fetches and return zero-filled stubs so desmume2015
-       falls back to its internal BIOS instead of 404ing the CDN. */
+       falls back to its internal BIOS replacement instead of 404ing. */
     var NDS_BIOS = { 'bios7.bin': 16384, 'bios9.bin': 4096, 'firmware.bin': 524288 };
     var _origFetch = window.fetch;
     window.fetch = function (url, opts) {
@@ -277,6 +277,8 @@
             attrs = Object.assign({}, attrs || {}, { preserveDrawingBuffer: true });
         return _origGetCtx.call(this, type, attrs);
     };
+
+    var CDN = 'https://cdn.emulatorjs.org/latest/data/';
 
     var SYSTEMS = [
         { id:'nes',      label:'NES',             core:'fceumm',           exts:['.nes','.fds','.zip'],                      group:'Nintendo', icon:'🎮' },
@@ -557,7 +559,7 @@
         window.EJS_player             = '#game';
         window.EJS_core               = sys.core;
         window.EJS_gameUrl            = blobUrl;
-        window.EJS_pathtodata         = 'https://cdn.emulatorjs.org/stable/data/';
+        window.EJS_pathtodata         = CDN;
         window.EJS_color              = '#7c6af7';
         window.EJS_backgroundColor    = '#0d0d0f';
         window.EJS_startOnLoaded      = !HEAVY[sys.id];
@@ -576,7 +578,7 @@
             quickSave:true, quickLoad:true,
         };
         var s = document.createElement('script');
-        s.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+        s.src = CDN + 'loader.js';
         s.onerror = function () { clearInterval(_timer); emuStatus.textContent = 'Failed to load EmulatorJS CDN.'; };
         document.body.appendChild(s);
     }
