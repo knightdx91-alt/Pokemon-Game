@@ -74,14 +74,17 @@
     // Wild encounters
     // ---------------------------------------------------------------
     async function _checkEncounter() {
-        if (!window.GameBattle || GameBattle.isActive()) return;
+        window._encDbg = 'A';
+        if (!window.GameBattle || GameBattle.isActive()) { window._encDbg='B'; return; }
         const mapType = GameMap.current && GameMap.current.map_type;
         const isWild = mapType === 'MAP_TYPE_ROUTE' || mapType === 'MAP_TYPE_UNDERGROUND';
-        if (!isWild) return;
+        if (!isWild) { window._encDbg='C:'+mapType; return; }
+        window._encDbg = 'D';
         if (Math.random() > ENCOUNTER_CHANCE) return;
 
         await GameMap.loadEncounterData(currentRegion);
         const entry = GameBattle.rollEncounter(currentRegion);
+        window._encDbg = 'E:' + (entry ? entry.species : 'null');
         if (!entry) return;
 
         _transitioning = true;   // block movement during battle
