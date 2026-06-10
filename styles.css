@@ -761,6 +761,69 @@ body.orient-reverse-landscape #screen-primary {
     position: relative;
     background: linear-gradient(to bottom, #182838 0%, #1a3040 60%, #2a3828 100%);
     overflow: hidden;
+    image-rendering: pixelated;
+}
+
+/* ── Battle background terrain ──────────────────────────────── */
+#bt-terrain-bg {
+    position: absolute;
+    inset: 0;
+    image-rendering: pixelated;
+    background-repeat: repeat;
+    background-size: 64px auto;
+    opacity: 0.92;
+    pointer-events: none;
+    z-index: 0;
+}
+#bt-field > *:not(#bt-terrain-bg) { position: relative; z-index: 1; }
+
+/* ── Pokéball animation layer ───────────────────────────────── */
+#bt-ball-anim {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+    pointer-events: none;
+    z-index: 20;
+    transform-origin: center center;
+}
+
+@keyframes bt-throw-arc {
+    0%   { left: 60%; bottom: 20%; transform: rotate(0deg) scale(1); opacity: 1; }
+    40%  { left: 40%; bottom: 55%; transform: rotate(-180deg) scale(1.2); opacity: 1; }
+    80%  { left: 15%; bottom: 45%; transform: rotate(-360deg) scale(1); opacity: 1; }
+    100% { left: 14%; bottom: 44%; transform: rotate(-400deg) scale(0.9); opacity: 1; }
+}
+
+@keyframes bt-ball-shake {
+    0%   { transform: rotate(0deg); }
+    20%  { transform: rotate(-20deg); }
+    40%  { transform: rotate(20deg); }
+    60%  { transform: rotate(-15deg); }
+    80%  { transform: rotate(15deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes bt-ball-break {
+    0%   { transform: scale(1); opacity: 1; }
+    30%  { transform: scale(1.3); opacity: 0.8; }
+    100% { transform: scale(0); opacity: 0; }
+}
+
+@keyframes bt-pokemon-caught {
+    0%   { transform: scale(1); opacity: 1; }
+    100% { transform: scale(0); opacity: 0; }
+}
+
+@keyframes bt-pokemon-appear {
+    0%   { transform: scale(0); opacity: 0; }
+    60%  { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes bt-flash {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
 }
 
 /* Enemy info box (top-left) */

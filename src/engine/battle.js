@@ -695,7 +695,9 @@ window.GameBattle = (function () {
         }
 
         _buildUI();
-        _showMessage(`A wild ${wild.name} appeared!`, () => _showActionMenu());
+        _playEntryAnimation(() => {
+            _showMessage(`A wild ${wild.name} appeared!`, () => _showActionMenu());
+        });
     }
 
     function _calcPlayerStats() {
@@ -734,6 +736,126 @@ window.GameBattle = (function () {
     // -----------------------------------------------------------------------
     // UI
     // -----------------------------------------------------------------------
+    // Map type → terrain key
+    function _getTerrainKey() {
+        const mapType = window._currentMapType || '';
+        if (mapType === 'MAP_TYPE_UNDERGROUND') return 'cave';
+        if (mapType === 'MAP_TYPE_INDOOR')      return 'indoor';
+        if (mapType === 'MAP_TYPE_TOWN')        return 'building';
+        // Route — check map name for hints
+        const mapName = (window._mapName || '').toLowerCase();
+        if (mapName.includes('cave') || mapName.includes('tunnel')) return 'cave';
+        if (mapName.includes('water') || mapName.includes('sea'))   return 'water';
+        if (mapName.includes('sand') || mapName.includes('beach'))  return 'sand';
+        return 'grass';
+    }
+
+    // Ball sprite for a given item key
+    function _ballSrc(itemKey) {
+        const A = window._BattleAssets;
+        if (!A) return null;
+        if (itemKey === 'poke_ball')   return A.ball_poke;
+        if (itemKey === 'great_ball')  return A.ball_great;
+        if (itemKey === 'ultra_ball')  return A.ball_ultra;
+        if (itemKey === 'master_ball') return A.ball_master;
+        if (itemKey === 'premier_ball') return A.ball_premier;
+        return A.ball_poke;
+    }
+
+    // Entry animation: trainer throws ball → enemy sprite slides in
+    function _playEntryAnimation(onDone) {
+        const field = document.getElementById('bt-field');
+        const eWrap = document.getElementById('bt-enemy-sprite-wrap');
+        if (!field || !eWrap || !window._BattleAssets) { onDone(); return; }
+
+        // Hide enemy sprite initially
+        eWrap.style.opacity = '0';
+
+        // Get player's first ball in inventory
+        const st = window.GameSave && GameSave.state;
+        const balls = st && st.inventory && st.inventory.pokeBalls || {};
+        let ballItemKey = 'poke_ball';
+        for (const k of ['master_ball','ultra_ball','great_ball','poke_ball','premier_ball']) {
+            if (balls[k] > 0) { ballItemKey = k; break; }
+        }
+
+        const ball = document.createElement('img');
+        ball.id = 'bt-ball-anim';
+        ball.src = _ballSrc(ballItemKey) || '';
+        // Use first frame of 16×48 sprite (closed ball = top 16px)
+        ball.style.cssText = 'position:absolute;width:32px;height:32px;image-rendering:pixelated;z-index:20;left:60%;bottom:20%;object-fit:none;object-position:0 0;';
+        field.appendChild(ball);
+
+        ball.style.animation = 'bt-throw-arc 0.6s ease-out forwards';
+
+        ball.addEventListener('animationend', function () {
+            // Flash enemy sprite in
+            eWrap.style.animation = 'bt-pokemon-appear 0.35s ease-out forwards';
+            eWrap.style.opacity = '1';
+            // Remove ball
+            setTimeout(() => { ball.remove(); }, 100);
+            eWrap.addEventListener('animationend', function () {
+                eWrap.style.animation = '';
+                onDone();
+            }, { once: true });
+        }, { once: true });
+    }
+
+    // Pokéball throw + catch/fail animation
+    function _animateBallThrow(itemKey, caught, onDone) {
+        const field = document.getElementById('bt-field');
+        const eWrap = document.getElementById('bt-enemy-sprite-wrap');
+        if (!field || !eWrap || !window._BattleAssets) { onDone(); return; }
+
+        const ball = document.createElement('img');
+        ball.id = 'bt-ball-anim';
+        ball.src = _ballSrc(itemKey) || '';
+        ball.style.cssText = 'position:absolute;width:32px;height:32px;image-rendering:pixelated;z-index:20;left:60%;bottom:20%;';
+        field.appendChild(ball);
+
+        // Phase 1: throw arc
+        ball.style.animation = 'bt-throw-arc 0.5s ease-out forwards';
+        ball.addEventListener('animationend', function throwDone() {
+            // Phase 2: enemy disappears into ball
+            eWrap.style.animation = 'bt-pokemon-caught 0.2s ease-in forwards';
+            eWrap.addEventListener('animationend', function () {
+                eWrap.style.opacity = '0';
+                eWrap.style.animation = '';
+
+                if (caught) {
+                    // Shake 3 times then stay
+                    let shakes = 0;
+                    function doShake() {
+                        if (shakes >= 3) { onDone(); return; }
+                        shakes++;
+                        ball.style.animation = 'none';
+                        void ball.offsetWidth;
+                        ball.style.animation = 'bt-ball-shake 0.5s ease-in-out';
+                        ball.addEventListener('animationend', doShake, { once: true });
+                    }
+                    setTimeout(doShake, 300);
+                } else {
+                    // Shake once then break open → enemy reappears
+                    ball.style.animation = 'none';
+                    void ball.offsetWidth;
+                    ball.style.animation = 'bt-ball-shake 0.5s ease-in-out';
+                    ball.addEventListener('animationend', function () {
+                        ball.style.animation = 'bt-ball-break 0.3s ease-in forwards';
+                        ball.addEventListener('animationend', function () {
+                            ball.remove();
+                            eWrap.style.opacity = '1';
+                            eWrap.style.animation = 'bt-pokemon-appear 0.3s ease-out forwards';
+                            eWrap.addEventListener('animationend', function () {
+                                eWrap.style.animation = '';
+                                onDone();
+                            }, { once: true });
+                        }, { once: true });
+                    }, { once: true });
+                }
+            }, { once: true });
+        }, { once: true });
+    }
+
     function _buildUI() {
         const screen = document.getElementById('screen-primary');
         if (!screen) return;
@@ -742,8 +864,13 @@ window.GameBattle = (function () {
         _el.id = 'battle-overlay';
         screen.appendChild(_el);
 
+        // Pick terrain based on current map type
+        const terrainKey = _getTerrainKey();
+        const terrainBg = window._BattleAssets && window._BattleAssets['terrain_' + terrainKey];
+
         _el.innerHTML = `
 <div id="bt-field">
+  <div id="bt-terrain-bg" style="${terrainBg ? `background-image:url('${terrainBg}')` : ''}"></div>
   <div id="bt-enemy-info">
     <div id="bt-enemy-name-row">
       <span id="bt-enemy-name">${_enemy.name}</span>
@@ -1248,16 +1375,20 @@ window.GameBattle = (function () {
         }
         GameSave.markDirty();
         const caught = (item.ballBonus >= 255) || calcCatch(_enemy, item.ballBonus);
-        if (caught) {
-            _showMessage(`${_enemy.name} was caught!`, () => { _catchPokemon(); _endBattle('caught'); });
-        } else {
-            _showMessage(`${_enemy.name} broke free!`, () => {
-                _enemyTurn(() => {
-                    if ((_player.currentHp || 0) <= 0) { _onPlayerFaint(); return; }
-                    _showActionMenu();
-                });
+        _showMessage(`You threw a ${item.name}!`, () => {
+            _animateBallThrow(item.key, caught, () => {
+                if (caught) {
+                    _showMessage(`${_enemy.name} was caught!`, () => { _catchPokemon(); _endBattle('caught'); });
+                } else {
+                    _showMessage(`${_enemy.name} broke free!`, () => {
+                        _enemyTurn(() => {
+                            if ((_player.currentHp || 0) <= 0) { _onPlayerFaint(); return; }
+                            _showActionMenu();
+                        });
+                    });
+                }
             });
-        }
+        });
     }
 
     function _usePotion(item) {

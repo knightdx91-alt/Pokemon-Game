@@ -113,7 +113,7 @@
             console.log(`[Warp] -> ${mapName} (warp ${warpIndex})`);
 
             await GameMap.load(mapName, currentRegion);
-            window._mapName = mapName; window._mapLoaded = true;
+            window._mapName = mapName; window._mapLoaded = true; window._currentMapType = (GameMap.current && GameMap.current.map_type) || "";
 
             const destWarps = (GameMap.current && GameMap.current.warps) || [];
             let returnWarp  = destWarps[warpIndex] || null;
@@ -170,7 +170,7 @@
             console.log(`[Connection] ${dir} -> ${destMapId}`);
             const result = await GameMap.loadById(destMapId, currentRegion);
             if (!result) return;
-            window._mapName = destMapId; window._mapLoaded = true;
+            window._mapName = destMapId; window._mapLoaded = true; window._currentMapType = (GameMap.current && GameMap.current.map_type) || "";
 
             const destW = GameMap.width;
             const destH = GameMap.height;
@@ -207,7 +207,7 @@
         try {
             await GameMap.load(dest.map, dest.region || currentRegion);
             currentRegion = dest.region || currentRegion;
-            window._mapName = dest.map;
+            window._mapName = dest.map; window._currentMapType = (GameMap.current && GameMap.current.map_type) || "";
             window._mapLoaded = true;
             player.x = Math.max(0, Math.min(dest.x, GameMap.width  - 1));
             player.y = Math.max(0, Math.min(dest.y, GameMap.height - 1));
