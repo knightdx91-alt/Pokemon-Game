@@ -4,6 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Emulator — RetroPlay</title>
+    <!-- Register COI service worker for SharedArrayBuffer (PPSSPP needs it) -->
+    <script>
+    if ('serviceWorker' in navigator && !window.crossOriginIsolated) {
+        navigator.serviceWorker.register('./sw.js').then(function (reg) {
+            if (reg.installing) {
+                reg.installing.addEventListener('statechange', function (e) {
+                    if (e.target.state === 'activated') location.reload();
+                });
+            }
+        });
+    }
+    </script>
     <style>
         :root {
             --bg:       #0d0d0f;
@@ -254,6 +266,24 @@
 
 <script>
 (function () {
+    /* Patch window.fetch to intercept NDS BIOS requests and return zero-filled stubs.
+       desmume2015 fetches these before starting; 404 = network error. With a stub
+       response the core falls back to its internal BIOS replacement. */
+    var NDS_BIOS = { 'bios7.bin': 16384, 'bios9.bin': 4096, 'firmware.bin': 524288 };
+    var _origFetch = window.fetch;
+    window.fetch = function (url, opts) {
+        if (typeof url === 'string') {
+            var file = url.split('/').pop().split('?')[0];
+            if (NDS_BIOS[file]) {
+                return Promise.resolve(new Response(new Uint8Array(NDS_BIOS[file]), {
+                    status: 200,
+                    headers: { 'Content-Type': 'application/octet-stream' }
+                }));
+            }
+        }
+        return _origFetch.apply(this, arguments);
+    };
+
     var _origGetCtx = HTMLCanvasElement.prototype.getContext;
     HTMLCanvasElement.prototype.getContext = function (type, attrs) {
         if (type === 'webgl' || type === 'webgl2' || type === 'experimental-webgl')
@@ -268,7 +298,7 @@
         { id:'gb',       label:'Game Boy',        core:'gambatte',         exts:['.gb','.zip'],                              group:'Nintendo', icon:'🎲' },
         { id:'gbc',      label:'Game Boy Color',  core:'gambatte',         exts:['.gbc','.zip'],                             group:'Nintendo', icon:'🌈' },
         { id:'gba',      label:'GBA',             core:'mgba',             exts:['.gba','.zip'],                             group:'Nintendo', icon:'🎪' },
-        { id:'nds',      label:'Nintendo DS',     core:'desmume',          exts:['.nds','.zip'],                             group:'Nintendo', icon:'📱' },
+        { id:'nds',      label:'Nintendo DS',     core:'desmume2015',      exts:['.nds','.zip'],                             group:'Nintendo', icon:'📱' },
         { id:'vb',       label:'Virtual Boy',     core:'beetle_vb',        exts:['.vb','.vboy','.zip'],                      group:'Nintendo', icon:'🥽' },
         { id:'pokemini', label:'Pokémon Mini',    core:'pokemini',         exts:['.min','.zip'],                             group:'Nintendo', icon:'⭐' },
         { id:'sms',      label:'Master System',   core:'genesis_plus_gx',  exts:['.sms','.zip'],                             group:'Sega',     icon:'📟' },
@@ -304,7 +334,7 @@
     /* Systems that pass ZIP directly to the core without in-browser extraction */
     var ZIP_NATIVE = { fbneo:true, mame2003:true, amiga:true, dos:true, psp:true, psx:true, saturn:true, dc:true, n64:true, segacd:true, sega32x:true };
 
-    /* Heavy cores that shouldn't auto-start — user taps play instead */
+    /* Heavy cores: disable auto-start so user taps play (avoids OOM on low-memory mobile) */
     var HEAVY = { nds:true, psp:true, psx:true, saturn:true, dc:true, n64:true, segacd:true };
 
     var SYS_BY_ID = {};
