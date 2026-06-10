@@ -267,6 +267,7 @@ html, body {
     user-select: none;
     -webkit-user-select: none;
     cursor: pointer;
+    pointer-events: auto;   /* override any ancestor pointer-events:none */
     font-family: 'Courier New', Courier, monospace;
     font-weight: bold;
     color: rgba(220, 230, 255, 0.95);
