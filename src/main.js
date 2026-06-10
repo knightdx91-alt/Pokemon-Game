@@ -6,7 +6,7 @@
     const MOVE_COOLDOWN_MS  = 150;
     const WARP_COOLDOWN_MS  = 400;
     // Encounter roll: 1-in-N chance per step in grass/cave (matches Gen 3 ~10% grass feel)
-    const ENCOUNTER_CHANCE  = 0.10;
+    const ENCOUNTER_CHANCE  = 1.00; // TODO: restore to 0.10 after battle testing
 
     const player = {
         x: 7,
