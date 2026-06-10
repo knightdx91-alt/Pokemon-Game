@@ -279,22 +279,25 @@ window.GameStartMenu = (function () {
         });
         top.appendChild(carousel);
 
-        // Scroll only in the direction of movement, never on wrap-around
+        // Restore scroll position (DOM was rebuilt), then nudge if icon is off-screen
         var _dir = _carouselDir;
         _carouselDir = 0;
         requestAnimationFrame(function() {
-            if (_dir === 0) return; // wrapped or initial open — don't scroll
+            // Always restore the saved scroll first
+            carousel.scrollLeft = _carouselScroll;
+            if (_dir === 0) return;
             var selEl = carousel.children[selectedIdx];
             if (!selEl) return;
             var elLeft  = selEl.offsetLeft;
             var elRight = elLeft + selEl.offsetWidth;
             var visLeft  = carousel.scrollLeft;
-            var visRight = carousel.scrollLeft + carousel.clientWidth;
+            var visRight = visLeft + carousel.clientWidth;
             if (_dir < 0 && elLeft < visLeft) {
                 carousel.scrollLeft = elLeft - 4;
             } else if (_dir > 0 && elRight > visRight) {
                 carousel.scrollLeft = elRight - carousel.clientWidth + 4;
             }
+            _carouselScroll = carousel.scrollLeft;
         });
 
         // Label below icons (EE shows item name at y=32 inside the top window)
@@ -2874,7 +2877,7 @@ window.GameStartMenu = (function () {
     // --- Public API ---
     function open() {
         if (!menuEl) return;
-        selectedIdx=1; page='main'; _subIdx=0; _saveDone=false; isOpen=true;
+        selectedIdx=1; page='main'; _subIdx=0; _saveDone=false; isOpen=true; _carouselScroll=0; _carouselDir=0;
         menuEl.classList.add('open'); _render();
     }
     function close() {
@@ -2917,7 +2920,8 @@ window.GameStartMenu = (function () {
         if (typeof el._redraw === 'function') { el._redraw(); return true; }
         return false;
     }
-    var _carouselDir = 0; // -1 left, +1 right, 0 no scroll
+    var _carouselDir      = 0;  // -1 left, +1 right, 0 no scroll
+    var _carouselScroll   = 0;  // persisted scroll position across renders
 
     function moveLeft() {
         if (!isOpen) return;
