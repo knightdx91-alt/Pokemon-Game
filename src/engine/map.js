@@ -105,6 +105,9 @@ window.GameMap = (function () {
                     if (tresp.ok) {
                         const tj = await tresp.json();
                         tilesetBehaviors = tj.behaviors || null;
+                        window._dbgTileset = tilesetName + ':' + (tilesetBehaviors ? tilesetBehaviors.length : 'null');
+                    } else {
+                        window._dbgTileset = tilesetName + ':HTTP' + tresp.status;
                     }
                 } catch (_) { /* behaviors unavailable — fall back to collision-only */ }
             }
