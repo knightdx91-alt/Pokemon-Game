@@ -4,18 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Emulator — RetroPlay</title>
-    <!-- Register COI service worker for SharedArrayBuffer (PPSSPP needs it) -->
-    <script>
-    if ('serviceWorker' in navigator && !window.crossOriginIsolated) {
-        navigator.serviceWorker.register('./sw.js').then(function (reg) {
-            if (reg.installing) {
-                reg.installing.addEventListener('statechange', function (e) {
-                    if (e.target.state === 'activated') location.reload();
-                });
-            }
-        });
-    }
-    </script>
     <style>
         :root {
             --bg:       #0d0d0f;
@@ -266,9 +254,8 @@
 
 <script>
 (function () {
-    /* Patch window.fetch to intercept NDS BIOS requests and return zero-filled stubs.
-       desmume2015 fetches these before starting; 404 = network error. With a stub
-       response the core falls back to its internal BIOS replacement. */
+    /* Intercept NDS BIOS fetches and return zero-filled stubs so desmume2015
+       falls back to its internal BIOS instead of 404ing the CDN. */
     var NDS_BIOS = { 'bios7.bin': 16384, 'bios9.bin': 4096, 'firmware.bin': 524288 };
     var _origFetch = window.fetch;
     window.fetch = function (url, opts) {
@@ -331,10 +318,7 @@
         { id:'o2em',     label:'Odyssey2',        core:'o2em',             exts:['.bin','.zip'],                             group:'Other',    icon:'🎱' },
     ];
 
-    /* Systems that pass ZIP directly to the core without in-browser extraction */
     var ZIP_NATIVE = { fbneo:true, mame2003:true, amiga:true, dos:true, psp:true, psx:true, saturn:true, dc:true, n64:true, segacd:true, sega32x:true };
-
-    /* Heavy cores: disable auto-start so user taps play (avoids OOM on low-memory mobile) */
     var HEAVY = { nds:true, psp:true, psx:true, saturn:true, dc:true, n64:true, segacd:true };
 
     var SYS_BY_ID = {};
@@ -378,7 +362,6 @@
     function showLoading(msg) { setDl(msg); setProgress(0); loadingOverlay.classList.add('visible'); }
     function hideLoading() { loadingOverlay.classList.remove('visible'); setProgress(0); }
 
-    /* ── Lazy-load Google scripts only when Drive picker is needed ── */
     function loadGoogleScripts(cb) {
         if (_gapiLoaded && _gsiLoaded) { cb(); return; }
         var pending = 2;
@@ -393,7 +376,6 @@
         document.body.appendChild(s2);
     }
 
-    /* ── ZIP detection and extraction ── */
     function isZipBlob(blob) {
         return blob.slice(0, 4).arrayBuffer().then(function (buf) {
             var b = new Uint8Array(buf);
@@ -441,7 +423,6 @@
         });
     }
 
-    /* ── URL input ── */
     urlInput.addEventListener('input', function () {
         btnUrlLoad.disabled = !urlInput.value.trim() || !_selectedSys;
     });
@@ -465,7 +446,6 @@
             });
     });
 
-    /* ── IDB helpers ── */
     function openDB() {
         return new Promise(function (res, rej) {
             var r = indexedDB.open(IDB_DB, 1);
@@ -518,7 +498,6 @@
         });
     }
 
-    /* ── Stream download ── */
     function streamFetch(url, headers, label) {
         return fetch(url, { headers: headers || {} }).then(function (resp) {
             if (!resp.ok) throw new Error('HTTP ' + resp.status);
@@ -541,7 +520,6 @@
         });
     }
 
-    /* ── Launch EJS ── */
     function launchEJS(sys, blobUrl, label) {
         hideLoading();
         setupScreen.style.display = 'none';
@@ -603,7 +581,6 @@
         document.body.appendChild(s);
     }
 
-    /* ── Cache helpers ── */
     function cacheAndLaunch(sys, blob, fileName) {
         setDl('Saving to cache…'); setProgress(100);
         var meta = { sysId: sys.id, label: sys.label, filename: fileName || sys.label, size: blob.size };
@@ -618,7 +595,6 @@
         });
     }
 
-    /* ── Drive picker (lazy-loads Google scripts) ── */
     function startDrivePicker() {
         if (!_selectedSys) return;
         showLoading('Loading Google API…');
@@ -662,7 +638,6 @@
             .catch(function (err) { hideLoading(); btnDrive.disabled = false; alert('Download failed: ' + err.message); });
     }
 
-    /* ── Play from cache ── */
     function playFromCache(id) {
         var sys = SYS_BY_ID[id], meta = _metaMap[id] || {};
         if (!sys) return;
@@ -673,7 +648,6 @@
         });
     }
 
-    /* ── Cache panel ── */
     function openCachePanel() {
         cacheList.innerHTML = '';
         var keys = Object.keys(_cachedIds);
@@ -702,7 +676,6 @@
         cacheOverlay.classList.add('visible');
     }
 
-    /* ── System selection ── */
     function deselectSystem() {
         document.querySelectorAll('.sys-card.selected').forEach(function (c) { c.classList.remove('selected'); });
         _selectedSys = null;
@@ -753,7 +726,6 @@
         pickerScreen.appendChild(frag);
     }
 
-    /* ── Event wiring ── */
     document.getElementById('btn-open-cache').addEventListener('click', openCachePanel);
     document.getElementById('btn-close-cache').addEventListener('click', function () { cacheOverlay.classList.remove('visible'); });
     cacheOverlay.addEventListener('click', function (e) { if (e.target === cacheOverlay) cacheOverlay.classList.remove('visible'); });
@@ -775,7 +747,6 @@
     });
     document.getElementById('btn-back-emu').addEventListener('click', function () { location.reload(); });
 
-    /* ── Init ── */
     openDB().then(function (db) {
         return Promise.all([idbAllKeys(db), idbAllMeta(db), idbAllMetaKeys(db)]).then(function (results) {
             results[0].forEach(function (k) { _cachedIds[k] = true; });
