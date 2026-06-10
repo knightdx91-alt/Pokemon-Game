@@ -72,7 +72,7 @@ html, body {
    HUD OVERLAY
    =================================================================== */
 #ui-overlay {
-    position: absolute;
+    position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 10;
@@ -188,13 +188,18 @@ html, body {
 }
 #settings-close:hover { color: #fff; }
 
-.settings-row {
+.settings-row,
+.setting-row {
     display: flex;
     gap: 8px;
     margin-bottom: 10px;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
-.settings-row button {
+.settings-row button,
+.setting-row button,
+.toggle-btn {
     flex: 1;
     padding: 5px;
     background: #2a2a3e;
@@ -204,12 +209,39 @@ html, body {
     cursor: pointer;
     font-family: inherit;
     font-size: 12px;
+    white-space: nowrap;
 }
 .settings-row button.active,
-.settings-row button:hover {
+.settings-row button:hover,
+.setting-row button.active,
+.setting-row button:hover,
+.toggle-btn.active,
+.toggle-btn:hover {
     background: #3a3a5e;
     color: #fff;
     border-color: #7777cc;
+}
+
+.toggle-group {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.action-btn {
+    padding: 5px 10px;
+    background: #2a2a3e;
+    border: 1px solid #555;
+    color: #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+}
+.action-btn:hover {
+    background: #3a3a5e;
+    color: #fff;
 }
 
 #reset-layout-btn {
@@ -402,7 +434,7 @@ html, body {
     height: 100%;
     background: #252535;
     border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 8px;
+    border-radius: 6px / 50%;
     color: #ccc;
     font-family: 'Courier New', Courier, monospace;
     font-size: 11px;

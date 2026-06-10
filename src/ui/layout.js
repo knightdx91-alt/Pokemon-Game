@@ -179,20 +179,9 @@ window.GameLayout = (function () {
             wrapper.dataset.orientation = getOrientation();
         }
 
-        if (portrait) {
-            // In portrait, screens can be dragged/resized
-            if (primary)   { primary.style.position   = 'fixed'; applyElementLayout(primary,   'screen-primary'); }
-            if (secondary) { secondary.style.position = 'fixed'; applyElementLayout(secondary, 'screen-secondary'); }
-        } else {
-            // In landscape, reset position and let CSS handle layout
-            if (primary) {
-                primary.style.position = '';
-                primary.style.left = '';
-                primary.style.top  = '';
-                primary.style.width  = '';
-                primary.style.height = '';
-            }
-        }
+        // Always keep screens in normal flow — CSS handles layout per orientation class
+        if (primary)   applyElementLayout(primary,   'screen-primary');
+        if (secondary) applyElementLayout(secondary, 'screen-secondary');
     }
 
     function reset() {
@@ -205,14 +194,12 @@ window.GameLayout = (function () {
             primary.style.top = '';
             primary.style.width = '';
             primary.style.height = '';
-            primary.style.position = '';
         }
         if (secondary) {
             secondary.style.left = '';
             secondary.style.top = '';
             secondary.style.width = '';
             secondary.style.height = '';
-            secondary.style.position = '';
         }
         reflow();
     }

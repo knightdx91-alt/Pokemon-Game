@@ -15,14 +15,14 @@ window.GameControls = (function () {
     // controls zone is the bottom ~40vh.
     // -----------------------------------------------------------------------
     const DEFAULTS = {
-        dpad:        { xPct: 4,  yPct: 70, sizePx: 120 },
-        joystick:    { xPct: 4,  yPct: 68, sizePx: 120 },
-        'btn-a':     { xPct: 74, yPct: 68, sizePx: 60  },
-        'btn-b':     { xPct: 61, yPct: 79, sizePx: 52  },
-        'btn-l':     { xPct: 0,  yPct: 61, sizePx: 72  },
-        'btn-r':     { xPct: 80, yPct: 61, sizePx: 72  },
-        'btn-start': { xPct: 54, yPct: 90, sizePx: 48  },
-        'btn-select':{ xPct: 35, yPct: 90, sizePx: 48  },
+        dpad:        { xPct: 4,  yPct: 70, wPx: 120, hPx: 120 },
+        joystick:    { xPct: 4,  yPct: 68, wPx: 120, hPx: 120 },
+        'btn-a':     { xPct: 74, yPct: 68, wPx: 60,  hPx: 60  },
+        'btn-b':     { xPct: 61, yPct: 79, wPx: 52,  hPx: 52  },
+        'btn-l':     { xPct: 0,  yPct: 61, wPx: 90,  hPx: 38  },
+        'btn-r':     { xPct: 80, yPct: 61, wPx: 90,  hPx: 38  },
+        'btn-start': { xPct: 54, yPct: 90, wPx: 64,  hPx: 36  },
+        'btn-select':{ xPct: 35, yPct: 90, wPx: 64,  hPx: 36  },
     };
 
     // -----------------------------------------------------------------------
@@ -57,11 +57,13 @@ window.GameControls = (function () {
     function applyLayout(el, id) {
         const lay   = getLayout(id);
         const scale = _getScale();
-        const sz    = Math.round(lay.sizePx * scale);
+        // Support legacy sizePx (square) and new wPx/hPx (non-square)
+        const wPx = lay.wPx !== undefined ? lay.wPx : (lay.sizePx || 60);
+        const hPx = lay.hPx !== undefined ? lay.hPx : (lay.sizePx || 60);
         el.style.left   = lay.xPct + '%';
         el.style.top    = lay.yPct + '%';
-        el.style.width  = sz + 'px';
-        el.style.height = sz + 'px';
+        el.style.width  = Math.round(wPx * scale) + 'px';
+        el.style.height = Math.round(hPx * scale) + 'px';
     }
 
     // -----------------------------------------------------------------------
@@ -113,14 +115,15 @@ window.GameControls = (function () {
         handle.className = 'ctrl-resize-handle';
         widget.appendChild(handle);
 
-        let resizing = false, startX, startY, startSize;
+        let resizing = false, startX, startY, startW, startH;
 
         handle.addEventListener('pointerdown', function(e) {
             if (!editMode) return;
             resizing = true;
             startX = e.clientX;
             startY = e.clientY;
-            startSize = widget.offsetWidth;
+            startW = widget.offsetWidth;
+            startH = widget.offsetHeight;
             handle.setPointerCapture(e.pointerId);
             e.preventDefault();
             e.stopPropagation();
@@ -128,12 +131,13 @@ window.GameControls = (function () {
 
         handle.addEventListener('pointermove', function(e) {
             if (!resizing || !editMode) return;
-            const delta = ((e.clientX - startX) + (e.clientY - startY)) / 2;
-            const newSize = Math.max(minSize, Math.min(maxSize, startSize + delta));
-            widget.style.width  = newSize + 'px';
-            widget.style.height = newSize + 'px';
+            const newW = Math.max(minSize, Math.min(maxSize, startW + (e.clientX - startX)));
+            const newH = Math.max(minSize, Math.min(maxSize, startH + (e.clientY - startY)));
+            widget.style.width  = newW + 'px';
+            widget.style.height = newH + 'px';
             if (!savedLayout[id]) savedLayout[id] = Object.assign({}, DEFAULTS[id] || {});
-            savedLayout[id].sizePx = newSize;
+            savedLayout[id].wPx = newW;
+            savedLayout[id].hPx = newH;
             e.preventDefault();
         }, { passive: false });
 

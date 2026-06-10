@@ -1,5 +1,5 @@
 // GameHUD — renders HUD info and settings button onto #ui-overlay
-const GAME_VERSION = 'v0.1.5';
+const GAME_VERSION = 'v0.1.6';
 
 window.GameHUD = (function () {
     let overlay = null;
@@ -134,7 +134,7 @@ window.GameHUD = (function () {
 
     // Called by renderer every 500ms
     function setFps(fps) {
-        if (fpsEl) fpsEl.textContent = fps + ' FPS';
+        if (fpsEl) fpsEl.textContent = fps + ' FPS · ' + GAME_VERSION;
     }
 
     function init(map, player) {
@@ -152,10 +152,10 @@ window.GameHUD = (function () {
         infoEl.id = 'hud-info';
         overlay.appendChild(infoEl);
 
-        // FPS counter (top-right)
+        // FPS counter (top-right) — also shows version
         fpsEl = document.createElement('div');
         fpsEl.id = 'hud-fps';
-        fpsEl.textContent = '-- FPS';
+        fpsEl.textContent = '-- FPS · ' + GAME_VERSION;
         overlay.appendChild(fpsEl);
 
         // Settings button (bottom-left)
