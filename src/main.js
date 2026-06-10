@@ -330,14 +330,6 @@
                 document.documentElement.style.setProperty('--control-scale', savedScale);
             }
 
-            // Initialize save state — load slot 0 or create fresh data
-            if (window.GameSave) {
-                if (!GameSave.load(0)) {
-                    GameSave.state = GameSave.DEFAULT_SLOT_DATA();
-                    GameSave.currentSlot = 0;
-                }
-            }
-
             GameInput.init();
             GameLayout.init();
             GameControls.init();
@@ -363,6 +355,22 @@
             player.y = Math.min(player.y, GameMap.height - 1);
             player.prevX = player.x;
             player.prevY = player.y;
+
+            // Initialize save state — must happen after map/renderer setup
+            try {
+                if (window.GameSave) {
+                    if (!GameSave.load(0)) {
+                        GameSave.state = GameSave.DEFAULT_SLOT_DATA();
+                        GameSave.currentSlot = 0;
+                    }
+                }
+            } catch (saveErr) {
+                console.warn('[Main] Save load failed, using fresh state:', saveErr);
+                if (window.GameSave) {
+                    GameSave.state = GameSave.DEFAULT_SLOT_DATA();
+                    GameSave.currentSlot = 0;
+                }
+            }
 
             // Pre-load encounter data for starting map
             GameMap.loadEncounterData(currentRegion);
