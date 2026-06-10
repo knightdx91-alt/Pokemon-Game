@@ -240,16 +240,19 @@
         }
 
         // Movement
+        // justPressed bypasses the cooldown for immediate tap-to-move response.
+        // state (held) fires again once the cooldown expires for smooth walking.
         if (!_transitioning) {
             const elapsed = timestamp - lastMoveTime;
-            if (elapsed >= MOVE_COOLDOWN_MS) {
-                const inp = GameInput.state;
+            const inp = GameInput.state;
+            const anyJp = jp.up || jp.down || jp.left || jp.right;
+            if (elapsed >= MOVE_COOLDOWN_MS || anyJp) {
                 let dx = 0, dy = 0;
 
-                if      (inp.up)    { dy = -1; player.direction = 'up'; }
-                else if (inp.down)  { dy =  1; player.direction = 'down'; }
-                else if (inp.left)  { dx = -1; player.direction = 'left'; }
-                else if (inp.right) { dx =  1; player.direction = 'right'; }
+                if      (inp.up    || jp.up)    { dy = -1; player.direction = 'up'; }
+                else if (inp.down  || jp.down)  { dy =  1; player.direction = 'down'; }
+                else if (inp.left  || jp.left)  { dx = -1; player.direction = 'left'; }
+                else if (inp.right || jp.right) { dx =  1; player.direction = 'right'; }
 
                 if (dx !== 0 || dy !== 0) {
                     const nx = player.x + dx;
