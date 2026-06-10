@@ -282,18 +282,32 @@ def process_tileset_pair(primary_name: str, secondary_name: str):
 
     # GBA FireRed palette assignment:
     #   Slots 0-5  → primary tileset palettes
-    #   Slots 6-11 → secondary tileset palettes
-    #   Slots 12-15 → unused (all-black placeholders — never reference these)
+    #   Slots 6-15 → secondary tileset palettes (if present and non-placeholder)
     # Build one correct merged palette used for ALL tiles (both primary and secondary).
+    # A "placeholder" palette is one where every color is the same (all-black, all-magenta, etc.)
+    def is_placeholder(colors):
+        return len(set(colors)) <= 1
+
     correct_pals = {}
+    # Slots 0-5: primary wins
     for i in range(6):
         if i in pri_pals:
             correct_pals[i] = pri_pals[i]
-    for i in range(6, 12):
-        if i in sec_pals:
+        elif i in sec_pals:
             correct_pals[i] = sec_pals[i]
+    # Slots 6-15: secondary wins, fall back to primary
+    for i in range(6, 16):
+        if i in sec_pals and not is_placeholder(sec_pals[i]):
+            correct_pals[i] = sec_pals[i]
+        elif i in pri_pals and not is_placeholder(pri_pals[i]):
+            correct_pals[i] = pri_pals[i]
+        elif i in sec_pals:
+            correct_pals[i] = sec_pals[i]
+        elif i in pri_pals:
+            correct_pals[i] = pri_pals[i]
     merged_pri_pals = correct_pals
     merged_sec_pals = correct_pals
+
 
     # --- Load metatiles ---
     pri_meta_bin = (primary_dir   / "metatiles.bin").read_bytes()
