@@ -47,7 +47,7 @@ window.FlyMenu = (function () {
             'border-bottom:1px solid #18b8c8',
             'color:#80d0e8',
             'font-family:\'Press Start 2P\',monospace',
-            'font-size:12px',
+            'font-size:8px',
             'padding:3px 6px',
             'text-align:center',
             'letter-spacing:2px',
@@ -64,7 +64,7 @@ window.FlyMenu = (function () {
                 'align-items:center',
                 'padding:4px 6px',
                 'font-family:\'Press Start 2P\',monospace',
-                'font-size:11px',
+                'font-size:8px',
                 'color:#c8d8e8',
                 'cursor:pointer',
                 isSel ? 'background:rgba(24,184,200,0.18)' : '',
@@ -133,8 +133,6 @@ window.FlyMenu = (function () {
     function moveDown()  { if (!_open) return; _cursor = (_cursor + 1) % FLY_DESTINATIONS.length; _build(); }
     function confirm()   { if (!_open) return; _confirm(); }
     function cancel()    { close(); }
-
-    Object.defineProperty(FlyMenu, 'isOpen', { get: function () { return _open; } });
 
     return { open, close, moveUp, moveDown, confirm, cancel, get isOpen() { return _open; } };
 })();
