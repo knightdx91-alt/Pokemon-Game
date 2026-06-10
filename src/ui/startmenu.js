@@ -279,17 +279,20 @@ window.GameStartMenu = (function () {
         });
         top.appendChild(carousel);
 
-        // Scroll only enough to keep selected icon fully visible
+        // Scroll only in the direction of movement, never on wrap-around
+        var _dir = _carouselDir;
+        _carouselDir = 0;
         requestAnimationFrame(function() {
+            if (_dir === 0) return; // wrapped or initial open — don't scroll
             var selEl = carousel.children[selectedIdx];
             if (!selEl) return;
             var elLeft  = selEl.offsetLeft;
             var elRight = elLeft + selEl.offsetWidth;
             var visLeft  = carousel.scrollLeft;
             var visRight = carousel.scrollLeft + carousel.clientWidth;
-            if (elLeft < visLeft) {
+            if (_dir < 0 && elLeft < visLeft) {
                 carousel.scrollLeft = elLeft - 4;
-            } else if (elRight > visRight) {
+            } else if (_dir > 0 && elRight > visRight) {
                 carousel.scrollLeft = elRight - carousel.clientWidth + 4;
             }
         });
@@ -2914,15 +2917,27 @@ window.GameStartMenu = (function () {
         if (typeof el._redraw === 'function') { el._redraw(); return true; }
         return false;
     }
+    var _carouselDir = 0; // -1 left, +1 right, 0 no scroll
+
     function moveLeft() {
         if (!isOpen) return;
-        if (page==='main') { selectedIdx=(selectedIdx-1+ITEMS.length)%ITEMS.length; _render(); return; }
+        if (page==='main') {
+            var prev = selectedIdx;
+            selectedIdx = (selectedIdx - 1 + ITEMS.length) % ITEMS.length;
+            _carouselDir = (selectedIdx > prev) ? 0 : -1; // wrapped = 0, normal = -1
+            _render(); return;
+        }
         if (page==='journal') { _journalTab=(_journalTab-1+4)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
         if (page==='bag') { _bagPocket=(_bagPocket-1+8)%8; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
     }
     function moveRight() {
         if (!isOpen) return;
-        if (page==='main') { selectedIdx=(selectedIdx+1)%ITEMS.length; _render(); return; }
+        if (page==='main') {
+            var prev = selectedIdx;
+            selectedIdx = (selectedIdx + 1) % ITEMS.length;
+            _carouselDir = (selectedIdx < prev) ? 0 : 1; // wrapped = 0, normal = +1
+            _render(); return;
+        }
         if (page==='journal') { _journalTab=(_journalTab+1)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
         if (page==='bag') { _bagPocket=(_bagPocket+1)%8; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
     }
