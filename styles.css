@@ -227,138 +227,246 @@ html, body {
     --control-scale: 1;
 }
 
-#controls-container {
+#controls-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+    touch-action: none;
+}
+
+/* --- Widget wrapper (each button group is absolutely positioned) --- */
+.ctrl-widget {
+    pointer-events: all;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    box-sizing: border-box;
+}
+
+/* --- Edit mode visuals -------------------------------------------- */
+.ctrl-edit {
+    outline: 2px dashed rgba(255,255,100,0.7);
+    outline-offset: 2px;
+}
+
+.ctrl-resize-handle {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 14px;
+    height: 14px;
+    background: rgba(255,255,100,0.7);
+    cursor: se-resize;
+    border-radius: 2px;
+    z-index: 10;
+    touch-action: none;
+    pointer-events: all;
+}
+
+#ctrl-edit-bar {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    padding: 8px 12px;
-    pointer-events: none;
-    z-index: 20;
-}
-
-/* D-pad */
-#dpad {
-    pointer-events: all;
-    display: grid;
-    grid-template-columns: repeat(3, calc(40px * var(--control-scale)));
-    grid-template-rows: repeat(3, calc(40px * var(--control-scale)));
-    gap: 2px;
-}
-
-.dpad-btn {
-    background: rgba(40,40,40,0.85);
-    border: 1px solid #555;
-    border-radius: 4px;
-    color: #ccc;
-    font-size: calc(16px * var(--control-scale));
-    cursor: pointer;
+    background: rgba(0,0,0,0.9);
+    color: #fff;
+    padding: 8px 16px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: none;
-    user-select: none;
-    pointer-events: all;
-}
-.dpad-btn:active,
-.dpad-btn.pressed {
-    background: rgba(80,80,120,0.9);
-    color: #fff;
-}
-
-/* Action buttons */
-#action-buttons {
-    pointer-events: all;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    align-items: flex-end;
-}
-
-.action-btn {
-    width: calc(48px * var(--control-scale));
-    height: calc(48px * var(--control-scale));
-    background: rgba(40,40,40,0.85);
-    border: 1px solid #555;
-    border-radius: 50%;
-    color: #ccc;
-    font-size: calc(13px * var(--control-scale));
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: none;
-    user-select: none;
-    pointer-events: all;
-}
-.action-btn:active,
-.action-btn.pressed {
-    background: rgba(80,80,120,0.9);
-    color: #fff;
-}
-
-/* Start/Select */
-#menu-buttons {
-    position: fixed;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
     gap: 12px;
+    z-index: 300;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
     pointer-events: all;
-    z-index: 21;
 }
 
-.menu-btn {
-    padding: calc(4px * var(--control-scale)) calc(10px * var(--control-scale));
-    background: rgba(40,40,40,0.85);
-    border: 1px solid #555;
-    border-radius: 10px;
-    color: #aaa;
-    font-size: calc(10px * var(--control-scale));
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    pointer-events: all;
-    font-family: inherit;
-}
-.menu-btn:active,
-.menu-btn.pressed {
-    background: rgba(80,80,120,0.9);
+#ctrl-edit-bar button {
+    background: #2a3a6a;
+    border: 1px solid #4a6aaf;
     color: #fff;
+    padding: 4px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
 }
 
-/* Joystick */
-#joystick-zone {
-    pointer-events: all;
-    width: calc(100px * var(--control-scale));
-    height: calc(100px * var(--control-scale));
+/* --- D-pad --------------------------------------------------------- */
+.gba-dpad {
     position: relative;
-    touch-action: none;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
 }
 
-#joystick-base {
+/* Cross shape: horizontal + vertical bars */
+.gba-dpad::before,
+.gba-dpad::after {
+    content: '';
+    position: absolute;
+    background: #252535;
+    border-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.07) inset;
+    pointer-events: none;
+}
+
+.gba-dpad::before { top: 32.7%; left: 0;     width: 100%;   height: 34.5%; } /* horizontal */
+.gba-dpad::after  { left: 32.7%; top: 0;     width: 34.5%;  height: 100%;  } /* vertical   */
+
+.gba-dpad-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 29%; height: 29%;
+    border-radius: 50%;
+    background: #2e2e44;
+    border: 1px solid rgba(255,255,255,0.1);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.gba-dpad-up,
+.gba-dpad-down,
+.gba-dpad-left,
+.gba-dpad-right {
+    position: absolute;
+    z-index: 3;
+    pointer-events: all;
+    touch-action: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(200,200,220,0.5);
+    font-size: 11px;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.07s;
+}
+
+.gba-dpad-up    { top: 0;    left: 32.7%; width: 34.5%; height: 34.5%; border-radius: 4px 4px 0 0; }
+.gba-dpad-down  { bottom: 0; left: 32.7%; width: 34.5%; height: 34.5%; border-radius: 0 0 4px 4px; }
+.gba-dpad-left  { left: 0;   top: 32.7%;  width: 34.5%; height: 34.5%; border-radius: 4px 0 0 4px; }
+.gba-dpad-right { right: 0;  top: 32.7%;  width: 34.5%; height: 34.5%; border-radius: 0 4px 4px 0; }
+
+.gba-dpad-up:active,
+.gba-dpad-down:active,
+.gba-dpad-left:active,
+.gba-dpad-right:active { color: rgba(255,255,255,0.9); }
+
+/* --- Circle buttons (A, B) ---------------------------------------- */
+.gba-btn-circle {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: all;
+    touch-action: none;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.1) inset;
+    transition: filter 0.07s, transform 0.07s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.gba-btn-a-color { background: #8b1a1a; }
+.gba-btn-b-color { background: #1a3a6b; }
+
+.gba-btn-circle:active {
+    filter: brightness(1.35);
+    transform: scale(0.93);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.4) inset;
+}
+
+/* --- Shoulder buttons (L, R) -------------------------------------- */
+.gba-shoulder-btn {
+    width: 100%;
+    height: 100%;
+    background: #252535;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    color: #ccc;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 11px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: all;
+    touch-action: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.08) inset;
+    transition: background 0.07s, transform 0.07s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.gba-shoulder-btn:active {
+    background: #363650;
+    transform: scale(0.96);
+}
+
+/* --- System buttons (START, SELECT) ------------------------------- */
+.gba-sys-btn {
+    width: 100%;
+    height: 100%;
+    background: #252535;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 9px;
+    color: #ccc;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 8px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: all;
+    touch-action: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.07) inset;
+    transition: background 0.07s, transform 0.07s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.gba-sys-btn:active {
+    background: #363650;
+    transform: scale(0.96);
+}
+
+/* --- Joystick ----------------------------------------------------- */
+.joystick-base {
     position: absolute;
     inset: 0;
     border-radius: 50%;
-    background: rgba(40,40,40,0.6);
-    border: 2px solid #555;
+    background: #252535;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.07) inset;
+    pointer-events: all;
+    touch-action: none;
 }
 
-#joystick-thumb {
+.joystick-thumb {
     position: absolute;
     width: 40%;
     height: 40%;
-    background: rgba(100,100,160,0.9);
     border-radius: 50%;
-    top: 30%;
-    left: 30%;
+    background: #3a3a58;
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
     touch-action: none;
-    border: 1px solid #888;
 }
 
 /* ===================================================================
