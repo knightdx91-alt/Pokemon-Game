@@ -1,8 +1,7 @@
 // GameRenderer — renders game world to #screen-primary canvas
 window.GameRenderer = (function () {
-    // Fixed tile size: 16x16 pixels per metatile, viewport 15x13 tiles → 240x208 px canvas
     const TILE_PX          = 16;
-    const METATILES_PER_ROW = 16;  // spritesheet layout
+    const METATILES_PER_ROW = 16;
 
     let canvas = null;
     let ctx    = null;
@@ -12,21 +11,23 @@ window.GameRenderer = (function () {
     let _player = null;
 
     // Tileset state
-    let _tilesetName  = null;   // e.g. "pallet_town"
-    let _tilesetImg   = null;   // HTMLImageElement — the metatile spritesheet
-    let _tilesetMeta  = null;   // parsed JSON from data/tilesets/<name>.json
-    let _tilesetLoading = false;
+    let _tilesetName        = null;   // name of the CURRENTLY DISPLAYED tileset
+    let _tilesetLoadingName = null;   // name being fetched (prevents duplicate loads)
+    let _tilesetImg         = null;   // spritesheet for _tilesetName
+    let _tilesetMeta        = null;
 
     // NPC sprite state
-    let _npcIndex     = null;   // parsed index.json: { stem -> path }
-    let _npcImgCache  = new Map(); // stem -> HTMLImageElement (or 'loading'/'error')
+    let _npcIndex    = null;
+    let _npcImgCache = new Map();
 
     // Player sprite state
-    let _playerImg    = null;   // HTMLImageElement for data/sprites/player.png
+    let _playerImg = null;
 
-    // Actual Emerald frame layout (from object_event_anims.h):
-    //   0=stand-south, 1=stand-north, 2=stand-west/east
-    //   walk-south: 3,0,4,0  walk-north: 5,1,6,1  walk-west/east: 7,2,8,2
+    // FPS tracking
+    let _fpsFrameCount = 0;
+    let _fpsLastTime   = 0;
+    let _currentFps    = 0;
+
     const WALK_FRAMES = {
         down:  { stand: 0, step1: 3, step2: 4 },
         up:    { stand: 1, step1: 5, step2: 6 },
@@ -34,7 +35,6 @@ window.GameRenderer = (function () {
         right: { stand: 2, step1: 7, step2: 8 },
     };
 
-    // Fallback color definitions (used when tileset image not ready)
     const COLORS = {
         walkable:  '#4a7c4e',
         impassable:'#1a1a2e',
@@ -42,42 +42,48 @@ window.GameRenderer = (function () {
         npc:       '#1565c0',
         warp:      '#f9a825',
         sign:      '#8d6e63',
-        gridLine:  'rgba(0,0,0,0.12)',
         bg:        '#2d4a2d'
     };
 
-    // Keep canvas at exactly 240x208 (CSS scales it up)
     function resizeCanvas() {
         if (!canvas) return;
         if (canvas.width  !== 240) canvas.width  = 240;
         if (canvas.height !== 208) canvas.height = 208;
     }
 
-    // Load (or reload) the tileset spritesheet for the given tileset name
+    // Load a new tileset spritesheet. Keeps the old image visible until the new
+    // one successfully loads (no green-box flash during transition). If loading
+    // fails the name is cleared so the next render will retry.
     function loadTileset(name) {
-        if (!name || name === _tilesetName) return;
-        _tilesetName    = name;
-        _tilesetImg     = null;
-        _tilesetMeta    = null;
-        _tilesetLoading = true;
+        if (!name) return;
+        if (name === _tilesetName) return;        // already displayed
+        if (name === _tilesetLoadingName) return; // already in-flight
 
-        // Load JSON metadata first, then image
+        _tilesetLoadingName = name;
+
         fetch(`data/tilesets/${name}.json`)
             .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
             .then(meta => {
-                _tilesetMeta = meta;
                 const img = new Image();
-                img.onload  = () => { _tilesetImg = img; _tilesetLoading = false; };
-                img.onerror = () => { console.warn(`[Renderer] Failed to load tileset image: ${name}`); _tilesetLoading = false; };
+                img.onload = () => {
+                    // Atomic swap: only update displayed tileset once fully ready
+                    _tilesetImg         = img;
+                    _tilesetMeta        = meta;
+                    _tilesetName        = name;
+                    _tilesetLoadingName = null;
+                };
+                img.onerror = () => {
+                    console.warn(`[Renderer] Failed to load tileset image: ${name}`);
+                    _tilesetLoadingName = null; // allow retry next render
+                };
                 img.src = `data/tilesets/${name}.png`;
             })
             .catch(e => {
                 console.warn(`[Renderer] Failed to load tileset JSON for ${name}:`, e);
-                _tilesetLoading = false;
+                _tilesetLoadingName = null; // allow retry next render
             });
     }
 
-    // Draw one metatile from the spritesheet at screen (sx, sy)
     function drawMetatile(metatileIdx, sx, sy) {
         if (!_tilesetImg) return false;
         const col = metatileIdx % METATILES_PER_ROW;
@@ -90,59 +96,74 @@ window.GameRenderer = (function () {
         return true;
     }
 
+    function _getVisualPos() {
+        if (!_player) return { vx: 0, vy: 0 };
+        const elapsed = performance.now() - (_player.moveStartTime || 0);
+        const dur     = _player.moveDuration || 150;
+        const t       = Math.min(1, elapsed / dur);
+        const prevX   = (_player.prevX !== undefined) ? _player.prevX : _player.x;
+        const prevY   = (_player.prevY !== undefined) ? _player.prevY : _player.y;
+        return {
+            vx: prevX + (_player.x - prevX) * t,
+            vy: prevY + (_player.y - prevY) * t,
+        };
+    }
+
     function render() {
         if (!canvas || !ctx || !_map || !_camera || !_player) return;
 
         resizeCanvas();
 
-        const camX = _camera.x;
-        const camY = _camera.y;
-        const vw   = _camera.viewportW;
-        const vh   = _camera.viewportH;
+        const vw = _camera.viewportW;
+        const vh = _camera.viewportH;
 
-        // Check if tileset needs loading/switching
+        const { vx, vy } = _getVisualPos();
+
+        let vcamX = vx - Math.floor(vw / 2);
+        let vcamY = vy - Math.floor(vh / 2);
+        if (_map.width  > vw) vcamX = Math.max(0, Math.min(vcamX, _map.width  - vw));
+        else vcamX = 0;
+        if (_map.height > vh) vcamY = Math.max(0, Math.min(vcamY, _map.height - vh));
+        else vcamY = 0;
+
+        const tileStartX = Math.floor(vcamX);
+        const tileStartY = Math.floor(vcamY);
+        const subX = -(vcamX - tileStartX) * TILE_PX;
+        const subY = -(vcamY - tileStartY) * TILE_PX;
+
+        // Kick off tileset load if needed (non-blocking; keeps old image until ready)
         const wantedTileset = _map.getTilesetName ? _map.getTilesetName() : null;
-        if (wantedTileset && wantedTileset !== _tilesetName) {
+        if (wantedTileset && wantedTileset !== _tilesetName && wantedTileset !== _tilesetLoadingName) {
             loadTileset(wantedTileset);
         }
 
-        // Background
         ctx.fillStyle = COLORS.bg;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Build sets for quick warp/sign/npc lookup
         const warpSet = new Set();
         const signSet = new Set();
-        const npcSet  = new Set();
         if (_map.current) {
             if (_map.current.warps) _map.current.warps.forEach(w => warpSet.add(`${w.x},${w.y}`));
             if (_map.current.signs) _map.current.signs.forEach(s => signSet.add(`${s.x},${s.y}`));
-            if (_map.current.npcs)  _map.current.npcs.forEach(n => npcSet.add(`${n.x},${n.y}`));
         }
 
-        // Draw tiles
-        for (let ty = 0; ty < vh; ty++) {
-            for (let tx = 0; tx < vw; tx++) {
-                const worldX = camX + tx;
-                const worldY = camY + ty;
-                const sx = tx * TILE_PX;
-                const sy = ty * TILE_PX;
+        for (let ty = -1; ty <= vh; ty++) {
+            for (let tx = -1; tx <= vw; tx++) {
+                const worldX = tileStartX + tx;
+                const worldY = tileStartY + ty;
+                const sx = tx * TILE_PX + subX;
+                const sy = ty * TILE_PX + subY;
 
-                // Try to draw from spritesheet
                 const metatileIdx = _map.getTile(worldX, worldY);
-                let drawnFromSheet = false;
+                let drawn = false;
                 if (metatileIdx !== null && metatileIdx !== undefined && _tilesetImg) {
-                    drawnFromSheet = drawMetatile(metatileIdx, sx, sy);
+                    drawn = drawMetatile(metatileIdx, sx, sy);
                 }
-
-                // Fallback: solid color tile
-                if (!drawnFromSheet) {
-                    const walkable = _map.isWalkable(worldX, worldY);
-                    ctx.fillStyle = walkable ? COLORS.walkable : COLORS.impassable;
+                if (!drawn) {
+                    ctx.fillStyle = _map.isWalkable(worldX, worldY) ? COLORS.walkable : COLORS.impassable;
                     ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
                 }
 
-                // Warp/sign overlays (semi-transparent tint on top of tile graphics)
                 if (warpSet.has(`${worldX},${worldY}`)) {
                     ctx.fillStyle = 'rgba(249,168,37,0.45)';
                     ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
@@ -153,21 +174,37 @@ window.GameRenderer = (function () {
             }
         }
 
-        // Draw NPCs
+        // NPCs
         if (_map.current && _map.current.npcs) {
             for (const npc of _map.current.npcs) {
-                if (npc.x < camX || npc.x >= camX + vw || npc.y < camY || npc.y >= camY + vh) continue;
-                const sx = (npc.x - camX) * TILE_PX;
-                const sy = (npc.y - camY) * TILE_PX;
-
+                if (npc.x < tileStartX - 1 || npc.x > tileStartX + vw + 1) continue;
+                if (npc.y < tileStartY - 1 || npc.y > tileStartY + vh + 1) continue;
+                const sx = (npc.x - tileStartX) * TILE_PX + subX;
+                const sy = (npc.y - tileStartY) * TILE_PX + subY;
                 const stem = _gfxToStem(npc.graphics_id);
                 const img  = stem ? _getNpcImg(stem) : null;
-
-                if (img) {
-                    // Draw first frame (16x32) of spritesheet; feet on tile, body above
-                    ctx.drawImage(img, 0, 0, 16, 32, sx, sy - TILE_PX, TILE_PX, TILE_PX * 2);
-                } else {
-                    // Fallback: blue square with face dot
+                if (img && img.complete && img.naturalWidth) {
+                    const iw = img.naturalWidth;
+                    const ih = img.naturalHeight;
+                    let srcW, srcH, drawW, drawH, drawOffY;
+                    if (iw === 16 && ih === 16) {
+                        // Single-frame ground item (item_ball)
+                        srcW = 16; srcH = 16; drawW = TILE_PX; drawH = TILE_PX; drawOffY = 0;
+                    } else if (iw === 32 && ih === 16) {
+                        // Wide ground item (town_map) — spans 2 tiles
+                        srcW = 32; srcH = 16; drawW = TILE_PX * 2; drawH = TILE_PX; drawOffY = 0;
+                    } else if (iw === 32 && ih === 32) {
+                        // 2×2 overworld sprite (snorlax)
+                        srcW = 32; srcH = 32; drawW = TILE_PX * 2; drawH = TILE_PX * 2; drawOffY = -TILE_PX;
+                    } else if (ih <= 16 && iw > 16) {
+                        // Multi-frame ground item strip — use first frame
+                        srcW = ih; srcH = ih; drawW = TILE_PX; drawH = TILE_PX; drawOffY = 0;
+                    } else {
+                        // Standard character sprite (16×32)
+                        srcW = 16; srcH = 32; drawW = TILE_PX; drawH = TILE_PX * 2; drawOffY = -TILE_PX;
+                    }
+                    ctx.drawImage(img, 0, 0, srcW, srcH, sx, sy + drawOffY, drawW, drawH);
+                } else if (!img) {
                     const pad = 2;
                     ctx.fillStyle = COLORS.npc;
                     ctx.fillRect(sx + pad, sy + pad, TILE_PX - pad * 2, TILE_PX - pad * 2);
@@ -177,21 +214,18 @@ window.GameRenderer = (function () {
             }
         }
 
-        // Draw player (always at camera center offset)
-        const playerSX = (_player.x - camX) * TILE_PX;
-        const playerSY = (_player.y - camY) * TILE_PX;
+        // Player
+        const playerSX = (vx - vcamX) * TILE_PX;
+        const playerSY = (vy - vcamY) * TILE_PX;
         if (_playerImg) {
             const dir = _player.direction || 'down';
-            const wf  = _player.walkFrame || 0;  // 0=stand, 1=step1, 2=step2
+            const wf  = _player.walkFrame || 0;
             const wfs = WALK_FRAMES[dir] || WALK_FRAMES.down;
             const frameIdx = wf === 0 ? wfs.stand : wf === 1 ? wfs.step1 : wfs.step2;
             const srcX = frameIdx * 16;
-            const isRight = (dir === 'right');
-            if (isRight) {
+            if (dir === 'right') {
                 ctx.save();
                 ctx.scale(-1, 1);
-                // After scale(-1,1), x-coords are negated:
-                // screen left-edge of sprite in flipped space = -(playerSX + TILE_PX)
                 ctx.drawImage(_playerImg, srcX, 0, 16, 32,
                     -(playerSX + TILE_PX), playerSY - TILE_PX, TILE_PX, TILE_PX * 2);
                 ctx.restore();
@@ -200,23 +234,28 @@ window.GameRenderer = (function () {
                     playerSX, playerSY - TILE_PX, TILE_PX, TILE_PX * 2);
             }
         } else {
-            // Fallback: red square
             const pad = 2;
             ctx.fillStyle = COLORS.player;
             ctx.fillRect(playerSX + pad, playerSY + pad, TILE_PX - pad * 2, TILE_PX - pad * 2);
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(playerSX + Math.floor(TILE_PX / 2) - 1, playerSY + pad + 1, 3, 3);
         }
-
-        // Map name overlay removed — handled by HUD banner
     }
 
-    function loop() {
+    function loop(timestamp) {
+        _fpsFrameCount++;
+        if (_fpsLastTime === 0) _fpsLastTime = timestamp;
+        const fpsDelta = timestamp - _fpsLastTime;
+        if (fpsDelta >= 500) {
+            _currentFps = Math.round(_fpsFrameCount / (fpsDelta / 1000));
+            _fpsFrameCount = 0;
+            _fpsLastTime = timestamp;
+            if (window.GameHUD && GameHUD.setFps) GameHUD.setFps(_currentFps);
+        }
         render();
         rafId = requestAnimationFrame(loop);
     }
 
-    // Load NPC sprite index JSON
     function _loadNpcIndex() {
         fetch('data/sprites/npcs/index.json')
             .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
@@ -224,14 +263,12 @@ window.GameRenderer = (function () {
             .catch(e => console.warn('[Renderer] Failed to load NPC sprite index:', e));
     }
 
-    // Get (or start loading) an NPC sprite image by stem key
     function _getNpcImg(stem) {
         if (!_npcIndex || !_npcIndex[stem]) return null;
         if (_npcImgCache.has(stem)) {
             const v = _npcImgCache.get(stem);
             return (v instanceof HTMLImageElement) ? v : null;
         }
-        // Start loading
         _npcImgCache.set(stem, 'loading');
         const img = new Image();
         img.onload  = () => { _npcImgCache.set(stem, img); };
@@ -240,7 +277,6 @@ window.GameRenderer = (function () {
         return null;
     }
 
-    // Convert OBJ_EVENT_GFX_WOMAN_1 -> woman_1
     function _gfxToStem(graphicsId) {
         if (!graphicsId) return null;
         return graphicsId.replace(/^OBJ_EVENT_GFX_/, '').toLowerCase();
@@ -256,12 +292,11 @@ window.GameRenderer = (function () {
     function init(canvasEl) {
         canvas = canvasEl;
         ctx    = canvas.getContext('2d');
-        // Disable image smoothing so pixel art stays crisp when CSS scales the canvas
         ctx.imageSmoothingEnabled = false;
         resizeCanvas();
         _loadNpcIndex();
         _loadPlayerImg();
-        loop();
+        loop(0);
     }
 
     function setScene(map, camera, player) {

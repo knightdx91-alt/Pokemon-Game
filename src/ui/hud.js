@@ -1,7 +1,10 @@
 // GameHUD — renders HUD info and settings button onto #ui-overlay
+const GAME_VERSION = 'v0.1.3';
+
 window.GameHUD = (function () {
     let overlay = null;
     let infoEl = null;
+    let fpsEl = null;
     let settingsBtn = null;
     let settingsPanel = null;
     let mapRef = null;
@@ -20,21 +23,18 @@ window.GameHUD = (function () {
         const toggleDpad = document.getElementById('toggle-dpad');
         const toggleJoystick = document.getElementById('toggle-joystick');
 
-        // Open settings
         if (settingsBtn) {
             settingsBtn.addEventListener('click', () => {
                 settingsPanel.classList.remove('hidden');
             });
         }
 
-        // Close settings
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
                 settingsPanel.classList.add('hidden');
             });
         }
 
-        // Close on overlay click outside panel
         document.addEventListener('mousedown', (e) => {
             if (settingsPanel && !settingsPanel.classList.contains('hidden')) {
                 if (!settingsPanel.contains(e.target) && e.target !== settingsBtn) {
@@ -43,16 +43,13 @@ window.GameHUD = (function () {
             }
         });
 
-        // Reset layout
         if (resetBtn) {
             resetBtn.addEventListener('click', () => {
                 if (window.GameLayout) GameLayout.reset();
             });
         }
 
-        // Button size slider
         if (sizeSlider) {
-            // Load saved scale
             const saved = localStorage.getItem('pokemon_control_scale');
             if (saved) {
                 sizeSlider.value = saved;
@@ -68,7 +65,6 @@ window.GameHUD = (function () {
             });
         }
 
-        // Control mode toggle
         if (toggleDpad) {
             toggleDpad.addEventListener('click', () => {
                 if (window.GameControls) GameControls.setMode('dpad');
@@ -91,7 +87,6 @@ window.GameHUD = (function () {
         _bannerEl.textContent = name;
         _bannerEl.style.opacity = '1';
         if (_bannerTimer) clearTimeout(_bannerTimer);
-        // Fade out after 2s
         _bannerTimer = setTimeout(function () {
             _bannerEl.style.opacity = '0';
             _bannerTimer = setTimeout(function () {
@@ -105,14 +100,11 @@ window.GameHUD = (function () {
     function update() {
         if (!infoEl) return;
         const mapName = (mapRef && mapRef.current) ? mapRef.current.name : '—';
-        // Only show map name (no coordinates)
         infoEl.textContent = mapName;
 
-        // Show banner when map changes
         if (mapName !== _lastMapName && mapName !== '—') {
             _lastMapName = mapName;
             _showBanner(mapName);
-            // Record as visited
             if (window.GameSave && GameSave.state) {
                 if (GameSave.state.visitedMaps) {
                     GameSave.state.visitedMaps.add(mapName);
@@ -120,6 +112,11 @@ window.GameHUD = (function () {
                 GameSave.markDirty();
             }
         }
+    }
+
+    // Called by renderer every 500ms
+    function setFps(fps) {
+        if (fpsEl) fpsEl.textContent = fps + ' FPS';
     }
 
     function init(map, player) {
@@ -132,10 +129,16 @@ window.GameHUD = (function () {
             return;
         }
 
-        // Info box (map name + position)
+        // Info box (map name)
         infoEl = document.createElement('div');
         infoEl.id = 'hud-info';
         overlay.appendChild(infoEl);
+
+        // FPS counter (top-right)
+        fpsEl = document.createElement('div');
+        fpsEl.id = 'hud-fps';
+        fpsEl.textContent = '-- FPS';
+        overlay.appendChild(fpsEl);
 
         // Settings button (bottom-left)
         settingsBtn = document.createElement('button');
@@ -153,5 +156,5 @@ window.GameHUD = (function () {
         update();
     }
 
-    return { init, update };
+    return { init, update, setFps };
 })();
