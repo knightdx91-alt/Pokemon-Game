@@ -195,8 +195,20 @@
     // ---------------------------------------------------------------
     // Game loop
     // ---------------------------------------------------------------
+    let _mapLoading = false;
+
     function gameLoop(timestamp) {
         const jp = GameInput.justPressed;
+
+        // If map never loaded (init() may have not awaited it yet), kick it off now
+        if (!GameMap.current && !_mapLoading && !_transitioning) {
+            _mapLoading = true;
+            GameMap.load('PalletTown', currentRegion).then(function () {
+                GameRenderer.setScene(GameMap, GameCamera, player);
+                GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
+                _mapLoading = false;
+            }).catch(function () { _mapLoading = false; });
+        }
 
         // Battle gets first priority on all input
         if (window.GameBattle && GameBattle.isActive()) {
