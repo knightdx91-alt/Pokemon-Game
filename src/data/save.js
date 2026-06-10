@@ -66,8 +66,8 @@
 
             // Pokedex
             pokedex: {
-                seen: [],    // species IDs
-                caught: []   // species IDs
+                seen: [6],    // dex numbers (Charizard starter pre-seen)
+                caught: [6]   // dex numbers
             },
 
             // Party — up to 6 Pokemon (null = empty slot)

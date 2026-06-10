@@ -652,6 +652,13 @@ window.GameBattle = (function () {
         _active = true;
         _enemy = wild;
         _player = st.party[0];
+
+        // Mark enemy as seen in Pokédex
+        const dexEntry = _pokedexDb && _pokedexDb[wild.species];
+        if (dexEntry && dexEntry.num) {
+            if (!st.pokedex) st.pokedex = { seen: [], caught: [] };
+            if (!st.pokedex.seen.includes(dexEntry.num)) { st.pokedex.seen.push(dexEntry.num); GameSave.markDirty(); }
+        }
         _playerStatCache = _calcPlayerStats();
         _onEnd = onEnd || null;
         _phase = 'action';
@@ -1289,6 +1296,14 @@ window.GameBattle = (function () {
     function _catchPokemon() {
         const st = GameSave.state;
         if (!st || !st.party) return;
+
+        // Mark as caught in Pokédex
+        const dexE = _pokedexDb && _pokedexDb[_enemy.species];
+        if (dexE && dexE.num) {
+            if (!st.pokedex) st.pokedex = { seen: [], caught: [] };
+            if (!st.pokedex.caught.includes(dexE.num)) st.pokedex.caught.push(dexE.num);
+            if (!st.pokedex.seen.includes(dexE.num))   st.pokedex.seen.push(dexE.num);
+        }
         const slot = st.party.findIndex(m => m === null);
         if (slot === -1 && st.party.length >= 6) return;
         const mon = {
