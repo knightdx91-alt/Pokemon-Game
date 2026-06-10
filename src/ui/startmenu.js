@@ -1843,21 +1843,16 @@ window.GameStartMenu = (function () {
                 false, _subIdx === (i+1));
         }
 
-        // ── Bottom message bar  GBA (8, 120, 224, 32)
-        ctx.fillStyle = _tc.titleBg;
-        ctx.fillRect(0, 120*S, 240*S, 40*S);
-        ctx.fillStyle = COL_CYAN;
-        ctx.fillRect(0, 120*S, 240*S, S);
-
-        // ── CANCEL button  GBA (192, 136, 48, 16)
+        // ── CANCEL button  GBA (192, 136, 48, 16) — no background bar, just the button
         var cancelSel = (_subIdx >= filled.length);
-        ctx.fillStyle = cancelSel ? COL_CYAN : COL_DIM;
+        ctx.fillStyle = cancelSel ? COL_CYAN : _tc.bg;
+        ctx.fillRect(192*S, 136*S, 48*S, 16*S);
         ctx.strokeStyle = cancelSel ? COL_CYAN : '#304060';
         ctx.lineWidth = S;
-        ctx.strokeRect(192*S, 136*S, 48*S, 16*S);
+        ctx.strokeRect(192*S + S/2, 136*S + S/2, 48*S - S, 16*S - S);
         ctx.font = 'bold '+(6*S)+'px monospace';
         ctx.fillStyle = cancelSel ? '#050510' : COL_TEXT;
-        if (cancelSel) { ctx.fillStyle = COL_CYAN; ctx.fillRect(192*S, 136*S, 48*S, 16*S); ctx.fillStyle = '#050510'; }
+        ctx.textBaseline = 'top';
         ctx.fillText('CANCEL', 196*S, 139*S);
 
         // ── Action sub-menu overlay  (GBA coords: x=130, y=50, w=100, rowH=14)
@@ -2812,6 +2807,9 @@ window.GameStartMenu = (function () {
                         _partyActionOpen = false;
                         _openPartySummary(_partyActionMon, _partyActionIdx, _pFilled, function(){ _redrawPageEl(); });
                     }
+                } else if (_subIdx >= _pFilled.length) {
+                    // CANCEL row selected
+                    _goBack();
                 } else if (_pFilled[_subIdx]) {
                     _partyActionMon  = _pFilled[_subIdx];
                     _partyActionIdx  = _subIdx;
@@ -2932,7 +2930,7 @@ window.GameStartMenu = (function () {
         if (page==='bag')     return _getBagPockets()[_bagPocket].items.length + 1; // +1 for Close Pack
         if (page==='pokemon') {
             const party = window.GameSave && GameSave.state && GameSave.state.party;
-            return party ? party.filter(Boolean).length || 1 : 1;
+            return (party ? party.filter(Boolean).length || 1 : 1) + 1; // +1 for CANCEL
         }
         if (page==='pokedex') return _dexList ? _dexList.length : 0;
         if (page==='pokedex_entry') return 3; // tabs: Info / Stats / Moves
