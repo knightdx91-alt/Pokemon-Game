@@ -703,10 +703,6 @@ window.GameBattle = (function () {
             textBox.addEventListener('click', () => { if (_pendingCallback) _advanceMessage(); });
         }
 
-        // Hide on-screen controls so they don't intercept battle button taps
-        const cl = document.getElementById('controls-layer');
-        if (cl) cl.style.display = 'none';
-
         document.addEventListener('keydown', _onKeyDown);
     }
 
@@ -1705,10 +1701,12 @@ window.GameBattle = (function () {
         if (!_active) return;
         if (jp.a) {
             if (_pendingCallback) { _advanceMessage(); return; }
-            if (_phase === 'action')       _onActionSelect(_selectedAction);
-            if (_phase === 'move_select')  { const m = _el && _el.querySelectorAll('.bt-move-btn')[_selectedMove]; if(m) m.click(); }
-            if (_phase === 'bag_select')   _useBagItem(_selectedBag);
-            if (_phase === 'party_select') { const b = _el && _el.querySelectorAll('.bt-party-btn')[_selectedParty]; if(b) b.click(); }
+            // Use else-if to prevent cascade: _onActionSelect changes _phase, and we must
+            // not immediately act on the new phase in the same A-button press.
+            if (_phase === 'action')            _onActionSelect(_selectedAction);
+            else if (_phase === 'move_select')  { const m = _el && _el.querySelectorAll('.bt-move-btn')[_selectedMove]; if(m) m.click(); }
+            else if (_phase === 'bag_select')   _useBagItem(_selectedBag);
+            else if (_phase === 'party_select') { const b = _el && _el.querySelectorAll('.bt-party-btn')[_selectedParty]; if(b) b.click(); }
         }
         if (jp.b) {
             if (_phase === 'move_select' || _phase === 'bag_select') _showActionMenu();
@@ -1748,9 +1746,6 @@ window.GameBattle = (function () {
         document.removeEventListener('keydown', _onKeyDown);
         if (_el && _el.parentNode) _el.parentNode.removeChild(_el);
         _el = null;
-        // Restore on-screen controls
-        const cl = document.getElementById('controls-layer');
-        if (cl) cl.style.display = '';
         GameSave.markDirty();
         if (_onEnd) _onEnd(result);
     }
