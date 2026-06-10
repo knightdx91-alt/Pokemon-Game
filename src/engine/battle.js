@@ -697,6 +697,16 @@ window.GameBattle = (function () {
             btn.addEventListener('click', () => _onActionSelect(parseInt(btn.dataset.act)));
         });
 
+        // Tap text box to advance message on mobile
+        const textBox = document.getElementById('bt-text-box');
+        if (textBox) {
+            textBox.addEventListener('click', () => { if (_pendingCallback) _advanceMessage(); });
+        }
+
+        // Hide on-screen controls so they don't intercept battle button taps
+        const cl = document.getElementById('controls-layer');
+        if (cl) cl.style.display = 'none';
+
         document.addEventListener('keydown', _onKeyDown);
     }
 
@@ -1738,6 +1748,9 @@ window.GameBattle = (function () {
         document.removeEventListener('keydown', _onKeyDown);
         if (_el && _el.parentNode) _el.parentNode.removeChild(_el);
         _el = null;
+        // Restore on-screen controls
+        const cl = document.getElementById('controls-layer');
+        if (cl) cl.style.display = '';
         GameSave.markDirty();
         if (_onEnd) _onEnd(result);
     }
