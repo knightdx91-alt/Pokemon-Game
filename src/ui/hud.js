@@ -1,5 +1,5 @@
 // GameHUD — renders HUD info and settings button onto #ui-overlay
-const GAME_VERSION = 'v0.2.2';
+const GAME_VERSION = 'v0.2.3';
 
 window.GameHUD = (function () {
     let overlay = null;
@@ -114,12 +114,17 @@ window.GameHUD = (function () {
         _bannerEl.style.display = 'block';
     }
 
+    let _mapLine   = null;
+    let _coordLine = null;
+    let _fpsLine   = null;
+
     // --- Update display ---
     function update() {
         if (!infoEl) return;
         const mapName = (mapRef && mapRef.current) ? mapRef.current.name : '—';
-        const coords  = playerRef ? `${playerRef.x}, ${playerRef.y}` : '—';
-        infoEl.innerHTML = mapName + '<br><span style="color:#7fff7f;font-size:9px">' + coords + '</span>';
+        const coords  = playerRef ? playerRef.x + ', ' + playerRef.y : '—';
+        if (_mapLine)   _mapLine.textContent   = mapName;
+        if (_coordLine) _coordLine.textContent = coords;
 
         if (mapName !== _lastMapName && mapName !== '—') {
             _lastMapName = mapName;
@@ -135,11 +140,11 @@ window.GameHUD = (function () {
 
     // Called by renderer every 500ms
     function setFps(fps) {
-        if (fpsEl) fpsEl.textContent = fps + ' FPS · ' + GAME_VERSION;
+        if (_fpsLine) _fpsLine.textContent = fps + ' FPS';
     }
 
     function init(map, player) {
-        mapRef = map;
+        mapRef    = map;
         playerRef = player;
 
         overlay = document.getElementById('ui-overlay');
@@ -148,24 +153,34 @@ window.GameHUD = (function () {
             return;
         }
 
-        // Info box (map name)
+        // Single info block: map name / coords / fps stacked
         infoEl = document.createElement('div');
         infoEl.id = 'hud-info';
+
+        _mapLine = document.createElement('div');
+        _mapLine.textContent = '—';
+
+        _coordLine = document.createElement('div');
+        _coordLine.textContent = '—';
+
+        _fpsLine = document.createElement('div');
+        _fpsLine.textContent = '-- FPS';
+
+        infoEl.appendChild(_mapLine);
+        infoEl.appendChild(_coordLine);
+        infoEl.appendChild(_fpsLine);
         overlay.appendChild(infoEl);
 
-        // FPS counter (top-right) — also shows version
-        fpsEl = document.createElement('div');
-        fpsEl.id = 'hud-fps';
-        fpsEl.textContent = '-- FPS · ' + GAME_VERSION;
-        overlay.appendChild(fpsEl);
+        // Keep fpsEl reference non-null (CSS hides #hud-fps anyway)
+        fpsEl = _fpsLine;
 
-        // Settings button (bottom-left)
+        // Settings button (bottom-left of overlay)
         settingsBtn = document.createElement('button');
         settingsBtn.id = 'settings-btn';
-        settingsBtn.textContent = '⚙ Settings';
+        settingsBtn.textContent = '⚙';
         overlay.appendChild(settingsBtn);
 
-        // Map name banner
+        // Map name banner (transition flash)
         _bannerEl = document.createElement('div');
         _bannerEl.id = 'map-name-banner';
         _bannerEl.style.display = 'none';

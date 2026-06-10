@@ -26,8 +26,33 @@
 
     </div><!-- #game-wrapper -->
 
-    <!-- On-screen controls (D-pad / joystick) -->
-    <div id="controls-layer"></div>
+    <!-- On-screen controls — static HTML, wired by controls.js -->
+    <div id="controls-layer">
+
+        <!-- D-pad -->
+        <div id="gp-dpad">
+            <button id="gp-up"    class="gp-btn" aria-label="Up">▲</button>
+            <div id="gp-middle">
+                <button id="gp-left"  class="gp-btn" aria-label="Left">◄</button>
+                <div    id="gp-center-dot"></div>
+                <button id="gp-right" class="gp-btn" aria-label="Right">►</button>
+            </div>
+            <button id="gp-down"  class="gp-btn" aria-label="Down">▼</button>
+        </div>
+
+        <!-- Face buttons -->
+        <button id="gp-a" class="gp-btn" aria-label="A">A</button>
+        <button id="gp-b" class="gp-btn" aria-label="B">B</button>
+
+        <!-- Shoulder buttons -->
+        <button id="gp-l" class="gp-btn" aria-label="L">L</button>
+        <button id="gp-r" class="gp-btn" aria-label="R">R</button>
+
+        <!-- System buttons -->
+        <button id="gp-start"  class="gp-btn" aria-label="Start">START</button>
+        <button id="gp-select" class="gp-btn" aria-label="Select">SEL</button>
+
+    </div>
 
     <!-- HUD overlay (map name, position, settings button) -->
     <div id="ui-overlay"></div>
