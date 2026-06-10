@@ -3,12 +3,10 @@
     'use strict';
 
     // --- Player state ---
-    const MOVE_COOLDOWN_MS = 150;
-
-    // How long after a warp before another warp can fire.
-    // Short enough that players don't feel trapped; long enough to prevent
-    // immediately warping back through the same tile.
-    const WARP_COOLDOWN_MS = 400;
+    const MOVE_COOLDOWN_MS  = 150;
+    const WARP_COOLDOWN_MS  = 400;
+    // Encounter roll: 1-in-N chance per step in grass/cave (matches Gen 3 ~10% grass feel)
+    const ENCOUNTER_CHANCE  = 0.10;
 
     const player = {
         x: 7,
@@ -22,16 +20,13 @@
     };
 
     let currentRegion = 'kanto';
-    let _transitioning = false;
+    let _transitioning   = false;
     let _warpCooldownUntil = 0;
+    let lastMoveTime       = 0;
 
     setInterval(function () {
         if (window.GameSave) GameSave.autosave();
     }, 15000);
-
-    const MOVE_COOLDOWN_MS_LOCAL = MOVE_COOLDOWN_MS;
-    let lastMoveTime = 0;
-    let prevStartState = false;
 
     // ---------------------------------------------------------------
     // Helpers
@@ -43,10 +38,64 @@
         player.moveStartTime = 0;
     }
 
+    /** Tile in the direction the player is facing */
+    function _facingTile() {
+        const d = player.direction;
+        return {
+            x: player.x + (d === 'left' ? -1 : d === 'right' ? 1 : 0),
+            y: player.y + (d === 'up'   ? -1 : d === 'down'  ? 1 : 0),
+        };
+    }
+
+    // ---------------------------------------------------------------
+    // NPC / sign interaction
+    // ---------------------------------------------------------------
+    function _interact() {
+        const { x, y } = _facingTile();
+
+        // NPC in front?
+        const npc = GameMap.getNpcAt(x, y);
+        if (npc && npc.script && npc.script !== '0x0') {
+            const mapName = GameMap.current && GameMap.current.name;
+            GameDialogue.showScript(mapName, npc.script);
+            return;
+        }
+
+        // Sign in front?
+        const sign = GameMap.getSign(x, y);
+        if (sign && sign.script && sign.script !== '0x0') {
+            const mapName = GameMap.current && GameMap.current.name;
+            GameDialogue.showScript(mapName, sign.script);
+            return;
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // Wild encounters
+    // ---------------------------------------------------------------
+    async function _checkEncounter() {
+        if (!window.GameBattle || GameBattle.isActive()) return;
+        const terrain = GameMap.getTileTerrainType(player.x, player.y);
+        if (terrain !== 'grass' && terrain !== 'cave') return;
+        if (Math.random() > ENCOUNTER_CHANCE) return;
+
+        await GameMap.loadEncounterData(currentRegion);
+        const entry = GameBattle.rollEncounter(currentRegion);
+        if (!entry) return;
+
+        _transitioning = true;   // block movement during battle
+        GameBattle.start(entry, function (result) {
+            _transitioning = false;
+            if (result === 'lost') {
+                // Soft-reset to Pallet Town / last Pokémon Center (simplified: reload map)
+                console.log('[Main] Blacked out!');
+            }
+        });
+    }
+
     // ---------------------------------------------------------------
     // Transitions
     // ---------------------------------------------------------------
-
     async function transitionToWarp(warp) {
         if (_transitioning) return;
         _transitioning = true;
@@ -145,6 +194,50 @@
     // Game loop
     // ---------------------------------------------------------------
     function gameLoop(timestamp) {
+        const jp = GameInput.justPressed;
+
+        // Battle gets first priority on all input
+        if (window.GameBattle && GameBattle.isActive()) {
+            GameBattle.consumeInput(jp);
+            GameInput.consumeJustPressed();
+            requestAnimationFrame(gameLoop);
+            return;
+        }
+
+        // Dialogue consumes A
+        if (window.GameDialogue && GameDialogue.isOpen()) {
+            if (jp.a || jp.b) GameDialogue.advance();
+            GameInput.consumeJustPressed();
+            requestAnimationFrame(gameLoop);
+            return;
+        }
+
+        // Start menu
+        if (window.GameStartMenu && GameStartMenu.isOpen()) {
+            if (jp.up)    GameStartMenu.moveUp();
+            if (jp.down)  GameStartMenu.moveDown();
+            if (jp.left)  GameStartMenu.moveLeft();
+            if (jp.right) GameStartMenu.moveRight();
+            if (jp.a)     GameStartMenu.confirm();
+            if (jp.b || jp.start) GameStartMenu.back();
+            GameInput.consumeJustPressed();
+            GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
+            GameHUD.update();
+            requestAnimationFrame(gameLoop);
+            return;
+        }
+
+        // Start menu toggle
+        if (jp.start) {
+            if (window.GameStartMenu) GameStartMenu.toggle();
+        }
+
+        // A button: interact
+        if (jp.a) {
+            _interact();
+        }
+
+        // Movement
         if (!_transitioning) {
             const elapsed = timestamp - lastMoveTime;
             if (elapsed >= MOVE_COOLDOWN_MS) {
@@ -179,6 +272,8 @@
                         const warp = GameMap.getWarp(nx, ny);
                         if (warp && performance.now() >= _warpCooldownUntil) {
                             transitionToWarp(warp);
+                        } else {
+                            _checkEncounter();
                         }
                     }
                     lastMoveTime = timestamp;
@@ -188,12 +283,7 @@
             }
         }
 
-        const curStart = GameInput.state.start;
-        if (curStart && !prevStartState) {
-            if (window.GameStartMenu) GameStartMenu.toggle();
-        }
-        prevStartState = curStart;
-
+        GameInput.consumeJustPressed();
         GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
         GameHUD.update();
         requestAnimationFrame(gameLoop);
@@ -213,6 +303,8 @@
         GameControls.init();
         GameHUD.init(GameMap, player);
 
+        if (window.GameDialogue) GameDialogue.init();
+
         const canvas = document.getElementById('canvas-primary');
         GameRenderer.init(canvas);
 
@@ -229,6 +321,9 @@
         player.y = Math.min(player.y, GameMap.height - 1);
         player.prevX = player.x;
         player.prevY = player.y;
+
+        // Pre-load encounter data for starting map
+        GameMap.loadEncounterData(currentRegion);
 
         GameRenderer.setScene(GameMap, GameCamera, player);
         GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);

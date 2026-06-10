@@ -71,32 +71,31 @@
             },
 
             // Party — up to 6 Pokemon (null = empty slot)
-            party: Array.from({ length: 6 }, () => Object.assign(DEFAULT_POKEMON(), {
-                speciesId: 6, nickname: 'CHARIZARD', level: 100,
-                currentHp: 360, maxHp: 360,
-                atk: 293, def: 240, spAtk: 317, spDef: 240, speed: 299,
-                moves: [
-                    { name: 'Flamethrower', type: 'Fire',   pp: 15, maxPp: 15 },
-                    { name: 'Air Slash',    type: 'Flying',  pp: 20, maxPp: 20 },
-                    { name: 'Dragon Claw',  type: 'Dragon',  pp: 15, maxPp: 15 },
-                    { name: 'Earthquake',   type: 'Ground',  pp: 10, maxPp: 10 },
-                ],
-                caughtLevel: 5, exp: 1059860, nature: 'Adamant', type: 'Fire/Flying',
-                ability: 'Blaze', otName: 'PLAYER', otId: '00001'
-            })),
+            // speciesId must be lowercase string matching pokedex.json keys
+            // moves must be array of move ID strings matching moves.json keys
+            party: [
+                Object.assign(DEFAULT_POKEMON(), {
+                    speciesId: 'charizard', nickname: 'CHARIZARD', level: 50,
+                    currentHp: 155, nature: 'adamant',
+                    moves: ['flamethrower', 'air_slash', 'dragon_claw', 'earthquake'],
+                    ivs: { hp:31, atk:31, def:31, spa:31, spd:31, spe:31 },
+                    evs: { hp:0, atk:0, def:0, spa:0, spd:0, spe:0 },
+                }),
+                null, null, null, null, null,
+            ],
 
             // PC Boxes — 20 boxes × 30 slots
             pcBoxes: Array.from({ length: 20 }, (_, i) => DEFAULT_BOX('Box ' + (i + 1))),
 
-            // Inventory pockets
+            // Inventory pockets — keyed by item ID string, value = quantity
             inventory: {
-                items:     [{ itemId: 1, name: 'Potion',        quantity: 5,  desc: 'Restores 20 HP.' }],
-                medicine:  [{ itemId: 2, name: 'Antidote',      quantity: 2,  desc: 'Cures poison.' }],
-                valuables: [{ itemId: 3, name: 'Nugget',        quantity: 1,  desc: 'A nugget of pure gold.' }],
-                keyItems:  [{ itemId: 4, name: 'Bicycle',       quantity: 1,  desc: 'A folding bicycle.' }],
-                pokeBalls: [{ itemId: 5, name: 'Poké Ball',     quantity: 10, desc: 'A device for catching Pokémon.' }],
-                tms:       [{ itemId: 6, name: 'TM01 Focus Punch', quantity: 1, desc: 'Teaches Focus Punch.' }],
-                berries:   [{ itemId: 7, name: 'Oran Berry',    quantity: 3,  desc: 'Restores 10 HP if held.' }],
+                items:     { potion: 5, super_potion: 1 },
+                medicine:  { antidote: 2 },
+                valuables: {},
+                keyItems:  {},
+                pokeBalls: { poke_ball: 10, great_ball: 3 },
+                tms:       {},
+                berries:   { oran_berry: 3 },
             },
 
             // Badges per region
@@ -285,35 +284,29 @@
             // Re-inflate Sets
             if (Array.isArray(data.worldFlags))  data.worldFlags  = new Set(data.worldFlags);
             if (Array.isArray(data.visitedMaps)) data.visitedMaps = new Set(data.visitedMaps);
-            // Backfill test items so all 7 bag pockets are non-empty
+            // Backfill inventory pockets if missing or wrong format
             const inv = data.inventory || (data.inventory = {});
-            const SEEDS = {
-                items:     { itemId:1,  name:'Potion',           quantity:5,  desc:'Restores 20 HP.' },
-                medicine:  { itemId:2,  name:'Antidote',         quantity:2,  desc:'Cures poison.' },
-                valuables: { itemId:3,  name:'Nugget',           quantity:1,  desc:'A nugget of pure gold.' },
-                keyItems:  { itemId:4,  name:'Bicycle',          quantity:1,  desc:'A folding bicycle.' },
-                pokeBalls: { itemId:5,  name:'Poké Ball',        quantity:10, desc:'A device for catching Pokémon.' },
-                tms:       { itemId:6,  name:'TM01 Focus Punch', quantity:1,  desc:'Teaches Focus Punch.' },
-                berries:   { itemId:7,  name:'Oran Berry',       quantity:3,  desc:'Restores 10 HP if held.' },
-            };
-            for (const [pocket, seed] of Object.entries(SEEDS)) {
-                if (!Array.isArray(inv[pocket]) || inv[pocket].length === 0) inv[pocket] = [seed];
+            const POCKETS = ['items','medicine','valuables','keyItems','pokeBalls','tms','berries'];
+            for (const p of POCKETS) {
+                // Migrate old array format to object format
+                if (Array.isArray(inv[p])) inv[p] = {};
+                if (!inv[p] || typeof inv[p] !== 'object') inv[p] = {};
             }
-            // Backfill test Charizards if party is completely empty
+            if (!inv.items.potion)    inv.items.potion    = 5;
+            if (!inv.pokeBalls.poke_ball) inv.pokeBalls.poke_ball = 10;
+
+            // Backfill starter Charizard if party is completely empty
             if (!Array.isArray(data.party) || data.party.every(s => s === null)) {
-                data.party = Array.from({ length: 6 }, () => Object.assign(DEFAULT_POKEMON(), {
-                    speciesId: 6, nickname: 'CHARIZARD', level: 100,
-                    currentHp: 360, maxHp: 360,
-                    atk: 293, def: 240, spAtk: 317, spDef: 240, speed: 299,
-                    moves: [
-                        { name: 'Flamethrower', type: 'Fire',   pp: 15, maxPp: 15 },
-                        { name: 'Air Slash',    type: 'Flying',  pp: 20, maxPp: 20 },
-                        { name: 'Dragon Claw',  type: 'Dragon',  pp: 15, maxPp: 15 },
-                        { name: 'Earthquake',   type: 'Ground',  pp: 10, maxPp: 10 },
-                    ],
-                    caughtLevel: 5, exp: 1059860, nature: 'Adamant', type: 'Fire/Flying',
-                    ability: 'Blaze', otName: 'PLAYER', otId: '00001'
-                }));
+                data.party = [
+                    Object.assign(DEFAULT_POKEMON(), {
+                        speciesId: 'charizard', nickname: 'CHARIZARD', level: 50,
+                        currentHp: 155, nature: 'adamant',
+                        moves: ['flamethrower', 'air_slash', 'dragon_claw', 'earthquake'],
+                        ivs: { hp:31, atk:31, def:31, spa:31, spd:31, spe:31 },
+                        evs: { hp:0, atk:0, def:0, spa:0, spd:0, spe:0 },
+                    }),
+                    null, null, null, null, null,
+                ];
             }
             this.currentSlot = slotIndex;
             this.state = data;

@@ -452,3 +452,346 @@ body.landscape #screen-secondary {
     height: 100vh;
     min-width: 80px;
 }
+
+/* ===================================================================
+   DIALOGUE BOX (GBA-style message window)
+   =================================================================== */
+#dialogue-box {
+    position: absolute;
+    left: 2%;
+    right: 2%;
+    bottom: 3%;
+    z-index: 60;
+    background: #060610;
+    border: 1px solid #000;
+    box-shadow: 0 0 0 3px #18b8c8, 0 0 0 4px #000, inset 0 0 0 1px #002830;
+    border-radius: 2px;
+    padding: 5px 7px 4px;
+    pointer-events: none;
+}
+
+#dialogue-inner {
+    position: relative;
+}
+
+#dialogue-text {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 9px;
+    line-height: 1.5;
+    color: #c8d8e8;
+    min-height: 28px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+#dialogue-arrow {
+    position: absolute;
+    bottom: 0;
+    right: 2px;
+    font-size: 8px;
+    color: #18b8c8;
+    animation: dlg-blink 0.6s step-end infinite;
+}
+
+@keyframes dlg-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
+
+/* ===================================================================
+   BATTLE OVERLAY (GBA-style wild battle screen)
+   =================================================================== */
+#battle-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 80;
+    background: #0a1018;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 9px;
+    color: #c8d8e8;
+}
+
+/* Field area: enemy top-left, player bottom-right */
+#bt-field {
+    flex: 1;
+    position: relative;
+    background: linear-gradient(to bottom, #182838 0%, #1a3040 60%, #2a3828 100%);
+    overflow: hidden;
+}
+
+/* Enemy info box (top-left) */
+#bt-enemy-info {
+    position: absolute;
+    top: 6%;
+    left: 3%;
+    background: #060610;
+    border: 1px solid #000;
+    box-shadow: 0 0 0 2px #18b8c8, 0 0 0 3px #000;
+    padding: 3px 6px;
+    min-width: 90px;
+    border-radius: 2px;
+}
+
+/* Player info box (bottom-right) */
+#bt-player-info {
+    position: absolute;
+    bottom: 6%;
+    right: 3%;
+    background: #060610;
+    border: 1px solid #000;
+    box-shadow: 0 0 0 2px #18b8c8, 0 0 0 3px #000;
+    padding: 3px 6px;
+    min-width: 100px;
+    border-radius: 2px;
+}
+
+#bt-enemy-name, #bt-player-name {
+    font-weight: bold;
+    color: #e8f0f8;
+    font-size: 9px;
+}
+
+#bt-enemy-name-row, #bt-player-name-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bt-level-row {
+    font-size: 8px;
+    color: #90a8c0;
+    margin-top: 1px;
+}
+
+.bt-hp-wrap {
+    background: #0a1018;
+    border: 1px solid #18b8c8;
+    border-radius: 2px;
+    height: 5px;
+    margin-top: 2px;
+    overflow: hidden;
+}
+
+.bt-hp-bar {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.bt-hp-bar.hp-green  { background: #38c838; }
+.bt-hp-bar.hp-yellow { background: #e8c000; }
+.bt-hp-bar.hp-red    { background: #e82020; }
+
+.bt-hp-text {
+    font-size: 8px;
+    color: #90a8c0;
+    text-align: right;
+    margin-top: 1px;
+}
+
+#bt-enemy-status, #bt-player-status {
+    font-size: 7px;
+    font-weight: bold;
+    min-height: 9px;
+    margin-top: 1px;
+}
+
+/* Sprites */
+#bt-enemy-sprite-wrap {
+    position: absolute;
+    top: 5%;
+    right: 10%;
+    width: 40%;
+    height: 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#bt-enemy-sprite {
+    max-width: 100%;
+    max-height: 100%;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5));
+}
+
+#bt-player-sprite-wrap {
+    position: absolute;
+    bottom: 5%;
+    left: 10%;
+    width: 36%;
+    height: 42%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#bt-player-sprite-placeholder {
+    width: 48px;
+    height: 48px;
+    background: radial-gradient(circle, #4060a0 30%, #202840 100%);
+    border-radius: 50%;
+    opacity: 0.7;
+}
+
+/* Bottom panel */
+#bt-bottom {
+    height: 38%;
+    min-height: 52px;
+    background: #060610;
+    border-top: 2px solid #18b8c8;
+    display: flex;
+    flex-direction: column;
+}
+
+#bt-text-box {
+    flex: 1;
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+}
+
+#bt-text {
+    font-size: 9px;
+    color: #c8d8e8;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+/* Action menu: 2×2 grid */
+#bt-action-box {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    padding: 4px;
+    flex: 1;
+}
+
+.bt-act {
+    background: #0a1830;
+    color: #c8d8e8;
+    border: 1px solid #18b8c8;
+    border-radius: 2px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 9px;
+    cursor: pointer;
+    padding: 3px 6px;
+}
+
+.bt-act.selected, .bt-act:hover {
+    background: rgba(24,184,200,0.20);
+    color: #e8f8ff;
+}
+
+/* Move list */
+#bt-move-box {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    padding: 4px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.bt-move-btn {
+    background: #0a1830;
+    color: #c8d8e8;
+    border: 1px solid #183050;
+    border-radius: 2px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 8px;
+    cursor: pointer;
+    padding: 2px 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    text-align: left;
+}
+
+.bt-move-btn.selected, .bt-move-btn:hover {
+    background: rgba(24,184,200,0.20);
+    border-color: #18b8c8;
+}
+
+.bt-move-btn.pp-zero { opacity: 0.4; cursor: not-allowed; }
+
+.bt-move-name { font-weight: bold; color: #e0f0ff; font-size: 8px; }
+.bt-move-pp   { font-size: 7px; color: #78a8c8; }
+.bt-move-pp.pp-empty { color: #e84040; }
+.bt-move-type { font-size: 7px; }
+
+/* Type badge colors */
+[data-type="normal"]   { color: #a0a890; }
+[data-type="fire"]     { color: #f08030; }
+[data-type="water"]    { color: #6890f0; }
+[data-type="grass"]    { color: #78c850; }
+[data-type="electric"] { color: #f8d030; }
+[data-type="ice"]      { color: #98d8d8; }
+[data-type="fighting"] { color: #c03028; }
+[data-type="poison"]   { color: #a040a0; }
+[data-type="ground"]   { color: #e0c068; }
+[data-type="flying"]   { color: #a890f0; }
+[data-type="psychic"]  { color: #f85888; }
+[data-type="bug"]      { color: #a8b820; }
+[data-type="rock"]     { color: #b8a038; }
+[data-type="ghost"]    { color: #705898; }
+[data-type="dragon"]   { color: #7038f8; }
+[data-type="dark"]     { color: #705848; }
+[data-type="steel"]    { color: #b8b8d0; }
+[data-type="fairy"]    { color: #f0b6bc; }
+
+/* Bag & party lists */
+#bt-bag-box, #bt-party-box {
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+#bt-party-box {
+    display: none;
+}
+
+.bt-bag-btn, .bt-party-btn {
+    background: #0a1830;
+    color: #c8d8e8;
+    border: 1px solid #183050;
+    border-radius: 2px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 8px;
+    cursor: pointer;
+    padding: 3px 6px;
+    text-align: left;
+}
+
+.bt-bag-btn.selected, .bt-bag-btn:hover,
+.bt-party-btn.selected, .bt-party-btn:hover {
+    background: rgba(24,184,200,0.20);
+    border-color: #18b8c8;
+}
+
+.bt-party-btn.party-current { opacity: 0.6; cursor: default; }
+.bt-party-btn.party-fainted { opacity: 0.4; cursor: not-allowed; }
+
+.party-name { font-weight: bold; color: #e0f0ff; margin-right: 6px; }
+.party-lv   { font-size: 7px; color: #78a8c8; margin-right: 6px; }
+.party-hp-wrap { display: inline-block; width: 40px; height: 4px; background: #0a1018; border: 1px solid #18b8c8; border-radius: 2px; vertical-align: middle; overflow: hidden; margin-right: 4px; }
+.party-hp-bar  { display: block; height: 100%; }
+.party-hp-txt  { font-size: 7px; color: #78a8c8; }
+
+.bt-back-btn {
+    background: transparent;
+    color: #90a8c0;
+    border: none;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 8px;
+    cursor: pointer;
+    padding: 2px 4px;
+    text-align: left;
+    margin-top: 2px;
+}
+
+.bt-back-btn:hover { color: #18b8c8; }

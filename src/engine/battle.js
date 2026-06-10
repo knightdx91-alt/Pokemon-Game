@@ -1389,7 +1389,7 @@ window.GameBattle = (function () {
         if (actual === 0) {
             msgs.push(`${name}'s ${stat.toUpperCase()} won't go any ${delta > 0 ? 'higher' : 'lower'}!`);
         } else {
-            const words = { 2:'rose sharply', 1:'rose', '-1':'fell', '-2:'fell sharply' }[actual] || (actual > 2 ? 'rose drastically' : 'fell drastically');
+            const words = { 2:'rose sharply', 1:'rose', '-1':'fell', '-2':'fell sharply' }[actual] || (actual > 2 ? 'rose drastically' : 'fell drastically');
             msgs.push(`${name}'s ${stat.toUpperCase()} ${words}!`);
         }
     }

@@ -1029,19 +1029,35 @@ window.GameStartMenu = (function () {
     }
 
     // ── Bag pocket data helper ──────────────────────────────────────────────
+    // Inventory is stored as {itemKey: quantity} dicts.
+    // Item display names are derived from the key.
+    var ITEM_NAMES = {
+        potion:'Potion', super_potion:'Super Potion', hyper_potion:'Hyper Potion',
+        max_potion:'Max Potion', full_restore:'Full Restore', antidote:'Antidote',
+        burn_heal:'Burn Heal', awakening:'Awakening', parlyz_heal:'Parlyz Heal',
+        ice_heal:'Ice Heal', full_heal:'Full Heal', revive:'Revive',
+        poke_ball:'Poké Ball', great_ball:'Great Ball', ultra_ball:'Ultra Ball',
+        master_ball:'Master Ball', safari_ball:'Safari Ball',
+        nugget:'Nugget', big_nugget:'Big Nugget', pearl:'Pearl', big_pearl:'Big Pearl',
+        bicycle:'Bicycle', town_map:'Town Map', super_rod:'Super Rod',
+        oran_berry:'Oran Berry', sitrus_berry:'Sitrus Berry', lum_berry:'Lum Berry',
+    };
+    function _itemName(key) {
+        return ITEM_NAMES[key] || key.split('_').map(function(w){return w[0].toUpperCase()+w.slice(1);}).join(' ');
+    }
+    function _dictToList(dict) {
+        if (!dict || typeof dict !== 'object' || Array.isArray(dict)) return [];
+        return Object.entries(dict)
+            .filter(function(e){ return e[1] > 0; })
+            .map(function(e){ return { itemId: e[0], name: _itemName(e[0]), quantity: e[1], desc: '' }; });
+    }
     function _getBagPockets() {
         const inv = (window.GameSave && GameSave.state && GameSave.state.inventory)
             ? GameSave.state.inventory : {};
-        const FB = {
-            items:     [{ itemId:1, name:'Potion',           quantity:5,  desc:'Restores 20 HP.' }],
-            medicine:  [{ itemId:2, name:'Antidote',         quantity:2,  desc:'Cures poison.' }],
-            valuables: [{ itemId:3, name:'Nugget',           quantity:1,  desc:'A nugget of pure gold.' }],
-            keyItems:  [{ itemId:4, name:'Bicycle',          quantity:1,  desc:'A folding bicycle.' }],
-            pokeBalls: [{ itemId:5, name:'Poké Ball',        quantity:10, desc:'A device for catching Pokémon.' }],
-            tms:       [{ itemId:6, name:'TM01 Focus Punch', quantity:1,  desc:'Teaches Focus Punch.' }],
-            berries:   [{ itemId:7, name:'Oran Berry',       quantity:3,  desc:'Restores 10 HP if held.' }],
-        };
-        function pick(key) { var a = inv[key]; return (a && a.length) ? a : FB[key]; }
+        function pick(key) {
+            var list = _dictToList(inv[key]);
+            return list.length ? list : [{ itemId: key+'_empty', name: '(empty)', quantity: 0, desc: '' }];
+        }
         return [
             { label: 'Items',      items: pick('items')     },
             { label: 'Medicine',   items: pick('medicine')  },
