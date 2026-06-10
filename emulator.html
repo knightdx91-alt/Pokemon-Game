@@ -24,195 +24,90 @@
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
         }
-
         #setup-screen {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2rem 1rem 5rem;
+            min-height: 100vh; display: flex; flex-direction: column;
+            align-items: center; padding: 2rem 1rem 5rem;
         }
         .logo {
-            margin: 2.5rem 0 0.5rem;
-            font-size: 2.2rem;
-            font-weight: 700;
+            margin: 2.5rem 0 0.5rem; font-size: 2.2rem; font-weight: 700;
             letter-spacing: -0.03em;
             background: linear-gradient(135deg, #a898ff, #7c6af7, #f07aff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
         .tagline { color: var(--muted); font-size: 0.95rem; margin-bottom: 2.5rem; }
-
         .systems-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-            width: 100%;
-            max-width: 680px;
-            margin-bottom: 1.5rem;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+            padding: 2rem; width: 100%; max-width: 680px; margin-bottom: 1.5rem;
         }
-        .systems-card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.25rem;
-        }
-        .systems-card h2 {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--muted);
-            margin-bottom: 0;
-        }
-        .category-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #555;
-            margin: 1.25rem 0 0.5rem;
-        }
-        .system-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 0.5rem;
-        }
+        .systems-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+        .systems-card h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0; }
+        .category-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: #555; margin: 1.25rem 0 0.5rem; }
+        .system-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.5rem; }
         .sys-card {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text);
-            cursor: pointer;
-            padding: 0.6rem 0.5rem;
-            text-align: center;
-            transition: all 0.15s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-family: inherit;
+            background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+            color: var(--text); cursor: pointer; padding: 0.6rem 0.5rem; text-align: center;
+            transition: all 0.15s; display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: inherit;
         }
         .sys-card:hover    { border-color: var(--accent); background: #1e1c2e; }
         .sys-card.selected { border-color: var(--accent); background: #1e1c2e; box-shadow: 0 0 0 1px var(--accent); color: var(--accent2); }
         .sys-card.has-cache .sys-name::after { content: ' ·'; color: var(--accent); }
         .sys-icon { font-size: 1.3rem; }
         .sys-name { font-size: 0.75rem; font-weight: 600; line-height: 1.2; }
-
         .launch-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.75rem 2rem;
-            width: 100%;
-            max-width: 680px;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+            padding: 1.75rem 2rem; width: 100%; max-width: 680px;
+            display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem;
         }
-        .launch-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
+        .launch-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
         .selected-info { display: flex; align-items: center; gap: 14px; }
         .sel-icon { font-size: 2rem; line-height: 1; }
         .sel-name { font-size: 1rem; font-weight: 600; }
         .sel-ext  { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
         .launch-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-
-        .url-row {
-            display: flex;
-            gap: 8px;
-            align-items: stretch;
-            border-top: 1px solid var(--border);
-            padding-top: 1rem;
-        }
+        .url-row { display: flex; gap: 8px; align-items: stretch; border-top: 1px solid var(--border); padding-top: 1rem; }
         .url-row input {
-            flex: 1;
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text);
-            font-family: inherit;
-            font-size: 0.85rem;
-            padding: 0.65rem 0.9rem;
-            outline: none;
-            transition: border-color 0.15s;
-            min-width: 0;
+            flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+            color: var(--text); font-family: inherit; font-size: 0.85rem; padding: 0.65rem 0.9rem;
+            outline: none; transition: border-color 0.15s; min-width: 0;
         }
         .url-row input::placeholder { color: #555; }
         .url-row input:focus { border-color: var(--accent); }
         .url-row input:disabled { opacity: 0.5; }
-
         .btn-primary {
-            background: var(--accent);
-            border: none;
-            border-radius: 10px;
-            color: #fff;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 0.7rem 1.4rem;
-            transition: background 0.15s, transform 0.1s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
+            background: var(--accent); border: none; border-radius: 10px; color: #fff;
+            cursor: pointer; font-family: inherit; font-size: 0.9rem; font-weight: 600;
+            padding: 0.7rem 1.4rem; transition: background 0.15s, transform 0.1s;
+            display: flex; align-items: center; gap: 8px; white-space: nowrap;
         }
         .btn-primary:hover   { background: #6a59e0; }
         .btn-primary:active  { transform: scale(0.97); }
         .btn-primary:disabled { background: #333; color: #666; cursor: not-allowed; }
         .btn-ghost {
-            background: none;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--muted);
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.9rem;
-            padding: 0.7rem 1.2rem;
-            transition: color 0.15s, border-color 0.15s;
-            white-space: nowrap;
+            background: none; border: 1px solid var(--border); border-radius: 10px;
+            color: var(--muted); cursor: pointer; font-family: inherit; font-size: 0.9rem;
+            padding: 0.7rem 1.2rem; transition: color 0.15s, border-color 0.15s; white-space: nowrap;
         }
         .btn-ghost:hover        { color: var(--text); border-color: #3a3a4a; }
         .btn-ghost.play         { color: var(--accent2); border-color: #3a3260; }
         .btn-ghost.play:hover   { border-color: var(--accent); }
         .btn-ghost.danger       { color: var(--danger); border-color: #3a2a2a; }
         .btn-ghost.danger:hover { border-color: var(--danger); }
-
         .cache-badge-btn {
-            background: var(--surface2);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--muted);
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.78rem;
-            padding: 0.4rem 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: color 0.15s, border-color 0.15s;
-            white-space: nowrap;
+            background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+            color: var(--muted); cursor: pointer; font-family: inherit; font-size: 0.78rem;
+            padding: 0.4rem 0.75rem; display: flex; align-items: center; gap: 6px;
+            transition: color 0.15s, border-color 0.15s; white-space: nowrap;
         }
         .cache-badge-btn:hover { color: var(--accent2); border-color: var(--accent); }
         .cache-badge-btn .cd-icon { font-size: 1.1rem; line-height: 1; }
-
         #cache-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
-            z-index: 200; align-items: center; justify-content: center; padding: 20px;
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; padding: 20px;
         }
         #cache-overlay.visible { display: flex; }
         #cache-panel {
             background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
-            width: 100%; max-width: 480px; max-height: 75vh;
-            display: flex; flex-direction: column; overflow: hidden;
+            width: 100%; max-width: 480px; max-height: 75vh; display: flex; flex-direction: column; overflow: hidden;
         }
         #cache-header {
             padding: 16px 20px; border-bottom: 1px solid var(--border);
@@ -238,37 +133,31 @@
         .cache-file { font-size: 11px; color: #4a4a5a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
         .cache-size { font-size: 11px; color: var(--muted); white-space: nowrap; }
         .btn-del-row {
-            background: none; color: #4a4a5a; border: 1px solid var(--border);
-            border-radius: 6px; padding: 4px 8px; font-size: 11px;
-            cursor: pointer; font-family: inherit; flex-shrink: 0; transition: color 0.1s, border-color 0.1s;
+            background: none; color: #4a4a5a; border: 1px solid var(--border); border-radius: 6px;
+            padding: 4px 8px; font-size: 11px; cursor: pointer; font-family: inherit;
+            flex-shrink: 0; transition: color 0.1s, border-color 0.1s;
         }
         .btn-del-row:hover { color: var(--danger); border-color: var(--danger); }
         #cache-empty { padding: 32px; text-align: center; font-size: 13px; color: #4a4a5a; }
-
         #emu-screen { display: none; flex-direction: column; height: 100vh; }
         #emu-screen.visible { display: flex; }
         .emu-topbar {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 0.6rem 1.25rem;
-            display: flex; align-items: center; gap: 1rem; flex-shrink: 0;
+            background: var(--surface); border-bottom: 1px solid var(--border);
+            padding: 0.6rem 1.25rem; display: flex; align-items: center; gap: 1rem; flex-shrink: 0;
         }
         .logo-small {
             font-weight: 700; font-size: 1.1rem;
             background: linear-gradient(135deg, #a898ff, #7c6af7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            white-space: nowrap;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; white-space: nowrap;
         }
         .emu-info { flex: 1; min-width: 0; }
         .emu-game-name { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .emu-sys-name  { font-size: 0.75rem; color: var(--muted); }
         .btn-back {
             background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
-            color: var(--text); cursor: pointer; font-family: inherit;
-            font-size: 0.82rem; padding: 0.4rem 0.85rem;
-            transition: border-color 0.15s; white-space: nowrap; flex-shrink: 0;
+            color: var(--text); cursor: pointer; font-family: inherit; font-size: 0.82rem;
+            padding: 0.4rem 0.85rem; transition: border-color 0.15s; white-space: nowrap; flex-shrink: 0;
         }
         .btn-back:hover { border-color: var(--accent); }
         #game {
@@ -283,26 +172,19 @@
             background: var(--bg); border-top: 1px solid var(--border); flex-shrink: 0;
         }
         #emu-status.loading { color: var(--accent2); }
-
         .loading-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.88); z-index: 999;
-            align-items: center; justify-content: center;
-            flex-direction: column; gap: 1rem;
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 999;
+            align-items: center; justify-content: center; flex-direction: column; gap: 1rem;
         }
         .loading-overlay.visible { display: flex; }
         .spinner {
-            width: 40px; height: 40px;
-            border: 3px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            width: 40px; height: 40px; border: 3px solid var(--border);
+            border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-text { color: var(--muted); font-size: 0.9rem; text-align: center; max-width: 280px; }
         .loading-prog-wrap { width: 220px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
         .loading-prog-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.08s linear; border-radius: 2px; }
-
         .url-hint { font-size: 0.72rem; color: #555; line-height: 1.5; }
     </style>
 </head>
@@ -311,17 +193,13 @@
 <div id="setup-screen">
     <div class="logo">RetroPlay</div>
     <p class="tagline">Your ROMs, every system, one page.</p>
-
     <div class="systems-card">
         <div class="systems-card-header">
             <h2>&#127918; Pick a system</h2>
-            <button class="cache-badge-btn" id="btn-open-cache">
-                <span class="cd-icon">💿</span> Cached ROMs
-            </button>
+            <button class="cache-badge-btn" id="btn-open-cache"><span class="cd-icon">💿</span> Cached ROMs</button>
         </div>
         <div id="picker-screen"></div>
     </div>
-
     <div class="launch-card">
         <div class="launch-top">
             <div class="selected-info">
@@ -341,18 +219,13 @@
             <input type="url" id="url-input" placeholder="Paste direct download URL (ZIP or ROM)" />
             <button class="btn-primary" id="btn-url-load" disabled>&#9654; Load</button>
         </div>
-        <div class="url-hint">
-            ZIP files are automatically handled. Google Drive: Share → copy link and paste as-is.
-        </div>
+        <div class="url-hint">ZIP files are automatically handled. Google Drive: Share → copy link and paste as-is.</div>
     </div>
 </div>
 
 <div id="cache-overlay">
     <div id="cache-panel">
-        <div id="cache-header">
-            <span>Cached ROMs</span>
-            <button id="btn-close-cache">✕ Close</button>
-        </div>
+        <div id="cache-header"><span>Cached ROMs</span><button id="btn-close-cache">✕ Close</button></div>
         <div id="cache-list"></div>
     </div>
 </div>
@@ -364,7 +237,7 @@
             <div class="emu-game-name" id="emu-game-label">—</div>
             <div class="emu-sys-name"  id="emu-sys-label">—</div>
         </div>
-        <button class="btn-back" id="btn-back-emu">← Back to menu</button>
+        <button class="btn-back" id="btn-back-emu">← Back</button>
     </div>
     <div id="game"></div>
     <div id="emu-progress-wrap"><div id="emu-progress-fill"></div></div>
@@ -378,8 +251,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
-<script src="https://apis.google.com/js/api.js"></script>
-<script src="https://accounts.google.com/gsi/client"></script>
 
 <script>
 (function () {
@@ -397,7 +268,7 @@
         { id:'gb',       label:'Game Boy',        core:'gambatte',         exts:['.gb','.zip'],                              group:'Nintendo', icon:'🎲' },
         { id:'gbc',      label:'Game Boy Color',  core:'gambatte',         exts:['.gbc','.zip'],                             group:'Nintendo', icon:'🌈' },
         { id:'gba',      label:'GBA',             core:'mgba',             exts:['.gba','.zip'],                             group:'Nintendo', icon:'🎪' },
-        { id:'nds',      label:'Nintendo DS',     core:'desmume',          exts:['.nds','.zip'],                             group:'Nintendo', icon:'📱' },
+        { id:'nds',      label:'Nintendo DS',     core:'desmume2015',      exts:['.nds','.zip'],                             group:'Nintendo', icon:'📱' },
         { id:'vb',       label:'Virtual Boy',     core:'beetle_vb',        exts:['.vb','.vboy','.zip'],                      group:'Nintendo', icon:'🥽' },
         { id:'pokemini', label:'Pokémon Mini',    core:'pokemini',         exts:['.min','.zip'],                             group:'Nintendo', icon:'⭐' },
         { id:'sms',      label:'Master System',   core:'genesis_plus_gx',  exts:['.sms','.zip'],                             group:'Sega',     icon:'📟' },
@@ -430,17 +301,11 @@
         { id:'o2em',     label:'Odyssey2',        core:'o2em',             exts:['.bin','.zip'],                             group:'Other',    icon:'🎱' },
     ];
 
-    /*
-     * ZIP_NATIVE: these systems receive the ZIP directly without in-browser extraction.
-     * - Arcade cores (fbneo, mame2003) need the ZIP structure intact.
-     * - Large-file systems (psp, psx, saturn, dc, n64) would OOM if we tried to
-     *   decompress multi-GB ISOs into an ArrayBuffer on mobile.
-     * - amiga/dos use ZIP as their native container.
-     */
-    var ZIP_NATIVE = {
-        fbneo:true, mame2003:true, amiga:true, dos:true,
-        psp:true, psx:true, saturn:true, dc:true, n64:true, segacd:true, sega32x:true
-    };
+    /* Systems that pass ZIP directly to the core without in-browser extraction */
+    var ZIP_NATIVE = { fbneo:true, mame2003:true, amiga:true, dos:true, psp:true, psx:true, saturn:true, dc:true, n64:true, segacd:true, sega32x:true };
+
+    /* Heavy cores that shouldn't auto-start — user taps play instead */
+    var HEAVY = { nds:true, psp:true, psx:true, saturn:true, dc:true, n64:true, segacd:true };
 
     var SYS_BY_ID = {};
     SYSTEMS.forEach(function (s) { SYS_BY_ID[s.id] = s; });
@@ -455,6 +320,8 @@
     var _selectedSys = null;
     var _cachedIds   = {};
     var _metaMap     = {};
+    var _gapiLoaded  = false;
+    var _gsiLoaded   = false;
 
     var setupScreen   = document.getElementById('setup-screen');
     var pickerScreen  = document.getElementById('picker-screen');
@@ -474,18 +341,29 @@
     var urlInput      = document.getElementById('url-input');
     var btnUrlLoad    = document.getElementById('btn-url-load');
 
-    function setDl(msg, color) {
-        if (loadingText) { loadingText.textContent = msg || ''; loadingText.style.color = color || 'var(--muted)'; }
-    }
-    function setProgress(pct) {
-        if (loadingProg) loadingProg.style.width = Math.min(100, Math.max(0, pct)) + '%';
-    }
+    function setDl(msg, color) { if (loadingText) { loadingText.textContent = msg || ''; loadingText.style.color = color || 'var(--muted)'; } }
+    function setProgress(pct) { if (loadingProg) loadingProg.style.width = Math.min(100, Math.max(0, pct)) + '%'; }
     function setEmuProgress(pct) { emuProgFill.style.width = Math.min(100, Math.max(0, pct)) + '%'; }
     function fmtMB(bytes) { return (bytes / 1048576).toFixed(1) + ' MB'; }
     function showLoading(msg) { setDl(msg); setProgress(0); loadingOverlay.classList.add('visible'); }
     function hideLoading() { loadingOverlay.classList.remove('visible'); setProgress(0); }
 
-    /* ── ZIP detection and extraction (small ROMs only) ── */
+    /* ── Lazy-load Google scripts only when Drive picker is needed ── */
+    function loadGoogleScripts(cb) {
+        if (_gapiLoaded && _gsiLoaded) { cb(); return; }
+        var pending = 2;
+        function done() { if (--pending === 0) { _gapiLoaded = true; _gsiLoaded = true; cb(); } }
+        var s1 = document.createElement('script');
+        s1.src = 'https://apis.google.com/js/api.js';
+        s1.onload = done; s1.onerror = done;
+        document.body.appendChild(s1);
+        var s2 = document.createElement('script');
+        s2.src = 'https://accounts.google.com/gsi/client';
+        s2.onload = done; s2.onerror = done;
+        document.body.appendChild(s2);
+    }
+
+    /* ── ZIP detection and extraction ── */
     function isZipBlob(blob) {
         return blob.slice(0, 4).arrayBuffer().then(function (buf) {
             var b = new Uint8Array(buf);
@@ -506,20 +384,14 @@
                     for (var i = 0; i < searchExts.length && !match; i++) {
                         for (var j = 0; j < keys.length; j++) {
                             if (keys[j].toLowerCase().endsWith(searchExts[i])) {
-                                match = files[keys[j]];
-                                matchName = keys[j].split('/').pop();
-                                break;
+                                match = files[keys[j]]; matchName = keys[j].split('/').pop(); break;
                             }
                         }
                     }
                     if (!match) {
                         var biggestSize = 0;
                         keys.forEach(function (k) {
-                            if (files[k].length > biggestSize) {
-                                biggestSize = files[k].length;
-                                match = files[k];
-                                matchName = k.split('/').pop();
-                            }
+                            if (files[k].length > biggestSize) { biggestSize = files[k].length; match = files[k]; matchName = k.split('/').pop(); }
                         });
                     }
                     if (!match) { rej(new Error('ZIP is empty')); return; }
@@ -543,13 +415,11 @@
     urlInput.addEventListener('input', function () {
         btnUrlLoad.disabled = !urlInput.value.trim() || !_selectedSys;
     });
-
     function rewriteGDriveUrl(url) {
         var m = url.match(/drive\.google\.com\/file\/d\/([^/?]+)/);
         if (m) return 'https://drive.google.com/uc?export=download&id=' + m[1];
         return url;
     }
-
     btnUrlLoad.addEventListener('click', function () {
         var raw = urlInput.value.trim();
         if (!raw || !_selectedSys) return;
@@ -595,31 +465,26 @@
     function idbDel(db, key) {
         return new Promise(function (res, rej) {
             var tx = db.transaction([ROM_STORE, META_STORE], 'readwrite');
-            tx.objectStore(ROM_STORE).delete(key);
-            tx.objectStore(META_STORE).delete(key);
-            tx.oncomplete = function () { res(); };
-            tx.onerror    = function (e) { rej(e.target.error); };
+            tx.objectStore(ROM_STORE).delete(key); tx.objectStore(META_STORE).delete(key);
+            tx.oncomplete = function () { res(); }; tx.onerror = function (e) { rej(e.target.error); };
         });
     }
     function idbAllKeys(db) {
         return new Promise(function (res, rej) {
             var r = db.transaction(ROM_STORE,'readonly').objectStore(ROM_STORE).getAllKeys();
-            r.onsuccess = function (e) { res(e.target.result || []); };
-            r.onerror   = function (e) { rej(e.target.error); };
+            r.onsuccess = function (e) { res(e.target.result || []); }; r.onerror = function (e) { rej(e.target.error); };
         });
     }
     function idbAllMeta(db) {
         return new Promise(function (res, rej) {
             var r = db.transaction(META_STORE,'readonly').objectStore(META_STORE).getAll();
-            r.onsuccess = function (e) { res(e.target.result || []); };
-            r.onerror   = function (e) { rej(e.target.error); };
+            r.onsuccess = function (e) { res(e.target.result || []); }; r.onerror = function (e) { rej(e.target.error); };
         });
     }
     function idbAllMetaKeys(db) {
         return new Promise(function (res, rej) {
             var r = db.transaction(META_STORE,'readonly').objectStore(META_STORE).getAllKeys();
-            r.onsuccess = function (e) { res(e.target.result || []); };
-            r.onerror   = function (e) { rej(e.target.error); };
+            r.onsuccess = function (e) { res(e.target.result || []); }; r.onerror = function (e) { rej(e.target.error); };
         });
     }
 
@@ -635,19 +500,14 @@
                         if (r.done) return new Blob(chunks, { type: 'application/octet-stream' });
                         chunks.push(r.value); loaded += r.value.length;
                         var mb = (loaded / 1048576).toFixed(1);
-                        if (total) {
-                            setProgress(Math.round(loaded / total * 92));
-                            setDl((label || 'Downloading') + ' · ' + mb + ' MB / ' + (total / 1048576).toFixed(1) + ' MB');
-                        } else {
-                            setDl((label || 'Downloading') + ' · ' + mb + ' MB');
-                        }
+                        if (total) { setProgress(Math.round(loaded / total * 92)); setDl((label || 'Downloading') + ' · ' + mb + ' MB / ' + (total / 1048576).toFixed(1) + ' MB'); }
+                        else { setDl((label || 'Downloading') + ' · ' + mb + ' MB'); }
                         return pump();
                     });
                 }
                 return pump();
             }
-            setDl('Downloading…'); setProgress(50);
-            return resp.blob();
+            setDl('Downloading…'); setProgress(50); return resp.blob();
         });
     }
 
@@ -682,8 +542,7 @@
 
         var _timer = setInterval(function () {
             var elapsed = Math.floor((Date.now() - startTime) / 1000);
-            var mins = Math.floor(elapsed / 60);
-            var secs = ('0' + (elapsed % 60)).slice(-2);
+            var mins = Math.floor(elapsed / 60), secs = ('0' + (elapsed % 60)).slice(-2);
             emuStatus.textContent = _lastMsg + '  ·  ' + (mins > 0 ? mins + 'm ' + secs + 's' : elapsed + 's');
         }, 1000);
 
@@ -693,13 +552,11 @@
         window.EJS_pathtodata         = 'https://cdn.emulatorjs.org/stable/data/';
         window.EJS_color              = '#7c6af7';
         window.EJS_backgroundColor    = '#0d0d0f';
-        window.EJS_startOnLoaded      = true;
+        window.EJS_startOnLoaded      = !HEAVY[sys.id];  /* heavy cores wait for user tap */
         window.EJS_disableContextMenu = true;
         window.EJS_onGameStart        = function () {
-            clearInterval(_timer);
-            _observer.disconnect();
-            emuStatus.classList.remove('loading');
-            setEmuProgress(100);
+            clearInterval(_timer); _observer.disconnect();
+            emuStatus.classList.remove('loading'); setEmuProgress(100);
             setTimeout(function () { setEmuProgress(0); }, 800);
             emuStatus.textContent = 'Running · ' + (label || sys.label);
             if (window.cloudSaveOnStart) window.cloudSaveOnStart();
@@ -724,28 +581,30 @@
             return idbPut(db, ROM_STORE, sys.id, blob)
                 .then(function () { return idbPut(db, META_STORE, sys.id, meta); })
                 .then(function () {
-                    _cachedIds[sys.id] = true;
-                    _metaMap[sys.id]   = meta;
+                    _cachedIds[sys.id] = true; _metaMap[sys.id] = meta;
                     refreshCard(sys.id);
                     launchEJS(sys, URL.createObjectURL(blob), fileName || sys.label);
                 });
         });
     }
 
-    /* ── Drive picker ── */
+    /* ── Drive picker (lazy-loads Google scripts) ── */
     function startDrivePicker() {
         if (!_selectedSys) return;
-        showLoading('Opening Google sign-in…');
-        gapi.load('client', function () {
-            google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID, scope: SCOPE,
-                callback: function (resp) {
-                    if (resp.error) { hideLoading(); alert('Sign-in failed: ' + resp.error); return; }
-                    _accessToken = resp.access_token;
-                    hideLoading();
-                    openDrivePicker(_selectedSys, _accessToken);
-                },
-            }).requestAccessToken();
+        showLoading('Loading Google API…');
+        loadGoogleScripts(function () {
+            showLoading('Opening Google sign-in…');
+            gapi.load('client', function () {
+                google.accounts.oauth2.initTokenClient({
+                    client_id: CLIENT_ID, scope: SCOPE,
+                    callback: function (resp) {
+                        if (resp.error) { hideLoading(); alert('Sign-in failed: ' + resp.error); return; }
+                        _accessToken = resp.access_token;
+                        hideLoading();
+                        openDrivePicker(_selectedSys, _accessToken);
+                    },
+                }).requestAccessToken();
+            });
         });
     }
 
@@ -775,8 +634,7 @@
 
     /* ── Play from cache ── */
     function playFromCache(id) {
-        var sys  = SYS_BY_ID[id];
-        var meta = _metaMap[id] || {};
+        var sys = SYS_BY_ID[id], meta = _metaMap[id] || {};
         if (!sys) return;
         cacheOverlay.classList.remove('visible');
         openDB().then(function (db) { return idbGet(db, ROM_STORE, id); }).then(function (blob) {
@@ -789,31 +647,23 @@
     function openCachePanel() {
         cacheList.innerHTML = '';
         var keys = Object.keys(_cachedIds);
-        if (!keys.length) {
-            cacheList.innerHTML = '<div id="cache-empty">No ROMs cached yet.</div>';
-        } else {
+        if (!keys.length) { cacheList.innerHTML = '<div id="cache-empty">No ROMs cached yet.</div>'; }
+        else {
             keys.forEach(function (id) {
-                var meta = _metaMap[id] || {};
-                var sys  = SYS_BY_ID[id] || {};
-                var row  = document.createElement('div');
+                var meta = _metaMap[id] || {}, sys = SYS_BY_ID[id] || {};
+                var row = document.createElement('div');
                 row.className = 'cache-row';
                 row.innerHTML =
                     '<button class="btn-play-row">▶ Play</button>' +
-                    '<div class="cache-info">' +
-                        '<div class="cache-sys">' + (meta.label || sys.label || id) + '</div>' +
-                        '<div class="cache-file">' + (meta.filename || 'unknown') + '</div>' +
-                    '</div>' +
+                    '<div class="cache-info"><div class="cache-sys">' + (meta.label || sys.label || id) + '</div>' +
+                    '<div class="cache-file">' + (meta.filename || 'unknown') + '</div></div>' +
                     '<div class="cache-size">' + (meta.size ? fmtMB(meta.size) : '—') + '</div>' +
                     '<button class="btn-del-row">Delete</button>';
                 row.querySelector('.btn-play-row').addEventListener('click', function () { playFromCache(id); });
                 row.querySelector('.btn-del-row').addEventListener('click', function () {
                     openDB().then(function (db) { return idbDel(db, id); }).then(function () {
-                        delete _cachedIds[id]; delete _metaMap[id];
-                        refreshCard(id); openCachePanel();
-                        if (_selectedSys && _selectedSys.id === id) {
-                            btnPlayCached.style.display = 'none';
-                            btnClear.style.display = 'none';
-                        }
+                        delete _cachedIds[id]; delete _metaMap[id]; refreshCard(id); openCachePanel();
+                        if (_selectedSys && _selectedSys.id === id) { btnPlayCached.style.display = 'none'; btnClear.style.display = 'none'; }
                     });
                 });
                 cacheList.appendChild(row);
@@ -822,19 +672,16 @@
         cacheOverlay.classList.add('visible');
     }
 
-    /* ── System selection + grid ── */
+    /* ── System selection ── */
     function deselectSystem() {
         document.querySelectorAll('.sys-card.selected').forEach(function (c) { c.classList.remove('selected'); });
         _selectedSys = null;
         document.getElementById('sel-icon-txt').textContent = '❓';
         document.getElementById('sel-name-txt').textContent = 'No system selected';
         document.getElementById('sel-ext-txt').textContent  = 'Choose a system above';
-        btnPlayCached.style.display = 'none';
-        btnClear.style.display      = 'none';
-        btnDrive.disabled   = true;
-        btnUrlLoad.disabled = true;
+        btnPlayCached.style.display = 'none'; btnClear.style.display = 'none';
+        btnDrive.disabled = true; btnUrlLoad.disabled = true;
     }
-
     function selectSystem(sys) {
         if (_selectedSys && _selectedSys.id === sys.id) { deselectSystem(); return; }
         document.querySelectorAll('.sys-card.selected').forEach(function (c) { c.classList.remove('selected'); });
@@ -845,19 +692,14 @@
         document.getElementById('sel-name-txt').textContent = sys.label;
         document.getElementById('sel-ext-txt').textContent  = sys.exts.join(', ');
         var cached = !!_cachedIds[sys.id];
-        btnPlayCached.style.display = cached ? '' : 'none';
-        btnClear.style.display      = cached ? '' : 'none';
-        btnDrive.disabled   = false;
-        btnUrlLoad.disabled = !urlInput.value.trim();
+        btnPlayCached.style.display = cached ? '' : 'none'; btnClear.style.display = cached ? '' : 'none';
+        btnDrive.disabled = false; btnUrlLoad.disabled = !urlInput.value.trim();
     }
-
     function refreshCard(sysId) {
         var card = document.querySelector('.sys-card[data-id="' + sysId + '"]');
         if (!card) return;
-        if (_cachedIds[sysId]) card.classList.add('has-cache');
-        else card.classList.remove('has-cache');
+        if (_cachedIds[sysId]) card.classList.add('has-cache'); else card.classList.remove('has-cache');
     }
-
     function buildGrid() {
         var groups = [], groupMap = {};
         SYSTEMS.forEach(function (sys) {
@@ -866,18 +708,13 @@
         });
         var frag = document.createDocumentFragment();
         groups.forEach(function (g) {
-            var lbl = document.createElement('div');
-            lbl.className = 'category-label';
-            lbl.textContent = g;
-            frag.appendChild(lbl);
-            var grid = document.createElement('div');
-            grid.className = 'system-grid';
+            var lbl = document.createElement('div'); lbl.className = 'category-label'; lbl.textContent = g; frag.appendChild(lbl);
+            var grid = document.createElement('div'); grid.className = 'system-grid';
             groupMap[g].forEach(function (sys) {
                 var btn = document.createElement('button');
                 btn.className = 'sys-card' + (_cachedIds[sys.id] ? ' has-cache' : '');
                 btn.dataset.id = sys.id;
-                btn.innerHTML = '<span class="sys-icon">' + sys.icon + '</span>' +
-                                '<span class="sys-name">' + sys.label + '</span>';
+                btn.innerHTML = '<span class="sys-icon">' + sys.icon + '</span><span class="sys-name">' + sys.label + '</span>';
                 btn.addEventListener('click', function () { selectSystem(sys); });
                 grid.appendChild(btn);
             });
@@ -903,8 +740,7 @@
         if (!_selectedSys) return;
         openDB().then(function (db) { return idbDel(db, _selectedSys.id); }).then(function () {
             delete _cachedIds[_selectedSys.id]; delete _metaMap[_selectedSys.id];
-            refreshCard(_selectedSys.id);
-            btnPlayCached.style.display = 'none'; btnClear.style.display = 'none';
+            refreshCard(_selectedSys.id); btnPlayCached.style.display = 'none'; btnClear.style.display = 'none';
         });
     });
     document.getElementById('btn-back-emu').addEventListener('click', function () { location.reload(); });
