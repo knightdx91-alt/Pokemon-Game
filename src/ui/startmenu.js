@@ -2020,8 +2020,8 @@ window.GameStartMenu = (function () {
                 ctx.fillText('○', 218*S, rowMid);
             }
 
-            // Name — always show, dim if unseen
-            ctx.fillStyle = hasSeen ? COL_TEXT : COL_DIM;
+            // Name — always show in white
+            ctx.fillStyle = '#ffffff';
             ctx.fillText(entry.name, 36*S, rowMid);
 
             // Type tags (abbreviated)
