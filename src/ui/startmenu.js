@@ -1076,8 +1076,7 @@ window.GameStartMenu = (function () {
         const inv = (window.GameSave && GameSave.state && GameSave.state.inventory)
             ? GameSave.state.inventory : {};
         function pick(key) {
-            var list = _dictToList(inv[key]);
-            return list.length ? list : [{ itemId: key+'_empty', name: '(empty)', quantity: 0, desc: '' }];
+            return _dictToList(inv[key]);
         }
         return [
             { label: 'Items',      items: pick('items')     },
@@ -1156,8 +1155,8 @@ window.GameStartMenu = (function () {
 
         // ── Description text (y=116..159 GBA) ────────────────────────────────
         var selItem = items[_subIdx];
-        var desc = selItem ? (selItem.desc || selItem.description || '') : '';
-        if (!desc) desc = pocket.label + ' is empty.';
+        var isClosePack = (!selItem || _subIdx >= items.length);
+        var desc = isClosePack ? 'Return to battle.' : (selItem.desc || selItem.description || '');
         ctx.fillStyle = TEXT;
         ctx.font = (7*S) + 'px monospace';
         ctx.textBaseline = 'top';
@@ -1178,7 +1177,8 @@ window.GameStartMenu = (function () {
         ctx.strokeRect(113*S, 1*S, 126*S, 158*S);
 
         var MAX_VIS = 8;
-        var scroll = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), items.length - MAX_VIS));
+        var totalRows = items.length + 1; // +1 for Close Pack
+        var scroll = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), totalRows - MAX_VIS));
         if (scroll < 0) scroll = 0;
 
         ctx.font = (7*S) + 'px monospace';
@@ -1279,11 +1279,14 @@ window.GameStartMenu = (function () {
                 var POCKETS = _getBagPockets();
                 var items = (POCKETS[_bagPocket] || POCKETS[0]).items;
                 var MAX_VIS = 9;
-                var scroll = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), items.length - MAX_VIS));
+                var scroll = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), items.length + 1 - MAX_VIS));
                 if (scroll < 0) scroll = 0;
                 var itemIdx = scroll + row;
                 if (itemIdx >= 0 && itemIdx < items.length) {
                     _subIdx = itemIdx; _render();
+                } else if (itemIdx === items.length) {
+                    // Tapped Close Pack row — confirm it
+                    _subIdx = itemIdx; _confirmSelected();
                 }
             }
         });
@@ -2763,11 +2766,15 @@ window.GameStartMenu = (function () {
             else if (page==='pokedex' && _dexList && _dexList[_subIdx]) {
                 _dexEntry = _dexList[_subIdx];
                 page = 'pokedex_entry'; _subIdx = 0; _render();
-            } else if (page==='bag' && _battleItemCallback) {
+            } else if (page==='bag') {
                 var _bPockets = _getBagPockets();
                 var _bPocket  = _bPockets[_bagPocket] || _bPockets[0];
                 var _bItem    = _bPocket && _bPocket.items[_subIdx];
-                if (_bItem && _bItem.quantity > 0 && !_bItem.itemId.endsWith('_empty')) {
+                // Close Pack selected (index past last item), or no item at index
+                if (!_bItem || _subIdx >= _bPocket.items.length) {
+                    _goBack(); return;
+                }
+                if (_battleItemCallback && _bItem.quantity > 0) {
                     var _bCb = _battleItemCallback;
                     _battleItemCallback = null; _battleBagCancel = null;
                     close();
@@ -2890,7 +2897,7 @@ window.GameStartMenu = (function () {
         if (page==='save')    return 2;
         if (page==='pokenav') return 5;  // Map, Condition, Ribbons, Match Call, Close
         if (page==='options') return 21; // 18 EE options + 3 engine extras
-        if (page==='bag')     return _getBagPockets()[_bagPocket].items.length;
+        if (page==='bag')     return _getBagPockets()[_bagPocket].items.length + 1; // +1 for Close Pack
         if (page==='pokemon') {
             const party = window.GameSave && GameSave.state && GameSave.state.party;
             return party ? party.filter(Boolean).length || 1 : 1;
