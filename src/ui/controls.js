@@ -12,6 +12,9 @@ window.GameControls = (function () {
         el.style.touchAction   = 'none';
 
         el.addEventListener('pointerdown', function (e) {
+            // Direct DOM debug — bypasses game loop entirely
+            var dbg = document.getElementById('ctrl-debug');
+            if (dbg) dbg.textContent = key;
             // Set input FIRST — before anything that might throw
             if (window.GameInput) {
                 GameInput.state[key]       = true;

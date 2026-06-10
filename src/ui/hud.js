@@ -1,5 +1,5 @@
 // GameHUD — renders HUD info and settings button onto #ui-overlay
-const GAME_VERSION = 'v0.3.4';
+const GAME_VERSION = 'v0.3.5';
 
 window.GameHUD = (function () {
     let overlay = null;
@@ -128,6 +128,9 @@ window.GameHUD = (function () {
         if (_mapLine)   _mapLine.textContent   = mapName;
         if (_coordLine) _coordLine.textContent = coords + (inputDbg ? ' [' + inputDbg + ']' : '');
 
+        const errEl = document.getElementById('hud-err');
+        if (errEl) errEl.textContent = window._initError ? 'ERR:' + window._initError.slice(0, 40) : '';
+
         if (mapName !== _lastMapName && mapName !== '—') {
             _lastMapName = mapName;
             _showBanner(mapName);
@@ -171,10 +174,20 @@ window.GameHUD = (function () {
         _fpsLine = document.createElement('div');
         _fpsLine.textContent = '-- FPS';
 
+        const _errLine = document.createElement('div');
+        _errLine.id = 'hud-err';
+        _errLine.style.color = '#f88';
+
+        const _ctrlDbg = document.createElement('div');
+        _ctrlDbg.id = 'ctrl-debug';
+        _ctrlDbg.style.color = '#ff0';
+
         infoEl.appendChild(_verLine);
         infoEl.appendChild(_mapLine);
         infoEl.appendChild(_coordLine);
         infoEl.appendChild(_fpsLine);
+        infoEl.appendChild(_errLine);
+        infoEl.appendChild(_ctrlDbg);
         overlay.appendChild(infoEl);
 
         // Keep fpsEl reference non-null (CSS hides #hud-fps anyway)
