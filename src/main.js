@@ -202,6 +202,12 @@
     function gameLoop(timestamp) {
         const jp = GameInput.justPressed;
 
+        window._dbgState = 'tr:' + (_transitioning?1:0) +
+            ' sm:' + (window.GameStartMenu && GameStartMenu.isOpen() ? 1 : 0) +
+            ' dlg:' + (window.GameDialogue && GameDialogue.isOpen() ? 1 : 0) +
+            ' bat:' + (window.GameBattle && GameBattle.isActive() ? 1 : 0) +
+            ' ml:' + (_mapLoading?1:0);
+
         // If map never loaded (init() may have not awaited it yet), kick it off now
         if (!window._mapLoaded && !_mapLoading) {
             _mapLoading = true;
@@ -308,10 +314,6 @@
 
         GameInput.consumeJustPressed();
         GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
-        window._dbgState = 'tr:' + (_transitioning?1:0) +
-            ' sm:' + (window.GameStartMenu && GameStartMenu.isOpen() ? 1 : 0) +
-            ' dlg:' + (window.GameDialogue && GameDialogue.isOpen() ? 1 : 0) +
-            ' bat:' + (window.GameBattle && GameBattle.isActive() ? 1 : 0);
         GameHUD.update();
         requestAnimationFrame(gameLoop);
     }
