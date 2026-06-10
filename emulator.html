@@ -93,7 +93,7 @@
             gap: 4px;
             font-family: inherit;
         }
-        .sys-card:hover  { border-color: var(--accent); background: #1e1c2e; }
+        .sys-card:hover    { border-color: var(--accent); background: #1e1c2e; }
         .sys-card.selected { border-color: var(--accent); background: #1e1c2e; box-shadow: 0 0 0 1px var(--accent); color: var(--accent2); }
         .sys-card.has-cache .sys-name::after { content: ' ·'; color: var(--accent); }
         .sys-icon { font-size: 1.3rem; }
@@ -124,7 +124,6 @@
         .sel-ext  { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
         .launch-btns { display: flex; gap: 8px; flex-wrap: wrap; }
 
-        /* URL input row */
         .url-row {
             display: flex;
             gap: 8px;
@@ -180,11 +179,11 @@
             transition: color 0.15s, border-color 0.15s;
             white-space: nowrap;
         }
-        .btn-ghost:hover          { color: var(--text); border-color: #3a3a4a; }
-        .btn-ghost.play           { color: var(--accent2); border-color: #3a3260; }
-        .btn-ghost.play:hover     { border-color: var(--accent); }
-        .btn-ghost.danger         { color: var(--danger); border-color: #3a2a2a; }
-        .btn-ghost.danger:hover   { border-color: var(--danger); }
+        .btn-ghost:hover        { color: var(--text); border-color: #3a3a4a; }
+        .btn-ghost.play         { color: var(--accent2); border-color: #3a3260; }
+        .btn-ghost.play:hover   { border-color: var(--accent); }
+        .btn-ghost.danger       { color: var(--danger); border-color: #3a2a2a; }
+        .btn-ghost.danger:hover { border-color: var(--danger); }
 
         .cache-badge-btn {
             background: var(--surface2);
@@ -252,10 +251,7 @@
             background: var(--surface);
             border-bottom: 1px solid var(--border);
             padding: 0.6rem 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-shrink: 0;
+            display: flex; align-items: center; gap: 1rem; flex-shrink: 0;
         }
         .logo-small {
             font-weight: 700; font-size: 1.1rem;
@@ -277,17 +273,14 @@
         .btn-back:hover { border-color: var(--accent); }
         #game {
             width: 100%; flex: 1; background: #000; min-height: 0;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
-            touch-action: manipulation;
+            -webkit-touch-callout: none; -webkit-user-select: none;
+            user-select: none; touch-action: manipulation;
         }
         #emu-progress-wrap { width: 100%; height: 4px; background: var(--surface2); flex-shrink: 0; }
         #emu-progress-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.3s ease; }
         #emu-status {
             padding: 6px 16px; font-size: 11px; color: #4a4a5a;
-            background: var(--bg); border-top: 1px solid var(--border);
-            flex-shrink: 0;
+            background: var(--bg); border-top: 1px solid var(--border); flex-shrink: 0;
         }
         #emu-status.loading { color: var(--accent2); }
 
@@ -310,12 +303,7 @@
         .loading-prog-wrap { width: 220px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
         .loading-prog-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.08s linear; border-radius: 2px; }
 
-        .url-hint {
-            font-size: 0.72rem;
-            color: #555;
-            line-height: 1.5;
-        }
-        .url-hint a { color: var(--accent2); text-decoration: none; }
+        .url-hint { font-size: 0.72rem; color: #555; line-height: 1.5; }
     </style>
 </head>
 <body>
@@ -349,15 +337,12 @@
                 <button class="btn-ghost danger" id="btn-clear-cache" style="display:none">Delete cache</button>
             </div>
         </div>
-
-        <!-- Direct URL row -->
         <div class="url-row">
-            <input type="url" id="url-input" placeholder="Paste direct download URL (no file picker needed)" />
+            <input type="url" id="url-input" placeholder="Paste direct download URL (ZIP or ROM)" />
             <button class="btn-primary" id="btn-url-load" disabled>&#9654; Load</button>
         </div>
         <div class="url-hint">
-            Google Drive: open file → Share → copy link, then change
-            <code>/file/d/ID/view</code> to <code>/uc?export=download&amp;id=ID</code>
+            ZIP files are automatically extracted. Google Drive: Share → copy link and paste as-is.
         </div>
     </div>
 </div>
@@ -392,6 +377,8 @@
     <div class="loading-prog-wrap"><div class="loading-prog-fill" id="loadingProgFill"></div></div>
 </div>
 
+<!-- fflate for in-browser ZIP extraction -->
+<script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
 <script src="https://apis.google.com/js/api.js"></script>
 <script src="https://accounts.google.com/gsi/client"></script>
 
@@ -403,9 +390,6 @@
             attrs = Object.assign({}, attrs || {}, { preserveDrawingBuffer: true });
         return _origGetCtx.call(this, type, attrs);
     };
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('game').addEventListener('contextmenu', function (e) { e.preventDefault(); return false; });
-    });
 
     var SYSTEMS = [
         { id:'nes',      label:'NES',             core:'fceumm',           exts:['.nes','.fds'],                       group:'Nintendo', icon:'🎮' },
@@ -447,6 +431,9 @@
         { id:'o2em',     label:'Odyssey2',        core:'o2em',             exts:['.bin'],                             group:'Other',    icon:'🎱' },
     ];
 
+    /* Systems that use ZIP natively — don't extract from these */
+    var ZIP_NATIVE = { fbneo: true, mame2003: true, amiga: true, dos: true };
+
     var SYS_BY_ID = {};
     SYSTEMS.forEach(function (s) { SYS_BY_ID[s.id] = s; });
 
@@ -461,23 +448,23 @@
     var _cachedIds   = {};
     var _metaMap     = {};
 
-    var setupScreen    = document.getElementById('setup-screen');
-    var pickerScreen   = document.getElementById('picker-screen');
-    var emuScreen      = document.getElementById('emu-screen');
-    var btnPlayCached  = document.getElementById('btn-play-cached');
-    var btnDrive       = document.getElementById('btn-drive');
-    var btnClear       = document.getElementById('btn-clear-cache');
-    var emuStatus      = document.getElementById('emu-status');
-    var emuGameLabel   = document.getElementById('emu-game-label');
-    var emuSysLabel    = document.getElementById('emu-sys-label');
-    var emuProgFill    = document.getElementById('emu-progress-fill');
-    var cacheOverlay   = document.getElementById('cache-overlay');
-    var cacheList      = document.getElementById('cache-list');
-    var loadingOverlay = document.getElementById('loadingOverlay');
-    var loadingText    = document.getElementById('loadingText');
-    var loadingProg    = document.getElementById('loadingProgFill');
-    var urlInput       = document.getElementById('url-input');
-    var btnUrlLoad     = document.getElementById('btn-url-load');
+    var setupScreen   = document.getElementById('setup-screen');
+    var pickerScreen  = document.getElementById('picker-screen');
+    var emuScreen     = document.getElementById('emu-screen');
+    var btnPlayCached = document.getElementById('btn-play-cached');
+    var btnDrive      = document.getElementById('btn-drive');
+    var btnClear      = document.getElementById('btn-clear-cache');
+    var emuStatus     = document.getElementById('emu-status');
+    var emuGameLabel  = document.getElementById('emu-game-label');
+    var emuSysLabel   = document.getElementById('emu-sys-label');
+    var emuProgFill   = document.getElementById('emu-progress-fill');
+    var cacheOverlay  = document.getElementById('cache-overlay');
+    var cacheList     = document.getElementById('cache-list');
+    var loadingOverlay= document.getElementById('loadingOverlay');
+    var loadingText   = document.getElementById('loadingText');
+    var loadingProg   = document.getElementById('loadingProgFill');
+    var urlInput      = document.getElementById('url-input');
+    var btnUrlLoad    = document.getElementById('btn-url-load');
 
     function setDl(msg, color) {
         if (loadingText) { loadingText.textContent = msg || ''; loadingText.style.color = color || 'var(--muted)'; }
@@ -486,59 +473,110 @@
         if (loadingProg) loadingProg.style.width = Math.min(100, Math.max(0, pct)) + '%';
     }
     function setEmuProgress(pct) { emuProgFill.style.width = Math.min(100, Math.max(0, pct)) + '%'; }
-    function fmtMB(bytes)        { return (bytes / 1048576).toFixed(1) + ' MB'; }
-    function showLoading(msg)    { setDl(msg); setProgress(0); loadingOverlay.classList.add('visible'); }
-    function hideLoading()       { loadingOverlay.classList.remove('visible'); setProgress(0); }
+    function fmtMB(bytes) { return (bytes / 1048576).toFixed(1) + ' MB'; }
+    function showLoading(msg) { setDl(msg); setProgress(0); loadingOverlay.classList.add('visible'); }
+    function hideLoading() { loadingOverlay.classList.remove('visible'); setProgress(0); }
 
-    /* ── URL input enable/disable ── */
+    /* ── ZIP detection and extraction ── */
+    function isZipBlob(blob) {
+        return blob.slice(0, 4).arrayBuffer().then(function (buf) {
+            var bytes = new Uint8Array(buf);
+            /* ZIP magic: PK\x03\x04 */
+            return bytes[0] === 0x50 && bytes[1] === 0x4B && bytes[2] === 0x03 && bytes[3] === 0x04;
+        });
+    }
+
+    function extractFromZip(blob, sys) {
+        return blob.arrayBuffer().then(function (buf) {
+            return new Promise(function (res, rej) {
+                if (typeof fflate === 'undefined') { rej(new Error('fflate not loaded')); return; }
+                setDl('Extracting from ZIP…');
+                fflate.unzip(new Uint8Array(buf), function (err, files) {
+                    if (err) { rej(err); return; }
+                    var keys = Object.keys(files);
+                    /* Try to find a file matching the system's extensions */
+                    var match = null;
+                    var matchName = null;
+                    for (var i = 0; i < sys.exts.length && !match; i++) {
+                        var ext = sys.exts[i];
+                        for (var j = 0; j < keys.length; j++) {
+                            if (keys[j].toLowerCase().endsWith(ext)) {
+                                match = files[keys[j]];
+                                matchName = keys[j].split('/').pop();
+                                break;
+                            }
+                        }
+                    }
+                    /* Fallback: largest file in the ZIP */
+                    if (!match) {
+                        var biggest = null, biggestName = null, biggestSize = 0;
+                        keys.forEach(function (k) {
+                            if (files[k].length > biggestSize) {
+                                biggestSize = files[k].length;
+                                biggest = files[k];
+                                biggestName = k.split('/').pop();
+                            }
+                        });
+                        match = biggest;
+                        matchName = biggestName;
+                    }
+                    if (!match) { rej(new Error('ZIP appears to be empty')); return; }
+                    res({ blob: new Blob([match], { type: 'application/octet-stream' }), name: matchName });
+                });
+            });
+        });
+    }
+
+    /* ── Main handler: unzip if needed, then launch ── */
+    function prepareAndLaunch(sys, blob, fileName) {
+        if (ZIP_NATIVE[sys.id]) {
+            /* This system uses ZIP natively — pass it straight through */
+            cacheAndLaunch(sys, blob, fileName);
+            return;
+        }
+        isZipBlob(blob).then(function (isZip) {
+            if (!isZip) {
+                cacheAndLaunch(sys, blob, fileName);
+                return;
+            }
+            extractFromZip(blob, sys)
+                .then(function (result) {
+                    cacheAndLaunch(sys, result.blob, result.name);
+                })
+                .catch(function (err) {
+                    hideLoading();
+                    alert('ZIP extraction failed: ' + err.message);
+                });
+        });
+    }
+
+    /* ── URL helpers ── */
     urlInput.addEventListener('input', function () {
         btnUrlLoad.disabled = !urlInput.value.trim() || !_selectedSys;
     });
 
-    /* ── Guess system from URL file extension ── */
-    function guessSysFromUrl(url) {
-        var lower = url.toLowerCase().split('?')[0];
-        for (var i = 0; i < SYSTEMS.length; i++) {
-            var sys = SYSTEMS[i];
-            for (var j = 0; j < sys.exts.length; j++) {
-                if (lower.endsWith(sys.exts[j])) return sys;
-            }
-        }
-        return null;
-    }
-
-    /* ── Rewrite Google Drive share links to direct download ── */
     function rewriteGDriveUrl(url) {
-        var m = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+        var m = url.match(/drive\.google\.com\/file\/d\/([^/?]+)/);
         if (m) return 'https://drive.google.com/uc?export=download&id=' + m[1];
         return url;
     }
 
-    /* ── Load from URL ── */
     btnUrlLoad.addEventListener('click', function () {
         var raw = urlInput.value.trim();
-        if (!raw) return;
+        if (!raw || !_selectedSys) return;
         var url = rewriteGDriveUrl(raw);
-
-        var sys = _selectedSys;
-        if (!sys) {
-            sys = guessSysFromUrl(url);
-            if (!sys) { alert('Please select a system first.'); return; }
-        }
-
         var fileName = decodeURIComponent(url.split('/').pop().split('?')[0]) || 'rom';
         btnUrlLoad.disabled = true;
         showLoading('Connecting…');
-
         streamFetch(url, {}, fileName)
             .then(function (blob) {
                 btnUrlLoad.disabled = false;
-                cacheAndLaunch(sys, blob, fileName);
+                prepareAndLaunch(_selectedSys, blob, fileName);
             })
             .catch(function (err) {
                 hideLoading();
                 btnUrlLoad.disabled = false;
-                alert('Download failed: ' + err.message + '\n\nIf using Google Drive, make sure the file is shared publicly (Anyone with the link).');
+                alert('Download failed: ' + err.message + '\n\nIf using Google Drive, make sure sharing is set to "Anyone with the link".');
             });
     });
 
@@ -641,7 +679,6 @@
         var startTime = Date.now();
         var _lastMsg  = 'Loading core…';
 
-        gameDiv.addEventListener('contextmenu', function (e) { e.preventDefault(); return false; });
         emuStatus.textContent = _lastMsg;
         emuStatus.classList.add('loading');
         setEmuProgress(0);
@@ -731,8 +768,8 @@
         gapi.load('picker', function () {
             new google.picker.PickerBuilder()
                 .addView(new google.picker.DocsView(google.picker.ViewId.DOCS)
-                    .setMimeTypes('application/octet-stream,application/x-unknown')
-                    .setQuery(sys.exts[0]))
+                    .setMimeTypes('application/octet-stream,application/x-unknown,application/zip')
+                    .setQuery(sys.label))
                 .setOAuthToken(token)
                 .setCallback(function (data) {
                     if (data[google.picker.Response.ACTION] === google.picker.Action.PICKED) {
@@ -746,11 +783,18 @@
 
     function downloadFromDrive(sys, fileId, fileName, token) {
         btnDrive.disabled = true;
-        showLoading('Starting · ' + fileName);
+        showLoading('Downloading · ' + fileName);
         streamFetch('https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media',
             { 'Authorization': 'Bearer ' + token }, fileName)
-            .then(function (blob) { btnDrive.disabled = false; cacheAndLaunch(sys, blob, fileName); })
-            .catch(function (err) { hideLoading(); btnDrive.disabled = false; alert('Download failed: ' + err.message); });
+            .then(function (blob) {
+                btnDrive.disabled = false;
+                prepareAndLaunch(sys, blob, fileName);
+            })
+            .catch(function (err) {
+                hideLoading();
+                btnDrive.disabled = false;
+                alert('Download failed: ' + err.message);
+            });
     }
 
     /* ── Play from cache ── */
@@ -811,7 +855,7 @@
         document.getElementById('sel-ext-txt').textContent  = 'Choose a system above';
         btnPlayCached.style.display = 'none';
         btnClear.style.display      = 'none';
-        btnDrive.disabled = true;
+        btnDrive.disabled   = true;
         btnUrlLoad.disabled = true;
     }
 
@@ -823,11 +867,11 @@
         _selectedSys = sys;
         document.getElementById('sel-icon-txt').textContent = sys.icon || '🎮';
         document.getElementById('sel-name-txt').textContent = sys.label;
-        document.getElementById('sel-ext-txt').textContent  = sys.exts.join(', ');
+        document.getElementById('sel-ext-txt').textContent  = sys.exts.join(', ') + ' (or .zip)';
         var cached = !!_cachedIds[sys.id];
         btnPlayCached.style.display = cached ? '' : 'none';
         btnClear.style.display      = cached ? '' : 'none';
-        btnDrive.disabled = false;
+        btnDrive.disabled   = false;
         btnUrlLoad.disabled = !urlInput.value.trim();
     }
 
