@@ -439,7 +439,11 @@ body.reverse-landscape #game-wrapper {
     position: relative;
     width: calc(110px * var(--control-scale, 1));
     height: calc(110px * var(--control-scale, 1));
-    pointer-events: none;
+    /* Container is the hit area — must receive pointer events */
+    pointer-events: all;
+    touch-action: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* Cross shape via CSS — horizontal and vertical bars */
@@ -485,25 +489,20 @@ body.reverse-landscape #game-wrapper {
     pointer-events: none;
 }
 
-/* D-pad hit areas */
+/* D-pad arrow labels — purely cosmetic, no pointer events */
 .gba-dpad-up,
 .gba-dpad-down,
 .gba-dpad-left,
 .gba-dpad-right {
     position: absolute;
     z-index: 3;
-    pointer-events: all;
-    touch-action: none;
+    pointer-events: none;
     background: transparent;
-    border: none;
-    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     color: rgba(200,200,220,0.5);
     font-size: calc(11px * var(--control-scale, 1));
-    -webkit-tap-highlight-color: transparent;
-    transition: color 0.07s;
 }
 
 .gba-dpad-up {
@@ -511,7 +510,6 @@ body.reverse-landscape #game-wrapper {
     left: calc(36px * var(--control-scale, 1));
     width: calc(38px * var(--control-scale, 1));
     height: calc(38px * var(--control-scale, 1));
-    border-radius: 4px 4px 0 0;
 }
 
 .gba-dpad-down {
@@ -519,7 +517,6 @@ body.reverse-landscape #game-wrapper {
     left: calc(36px * var(--control-scale, 1));
     width: calc(38px * var(--control-scale, 1));
     height: calc(38px * var(--control-scale, 1));
-    border-radius: 0 0 4px 4px;
 }
 
 .gba-dpad-left {
@@ -527,7 +524,6 @@ body.reverse-landscape #game-wrapper {
     top: calc(36px * var(--control-scale, 1));
     width: calc(38px * var(--control-scale, 1));
     height: calc(38px * var(--control-scale, 1));
-    border-radius: 4px 0 0 4px;
 }
 
 .gba-dpad-right {
@@ -535,14 +531,6 @@ body.reverse-landscape #game-wrapper {
     top: calc(36px * var(--control-scale, 1));
     width: calc(38px * var(--control-scale, 1));
     height: calc(38px * var(--control-scale, 1));
-    border-radius: 0 4px 4px 0;
-}
-
-.gba-dpad-up:active,
-.gba-dpad-down:active,
-.gba-dpad-left:active,
-.gba-dpad-right:active {
-    color: rgba(255,255,255,0.9);
 }
 
 /* --- Joystick (replaces d-pad in joystick mode) -------------------- */
