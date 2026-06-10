@@ -2752,6 +2752,8 @@ window.GameStartMenu = (function () {
     // --- Navigation ---
     function _goBack() {
         if (page==='pokedex_entry') { page='pokedex'; _render(); return; }
+        // In battle bag mode, B/back closes entirely and returns to battle
+        if (_battleBagCancel) { close(); return; }
         page='main'; _subIdx=0; _render();
     }
 
@@ -2772,7 +2774,8 @@ window.GameStartMenu = (function () {
                 var _bItem    = _bPocket && _bPocket.items[_subIdx];
                 // Close Pack selected (index past last item), or no item at index
                 if (!_bItem || _subIdx >= _bPocket.items.length) {
-                    _goBack(); return;
+                    if (_battleBagCancel) close(); else _goBack();
+                    return;
                 }
                 if (_battleItemCallback && _bItem.quantity > 0) {
                     var _bCb = _battleItemCallback;
