@@ -472,11 +472,11 @@ window.GameStartMenu = (function () {
                     { key:'Alchemy',    val:'Lv '+(ls.alchemy||0) },
                 ];
 
-                ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace';
+                ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
                 ctx.fillStyle = COL_CYAN;
                 ctx.fillText('TRAINER CARD', 16*S, 8*S);
 
-                ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+                ctx.font = (10*S)+'px "Press Start 2P", monospace';
                 var y = 28*S;
                 rows.forEach(function(r) {
                     if (!r) { y += 8*S; return; }
@@ -655,7 +655,7 @@ window.GameStartMenu = (function () {
         ctx.textBaseline = 'top';
 
         // ── 4 main tabs (y=0..17 GBA) ───────────────────────────────────────
-        ctx.font = (10*S) + 'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S) + 'px "Press Start 2P", monospace';
         var tabW = 60;
         JOURNAL_TABS.forEach(function(label, i) {
             var tx = i * tabW * S, tw = tabW * S, ty = 0, th = 17 * S;
@@ -694,7 +694,7 @@ window.GameStartMenu = (function () {
         ctx.fillStyle = CYAN;
         ctx.fillRect(0, 112*S, GBA_W, S);
 
-        ctx.font = (10*S) + 'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
         // Row 1: Name  ID: XXXXX  Money
         ctx.fillStyle = TEXT;
@@ -722,7 +722,7 @@ window.GameStartMenu = (function () {
         // Sub-page nav row (y=18..29 GBA)
         ctx.fillStyle = TITLEBG;
         ctx.fillRect(0, 18*S, GBA_W, 11*S);
-        ctx.font = (10*S) + 'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
         ctx.fillStyle = CYAN;
         ctx.fillText('< (L)', 4*S, 19*S);
@@ -737,7 +737,7 @@ window.GameStartMenu = (function () {
 
         // Stats in 2-column layout (y=30..111 GBA, 4 rows visible)
         var stats = page.stats();
-        ctx.font = (10*S) + 'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S) + 'px "Press Start 2P", monospace';
         var ROW_H = 20, COL_MID = 120;
         for (var i = 0; i < stats.length; i++) {
             var col  = i % 2;
@@ -767,7 +767,7 @@ window.GameStartMenu = (function () {
         var ap = _ap();
         var allForAP = window.GameAchievements ? GameAchievements.getAll() : [];
         var maxAP = allForAP.reduce(function(s,a){ return s + (a.apReward||0); }, 0);
-        ctx.font = (10*S) + 'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
         var apStr = ap + ' / ' + maxAP + ' AP';
         var apW = ctx.measureText(apStr).width;
@@ -804,15 +804,15 @@ window.GameStartMenu = (function () {
             var ry2 = (listY + j * 14) * S;
             if (sel2) { ctx.fillStyle = 'rgba(90,206,214,0.2)'; ctx.fillRect(0, ry2 - S, GBA_W, 14*S); }
             ctx.fillStyle = ach.unlocked ? TEXT : DIM;
-            ctx.font = (10*S) + 'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S) + 'px "Press Start 2P", monospace';
             ctx.fillText((ach.unlocked ? '[+]' : '[X]') + ' ' + (ach.name||''), 4*S, ry2);
             var apVal = (ach.apReward || 0) + 'AP';
             var avw = ctx.measureText(apVal).width;
             ctx.fillText(apVal, GBA_W - avw - 4*S, ry2);
         }
         // Scroll indicators
-        if (_achOffset > 0) { ctx.fillStyle = CYAN; ctx.font=(7*S)+'px "Pokemon FireRed", monospace'; ctx.fillText('▲', GBA_W/2-4, (listY-2)*S); }
-        if (_achOffset + LIST_ROWS < filtered.length) { ctx.fillStyle = CYAN; ctx.font=(7*S)+'px "Pokemon FireRed", monospace'; ctx.fillText('▼', GBA_W/2-4, (listY+LIST_ROWS*14)*S); }
+        if (_achOffset > 0) { ctx.fillStyle = CYAN; ctx.font=(7*S)+'px "Press Start 2P", monospace'; ctx.fillText('▲', GBA_W/2-4, (listY-2)*S); }
+        if (_achOffset + LIST_ROWS < filtered.length) { ctx.fillStyle = CYAN; ctx.font=(7*S)+'px "Press Start 2P", monospace'; ctx.fillText('▼', GBA_W/2-4, (listY+LIST_ROWS*14)*S); }
 
         // Selected ach description
         var selAch = filtered[_subIdx];
@@ -822,7 +822,7 @@ window.GameStartMenu = (function () {
             ctx.fillStyle = CYAN;
             ctx.fillRect(0, 102*S, GBA_W, S);
             ctx.fillStyle = selAch.unlocked ? TEXT : DIM;
-            ctx.font = (10*S) + 'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S) + 'px "Press Start 2P", monospace';
             ctx.fillText((selAch.name||'') + (selAch.unlocked ? ' [EARNED]' : ' [LOCKED]'), 4*S, 103*S);
             ctx.fillStyle = DIM;
             ctx.fillText((selAch.desc||''), 4*S, 103*S + 9*S);
@@ -834,7 +834,7 @@ window.GameStartMenu = (function () {
         var ap = _ap();
 
         // Tier tabs + AP counter
-        ctx.font = (10*S) + 'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
         var tw = 55 * S;
         TIERS.forEach(function(t, i) {
@@ -880,12 +880,12 @@ window.GameStartMenu = (function () {
         ctx.fillStyle = CYAN;
         ctx.fillRect(0, 102*S, GBA_W, S);
         ctx.fillStyle = DIM;
-        ctx.font = (10*S) + 'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S) + 'px "Press Start 2P", monospace';
         ctx.fillText('Select a power to view its description.', 4*S, 104*S);
     }
 
     function _drawJournalQuests(ctx, S, CYAN, TEXT, DIM) {
-        ctx.font = (10*S) + 'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
 
         // Header
@@ -985,12 +985,12 @@ window.GameStartMenu = (function () {
         ctx.fillRect(0, 20*S, GBA_W, 2);
 
         ctx.textBaseline = 'top';
-        ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
         ctx.fillStyle = _tc.hi;
         ctx.fillText('ACHIEVEMENT ATLAS', 8*S, 6*S);
 
         // Total AP right-aligned
-        ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S)+'px "Press Start 2P", monospace';
         ctx.fillStyle = COL_CYAN;
         var apStr = totalAP + ' / ' + maxAP + ' AP';
         var apW = ctx.measureText(apStr).width;
@@ -1005,7 +1005,7 @@ window.GameStartMenu = (function () {
         if (_subIdx >= _achOffset + LIST_ROWS) _achOffset = _subIdx - LIST_ROWS + 1;
         _achOffset = Math.max(0, Math.min(_achOffset, Math.max(0, filtered.length - LIST_ROWS)));
 
-        ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S)+'px "Press Start 2P", monospace';
         var listY = 26;
         if (!filtered.length) {
             ctx.fillStyle = COL_DIM;
@@ -1036,8 +1036,8 @@ window.GameStartMenu = (function () {
         }
 
         // Scroll indicators
-        if (_achOffset > 0) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px "Pokemon FireRed", monospace'; ctx.fillText('▲', GBA_W/2 - 4, (listY - 1)*S); }
-        if (_achOffset + LIST_ROWS < filtered.length) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px "Pokemon FireRed", monospace'; ctx.fillText('▼', GBA_W/2 - 4, (listY + LIST_ROWS*14)*S); }
+        if (_achOffset > 0) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px "Press Start 2P", monospace'; ctx.fillText('▲', GBA_W/2 - 4, (listY - 1)*S); }
+        if (_achOffset + LIST_ROWS < filtered.length) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px "Press Start 2P", monospace'; ctx.fillText('▼', GBA_W/2 - 4, (listY + LIST_ROWS*14)*S); }
 
         // Desc box at bottom (y=112)
         ctx.fillStyle = _tc.titleBg;
@@ -1045,7 +1045,7 @@ window.GameStartMenu = (function () {
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 112*S, GBA_W, 2);
 
-        ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S)+'px "Press Start 2P", monospace';
         var selAch = filtered[_subIdx];
         if (selAch) {
             ctx.fillStyle = COL_CYAN;
@@ -1054,7 +1054,7 @@ window.GameStartMenu = (function () {
             ctx.fillStyle = COL_TEXT;
             var desc = selAch.desc || '';
             var words = desc.split(' '), line = '', ly = 126*S;
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace';
             for (var w = 0; w < words.length; w++) {
                 var test = line ? line + ' ' + words[w] : words[w];
                 if (ctx.measureText(test).width > (GBA_W - 8*S) && line) {
@@ -1064,7 +1064,7 @@ window.GameStartMenu = (function () {
             }
             if (line) ctx.fillText(line, 4*S, ly);
             ctx.fillStyle = COL_DIM;
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace';
             var meta = (selAch.tier||'').toUpperCase() + '  ' + selAch.apReward + ' AP';
             ctx.fillText(meta, 4*S, 148*S);
         } else {
@@ -1138,7 +1138,7 @@ window.GameStartMenu = (function () {
         ctx.fillRect(0, 0, BAG_W, BAG_H);
 
         // ── Pocket name row (y=0..9 GBA): ( ◄ label ► ) ─────────────────────
-        ctx.font = 'bold ' + (8*S) + 'px "Pokemon FireRed", monospace';
+        ctx.font = 'bold ' + (8*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
         ctx.fillStyle = CYAN;
         ctx.fillText('(', 2*S, 1*S);
@@ -1182,7 +1182,7 @@ window.GameStartMenu = (function () {
         var isClosePack = (!selItem || _subIdx >= items.length);
         var desc = isClosePack ? 'Return to battle.' : (selItem.desc || selItem.description || '');
         ctx.fillStyle = TEXT;
-        ctx.font = (10*S) + 'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
         var words = desc.split(' '), line = '', lx = 2*S, ly = 116*S, maxW = 108*S, lineH = 9*S;
         for (var w = 0; w < words.length; w++) {
@@ -1205,7 +1205,7 @@ window.GameStartMenu = (function () {
         var scroll = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), totalRows - MAX_VIS));
         if (scroll < 0) scroll = 0;
 
-        ctx.font = (10*S) + 'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
 
         function drawCursor(cx, cy, h) {
@@ -1581,11 +1581,11 @@ window.GameStartMenu = (function () {
             // Title bar
             ctx.fillStyle = TITLEBG; ctx.fillRect(0, 0, canvas.width, 20*S);
             ctx.fillStyle = CYAN; ctx.fillRect(0, 20*S, canvas.width, S);
-            ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace'; ctx.fillStyle = CYAN; ctx.textBaseline = 'top';
+            ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = CYAN; ctx.textBaseline = 'top';
             ctx.fillText(TABS[_tab].toUpperCase(), 8*S, 4*S);
 
             // Tab strip (L/R hint)
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace'; ctx.fillStyle = DIM;
+            ctx.font = (10*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = DIM;
             ctx.fillText('◀ L', 2*S, 4*S);
             ctx.fillText('R ▶', (GBA_W-18)*S, 4*S);
 
@@ -1593,10 +1593,10 @@ window.GameStartMenu = (function () {
             var barH = 18;
             ctx.fillStyle = '#0a1820'; ctx.fillRect(0, 21*S, canvas.width, barH*S);
             ctx.fillStyle = CYAN; ctx.fillRect(0, (21+barH)*S, canvas.width, S);
-            ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace'; ctx.fillStyle = TEXT; ctx.textBaseline = 'top';
+            ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = TEXT; ctx.textBaseline = 'top';
             var gStr = mon.gender==='M' ? ' ♂' : mon.gender==='F' ? ' ♀' : '';
             ctx.fillText(_monDisplayName(mon)+gStr, 8*S, 23*S);
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace'; ctx.fillStyle = DIM;
+            ctx.font = (10*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = DIM;
             var _dexNum = (typeof mon.speciesId === 'number') ? mon.speciesId : ((_pokedexNumMap && Object.keys(_pokedexNumMap).find(function(k){ return _pokedexNumMap[k] === (mon.speciesId||'').toLowerCase(); })) || '?');
             ctx.fillText('No. '+_dexNum, (GBA_W-60)*S, 23*S);
             ctx.fillStyle = TEXT;
@@ -1618,7 +1618,7 @@ window.GameStartMenu = (function () {
                     ['Nature',    (mon.nature||'Hardy')],
                     ['Item',      (mon.heldItem||'None')],
                 ];
-                ctx.font = (10*S)+'px "Pokemon FireRed", monospace'; ctx.textBaseline = 'top';
+                ctx.font = (10*S)+'px "Press Start 2P", monospace'; ctx.textBaseline = 'top';
                 rows.forEach(function(r, i) {
                     var ry = ty + i*14;
                     ctx.fillStyle = DIM; ctx.fillText(r[0], lx*S, ry*S);
@@ -1637,7 +1637,7 @@ window.GameStartMenu = (function () {
                     ['Sp.Def',mon.spDef||0],
                     ['Speed', mon.speed||0],
                 ];
-                ctx.font = (10*S)+'px "Pokemon FireRed", monospace'; ctx.textBaseline = 'top';
+                ctx.font = (10*S)+'px "Press Start 2P", monospace'; ctx.textBaseline = 'top';
                 stats.forEach(function(st, i) {
                     var ry = ty + i*13;
                     ctx.fillStyle = DIM; ctx.fillText(st[0], lx*S, ry*S);
@@ -1656,12 +1656,12 @@ window.GameStartMenu = (function () {
                 ctx.fillStyle = TEXT; ctx.fillText(mon.heldItem||'None', (lx+36)*S, (ey+13)*S);
             } else {
                 // Battle Moves
-                ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace'; ctx.textBaseline = 'top';
+                ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace'; ctx.textBaseline = 'top';
                 ctx.fillStyle = DIM; ctx.fillText('MOVES', lx*S, ty*S);
                 var moves = (mon.moves||[]).slice(0,4);
                 var moveColors = { Normal:'#a8a878',Fire:'#f08030',Water:'#6890f0',Electric:'#f8d030',
                     Grass:'#78c850',Ice:'#98d8d8',Fighting:'#c03028',Poison:'#a040a0',Psychic:'#f85888' };
-                ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+                ctx.font = (10*S)+'px "Press Start 2P", monospace';
                 moves.forEach(function(mv, i) {
                     var ry = ty + 12 + i*20;
                     if (!mv) {
@@ -1690,7 +1690,7 @@ window.GameStartMenu = (function () {
             // Bottom hint bar
             ctx.fillStyle = TITLEBG; ctx.fillRect(0, (GBA_H-12)*S, canvas.width, 12*S);
             ctx.fillStyle = CYAN; ctx.fillRect(0, (GBA_H-12)*S, canvas.width, S);
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace'; ctx.fillStyle = DIM; ctx.textBaseline = 'top';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = DIM; ctx.textBaseline = 'top';
             ctx.fillText('B: Back   L/R: Tab', 8*S, (GBA_H-10)*S);
         }
 
@@ -1789,7 +1789,7 @@ window.GameStartMenu = (function () {
 
             if (!mon) {
                 ctx.fillStyle = '#223322';
-                ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+                ctx.font = (10*S)+'px "Press Start 2P", monospace';
                 ctx.fillText('Empty', (winX+4)*S, (winY+winH/2-3)*S);
                 return;
             }
@@ -1797,26 +1797,26 @@ window.GameStartMenu = (function () {
             var hpPct = mon.maxHp > 0 ? Math.max(0, Math.min(1, (mon.currentHp||0)/mon.maxHp)) : 0;
 
             // Nickname
-            ctx.font = 'bold '+(isLarge ? 14 : 12)*S+'px "Pokemon FireRed", monospace';
+            ctx.font = 'bold '+(isLarge ? 14 : 12)*S+'px "Press Start 2P", monospace';
             ctx.fillStyle = COL_TEXT;
             ctx.fillText(_monDisplayName(mon).slice(0, isLarge ? 8 : 10), nickX*S, nickY*S);
 
             // Level  ("Lv" prefix as in EE)
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace';
             ctx.fillStyle = COL_DIM;
             ctx.fillText('Lv', lvX*S, lvY*S);
             ctx.fillStyle = COL_TEXT;
             ctx.fillText(''+(mon.level||1), (lvX+10)*S, lvY*S);
 
             // Gender
-            ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
             drawGender(mon.gender, genX, genY);
 
             // HP bar (EE: 48px wide, at hpBarX/Y)
             drawHpBar(hpBarX, hpBarY, 48, hpPct);
 
             // HP numbers: "NNN/NNN"  (EE draws current right-aligned, "/" , max right-aligned)
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace';
             ctx.fillStyle = COL_TEXT;
             var hpStr = (mon.currentHp||0)+'/\n'+(mon.maxHp||0);
             ctx.fillText((mon.currentHp||0)+'/'+(mon.maxHp||0), hpNumX*S, hpNumY*S);
@@ -1824,7 +1824,7 @@ window.GameStartMenu = (function () {
             // Status badge
             if (mon.statusCondition) {
                 ctx.fillStyle = STATUS_COLOR[mon.statusCondition] || '#888';
-                ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+                ctx.font = (10*S)+'px "Press Start 2P", monospace';
                 ctx.fillText('['+mon.statusCondition+']', (winX+2)*S, (winY+winH-8)*S);
             }
 
@@ -1878,7 +1878,7 @@ window.GameStartMenu = (function () {
         ctx.strokeStyle = cancelSel ? COL_CYAN : '#304060';
         ctx.lineWidth = S;
         ctx.strokeRect(192*S + S/2, 136*S + S/2, 48*S - S, 16*S - S);
-        ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
         ctx.fillStyle = cancelSel ? '#050510' : COL_TEXT;
         ctx.textBaseline = 'top';
         ctx.fillText('CANCEL', 196*S, 139*S);
@@ -1892,7 +1892,7 @@ window.GameStartMenu = (function () {
             ctx.fillRect(0, 120*S, 240*S, 40*S);
             ctx.fillStyle = COL_CYAN;
             ctx.fillRect(0, 120*S, 240*S, S);
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace';
             ctx.fillStyle = COL_TEXT;
             ctx.textBaseline = 'top';
             ctx.fillText('Do what with this', 8*S, 124*S);
@@ -1902,7 +1902,7 @@ window.GameStartMenu = (function () {
             ctx.fillRect(ax*S, ay*S, aw*S, (opts.length*rowH+6)*S);
             ctx.strokeStyle = COL_CYAN; ctx.lineWidth = S;
             ctx.strokeRect(ax*S + S/2, ay*S + S/2, aw*S - S, (opts.length*rowH+6)*S - S);
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace';
             opts.forEach(function(opt, oi) {
                 var oy = ay + 3 + oi * rowH;
                 if (oi === _partyActionSel) {
@@ -1947,7 +1947,7 @@ window.GameStartMenu = (function () {
             _makeCanvasShell(el, function(ctx) {
                 _canvasBg(ctx, null);
                 ctx.textBaseline = 'top';
-                ctx.font = '16px "Pokemon FireRed", monospace';
+                ctx.font = '16px "Press Start 2P", monospace';
                 ctx.fillStyle = '#b4b4b4';
                 ctx.fillText('Loading Pokedex...', 20, 60);
             });
@@ -1994,13 +1994,13 @@ window.GameStartMenu = (function () {
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 20*S, GBA_W, 2);
         ctx.textBaseline = 'top';
-        ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
         ctx.fillStyle = _tc.hi;
         ctx.fillText('POKEDEX', 8*S, 5*S);
 
         if (!_dexList || !_dexList.length) {
             ctx.fillStyle = COL_DIM;
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace';
             ctx.fillText('No data loaded.', 8*S, 40*S);
             return;
         }
@@ -2014,7 +2014,7 @@ window.GameStartMenu = (function () {
         if (start + WIN > _dexList.length) start = Math.max(0, _dexList.length - WIN);
         var end = Math.min(_dexList.length, start + WIN);
 
-        ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S)+'px "Press Start 2P", monospace';
         ctx.textBaseline = 'middle';
         for (var relI = 0; relI < end - start; relI++) {
             var absI = start + relI;
@@ -2074,11 +2074,11 @@ window.GameStartMenu = (function () {
         ctx.fillRect(0, 153*S, GBA_W, 7*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 153*S, GBA_W, 1);
-        ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S)+'px "Press Start 2P", monospace';
         ctx.fillStyle = COL_DIM;
         ctx.fillText((_subIdx+1) + ' / ' + _dexList.length, 4*S, 154*S);
-        if (start > 0) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px "Pokemon FireRed", monospace'; ctx.fillText('▲', GBA_W-12*S, 22*S); }
-        if (end < _dexList.length) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px "Pokemon FireRed", monospace'; ctx.fillText('▼', GBA_W-12*S, 150*S); }
+        if (start > 0) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px "Press Start 2P", monospace'; ctx.fillText('▲', GBA_W-12*S, 22*S); }
+        if (end < _dexList.length) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px "Press Start 2P", monospace'; ctx.fillText('▼', GBA_W-12*S, 150*S); }
     }
 
     function _buildPokedexEntry(el) {
@@ -2123,7 +2123,7 @@ window.GameStartMenu = (function () {
         ctx.fillRect(0, 0, GBA_W, 20*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 20*S, GBA_W, 2);
-        ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
         ctx.fillStyle = _tc.hi;
         ctx.fillText('POKEDEX', 8*S, 5*S);
 
@@ -2134,15 +2134,15 @@ window.GameStartMenu = (function () {
             ctx.fillStyle = '#1a1a2e';
             ctx.fillRect(0, 22*S, 80*S, 66*S);
             ctx.fillStyle = COL_DIM;
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace';
             ctx.fillText('No sprite', 4*S, 50*S);
         }
 
         // Info right side: x=82..239, y=22
-        ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
         ctx.fillStyle = COL_TEXT;
         ctx.fillText(entry.name, 84*S, 24*S);
-        ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S)+'px "Press Start 2P", monospace';
         ctx.fillStyle = COL_DIM;
         ctx.fillText('#' + String(entry.num).padStart(3,'0'), 84*S, 34*S);
         ctx.fillText(entry.category || '', 84*S, 44*S);
@@ -2156,7 +2156,7 @@ window.GameStartMenu = (function () {
                 ctx.fillStyle = tcol;
                 ctx.fillRect(tx, 55*S, tw, 10*S);
                 ctx.fillStyle = '#ffffff';
-                ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+                ctx.font = (10*S)+'px "Press Start 2P", monospace';
                 ctx.fillText(t, tx + 2*S, 56*S);
                 tx += tw + 2*S;
             });
@@ -2183,7 +2183,7 @@ window.GameStartMenu = (function () {
                 ['Exp Rate',   (entry.exp_rate||'').replace('EXP_RATE_','').toLowerCase().replace(/_/g,' ')],
                 ['Egg Groups', (entry.egg_groups||[]).join(', ')],
             ];
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace';
             rows.forEach(function(r, i) {
                 var ry = (bodyY + i * 12) * S;
                 ctx.fillStyle = COL_DIM;  ctx.fillText(r[0], 4*S, ry);
@@ -2192,7 +2192,7 @@ window.GameStartMenu = (function () {
             // Dex entry text wrapped
             var desc = entry.entry || '';
             var words = desc.split(' '), line = '', ly = (bodyY + rows.length * 12 + 4) * S;
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace';
             ctx.fillStyle = COL_DIM;
             for (var wi = 0; wi < words.length; wi++) {
                 var test2 = line ? line + ' ' + words[wi] : words[wi];
@@ -2207,7 +2207,7 @@ window.GameStartMenu = (function () {
             if (entry.evolutions && entry.evolutions.length) {
                 var evoY = Math.min(ly + 14*S, 138*S);
                 ctx.fillStyle = COL_CYAN;
-                ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+                ctx.font = (10*S)+'px "Press Start 2P", monospace';
                 ctx.fillText('Evolves into:', 4*S, evoY);
                 entry.evolutions.slice(0, 2).forEach(function(evo, ei) {
                     var method = (evo.method||'').replace('EVO_','').replace(/_/g,' ').toLowerCase();
@@ -2228,7 +2228,7 @@ window.GameStartMenu = (function () {
                 total += val;
                 var ry = (bodyY + i * 10) * S;
                 var pct = Math.min(1, val / 255);
-                ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+                ctx.font = (10*S)+'px "Press Start 2P", monospace';
                 ctx.fillStyle = COL_DIM;  ctx.fillText(label, 4*S, ry);
                 ctx.fillStyle = COL_TEXT; ctx.fillText(String(val), 60*S, ry);
                 // bar
@@ -2236,12 +2236,12 @@ window.GameStartMenu = (function () {
                 ctx.fillStyle = STAT_COLORS2[k]; ctx.fillRect(80*S, ry, Math.round(pct * 150)*S, 7*S);
             });
             ctx.fillStyle = COL_CYAN;
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace';
             ctx.fillText('Total: ' + total, 4*S, (bodyY + STAT_NAMES.length * 10 + 4)*S);
 
         } else {
             // Moves tab
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace';
             ctx.fillStyle = COL_DIM;
             ctx.fillText('Loading moves...', 4*S, bodyY*S);
             var fullEntry2 = _dexDb ? _dexDb[keyName] : null;
@@ -2300,11 +2300,11 @@ window.GameStartMenu = (function () {
             ctx.fillStyle = '#18b8c8';
             ctx.fillRect(0, 20*S, canvas.width, 2);
             ctx.textBaseline = 'top'; ctx.fillStyle = '#18b8c8';
-            ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
             ctx.fillText('POKENAV — MAP', 8*S, 5*S);
 
             // Region name
-            ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace'; ctx.fillStyle = '#80d0e8';
+            ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = '#80d0e8';
             ctx.fillText(region.charAt(0).toUpperCase()+region.slice(1)+' Region', 8*S, 30*S);
 
             // Map area visualization — draw a simple schematic grid
@@ -2325,7 +2325,7 @@ window.GameStartMenu = (function () {
             ctx.strokeRect(bx*S, by*S, bw*S, bh*S);
 
             // Region label
-            ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace'; ctx.fillStyle = '#18b8c8';
+            ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = '#18b8c8';
             ctx.fillText(ri.label, (bx+4)*S, (by+4)*S);
 
             // Player position indicator — pulsing dot in center
@@ -2338,14 +2338,14 @@ window.GameStartMenu = (function () {
             ctx.stroke();
 
             // Current map name below dot
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace'; ctx.fillStyle = '#ffffff';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
             ctx.fillText(mapName, px*S, (py+8)*S);
             ctx.textAlign = 'left';
 
             // Visited maps count
             var visited = st && st.visitedMaps ? (st.visitedMaps instanceof Set ? st.visitedMaps.size : st.visitedMaps.length) : 0;
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace'; ctx.fillStyle = '#c8d8e8';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = '#c8d8e8';
             ctx.fillText('Maps visited: '+visited, 8*S, 140*S);
 
             // Coordinates
@@ -2358,7 +2358,7 @@ window.GameStartMenu = (function () {
             // Bottom bar
             ctx.fillStyle = '#0a1830'; ctx.fillRect(0, 148*S, canvas.width, 12*S);
             ctx.fillStyle = '#18b8c8'; ctx.fillRect(0, 148*S, canvas.width, 1);
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace'; ctx.fillStyle = '#6090a8';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = '#6090a8';
             ctx.fillText('B: Back', 8*S, 150*S);
         }
 
@@ -2418,10 +2418,10 @@ window.GameStartMenu = (function () {
         ctx.fillRect(0, 36*S, GBA_W, 2);
 
         ctx.textBaseline = 'top';
-        ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
         ctx.fillStyle = COL_CYAN;
         ctx.fillText('POKENAV', 8*S, 8*S);
-        ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S)+'px "Press Start 2P", monospace';
         ctx.fillStyle = _tc.hi;
         ctx.fillText('Navigation System', 8*S, 24*S);
 
@@ -2434,7 +2434,7 @@ window.GameStartMenu = (function () {
             { label:'Close',      hint:'Close the Pokenav' },
         ];
 
-        ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S)+'px "Press Start 2P", monospace';
         OPTIONS.forEach(function(opt, i) {
             var ry = (40 + i * 18) * S;
             var isSel = i === _subIdx;
@@ -2453,7 +2453,7 @@ window.GameStartMenu = (function () {
         ctx.fillRect(0, 148*S, GBA_W, 12*S);
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 148*S, GBA_W, 1);
-        ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S)+'px "Press Start 2P", monospace';
         ctx.fillStyle = COL_DIM;
         var curHint = OPTIONS[_subIdx] ? OPTIONS[_subIdx].hint : '';
         ctx.fillText(curHint, 4*S, 150*S);
@@ -2483,7 +2483,7 @@ window.GameStartMenu = (function () {
         ctx.fillStyle = COL_CYAN;
         ctx.fillRect(0, 20*S, GBA_W, 2);
         ctx.textBaseline = 'top';
-        ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
         ctx.fillStyle = _tc.hi;
         ctx.fillText('SAVE', 8*S, 5*S);
 
@@ -2491,7 +2491,7 @@ window.GameStartMenu = (function () {
         var dexCount = (window.GameSave && GameSave.state && GameSave.state.pokedex)
             ? (GameSave.state.pokedex.caught || []).length : 0;
 
-        ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = (10*S)+'px "Press Start 2P", monospace';
         ctx.fillStyle = COL_CYAN;
         ctx.fillText(_mapName(), 8*S, 28*S);
 
@@ -2523,14 +2523,14 @@ window.GameStartMenu = (function () {
                 ctx.fillStyle = COL_CYAN;
                 ctx.fillRect(0, ry, 2*S, 14*S);
             }
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace';
             ctx.fillStyle = isSel ? COL_CYAN : COL_TEXT;
             ctx.fillText((isSel ? '▶ ' : '  ') + label, 8*S, ry + 2*S);
         });
 
         if (_saveDone) {
             ctx.fillStyle = '#20d840';
-            ctx.font = (10*S)+'px "Pokemon FireRed", monospace';
+            ctx.font = (10*S)+'px "Press Start 2P", monospace';
             ctx.fillText('Game saved!', 8*S, 142*S);
         }
     }
@@ -2785,7 +2785,7 @@ window.GameStartMenu = (function () {
         ctx.fillStyle = _tc.hi;
         ctx.fillRect(0, 20*S, GBA_W, 2);
         ctx.textBaseline = 'top';
-        ctx.font = 'bold '+(11*S)+'px "Pokemon FireRed", monospace';
+        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
         ctx.fillStyle = _tc.hi;
         ctx.fillText('OPTIONS', 8*S, 5*S);
         ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.globalAlpha = 1;
