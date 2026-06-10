@@ -3,46 +3,25 @@ window.GameControls = (function () {
     'use strict';
 
     let mode = 'dpad'; // 'dpad' | 'joystick'
-    let _built = false;
 
     // ------------------------------------------------------------------
-    // Direct input binding — no wrapper, no debounce flags, no capture.
-    // touchstart sets the key; touchend/cancel clears it.
-    // mousedown/mouseup for desktop.
+    // Button binding — Pointer Events + setPointerCapture
+    // setPointerCapture ensures pointerup fires on the element even if
+    // the finger slides off, preventing stuck-pressed states.
     // ------------------------------------------------------------------
     function _bind(el, key) {
-        el.addEventListener('touchstart', function (e) {
-            e.preventDefault();
-            GameInput.state[key] = true;
-            GameInput.justPressed[key] = true;
-        }, { passive: false });
-
-        el.addEventListener('touchend', function (e) {
-            e.preventDefault();
-            GameInput.state[key] = false;
-        }, { passive: false });
-
-        el.addEventListener('touchcancel', function () {
-            GameInput.state[key] = false;
-        }, { passive: false });
-
-        el.addEventListener('mousedown', function (e) {
-            e.preventDefault();
-            GameInput.state[key] = true;
+        el.addEventListener('pointerdown', function (e) {
+            if (e.cancelable) e.preventDefault();
+            el.setPointerCapture(e.pointerId);
+            GameInput.state[key]       = true;
             GameInput.justPressed[key] = true;
         });
-
-        el.addEventListener('mouseup', function () {
-            GameInput.state[key] = false;
-        });
-
-        el.addEventListener('mouseleave', function () {
-            GameInput.state[key] = false;
-        });
+        el.addEventListener('pointerup',     function () { GameInput.state[key] = false; });
+        el.addEventListener('pointercancel', function () { GameInput.state[key] = false; });
     }
 
     // ------------------------------------------------------------------
-    // Style helpers
+    // Style helper
     // ------------------------------------------------------------------
     function _pos(el, leftPct, topPct, w, h) {
         el.style.cssText = [
@@ -61,35 +40,81 @@ window.GameControls = (function () {
     }
 
     // ------------------------------------------------------------------
-    // D-pad
+    // D-pad — zone-based on a single container
+    //
+    // The whole cross is one hit area. Direction is determined from where
+    // the pointer is relative to the center, so sliding gestures work
+    // correctly without needing to hit individual small buttons.
     // ------------------------------------------------------------------
     function _buildDpad() {
-        // Outer container — no listeners, just layout
         const wrap = document.createElement('div');
         _pos(wrap, 4, 68, 120, 120);
-        wrap.style.position = 'fixed';
+        wrap.style.cursor = 'pointer';
 
-        // Cross bars via CSS — ::before/::after on a nested div
+        // Cross background via CSS pseudo-elements on .ctrl-dpad-cross
         const cross = document.createElement('div');
         cross.className = 'ctrl-dpad-cross';
         cross.style.cssText = 'position:absolute;inset:0;pointer-events:none;';
         wrap.appendChild(cross);
 
-        const dirs = [
-            { key: 'up',    style: 'left:32%;top:0;width:36%;height:36%;border-radius:4px 4px 0 0' },
-            { key: 'down',  style: 'left:32%;bottom:0;width:36%;height:36%;border-radius:0 0 4px 4px' },
-            { key: 'left',  style: 'top:32%;left:0;width:36%;height:36%;border-radius:4px 0 0 4px' },
-            { key: 'right', style: 'top:32%;right:0;width:36%;height:36%;border-radius:0 4px 4px 0' },
+        // Cosmetic arrow labels — pointer-events:none, purely visual
+        var cosmetic = [
+            { label: '▲', css: 'left:32%;top:0;width:36%;height:36%;border-radius:4px 4px 0 0' },
+            { label: '▼', css: 'left:32%;bottom:0;width:36%;height:36%;border-radius:0 0 4px 4px' },
+            { label: '◄', css: 'top:32%;left:0;width:36%;height:36%;border-radius:4px 0 0 4px' },
+            { label: '►', css: 'top:32%;right:0;width:36%;height:36%;border-radius:0 4px 4px 0' },
         ];
-
-        dirs.forEach(function (d) {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'ctrl-dpad-btn';
-            btn.style.cssText = 'position:absolute;' + d.style + ';background:#2a2a3e;border:1px solid rgba(255,255,255,0.2);cursor:pointer;touch-action:none;';
-            _bind(btn, d.key);
-            wrap.appendChild(btn);
+        cosmetic.forEach(function (d) {
+            var div = document.createElement('div');
+            div.style.cssText = 'position:absolute;pointer-events:none;background:#2a2a3e;' +
+                'border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;' +
+                'justify-content:center;color:rgba(200,200,220,0.5);font-size:11px;' + d.css;
+            div.textContent = d.label;
+            wrap.appendChild(div);
         });
+
+        // Zone-based pointer input
+        var active  = new Map(); // pointerId -> direction string | null
+        var claimed = new Set(); // directions currently held by this dpad
+
+        function dirFrom(e) {
+            var r  = wrap.getBoundingClientRect();
+            var dx = e.clientX - (r.left + r.width  * 0.5);
+            var dy = e.clientY - (r.top  + r.height * 0.5);
+            if (Math.hypot(dx, dy) < r.width * 0.12) return null; // dead-zone
+            return Math.abs(dx) >= Math.abs(dy)
+                ? (dx > 0 ? 'right' : 'left')
+                : (dy > 0 ? 'down'  : 'up');
+        }
+
+        function flush() {
+            // Only clear the directions this d-pad last claimed
+            // (avoids clobbering keyboard-held directions)
+            claimed.forEach(function (d) { GameInput.state[d] = false; });
+            claimed.clear();
+            active.forEach(function (dir) {
+                if (dir) {
+                    GameInput.state[dir]       = true;
+                    GameInput.justPressed[dir] = true;
+                    claimed.add(dir);
+                }
+            });
+        }
+
+        wrap.addEventListener('pointerdown', function (e) {
+            if (e.cancelable) e.preventDefault();
+            wrap.setPointerCapture(e.pointerId);
+            active.set(e.pointerId, dirFrom(e));
+            flush();
+        });
+        wrap.addEventListener('pointermove', function (e) {
+            if (!active.has(e.pointerId)) return;
+            if (e.cancelable) e.preventDefault();
+            active.set(e.pointerId, dirFrom(e));
+            flush();
+        });
+        wrap.addEventListener('pointerup',     function (e) { active.delete(e.pointerId); flush(); });
+        wrap.addEventListener('pointercancel', function (e) { active.delete(e.pointerId); flush(); });
 
         document.body.appendChild(wrap);
     }
@@ -104,11 +129,14 @@ window.GameControls = (function () {
 
         const base  = document.createElement('div');
         base.id = 'joystick-base';
-        base.style.cssText = 'position:absolute;inset:0;border-radius:50%;background:#252535;border:1px solid rgba(255,255,255,0.15);touch-action:none;';
+        base.style.cssText = 'position:absolute;inset:0;border-radius:50%;background:#252535;' +
+            'border:1px solid rgba(255,255,255,0.15);touch-action:none;';
 
         const thumb = document.createElement('div');
         thumb.id = 'joystick-thumb';
-        thumb.style.cssText = 'position:absolute;width:40%;height:40%;border-radius:50%;background:#3a3a58;border:1px solid rgba(255,255,255,0.25);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;';
+        thumb.style.cssText = 'position:absolute;width:40%;height:40%;border-radius:50%;' +
+            'background:#3a3a58;border:1px solid rgba(255,255,255,0.25);' +
+            'top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;';
 
         base.appendChild(thumb);
         wrap.appendChild(base);
@@ -118,7 +146,7 @@ window.GameControls = (function () {
     }
 
     // ------------------------------------------------------------------
-    // Circle buttons  (A / B)
+    // Circle buttons (A / B)
     // ------------------------------------------------------------------
     function _buildCircle(key, label, leftPct, topPct, size, bg) {
         const btn = document.createElement('button');
@@ -134,12 +162,13 @@ window.GameControls = (function () {
         btn.style.fontWeight   = 'bold';
         btn.style.cursor       = 'pointer';
         btn.style.boxShadow    = '0 3px 8px rgba(0,0,0,0.6)';
+        btn.addEventListener('contextmenu', function (e) { e.preventDefault(); });
         _bind(btn, key);
         document.body.appendChild(btn);
     }
 
     // ------------------------------------------------------------------
-    // Shoulder buttons  (L / R)
+    // Shoulder buttons (L / R)
     // ------------------------------------------------------------------
     function _buildShoulder(key, label, leftPct, topPct) {
         const btn = document.createElement('button');
@@ -155,12 +184,13 @@ window.GameControls = (function () {
         btn.style.fontWeight   = 'bold';
         btn.style.cursor       = 'pointer';
         btn.style.boxShadow    = '0 2px 6px rgba(0,0,0,0.5)';
+        btn.addEventListener('contextmenu', function (e) { e.preventDefault(); });
         _bind(btn, key);
         document.body.appendChild(btn);
     }
 
     // ------------------------------------------------------------------
-    // System buttons  (START / SELECT)
+    // System buttons (START / SELECT)
     // ------------------------------------------------------------------
     function _buildSys(key, label, leftPct, topPct) {
         const btn = document.createElement('button');
@@ -176,23 +206,22 @@ window.GameControls = (function () {
         btn.style.fontFamily   = 'Courier New,monospace';
         btn.style.fontWeight   = 'bold';
         btn.style.cursor       = 'pointer';
+        btn.addEventListener('contextmenu', function (e) { e.preventDefault(); });
         _bind(btn, key);
         document.body.appendChild(btn);
     }
 
     // ------------------------------------------------------------------
-    // Build all buttons
+    // Build all controls
     // ------------------------------------------------------------------
     function _build() {
         // Remove any previously built controls
         document.querySelectorAll('.ctrl-root').forEach(function (el) { el.remove(); });
 
-        // Tag every element we create so we can remove them on rebuild
-        const _orig = document.body.appendChild.bind(document.body);
-        const _added = [];
+        // Temporarily wrap appendChild to tag everything we create
+        const _orig  = document.body.appendChild.bind(document.body);
         document.body.appendChild = function (el) {
-            el.classList && el.classList.add('ctrl-root');
-            _added.push(el);
+            if (el.classList) el.classList.add('ctrl-root');
             return _orig(el);
         };
 
@@ -209,31 +238,18 @@ window.GameControls = (function () {
         _buildSys('start',  'START',  55, 89);
         _buildSys('select', 'SEL',    36, 89);
 
-        // Restore
         document.body.appendChild = _orig;
-        _built = true;
     }
 
     // ------------------------------------------------------------------
     // Public API
     // ------------------------------------------------------------------
-    function init() {
-        _build();
-    }
-
-    function setMode(newMode) {
-        mode = newMode;
-        _build();
-    }
-
-    function rebuild() {
-        _build();
-    }
-
-    // Stubs kept so hud.js wiring doesn't error
-    function toggleEditMode() {}
-    function setEditMode() {}
-    function resetLayout() { _build(); }
+    function init()             { _build(); }
+    function setMode(newMode)   { mode = newMode; _build(); }
+    function rebuild()          { _build(); }
+    function toggleEditMode()   {}
+    function setEditMode()      {}
+    function resetLayout()      { _build(); }
 
     return { init, setMode, rebuild, toggleEditMode, setEditMode, resetLayout, get mode() { return mode; } };
 })();
