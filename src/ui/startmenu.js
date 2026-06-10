@@ -1986,41 +1986,43 @@ window.GameStartMenu = (function () {
         var end = Math.min(_dexList.length, start + WIN);
 
         ctx.font = (4*S)+'px "Press Start 2P", monospace';
+        ctx.textBaseline = 'middle';
         for (var relI = 0; relI < end - start; relI++) {
             var absI = start + relI;
             var entry = _dexList[absI];
-            var y = (24 + relI * 14) * S;
+            var rowTop = (24 + relI * 14) * S;
+            var rowMid = rowTop + 7*S;
             var isSel = absI === _subIdx;
             var hasSeen = seen.has(entry.num);
             var hasCaught = caught.has(entry.num);
 
             if (isSel) {
                 ctx.fillStyle = 'rgba(90,206,214,0.20)';
-                ctx.fillRect(0, y, GBA_W, 14*S);
+                ctx.fillRect(0, rowTop, GBA_W, 14*S);
                 ctx.fillStyle = COL_CYAN;
-                ctx.fillRect(0, y, 2*S, 14*S);
+                ctx.fillRect(0, rowTop, 2*S, 14*S);
             }
 
             // Arrow
             ctx.fillStyle = isSel ? COL_CYAN : 'transparent';
-            ctx.fillText(isSel ? '▶' : ' ', 2*S, y + 2*S);
+            ctx.fillText('▶', 2*S, rowMid);
 
             // Dex num
             ctx.fillStyle = COL_DIM;
-            ctx.fillText(String(entry.num).padStart(3,'0'), 10*S, y + 2*S);
+            ctx.fillText(String(entry.num).padStart(3,'0'), 10*S, rowMid);
 
             // Caught dot
             if (hasCaught) {
                 ctx.fillStyle = COL_CYAN;
-                ctx.fillText('●', 218*S, y + 2*S);
+                ctx.fillText('●', 218*S, rowMid);
             } else if (hasSeen) {
-                ctx.fillStyle = '#555566';
-                ctx.fillText('○', 218*S, y + 2*S);
+                ctx.fillStyle = '#888899';
+                ctx.fillText('○', 218*S, rowMid);
             }
 
             // Name
-            ctx.fillStyle = hasSeen ? COL_TEXT : '#444455';
-            ctx.fillText(hasSeen ? entry.name : '???', 36*S, y + 2*S);
+            ctx.fillStyle = hasSeen ? COL_TEXT : '#505060';
+            ctx.fillText(hasSeen ? entry.name : '???', 36*S, rowMid);
 
             // Type tags (abbreviated)
             if (hasSeen && entry.types) {
