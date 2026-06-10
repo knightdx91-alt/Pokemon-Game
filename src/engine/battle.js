@@ -284,6 +284,7 @@ window.GameBattle = (function () {
     let _selectedMove = 0;
     let _selectedBag = 0;
     let _selectedParty = 0;
+    let _bagPocket = 0;
     let _messageQueue = [];
     let _animBusy = false;
     let _bagItems = [];
@@ -534,40 +535,105 @@ window.GameBattle = (function () {
     }
 
     // -----------------------------------------------------------------------
-    // Bag item list
+    // Bag pocket definitions
     // -----------------------------------------------------------------------
+    const BAG_POCKETS = [
+        {
+            label: 'Items',
+            invKey: 'items',
+            defs: [
+                { key:'potion',       name:'Potion',       useType:'potion', heal:20 },
+                { key:'super_potion', name:'Super Potion', useType:'potion', heal:50 },
+                { key:'hyper_potion', name:'Hyper Potion', useType:'potion', heal:200 },
+                { key:'max_potion',   name:'Max Potion',   useType:'potion', heal:99999 },
+                { key:'full_restore', name:'Full Restore', useType:'potion', heal:99999, cureStatus:true },
+                { key:'antidote',     name:'Antidote',     useType:'potion', heal:0, cureStatus:'poison' },
+                { key:'burn_heal',    name:'Burn Heal',    useType:'potion', heal:0, cureStatus:'burn' },
+                { key:'awakening',    name:'Awakening',    useType:'potion', heal:0, cureStatus:'sleep' },
+                { key:'parlyz_heal',  name:'Parlyz Heal',  useType:'potion', heal:0, cureStatus:'para' },
+                { key:'ice_heal',     name:'Ice Heal',     useType:'potion', heal:0, cureStatus:'freeze' },
+                { key:'full_heal',    name:'Full Heal',    useType:'potion', heal:0, cureStatus:true },
+                { key:'repel',        name:'Repel',        useType:'empty' },
+                { key:'super_repel',  name:'Super Repel',  useType:'empty' },
+                { key:'max_repel',    name:'Max Repel',    useType:'empty' },
+                { key:'escape_rope',  name:'Escape Rope',  useType:'empty' },
+            ],
+        },
+        {
+            label: 'Medicine',
+            invKey: 'medicine',
+            defs: [
+                { key:'antidote',     name:'Antidote',     useType:'potion', heal:0, cureStatus:'poison' },
+                { key:'full_heal',    name:'Full Heal',    useType:'potion', heal:0, cureStatus:true },
+                { key:'revive',       name:'Revive',       useType:'revive', healFrac:0.5 },
+                { key:'max_revive',   name:'Max Revive',   useType:'revive', healFrac:1 },
+                { key:'elixir',       name:'Elixir',       useType:'empty' },
+                { key:'max_elixir',   name:'Max Elixir',   useType:'empty' },
+            ],
+        },
+        {
+            label: 'Poké Balls',
+            invKey: 'pokeBalls',
+            defs: [
+                { key:'poke_ball',   name:'Poké Ball',   useType:'ball', ballBonus:1 },
+                { key:'great_ball',  name:'Great Ball',  useType:'ball', ballBonus:1.5 },
+                { key:'ultra_ball',  name:'Ultra Ball',  useType:'ball', ballBonus:2 },
+                { key:'master_ball', name:'Master Ball', useType:'ball', ballBonus:255 },
+                { key:'safari_ball', name:'Safari Ball', useType:'ball', ballBonus:1.5 },
+                { key:'net_ball',    name:'Net Ball',    useType:'ball', ballBonus:3 },
+                { key:'dive_ball',   name:'Dive Ball',   useType:'ball', ballBonus:3.5 },
+                { key:'nest_ball',   name:'Nest Ball',   useType:'ball', ballBonus:3 },
+                { key:'repeat_ball', name:'Repeat Ball', useType:'ball', ballBonus:3 },
+                { key:'timer_ball',  name:'Timer Ball',  useType:'ball', ballBonus:4 },
+                { key:'luxury_ball', name:'Luxury Ball', useType:'ball', ballBonus:1 },
+                { key:'premier_ball',name:'Premier Ball',useType:'ball', ballBonus:1 },
+                { key:'dusk_ball',   name:'Dusk Ball',   useType:'ball', ballBonus:3.5 },
+                { key:'heal_ball',   name:'Heal Ball',   useType:'ball', ballBonus:1 },
+                { key:'quick_ball',  name:'Quick Ball',  useType:'ball', ballBonus:5 },
+            ],
+        },
+        {
+            label: 'TMs/HMs',
+            invKey: 'tms',
+            defs: [],
+        },
+        {
+            label: 'Berries',
+            invKey: 'berries',
+            defs: [
+                { key:'oran_berry',  name:'Oran Berry',  useType:'potion', heal:10 },
+                { key:'sitrus_berry',name:'Sitrus Berry', useType:'potion', heal:30 },
+                { key:'lum_berry',   name:'Lum Berry',   useType:'potion', heal:0, cureStatus:true },
+                { key:'pecha_berry', name:'Pecha Berry', useType:'potion', heal:0, cureStatus:'poison' },
+                { key:'rawst_berry', name:'Rawst Berry', useType:'potion', heal:0, cureStatus:'burn' },
+                { key:'chesto_berry',name:'Chesto Berry',useType:'potion', heal:0, cureStatus:'sleep' },
+                { key:'cheri_berry', name:'Cheri Berry', useType:'potion', heal:0, cureStatus:'para' },
+                { key:'aspear_berry',name:'Aspear Berry',useType:'potion', heal:0, cureStatus:'freeze' },
+            ],
+        },
+    ];
+
     function _buildBagItems() {
-        const items = [];
         const st = window.GameSave && GameSave.state;
-        if (!st) return items;
-        const balls = [
-            { key:'poke_ball',   name:'Poké Ball',   bonus:1 },
-            { key:'great_ball',  name:'Great Ball',  bonus:1.5 },
-            { key:'ultra_ball',  name:'Ultra Ball',  bonus:2 },
-            { key:'master_ball', name:'Master Ball', bonus:255 },
-        ];
-        for (const b of balls) {
-            const cnt = (st.inventory?.pokeBalls?.[b.key]) || 0;
-            if (cnt > 0) items.push({ label:`${b.name} ×${cnt}`, useType:'ball', ballBonus:b.bonus, key:b.key, count:cnt });
+        if (!st) return [{ label:'No items', useType:'empty' }];
+        const pocket = BAG_POCKETS[_bagPocket];
+        if (!pocket) return [];
+        const inv = (st.inventory && st.inventory[pocket.invKey]) || {};
+        const items = [];
+
+        if (pocket.defs.length > 0) {
+            for (const d of pocket.defs) {
+                const cnt = inv[d.key] || 0;
+                if (cnt > 0) items.push({ ...d, label:`${d.name} ×${cnt}`, count:cnt });
+            }
+        } else {
+            // Dynamic pocket (TMs etc) — enumerate all keys
+            for (const [k, cnt] of Object.entries(inv)) {
+                if (cnt > 0) items.push({ key:k, label:`${k.toUpperCase()} ×${cnt}`, useType:'empty', count:cnt });
+            }
         }
-        const potions = [
-            { key:'potion',       name:'Potion',       heal:20 },
-            { key:'super_potion', name:'Super Potion', heal:50 },
-            { key:'hyper_potion', name:'Hyper Potion', heal:200 },
-            { key:'max_potion',   name:'Max Potion',   heal:99999 },
-            { key:'full_restore', name:'Full Restore', heal:99999, cureStatus:true },
-            { key:'antidote',     name:'Antidote',     heal:0, cureStatus:'poison' },
-            { key:'burn_heal',    name:'Burn Heal',    heal:0, cureStatus:'burn' },
-            { key:'awakening',    name:'Awakening',    heal:0, cureStatus:'sleep' },
-            { key:'parlyz_heal',  name:'Parlyz Heal',  heal:0, cureStatus:'para' },
-            { key:'ice_heal',     name:'Ice Heal',     heal:0, cureStatus:'freeze' },
-            { key:'full_heal',    name:'Full Heal',    heal:0, cureStatus:true },
-        ];
-        for (const p of potions) {
-            const cnt = (st.inventory?.items?.[p.key]) || 0;
-            if (cnt > 0) items.push({ label:`${p.name} ×${cnt}`, useType:'potion', heal:p.heal||0, key:p.key, count:cnt, cureStatus:p.cureStatus });
-        }
-        if (!items.length) items.push({ label:'No usable items', useType:'empty' });
+
+        if (!items.length) items.push({ label:`${pocket.label} is empty`, useType:'empty' });
         return items;
     }
 
@@ -896,23 +962,50 @@ window.GameBattle = (function () {
         if (textBox)   textBox.style.display   = 'none';
         if (actionBox) actionBox.style.display = 'none';
         if (!bagBox) return;
-        _bagItems = _buildBagItems();
-        bagBox.style.display = 'grid';
+        bagBox.style.display = 'flex';
+        _rebuildBagUI(bagBox);
+    }
+
+    function _rebuildBagUI(bagBox) {
+        if (!bagBox) bagBox = document.getElementById('bt-bag-box');
+        if (!bagBox) return;
         bagBox.innerHTML = '';
+
+        // Pocket tab row
+        const tabRow = document.createElement('div');
+        tabRow.id = 'bt-bag-tabs';
+        BAG_POCKETS.forEach((p, i) => {
+            const tab = document.createElement('button');
+            tab.className = 'bt-bag-tab' + (i === _bagPocket ? ' active' : '');
+            tab.textContent = p.label;
+            tab.addEventListener('click', () => { _bagPocket = i; _selectedBag = 0; _rebuildBagUI(); });
+            tabRow.appendChild(tab);
+        });
+        bagBox.appendChild(tabRow);
+
+        // Item list
+        const listEl = document.createElement('div');
+        listEl.id = 'bt-bag-list';
+        _bagItems = _buildBagItems();
         _bagItems.forEach((item, i) => {
             const btn = document.createElement('button');
             btn.className = 'bt-bag-btn';
             btn.textContent = item.label;
-            btn.addEventListener('click', () => _useBagItem(i));
-            bagBox.appendChild(btn);
+            if (item.useType !== 'empty') {
+                btn.addEventListener('click', () => { _selectedBag = i; _useBagItem(i); });
+            }
+            listEl.appendChild(btn);
         });
+        bagBox.appendChild(listEl);
+
         const back = document.createElement('button');
         back.className = 'bt-back-btn';
         back.textContent = '← Back';
         back.addEventListener('click', () => _showActionMenu());
         bagBox.appendChild(back);
-        _selectedBag = 0;
-        _highlightBag(0);
+
+        _selectedBag = Math.min(_selectedBag, Math.max(0, _bagItems.length - 1));
+        _highlightBag(_selectedBag);
     }
 
     function _highlightBag(idx) {
@@ -1719,14 +1812,30 @@ window.GameBattle = (function () {
             if (jp.right) _highlightAction(_selectedAction % 2 === 0 ? _selectedAction + 1 : _selectedAction);
         }
         if (_phase === 'move_select') {
-            const btns = _el ? _el.querySelectorAll('.bt-move-btn') : [];
-            if (jp.up)   _highlightMove(Math.max(0, _selectedMove - 1));
-            if (jp.down) _highlightMove(Math.min(btns.length - 1, _selectedMove + 1));
+            // Move box is a 2-column grid: indices 0,1 = row 0; 2,3 = row 1; back btn = last
+            const moveBtns = _el ? Array.from(_el.querySelectorAll('.bt-move-btn')).filter(b => !b.classList.contains('bt-back-btn')) : [];
+            const numMoves = moveBtns.length;
+            const allBtns  = _el ? _el.querySelectorAll('.bt-move-btn') : [];
+            const total    = allBtns.length; // includes back button
+            const cur      = _selectedMove;
+            const isBack   = cur >= numMoves;
+            if (jp.up) {
+                if (isBack) _highlightMove(Math.max(0, numMoves - (numMoves % 2 === 0 ? 2 : 1)));
+                else        _highlightMove(Math.max(0, cur - 2));
+            }
+            if (jp.down) {
+                if (!isBack && cur + 2 < numMoves) _highlightMove(cur + 2);
+                else if (!isBack)                  _highlightMove(total - 1); // go to back button
+            }
+            if (jp.left  && !isBack && cur % 2 === 1) _highlightMove(cur - 1);
+            if (jp.right && !isBack && cur % 2 === 0 && cur + 1 < numMoves) _highlightMove(cur + 1);
         }
         if (_phase === 'bag_select') {
             const btns = _el ? _el.querySelectorAll('.bt-bag-btn') : [];
-            if (jp.up)   _highlightBag(Math.max(0, _selectedBag - 1));
-            if (jp.down) _highlightBag(Math.min(btns.length - 1, _selectedBag + 1));
+            if (jp.up)    _highlightBag(Math.max(0, _selectedBag - 1));
+            if (jp.down)  _highlightBag(Math.min(btns.length - 1, _selectedBag + 1));
+            if (jp.left)  { _bagPocket = (_bagPocket - 1 + BAG_POCKETS.length) % BAG_POCKETS.length; _selectedBag = 0; _rebuildBagUI(); }
+            if (jp.right) { _bagPocket = (_bagPocket + 1) % BAG_POCKETS.length; _selectedBag = 0; _rebuildBagUI(); }
         }
         if (_phase === 'party_select') {
             const btns = _el ? _el.querySelectorAll('.bt-party-btn') : [];

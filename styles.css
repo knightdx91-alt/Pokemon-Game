@@ -981,8 +981,49 @@ body.orient-reverse-landscape #screen-primary {
 #bt-bag-box, #bt-party-box {
     display: none;
     flex-direction: column;
-    gap: 2px;
-    padding: 4px;
+    gap: 0;
+    padding: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Bag pocket tabs */
+#bt-bag-tabs {
+    display: flex;
+    gap: 1px;
+    padding: 2px 2px 0;
+    background: #060610;
+    border-bottom: 1px solid #18b8c8;
+    flex-shrink: 0;
+    overflow-x: auto;
+}
+
+.bt-bag-tab {
+    background: #0a1018;
+    color: #78a0b8;
+    border: 1px solid #183050;
+    border-bottom: none;
+    border-radius: 2px 2px 0 0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 7px;
+    cursor: pointer;
+    padding: 2px 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.bt-bag-tab.active {
+    background: #0a1830;
+    color: #e8f8ff;
+    border-color: #18b8c8;
+}
+
+/* Bag item list */
+#bt-bag-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 3px;
     flex: 1;
     overflow-y: auto;
 }
