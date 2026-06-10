@@ -1,5 +1,5 @@
 // GameHUD — renders HUD info and settings button onto #ui-overlay
-const GAME_VERSION = 'v0.3.5';
+const GAME_VERSION = 'v0.3.6';
 
 window.GameHUD = (function () {
     let overlay = null;
@@ -129,7 +129,8 @@ window.GameHUD = (function () {
         if (_coordLine) _coordLine.textContent = coords + (inputDbg ? ' [' + inputDbg + ']' : '');
 
         const errEl = document.getElementById('hud-err');
-        if (errEl) errEl.textContent = window._initError ? 'ERR:' + window._initError.slice(0, 40) : '';
+        if (errEl) errEl.textContent = (window._initError ? 'ERR:' + window._initError.slice(0, 40) : '') +
+            (window._dbgState ? ' | ' + window._dbgState : '');
 
         if (mapName !== _lastMapName && mapName !== '—') {
             _lastMapName = mapName;

@@ -308,6 +308,10 @@
 
         GameInput.consumeJustPressed();
         GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
+        window._dbgState = 'tr:' + (_transitioning?1:0) +
+            ' sm:' + (window.GameStartMenu && GameStartMenu.isOpen() ? 1 : 0) +
+            ' dlg:' + (window.GameDialogue && GameDialogue.isOpen() ? 1 : 0) +
+            ' bat:' + (window.GameBattle && GameBattle.isActive() ? 1 : 0);
         GameHUD.update();
         requestAnimationFrame(gameLoop);
     }
