@@ -76,13 +76,11 @@
     async function _checkEncounter() {
         if (!window.GameBattle || GameBattle.isActive()) return;
         const terrain = GameMap.getTileTerrainType(player.x, player.y);
-        console.log('[Enc] terrain=' + terrain + ' pos=' + player.x + ',' + player.y);
         if (terrain !== 'grass' && terrain !== 'cave') return;
         if (Math.random() > ENCOUNTER_CHANCE) return;
 
         await GameMap.loadEncounterData(currentRegion);
         const entry = GameBattle.rollEncounter(currentRegion);
-        console.log('[Enc] entry=' + (entry ? entry.species : 'null'));
         if (!entry) return;
 
         _transitioning = true;   // block movement during battle
@@ -162,7 +160,7 @@
         _transitioning = true;
         try {
             const { connection, dir, exitX, exitY, offset } = connInfo;
-            const destMapId = connection.dest_map;
+            const destMapId = connection.dest_map || connection.map;
             if (!destMapId || destMapId === 'MAP_DYNAMIC' || destMapId === 'MAP_NONE') return;
 
             console.log(`[Connection] ${dir} -> ${destMapId}`);
