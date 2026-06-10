@@ -67,47 +67,49 @@ window.GameControls = (function () {
     }
 
     // -----------------------------------------------------------------------
-    // Make a widget draggable + resizable (edit mode only)
+    // Make a widget draggable + resizable (edit mode only).
+    // Uses touch+mouse (NOT pointer events) so there are zero competing
+    // non-passive pointerdown listeners on the widget that could suppress
+    // the button's own pointer/touch event handlers.
     // -----------------------------------------------------------------------
     function makeDraggable(widget, id) {
         let drag = false, startX, startY, startLeft, startTop;
 
-        widget.addEventListener('pointerdown', function(e) {
+        function cx(e) { return e.touches ? e.touches[0].clientX : e.clientX; }
+        function cy(e) { return e.touches ? e.touches[0].clientY : e.clientY; }
+
+        function onStart(e) {
             if (!editMode) return;
             if (e.target.classList.contains('ctrl-resize-handle')) return;
             drag = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            const rect = widget.getBoundingClientRect();
+            startX = cx(e); startY = cy(e);
+            const rect  = widget.getBoundingClientRect();
             const lRect = layer.getBoundingClientRect();
             startLeft = rect.left - lRect.left;
             startTop  = rect.top  - lRect.top;
-            widget.setPointerCapture(e.pointerId);
             e.preventDefault();
             e.stopPropagation();
-        }, { passive: false });
-
-        widget.addEventListener('pointermove', function(e) {
+        }
+        function onMove(e) {
             if (!drag || !editMode) return;
             const lRect = layer.getBoundingClientRect();
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-            const newLeft = Math.max(0, Math.min(lRect.width  - widget.offsetWidth,  startLeft + dx));
-            const newTop  = Math.max(0, Math.min(lRect.height - widget.offsetHeight, startTop  + dy));
+            const newLeft = Math.max(0, Math.min(lRect.width  - widget.offsetWidth,  startLeft + cx(e) - startX));
+            const newTop  = Math.max(0, Math.min(lRect.height - widget.offsetHeight, startTop  + cy(e) - startY));
             widget.style.left = newLeft + 'px';
             widget.style.top  = newTop  + 'px';
-            // Store as percentages
             if (!savedLayout[id]) savedLayout[id] = Object.assign({}, DEFAULTS[id] || {});
             savedLayout[id].xPct = (newLeft / lRect.width)  * 100;
             savedLayout[id].yPct = (newTop  / lRect.height) * 100;
             e.preventDefault();
-        }, { passive: false });
+        }
+        function onEnd() { if (drag) { drag = false; saveLayout(); } }
 
-        widget.addEventListener('pointerup', function(e) {
-            if (!drag) return;
-            drag = false;
-            saveLayout();
-        });
+        widget.addEventListener('touchstart', onStart, { passive: false });
+        widget.addEventListener('mousedown',  onStart);
+        window.addEventListener('touchmove',  onMove,  { passive: false });
+        window.addEventListener('mousemove',  onMove);
+        window.addEventListener('touchend',   onEnd);
+        window.addEventListener('mouseup',    onEnd);
     }
 
     function makeResizable(widget, id, minSize, maxSize) {
@@ -117,34 +119,37 @@ window.GameControls = (function () {
 
         let resizing = false, startX, startY, startW, startH;
 
-        handle.addEventListener('pointerdown', function(e) {
+        function cx(e) { return e.touches ? e.touches[0].clientX : e.clientX; }
+        function cy(e) { return e.touches ? e.touches[0].clientY : e.clientY; }
+
+        function onStart(e) {
             if (!editMode) return;
             resizing = true;
-            startX = e.clientX;
-            startY = e.clientY;
+            startX = cx(e); startY = cy(e);
             startW = widget.offsetWidth;
             startH = widget.offsetHeight;
-            handle.setPointerCapture(e.pointerId);
             e.preventDefault();
             e.stopPropagation();
-        }, { passive: false });
-
-        handle.addEventListener('pointermove', function(e) {
+        }
+        function onMove(e) {
             if (!resizing || !editMode) return;
-            const newW = Math.max(minSize, Math.min(maxSize, startW + (e.clientX - startX)));
-            const newH = Math.max(minSize, Math.min(maxSize, startH + (e.clientY - startY)));
+            const newW = Math.max(minSize, Math.min(maxSize, startW + cx(e) - startX));
+            const newH = Math.max(minSize, Math.min(maxSize, startH + cy(e) - startY));
             widget.style.width  = newW + 'px';
             widget.style.height = newH + 'px';
             if (!savedLayout[id]) savedLayout[id] = Object.assign({}, DEFAULTS[id] || {});
             savedLayout[id].wPx = newW;
             savedLayout[id].hPx = newH;
             e.preventDefault();
-        }, { passive: false });
+        }
+        function onEnd() { if (resizing) { resizing = false; saveLayout(); } }
 
-        handle.addEventListener('pointerup', function() {
-            resizing = false;
-            saveLayout();
-        });
+        handle.addEventListener('touchstart', onStart, { passive: false });
+        handle.addEventListener('mousedown',  onStart);
+        window.addEventListener('touchmove',  onMove,  { passive: false });
+        window.addEventListener('mousemove',  onMove);
+        window.addEventListener('touchend',   onEnd);
+        window.addEventListener('mouseup',    onEnd);
     }
 
     // -----------------------------------------------------------------------

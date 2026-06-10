@@ -75,10 +75,10 @@ window.GameInput = (function () {
             active = false;
             _clearPressed(btn);
         }
+        // pointerleave omitted — fires on slight drift and prematurely clears held direction
         el.addEventListener('pointerdown',  press,   { passive: false });
         el.addEventListener('pointerup',    release);
         el.addEventListener('pointercancel',release);
-        el.addEventListener('pointerleave', release);
         el.addEventListener('touchstart',   press,   { passive: false });
         el.addEventListener('touchend',     release, { passive: false });
         el.addEventListener('touchcancel',  release, { passive: false });
