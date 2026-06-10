@@ -290,36 +290,183 @@ button.ctrl-root:active {
 
 
 /* ===================================================================
-   START MENU
+   START MENU  (full-screen overlay inside #screen-primary)
    =================================================================== */
 #start-menu {
-    position: fixed;
-    top: 50%;
-    right: 12px;
-    transform: translateY(-50%);
-    background: #1a1a2e;
-    border: 2px solid #555;
-    border-radius: 6px;
-    padding: 8px 0;
+    display: none;           /* hidden until .open is added */
+    position: absolute;
+    inset: 0;
     z-index: 50;
-    min-width: 120px;
-    font-family: inherit;
-    color: #e0e0e0;
-    font-size: 13px;
+    pointer-events: none;    /* children re-enable where needed */
+    font-family: "Courier New", Courier, monospace;
+    color: #c8d8e8;
+    font-size: 11px;
+    overflow: hidden;
+}
+#start-menu.open { display: flex; flex-direction: column; }
+
+/* Top strip — icon carousel + label */
+.sm-top-strip {
     pointer-events: all;
+    background: rgba(6,6,16,0.93);
+    border-bottom: 2px solid #000;
+    box-shadow: 0 0 0 2px #18b8c8, 0 0 0 3px #000;
+    padding: 6px 4px 4px;
+    flex-shrink: 0;
+}
+.sm-carousel {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.sm-carousel::-webkit-scrollbar { display: none; }
+.sm-icon-wrap {
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.sm-icon-wrap.selected {
+    border-color: #18b8c8;
+    background: rgba(24,184,200,0.15);
+}
+.sm-icon-sprite {
+    width: 32px;
+    height: 32px;
+    background-size: 32px 64px;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+}
+.sm-icon-wrap.selected .sm-icon-sprite { background-position: 0 -32px; }
+.sm-label-bar {
+    text-align: center;
+    font-size: 10px;
+    color: #80d0e8;
+    margin-top: 3px;
+    letter-spacing: 0.5px;
 }
 
-#start-menu .menu-item {
-    padding: 8px 16px;
+/* Middle — transparent, game world visible */
+.sm-middle { flex: 1 1 auto; pointer-events: none; }
+
+/* Bottom info box */
+.sm-info-box {
+    pointer-events: all;
+    background: rgba(6,6,16,0.93);
+    border-top: 2px solid #000;
+    box-shadow: 0 0 0 2px #18b8c8, 0 0 0 3px #000;
+    padding: 5px 8px;
+    flex-shrink: 0;
+    font-size: 9px;
+    line-height: 1.6;
+}
+.sm-info-line1, .sm-info-line2 { display: flex; justify-content: space-between; }
+.sm-info-ver { color: #80d0e8; }
+.sm-tod { font-weight: bold; }
+.sm-tod.morning { color: #f0c040; }
+.sm-tod.day     { color: #80d8ff; }
+.sm-tod.evening { color: #f08030; }
+.sm-tod.night   { color: #6080c8; }
+
+/* Sub-menu overlay */
+#start-menu-sub.sm-sub-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* GBA-style dialog window */
+.sm-win {
+    position: absolute;
+    pointer-events: all;
+    background: #060610;
+    border: 1px solid #000;
+    box-shadow: 0 0 0 3px #18b8c8, 0 0 0 4px #000, inset 0 0 0 1px #002830;
+    border-radius: 3px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.sm-win-title {
+    background: #0a1830;
+    border-bottom: 1px solid #18b8c8;
+    color: #80d0e8;
+    font-size: 10px;
+    padding: 3px 8px;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+}
+.sm-sub-content {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #18b8c8 #060610;
+    padding: 4px 0;
+}
+.sm-back-btn {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: #0a1830;
+    border: 1px solid #18b8c8;
+    color: #80d0e8;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 8px;
+    padding: 2px 6px;
     cursor: pointer;
+    border-radius: 2px;
+    pointer-events: all;
+    z-index: 10;
+}
+.sm-back-btn:hover, .sm-back-btn.active { background: rgba(24,184,200,0.2); }
+
+/* Row items in sub-menus */
+.sm-row {
+    display: flex;
+    align-items: center;
+    padding: 4px 10px;
+    font-size: 10px;
+    color: #c8d8e8;
+    cursor: pointer;
+    pointer-events: all;
     border-left: 3px solid transparent;
 }
-#start-menu .menu-item:hover,
-#start-menu .menu-item.selected {
-    background: #2a2a4e;
-    border-left-color: #7777cc;
+.sm-row.selected, .sm-row:hover {
+    background: rgba(24,184,200,0.15);
+    border-left-color: #18b8c8;
     color: #fff;
 }
+.sm-row .sm-cursor { margin-right: 4px; color: #18b8c8; }
+.sm-sep { border-top: 1px solid #002830; margin: 2px 8px; }
+
+/* Option buttons */
+.sm-opt-btns { display: flex; flex-wrap: wrap; gap: 3px; padding: 2px 8px 4px; }
+.sm-opt-btn {
+    background: #0a1830;
+    border: 1px solid #18b8c8;
+    color: #80d0e8;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 9px;
+    padding: 2px 7px;
+    cursor: pointer;
+    border-radius: 2px;
+    pointer-events: all;
+}
+.sm-opt-btn.active { background: rgba(24,184,200,0.3); color: #fff; }
+.sm-opt-btn:hover  { background: rgba(24,184,200,0.2); }
 
 /* ===================================================================
    DRAG HANDLE (portrait)
