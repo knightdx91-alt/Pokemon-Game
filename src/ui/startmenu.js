@@ -1947,7 +1947,14 @@ window.GameStartMenu = (function () {
                     var row = Math.floor((cy - 24) / 14);
                     var clickedIdx = start + row;
                     if (clickedIdx >= 0 && clickedIdx < _dexList.length) {
-                        _subIdx = clickedIdx; _render();
+                        _subIdx = clickedIdx;
+                        var _clkSaved = window.GameSave && GameSave.state && GameSave.state.pokedex;
+                        var _clkSeen  = new Set((_clkSaved && _clkSaved.seen) || []);
+                        if (_clkSeen.has(_dexList[clickedIdx].num)) {
+                            _dexEntry = _dexList[clickedIdx];
+                            page = 'pokedex_entry'; _subIdx = 0;
+                        }
+                        _render();
                     }
                 }
             });
@@ -2008,7 +2015,7 @@ window.GameStartMenu = (function () {
             ctx.fillText('▶', 2*S, rowMid);
 
             // Dex num
-            ctx.fillStyle = COL_DIM;
+            ctx.fillStyle = '#ffffff';
             ctx.fillText(String(entry.num).padStart(3,'0'), 10*S, rowMid);
 
             // Caught dot
@@ -2020,11 +2027,11 @@ window.GameStartMenu = (function () {
                 ctx.fillText('○', 218*S, rowMid);
             }
 
-            // Name — always show in white
+            // Name — white if seen, ??? if not
             ctx.fillStyle = '#ffffff';
-            ctx.fillText(entry.name, 36*S, rowMid);
+            ctx.fillText(hasSeen ? entry.name : '???', 36*S, rowMid);
 
-            // Type tags (abbreviated)
+            // Type tags (seen only)
             if (hasSeen && entry.types) {
                 var tx = 110*S;
                 for (var ti = 0; ti < Math.min(2, entry.types.length); ti++) {
@@ -2032,9 +2039,9 @@ window.GameStartMenu = (function () {
                     var tcol = TYPE_COLORS[tname] || '#888888';
                     var tw = ctx.measureText(tname).width + 4*S;
                     ctx.fillStyle = tcol;
-                    ctx.fillRect(tx, y + 1*S, tw, 10*S);
+                    ctx.fillRect(tx, rowTop + 2*S, tw, 10*S);
                     ctx.fillStyle = '#ffffff';
-                    ctx.fillText(tname, tx + 2*S, y + 2*S);
+                    ctx.fillText(tname, tx + 2*S, rowMid);
                     tx += tw + 2*S;
                 }
             }
@@ -2780,6 +2787,9 @@ window.GameStartMenu = (function () {
                 else if (_subIdx === 0) { _openPokenavMap(); }
             }
             else if (page==='pokedex' && _dexList && _dexList[_subIdx]) {
+                var _deSaved = window.GameSave && GameSave.state && GameSave.state.pokedex;
+                var _deSeen  = new Set((_deSaved && _deSaved.seen) || []);
+                if (!_deSeen.has(_dexList[_subIdx].num)) return; // unseen — block entry
                 _dexEntry = _dexList[_subIdx];
                 page = 'pokedex_entry'; _subIdx = 0; _render();
             } else if (page==='bag') {
