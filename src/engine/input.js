@@ -13,6 +13,25 @@ window.GameInput = (function () {
         r: false
     };
 
+    // justPressed: latched on keydown/touchstart, cleared by consumeJustPressed()
+    // Use this for discrete actions (menus, confirm, dialogue advance)
+    const justPressed = {
+        up: false,
+        down: false,
+        left: false,
+        right: false,
+        a: false,
+        b: false,
+        start: false,
+        select: false,
+        l: false,
+        r: false
+    };
+
+    function consumeJustPressed() {
+        for (const k in justPressed) justPressed[k] = false;
+    }
+
     // Key mappings
     const KEY_MAP = {
         ArrowUp:    'up',    w: 'up',    W: 'up',
@@ -28,6 +47,7 @@ window.GameInput = (function () {
     function onKeyDown(e) {
         const btn = KEY_MAP[e.key];
         if (btn) {
+            if (!state[btn]) justPressed[btn] = true; // only latch on first press
             state[btn] = true;
             e.preventDefault();
         }
@@ -44,6 +64,7 @@ window.GameInput = (function () {
     function bindDpadButton(el, btn) {
         function press(e) {
             e.preventDefault();
+            justPressed[btn] = true; // always latch on physical press
             state[btn] = true;
         }
         function release(e) {
@@ -147,6 +168,8 @@ window.GameInput = (function () {
 
     return {
         state,
+        justPressed,
+        consumeJustPressed,
         init,
         bindDpadButton,
         bindJoystick

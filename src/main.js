@@ -26,8 +26,6 @@
     const MOVE_COOLDOWN_MS = 150;
     let lastMoveTime = 0;
 
-    // --- Previous input state (for rising-edge detection) ---
-    let prevStartState = false;
 
     // ---------------------------------------------------------------
     // Transition helpers
@@ -159,18 +157,37 @@
     // Game loop
     // ---------------------------------------------------------------
     function gameLoop(timestamp) {
-        // Process input — move one tile per keypress with cooldown
+        const jp = GameInput.justPressed;
+
+        // Route input to start menu when open
+        if (window.GameStartMenu && GameStartMenu.isOpen) {
+            if (jp.up)    GameStartMenu.moveUp();
+            if (jp.down)  GameStartMenu.moveDown();
+            if (jp.a)     GameStartMenu.confirm();
+            if (jp.b || jp.start) GameStartMenu.back();
+            GameInput.consumeJustPressed();
+            requestAnimationFrame(gameLoop);
+            return;
+        }
+
+        // Process input — move one tile per press/hold with cooldown
         if (!_transitioning) {
             const elapsed = timestamp - lastMoveTime;
-            if (elapsed >= MOVE_COOLDOWN_MS) {
-                const inp = GameInput.state;
+            const jp  = GameInput.justPressed;
+            const inp = GameInput.state;
+            // justPressed fires a move immediately regardless of cooldown (tap responsiveness)
+            // held state fires once cooldown has elapsed (smooth held movement)
+            const canMove = elapsed >= MOVE_COOLDOWN_MS;
+            const hasJp   = jp.up || jp.down || jp.left || jp.right;
+            if (canMove || hasJp) {
                 let dx = 0;
                 let dy = 0;
 
-                if      (inp.up)    { dy = -1; player.direction = 'up'; }
-                else if (inp.down)  { dy =  1; player.direction = 'down'; }
-                else if (inp.left)  { dx = -1; player.direction = 'left'; }
-                else if (inp.right) { dx =  1; player.direction = 'right'; }
+                // Prioritise justPressed direction so a quick tap always registers
+                if      (jp.up    || (canMove && inp.up))    { dy = -1; player.direction = 'up'; }
+                else if (jp.down  || (canMove && inp.down))  { dy =  1; player.direction = 'down'; }
+                else if (jp.left  || (canMove && inp.left))  { dx = -1; player.direction = 'left'; }
+                else if (jp.right || (canMove && inp.right)) { dx =  1; player.direction = 'right'; }
 
                 if (dx !== 0 || dy !== 0) {
                     const nx = player.x + dx;
@@ -206,12 +223,10 @@
             }
         }
 
-        // START button — rising edge → toggle start menu
-        const curStart = GameInput.state.start;
-        if (curStart && !prevStartState) {
+        // START button — justPressed → toggle start menu
+        if (jp.start) {
             if (window.GameStartMenu) GameStartMenu.toggle();
         }
-        prevStartState = curStart;
 
         // Update camera
         GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
@@ -219,6 +234,7 @@
         // Update HUD display
         GameHUD.update();
 
+        GameInput.consumeJustPressed();
         requestAnimationFrame(gameLoop);
     }
 

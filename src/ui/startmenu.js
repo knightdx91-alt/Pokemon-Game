@@ -111,5 +111,27 @@ window.GameStartMenu = (function () {
 
     document.addEventListener('DOMContentLoaded', init);
 
-    return { toggle, open, close };
+    function moveUp() {
+        if (!isOpen) return;
+        selectedIdx = (selectedIdx - 1 + ITEMS.length) % ITEMS.length;
+        _render();
+    }
+
+    function moveDown() {
+        if (!isOpen) return;
+        selectedIdx = (selectedIdx + 1) % ITEMS.length;
+        _render();
+    }
+
+    function confirm() {
+        if (!isOpen) return;
+        _confirmSelected();
+    }
+
+    function back() {
+        if (!isOpen) return;
+        close();
+    }
+
+    return { toggle, open, close, moveUp, moveDown, confirm, back, get isOpen() { return isOpen; } };
 })();
