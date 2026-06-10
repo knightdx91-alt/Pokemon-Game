@@ -303,6 +303,11 @@ html, body {
     z-index: 10;
     touch-action: none;
     pointer-events: all;
+    display: none;   /* hidden unless in edit mode */
+}
+
+.ctrl-edit .ctrl-resize-handle {
+    display: block;
 }
 
 #ctrl-edit-bar {

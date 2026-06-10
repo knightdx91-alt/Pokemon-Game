@@ -20,7 +20,7 @@ window.GameControls = (function () {
         'btn-a':     { xPct: 74, yPct: 68, wPx: 60,  hPx: 60  },
         'btn-b':     { xPct: 61, yPct: 79, wPx: 52,  hPx: 52  },
         'btn-l':     { xPct: 0,  yPct: 61, wPx: 90,  hPx: 38  },
-        'btn-r':     { xPct: 80, yPct: 61, wPx: 90,  hPx: 38  },
+        'btn-r':     { xPct: 73, yPct: 61, wPx: 90,  hPx: 38  },
         'btn-start': { xPct: 54, yPct: 90, wPx: 64,  hPx: 36  },
         'btn-select':{ xPct: 35, yPct: 90, wPx: 64,  hPx: 36  },
     };

@@ -61,22 +61,30 @@ window.GameInput = (function () {
         }
     }
 
-    // D-pad button press tracking — uses Pointer Events for unified mouse/touch/stylus handling
+    // D-pad button press tracking — belt-and-suspenders: pointer + touch + mouse
     function bindDpadButton(el, btn) {
-        el.addEventListener('pointerdown', function(e) {
-            e.preventDefault();
-            el.setPointerCapture(e.pointerId);
+        let active = false;
+        function press(e) {
+            if (active) return;
+            active = true;
+            if (e.cancelable) e.preventDefault();
             _setPressed(btn);
-        }, { passive: false });
-        el.addEventListener('pointerup', function(e) {
+        }
+        function release() {
+            if (!active) return;
+            active = false;
             _clearPressed(btn);
-        });
-        el.addEventListener('pointercancel', function(e) {
-            _clearPressed(btn);
-        });
-        el.addEventListener('pointerleave', function(e) {
-            _clearPressed(btn);
-        });
+        }
+        el.addEventListener('pointerdown',  press,   { passive: false });
+        el.addEventListener('pointerup',    release);
+        el.addEventListener('pointercancel',release);
+        el.addEventListener('pointerleave', release);
+        el.addEventListener('touchstart',   press,   { passive: false });
+        el.addEventListener('touchend',     release, { passive: false });
+        el.addEventListener('touchcancel',  release, { passive: false });
+        el.addEventListener('mousedown',    press);
+        el.addEventListener('mouseup',      release);
+        el.addEventListener('mouseleave',   release);
     }
 
     // Joystick state
@@ -120,40 +128,43 @@ window.GameInput = (function () {
     }
 
     function bindJoystick(baseEl, thumbEl) {
-        let capturedId = null;
-
-        baseEl.addEventListener('pointerdown', function(e) {
-            e.preventDefault();
-            baseEl.setPointerCapture(e.pointerId);
-            capturedId = e.pointerId;
+        function coords(e) {
+            if (e.touches && e.touches.length > 0) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            return { x: e.clientX, y: e.clientY };
+        }
+        function onStart(e) {
+            if (joystickActive) return;
+            if (e.cancelable) e.preventDefault();
             joystickActive = true;
             const rect = baseEl.getBoundingClientRect();
             joystickOriginX = rect.left + rect.width / 2;
             joystickOriginY = rect.top + rect.height / 2;
-            updateJoystick(e.clientX, e.clientY, thumbEl);
-        }, { passive: false });
-
-        baseEl.addEventListener('pointermove', function(e) {
-            if (!joystickActive || e.pointerId !== capturedId) return;
-            e.preventDefault();
-            updateJoystick(e.clientX, e.clientY, thumbEl);
-        }, { passive: false });
-
-        baseEl.addEventListener('pointerup', function(e) {
+            const c = coords(e);
+            updateJoystick(c.x, c.y, thumbEl);
+        }
+        function onMove(e) {
+            if (!joystickActive) return;
+            if (e.cancelable) e.preventDefault();
+            const c = coords(e);
+            updateJoystick(c.x, c.y, thumbEl);
+        }
+        function onEnd() {
             if (!joystickActive) return;
             joystickActive = false;
-            capturedId = null;
             thumbEl.style.transform = 'translate(-50%, -50%)';
             clearJoystickDirs();
-        });
-
-        baseEl.addEventListener('pointercancel', function(e) {
-            if (!joystickActive) return;
-            joystickActive = false;
-            capturedId = null;
-            thumbEl.style.transform = 'translate(-50%, -50%)';
-            clearJoystickDirs();
-        });
+        }
+        baseEl.addEventListener('pointerdown',  onStart, { passive: false });
+        baseEl.addEventListener('pointermove',  onMove,  { passive: false });
+        baseEl.addEventListener('pointerup',    onEnd);
+        baseEl.addEventListener('pointercancel',onEnd);
+        baseEl.addEventListener('touchstart',   onStart, { passive: false });
+        baseEl.addEventListener('touchmove',    onMove,  { passive: false });
+        baseEl.addEventListener('touchend',     onEnd);
+        baseEl.addEventListener('touchcancel',  onEnd);
+        baseEl.addEventListener('mousedown',    onStart);
+        window.addEventListener('mousemove',    onMove);
+        window.addEventListener('mouseup',      onEnd);
     }
 
     function init() {
