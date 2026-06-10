@@ -1,5 +1,5 @@
 // GameHUD — renders HUD info and settings button onto #ui-overlay
-const GAME_VERSION = 'v0.2.4';
+const GAME_VERSION = 'v0.2.5';
 
 window.GameHUD = (function () {
     let overlay = null;
@@ -157,6 +157,9 @@ window.GameHUD = (function () {
         infoEl = document.createElement('div');
         infoEl.id = 'hud-info';
 
+        const _verLine = document.createElement('div');
+        _verLine.textContent = GAME_VERSION;
+
         _mapLine = document.createElement('div');
         _mapLine.textContent = '—';
 
@@ -166,6 +169,7 @@ window.GameHUD = (function () {
         _fpsLine = document.createElement('div');
         _fpsLine.textContent = '-- FPS';
 
+        infoEl.appendChild(_verLine);
         infoEl.appendChild(_mapLine);
         infoEl.appendChild(_coordLine);
         infoEl.appendChild(_fpsLine);

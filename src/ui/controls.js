@@ -5,30 +5,31 @@ window.GameControls = (function () {
 
     var mode = 'dpad';
 
-    // Wire a button element to an input key.
-    // Uses touchstart/touchend as primary (works on all mobile browsers).
-    // mousedown/mouseup as secondary (desktop testing).
+    // Wire a button element to an input key using Pointer Events.
+    // pointerdown/up work on touch, mouse, and stylus with no passive issues.
     function _wire(id, key) {
         var el = document.getElementById(id);
         if (!el) return;
 
-        function press(e) {
+        // Force pointer-events on the element itself regardless of ancestors
+        el.style.pointerEvents = 'auto';
+        el.style.touchAction   = 'none';
+
+        el.addEventListener('pointerdown', function (e) {
             e.preventDefault();
+            e.stopPropagation();
+            el.setPointerCapture(e.pointerId);
             GameInput.state[key]       = true;
             GameInput.justPressed[key] = true;
-        }
-        function release(e) {
-            if (e && e.cancelable) e.preventDefault();
+        });
+
+        el.addEventListener('pointerup', function (e) {
             GameInput.state[key] = false;
-        }
+        });
 
-        el.addEventListener('touchstart',  press,   { passive: false });
-        el.addEventListener('touchend',    release, { passive: false });
-        el.addEventListener('touchcancel', release, { passive: false });
-
-        el.addEventListener('mousedown', press);
-        el.addEventListener('mouseup',   release);
-        el.addEventListener('mouseleave',release);
+        el.addEventListener('pointercancel', function (e) {
+            GameInput.state[key] = false;
+        });
     }
 
     function init() {
