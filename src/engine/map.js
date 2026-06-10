@@ -130,6 +130,7 @@ window.GameMap = (function () {
         // Reload index when region changes
         if (region !== _region || !_nameIndex) await init(region);
         _region = region;
+        _encounterData = null; _encounterMapId = null; _encounterPromise = null;
         const url = `data/maps/${region}/${mapName}.json`;
         try {
             const resp = await fetch(url);
@@ -289,13 +290,18 @@ window.GameMap = (function () {
     // Encounter data for the current map — loaded lazily
     let _encounterData = null;
     let _encounterMapId = null;
+    let _encounterPromise = null;
 
     async function loadEncounterData(region) {
         const mapId = current && current.id;
         if (!mapId) return;
-        if (_encounterMapId === mapId) return; // already loaded
+        if (_encounterMapId === mapId && _encounterPromise) {
+            await _encounterPromise; // already loading or loaded — wait for it
+            return;
+        }
         _encounterData = null;
         _encounterMapId = mapId;
+        _encounterPromise = (async () => {
         try {
             const resp = await fetch(`data/encounters/${region}.json`);
             if (!resp.ok) return;
@@ -311,6 +317,8 @@ window.GameMap = (function () {
                 }
             }
         } catch(e) { /* no encounter data */ }
+        })();
+        await _encounterPromise;
     }
 
     function getEncounterData() { return _encounterData; }
