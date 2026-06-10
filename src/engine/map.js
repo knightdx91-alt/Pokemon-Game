@@ -81,9 +81,18 @@ window.GameMap = (function () {
             _fallbackSize(data);
             return;
         }
+        // Layouts live in region subdirectories for non-Kanto regions.
+        // Try region subdir first, fall back to flat root for Kanto.
+        const layoutPaths = _region && _region !== 'kanto'
+            ? [`data/layouts/${_region}/${layoutId}.json`, `data/layouts/${layoutId}.json`]
+            : [`data/layouts/${layoutId}.json`];
         try {
-            const lresp = await fetch(`data/layouts/${layoutId}.json`);
-            if (!lresp.ok) throw new Error(`HTTP ${lresp.status}`);
+            let lresp = null;
+            for (const path of layoutPaths) {
+                lresp = await fetch(path);
+                if (lresp.ok) break;
+            }
+            if (!lresp || !lresp.ok) throw new Error(`HTTP ${lresp ? lresp.status : 'none'}`);
             layoutData = await lresp.json();
             mapWidth   = layoutData.width;
             mapHeight  = layoutData.height;
@@ -254,7 +263,9 @@ window.GameMap = (function () {
     }
 
     function getTilesetName() {
-        return layoutData ? layoutData.tileset : null;
+        if (layoutData && layoutData.tileset) return layoutData.tileset;
+        // Fallback for DS maps (no layout): use tileset field on the map JSON itself
+        return (current && current.tileset) || null;
     }
 
     // Returns 'grass' | 'cave' | 'water' | null for the given tile
