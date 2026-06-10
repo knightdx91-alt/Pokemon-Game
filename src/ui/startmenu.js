@@ -2020,9 +2020,9 @@ window.GameStartMenu = (function () {
                 ctx.fillText('○', 218*S, rowMid);
             }
 
-            // Name
-            ctx.fillStyle = hasSeen ? COL_TEXT : '#505060';
-            ctx.fillText(hasSeen ? entry.name : '???', 36*S, rowMid);
+            // Name — always show, dim if unseen
+            ctx.fillStyle = hasSeen ? COL_TEXT : COL_DIM;
+            ctx.fillText(entry.name, 36*S, rowMid);
 
             // Type tags (abbreviated)
             if (hasSeen && entry.types) {
