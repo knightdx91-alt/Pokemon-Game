@@ -382,10 +382,11 @@ window.GameStartMenu = (function () {
     function _render() {
         if (!menuEl) return;
         if (page === 'main') {
+            menuEl.style.visibility = 'visible';
             _renderMain();
             if (subEl) subEl.style.display = 'none';
         } else {
-            _renderMain(); // keep top/bottom visible behind overlay
+            menuEl.style.visibility = 'hidden';
             _renderSub();
         }
     }
@@ -2805,6 +2806,7 @@ window.GameStartMenu = (function () {
     function close() {
         if (!menuEl) return;
         isOpen=false; menuEl.classList.remove('open');
+        menuEl.style.visibility = 'visible';
         if (subEl) subEl.style.display='none';
     }
     function toggle() { if(isOpen) close(); else open(); }
