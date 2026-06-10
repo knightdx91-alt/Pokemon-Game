@@ -2922,9 +2922,9 @@ window.GameStartMenu = (function () {
     function moveLeft() {
         if (!isOpen) return;
         if (page==='main') {
-            var prev = selectedIdx;
-            selectedIdx = (selectedIdx - 1 + ITEMS.length) % ITEMS.length;
-            _carouselDir = (selectedIdx > prev) ? 0 : -1; // wrapped = 0, normal = -1
+            if (selectedIdx === 0) return; // already at first icon, stop
+            selectedIdx--;
+            _carouselDir = -1;
             _render(); return;
         }
         if (page==='journal') { _journalTab=(_journalTab-1+4)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
@@ -2933,9 +2933,9 @@ window.GameStartMenu = (function () {
     function moveRight() {
         if (!isOpen) return;
         if (page==='main') {
-            var prev = selectedIdx;
-            selectedIdx = (selectedIdx + 1) % ITEMS.length;
-            _carouselDir = (selectedIdx < prev) ? 0 : 1; // wrapped = 0, normal = +1
+            if (selectedIdx === ITEMS.length - 1) return; // already at last icon, stop
+            selectedIdx++;
+            _carouselDir = 1;
             _render(); return;
         }
         if (page==='journal') { _journalTab=(_journalTab+1)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
