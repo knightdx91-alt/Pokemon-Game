@@ -1,5 +1,5 @@
 // GameHUD — renders HUD info and settings button onto #ui-overlay
-const GAME_VERSION = 'v0.1.4';
+const GAME_VERSION = 'v0.1.5';
 
 window.GameHUD = (function () {
     let overlay = null;
@@ -45,9 +45,26 @@ window.GameHUD = (function () {
 
         if (resetBtn) {
             resetBtn.addEventListener('click', () => {
-                if (window.GameLayout) GameLayout.reset();
+                if (window.GameControls) GameControls.resetLayout();
             });
         }
+
+        const customizeBtn = document.getElementById('customize-layout-btn');
+        if (customizeBtn) {
+            customizeBtn.addEventListener('click', () => {
+                settingsPanel.classList.add('hidden');
+                if (window.GameControls) GameControls.toggleEditMode();
+            });
+        }
+
+        document.querySelectorAll('.orient-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const val = btn.dataset.orient;
+                if (val && window.GameLayout) GameLayout.setOrientation(val);
+                document.querySelectorAll('.orient-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
 
         if (sizeSlider) {
             const saved = localStorage.getItem('pokemon_control_scale');
@@ -62,6 +79,7 @@ window.GameHUD = (function () {
                 document.documentElement.style.setProperty('--control-scale', v);
                 if (sizeValue) sizeValue.textContent = parseFloat(v).toFixed(1) + '×';
                 localStorage.setItem('pokemon_control_scale', v);
+                if (window.GameControls) GameControls.rebuild();
             });
         }
 

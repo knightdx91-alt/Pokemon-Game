@@ -10,17 +10,19 @@ window.GameControls = (function () {
     let savedLayout = {};       // { btnId: { xPct, yPct, sizePx } }
 
     // -----------------------------------------------------------------------
-    // Default layout — percentages of controls-layer (left%, top%, sizePx)
+    // Default layout — percentages of screen (left%, top%) + base size in px.
+    // Positions assume portrait phone: game screen fills top ~60vh,
+    // controls zone is the bottom ~40vh.
     // -----------------------------------------------------------------------
     const DEFAULTS = {
-        dpad:       { xPct: 8,   yPct: 52,  sizePx: 110 },
-        joystick:   { xPct: 8,   yPct: 52,  sizePx: 110 },
-        'btn-a':    { xPct: 76,  yPct: 56,  sizePx: 52  },
-        'btn-b':    { xPct: 64,  yPct: 66,  sizePx: 52  },
-        'btn-l':    { xPct: 2,   yPct: 30,  sizePx: 68  },
-        'btn-r':    { xPct: 80,  yPct: 30,  sizePx: 68  },
-        'btn-start':{ xPct: 57,  yPct: 80,  sizePx: 52  },
-        'btn-select':{ xPct: 38, yPct: 80,  sizePx: 52  },
+        dpad:        { xPct: 4,  yPct: 70, sizePx: 120 },
+        joystick:    { xPct: 4,  yPct: 68, sizePx: 120 },
+        'btn-a':     { xPct: 74, yPct: 68, sizePx: 60  },
+        'btn-b':     { xPct: 61, yPct: 79, sizePx: 52  },
+        'btn-l':     { xPct: 0,  yPct: 61, sizePx: 72  },
+        'btn-r':     { xPct: 80, yPct: 61, sizePx: 72  },
+        'btn-start': { xPct: 54, yPct: 90, sizePx: 48  },
+        'btn-select':{ xPct: 35, yPct: 90, sizePx: 48  },
     };
 
     // -----------------------------------------------------------------------
@@ -42,14 +44,24 @@ window.GameControls = (function () {
     }
 
     // -----------------------------------------------------------------------
-    // Apply position + size to a widget element
+    // Apply position + size to a widget element.
+    // Reads --control-scale from CSS to scale the base sizePx.
     // -----------------------------------------------------------------------
+    function _getScale() {
+        const v = parseFloat(
+            getComputedStyle(document.documentElement).getPropertyValue('--control-scale')
+        );
+        return isNaN(v) ? 1 : Math.max(0.4, Math.min(3, v));
+    }
+
     function applyLayout(el, id) {
-        const lay = getLayout(id);
-        el.style.left    = lay.xPct + '%';
-        el.style.top     = lay.yPct + '%';
-        el.style.width   = lay.sizePx + 'px';
-        el.style.height  = lay.sizePx + 'px';
+        const lay   = getLayout(id);
+        const scale = _getScale();
+        const sz    = Math.round(lay.sizePx * scale);
+        el.style.left   = lay.xPct + '%';
+        el.style.top    = lay.yPct + '%';
+        el.style.width  = sz + 'px';
+        el.style.height = sz + 'px';
     }
 
     // -----------------------------------------------------------------------
@@ -338,5 +350,9 @@ window.GameControls = (function () {
         build();
     }
 
-    return { init, setMode, toggleEditMode, setEditMode, resetLayout, get mode() { return mode; } };
+    function rebuild() {
+        if (layer) build();
+    }
+
+    return { init, setMode, toggleEditMode, setEditMode, resetLayout, rebuild, get mode() { return mode; } };
 })();
