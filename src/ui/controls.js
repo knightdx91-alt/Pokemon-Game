@@ -4,42 +4,26 @@ window.GameControls = (function () {
 
     var mode = 'dpad';
 
-    function _set(key, val) {
-        if (!window.GameInput) return;
-        GameInput.state[key] = val;
-        if (val) GameInput.justPressed[key] = true;
-    }
-
     function _wire(id, key) {
         var el = document.getElementById(id);
         if (!el) return;
 
         el.style.pointerEvents = 'auto';
         el.style.touchAction   = 'none';
-        el.style.userSelect    = 'none';
 
-        // touchstart/touchend — most reliable on mobile
-        el.addEventListener('touchstart', function (e) {
+        el.addEventListener('pointerdown', function (e) {
+            // Set input FIRST — before anything that might throw
+            if (window.GameInput) {
+                GameInput.state[key]       = true;
+                GameInput.justPressed[key] = true;
+            }
             e.preventDefault();
-            _set(key, true);
-        }, { passive: false });
-
-        el.addEventListener('touchend', function (e) {
-            e.preventDefault();
-            _set(key, false);
-        }, { passive: false });
-
-        el.addEventListener('touchcancel', function () {
-            _set(key, false);
+            try { el.setPointerCapture(e.pointerId); } catch (_) {}
         });
 
-        // mousedown/mouseup — desktop fallback
-        el.addEventListener('mousedown', function (e) {
-            e.preventDefault();
-            _set(key, true);
-        });
-        el.addEventListener('mouseup', function () { _set(key, false); });
-        el.addEventListener('mouseleave', function () { _set(key, false); });
+        el.addEventListener('pointerup',          function () { if (window.GameInput) GameInput.state[key] = false; });
+        el.addEventListener('pointercancel',       function () { if (window.GameInput) GameInput.state[key] = false; });
+        el.addEventListener('lostpointercapture', function () { if (window.GameInput) GameInput.state[key] = false; });
     }
 
     function init() {
