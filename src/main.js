@@ -205,16 +205,15 @@
         // If map never loaded (init() may have not awaited it yet), kick it off now
         if (!window._mapLoaded && !_mapLoading) {
             _mapLoading = true;
-            GameMap.load('PalletTown', currentRegion).then(function (mapData) {
-                window._mapLoaded = true;
-                window._mapName   = mapData && mapData.name ? mapData.name : 'PalletTown';
-                GameRenderer.setScene(GameMap, GameCamera, player);
-                GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
-                _mapLoading = false;
-            }).catch(function (e) {
-                window._mapName = 'LoadErr';
-                _mapLoading = false;
-            });
+            try {
+                GameMap.load('PalletTown', currentRegion).then(function (mapData) {
+                    window._mapLoaded = true;
+                    window._mapName   = (mapData && mapData.name) ? mapData.name : 'PalletTown';
+                    try { GameRenderer.setScene(GameMap, GameCamera, player); } catch(_){}
+                    try { GameCamera.update(player.x, player.y, GameMap.width, GameMap.height); } catch(_){}
+                    _mapLoading = false;
+                }).catch(function () { _mapLoading = false; });
+            } catch(_) { _mapLoading = false; }
         }
 
         // Battle gets first priority on all input
@@ -317,6 +316,10 @@
     // Startup
     // ---------------------------------------------------------------
     async function init() {
+        // Set map name immediately so HUD never shows '—' on first paint
+        window._mapName   = 'PalletTown';
+        window._mapLoaded = false;
+
         try {
             const savedScale = localStorage.getItem('pokemon_control_scale');
             if (savedScale) {
@@ -335,6 +338,8 @@
 
             await GameMap.init();
             await GameMap.load('PalletTown', currentRegion);
+            window._mapName   = (GameMap.current && GameMap.current.name) || 'PalletTown';
+            window._mapLoaded = true;
 
             player.x    = 7;
             player.y    = 8;
