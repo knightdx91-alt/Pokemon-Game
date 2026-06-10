@@ -109,7 +109,9 @@ window.GameMap = (function () {
                     } else {
                         window._dbgTileset = tilesetName + ':HTTP' + tresp.status;
                     }
-                } catch (_) { /* behaviors unavailable — fall back to collision-only */ }
+                } catch (e) { window._dbgTileset = tilesetName + ':ERR'; }
+            } else {
+                window._dbgTileset = 'no-tileset';
             }
         } catch (e) {
             console.warn(`[Map] Layout not found: ${layoutId}`, e);
