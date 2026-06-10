@@ -279,13 +279,18 @@ window.GameStartMenu = (function () {
         });
         top.appendChild(carousel);
 
-        // Scroll selected icon into view (centred)
+        // Scroll only enough to keep selected icon fully visible
         requestAnimationFrame(function() {
-            var ICON_W = 56 + 4; // width + gap
             var selEl = carousel.children[selectedIdx];
-            if (selEl) {
-                var targetScroll = selEl.offsetLeft - (carousel.clientWidth / 2) + (ICON_W / 2);
-                carousel.scrollLeft = Math.max(0, targetScroll);
+            if (!selEl) return;
+            var elLeft  = selEl.offsetLeft;
+            var elRight = elLeft + selEl.offsetWidth;
+            var visLeft  = carousel.scrollLeft;
+            var visRight = carousel.scrollLeft + carousel.clientWidth;
+            if (elLeft < visLeft) {
+                carousel.scrollLeft = elLeft - 4;
+            } else if (elRight > visRight) {
+                carousel.scrollLeft = elRight - carousel.clientWidth + 4;
             }
         });
 
