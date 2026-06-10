@@ -50,7 +50,7 @@
         }
         .sys-card:hover    { border-color: var(--accent); background: #1e1c2e; }
         .sys-card.selected { border-color: var(--accent); background: #1e1c2e; box-shadow: 0 0 0 1px var(--accent); color: var(--accent2); }
-        .sys-card.has-cache .sys-name::after { content: ' ·'; color: var(--accent); }
+        .sys-card.has-cache .sys-name::after { content: ' \B7'; color: var(--accent); }
         .sys-icon { font-size: 1.3rem; }
         .sys-name { font-size: 0.75rem; font-weight: 600; line-height: 1.2; }
         .launch-card {
@@ -196,7 +196,7 @@
     <div class="systems-card">
         <div class="systems-card-header">
             <h2>&#127918; Pick a system</h2>
-            <button class="cache-badge-btn" id="btn-open-cache"><span class="cd-icon">💿</span> Cached ROMs</button>
+            <button class="cache-badge-btn" id="btn-open-cache"><span class="cd-icon">&#128189;</span> Cached ROMs</button>
         </div>
         <div id="picker-screen"></div>
     </div>
@@ -219,13 +219,13 @@
             <input type="url" id="url-input" placeholder="Paste direct download URL (ZIP or ROM)" />
             <button class="btn-primary" id="btn-url-load" disabled>&#9654; Load</button>
         </div>
-        <div class="url-hint">ZIP files are automatically handled. Google Drive: Share → copy link and paste as-is.</div>
+        <div class="url-hint">ZIP files are automatically handled. Google Drive: Share &rarr; copy link and paste as-is.</div>
     </div>
 </div>
 
 <div id="cache-overlay">
     <div id="cache-panel">
-        <div id="cache-header"><span>Cached ROMs</span><button id="btn-close-cache">✕ Close</button></div>
+        <div id="cache-header"><span>Cached ROMs</span><button id="btn-close-cache">&#x2715; Close</button></div>
         <div id="cache-list"></div>
     </div>
 </div>
@@ -234,55 +234,107 @@
     <div class="emu-topbar">
         <span class="logo-small">RetroPlay</span>
         <div class="emu-info">
-            <div class="emu-game-name" id="emu-game-label">—</div>
-            <div class="emu-sys-name"  id="emu-sys-label">—</div>
+            <div class="emu-game-name" id="emu-game-label">&mdash;</div>
+            <div class="emu-sys-name"  id="emu-sys-label">&mdash;</div>
         </div>
-        <button class="btn-back" id="btn-back-emu">← Back</button>
+        <button class="btn-back" id="btn-back-emu">&larr; Back</button>
     </div>
     <div id="game"></div>
     <div id="emu-progress-wrap"><div id="emu-progress-fill"></div></div>
-    <div id="emu-status">Loading emulator…</div>
+    <div id="emu-status">Loading emulator&hellip;</div>
 </div>
 
 <div class="loading-overlay" id="loadingOverlay">
     <div class="spinner"></div>
-    <div class="loading-text" id="loadingText">Loading…</div>
+    <div class="loading-text" id="loadingText">Loading&hellip;</div>
     <div class="loading-prog-wrap"><div class="loading-prog-fill" id="loadingProgFill"></div></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
-
 <script>
 (function () {
-    /* Intercept NDS BIOS fetches so desmume2015 gets stub files instead of 404.
-       EmulatorJS may fetch individual files OR a nds-bios.zip bundle; handle both. */
-    var NDS_BIOS_SIZES = { 'bios7.bin': 16384, 'bios9.bin': 4096, 'firmware.bin': 524288 };
-    var _biosZipCache = null;
-    function biosZip() {
-        if (_biosZipCache) return _biosZipCache;
-        /* Build a valid ZIP containing the three empty BIOS files using fflate. */
-        if (typeof fflate !== 'undefined' && fflate.zipSync) {
-            var files = {};
-            Object.keys(NDS_BIOS_SIZES).forEach(function (n) { files[n] = new Uint8Array(NDS_BIOS_SIZES[n]); });
-            _biosZipCache = fflate.zipSync(files);
-        }
-        return _biosZipCache;
-    }
 
+    /* ---- NDS BIOS stub ZIP (pure JS, no external deps) ----
+       Builds a minimal store-compressed ZIP with 1-byte placeholder files
+       for bios7.bin, bios9.bin, firmware.bin.  desmume2015 detects invalid
+       BIOS and falls back to internal HLE BIOS automatically.
+       This data URL is passed as EJS_biosUrl so the core never fetches BIOS
+       from the CDN (which may be blocked on restricted devices). */
+    var _ndsBiosDataUrl = (function () {
+        var names = ['bios7.bin', 'bios9.bin', 'firmware.bin'];
+        var localBufs = [], cdBufs = [], offset = 0;
+        names.forEach(function (name) {
+            var nb = name.length;
+            /* Local file header (30 bytes) + filename + 1 data byte */
+            var lh = new Uint8Array(30 + nb + 1);
+            lh[0]=0x50; lh[1]=0x4B; lh[2]=0x03; lh[3]=0x04; /* PK local sig */
+            lh[4]=20;                  /* version needed: 2.0 */
+            /* bytes 6-13: flags=0, compression=STORE(0), modtime=0, moddate=0 */
+            /* bytes 14-17: CRC-32 = 0 (stub content, emulator ignores) */
+            lh[18]=1;                  /* compressed size = 1 */
+            lh[22]=1;                  /* uncompressed size = 1 */
+            lh[26]=nb;                 /* filename length */
+            for (var i = 0; i < nb; i++) lh[30 + i] = name.charCodeAt(i);
+            /* lh[30+nb] = 0x00 (the 1 data byte, already zeroed) */
+            localBufs.push(lh);
+
+            /* Central directory entry (46 bytes) + filename */
+            var cd = new Uint8Array(46 + nb);
+            cd[0]=0x50; cd[1]=0x4B; cd[2]=0x01; cd[3]=0x02; /* PK central sig */
+            cd[4]=20; cd[6]=20;    /* versions */
+            cd[20]=1;              /* compressed size = 1 */
+            cd[24]=1;              /* uncompressed size = 1 */
+            cd[28]=nb;             /* filename length */
+            /* relative offset of local header (little-endian uint32) */
+            cd[42]=offset&0xFF; cd[43]=(offset>>8)&0xFF;
+            cd[44]=(offset>>16)&0xFF; cd[45]=(offset>>24)&0xFF;
+            for (var i = 0; i < nb; i++) cd[46 + i] = name.charCodeAt(i);
+            cdBufs.push(cd);
+
+            offset += 30 + nb + 1;
+        });
+
+        var cdStart = offset;
+        var cdSize = cdBufs.reduce(function (a, b) { return a + b.length; }, 0);
+
+        /* End of central directory record */
+        var eocd = new Uint8Array(22);
+        eocd[0]=0x50; eocd[1]=0x4B; eocd[2]=0x05; eocd[3]=0x06;
+        eocd[8]=names.length; eocd[10]=names.length; /* entry counts */
+        eocd[12]=cdSize&0xFF;    eocd[13]=(cdSize>>8)&0xFF;
+        eocd[14]=(cdSize>>16)&0xFF; eocd[15]=(cdSize>>24)&0xFF;
+        eocd[16]=cdStart&0xFF;   eocd[17]=(cdStart>>8)&0xFF;
+        eocd[18]=(cdStart>>16)&0xFF; eocd[19]=(cdStart>>24)&0xFF;
+
+        var all = localBufs.concat(cdBufs).concat([eocd]);
+        var total = all.reduce(function (a, b) { return a + b.length; }, 0);
+        var out = new Uint8Array(total), pos = 0;
+        all.forEach(function (b) { out.set(b, pos); pos += b.length; });
+
+        /* Base64-encode without btoa chunking issues */
+        var bin = '';
+        for (var i = 0; i < out.length; i++) bin += String.fromCharCode(out[i]);
+        return 'data:application/zip;base64,' + btoa(bin);
+    })();
+
+    /* Intercept fetch as a safety net for any BIOS requests the core makes
+       directly (some versions fetch individual files instead of the zip). */
+    var NDS_BIOS_SIZES = { 'bios7.bin': 16384, 'bios9.bin': 4096, 'firmware.bin': 524288 };
     var _origFetch = window.fetch;
     window.fetch = function (url, opts) {
         if (typeof url === 'string') {
             var file = url.split('/').pop().split('?')[0];
             var fl   = file.toLowerCase();
-            /* Individual BIOS file */
             if (NDS_BIOS_SIZES[file]) {
                 return Promise.resolve(new Response(new Uint8Array(NDS_BIOS_SIZES[file]),
                     { status: 200, headers: { 'Content-Type': 'application/octet-stream' } }));
             }
-            /* BIOS bundle zip (e.g. nds-bios.zip) */
             if (fl.indexOf('bios') !== -1 && fl.slice(-4) === '.zip') {
-                var zd = biosZip();
-                if (zd) return Promise.resolve(new Response(zd,
+                /* Decode our pre-built data URL and return it directly */
+                var b64 = _ndsBiosDataUrl.split(',')[1];
+                var bin = atob(b64);
+                var bytes = new Uint8Array(bin.length);
+                for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                return Promise.resolve(new Response(bytes,
                     { status: 200, headers: { 'Content-Type': 'application/zip' } }));
             }
         }
@@ -299,43 +351,43 @@
     var CDN = 'https://cdn.emulatorjs.org/latest/data/';
 
     var SYSTEMS = [
-        { id:'nes',      label:'NES',             core:'fceumm',           exts:['.nes','.fds','.zip'],                      group:'Nintendo', icon:'🎮' },
-        { id:'snes',     label:'SNES',            core:'snes9x',           exts:['.sfc','.smc','.fig','.zip'],               group:'Nintendo', icon:'🕹️' },
-        { id:'n64',      label:'Nintendo 64',     core:'mupen64plus_next', exts:['.n64','.z64','.v64','.zip'],               group:'Nintendo', icon:'🎯' },
-        { id:'gb',       label:'Game Boy',        core:'gambatte',         exts:['.gb','.zip'],                              group:'Nintendo', icon:'🎲' },
-        { id:'gbc',      label:'Game Boy Color',  core:'gambatte',         exts:['.gbc','.zip'],                             group:'Nintendo', icon:'🌈' },
-        { id:'gba',      label:'GBA',             core:'mgba',             exts:['.gba','.zip'],                             group:'Nintendo', icon:'🎪' },
-        { id:'nds',      label:'Nintendo DS',     core:'desmume2015',      exts:['.nds','.zip'],                             group:'Nintendo', icon:'📱' },
-        { id:'vb',       label:'Virtual Boy',     core:'beetle_vb',        exts:['.vb','.vboy','.zip'],                      group:'Nintendo', icon:'🥽' },
-        { id:'pokemini', label:'Pokémon Mini',    core:'pokemini',         exts:['.min','.zip'],                             group:'Nintendo', icon:'⭐' },
-        { id:'sms',      label:'Master System',   core:'genesis_plus_gx',  exts:['.sms','.zip'],                             group:'Sega',     icon:'📟' },
-        { id:'gg',       label:'Game Gear',       core:'genesis_plus_gx',  exts:['.gg','.zip'],                              group:'Sega',     icon:'🂴' },
-        { id:'genesis',  label:'Mega Drive',      core:'genesis_plus_gx',  exts:['.md','.gen','.bin','.zip'],                group:'Sega',     icon:'⚡' },
-        { id:'segacd',   label:'Sega CD',         core:'genesis_plus_gx',  exts:['.bin','.iso','.cue','.chd','.zip'],        group:'Sega',     icon:'💿' },
-        { id:'sega32x',  label:'32X',             core:'picodrive',        exts:['.32x','.bin','.zip'],                      group:'Sega',     icon:'🔺' },
-        { id:'saturn',   label:'Saturn',          core:'yabause',          exts:['.bin','.iso','.chd','.zip'],               group:'Sega',     icon:'🪐' },
-        { id:'dc',       label:'Dreamcast',       core:'flycast',          exts:['.cdi','.gdi','.chd','.cue','.zip'],        group:'Sega',     icon:'🌀' },
-        { id:'psx',      label:'PlayStation',     core:'pcsx_rearmed',     exts:['.bin','.cue','.iso','.pbp','.chd','.zip'], group:'Sony',     icon:'🎮' },
-        { id:'psp',      label:'PSP',             core:'ppsspp',           exts:['.iso','.cso','.pbp','.zip'],               group:'Sony',     icon:'📺' },
-        { id:'a2600',    label:'Atari 2600',      core:'stella',           exts:['.a26','.bin','.zip'],                      group:'Atari',    icon:'👾' },
-        { id:'a5200',    label:'Atari 5200',      core:'a5200',            exts:['.a52','.rom','.bin','.zip'],               group:'Atari',    icon:'🕹️' },
-        { id:'a7800',    label:'Atari 7800',      core:'prosystem',        exts:['.a78','.bin','.zip'],                      group:'Atari',    icon:'🎯' },
-        { id:'lynx',     label:'Atari Lynx',      core:'beetle_lynx',      exts:['.lnx','.zip'],                             group:'Atari',    icon:'🂴' },
-        { id:'jaguar',   label:'Atari Jaguar',    core:'virtualjaguar',    exts:['.j64','.jag','.bin','.zip'],               group:'Atari',    icon:'🐆' },
-        { id:'pce',      label:'PC Engine',       core:'beetle_pce',       exts:['.pce','.bin','.cue','.chd','.zip'],        group:'NEC',      icon:'💽' },
-        { id:'pcfx',     label:'PC-FX',           core:'beetle_pcfx',      exts:['.iso','.bin','.chd','.cue','.zip'],        group:'NEC',      icon:'💾' },
-        { id:'ngp',      label:'Neo Geo Pocket',  core:'beetle_ngp',       exts:['.ngp','.ngc','.zip'],                      group:'SNK',      icon:'🎰' },
-        { id:'neocd',    label:'Neo Geo CD',      core:'neocd',            exts:['.chd','.cue','.zip'],                      group:'SNK',      icon:'📀' },
-        { id:'wswan',    label:'WonderSwan',      core:'beetle_wswan',     exts:['.ws','.wsc','.zip'],                       group:'Bandai',   icon:'🦢' },
-        { id:'fbneo',    label:'Arcade (FBNeo)',   core:'fbneo',            exts:['.zip'],                                    group:'Arcade',   icon:'🕹️' },
-        { id:'mame2003', label:'MAME 2003',       core:'mame2003',         exts:['.zip'],                                    group:'Arcade',   icon:'🎰' },
-        { id:'c64',      label:'Commodore 64',    core:'vice_x64',         exts:['.d64','.t64','.prg','.crt','.zip'],        group:'Computers',icon:'💻' },
-        { id:'msx',      label:'MSX',             core:'fmsx',             exts:['.rom','.mx1','.mx2','.dsk','.zip'],        group:'Computers',icon:'🖥️' },
-        { id:'amiga',    label:'Amiga',           core:'puae',             exts:['.adf','.hdf','.zip'],                      group:'Computers',icon:'🖱️' },
-        { id:'dos',      label:'DOS',             core:'dosbox_pure',      exts:['.zip','.exe','.com'],                      group:'Computers',icon:'📟' },
-        { id:'intv',     label:'Intellivision',   core:'freeintv',         exts:['.int','.bin','.zip'],                      group:'Other',    icon:'📺' },
-        { id:'vectrex',  label:'Vectrex',         core:'vecx',             exts:['.vec','.bin','.zip'],                      group:'Other',    icon:'📐' },
-        { id:'o2em',     label:'Odyssey2',        core:'o2em',             exts:['.bin','.zip'],                             group:'Other',    icon:'🎱' },
+        { id:'nes',      label:'NES',             core:'fceumm',           exts:['.nes','.fds','.zip'],                      group:'Nintendo', icon:'&#127918;' },
+        { id:'snes',     label:'SNES',            core:'snes9x',           exts:['.sfc','.smc','.fig','.zip'],               group:'Nintendo', icon:'&#128377;' },
+        { id:'n64',      label:'Nintendo 64',     core:'mupen64plus_next', exts:['.n64','.z64','.v64','.zip'],               group:'Nintendo', icon:'&#127919;' },
+        { id:'gb',       label:'Game Boy',        core:'gambatte',         exts:['.gb','.zip'],                              group:'Nintendo', icon:'&#127922;' },
+        { id:'gbc',      label:'Game Boy Color',  core:'gambatte',         exts:['.gbc','.zip'],                             group:'Nintendo', icon:'&#127752;' },
+        { id:'gba',      label:'GBA',             core:'mgba',             exts:['.gba','.zip'],                             group:'Nintendo', icon:'&#127916;' },
+        { id:'nds',      label:'Nintendo DS',     core:'desmume2015',      exts:['.nds','.zip'],                             group:'Nintendo', icon:'&#128241;' },
+        { id:'vb',       label:'Virtual Boy',     core:'beetle_vb',        exts:['.vb','.vboy','.zip'],                      group:'Nintendo', icon:'&#129405;' },
+        { id:'pokemini', label:'Pokemon Mini',    core:'pokemini',         exts:['.min','.zip'],                             group:'Nintendo', icon:'&#11088;' },
+        { id:'sms',      label:'Master System',   core:'genesis_plus_gx',  exts:['.sms','.zip'],                             group:'Sega',     icon:'&#128223;' },
+        { id:'gg',       label:'Game Gear',       core:'genesis_plus_gx',  exts:['.gg','.zip'],                              group:'Sega',     icon:'&#127540;' },
+        { id:'genesis',  label:'Mega Drive',      core:'genesis_plus_gx',  exts:['.md','.gen','.bin','.zip'],                group:'Sega',     icon:'&#9889;' },
+        { id:'segacd',   label:'Sega CD',         core:'genesis_plus_gx',  exts:['.bin','.iso','.cue','.chd','.zip'],        group:'Sega',     icon:'&#128189;' },
+        { id:'sega32x',  label:'32X',             core:'picodrive',        exts:['.32x','.bin','.zip'],                      group:'Sega',     icon:'&#128314;' },
+        { id:'saturn',   label:'Saturn',          core:'yabause',          exts:['.bin','.iso','.chd','.zip'],               group:'Sega',     icon:'&#129680;' },
+        { id:'dc',       label:'Dreamcast',       core:'flycast',          exts:['.cdi','.gdi','.chd','.cue','.zip'],        group:'Sega',     icon:'&#127744;' },
+        { id:'psx',      label:'PlayStation',     core:'pcsx_rearmed',     exts:['.bin','.cue','.iso','.pbp','.chd','.zip'], group:'Sony',     icon:'&#127918;' },
+        { id:'psp',      label:'PSP',             core:'ppsspp',           exts:['.iso','.cso','.pbp','.zip'],               group:'Sony',     icon:'&#128250;' },
+        { id:'a2600',    label:'Atari 2600',      core:'stella',           exts:['.a26','.bin','.zip'],                      group:'Atari',    icon:'&#128126;' },
+        { id:'a5200',    label:'Atari 5200',      core:'a5200',            exts:['.a52','.rom','.bin','.zip'],               group:'Atari',    icon:'&#128377;' },
+        { id:'a7800',    label:'Atari 7800',      core:'prosystem',        exts:['.a78','.bin','.zip'],                      group:'Atari',    icon:'&#127919;' },
+        { id:'lynx',     label:'Atari Lynx',      core:'beetle_lynx',      exts:['.lnx','.zip'],                             group:'Atari',    icon:'&#127540;' },
+        { id:'jaguar',   label:'Atari Jaguar',    core:'virtualjaguar',    exts:['.j64','.jag','.bin','.zip'],               group:'Atari',    icon:'&#128022;' },
+        { id:'pce',      label:'PC Engine',       core:'beetle_pce',       exts:['.pce','.bin','.cue','.chd','.zip'],        group:'NEC',      icon:'&#128189;' },
+        { id:'pcfx',     label:'PC-FX',           core:'beetle_pcfx',      exts:['.iso','.bin','.chd','.cue','.zip'],        group:'NEC',      icon:'&#128190;' },
+        { id:'ngp',      label:'Neo Geo Pocket',  core:'beetle_ngp',       exts:['.ngp','.ngc','.zip'],                      group:'SNK',      icon:'&#127920;' },
+        { id:'neocd',    label:'Neo Geo CD',      core:'neocd',            exts:['.chd','.cue','.zip'],                      group:'SNK',      icon:'&#128192;' },
+        { id:'wswan',    label:'WonderSwan',      core:'beetle_wswan',     exts:['.ws','.wsc','.zip'],                       group:'Bandai',   icon:'&#129442;' },
+        { id:'fbneo',    label:'Arcade (FBNeo)',   core:'fbneo',            exts:['.zip'],                                    group:'Arcade',   icon:'&#128377;' },
+        { id:'mame2003', label:'MAME 2003',       core:'mame2003',         exts:['.zip'],                                    group:'Arcade',   icon:'&#127920;' },
+        { id:'c64',      label:'Commodore 64',    core:'vice_x64',         exts:['.d64','.t64','.prg','.crt','.zip'],        group:'Computers',icon:'&#128187;' },
+        { id:'msx',      label:'MSX',             core:'fmsx',             exts:['.rom','.mx1','.mx2','.dsk','.zip'],        group:'Computers',icon:'&#128421;' },
+        { id:'amiga',    label:'Amiga',           core:'puae',             exts:['.adf','.hdf','.zip'],                      group:'Computers',icon:'&#128433;' },
+        { id:'dos',      label:'DOS',             core:'dosbox_pure',      exts:['.zip','.exe','.com'],                      group:'Computers',icon:'&#128223;' },
+        { id:'intv',     label:'Intellivision',   core:'freeintv',         exts:['.int','.bin','.zip'],                      group:'Other',    icon:'&#128250;' },
+        { id:'vectrex',  label:'Vectrex',         core:'vecx',             exts:['.vec','.bin','.zip'],                      group:'Other',    icon:'&#128208;' },
+        { id:'o2em',     label:'Odyssey2',        core:'o2em',             exts:['.bin','.zip'],                             group:'Other',    icon:'&#127921;' },
     ];
 
     var ZIP_NATIVE = { fbneo:true, mame2003:true, amiga:true, dos:true, psp:true, psx:true, saturn:true, dc:true, n64:true, segacd:true, sega32x:true };
@@ -437,6 +489,11 @@
         if (ZIP_NATIVE[sys.id]) { cacheAndLaunch(sys, blob, fileName); return; }
         isZipBlob(blob).then(function (isZip) {
             if (!isZip) { cacheAndLaunch(sys, blob, fileName); return; }
+            if (typeof fflate === 'undefined') {
+                /* fflate not loaded — treat ZIP as native pass-through */
+                cacheAndLaunch(sys, blob, fileName);
+                return;
+            }
             extractFromZip(blob, sys)
                 .then(function (r) { cacheAndLaunch(sys, r.blob, r.name); })
                 .catch(function (err) { hideLoading(); alert('ZIP extraction failed: ' + err.message); });
@@ -529,8 +586,8 @@
                         if (r.done) return new Blob(chunks, { type: 'application/octet-stream' });
                         chunks.push(r.value); loaded += r.value.length;
                         var mb = (loaded / 1048576).toFixed(1);
-                        if (total) { setProgress(Math.round(loaded / total * 92)); setDl((label || 'Downloading') + ' · ' + mb + ' MB / ' + (total / 1048576).toFixed(1) + ' MB'); }
-                        else { setDl((label || 'Downloading') + ' · ' + mb + ' MB'); }
+                        if (total) { setProgress(Math.round(loaded / total * 92)); setDl((label || 'Downloading') + ' \xB7 ' + mb + ' MB / ' + (total / 1048576).toFixed(1) + ' MB'); }
+                        else { setDl((label || 'Downloading') + ' \xB7 ' + mb + ' MB'); }
                         return pump();
                     });
                 }
@@ -571,7 +628,7 @@
         var _timer = setInterval(function () {
             var elapsed = Math.floor((Date.now() - startTime) / 1000);
             var mins = Math.floor(elapsed / 60), secs = ('0' + (elapsed % 60)).slice(-2);
-            emuStatus.textContent = _lastMsg + '  ·  ' + (mins > 0 ? mins + 'm ' + secs + 's' : elapsed + 's');
+            emuStatus.textContent = _lastMsg + '  \xB7  ' + (mins > 0 ? mins + 'm ' + secs + 's' : elapsed + 's');
         }, 1000);
 
         window.EJS_player             = '#game';
@@ -582,11 +639,17 @@
         window.EJS_backgroundColor    = '#0d0d0f';
         window.EJS_startOnLoaded      = !HEAVY[sys.id];
         window.EJS_disableContextMenu = true;
+
+        /* Supply stub BIOS directly so desmume2015 never fetches from CDN */
+        if (sys.id === 'nds') {
+            window.EJS_biosUrl = _ndsBiosDataUrl;
+        }
+
         window.EJS_onGameStart        = function () {
             clearInterval(_timer); _observer.disconnect();
             emuStatus.classList.remove('loading'); setEmuProgress(100);
             setTimeout(function () { setEmuProgress(0); }, 800);
-            emuStatus.textContent = 'Running · ' + (label || sys.label);
+            emuStatus.textContent = 'Running \xB7 ' + (label || sys.label);
             if (window.cloudSaveOnStart) window.cloudSaveOnStart();
         };
         window.EJS_Buttons = {
@@ -651,7 +714,7 @@
 
     function downloadFromDrive(sys, fileId, fileName, token) {
         btnDrive.disabled = true;
-        showLoading('Downloading · ' + fileName);
+        showLoading('Downloading \xB7 ' + fileName);
         streamFetch('https://www.googleapis.com/drive/v3/files/' + fileId + '?alt=media',
             { 'Authorization': 'Bearer ' + token }, fileName)
             .then(function (blob) { btnDrive.disabled = false; prepareAndLaunch(sys, blob, fileName); })
@@ -678,7 +741,7 @@
                 var row = document.createElement('div');
                 row.className = 'cache-row';
                 row.innerHTML =
-                    '<button class="btn-play-row">▶ Play</button>' +
+                    '<button class="btn-play-row">&#9654; Play</button>' +
                     '<div class="cache-info"><div class="cache-sys">' + (meta.label || sys.label || id) + '</div>' +
                     '<div class="cache-file">' + (meta.filename || 'unknown') + '</div></div>' +
                     '<div class="cache-size">' + (meta.size ? fmtMB(meta.size) : '—') + '</div>' +
@@ -711,7 +774,7 @@
         var card = document.querySelector('.sys-card[data-id="' + sys.id + '"]');
         if (card) { card.classList.add('selected'); card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
         _selectedSys = sys;
-        document.getElementById('sel-icon-txt').textContent = sys.icon || '🎮';
+        document.getElementById('sel-icon-txt').innerHTML = sys.icon || '&#127918;';
         document.getElementById('sel-name-txt').textContent = sys.label;
         document.getElementById('sel-ext-txt').textContent  = sys.exts.join(', ');
         var cached = !!_cachedIds[sys.id];
@@ -777,6 +840,7 @@
 
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
 <script src="cloud-saves.js?v=__CACHE_BUST__"></script>
 </body>
 </html>
