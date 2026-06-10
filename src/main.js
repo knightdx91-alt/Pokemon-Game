@@ -220,9 +220,19 @@
             } catch(_) { _mapLoading = false; }
         }
 
-        // Battle gets first priority on all input
+        // Battle gets first priority on all input.
+        // Exception: start menu may be open over the battle (bag access).
         if (window.GameBattle && GameBattle.isActive()) {
-            GameBattle.consumeInput(jp);
+            if (window.GameStartMenu && GameStartMenu.isOpen) {
+                if (jp.up)    GameStartMenu.moveUp();
+                if (jp.down)  GameStartMenu.moveDown();
+                if (jp.left)  GameStartMenu.moveLeft();
+                if (jp.right) GameStartMenu.moveRight();
+                if (jp.a)     GameStartMenu.confirm();
+                if (jp.b)     GameStartMenu.back();
+            } else {
+                GameBattle.consumeInput(jp);
+            }
             GameInput.consumeJustPressed();
             requestAnimationFrame(gameLoop);
             return;

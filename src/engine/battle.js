@@ -703,6 +703,28 @@ window.GameBattle = (function () {
     }
 
     // -----------------------------------------------------------------------
+    // Sprite transparency helper
+    // GBA palette PNGs use palette index 0 as transparent; browsers show it as
+    // a solid colour. Strip every pixel that matches the top-left corner pixel.
+    // -----------------------------------------------------------------------
+    function _stripBg(imgEl) {
+        try {
+            const c = document.createElement('canvas');
+            c.width  = imgEl.naturalWidth  || 64;
+            c.height = imgEl.naturalHeight || 64;
+            const ctx = c.getContext('2d');
+            ctx.drawImage(imgEl, 0, 0);
+            const d = ctx.getImageData(0, 0, c.width, c.height);
+            const r = d.data[0], g = d.data[1], b = d.data[2];
+            for (let i = 0; i < d.data.length; i += 4) {
+                if (d.data[i]===r && d.data[i+1]===g && d.data[i+2]===b) d.data[i+3] = 0;
+            }
+            ctx.putImageData(d, 0, 0);
+            imgEl.src = c.toDataURL();
+        } catch(_) {}
+    }
+
+    // -----------------------------------------------------------------------
     // UI
     // -----------------------------------------------------------------------
     function _buildUI() {
@@ -758,6 +780,15 @@ window.GameBattle = (function () {
 
         _updateHP();
         _updateStatusDisplay();
+
+        // Strip palette background from sprites
+        const eSprite = document.getElementById('bt-enemy-sprite');
+        const pSprite = document.getElementById('bt-player-sprite');
+        if (eSprite) eSprite.addEventListener('load', function() { _stripBg(this); }, { once: true });
+        if (pSprite) pSprite.addEventListener('load', function() { _stripBg(this); }, { once: true });
+        // If already loaded (cached), strip immediately
+        if (eSprite && eSprite.complete && eSprite.naturalWidth) _stripBg(eSprite);
+        if (pSprite && pSprite.complete && pSprite.naturalWidth) _stripBg(pSprite);
 
         _el.querySelectorAll('.bt-act').forEach(btn => {
             btn.addEventListener('click', () => _onActionSelect(parseInt(btn.dataset.act)));
@@ -956,14 +987,75 @@ window.GameBattle = (function () {
     // -----------------------------------------------------------------------
     function _showBagSelect() {
         _phase = 'bag_select';
-        const textBox   = document.getElementById('bt-text-box');
-        const actionBox = document.getElementById('bt-action-box');
-        const bagBox    = document.getElementById('bt-bag-box');
-        if (textBox)   textBox.style.display   = 'none';
-        if (actionBox) actionBox.style.display = 'none';
-        if (!bagBox) return;
-        bagBox.style.display = 'flex';
-        _rebuildBagUI(bagBox);
+        if (window.GameStartMenu) {
+            GameStartMenu.openBagForBattle(
+                function(smItem) { _useItemById(smItem.itemId, smItem.name); },
+                function()       { _showActionMenu(); }
+            );
+        } else {
+            // Fallback: custom bag UI if startmenu not available
+            const textBox   = document.getElementById('bt-text-box');
+            const actionBox = document.getElementById('bt-action-box');
+            const bagBox    = document.getElementById('bt-bag-box');
+            if (textBox)   textBox.style.display   = 'none';
+            if (actionBox) actionBox.style.display = 'none';
+            if (!bagBox) return;
+            bagBox.style.display = 'flex';
+            _rebuildBagUI(bagBox);
+        }
+    }
+
+    // Map a save-inventory itemId to battle use action
+    function _useItemById(itemId, itemName) {
+        const st = window.GameSave && GameSave.state;
+        if (!st) { _showActionMenu(); return; }
+
+        // Consume one from inventory
+        const pockets = ['items','medicine','pokeBalls','berries'];
+        let used = false;
+        for (const p of pockets) {
+            if (st.inventory && st.inventory[p] && st.inventory[p][itemId] > 0) {
+                st.inventory[p][itemId]--;
+                used = true; break;
+            }
+        }
+        if (!used) { _showMessage(`Couldn't use ${itemName}!`, () => _showActionMenu()); return; }
+        GameSave.markDirty();
+
+        // Determine effect
+        const BALL_BONUS = { poke_ball:1, great_ball:1.5, ultra_ball:2, master_ball:255,
+            safari_ball:1.5, net_ball:3, dive_ball:3.5, nest_ball:3, repeat_ball:3,
+            timer_ball:4, luxury_ball:1, premier_ball:1, dusk_ball:3.5, heal_ball:1, quick_ball:5 };
+        const POTIONS = {
+            potion:{heal:20}, super_potion:{heal:50}, hyper_potion:{heal:200},
+            max_potion:{heal:99999}, full_restore:{heal:99999,cureStatus:true},
+            antidote:{heal:0,cureStatus:'poison'}, burn_heal:{heal:0,cureStatus:'burn'},
+            awakening:{heal:0,cureStatus:'sleep'}, parlyz_heal:{heal:0,cureStatus:'para'},
+            ice_heal:{heal:0,cureStatus:'freeze'}, full_heal:{heal:0,cureStatus:true},
+            oran_berry:{heal:10}, sitrus_berry:{heal:30}, lum_berry:{heal:0,cureStatus:true},
+            pecha_berry:{heal:0,cureStatus:'poison'}, rawst_berry:{heal:0,cureStatus:'burn'},
+            chesto_berry:{heal:0,cureStatus:'sleep'}, cheri_berry:{heal:0,cureStatus:'para'},
+            aspear_berry:{heal:0,cureStatus:'freeze'},
+        };
+
+        if (BALL_BONUS[itemId] !== undefined) {
+            const ballBonus = BALL_BONUS[itemId];
+            const caught = ballBonus >= 255 || calcCatch(_enemy, ballBonus);
+            if (caught) {
+                _showMessage(`${_enemy.name} was caught!`, () => { _catchPokemon(); _endBattle('caught'); });
+            } else {
+                _showMessage(`${_enemy.name} broke free!`, () => {
+                    _enemyTurn(() => {
+                        if ((_player.currentHp || 0) <= 0) { _onPlayerFaint(); return; }
+                        _showActionMenu();
+                    });
+                });
+            }
+        } else if (POTIONS[itemId]) {
+            _usePotion({ ...POTIONS[itemId], key: itemId });
+        } else {
+            _showMessage(`${itemName} can't be used here.`, () => _showActionMenu());
+        }
     }
 
     function _rebuildBagUI(bagBox) {

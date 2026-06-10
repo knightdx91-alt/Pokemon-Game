@@ -117,6 +117,8 @@ window.GameStartMenu = (function () {
     // --- Bag state ---
     var _bagPocket   = 0;
     var _bagAssets   = null; // { bg, icons: [{unsel,sel}×8] }
+    var _battleItemCallback = null; // set when bag is opened from battle
+    var _battleBagCancel    = null; // called when bag is closed without using an item
     var _bagItemIconCache = {}; // name → Image|null
 
     function _itemIconPath(item) {
@@ -2761,6 +2763,17 @@ window.GameStartMenu = (function () {
             else if (page==='pokedex' && _dexList && _dexList[_subIdx]) {
                 _dexEntry = _dexList[_subIdx];
                 page = 'pokedex_entry'; _subIdx = 0; _render();
+            } else if (page==='bag' && _battleItemCallback) {
+                var _bPockets = _getBagPockets();
+                var _bPocket  = _bPockets[_bagPocket] || _bPockets[0];
+                var _bItem    = _bPocket && _bPocket.items[_subIdx];
+                if (_bItem && _bItem.quantity > 0 && !_bItem.itemId.endsWith('_empty')) {
+                    var _bCb = _battleItemCallback;
+                    _battleItemCallback = null; _battleBagCancel = null;
+                    close();
+                    _bCb(_bItem);
+                }
+                return;
             } else if (page==='pokemon') {
                 var _pFilled = _getParty().filter(Boolean);
                 if (_partyActionOpen) {
@@ -2808,6 +2821,16 @@ window.GameStartMenu = (function () {
         isOpen=false; menuEl.classList.remove('open');
         menuEl.style.visibility = 'visible';
         if (subEl) subEl.style.display='none';
+        // If closed without using a battle item, fire cancel callback
+        if (_battleBagCancel) { var cb = _battleBagCancel; _battleItemCallback = null; _battleBagCancel = null; cb(); }
+    }
+
+    function openBagForBattle(onUse, onCancel) {
+        if (!menuEl) { if (onCancel) onCancel(); return; }
+        _battleItemCallback = onUse;
+        _battleBagCancel    = onCancel || null;
+        selectedIdx = 0; page = 'bag'; _bagPocket = 0; _subIdx = 0; isOpen = true;
+        menuEl.classList.add('open'); _render();
     }
     function toggle() { if(isOpen) close(); else open(); }
 
@@ -2915,6 +2938,6 @@ window.GameStartMenu = (function () {
 
     document.addEventListener('DOMContentLoaded',init);
 
-    return { toggle, open, close, moveUp, moveDown, moveLeft, moveRight, confirm, back,
+    return { toggle, open, close, openBagForBattle, moveUp, moveDown, moveLeft, moveRight, confirm, back,
              get isOpen() { return isOpen; } };
 })();
