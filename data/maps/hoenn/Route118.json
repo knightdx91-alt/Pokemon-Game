@@ -11,14 +11,19 @@
   "show_map_name": true,
   "connections": [
     {
-      "map": "MAP_MAUVILLE_CITY",
-      "direction": "left",
-      "offset": 0
+      "map": "MAP_ROUTE119",
+      "offset": 40,
+      "direction": "up"
     },
     {
-      "map": "MAP_ROUTE119",
-      "direction": "right",
-      "offset": 0
+      "map": "MAP_MAUVILLE_CITY",
+      "offset": 0,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_ROUTE123",
+      "offset": 0,
+      "direction": "right"
     }
   ],
   "npcs": [
@@ -236,6 +241,12 @@
   "warps": [
     {
       "x": 42,
+      "y": 6,
+      "dest_map": "MAP_TERRA_CAVE_ENTRANCE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 9,
       "y": 6,
       "dest_map": "MAP_TERRA_CAVE_ENTRANCE",
       "dest_warp_id": "0"
