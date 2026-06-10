@@ -254,18 +254,36 @@
 
 <script>
 (function () {
-    /* Intercept NDS BIOS fetches and return zero-filled stubs so desmume2015
-       falls back to its internal BIOS replacement instead of 404ing. */
-    var NDS_BIOS = { 'bios7.bin': 16384, 'bios9.bin': 4096, 'firmware.bin': 524288 };
+    /* Intercept NDS BIOS fetches so desmume2015 gets stub files instead of 404.
+       EmulatorJS may fetch individual files OR a nds-bios.zip bundle; handle both. */
+    var NDS_BIOS_SIZES = { 'bios7.bin': 16384, 'bios9.bin': 4096, 'firmware.bin': 524288 };
+    var _biosZipCache = null;
+    function biosZip() {
+        if (_biosZipCache) return _biosZipCache;
+        /* Build a valid ZIP containing the three empty BIOS files using fflate. */
+        if (typeof fflate !== 'undefined' && fflate.zipSync) {
+            var files = {};
+            Object.keys(NDS_BIOS_SIZES).forEach(function (n) { files[n] = new Uint8Array(NDS_BIOS_SIZES[n]); });
+            _biosZipCache = fflate.zipSync(files);
+        }
+        return _biosZipCache;
+    }
+
     var _origFetch = window.fetch;
     window.fetch = function (url, opts) {
         if (typeof url === 'string') {
             var file = url.split('/').pop().split('?')[0];
-            if (NDS_BIOS[file]) {
-                return Promise.resolve(new Response(new Uint8Array(NDS_BIOS[file]), {
-                    status: 200,
-                    headers: { 'Content-Type': 'application/octet-stream' }
-                }));
+            var fl   = file.toLowerCase();
+            /* Individual BIOS file */
+            if (NDS_BIOS_SIZES[file]) {
+                return Promise.resolve(new Response(new Uint8Array(NDS_BIOS_SIZES[file]),
+                    { status: 200, headers: { 'Content-Type': 'application/octet-stream' } }));
+            }
+            /* BIOS bundle zip (e.g. nds-bios.zip) */
+            if (fl.indexOf('bios') !== -1 && fl.slice(-4) === '.zip') {
+                var zd = biosZip();
+                if (zd) return Promise.resolve(new Response(zd,
+                    { status: 200, headers: { 'Content-Type': 'application/zip' } }));
             }
         }
         return _origFetch.apply(this, arguments);
