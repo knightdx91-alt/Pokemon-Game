@@ -109,6 +109,7 @@
             console.log(`[Warp] -> ${mapName} (warp ${warpIndex})`);
 
             await GameMap.load(mapName, currentRegion);
+            window._mapName = mapName; window._mapLoaded = true;
 
             const destWarps = (GameMap.current && GameMap.current.warps) || [];
             let returnWarp  = destWarps[warpIndex] || null;
@@ -165,6 +166,7 @@
             console.log(`[Connection] ${dir} -> ${destMapId}`);
             const result = await GameMap.loadById(destMapId, currentRegion);
             if (!result) return;
+            window._mapName = destMapId; window._mapLoaded = true;
 
             const destW = GameMap.width;
             const destH = GameMap.height;
@@ -201,13 +203,18 @@
         const jp = GameInput.justPressed;
 
         // If map never loaded (init() may have not awaited it yet), kick it off now
-        if (!GameMap.current && !_mapLoading && !_transitioning) {
+        if (!window._mapLoaded && !_mapLoading) {
             _mapLoading = true;
-            GameMap.load('PalletTown', currentRegion).then(function () {
+            GameMap.load('PalletTown', currentRegion).then(function (mapData) {
+                window._mapLoaded = true;
+                window._mapName   = mapData && mapData.name ? mapData.name : 'PalletTown';
                 GameRenderer.setScene(GameMap, GameCamera, player);
                 GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
                 _mapLoading = false;
-            }).catch(function () { _mapLoading = false; });
+            }).catch(function (e) {
+                window._mapName = 'LoadErr';
+                _mapLoading = false;
+            });
         }
 
         // Battle gets first priority on all input
