@@ -929,42 +929,41 @@ window.GameBattle = (function () {
         moveBox.innerHTML = '';
 
         const moves = _player.moves || [];
-        let anyMoves = false;
-        moves.forEach((mv, i) => {
-            if (!mv) return;
-            anyMoves = true;
-            const md = (_movesDb && _movesDb[mv]) || { name:_fmt(mv), type:'Normal', pp:10, category:'physical' };
-            const pp = _playerPP[i] !== undefined ? _playerPP[i] : (md.pp || 10);
-            const maxPP = md.pp || 10;
-            const ppLow = pp === 0;
-            const btn = document.createElement('button');
-            btn.className = 'bt-move-btn' + (ppLow ? ' pp-zero' : '');
-            btn.dataset.idx = i;
-            btn.innerHTML = `<span class="bt-move-name">${md.name||_fmt(mv)}</span>`
-                          + `<span class="bt-move-pp${ppLow?' pp-empty':''}">${pp}/${maxPP}</span>`
-                          + `<span class="bt-move-type type-badge" data-type="${(md.type||'Normal').toLowerCase()}">${md.type||'Normal'}</span>`;
-            btn.addEventListener('click', () => { if (!ppLow) _useMove(i); });
-            moveBox.appendChild(btn);
-        });
-
-        if (!anyMoves) {
-            const btn = document.createElement('button');
-            btn.className = 'bt-move-btn';
-            btn.innerHTML = '<span class="bt-move-name">Struggle</span>';
-            btn.addEventListener('click', () => _useStruggle());
-            moveBox.appendChild(btn);
-        }
+        const realMoves = moves.filter(Boolean);
 
         // Check if all moves are at 0 PP → force Struggle
-        const allPPZero = moves.filter(Boolean).length > 0 &&
-            moves.filter(Boolean).every((mv, idx) => (_playerPP[idx] || 0) === 0);
-        if (allPPZero) {
-            moveBox.innerHTML = '';
+        const allPPZero = realMoves.length > 0 &&
+            realMoves.every((mv, idx) => (_playerPP[moves.indexOf(mv)] || 0) === 0);
+
+        if (allPPZero || realMoves.length === 0) {
             const btn = document.createElement('button');
             btn.className = 'bt-move-btn selected';
             btn.innerHTML = '<span class="bt-move-name">Struggle</span>';
             btn.addEventListener('click', () => _useStruggle());
             moveBox.appendChild(btn);
+        } else {
+            // Always render 4 slots
+            for (let i = 0; i < 4; i++) {
+                const mv = moves[i];
+                const btn = document.createElement('button');
+                if (!mv) {
+                    btn.className = 'bt-move-btn bt-move-empty';
+                    btn.disabled = true;
+                    btn.innerHTML = '<span class="bt-move-name">—</span>';
+                } else {
+                    const md = (_movesDb && _movesDb[mv]) || { name:_fmt(mv), type:'Normal', pp:10, category:'physical' };
+                    const pp = _playerPP[i] !== undefined ? _playerPP[i] : (md.pp || 10);
+                    const maxPP = md.pp || 10;
+                    const ppLow = pp === 0;
+                    btn.className = 'bt-move-btn' + (ppLow ? ' pp-zero' : '');
+                    btn.dataset.idx = i;
+                    btn.innerHTML = `<span class="bt-move-name">${md.name||_fmt(mv)}</span>`
+                                  + `<span class="bt-move-pp${ppLow?' pp-empty':''}">${pp}/${maxPP}</span>`
+                                  + `<span class="bt-move-type type-badge" data-type="${(md.type||'Normal').toLowerCase()}">${md.type||'Normal'}</span>`;
+                    btn.addEventListener('click', () => { if (!ppLow) _useMove(i); });
+                }
+                moveBox.appendChild(btn);
+            }
         }
 
         const back = document.createElement('button');
@@ -1164,6 +1163,18 @@ window.GameBattle = (function () {
                 _playerPP[i] = _player.movePP && _player.movePP[i] !== undefined ? _player.movePP[i] : (md.pp || 10);
             });
         }
+
+        // Update player sprite
+        const pSprite = document.getElementById('bt-player-sprite');
+        if (pSprite) {
+            pSprite.src = `data/sprites/pokemon/back/${_player.speciesId || 'charizard'}.png`;
+            pSprite.addEventListener('load', function() { _stripBg(this); }, { once: true });
+            if (pSprite.complete) _stripBg(pSprite);
+        }
+        const pName = document.getElementById('bt-player-name');
+        if (pName) pName.textContent = _getPlayerName();
+        const pLv = document.getElementById('bt-player-lv');
+        if (pLv) pLv.textContent = _player.level || 1;
 
         _showMessage(`Go! ${_getPlayerName()}!`, () => {
             _updateHP();
