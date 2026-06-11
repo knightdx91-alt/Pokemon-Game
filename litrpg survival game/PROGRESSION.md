@@ -27,18 +27,49 @@ The System grants attribute points on level-up; you allocate them (class nudges 
 |---|---|
 | **Might** | Physical self-combat damage, carry capacity |
 | **Finesse** | Tempo regen/speed, accuracy, stealth |
-| **Endurance** | Max HP, **Stamina pool & drain resistance**, Exposure resistance |
-| **Focus** | Affinity/arcane power (Channeler etc.), Bind strength |
-| **Resolve** | Damage resistances; **resistance to System effects** (Surveillance pressure, conversion) |
+| **Endurance** | **Vigor pool (HP) + its regen/min**, Stamina pool & drain resistance, Exposure resistance |
+| **Focus** | **Affinity-Energy pool size**, affinity/arcane power, Bind strength |
+| **Resolve** | **Affinity-Energy regen/min**, damage resistances, resistance to System effects (Surveillance, conversion) |
 | **Insight** | Skill effectiveness, crafting quality, detection range, Appraisal/luck |
 
 > Endurance and Resolve are the **survival/anti-System** stats — they tie attributes directly into the
 > survival layer and the Surveillance theme, not just combat.
 
+### Two-pool model — size vs. regen are separate stats
+Each resource pool has one attribute for its **size** and another for its **regen-per-minute**, so
+power and recovery are independent:
+- **Vigor (HP):** size + regen both from **Endurance**.
+- **Affinity-Energy (the "mana" you spend on abilities):** size from **Focus**, regen from **Resolve**.
+
+### Vigor = System-embedded energy, not flesh (theme mechanic)
+Your "HP" is **Vigor** — the System's energy woven into your body. It works as a **damage-absorption
+buffer**: incoming hits are blunted by spending Vigor, and the pool drains as it absorbs. It won't
+stop a true instakill, but a large pool defrays ordinary damage.
+- **Thematic weight:** losing health = running out of the thing the System put in you. Hitting zero
+  Vigor is the "downed" state (`ENCOUNTERS.md §4`), not literal death.
+- Vigor (defensive, embedded) is **separate** from Affinity-Energy (offensive, spent on abilities) —
+  two different energies, two different pools.
+
 ### Allocation
 - Points awarded per level; **player-assigned** (LitRPG agency). Class sets a recommended spread and
   small starting bonuses.
 - Framing: *the System "awards" your points* — another act of it classifying/shaping you.
+
+---
+
+## 2.5 Abilities — Class Skills, Affinity Arts, Perks
+
+Three categories of acquired power:
+
+| Category | What it is | Source | Cost |
+|---|---|---|---|
+| **Class Skills** | Active abilities that break ordinary physics (conjure flame, plate your body, blink a step). The "cool" toolkit. | Class + Designation Grade (`CLASSES.md`) | Affinity-Energy |
+| **Affinity Arts** | The caster magic — ranged/utility affinity effects for Arcane builds | Class/Focus, learned/scrolls | Affinity-Energy |
+| **Perks** | **Passive** edges — small or large advantages | Quests, relics (`HIDDEN_LAYER.md`), discovery, "wrong place at the wrong time" | none (passive) |
+
+> We deliberately keep Skills and Arts as **one fuel** (Affinity-Energy) and don't over-split them —
+> the active/caster distinction is flavor, not two economies. **Perks** are the discovery-reward
+> hook: hidden-layer relics and odd events grant them, so exploration literally makes you stronger.
 
 ---
 
