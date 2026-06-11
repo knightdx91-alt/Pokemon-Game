@@ -1297,11 +1297,20 @@ window.GameStartMenu = (function () {
             var rect = canvas.getBoundingClientRect();
             var cx = (e.clientX - rect.left) * (240 / rect.width);
             var cy = (e.clientY - rect.top)  * (160 / rect.height);
+            var NP = _getBagPockets().length;
 
-            // Pocket indicator squares: y=16..23, x=24..88 (8 squares of 8px)
-            if (cy >= 16 && cy < 24 && cx >= 24 && cx < 88) {
-                var p = Math.floor((cx - 24) / 8);
-                if (p >= 0 && p < 8) { _bagPocket = p; _subIdx = 0; _render(); return; }
+            // ◄ arrow: x=8..20, y=0..9
+            if (cy >= 0 && cy < 9 && cx >= 8 && cx < 20) {
+                _bagPocket = (_bagPocket - 1 + NP) % NP; _subIdx = 0; _render(); return;
+            }
+            // ► arrow: x=97..112, y=0..9
+            if (cy >= 0 && cy < 9 && cx >= 97 && cx < 112) {
+                _bagPocket = (_bagPocket + 1) % NP; _subIdx = 0; _render(); return;
+            }
+            // Pocket indicator squares: y=16..23, x=24..88 (7 squares of 10px each, centered)
+            if (cy >= 8 && cy < 16 && cx >= 24 && cx < 24 + NP * 10) {
+                var p = Math.floor((cx - 24) / 10);
+                if (p >= 0 && p < NP) { _bagPocket = p; _subIdx = 0; _render(); return; }
             }
             // Item list: x=113..239, y=8..152
             if (cx >= 113 && cy >= 8 && cy < 152) {
@@ -2934,13 +2943,13 @@ window.GameStartMenu = (function () {
         if (!isOpen) return;
         if (page==='main') { return; } // no horizontal nav on vertical list
         if (page==='journal') { _journalTab=(_journalTab-1+4)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
-        if (page==='bag') { _bagPocket=(_bagPocket-1+8)%8; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
+        if (page==='bag') { var _np=_getBagPockets().length; _bagPocket=(_bagPocket-1+_np)%_np; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
     }
     function moveRight() {
         if (!isOpen) return;
         if (page==='main') { return; } // no horizontal nav on vertical list
         if (page==='journal') { _journalTab=(_journalTab+1)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
-        if (page==='bag') { _bagPocket=(_bagPocket+1)%8; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
+        if (page==='bag') { var _np=_getBagPockets().length; _bagPocket=(_bagPocket+1)%_np; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
     }
     function moveUp() {
         if (!isOpen) return;
