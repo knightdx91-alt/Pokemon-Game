@@ -1081,28 +1081,50 @@
             return null;
         }
 
+        // Get the live save state bytes via EmulatorJS's own API (what the
+        // context-menu Save State button uses). Returns a Promise<Uint8Array|null>.
+        function grabState(g) {
+            return new Promise(function (resolve) {
+                try {
+                    var mgr = window.EJS_emulator && window.EJS_emulator.gameManager;
+                    if (mgr && typeof mgr.getState === 'function') {
+                        Promise.resolve(mgr.getState()).then(function (st) {
+                            if (st && st.length > 64) resolve(st instanceof Uint8Array ? st : new Uint8Array(st));
+                            else resolve(null);
+                        }).catch(function () { resolve(null); });
+                        return;
+                    }
+                } catch (_) {}
+                // Fallback: old FS scan
+                try {
+                    if (window.EJS_emulator && window.EJS_emulator.quickSave) window.EJS_emulator.quickSave();
+                } catch (_) {}
+                setTimeout(function () {
+                    var found = findStateFile(g);
+                    resolve(found ? found.data : null);
+                }, 800);
+            });
+        }
+
         saveBtn.addEventListener('click', function () {
             var g = gm();
             if (!g) { alert('Start a game first.'); return; }
             saveBtn.textContent = '💾 Saving…'; saveBtn.disabled = true;
 
-            // Trigger EJS quickSave so the core writes the state file
-            try {
-                if (window.EJS_emulator && window.EJS_emulator.quickSave) window.EJS_emulator.quickSave();
-                else if (window.EJS_emulator && window.EJS_emulator.saveState) window.EJS_emulator.saveState(1);
-            } catch (_) {}
-
-            // Wait for the core to finish writing, then find and upload
-            setTimeout(function () {
-                var found = findStateFile(g);
-                if (!found) {
+            grabState(g).then(function (data) {
+                if (!data) {
                     setBtn(saveBtn, '✗ No state', '#e05454');
                     setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 3000);
-                    alert('No save state found. Use the QuickSave button in the toolbar first, then press 💾 Save.');
+                    alert('Could not capture a save state from the emulator.');
                     return;
                 }
-                localStorage.setItem('ejs_state_path_' + (window.CLOUD_SAVE_GAME || 'game'), found.path);
-                var b64 = btoa(Array.prototype.reduce.call(found.data, function (s, b) { return s + String.fromCharCode(b); }, ''));
+                var b64 = '';
+                // Chunked btoa — large states overflow the call stack otherwise
+                var CHUNK = 0x8000, bin = '';
+                for (var i = 0; i < data.length; i += CHUNK) {
+                    bin += String.fromCharCode.apply(null, data.subarray(i, i + CHUNK));
+                }
+                b64 = btoa(bin);
                 ensureSaveBranch(function () {
                     getFileSha(statePath(), function (sha) {
                         var body = { message: 'state ' + (window.CLOUD_SAVE_GAME || 'game') + ' ' + new Date().toISOString(), content: b64, branch: SAVE_BRANCH };
@@ -1120,7 +1142,7 @@
                         });
                     });
                 });
-            }, 800);
+            });
         });
 
         loadBtn.addEventListener('click', function () {
@@ -1137,36 +1159,33 @@
                 var bytes = new Uint8Array(binary.length);
                 for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
 
-                // Write to the path we saved to, plus all candidate paths
-                var storedPath = localStorage.getItem('ejs_state_path_' + (window.CLOUD_SAVE_GAME || 'game'));
-                var name = window.EJS_gameName || '';
-                var writePaths = [
-                    storedPath,
-                    '/home/web_user/retroarch/userdata/states/' + name + '.state',
-                    '/home/web_user/retroarch/userdata/states/' + name + '.state1',
-                    '/data/states/' + name,
-                    '/data/states/1',
-                    '/data/states/quickSave',
-                ].filter(Boolean);
-
-                writePaths.forEach(function (p) {
-                    try {
-                        var dir = p.split('/').slice(0, -1).join('/');
-                        try { g.FS.mkdir(dir); } catch (_) {}
-                        g.FS.writeFile(p, bytes);
-                    } catch (_) {}
-                });
-
-                // Sync to IDB then trigger quickLoad
-                function doLoad() {
+                // Apply directly via EmulatorJS's own loadState API (same as
+                // the context-menu Load State button)
+                var mgr = window.EJS_emulator && window.EJS_emulator.gameManager;
+                if (mgr && typeof mgr.loadState === 'function') {
+                    mgr.loadState(bytes);
+                    setBtn(loadBtn, '✓ Loaded!', '#4caf88');
+                    setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 2500);
+                } else {
+                    // Fallback: write to FS candidate paths and quickLoad
+                    var name = window.EJS_gameName || '';
+                    [
+                        '/home/web_user/retroarch/userdata/states/' + name + '.state',
+                        '/data/states/' + name,
+                        '/data/states/1',
+                    ].forEach(function (p) {
+                        try {
+                            var dir = p.split('/').slice(0, -1).join('/');
+                            try { g.FS.mkdir(dir); } catch (_) {}
+                            g.FS.writeFile(p, bytes);
+                        } catch (_) {}
+                    });
                     try {
                         if (window.EJS_emulator && window.EJS_emulator.quickLoad) window.EJS_emulator.quickLoad();
-                        else if (window.EJS_emulator && window.EJS_emulator.loadState) window.EJS_emulator.loadState(1);
                     } catch (_) {}
                     setBtn(loadBtn, '✓ Loaded!', '#4caf88');
                     setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 2500);
                 }
-                try { g.FS.syncfs(false, function () { doLoad(); }); } catch (_) { doLoad(); }
             }).catch(function (e) {
                 setBtn(loadBtn, '✗ Error', '#e05454');
                 setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 3000);
