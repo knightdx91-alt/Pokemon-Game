@@ -1064,10 +1064,15 @@
                     var bytes = new Uint8Array(binary.length);
                     for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
                     var path = g.getSaveFilePath();
+                    if (!path) throw new Error('Emulator save path unavailable — is a game running?');
                     var dir = path.split('/').slice(0, -1).join('/');
                     try { if (dir && !g.FS.analyzePath(dir).exists) g.FS.mkdir(dir); } catch (_) {}
                     g.FS.writeFile(path, bytes);
+                    // Most cores only read the battery save on boot — restart to apply it
                     g.loadSaveFiles();
+                    setTimeout(function () {
+                        try { g.restart(); } catch (_) {}
+                    }, 150);
                     setBtn(loadBtn, '✓ Loaded!', '#4caf88');
                     setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 2500);
                 }).catch(function (e) {
