@@ -51,9 +51,16 @@ stop a true instakill, but a large pool defrays ordinary damage.
   two different energies, two different pools.
 
 ### Allocation
-- Points awarded per level; **player-assigned** (LitRPG agency). Class sets a recommended spread and
-  small starting bonuses.
+- **Points per level = `3 + (Tier rank above Basic)`** → Basic 3 … Legendary 8. Higher-Tier classes
+  grant more per level (each level matters more) but level far slower → power is **front-loaded**, not
+  strictly more total stats.
+- **Milestone bonuses:** a bonus lump (+ often a **Perk**) every **25 levels**, plus a chunk on each
+  **class evolution / Tier-up**.
+- *(Optional)* **training nudges:** sustained activity gives tiny attribute XP (running → Finesse),
+  hard-capped — flavor, not a grind path.
+- **Player-assigned** (LitRPG agency). Class sets a recommended spread and small starting bonuses.
 - Framing: *the System "awards" your points* — another act of it classifying/shaping you.
+- Full stat + **skill Tier/Rank** math: `SKILLS.md`.
 
 ---
 
@@ -79,7 +86,8 @@ Three categories of acquired power:
   milestones, crafting, quests/bounties. No daily-quest grind (matches the lean economy).
 - **XP-per-level scales with class Tier** — see the full curve model in §3.7.
 - **Skills level by use** (espionage/craft/survival skills improve as you use them — the System
-  tracks your activity). Separate from character level.
+  tracks your activity). Separate from character level. Skills have **Tiers (Basic→Legendary) and
+  Ranks (1–10)** with their own use-based XP math — full model in `SKILLS.md`.
 - **Creature XP** from battles; sharing/route rules TBD (see open calls).
 
 ---
