@@ -4,15 +4,12 @@ window.GameStartMenu = (function () {
 
     // Items match EE's BuildNormalStartMenu order
     const ITEMS = [
-        { id: 'POKEDEX',  label: 'Pokédex',  icon: 'start_icon_pokedex.png'  },
-        { id: 'POKEMON',  label: 'Pokémon',  icon: 'start_icon_pokemon.png'  },
-        { id: 'BAG',      label: 'Pack',      icon: 'start_icon_bag.png'      },
-        { id: 'POKENAV',  label: 'Pokénav',  icon: 'start_icon_pokenav.png'  },
-        { id: 'JOURNAL',  label: 'Journal',  icon: 'start_icon_journal.png'  },
-        { id: 'PLAYER',   label: '',         icon: 'start_icon_empty.png'    },
-        { id: 'SAVE',     label: 'Save',      icon: 'start_icon_save.png'     },
-        { id: 'OPTIONS',  label: 'Options',   icon: 'start_icon_options.png'  },
-        { id: 'EXIT',     label: 'Exit',      icon: 'start_icon_empty.png'    },
+        { id: 'POKEMON',  label: 'POKéMON'  },
+        { id: 'BAG',      label: 'BAG'      },
+        { id: 'PLAYER',   label: ''         },
+        { id: 'SAVE',     label: 'SAVE'     },
+        { id: 'OPTIONS',  label: 'OPTION'   },
+        { id: 'EXIT',     label: 'EXIT'     },
     ];
 
     const ICON_PATH = 'src/assets/start_menu/';
@@ -252,11 +249,8 @@ window.GameStartMenu = (function () {
 
     // --- Render main menu — FireRed vertical list, right-side panel ---
     var ITEM_DESCS = {
-        'POKEDEX': 'Check information on\nPokémon you have seen.',
-        'POKEMON': 'Check the Pokémon\nyou are carrying.',
+        'POKEMON': 'Check the POKéMON\nyou are carrying.',
         'BAG':     'Open your BAG\nand use items.',
-        'POKENAV': 'Use the POKÉNAV\ncommunication tool.',
-        'JOURNAL': 'View factions,\nachievements and quests.',
         'PLAYER':  'Check your Trainer\nCard and status.',
         'SAVE':    'Save your game with a complete record\nof your progress to take a break.',
         'OPTIONS': 'Adjust various settings\nfor your game.',

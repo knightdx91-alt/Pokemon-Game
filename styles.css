@@ -207,17 +207,17 @@ html, body {
 /* Left void — transparent, game world shows through */
 .sm-void { flex: 1; pointer-events: all; }
 
-/* Right panel — FireRed style: white bg, border on left+top+bottom, flush to right edge */
+/* Right panel — FireRed style: white bg, border on left+top+bottom, flush right */
 .sm-right-panel {
-    width: 46%; min-width: 90px; max-width: 120px;
-    background: #f0f0e8;
-    border: 2px solid #181818;
-    border-right: none;
-    border-top: 2px solid #181818;
-    border-radius: 0 0 0 8px;
+    width: 48%; min-width: 88px; max-width: 116px;
+    background: #f8f8f0;
+    border-left:   3px solid #585050;
+    border-top:    3px solid #585050;
+    border-bottom: 3px solid #585050;
+    border-right:  none;
+    border-radius: 0;
     display: flex; flex-direction: column;
     pointer-events: all; overflow: hidden;
-    margin-top: 0;
 }
 
 /* Menu item rows */
