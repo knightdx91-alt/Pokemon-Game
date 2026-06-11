@@ -30,8 +30,13 @@ The System grants attribute points on level-up; you allocate them (class nudges 
 | **Endurance** | **Vigor pool (HP) + its regen/min**, Stamina pool & drain resistance, Exposure resistance |
 | **Focus** | **Affinity-Energy pool size**, affinity/arcane power, Bind strength |
 | **Resolve** | **Affinity-Energy regen/min**, damage resistances, resistance to System effects (Surveillance, conversion) |
-| **Insight** | Skill effectiveness, crafting quality, detection range, Appraisal/luck |
+| **Insight** | Skill effectiveness, crafting quality, detection range, Appraisal/luck (luck folded here) |
+| **Presence** | NPC disposition, persuasion/dialogue options, **reputation gain rate**, shop prices (haggling), creature **trust/loyalty & Free-Bond**, party morale/leadership in lane battles |
 
+> **7 attributes, held there.** Presence is the social/leadership stat (Envoy/Broker, guilds,
+> multi-species, economy, creature bonding). No separate Luck/Wisdom — luck → Insight, willpower →
+> Resolve. More than 7 just dilutes each point.
+>
 > Endurance and Resolve are the **survival/anti-System** stats — they tie attributes directly into the
 > survival layer and the Surveillance theme, not just combat.
 

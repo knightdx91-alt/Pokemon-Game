@@ -244,6 +244,8 @@ Camp anchors: <where a Camp Kit is viable / forward-base spots>
 Surveillance notes: <System offers / Audit risk here>
 Hidden: <secret area? concealment + key skill — see HIDDEN_LAYER.md>
 Relics: <old-system relics here + how gated (skill / hazard / Surveillance)>
+Traversal: <capabilities gating sub-areas / shortcuts / secrets — see TRAVERSAL.md>
+Weather: <profile: likely types + frequency; any scripted/permanent — see WEATHER.md>
 Story beat: <glitch | ruin | vanishing NPC | construct death line | OWPS step>
 Warp unlock: <landmark that becomes fast-travel after first survival>
 Connections: <adjacent zones / sea routes>
