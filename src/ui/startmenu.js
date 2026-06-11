@@ -251,46 +251,59 @@ window.GameStartMenu = (function () {
     }
 
     // --- Render main menu — FireRed vertical list, right-side panel ---
+    var ITEM_DESCS = {
+        'POKEDEX': 'Check information on\nPokémon you have seen.',
+        'POKEMON': 'Check the Pokémon\nyou are carrying.',
+        'BAG':     'Open your BAG\nand use items.',
+        'POKENAV': 'Use the POKÉNAV\ncommunication tool.',
+        'JOURNAL': 'View factions,\nachievements and quests.',
+        'PLAYER':  'Check your Trainer\nCard and status.',
+        'SAVE':    'Save your game with a complete record\nof your progress to take a break.',
+        'OPTIONS': 'Adjust various settings\nfor your game.',
+        'EXIT':    'Close the menu\nand return to the game.',
+    };
+
     function _renderMain() {
         menuEl.innerHTML = '';
 
-        // Left void — transparent, game world shows through
+        // Top row: void on left + panel on right
+        const topRow = document.createElement('div');
+        topRow.className = 'sm-top-row';
+
         const voidEl = document.createElement('div');
         voidEl.className = 'sm-void';
-        menuEl.appendChild(voidEl);
+        topRow.appendChild(voidEl);
 
-        // Right panel — FireRed window chrome
+        // Right panel
         const panel = document.createElement('div');
         panel.className = 'sm-right-panel';
 
-        // Item list
         ITEMS.forEach(function (itm, i) {
             const row = document.createElement('div');
             row.className = 'sm-list-item' + (i === selectedIdx ? ' selected' : '');
 
             const cursor = document.createElement('span');
             cursor.className = 'sm-list-cursor';
-            cursor.textContent = i === selectedIdx ? '▶' : ' ';
+            cursor.textContent = i === selectedIdx ? '▶' : '';
             row.appendChild(cursor);
 
             const lbl = document.createElement('span');
             lbl.textContent = (itm.id === 'PLAYER') ? _playerName().toUpperCase() : itm.label.toUpperCase();
             row.appendChild(lbl);
 
-            row.addEventListener('click', function () {
-                selectedIdx = i;
-                _confirmSelected();
-            });
+            row.addEventListener('click', function () { selectedIdx = i; _confirmSelected(); });
             panel.appendChild(row);
         });
 
-        // Footer — money display like FireRed
-        const footer = document.createElement('div');
-        footer.className = 'sm-panel-footer';
-        footer.innerHTML = '<span class="sm-footer-label">¥</span><span>' + _money().toLocaleString() + '</span>';
-        panel.appendChild(footer);
+        topRow.appendChild(panel);
+        menuEl.appendChild(topRow);
 
-        menuEl.appendChild(panel);
+        // Blue description bar at bottom
+        const desc = document.createElement('div');
+        desc.className = 'sm-desc-bar';
+        const selItem = ITEMS[selectedIdx];
+        desc.textContent = selItem ? (ITEM_DESCS[selItem.id] || '') : '';
+        menuEl.appendChild(desc);
     }
 
     // --- Render sub-page overlay ---
