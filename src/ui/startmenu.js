@@ -271,7 +271,7 @@ window.GameStartMenu = (function () {
         // Right panel
         const panel = document.createElement('div');
         panel.className = 'sm-right-panel';
-        panel.style.setProperty('background', '#ffffff', 'important');
+        panel.style.setProperty('background', 'linear-gradient(#f8f8f0, #f8f8f0)', 'important');
 
         ITEMS.forEach(function (itm, i) {
             const row = document.createElement('div');
