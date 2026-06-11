@@ -1195,7 +1195,7 @@ window.GameStartMenu = (function () {
         // ── Big bag sprite, center-left ──────────────────────────────────────
         var bagFrame = assets && assets.bagFrames && assets.bagFrames[Math.min(_bagPocket, 5)];
         if (bagFrame) {
-            ctx.drawImage(bagFrame, 36*S, 26*S, 64*S, 64*S);
+            ctx.drawImage(bagFrame, 36*S, 38*S, 64*S, 64*S);
         }
 
         var selItem = items[_subIdx];
