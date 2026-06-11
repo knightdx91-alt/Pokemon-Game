@@ -62,6 +62,8 @@ The System grants attribute points on level-up; you allocate them (class nudges 
   next cycle's boss). Surviving past it requires Off-Grid / Resolve / hidden-layer protection —
   which ties the cap into the finale rather than being a flat wall.
 - It is a **soft** cap (consistent with the soft-survival philosophy): not a hard stop, a rising danger.
+- **Class Designation Grades** (`CLASSES.md §3.5`) climb alongside level; the top grade (**Paragon**)
+  lands right at the soft cap — top-grade power is exactly where conversion risk peaks.
 
 ---
 

@@ -122,6 +122,46 @@ double as **story flags** that interact with the cycle truth.
 
 ---
 
+## 3.5 Class Advancement — Designation Grades (the vertical ladder)
+
+A **second axis** from rarity (§3 / `ECONOMY.md §5`). Rarity = how rare a class is to *obtain*;
+**Grade** = how far you've climbed *within* a class as you level. The System assigns and "upgrades"
+your **Designation Grade** — another act of it classifying you.
+
+> Original ladder (genre-conventional advancement tiers, our own naming). Inspired by the
+> Basic→Legendary advancement feel; named for the System theme.
+
+| Grade | Name | Unlocks at (≈) | What it grants |
+|---|---|---|---|
+| I | **Initiate** | start | Base kit, signature mechanic (weak form) |
+| II | **Adept** | early T1 | First advanced skill; minor attribute spike |
+| III | **Master** | T2 | **Specialization branch** (pick a subclass); signature upgraded |
+| IV | **Grandmaster** | T3 | Powerful capstone skill; second branch choice |
+| V | **Ascendant** | T4 | Near-cap power; class identity peaks |
+| VI | **Paragon** | ~soft cap (450) | Top grade — and where System attention is hottest |
+
+### How grade-ups work
+- **Gated by level + a Classification Trial** — you don't tier up passively; each grade needs a
+  challenge/quest (often **guild-run**, tying advancement to guild reputation). Earned milestones,
+  not silent thresholds.
+- **Each grade grants:** new skill(s), an attribute spike, a stronger signature mechanic, and at
+  **Master/Grandmaster** a **branch choice** (the subclass trees referenced in §1).
+
+### Rarity × Grade interaction
+- **Rarity sets the ceiling and power-per-grade.** A higher-rarity class is stronger at each Grade
+  and may **start above Initiate** or reach a hidden **7th grade**. A Standard class and a Legendary
+  class can both be "Master," but the Legendary Master is stronger and advances toward more.
+- **Anomalous (glitch) classes** have **off-book grades** — the System never sanctioned them, so
+  their advancement comes through the hidden layer, not Classification Trials.
+
+### Theme / endings hook
+- Reaching **Paragon** sits right at the **~450 soft cap** (`PROGRESSION.md §4`) — top-grade power is
+  exactly where **conversion risk** peaks. Climbing the ladder all the way is the System's bait: the
+  stronger you get, the closer you are to becoming its next construct. Off-Grid protection
+  (`HIDDEN_LAYER.md`) is how you survive Paragon — pulling advancement into the finale.
+
+---
+
 ## 4. Interlock Summary
 - **Battle (`DESIGN.md`):** classes set creature-reliance and add personal/gadget/System combat
   styles on top of Tempo + Intervention.

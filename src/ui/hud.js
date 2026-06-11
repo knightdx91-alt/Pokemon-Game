@@ -1,5 +1,5 @@
 // GameHUD — renders HUD info and settings button onto #ui-overlay
-const GAME_VERSION = 'v0.9.66';
+const GAME_VERSION = 'v0.9.67';
 
 window.GameHUD = (function () {
     let overlay = null;
