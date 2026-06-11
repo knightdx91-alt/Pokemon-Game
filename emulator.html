@@ -160,6 +160,35 @@
             padding: 0.4rem 0.85rem; transition: border-color 0.15s; white-space: nowrap; flex-shrink: 0;
         }
         .btn-back:hover { border-color: var(--accent); }
+        #btn-screenshot {
+            background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+            color: var(--text); cursor: pointer; font-family: inherit; font-size: 0.82rem;
+            padding: 0.4rem 0.85rem; transition: border-color 0.15s; white-space: nowrap; flex-shrink: 0;
+        }
+        #btn-screenshot:hover { border-color: var(--accent2); }
+        #screenshot-modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 2000;
+            align-items: center; justify-content: center;
+        }
+        #screenshot-modal.visible { display: flex; }
+        #screenshot-modal-inner {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+            padding: 1.25rem; max-width: 520px; width: 90%; display: flex; flex-direction: column; gap: 0.75rem;
+        }
+        #screenshot-modal-inner img { width: 100%; border-radius: 6px; image-rendering: pixelated; }
+        #screenshot-link-box { display: flex; gap: 0.5rem; }
+        #screenshot-link-input {
+            flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+            color: var(--text); font-family: inherit; font-size: 0.78rem; padding: 0.4rem 0.6rem;
+        }
+        #screenshot-copy-btn, #screenshot-close-btn {
+            background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+            color: var(--text); cursor: pointer; font-family: inherit; font-size: 0.78rem;
+            padding: 0.4rem 0.7rem; white-space: nowrap;
+        }
+        #screenshot-copy-btn:hover { border-color: var(--accent2); }
+        #screenshot-close-btn:hover { border-color: var(--danger); }
+        #screenshot-status { font-size: 0.75rem; color: var(--muted); min-height: 1em; }
         #game {
             width: 100%; flex: 1; background: #000; min-height: 0;
             -webkit-touch-callout: none; -webkit-user-select: none;
@@ -237,11 +266,24 @@
             <div class="emu-game-name" id="emu-game-label">&mdash;</div>
             <div class="emu-sys-name"  id="emu-sys-label">&mdash;</div>
         </div>
+        <button id="btn-screenshot">📷 Screenshot</button>
         <button class="btn-back" id="btn-back-emu">&larr; Back</button>
     </div>
     <div id="game"></div>
     <div id="emu-progress-wrap"><div id="emu-progress-fill"></div></div>
     <div id="emu-status">Loading emulator&hellip;</div>
+</div>
+
+<div id="screenshot-modal">
+    <div id="screenshot-modal-inner">
+        <img id="screenshot-preview" src="" alt="screenshot">
+        <div id="screenshot-status">Uploading…</div>
+        <div id="screenshot-link-box">
+            <input id="screenshot-link-input" type="text" readonly placeholder="Link will appear here…">
+            <button id="screenshot-copy-btn">Copy</button>
+            <button id="screenshot-close-btn">Close</button>
+        </div>
+    </div>
 </div>
 
 <div class="loading-overlay" id="loadingOverlay">
@@ -829,6 +871,75 @@
         });
     });
     document.getElementById('btn-back-emu').addEventListener('click', function () { location.reload(); });
+
+    // --- Screenshot ---
+    (function () {
+        var modal     = document.getElementById('screenshot-modal');
+        var preview   = document.getElementById('screenshot-preview');
+        var statusEl  = document.getElementById('screenshot-status');
+        var linkInput = document.getElementById('screenshot-link-input');
+        var copyBtn   = document.getElementById('screenshot-copy-btn');
+        var closeBtn  = document.getElementById('screenshot-close-btn');
+
+        function getGameCanvas() {
+            var gameDiv = document.getElementById('game');
+            if (!gameDiv) return null;
+            var canvases = gameDiv.querySelectorAll('canvas');
+            var best = null, bestArea = 0;
+            canvases.forEach(function (c) {
+                var area = c.offsetWidth * c.offsetHeight;
+                if (area > bestArea) { bestArea = area; best = c; }
+            });
+            return best;
+        }
+
+        document.getElementById('btn-screenshot').addEventListener('click', function () {
+            var canvas = getGameCanvas();
+            if (!canvas) { alert('No game running — start a game first.'); return; }
+            var dataUrl;
+            try { dataUrl = canvas.toDataURL('image/png'); }
+            catch (e) { alert('Cannot capture frame (cross-origin canvas).'); return; }
+
+            preview.src = dataUrl;
+            linkInput.value = '';
+            statusEl.textContent = 'Uploading to imgur…';
+            modal.classList.add('visible');
+
+            // Upload to imgur (anonymous, no API key required for base64)
+            var base64 = dataUrl.replace(/^data:image\/png;base64,/, '');
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'https://api.imgur.com/3/image');
+            xhr.setRequestHeader('Authorization', 'Client-ID 546c25a59c58ad7');
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onload = function () {
+                try {
+                    var res = JSON.parse(xhr.responseText);
+                    if (res.success) {
+                        var link = res.data.link;
+                        linkInput.value = link;
+                        statusEl.textContent = 'Done! Copy the link and paste it in chat.';
+                    } else {
+                        statusEl.textContent = 'Upload failed: ' + (res.data && res.data.error || 'unknown error');
+                    }
+                } catch (e) { statusEl.textContent = 'Upload failed (parse error).'; }
+            };
+            xhr.onerror = function () { statusEl.textContent = 'Network error — upload failed.'; };
+            xhr.send(JSON.stringify({ image: base64, type: 'base64' }));
+        });
+
+        copyBtn.addEventListener('click', function () {
+            if (!linkInput.value) return;
+            navigator.clipboard.writeText(linkInput.value).then(function () {
+                copyBtn.textContent = 'Copied!';
+                setTimeout(function () { copyBtn.textContent = 'Copy'; }, 1500);
+            }).catch(function () {
+                linkInput.select(); document.execCommand('copy');
+            });
+        });
+
+        closeBtn.addEventListener('click', function () { modal.classList.remove('visible'); });
+        modal.addEventListener('click', function (e) { if (e.target === modal) modal.classList.remove('visible'); });
+    })();
 
     openDB().then(function (db) {
         return Promise.all([idbAllKeys(db), idbAllMeta(db), idbAllMetaKeys(db)]).then(function (results) {
