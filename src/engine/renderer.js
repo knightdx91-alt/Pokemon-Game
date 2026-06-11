@@ -187,13 +187,20 @@ window.GameRenderer = (function () {
                 const stem = _gfxToStem(npc.graphics_id);
                 const img  = stem ? _getNpcImg(stem) : null;
                 if (img) {
-                    ctx.drawImage(img, 0, 0, 16, 32, sx, sy - TILE_PX, TILE_PX, TILE_PX * 2);
-                } else {
-                    const pad = 2;
-                    ctx.fillStyle = COLORS.npc;
+                    // 16x16 objects (items, props) draw at tile; 16x32 characters draw one tile up
+                    const isTall = img.naturalHeight >= 32;
+                    if (isTall) {
+                        ctx.drawImage(img, 0, 0, 16, 32, sx, sy - TILE_PX, TILE_PX, TILE_PX * 2);
+                    } else {
+                        ctx.drawImage(img, 0, 0, 16, 16, sx, sy, TILE_PX, TILE_PX);
+                    }
+                } else if (_npcIndex && stem && _npcIndex[stem] !== undefined) {
+                    // Sprite in index but not yet loaded — skip silently this frame
+                } else if (_npcIndex && stem) {
+                    // Unknown sprite — draw a generic person silhouette placeholder
+                    const pad = 3;
+                    ctx.fillStyle = '#888888';
                     ctx.fillRect(sx + pad, sy + pad, TILE_PX - pad * 2, TILE_PX - pad * 2);
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(sx + Math.floor(TILE_PX / 2) - 1, sy + pad + 1, 3, 3);
                 }
             }
         }
