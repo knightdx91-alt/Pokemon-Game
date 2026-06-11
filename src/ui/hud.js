@@ -1,5 +1,5 @@
 // GameHUD — renders HUD info and settings button onto #ui-overlay
-const GAME_VERSION = 'v0.9.28';
+const GAME_VERSION = 'v0.9.29';
 
 window.GameHUD = (function () {
     let overlay = null;
@@ -147,63 +147,73 @@ window.GameHUD = (function () {
 
     // --- Screenshot ---
     function _takeScreenshot() {
+        const screen = document.getElementById('screen-primary');
         const canvas = document.querySelector('#screen-primary canvas');
-        if (!canvas) { alert('No game canvas found.'); return; }
+        if (!screen && !canvas) { alert('No game screen found.'); return; }
         const token = (document.getElementById('screenshot-token') || {}).value || '';
         const REPO = 'knightdx91-alt/pokemon-game';
         const BRANCH = 'screenshots';
         const PAT = token ||
             'IuWWfaKTQMSVRG5HSKuHBZPvlHq1Vpxp3AlUjYkeeF9Qe9dmQyX6f8RcTyg_w567PxfxUQLJ0QCJO3EC11_tap_buhtig'
                 .split('').reverse().join('');
-        const ts = Date.now();
-        const path = 'screenshots/' + ts + '.png';
-        const dataUrl = canvas.toDataURL('image/png');
-        const b64 = dataUrl.replace(/^data:image\/png;base64,/, '');
-        fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
-            method: 'PUT',
-            headers: {
-                Authorization: 'token ' + PAT,
-                'Content-Type': 'application/json',
-                Accept: 'application/vnd.github+json'
-            },
-            body: JSON.stringify({
-                message: 'screenshot ' + ts,
-                content: b64,
-                branch: BRANCH
+
+        function _upload(b64) {
+            const ts = Date.now();
+            const path = 'screenshots/' + ts + '.png';
+            fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
+                method: 'PUT',
+                headers: {
+                    Authorization: 'token ' + PAT,
+                    'Content-Type': 'application/json',
+                    Accept: 'application/vnd.github+json'
+                },
+                body: JSON.stringify({ message: 'screenshot ' + ts, content: b64, branch: BRANCH })
             })
-        })
-        .then(r => r.ok ? r.json() : r.json().then(d => { throw new Error(d.message || 'HTTP ' + r.status); }))
-        .then(() => {
-            const url = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + path;
-            const box = document.createElement('div');
-            box.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9999;display:flex;align-items:center;justify-content:center;';
-            const inner = document.createElement('div');
-            inner.style.cssText = 'background:#0a0a18;border:1px solid #18b8c8;border-radius:10px;padding:22px 18px;max-width:320px;width:90%;color:#c8d8e8;font-family:monospace;font-size:11px;display:flex;flex-direction:column;gap:12px;';
-            inner.innerHTML =
-                '<div style="color:#18b8c8;font-weight:700;font-size:13px;">📷 Screenshot saved!</div>' +
-                '<input id="_ss_url" readonly value="' + url + '" style="background:#060614;color:#e8e8f0;border:1px solid #18b8c8;border-radius:4px;padding:7px 8px;font-size:9px;font-family:monospace;width:100%;box-sizing:border-box;" />' +
-                '<div style="display:flex;gap:8px;">' +
-                '<button id="_ss_copy" style="flex:1;background:#18b8c8;color:#000;border:none;border-radius:5px;padding:8px;cursor:pointer;font-weight:700;">📋 Copy Link</button>' +
-                '<button id="_ss_close" style="flex:1;background:#2a2a3a;color:#c8d8e8;border:1px solid #18b8c8;border-radius:5px;padding:8px;cursor:pointer;font-weight:700;">Close</button>' +
-                '</div>';
-            box.appendChild(inner);
-            document.body.appendChild(box);
-            const inp = inner.querySelector('#_ss_url');
-            if (inp) { inp.focus(); inp.select(); }
-            inner.querySelector('#_ss_copy').addEventListener('click', function() {
-                navigator.clipboard.writeText(url).then(() => {
-                    this.textContent = '✓ Copied!';
-                    setTimeout(() => { this.textContent = '📋 Copy Link'; }, 2000);
-                }).catch(() => {
-                    inp.select();
-                    document.execCommand('copy');
-                    this.textContent = '✓ Copied!';
-                    setTimeout(() => { this.textContent = '📋 Copy Link'; }, 2000);
+            .then(r => r.ok ? r.json() : r.json().then(d => { throw new Error(d.message || 'HTTP ' + r.status); }))
+            .then(() => {
+                const url = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + path;
+                const box = document.createElement('div');
+                box.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9999;display:flex;align-items:center;justify-content:center;';
+                const inner = document.createElement('div');
+                inner.style.cssText = 'background:#0a0a18;border:1px solid #18b8c8;border-radius:10px;padding:22px 18px;max-width:320px;width:90%;color:#c8d8e8;font-family:monospace;font-size:11px;display:flex;flex-direction:column;gap:12px;';
+                inner.innerHTML =
+                    '<div style="color:#18b8c8;font-weight:700;font-size:13px;">📷 Screenshot saved!</div>' +
+                    '<input id="_ss_url" readonly value="' + url + '" style="background:#060614;color:#e8e8f0;border:1px solid #18b8c8;border-radius:4px;padding:7px 8px;font-size:9px;font-family:monospace;width:100%;box-sizing:border-box;" />' +
+                    '<div style="display:flex;gap:8px;">' +
+                    '<button id="_ss_copy" style="flex:1;background:#18b8c8;color:#000;border:none;border-radius:5px;padding:8px;cursor:pointer;font-weight:700;">📋 Copy Link</button>' +
+                    '<button id="_ss_close" style="flex:1;background:#2a2a3a;color:#c8d8e8;border:1px solid #18b8c8;border-radius:5px;padding:8px;cursor:pointer;font-weight:700;">Close</button>' +
+                    '</div>';
+                box.appendChild(inner);
+                document.body.appendChild(box);
+                const inp = inner.querySelector('#_ss_url');
+                if (inp) { inp.focus(); inp.select(); }
+                inner.querySelector('#_ss_copy').addEventListener('click', function() {
+                    navigator.clipboard.writeText(url).then(() => {
+                        this.textContent = '✓ Copied!';
+                        setTimeout(() => { this.textContent = '📋 Copy Link'; }, 2000);
+                    }).catch(() => {
+                        inp.select(); document.execCommand('copy');
+                        this.textContent = '✓ Copied!';
+                        setTimeout(() => { this.textContent = '📋 Copy Link'; }, 2000);
+                    });
                 });
+                inner.querySelector('#_ss_close').addEventListener('click', () => box.remove());
+            })
+            .catch(e => alert('Screenshot failed: ' + e.message));
+        }
+
+        if (window.html2canvas && screen) {
+            html2canvas(screen, { useCORS: true, allowTaint: true, scale: 1 }).then(c => {
+                _upload(c.toDataURL('image/png').replace(/^data:image\/png;base64,/, ''));
+            }).catch(() => {
+                // fallback to raw canvas
+                const b64 = canvas.toDataURL('image/png').replace(/^data:image\/png;base64,/, '');
+                _upload(b64);
             });
-            inner.querySelector('#_ss_close').addEventListener('click', () => box.remove());
-        })
-        .catch(e => alert('Screenshot failed: ' + e.message));
+        } else {
+            const b64 = canvas.toDataURL('image/png').replace(/^data:image\/png;base64,/, '');
+            _upload(b64);
+        }
     }
 
     function init(map, player) {
