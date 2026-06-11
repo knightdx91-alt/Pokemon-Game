@@ -1050,22 +1050,64 @@
                 .catch(function () { cb(null); });
         }
 
+        function statePath() {
+            return 'saves/' + (window.CLOUD_SAVE_GAME || 'unknown') + '/state.bin';
+        }
+
+        // Find the save state file EJS just wrote by scanning common paths
+        function findStateFile(g) {
+            var name = window.EJS_gameName || '';
+            var candidates = [
+                '/home/web_user/retroarch/userdata/states/' + name + '.state',
+                '/home/web_user/retroarch/userdata/states/' + name + '.state1',
+                '/data/states/' + name,
+                '/data/states/1',
+                '/data/states/quickSave',
+            ];
+            // Also enumerate /data/states/ and /home/web_user/retroarch/userdata/states/
+            ['/data/states', '/home/web_user/retroarch/userdata/states'].forEach(function (dir) {
+                try {
+                    g.FS.readdir(dir).forEach(function (f) {
+                        if (f !== '.' && f !== '..') candidates.push(dir + '/' + f);
+                    });
+                } catch (_) {}
+            });
+            for (var i = 0; i < candidates.length; i++) {
+                try {
+                    var d = g.FS.readFile(candidates[i]);
+                    if (d && d.length > 64) return { path: candidates[i], data: d };
+                } catch (_) {}
+            }
+            return null;
+        }
+
         saveBtn.addEventListener('click', function () {
             var g = gm();
             if (!g) { alert('Start a game first.'); return; }
+            saveBtn.textContent = '💾 Saving…'; saveBtn.disabled = true;
+
+            // Trigger EJS quickSave so the core writes the state file
             try {
-                g.saveSaveFiles();
-                var path = g.getSaveFilePath();
-                if (!path) { alert('No save file path — try saving in-game first.'); return; }
-                var data = g.FS.readFile(path);
-                if (!data || !data.length) { alert('No save data yet — save in-game first.'); return; }
-                var b64 = btoa(Array.prototype.reduce.call(data, function (s, b) { return s + String.fromCharCode(b); }, ''));
-                saveBtn.textContent = '💾 Saving…'; saveBtn.disabled = true;
+                if (window.EJS_emulator && window.EJS_emulator.quickSave) window.EJS_emulator.quickSave();
+                else if (window.EJS_emulator && window.EJS_emulator.saveState) window.EJS_emulator.saveState(1);
+            } catch (_) {}
+
+            // Wait for the core to finish writing, then find and upload
+            setTimeout(function () {
+                var found = findStateFile(g);
+                if (!found) {
+                    setBtn(saveBtn, '✗ No state', '#e05454');
+                    setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 3000);
+                    alert('No save state found. Use the QuickSave button in the toolbar first, then press 💾 Save.');
+                    return;
+                }
+                localStorage.setItem('ejs_state_path_' + (window.CLOUD_SAVE_GAME || 'game'), found.path);
+                var b64 = btoa(Array.prototype.reduce.call(found.data, function (s, b) { return s + String.fromCharCode(b); }, ''));
                 ensureSaveBranch(function () {
-                    getFileSha(savePath(), function (sha) {
-                        var body = { message: 'save ' + (window.CLOUD_SAVE_GAME || 'game') + ' ' + new Date().toISOString(), content: b64, branch: SAVE_BRANCH };
+                    getFileSha(statePath(), function (sha) {
+                        var body = { message: 'state ' + (window.CLOUD_SAVE_GAME || 'game') + ' ' + new Date().toISOString(), content: b64, branch: SAVE_BRANCH };
                         if (sha) body.sha = sha;
-                        fetch('https://api.github.com/repos/' + REPO + '/contents/' + savePath(), {
+                        fetch('https://api.github.com/repos/' + REPO + '/contents/' + statePath(), {
                             method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body)
                         }).then(function (r) {
                             if (!r.ok) return r.json().then(function (e) { throw new Error(e.message); });
@@ -1078,44 +1120,58 @@
                         });
                     });
                 });
-            } catch (e) { alert('Save error: ' + e.message); }
+            }, 800);
         });
 
         loadBtn.addEventListener('click', function () {
             var g = gm();
             if (!g) { alert('Start a game first.'); return; }
             loadBtn.textContent = '📂 Loading…'; loadBtn.disabled = true;
-            fetch('https://api.github.com/repos/' + REPO + '/contents/' + savePath() + '?ref=' + SAVE_BRANCH, { headers: ghHeaders() })
-                .then(function (r) {
-                    if (!r.ok) throw new Error('No save found on GitHub for this game.');
-                    return r.json();
-                }).then(function (d) {
-                    var binary = atob(d.content.replace(/\n/g, ''));
-                    var bytes = new Uint8Array(binary.length);
-                    for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-                    var path = g.getSaveFilePath();
-                    if (!path) throw new Error('Emulator save path unavailable — is a game running?');
-                    var dir = path.split('/').slice(0, -1).join('/');
-                    try { if (dir && !g.FS.analyzePath(dir).exists) g.FS.mkdir(dir); } catch (_) {}
-                    g.FS.writeFile(path, bytes);
-                    // Sync FS → IndexedDB so the file survives restart, then reboot
-                    function doRestart() {
-                        try { g.restart(); } catch (_) {}
-                        setBtn(loadBtn, '✓ Loaded!', '#4caf88');
-                        setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 2500);
-                    }
+            fetch('https://api.github.com/repos/' + REPO + '/contents/' + statePath() + '?ref=' + SAVE_BRANCH + '&t=' + Date.now(), {
+                headers: ghHeaders(), cache: 'no-store'
+            }).then(function (r) {
+                if (!r.ok) throw new Error('No save state found on GitHub for this game.');
+                return r.json();
+            }).then(function (d) {
+                var binary = atob(d.content.replace(/\n/g, ''));
+                var bytes = new Uint8Array(binary.length);
+                for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+
+                // Write to the path we saved to, plus all candidate paths
+                var storedPath = localStorage.getItem('ejs_state_path_' + (window.CLOUD_SAVE_GAME || 'game'));
+                var name = window.EJS_gameName || '';
+                var writePaths = [
+                    storedPath,
+                    '/home/web_user/retroarch/userdata/states/' + name + '.state',
+                    '/home/web_user/retroarch/userdata/states/' + name + '.state1',
+                    '/data/states/' + name,
+                    '/data/states/1',
+                    '/data/states/quickSave',
+                ].filter(Boolean);
+
+                writePaths.forEach(function (p) {
                     try {
-                        g.FS.syncfs(false, function () { doRestart(); });
-                    } catch (_) {
-                        // syncfs unavailable — try saveSaveFiles then restart
-                        try { g.saveSaveFiles(); } catch (_2) {}
-                        setTimeout(doRestart, 200);
-                    }
-                }).catch(function (e) {
-                    setBtn(loadBtn, '✗ Error', '#e05454');
-                    setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 3000);
-                    alert('Load error: ' + e.message);
+                        var dir = p.split('/').slice(0, -1).join('/');
+                        try { g.FS.mkdir(dir); } catch (_) {}
+                        g.FS.writeFile(p, bytes);
+                    } catch (_) {}
                 });
+
+                // Sync to IDB then trigger quickLoad
+                function doLoad() {
+                    try {
+                        if (window.EJS_emulator && window.EJS_emulator.quickLoad) window.EJS_emulator.quickLoad();
+                        else if (window.EJS_emulator && window.EJS_emulator.loadState) window.EJS_emulator.loadState(1);
+                    } catch (_) {}
+                    setBtn(loadBtn, '✓ Loaded!', '#4caf88');
+                    setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 2500);
+                }
+                try { g.FS.syncfs(false, function () { doLoad(); }); } catch (_) { doLoad(); }
+            }).catch(function (e) {
+                setBtn(loadBtn, '✗ Error', '#e05454');
+                setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 3000);
+                alert('Load error: ' + e.message);
+            });
         });
     })();
 
