@@ -68,31 +68,49 @@ ever advances it by `elapsed_time × speed`.
 > The guarantee is **not** "the NPC stays put" — it's "the NPC only ever moved as far as it could
 > have walked in the time that actually elapsed." Always physically plausible.
 
-### World clock
-- A **world clock** with a time-scale (e.g. 1 real minute = N in-game minutes), driving — and driven
-  by — the existing day/night cycle (`state.worldClock`).
-- NPC `speed` is defined in **in-game time**, so "15 real minutes" maps cleanly to an in-game journey.
+### World clock — REAL TIME (locked)
+- **1 real second = 1 in-game second.** The world runs on a real-time clock; a real day = an
+  in-game day. NPC `speed` is defined in real-world units.
+- **Day/night becomes literal** — play at 9pm and it's night in-game (Animal-Crossing-style). This
+  is a conscious consequence of real time.
+  - *Optional mitigation (not decided):* keep the travel/roaming clock on real time but **decouple
+    the visual day/night** to a faster cosmetic cycle if "always night after work" ever feels bad.
+    Real-time roaming does NOT force real-time lighting; they can share the clock or not.
 
 ---
 
-## 3. Offline Advancement — Catch-up with a Cap
+## 3. Offline Advancement — UNCAPPED, Real-Time (locked)
 
-**Recommended: catch-up, not freeze.** On load, advance the world brain by the real time elapsed —
-*bounded by travel speed* so it's always plausible — so the world genuinely changed while you were
-away, but no one ever teleports.
+**The world lives on its own real-time clock with no cap.** Log off and the ambient world keeps
+advancing in real time; come back after a year and the merchants have lived a year. Movement is
+still **speed-bounded** (§2), so nobody ever teleports — they just plausibly traveled a long way
+over a long real absence.
 
-- **Cap offline simulation** at a ceiling (e.g. 24–48 in-game hours). Returning after a month
-  fast-forwards only up to the cap — bounded plausibility *and* bounded surprise (the world is still
-  recognizable).
-- **Freeze** is the simpler fallback (world only ticks while playing); choose per how alive you want
-  the world to feel between sessions. Catch-up is the richer default.
+### Performance — advance analytically, never tick-by-tick
+With no cap you must NOT loop through elapsed time on load (a month of ticks would hang). Instead,
+each NPC's position is a **closed-form function of elapsed time**:
+- Schedules loop (home→work→sleep is periodic) → position = `f(elapsed mod cycle)`.
+- Travel paths are bounded → position = start + `min(elapsed × speed, pathLength)`.
+- "Where is NPC #47 after 30 days?" is an instant calculation regardless of how long you were gone.
+
+### CRITICAL SPLIT — Ambient (time-driven) vs. Narrative (event-driven)
+This is what makes uncapped + real-time safe:
+- **Ambient state** — roaming, schedules, day/night, weather → **time-driven, uncapped.** Runs forever.
+- **Narrative state** — vanishing-NPC plot beats, Calamity clears, quest/OWPS progress, the
+  buried-truth chain → **event-driven; only advances when the player plays.**
+
+> Without this split, an uncapped time-driven story could "spend itself" while you're away (whole
+> cast vanished, plot consumed without you). Gating *narrative* to player actions while *ambient*
+> life runs on the clock = a world that waited for you story-wise but moved on physically. This is
+> the same world-state/player-state boundary already locked, with one more line drawn inside world state.
 
 ### The mechanism — one timestamp, no drift
 ```
-on save:  store lastSimTime = worldClock
-on load:  delta = min(now - lastSimTime, OFFLINE_CAP)
-          advance every NPC by delta (speed-bounded along their paths)
-          lastSimTime = worldClock
+on save:  store lastSimTime = realNow
+on load:  delta = realNow - lastSimTime          // no cap
+          for each NPC: position = closedForm(npc, delta)   // analytic, not looped
+          lastSimTime = realNow
+          // narrative flags are NOT touched here — they only change through play
 ```
 Single source of truth = `lastSimTime`. No drift, no teleports, deterministic.
 
@@ -132,8 +150,14 @@ snaps an NPC to a zone center or its destination.
 
 ---
 
-## 6. Open Calls
-1. **Offline mode:** catch-up-with-cap (recommended) vs. freeze.
-2. **Offline cap value:** 24h? 48h? (How much can change while away.)
-3. **Time scale:** how many in-game minutes per real minute (ties to NPC speeds + day/night).
-4. **Traveler roster size:** how many named cross-region roamers to author (affects "alive" feel vs. work).
+## 6. Decisions & Open Calls
+**Locked:**
+- Offline mode: **uncapped catch-up** (the world lives on its own clock forever).
+- Time: **real time** (1 real second = 1 in-game second).
+- Safety: **ambient = time-driven/uncapped; narrative = event-driven/player-gated** (the §3 split).
+- Performance: positions advanced **analytically** (closed-form), never tick-by-tick.
+
+**Still open:**
+1. **Visual day/night:** literal real-time lighting, or decouple to a faster cosmetic cycle?
+2. **Traveler roster size:** how many named cross-region roamers to author (alive feel vs. work).
+3. **Narrative pin list:** which story-critical NPCs are exempt from ambient roaming (escort/quest).
