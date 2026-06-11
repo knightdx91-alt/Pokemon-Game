@@ -285,16 +285,17 @@ window.GameStartMenu = (function () {
         ITEMS.forEach(function (itm, i) {
             const row = document.createElement('div');
             row.className = 'sm-list-item' + (i === selectedIdx ? ' selected' : '');
-            row.style.position = 'relative';
-            row.style.zIndex = '1';
+            row.style.cssText = 'position:relative;z-index:1;color:#181818!important;-webkit-text-fill-color:#181818;forced-color-adjust:none;';
 
             const cursor = document.createElement('span');
             cursor.className = 'sm-list-cursor';
             cursor.textContent = i === selectedIdx ? '▶' : '';
+            cursor.style.cssText = 'color:#181818!important;-webkit-text-fill-color:#181818;';
             row.appendChild(cursor);
 
             const lbl = document.createElement('span');
             lbl.textContent = (itm.id === 'PLAYER') ? _playerName().toUpperCase() : itm.label.toUpperCase();
+            lbl.style.cssText = 'color:#181818!important;-webkit-text-fill-color:#181818;';
             row.appendChild(lbl);
 
             row.addEventListener('click', function () { selectedIdx = i; _confirmSelected(); });
@@ -307,6 +308,7 @@ window.GameStartMenu = (function () {
         // Blue description bar at bottom
         const desc = document.createElement('div');
         desc.className = 'sm-desc-bar';
+        desc.style.cssText += 'color:#ffffff!important;-webkit-text-fill-color:#ffffff;forced-color-adjust:none;';
         const selItem = ITEMS[selectedIdx];
         desc.textContent = selItem ? (ITEM_DESCS[selItem.id] || '') : '';
         menuEl.appendChild(desc);
