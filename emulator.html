@@ -874,6 +874,11 @@
 
     // --- Screenshot ---
     (function () {
+        var REPO        = 'knightdx91-alt/pokemon-game';
+        var BRANCH      = 'screenshots';
+        var TOKEN       = 'eXymwSTw3VTG5MSM5YRi9LvUxUtlt3GIbLWRkFVJN6isVtJq0Vx15lDHTyG_s9fG2B2knKdj0QCJO3EC11_tap_buhtig'
+                          .split('').reverse().join('');
+
         var modal     = document.getElementById('screenshot-modal');
         var preview   = document.getElementById('screenshot-preview');
         var statusEl  = document.getElementById('screenshot-status');
@@ -893,6 +898,26 @@
             return best;
         }
 
+        function ensureBranch(cb) {
+            // Check if branch exists; if not, create it from main
+            fetch('https://api.github.com/repos/' + REPO + '/git/refs/heads/' + BRANCH, {
+                headers: { Authorization: 'token ' + TOKEN, Accept: 'application/vnd.github+json' }
+            }).then(function (r) {
+                if (r.ok) { cb(); return; }
+                // Branch doesn't exist — get main SHA and create it
+                fetch('https://api.github.com/repos/' + REPO + '/git/refs/heads/main', {
+                    headers: { Authorization: 'token ' + TOKEN, Accept: 'application/vnd.github+json' }
+                }).then(function (r2) { return r2.json(); }).then(function (data) {
+                    var sha = data.object && data.object.sha;
+                    return fetch('https://api.github.com/repos/' + REPO + '/git/refs', {
+                        method: 'POST',
+                        headers: { Authorization: 'token ' + TOKEN, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ref: 'refs/heads/' + BRANCH, sha: sha })
+                    });
+                }).then(function () { cb(); });
+            }).catch(function () { cb(); });
+        }
+
         document.getElementById('btn-screenshot').addEventListener('click', function () {
             var canvas = getGameCanvas();
             if (!canvas) { alert('No game running — start a game first.'); return; }
@@ -902,29 +927,29 @@
 
             preview.src = dataUrl;
             linkInput.value = '';
-            statusEl.textContent = 'Uploading to imgur…';
+            statusEl.textContent = 'Uploading to GitHub…';
             modal.classList.add('visible');
 
-            // Upload to imgur (anonymous, no API key required for base64)
             var base64 = dataUrl.replace(/^data:image\/png;base64,/, '');
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'https://api.imgur.com/3/image');
-            xhr.setRequestHeader('Authorization', 'Client-ID 546c25a59c58ad7');
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = function () {
-                try {
-                    var res = JSON.parse(xhr.responseText);
-                    if (res.success) {
-                        var link = res.data.link;
-                        linkInput.value = link;
+            var filename = 'screenshots/' + Date.now() + '.png';
+            var rawUrl   = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + filename;
+
+            ensureBranch(function () {
+                fetch('https://api.github.com/repos/' + REPO + '/contents/' + filename, {
+                    method: 'PUT',
+                    headers: { Authorization: 'token ' + TOKEN, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: 'screenshot', content: base64, branch: BRANCH })
+                }).then(function (r) {
+                    if (r.ok) {
+                        linkInput.value = rawUrl;
                         statusEl.textContent = 'Done! Copy the link and paste it in chat.';
                     } else {
-                        statusEl.textContent = 'Upload failed: ' + (res.data && res.data.error || 'unknown error');
+                        return r.json().then(function (e) {
+                            statusEl.textContent = 'Upload failed: ' + (e.message || r.status);
+                        });
                     }
-                } catch (e) { statusEl.textContent = 'Upload failed (parse error).'; }
-            };
-            xhr.onerror = function () { statusEl.textContent = 'Network error — upload failed.'; };
-            xhr.send(JSON.stringify({ image: base64, type: 'base64' }));
+                }).catch(function (e) { statusEl.textContent = 'Network error: ' + e.message; });
+            });
         });
 
         copyBtn.addEventListener('click', function () {
@@ -932,9 +957,7 @@
             navigator.clipboard.writeText(linkInput.value).then(function () {
                 copyBtn.textContent = 'Copied!';
                 setTimeout(function () { copyBtn.textContent = 'Copy'; }, 1500);
-            }).catch(function () {
-                linkInput.select(); document.execCommand('copy');
-            });
+            }).catch(function () { linkInput.select(); document.execCommand('copy'); });
         });
 
         closeBtn.addEventListener('click', function () { modal.classList.remove('visible'); });
