@@ -22,15 +22,21 @@ A region also needs an index `data/maps/<region>_index.json` mapping
 ## The map editor
 
 Open **`map-editor.html`** (served over http, e.g. via GitHub Pages or a local
-server — not `file://`). You can:
+server — not `file://`). It's also launchable from the **RetroPlay hub**
+(`index.html`) via the "Map Editor" tile under **Create**. You can:
 
 - Pick any existing tileset and see its full metatile palette.
 - Paint with Pencil / Fill (bucket) / Rect / Pick (eyedropper).
 - Toggle **Collision** mode to mark blocked tiles (red).
 - Toggle **Warp** mode and click tiles to add warps, then set destinations.
 - **Export** → downloads `<LAYOUT_ID>.json` and `<Name>.json`.
+- **☁ Save to repo** → commits the map to the **`maps`** branch on GitHub
+  (Contents API). Files go to the mirrored `data/` paths
+  (`data/layouts/<region>/…`, `data/maps/<region>/…`, plus the region index),
+  so they can be copied/merged into `main` directly. The `maps` branch is a
+  dedicated storage branch for created maps — no game code.
 
-To install an exported map into the game:
+To install an exported (or repo-saved) map into the game:
 
 1. Put `<LAYOUT_ID>.json` in `data/layouts/<region>/`.
 2. Put `<Name>.json` in `data/maps/<region>/`.
@@ -45,7 +51,7 @@ To install an exported map into the game:
 The game honors a startup override:
 
 ```
-index.html?map=VerdantHollow&region=custom
+game.html?map=VerdantHollow&region=custom
 ```
 
 This loads any map directly instead of Pallet Town — handy for testing a map you
@@ -57,7 +63,7 @@ just built.
 it composes a layout from named primitives (`rect`, border, scatter) using a
 small palette of verified metatile IDs, writes the layout + map + index, and
 renders a PNG preview. `VerdantHollow` (the `custom` region) was built this way —
-visit `index.html?map=VerdantHollow&region=custom` to walk it.
+visit `game.html?map=VerdantHollow&region=custom` to walk it.
 
 ## Helper tools
 
