@@ -25,6 +25,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Root cause:** `_render()` called `_renderMain()` unconditionally even when `page !== 'main'`, with a comment "keep top/bottom visible behind overlay".  
 **Fix:** When `page !== 'main'`, set `menuEl.style.visibility = 'hidden'` and skip `_renderMain()`. Reset to `'visible'` in `close()` and when returning to `page === 'main'`.
 
+### 5. Battle background wrong + pokéball throw/catch animation not playing (`src/engine/battle.js`, `src/assets/battle_assets.js`)
+**Symptom:** The battle terrain background is incorrect (showing wrong terrain or none). When throwing a pokéball to catch a wild Pokémon, no animation plays — the result message appears instantly with no visual throw/shake/break sequence.  
+**Root cause (background):** `_getTerrainKey()` returns a key like `'grass'`, which maps to `window._BattleAssets.terrain_grass`. The `_BattleAssets` object is built in `src/assets/battle_assets.js` as a large file of base64 data URLs loaded from `source/pokefirered/graphics/battle_terrain/`. If this file is stale, the wrong terrain PNG is used. Also `#bt-terrain-bg` uses `background-size: 64px auto` + `background-repeat: repeat` which tiles the texture — check if the PNG dimensions and repeat mode look right in-browser.  
+**Root cause (animation):** `_animateBallThrow()` in `battle.js` (line ~805) checks `if (!field || !eWrap) { onDone(); return; }`. Even though a CSS fallback ball was added in v0.9.8, the animation CSS keyframes (`bt-throw-arc`, `bt-ball-shake`, `bt-ball-break`, `bt-pokemon-caught`, `bt-pokemon-appear`) may not be firing because the ball element's `style.cssText +=` concatenation overwrites inline styles set earlier. Check that `position:absolute` isn't lost when the fallback CSS-div path sets `style.cssText +=`.  
+**What to investigate next session:**
+1. Open browser DevTools → Network tab → filter `battle_assets` — confirm the file loads and `window._BattleAssets` is non-null in console.
+2. In DevTools → Elements tab during a battle — check `#bt-terrain-bg` has a `background-image` set and that `#bt-ball-anim` element appears in the DOM during a throw.
+3. If `#bt-ball-anim` never appears, the bail-out at the top of `_animateBallThrow` is triggering — add `console.log` to confirm `field`, `eWrap` exist.
+4. The `style.cssText +=` bug: the fallback `div` path does `ball.style.cssText += 'position:absolute;...'` but the background/borderRadius were set as individual properties before, not via cssText, so they'd survive. However for the `img` path there's no `+=` issue. Double-check both paths.
+5. Re-examine `battle_assets.js` — ensure terrain PNG base64 strings are non-empty and the keys exactly match what `_getTerrainKey()` returns (`terrain_grass`, `terrain_cave`, etc.).
+
 ---
 
 ## CRITICAL RULES — READ FIRST
