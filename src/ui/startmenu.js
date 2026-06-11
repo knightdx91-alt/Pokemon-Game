@@ -1172,15 +1172,13 @@ window.GameStartMenu = (function () {
         pillArrow(99*S, +1);
 
         // ── Pocket name centered in the pill (pill interior x=22..98) ────────
+        // Text sits directly on the cream pill baked into the EE background.
+        // EE's font1 is a small proportional sans — use plain sans-serif.
         ctx.textBaseline = 'top';
-        ctx.fillStyle = TEXT;
-        ctx.font = 'bold ' + (7*S) + 'px "Press Start 2P", monospace';
+        ctx.fillStyle = '#484848';
+        ctx.font = (8*S) + 'px Arial, "Helvetica Neue", sans-serif';
         var labelW = ctx.measureText(pocket.label).width;
-        if (labelW > 72*S) {
-            ctx.font = 'bold ' + (6*S) + 'px "Press Start 2P", monospace';
-            labelW = ctx.measureText(pocket.label).width;
-        }
-        ctx.fillText(pocket.label, (60*S) - labelW/2, 7*S);
+        ctx.fillText(pocket.label, (60*S) - labelW/2, 6*S);
 
         // ── Pocket icon row directly under the pill ──────────────────────────
         var iconRowY = 18*S;
