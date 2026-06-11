@@ -1,5 +1,5 @@
 // GameHUD — renders HUD info and settings button onto #ui-overlay
-const GAME_VERSION = 'v0.9.25';
+const GAME_VERSION = 'v0.9.26';
 
 window.GameHUD = (function () {
     let overlay = null;
@@ -177,14 +177,31 @@ window.GameHUD = (function () {
             const url = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + path;
             const box = document.createElement('div');
             box.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9999;display:flex;align-items:center;justify-content:center;';
-            box.innerHTML = '<div style="background:#0a0a18;border:1px solid #18b8c8;border-radius:10px;padding:22px 18px;max-width:320px;width:90%;color:#c8d8e8;font-family:monospace;font-size:11px;display:flex;flex-direction:column;gap:12px;">' +
+            const inner = document.createElement('div');
+            inner.style.cssText = 'background:#0a0a18;border:1px solid #18b8c8;border-radius:10px;padding:22px 18px;max-width:320px;width:90%;color:#c8d8e8;font-family:monospace;font-size:11px;display:flex;flex-direction:column;gap:12px;';
+            inner.innerHTML =
                 '<div style="color:#18b8c8;font-weight:700;font-size:13px;">📷 Screenshot saved!</div>' +
-                '<input readonly value="' + url + '" style="background:#060614;color:#e8e8f0;border:1px solid #18b8c8;border-radius:4px;padding:7px 8px;font-size:9px;font-family:monospace;width:100%;box-sizing:border-box;" onclick="this.select()" />' +
-                '<button onclick="this.closest(\'div\').parentNode.remove()" style="background:#18b8c8;color:#000;border:none;border-radius:5px;padding:8px;cursor:pointer;font-weight:700;">Close</button>' +
+                '<input id="_ss_url" readonly value="' + url + '" style="background:#060614;color:#e8e8f0;border:1px solid #18b8c8;border-radius:4px;padding:7px 8px;font-size:9px;font-family:monospace;width:100%;box-sizing:border-box;" />' +
+                '<div style="display:flex;gap:8px;">' +
+                '<button id="_ss_copy" style="flex:1;background:#18b8c8;color:#000;border:none;border-radius:5px;padding:8px;cursor:pointer;font-weight:700;">📋 Copy Link</button>' +
+                '<button id="_ss_close" style="flex:1;background:#2a2a3a;color:#c8d8e8;border:1px solid #18b8c8;border-radius:5px;padding:8px;cursor:pointer;font-weight:700;">Close</button>' +
                 '</div>';
+            box.appendChild(inner);
             document.body.appendChild(box);
-            const inp = box.querySelector('input');
+            const inp = inner.querySelector('#_ss_url');
             if (inp) { inp.focus(); inp.select(); }
+            inner.querySelector('#_ss_copy').addEventListener('click', function() {
+                navigator.clipboard.writeText(url).then(() => {
+                    this.textContent = '✓ Copied!';
+                    setTimeout(() => { this.textContent = '📋 Copy Link'; }, 2000);
+                }).catch(() => {
+                    inp.select();
+                    document.execCommand('copy');
+                    this.textContent = '✓ Copied!';
+                    setTimeout(() => { this.textContent = '📋 Copy Link'; }, 2000);
+                });
+            });
+            inner.querySelector('#_ss_close').addEventListener('click', () => box.remove());
         })
         .catch(e => alert('Screenshot failed: ' + e.message));
     }
