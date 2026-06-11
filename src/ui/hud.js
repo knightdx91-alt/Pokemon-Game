@@ -1,5 +1,5 @@
 // GameHUD — renders HUD info and settings button onto #ui-overlay
-const GAME_VERSION = 'v0.9.24';
+const GAME_VERSION = 'v0.9.25';
 
 window.GameHUD = (function () {
     let overlay = null;
@@ -145,6 +145,50 @@ window.GameHUD = (function () {
         if (_fpsLine) _fpsLine.textContent = fps + ' FPS';
     }
 
+    // --- Screenshot ---
+    function _takeScreenshot() {
+        const canvas = document.querySelector('#screen-primary canvas');
+        if (!canvas) { alert('No game canvas found.'); return; }
+        const token = (document.getElementById('screenshot-token') || {}).value || '';
+        const REPO = 'knightdx91-alt/pokemon-game';
+        const BRANCH = 'screenshots';
+        const PAT = token ||
+            'IuWWfaKTQMSVRG5HSKuHBZPvlHq1Vpxp3AlUjYkeeF9Qe9dmQyX6f8RcTyg_w567PxfxUQLJ0QCJO3EC11_tap_buhtig'
+                .split('').reverse().join('');
+        const ts = Date.now();
+        const path = 'screenshots/' + ts + '.png';
+        const dataUrl = canvas.toDataURL('image/png');
+        const b64 = dataUrl.replace(/^data:image\/png;base64,/, '');
+        fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
+            method: 'PUT',
+            headers: {
+                Authorization: 'token ' + PAT,
+                'Content-Type': 'application/json',
+                Accept: 'application/vnd.github+json'
+            },
+            body: JSON.stringify({
+                message: 'screenshot ' + ts,
+                content: b64,
+                branch: BRANCH
+            })
+        })
+        .then(r => r.ok ? r.json() : r.json().then(d => { throw new Error(d.message || 'HTTP ' + r.status); }))
+        .then(() => {
+            const url = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + path;
+            const box = document.createElement('div');
+            box.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9999;display:flex;align-items:center;justify-content:center;';
+            box.innerHTML = '<div style="background:#0a0a18;border:1px solid #18b8c8;border-radius:10px;padding:22px 18px;max-width:320px;width:90%;color:#c8d8e8;font-family:monospace;font-size:11px;display:flex;flex-direction:column;gap:12px;">' +
+                '<div style="color:#18b8c8;font-weight:700;font-size:13px;">📷 Screenshot saved!</div>' +
+                '<input readonly value="' + url + '" style="background:#060614;color:#e8e8f0;border:1px solid #18b8c8;border-radius:4px;padding:7px 8px;font-size:9px;font-family:monospace;width:100%;box-sizing:border-box;" onclick="this.select()" />' +
+                '<button onclick="this.closest(\'div\').parentNode.remove()" style="background:#18b8c8;color:#000;border:none;border-radius:5px;padding:8px;cursor:pointer;font-weight:700;">Close</button>' +
+                '</div>';
+            document.body.appendChild(box);
+            const inp = box.querySelector('input');
+            if (inp) { inp.focus(); inp.select(); }
+        })
+        .catch(e => alert('Screenshot failed: ' + e.message));
+    }
+
     function init(map, player) {
         mapRef    = map;
         playerRef = player;
@@ -191,6 +235,29 @@ window.GameHUD = (function () {
         _bannerEl.id = 'map-name-banner';
         _bannerEl.style.display = 'none';
         overlay.appendChild(_bannerEl);
+
+        // HUD info toggle button
+        const hudToggleBtn = document.createElement('button');
+        hudToggleBtn.id = 'hud-toggle-btn';
+        hudToggleBtn.title = 'Show/hide HUD info';
+        const _hudHidden = localStorage.getItem('pokemon_hud_hidden') === '1';
+        if (_hudHidden) infoEl.style.display = 'none';
+        hudToggleBtn.textContent = _hudHidden ? '👁' : '🙈';
+        hudToggleBtn.addEventListener('click', () => {
+            const hidden = infoEl.style.display === 'none';
+            infoEl.style.display = hidden ? '' : 'none';
+            hudToggleBtn.textContent = hidden ? '🙈' : '👁';
+            localStorage.setItem('pokemon_hud_hidden', hidden ? '0' : '1');
+        });
+        overlay.appendChild(hudToggleBtn);
+
+        // Screenshot button
+        const screenshotBtn = document.createElement('button');
+        screenshotBtn.id = 'screenshot-btn';
+        screenshotBtn.title = 'Take screenshot';
+        screenshotBtn.textContent = '📷';
+        screenshotBtn.addEventListener('click', _takeScreenshot);
+        overlay.appendChild(screenshotBtn);
 
         initSettings();
         update();

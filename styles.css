@@ -100,6 +100,15 @@ html, body {
 }
 #settings-btn:hover { background: var(--fr-red-dark); }
 
+#hud-toggle-btn, #screenshot-btn {
+    position: absolute; font-size: 10px;
+    background: rgba(0,0,0,0.55); color: #fff;
+    border: 1px solid rgba(255,255,255,0.3); border-radius: 4px;
+    padding: 3px 6px; cursor: pointer; pointer-events: all;
+}
+#hud-toggle-btn { bottom: 6px; left: 44px; }
+#screenshot-btn  { bottom: 6px; left: 80px; }
+
 /* === SETTINGS PANEL === */
 #settings-panel {
     position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
