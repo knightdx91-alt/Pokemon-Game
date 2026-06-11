@@ -274,6 +274,32 @@ block. Warp tiles are always walkable.
   `game.html?map=<Name>&region=<region>` loads any map directly instead of
   Pallet Town — e.g. `game.html?map=VerdantHollow&region=custom`.
 
+### Region sources: GBA (2D) vs DS (3D)
+- **Kanto** (pokefirered) and **Hoenn** (pokeemerald) are GBA — native 2D
+  metatile tilemaps. Fully extracted into renderable layouts (the format above).
+- **Johto/Sinnoh/Platinum** as shipped were extracted from the **DS** decomps
+  (pokeheartgold, pokeplatinum) and are **metadata-only** — DS maps are 3D
+  geometry (BMD0 models + map matrix), with no 2D metatile grid to extract.
+  Their map JSONs have warps/signs with `z` coords and no `layout`/grid. A pure
+  "image → 2D map" conversion isn't possible from DS sources.
+
+### Johto via Pokémon Heart & Soul (HnS) — the 2D path
+- **`source/pokemonhns`** submodule = the **HnS** ROM hack, built on
+  **pokeemerald (GBA)** — so its Johto + Kanto maps ARE 2D metatile tilemaps,
+  same format as Hoenn. This is the practical way to get a real 2D Johto.
+- **`tools/extract_hns.py`** reuses `extract_tilesets_emerald.py`, retargeted at
+  `source/pokemonhns` with `hns_` tileset prefix → `data/layouts/hns/` +
+  `data/tilesets/hns_*`. Run `git submodule update --init source/pokemonhns`
+  first. `EXTRACT_LAYOUT_FILTER=NEW_BARK,...` (env) limits to a subset.
+- **Two HnS quirks the extractor handles:** (1) HnS expands the primary tileset
+  to **640** tiles (`NUM_TILES_IN_PRIMARY 640`; pokeemerald default 512) — set
+  via `em.PRIMARY_TILE_COUNT = 640` in the wrapper, else secondary/building tiles
+  render black. (2) HnS drops extra named `.pal` files (e.g. `bellchime_12.pal`)
+  in palette dirs — `load_all_palettes` skips non-numeric stems.
+- Status: prototype-verified (NewBarkTown/Cherrygrove/Violet render perfectly).
+  Not yet fully extracted or wired as a playable region (needs map metadata
+  extraction, a `hns` region index, `INDEX_FILES` registration, connections).
+
 ### Tooling (`tools/`)
 - `build_tileset_index.py` — regenerate `data/tilesets/_index.json` (editor's
   tileset list) after adding tilesets.

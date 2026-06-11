@@ -104,7 +104,13 @@ def load_all_palettes(tileset_dir: Path):
     if not pal_dir.exists():
         return palettes
     for pal_file in sorted(pal_dir.glob("*.pal")):
-        palettes[int(pal_file.stem)] = load_jasc_pal(pal_file)
+        # Palette slots are numbered 00.pal..15.pal. Some hacks drop extra
+        # named .pal files (e.g. bellchime_12.pal) in the same dir — skip those.
+        try:
+            slot = int(pal_file.stem)
+        except ValueError:
+            continue
+        palettes[slot] = load_jasc_pal(pal_file)
     return palettes
 
 
@@ -314,6 +320,15 @@ def main():
 
     layouts_data = json.loads(LAYOUTS_JSON.read_text())
     layouts = layouts_data["layouts"]
+
+    # Optional prototype filter: EXTRACT_LAYOUT_FILTER=NEW_BARK,CHERRYGROVE
+    # restricts to layouts whose id contains any of the given substrings (and
+    # only builds the tilesets those layouts use). Empty/unset = full run.
+    import os as _os
+    _flt = [s.strip().upper() for s in _os.environ.get("EXTRACT_LAYOUT_FILTER", "").split(",") if s.strip()]
+    if _flt:
+        layouts = [L for L in layouts if any(s in L.get("id", "").upper() for s in _flt)]
+        print(f"[filter] {len(layouts)} layouts match {_flt}")
 
     # Collect unique tileset pairs
     tileset_pairs = {}
