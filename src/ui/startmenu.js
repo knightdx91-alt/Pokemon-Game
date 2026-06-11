@@ -250,86 +250,47 @@ window.GameStartMenu = (function () {
         return 'Autumn';
     }
 
-    // --- Render main menu (top strip + middle transparent + bottom info) ---
+    // --- Render main menu — FireRed vertical list, right-side panel ---
     function _renderMain() {
         menuEl.innerHTML = '';
 
-        // TOP STRIP
-        const top = document.createElement('div');
-        top.className = 'sm-top-strip';
+        // Left void — transparent, game world shows through
+        const voidEl = document.createElement('div');
+        voidEl.className = 'sm-void';
+        menuEl.appendChild(voidEl);
 
-        // Icon row
-        const carousel = document.createElement('div');
-        carousel.className = 'sm-carousel';
+        // Right panel — FireRed window chrome
+        const panel = document.createElement('div');
+        panel.className = 'sm-right-panel';
+
+        // Item list
         ITEMS.forEach(function (itm, i) {
-            const wrap = document.createElement('div');
-            wrap.className = 'sm-icon-wrap' + (i === selectedIdx ? ' selected' : '');
+            const row = document.createElement('div');
+            row.className = 'sm-list-item' + (i === selectedIdx ? ' selected' : '');
 
-            const sprite = document.createElement('div');
-            sprite.className = 'sm-icon-sprite';
-            sprite.style.backgroundImage = 'url("' + _iconFile(itm.icon) + '")';
-            // top half = normal frame, bottom half = selected/cyan frame (set via CSS)
+            const cursor = document.createElement('span');
+            cursor.className = 'sm-list-cursor';
+            cursor.textContent = i === selectedIdx ? '▶' : ' ';
+            row.appendChild(cursor);
 
-            wrap.appendChild(sprite);
-            wrap.addEventListener('click', function () {
+            const lbl = document.createElement('span');
+            lbl.textContent = (itm.id === 'PLAYER') ? _playerName().toUpperCase() : itm.label.toUpperCase();
+            row.appendChild(lbl);
+
+            row.addEventListener('click', function () {
                 selectedIdx = i;
                 _confirmSelected();
             });
-            carousel.appendChild(wrap);
-        });
-        top.appendChild(carousel);
-
-        // Restore scroll position (DOM was rebuilt), then nudge if icon is off-screen
-        var _dir = _carouselDir;
-        _carouselDir = 0;
-        requestAnimationFrame(function() {
-            // Always restore the saved scroll first
-            carousel.scrollLeft = _carouselScroll;
-            if (_dir === 0) return;
-            var selEl = carousel.children[selectedIdx];
-            if (!selEl) return;
-            var elLeft  = selEl.offsetLeft;
-            var elRight = elLeft + selEl.offsetWidth;
-            var visLeft  = carousel.scrollLeft;
-            var visRight = visLeft + carousel.clientWidth;
-            // Ensure selected icon is fully visible (no partial clipping)
-            if (elLeft < visLeft) {
-                carousel.scrollLeft = elLeft - 4;
-            } else if (elRight > visRight) {
-                carousel.scrollLeft = elRight - carousel.clientWidth + 4;
-            }
-            _carouselScroll = carousel.scrollLeft;
+            panel.appendChild(row);
         });
 
-        // Label below icons (EE shows item name at y=32 inside the top window)
-        const label = document.createElement('div');
-        label.className = 'sm-label-bar';
-        const cur = ITEMS[selectedIdx];
-        label.textContent = cur.id === 'PLAYER' ? _playerName() : cur.label;
-        top.appendChild(label);
+        // Footer — money display like FireRed
+        const footer = document.createElement('div');
+        footer.className = 'sm-panel-footer';
+        footer.innerHTML = '<span class="sm-footer-label">¥</span><span>' + _money().toLocaleString() + '</span>';
+        panel.appendChild(footer);
 
-        menuEl.appendChild(top);
-
-        // MIDDLE — transparent spacer (game world visible)
-        const mid = document.createElement('div');
-        mid.className = 'sm-middle';
-        menuEl.appendChild(mid);
-
-        // BOTTOM INFO BOX
-        const tod = _timeOfDay();
-        const info = document.createElement('div');
-        info.className = 'sm-info-box';
-        info.innerHTML =
-            '<div class="sm-info-line1">'
-          +   '<span>Played: ' + _playtime() + ' / Normal</span>'
-          +   '<span class="sm-info-ver">' + _mapName() + '</span>'
-          + '</div>'
-          + '<div class="sm-info-line2">'
-          +   '<span>' + _clockStr() + ' ◆ </span>'
-          +   '<span class="sm-tod ' + tod.cls + '">' + tod.label + '</span>'
-          +   '<span> · ' + _dayOfWeek() + ' · ' + _season() + '</span>'
-          + '</div>';
-        menuEl.appendChild(info);
+        menuEl.appendChild(panel);
     }
 
     // --- Render sub-page overlay ---
@@ -2878,7 +2839,7 @@ window.GameStartMenu = (function () {
     // --- Public API ---
     function open() {
         if (!menuEl) return;
-        selectedIdx=1; page='main'; _subIdx=0; _saveDone=false; isOpen=true; _carouselScroll=0; _carouselDir=0;
+        selectedIdx=0; page='main'; _subIdx=0; _saveDone=false; isOpen=true;
         menuEl.classList.add('open'); _render();
     }
     function close() {
@@ -2926,28 +2887,19 @@ window.GameStartMenu = (function () {
 
     function moveLeft() {
         if (!isOpen) return;
-        if (page==='main') {
-            if (selectedIdx === 0) return; // already at first icon, stop
-            selectedIdx--;
-            _carouselDir = -1;
-            _render(); return;
-        }
+        if (page==='main') { return; } // no horizontal nav on vertical list
         if (page==='journal') { _journalTab=(_journalTab-1+4)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
         if (page==='bag') { _bagPocket=(_bagPocket-1+8)%8; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
     }
     function moveRight() {
         if (!isOpen) return;
-        if (page==='main') {
-            if (selectedIdx === ITEMS.length - 1) return; // already at last icon, stop
-            selectedIdx++;
-            _carouselDir = 1;
-            _render(); return;
-        }
+        if (page==='main') { return; } // no horizontal nav on vertical list
         if (page==='journal') { _journalTab=(_journalTab+1)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
         if (page==='bag') { _bagPocket=(_bagPocket+1)%8; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
     }
     function moveUp() {
-        if (!isOpen||page==='main') return;
+        if (!isOpen) return;
+        if (page==='main') { if(selectedIdx>0){selectedIdx--;_render();} return; }
         if (page==='pokemon' && _partyActionOpen) {
             var _pOptLen = _battlePartyCallback ? 2 : 3;
             _partyActionSel = (_partyActionSel - 1 + _pOptLen) % _pOptLen; _redrawPageEl(true); return;
@@ -2955,7 +2907,8 @@ window.GameStartMenu = (function () {
         const c=_subCount(); if(c>0){_subIdx=(_subIdx-1+c)%c; if(page==='journal'||page==='pokemon'){_redrawPageEl(true);}else{_render();}}
     }
     function moveDown() {
-        if (!isOpen||page==='main') return;
+        if (!isOpen) return;
+        if (page==='main') { if(selectedIdx<ITEMS.length-1){selectedIdx++;_render();} return; }
         if (page==='pokemon' && _partyActionOpen) {
             var _pOptLen2 = _battlePartyCallback ? 2 : 3;
             _partyActionSel = (_partyActionSel + 1) % _pOptLen2; _redrawPageEl(true); return;
