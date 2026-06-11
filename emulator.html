@@ -705,15 +705,28 @@
             setTimeout(function () { setEmuProgress(0); }, 800);
             emuStatus.textContent = 'Running \xB7 ' + (label || sys.label);
             if (window.cloudSaveOnStart) window.cloudSaveOnStart();
-            // Periodically sync Emscripten FS → IndexedDB so save states persist across reloads
-            var _fsSyncInterval = setInterval(function () {
+
+            function _fsSync() {
                 var g = window.EJS_emulator && window.EJS_emulator.gameManager;
                 if (g && g.FS && typeof g.FS.syncfs === 'function') {
                     g.FS.syncfs(false, function () {});
-                } else {
-                    clearInterval(_fsSyncInterval);
                 }
-            }, 3000);
+            }
+
+            // Watch EJS notification toasts — sync immediately when a save state happens
+            var _notifObs = new MutationObserver(function (mutations) {
+                mutations.forEach(function (m) {
+                    m.addedNodes.forEach(function (node) {
+                        if (node.textContent && /saved|state/i.test(node.textContent)) {
+                            setTimeout(_fsSync, 200);
+                        }
+                    });
+                });
+            });
+            _notifObs.observe(document.body, { childList: true, subtree: true });
+
+            // Also sync every 5s as a safety net
+            setInterval(_fsSync, 5000);
         };
         window.EJS_Buttons = {
             playPause:true, restart:true, mute:true, settings:true, fullscreen:true,
