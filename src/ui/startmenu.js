@@ -456,9 +456,9 @@ window.GameStartMenu = (function () {
                     var ax = (240 - 16*4)*S - 8*S;    // right edge with margin
                     var ay = 20*S;
                     // Draw silhouette backdrop
-                    ctx.fillStyle = 'rgba(24,184,200,0.08)';
+                    ctx.fillStyle = 'rgba(230,8,8,0.07)';
                     ctx.fillRect(ax - 4*S, ay - 4*S, aw + 8*S, ah + 8*S);
-                    ctx.strokeStyle = '#ee3100';
+                    ctx.strokeStyle = '#e60808';
                     ctx.lineWidth = S;
                     ctx.strokeRect(ax - 4*S, ay - 4*S, aw + 8*S, ah + 8*S);
                     ctx.imageSmoothingEnabled = false;
@@ -598,11 +598,11 @@ window.GameStartMenu = (function () {
 
     function _drawJournalCanvas(ctx, bg) {
         var S = 2;
-        var CYAN  = '#5aced6';
-        var TEXT  = '#ffffff';
-        var DIM   = '#888899';
-        var BG    = '#000000';
-        var TITLEBG = '#ee3100';
+        var CYAN    = '#e60808';
+        var TEXT    = '#181818';
+        var DIM     = '#484848';
+        var BG      = '#d5d5bd';
+        var TITLEBG = '#62737b';
 
         // Hard reset canvas state before every draw
         ctx.globalAlpha = 1;
@@ -670,7 +670,7 @@ window.GameStartMenu = (function () {
         for (var pi = 0; pi < 6; pi++) {
             var px = (4 + pi * 10) * S;
             var hasMon = pi < party.length;
-            ctx.fillStyle = hasMon ? '#20d840' : '#442244';
+            ctx.fillStyle = hasMon ? '#2a7030' : '#888899';
             ctx.fillRect(px, 128*S, 8*S, 8*S);
         }
         ctx.fillStyle = TEXT;
@@ -708,7 +708,7 @@ window.GameStartMenu = (function () {
             var colX = col * COL_MID * S;
             // Background stripe on even rows
             if (row % 2 === 0) {
-                ctx.fillStyle = 'rgba(10,24,48,0.6)';
+                ctx.fillStyle = 'rgba(98,115,123,0.18)';
                 ctx.fillRect(colX, ry - S, COL_MID*S, ROW_H*S);
             }
             ctx.fillStyle = DIM;
@@ -718,7 +718,7 @@ window.GameStartMenu = (function () {
             var vw = ctx.measureText(val).width;
             ctx.fillText(val, colX + (COL_MID - 4)*S - vw, ry);
             // Column divider
-            ctx.fillStyle = 'rgba(90,206,214,0.2)';
+            ctx.fillStyle = 'rgba(230,8,8,0.12)';
             ctx.fillRect(COL_MID*S - S, 30*S, S, 82*S);
         }
     }
@@ -763,7 +763,7 @@ window.GameStartMenu = (function () {
             var ach = filtered[idx];
             var sel2 = (idx === _subIdx);
             var ry2 = (listY + j * 14) * S;
-            if (sel2) { ctx.fillStyle = 'rgba(90,206,214,0.2)'; ctx.fillRect(0, ry2 - S, GBA_W, 14*S); }
+            if (sel2) { ctx.fillStyle = 'rgba(230,8,8,0.12)'; ctx.fillRect(0, ry2 - S, GBA_W, 14*S); }
             ctx.fillStyle = ach.unlocked ? TEXT : DIM;
             ctx.font = (7*S) + 'px "Press Start 2P", monospace';
             ctx.fillText((ach.unlocked ? '[+]' : '[X]') + ' ' + (ach.name||''), 4*S, ry2);
@@ -778,7 +778,7 @@ window.GameStartMenu = (function () {
         // Selected ach description
         var selAch = filtered[_subIdx];
         if (selAch) {
-            ctx.fillStyle = 'rgba(10,24,48,0.8)';
+            ctx.fillStyle = 'rgba(98,115,123,0.22)';
             ctx.fillRect(0, 102*S, GBA_W, 10*S);
             ctx.fillStyle = CYAN;
             ctx.fillRect(0, 102*S, GBA_W, S);
@@ -872,7 +872,7 @@ window.GameStartMenu = (function () {
             var ry = (32 + i * 13) * S;
             var val = quests[q.key] || 0;
             var sel = (i === _subIdx);
-            if (sel) { ctx.fillStyle='rgba(90,206,214,0.2)'; ctx.fillRect(0,ry-S,GBA_W,13*S); }
+            if (sel) { ctx.fillStyle='rgba(230,8,8,0.12)'; ctx.fillRect(0,ry-S,GBA_W,13*S); }
             ctx.fillStyle = sel ? CYAN : TEXT;
             ctx.fillText(q.name, 8*S, ry);
             ctx.fillStyle = TEXT;
@@ -901,7 +901,7 @@ window.GameStartMenu = (function () {
                 var btn = document.createElement('button');
                 btn.className = 'sm-back-btn' + (_achTier === i ? ' active' : '');
                 btn.textContent = t;
-                btn.style.cssText = 'pointer-events:all;padding:2px 4px;font-size:10px;' + (_achTier === i ? 'color:#5aced6;' : '');
+                btn.style.cssText = 'pointer-events:all;padding:2px 4px;font-size:10px;' + (_achTier === i ? 'color:#e60808;font-weight:bold;' : '');
                 btn.addEventListener('click', function(e) {
                     e.stopPropagation();
                     _achTier = i; _achOffset = 0; _subIdx = 0; _render();
@@ -977,7 +977,7 @@ window.GameStartMenu = (function () {
                 var absIdx = _achOffset + vi;
                 var y = (listY + vi * 14) * S;
                 if (absIdx === _subIdx) {
-                    ctx.fillStyle = 'rgba(90,206,214,0.20)';
+                    ctx.fillStyle = 'rgba(230,8,8,0.12)';
                     ctx.fillRect(0, y, GBA_W, 14*S);
                     ctx.fillStyle = COL_CYAN;
                     ctx.fillRect(0, y, 2*S, 14*S);
@@ -1087,11 +1087,11 @@ window.GameStartMenu = (function () {
         var S = BAG_S;
 
         // EE dark palette
-        var CYAN    = '#5aced6';
-        var TEXT    = '#ffffff';
-        var DIM     = '#888899';
-        var BG      = '#000000';
-        var SEL_BG  = 'rgba(90,206,214,0.25)';
+        var CYAN    = '#e60808';
+        var TEXT    = '#181818';
+        var DIM     = '#484848';
+        var BG      = '#d5d5bd';
+        var SEL_BG  = 'rgba(230,8,8,0.12)';
 
         ctx.imageSmoothingEnabled = false;
         ctx.clearRect(0, 0, BAG_W, BAG_H);
@@ -1637,7 +1637,7 @@ window.GameStartMenu = (function () {
                     ctx.strokeRect(lx*S+S/2, ry*S+S/2, 110*S-S, 18*S-S);
                     // Type badge
                     ctx.fillStyle = mCol; ctx.fillRect(lx*S, ry*S, 28*S, 18*S);
-                    ctx.fillStyle = '#050510';
+                    ctx.fillStyle = '#d5d5bd';
                     ctx.fillText(mv.type||'NRM', (lx+2)*S, (ry+4)*S);
                     // Move name
                     ctx.fillStyle = TEXT;
@@ -1708,7 +1708,7 @@ window.GameStartMenu = (function () {
             var bg = isLead ? (selected ? COL_SLOT0S : COL_SLOT0) : (selected ? COL_BOXS : COL_BOX);
             ctx.fillStyle = bg;
             ctx.fillRect(x*S, y*S, w*S, h*S);
-            ctx.strokeStyle = selected ? COL_CYAN : (isLead ? '#2a6030' : '#1a3050');
+            ctx.strokeStyle = selected ? COL_CYAN : '#62737b';
             ctx.lineWidth = S;
             ctx.strokeRect(x*S + S/2, y*S + S/2, w*S - S, h*S - S);
             if (selected) {
@@ -1836,11 +1836,11 @@ window.GameStartMenu = (function () {
         var cancelSel = (_subIdx >= filled.length);
         ctx.fillStyle = cancelSel ? COL_CYAN : _tc.bg;
         ctx.fillRect(192*S, 136*S, 48*S, 16*S);
-        ctx.strokeStyle = cancelSel ? COL_CYAN : '#304060';
+        ctx.strokeStyle = cancelSel ? COL_CYAN : '#62737b';
         ctx.lineWidth = S;
         ctx.strokeRect(192*S + S/2, 136*S + S/2, 48*S - S, 16*S - S);
         ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
-        ctx.fillStyle = cancelSel ? '#050510' : COL_TEXT;
+        ctx.fillStyle = cancelSel ? '#d5d5bd' : COL_TEXT;
         ctx.textBaseline = 'top';
         ctx.fillText('CANCEL', 196*S, 139*S);
 
@@ -1987,7 +1987,7 @@ window.GameStartMenu = (function () {
             var hasCaught = caught.has(entry.num);
 
             if (isSel) {
-                ctx.fillStyle = 'rgba(90,206,214,0.20)';
+                ctx.fillStyle = 'rgba(230,8,8,0.12)';
                 ctx.fillRect(0, rowTop, GBA_W, 14*S);
                 ctx.fillStyle = COL_CYAN;
                 ctx.fillRect(0, rowTop, 2*S, 14*S);
@@ -2064,7 +2064,7 @@ window.GameStartMenu = (function () {
                 var btn = document.createElement('button');
                 btn.className = 'sm-back-btn' + (_subIdx === i ? ' active' : '');
                 btn.textContent = t;
-                btn.style.cssText = 'pointer-events:all;padding:2px 6px;font-size:10px;' + (_subIdx === i ? 'color:#5aced6;' : '');
+                btn.style.cssText = 'pointer-events:all;padding:2px 6px;font-size:10px;' + (_subIdx === i ? 'color:#e60808;font-weight:bold;' : '');
                 btn.addEventListener('click', function(e) { e.stopPropagation(); _subIdx = i; _render(); });
                 tabsEl.appendChild(btn);
             });
@@ -2282,7 +2282,7 @@ window.GameStartMenu = (function () {
             var bx=8, by=50, bw=140, bh=80;
             ctx.fillStyle = ri.color+'44';
             ctx.fillRect(bx*S, by*S, bw*S, bh*S);
-            ctx.strokeStyle = '#ee3100'; ctx.lineWidth = 2;
+            ctx.strokeStyle = '#e60808'; ctx.lineWidth = 2;
             ctx.strokeRect(bx*S, by*S, bw*S, bh*S);
 
             // Region label
@@ -2400,7 +2400,7 @@ window.GameStartMenu = (function () {
             var ry = (40 + i * 18) * S;
             var isSel = i === _subIdx;
             if (isSel) {
-                ctx.fillStyle = 'rgba(90,206,214,0.20)';
+                ctx.fillStyle = 'rgba(230,8,8,0.12)';
                 ctx.fillRect(0, ry, GBA_W, 16*S);
                 ctx.fillStyle = COL_CYAN;
                 ctx.fillRect(0, ry, 2*S, 16*S);
@@ -2479,7 +2479,7 @@ window.GameStartMenu = (function () {
             var ry = (104 + idx * 18) * S;
             var isSel = idx === _subIdx;
             if (isSel) {
-                ctx.fillStyle = 'rgba(90,206,214,0.20)';
+                ctx.fillStyle = 'rgba(230,8,8,0.12)';
                 ctx.fillRect(0, ry, GBA_W, 14*S);
                 ctx.fillStyle = COL_CYAN;
                 ctx.fillRect(0, ry, 2*S, 14*S);
