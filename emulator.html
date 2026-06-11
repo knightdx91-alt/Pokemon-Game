@@ -703,6 +703,15 @@
             setTimeout(function () { setEmuProgress(0); }, 800);
             emuStatus.textContent = 'Running \xB7 ' + (label || sys.label);
             if (window.cloudSaveOnStart) window.cloudSaveOnStart();
+            // Periodically sync Emscripten FS → IndexedDB so save states persist across reloads
+            var _fsSyncInterval = setInterval(function () {
+                var g = window.EJS_emulator && window.EJS_emulator.gameManager;
+                if (g && g.FS && typeof g.FS.syncfs === 'function') {
+                    g.FS.syncfs(false, function () {});
+                } else {
+                    clearInterval(_fsSyncInterval);
+                }
+            }, 3000);
         };
         window.EJS_Buttons = {
             playPause:true, restart:true, mute:true, settings:true, fullscreen:true,
