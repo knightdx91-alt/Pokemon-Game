@@ -47,6 +47,39 @@ records — the brain keeps moving them whether or not you're watching.
 > The player only ever renders the handful on the current screen; the world *feels* fully populated.
 > This is the Majora's-Mask-schedule / RDR2-population / roguelike-off-screen-sim technique.
 
+### NPC Population Model — Locals vs. Travelers
+Two populations, both make the world feel real:
+
+- **Locals (town-bound)** — live a schedule inside one Safe Zone; they have a *reason* to stay:
+  - **Crafters** who took the guild classes — run benches, sell, teach; tied to a guild.
+  - **Homebodies** who didn't want to brave the Wildlands — shopkeepers, families, the cautious.
+    (Most people just want to survive safely — not everyone is an adventurer.)
+  - Give towns a stable, recognizable cast between expeditions.
+- **Travelers (roaming) — MANY (locked toward aliveness).** Adventurers, merchants, scavengers,
+  wanderers whose records physically move across regions (the "I keep running into the same person"
+  magic). Large named roster.
+
+> The contrast is itself worldbuilding: the brave/desperate roam and risk the wilds; the
+> cautious/skilled stay and build. The world reads as a real society under the System.
+
+### Multi-Species World — the System recruited across planets
+When the System "spawned" on Earth it broadcast its offer **across worlds**; other planets'
+populations could **migrate to Earth to take part.** The world is now a cosmopolitan frontier —
+humans plus alien races converged into the same System-run reality.
+
+- **Population variety** — towns are melting pots; roaming rosters can be large and diverse without
+  feeling samey. Free visual variety across both locals and travelers.
+- **Theme escalation** — the System didn't just trap Earth; it *recruited* across worlds with the
+  same "helpful" pitch. It farms subjects on a cosmic scale. Every migrant was lured by the same blue text.
+- **Buried-truth payoff** — an alien who "remembers before" remembers a *different world's*
+  Awakening → hard proof the **cycle spans worlds, not just Earth's history.** Delivered by ordinary
+  roaming NPCs. (Ties directly into the §4 vanishing-NPC / remember-before hooks.)
+- **Texture** — some races are **refugees** whose home world was already consumed by a prior cycle;
+  they fled here hoping this time is different. Some know more about the System than humans (potential
+  OWPS allies *or* red herrings).
+- **Scope guard** — keep mechanical race effects **light/optional** (minor affinity leanings, guild
+  tendencies, dialogue flavor). This is a worldbuilding win first; don't make it a balancing burden.
+
 ### Don't over-simulate
 - **Most NPCs:** cheap abstract layer (town schedules + a few dozen named cross-region travelers).
 - **Story-critical NPCs:** can be pinned/scripted when continuity must be exact (escort, quest).

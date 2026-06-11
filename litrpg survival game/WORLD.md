@@ -51,6 +51,12 @@ Four open regions, each dominated by one era-tier but containing pockets of all 
 Hazard legend (player-facing): **Heat · Cold · Toxic · Gloom · Tempest** (defended by affinity
 gear/creatures — see `DESIGN.md §3`). Tiers T1–T4 = era danger bands.
 
+> **The population is multi-species.** When the System spawned on Earth it recruited *across worlds*
+> — other planets' populations could migrate here to take part. Towns are cosmopolitan melting pots
+> of humans + alien races (some refugees from worlds already consumed by prior cycles). This scales
+> the antagonist to cosmic scale and sets up a major buried-truth reveal (the cycle spans worlds).
+> Full model + story hooks in `LIVING_WORLD.md`.
+
 ---
 
 ## 3. Region Overviews
