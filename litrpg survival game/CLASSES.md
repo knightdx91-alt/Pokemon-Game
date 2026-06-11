@@ -100,6 +100,11 @@ class is the System sorting you into its framework. This means:
 The "a LOT, even obscure ones" tier. Some are **unlockable mid-game**, not offered at start. Several
 double as **story flags** that interact with the cycle truth.
 
+> **Rarity & how you get a class** (full ladder in `ECONOMY.md §5`): Standard→Legendary classes are
+> **buyable/unlockable via the System Shop** (credits + town reputation + sometimes a quest). The
+> **Anomalous** glitch tier below (Null, Systemtouched, Revenant…) is **never sold** — found only
+> through the hidden layer. Sanctioned power is bought; loopholes are discovered.
+
 | Class | Signature | Story/Surveillance note |
 |---|---|---|
 | **Null / Unclassed** | Refuse classification. No bonuses, hidden growth path | **Lower Surveillance** — the System can't categorize you. Major OWPS implications |
