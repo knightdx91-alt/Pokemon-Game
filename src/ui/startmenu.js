@@ -162,7 +162,7 @@ window.GameStartMenu = (function () {
         var bg = new Image();
         bg.onload = function() { assets.bg = bg; done(); };
         bg.onerror = function() { done(); };
-        bg.src = _bagBgPath();
+        bg.src = 'src/assets/bag/bag_bg_ee.png'; // assembled from EE submodule tiles + male palette
         for (var i = 0; i < 8; i++) {
             (function(idx) {
                 var icon = { unsel: null, sel: null };
@@ -1134,43 +1134,55 @@ window.GameStartMenu = (function () {
         var S = BAG_S;
         var NP = POCKETS.length;
 
-        // Theme-aware text colors (bg asset already matches the theme)
-        var theme  = (localStorage.getItem('pokemon_theme') || 'DARK').toLowerCase();
-        var isLight = (theme === 'light' || theme === 'vanilla');
-        var TEXT   = isLight ? '#404040' : '#c8d8e8';
-        var DIM    = isLight ? '#888878' : '#607080';
-        var ACCENT = '#18b8c8';
-        var SEL_BG = 'rgba(24,184,200,0.15)';
+        // EE bag is a light screen — dark text like the original
+        var TEXT   = '#383838';
+        var DIM    = '#383838';
+        var RED    = '#e04828';   // pill arrow red
+        var SEL_BG = 'rgba(0,0,0,0.07)';
 
         ctx.imageSmoothingEnabled = false;
         ctx.clearRect(0, 0, BAG_W, BAG_H);
 
-        // ── EE bag background (full 240×160 screen art from the submodule) ───
+        // ── EE bag background (assembled from submodule tiles + palette) ─────
         if (assets && assets.bg) {
             ctx.drawImage(assets.bg, 0, 0, BAG_W, BAG_H);
         } else {
-            ctx.fillStyle = isLight ? '#d5d5bd' : '#101820';
+            ctx.fillStyle = '#4880f8';
             ctx.fillRect(0, 0, BAG_W, BAG_H);
         }
 
-        // ── Selected pocket icon in the circle at top-left ───────────────────
+        // ── Selected pocket icon in the gold circle at top-left ──────────────
         var selIcon = assets && assets.icons && assets.icons[_bagPocket];
         if (selIcon && selIcon.sel) {
             ctx.drawImage(selIcon.sel, 5*S, 5*S, 10*S, 10*S);
         }
 
-        // ── Pocket name centered in the pill (x≈20..104, y≈4..18) ────────────
+        // ── Red ◄ ► arrows at the pill ends (like EE) ────────────────────────
+        function pillArrow(x, dir) {
+            ctx.fillStyle = RED;
+            ctx.beginPath();
+            if (dir < 0) {
+                ctx.moveTo(x + 6*S, 4*S); ctx.lineTo(x, 10*S); ctx.lineTo(x + 6*S, 16*S);
+            } else {
+                ctx.moveTo(x, 4*S); ctx.lineTo(x + 6*S, 10*S); ctx.lineTo(x, 16*S);
+            }
+            ctx.closePath(); ctx.fill();
+        }
+        pillArrow(20*S, -1);
+        pillArrow(96*S, +1);
+
+        // ── Pocket name centered in the pill ─────────────────────────────────
         ctx.font = 'bold ' + (8*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
         ctx.fillStyle = TEXT;
         var labelW = ctx.measureText(pocket.label).width;
-        ctx.fillText(pocket.label, (62*S) - labelW/2, 6*S);
+        ctx.fillText(pocket.label, (61*S) - labelW/2, 6*S);
 
-        // ── Pocket icon row below the pill (8 EE pockets) ────────────────────
-        var iconRowY = 21*S;
-        var iconStartX = Math.round((104 - NP*11) / 2) * S;
+        // ── Pocket icon row directly under the pill ──────────────────────────
+        var iconRowY = 17*S;
+        var iconStartX = 22*S;
         for (var i = 0; i < NP; i++) {
-            var ix = iconStartX + i * 11*S;
+            var ix = iconStartX + i * 9*S;
             var icon = assets && assets.icons && assets.icons[i];
             if (icon) {
                 var img = (i === _bagPocket) ? icon.sel : icon.unsel;
@@ -1178,35 +1190,28 @@ window.GameStartMenu = (function () {
             }
         }
 
-        // ── Big bag sprite, centered in left area ────────────────────────────
+        // ── Big bag sprite, center-left ──────────────────────────────────────
         var bagFrame = assets && assets.bagFrames && assets.bagFrames[Math.min(_bagPocket, 5)];
         if (bagFrame) {
-            ctx.drawImage(bagFrame, 22*S, 32*S, 56*S, 56*S);
+            ctx.drawImage(bagFrame, 36*S, 26*S, 64*S, 64*S);
         }
 
-        // ── ◄ ► pocket arrows flanking the bag ───────────────────────────────
-        function pocketArrow(x, dir) {
-            ctx.fillStyle = ACCENT;
-            ctx.beginPath();
-            if (dir < 0) {
-                ctx.moveTo(x + 7*S, 52*S); ctx.lineTo(x, 59*S); ctx.lineTo(x + 7*S, 66*S);
-            } else {
-                ctx.moveTo(x, 52*S); ctx.lineTo(x + 7*S, 59*S); ctx.lineTo(x, 66*S);
-            }
-            ctx.closePath(); ctx.fill();
-        }
-        pocketArrow(6*S, -1);
-        pocketArrow(88*S, +1);
+        var selItem = items[_subIdx];
+        var isClosePack = (!selItem || _subIdx >= items.length);
 
-        // ── Item icon in the bg's box (x≈2..32, y≈84..110) ───────────────────
-        if (itemIcon) {
+        // ── Item icon box (white box at x≈2..32, y≈84..110) ──────────────────
+        if (isClosePack) {
+            // EE shows a big grey return arrow for Close Pack
+            ctx.fillStyle = '#a0a0a8';
+            ctx.font = (20*S) + 'px sans-serif';
+            ctx.textBaseline = 'top';
+            ctx.fillText('↵', 8*S, 84*S);
+        } else if (itemIcon) {
             ctx.drawImage(itemIcon, 6*S, 86*S, 24*S, 24*S);
         }
 
-        // ── Description text in the bg's bottom-left box ─────────────────────
-        var selItem = items[_subIdx];
-        var isClosePack = (!selItem || _subIdx >= items.length);
-        var desc = isClosePack ? 'Close the Bag.' : (selItem.desc || selItem.description || '');
+        // ── Description text in the white bottom-left box ────────────────────
+        var desc = isClosePack ? 'Return to the field.' : (selItem.desc || selItem.description || '');
         ctx.fillStyle = TEXT;
         ctx.font = (7*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
@@ -1230,7 +1235,7 @@ window.GameStartMenu = (function () {
         ctx.textBaseline = 'top';
 
         function drawCursor(cx, cy, h) {
-            ctx.fillStyle = ACCENT;
+            ctx.fillStyle = TEXT; // EE cursor is dark
             ctx.beginPath();
             ctx.moveTo(cx,        cy + 1);
             ctx.lineTo(cx + 5*S,  cy + Math.floor(h/2));
@@ -1255,22 +1260,24 @@ window.GameStartMenu = (function () {
                 var item = items[idx];
                 ctx.fillStyle = TEXT;
                 ctx.fillText(item.name || item.itemId || '?', 122*S, row_y);
-                var qty = '\xd7' + String(item.quantity || 1);
-                ctx.fillText(qty, 232*S - ctx.measureText(qty).width, row_y);
+                // EE qty format: lowercase x, number right-aligned
+                ctx.fillText('x', 204*S, row_y);
+                var qn = String(item.quantity || 1);
+                ctx.fillText(qn, 230*S - ctx.measureText(qn).width, row_y);
             } else {
-                // Cancel entry — EE shows CLOSE BAG as last row
-                ctx.fillStyle = DIM;
-                ctx.fillText('CLOSE BAG', 122*S, row_y);
+                // EE's cancel entry
+                ctx.fillStyle = TEXT;
+                ctx.fillText('Close Pack', 122*S, row_y);
             }
         }
 
         // Scroll arrows
         if (scroll > 0) {
-            ctx.fillStyle = ACCENT;
+            ctx.fillStyle = RED;
             ctx.beginPath(); ctx.moveTo(168*S, 7*S); ctx.lineTo(172*S, 3*S); ctx.lineTo(176*S, 7*S); ctx.closePath(); ctx.fill();
         }
         if (scroll + MAX_VIS < totalRows) {
-            ctx.fillStyle = ACCENT;
+            ctx.fillStyle = RED;
             ctx.beginPath(); ctx.moveTo(168*S, 152*S); ctx.lineTo(172*S, 156*S); ctx.lineTo(176*S, 152*S); ctx.closePath(); ctx.fill();
         }
     }
@@ -1303,17 +1310,16 @@ window.GameStartMenu = (function () {
 
             var NP = _getBagPockets().length;
 
-            // ◄ ► arrows beside the bag sprite (wrap like EE)
-            if (cy >= 48 && cy < 70 && cx >= 0 && cx < 18) {
+            // Red ◄ ► arrows at the pill ends (wrap like EE)
+            if (cy >= 2 && cy < 19 && cx >= 14 && cx < 30) {
                 _bagPocket = (_bagPocket - 1 + NP) % NP; _subIdx = 0; _render(); return;
             }
-            if (cy >= 48 && cy < 70 && cx >= 84 && cx < 104) {
+            if (cy >= 2 && cy < 19 && cx >= 92 && cx < 108) {
                 _bagPocket = (_bagPocket + 1) % NP; _subIdx = 0; _render(); return;
             }
-            // Pocket icon row below the pill: y=21..29, 11px spacing
-            var iconStartX = Math.round((104 - NP*11) / 2);
-            if (cy >= 19 && cy < 31 && cx >= iconStartX && cx < iconStartX + NP*11) {
-                var p = Math.floor((cx - iconStartX) / 11);
+            // Pocket icon row under the pill: y=17..25, 9px spacing from x=22
+            if (cy >= 15 && cy < 27 && cx >= 22 && cx < 22 + NP * 9) {
+                var p = Math.floor((cx - 22) / 9);
                 if (p >= 0 && p < NP) { _bagPocket = p; _subIdx = 0; _render(); return; }
             }
             // Item list: x=108..236, y=8..152
