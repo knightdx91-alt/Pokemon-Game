@@ -1068,13 +1068,19 @@
                     var dir = path.split('/').slice(0, -1).join('/');
                     try { if (dir && !g.FS.analyzePath(dir).exists) g.FS.mkdir(dir); } catch (_) {}
                     g.FS.writeFile(path, bytes);
-                    // Most cores only read the battery save on boot — restart to apply it
-                    g.loadSaveFiles();
-                    setTimeout(function () {
+                    // Sync FS → IndexedDB so the file survives restart, then reboot
+                    function doRestart() {
                         try { g.restart(); } catch (_) {}
-                    }, 150);
-                    setBtn(loadBtn, '✓ Loaded!', '#4caf88');
-                    setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 2500);
+                        setBtn(loadBtn, '✓ Loaded!', '#4caf88');
+                        setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 2500);
+                    }
+                    try {
+                        g.FS.syncfs(false, function () { doRestart(); });
+                    } catch (_) {
+                        // syncfs unavailable — try saveSaveFiles then restart
+                        try { g.saveSaveFiles(); } catch (_2) {}
+                        setTimeout(doRestart, 200);
+                    }
                 }).catch(function (e) {
                     setBtn(loadBtn, '✗ Error', '#e05454');
                     setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 3000);
