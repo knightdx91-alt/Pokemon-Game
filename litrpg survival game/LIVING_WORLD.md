@@ -73,9 +73,13 @@ ever advances it by `elapsed_time × speed`.
   in-game day. NPC `speed` is defined in real-world units.
 - **Day/night becomes literal** — play at 9pm and it's night in-game (Animal-Crossing-style). This
   is a conscious consequence of real time.
-  - *Optional mitigation (not decided):* keep the travel/roaming clock on real time but **decouple
-    the visual day/night** to a faster cosmetic cycle if "always night after work" ever feels bad.
-    Real-time roaming does NOT force real-time lighting; they can share the clock or not.
+- **Player setting: "Always Daytime Visuals" (locked).** A toggle in options that **forces the
+  visual lighting to daytime while the real-time clock keeps advancing underneath.** The simulation
+  (NPC roaming, schedules, weather, any time-of-day gameplay) is unaffected — only the on-screen
+  lighting/sky is pinned to day. Fixes "always night after work" without pausing the world.
+  - Implementation note: lighting reads a `visualClock`; gameplay/sim reads the true real-time
+    clock. The toggle just makes `visualClock` return a fixed daytime value (or run a cosmetic
+    cycle) while the real clock advances normally. The two clocks are decoupled by design.
 
 ---
 
@@ -157,7 +161,16 @@ snaps an NPC to a zone center or its destination.
 - Safety: **ambient = time-driven/uncapped; narrative = event-driven/player-gated** (the §3 split).
 - Performance: positions advanced **analytically** (closed-form), never tick-by-tick.
 
-**Still open:**
-1. **Visual day/night:** literal real-time lighting, or decouple to a faster cosmetic cycle?
-2. **Traveler roster size:** how many named cross-region roamers to author (alive feel vs. work).
-3. **Narrative pin list:** which story-critical NPCs are exempt from ambient roaming (escort/quest).
+- Visual day/night: literal by default, with a **"Always Daytime Visuals" player toggle** that pins
+  lighting to day while the clock keeps advancing (sim untouched). `visualClock` decoupled from the
+  real-time sim clock.
+
+**Still open (filled in as we author the world/story, not upfront settings):**
+1. **Traveler roster size:** how many *named cross-region roamers* to author. Most NPCs are locals
+   who live a schedule in one town; travelers are the subset whose records physically move across
+   regions (the "I keep running into the same person" magic). Dial between aliveness (~50+) and
+   workload (~10–20). Set when we populate the world.
+2. **Narrative pin list:** which story-critical NPCs are **exempt from roaming** so they're always
+   where the plot needs them (quest-givers at a fixed spot, escorts, cutscene/boss NPCs). "Pinned"
+   = ignores the world brain until their beat is done, then released or vanished. Marked per-quest
+   as we write the story.
