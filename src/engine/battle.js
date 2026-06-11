@@ -762,55 +762,46 @@ window.GameBattle = (function () {
         return A.ball_poke;
     }
 
-    // Entry animation: trainer throws ball → enemy sprite slides in
+    // Entry animation: wild Pokémon slides in from right side
     function _playEntryAnimation(onDone) {
-        const field = document.getElementById('bt-field');
         const eWrap = document.getElementById('bt-enemy-sprite-wrap');
-        if (!field || !eWrap || !window._BattleAssets) { onDone(); return; }
+        if (!eWrap) { onDone(); return; }
 
-        // Hide enemy sprite initially
         eWrap.style.opacity = '0';
+        eWrap.style.transform = 'translateX(60px) scale(0.7)';
 
-        // Get player's first ball in inventory
-        const st = window.GameSave && GameSave.state;
-        const balls = st && st.inventory && st.inventory.pokeBalls || {};
-        let ballItemKey = 'poke_ball';
-        for (const k of ['master_ball','ultra_ball','great_ball','poke_ball','premier_ball']) {
-            if (balls[k] > 0) { ballItemKey = k; break; }
-        }
-
-        const ball = document.createElement('img');
-        ball.id = 'bt-ball-anim';
-        ball.src = _ballSrc(ballItemKey) || '';
-        // Use first frame of 16×48 sprite (closed ball = top 16px)
-        ball.style.cssText = 'position:absolute;width:32px;height:32px;image-rendering:pixelated;z-index:20;left:60%;bottom:20%;object-fit:none;object-position:0 0;';
-        field.appendChild(ball);
-
-        ball.style.animation = 'bt-throw-arc 0.6s ease-out forwards';
-
-        ball.addEventListener('animationend', function () {
-            // Flash enemy sprite in
-            eWrap.style.animation = 'bt-pokemon-appear 0.35s ease-out forwards';
+        // Short delay then animate in
+        setTimeout(() => {
+            eWrap.style.transition = 'opacity 0.3s ease-out, transform 0.35s ease-out';
             eWrap.style.opacity = '1';
-            // Remove ball
-            setTimeout(() => { ball.remove(); }, 100);
-            eWrap.addEventListener('animationend', function () {
-                eWrap.style.animation = '';
+            eWrap.style.transform = 'translateX(0) scale(1)';
+            setTimeout(() => {
+                eWrap.style.transition = '';
                 onDone();
-            }, { once: true });
-        }, { once: true });
+            }, 380);
+        }, 200);
     }
 
     // Pokéball throw + catch/fail animation
     function _animateBallThrow(itemKey, caught, onDone) {
         const field = document.getElementById('bt-field');
         const eWrap = document.getElementById('bt-enemy-sprite-wrap');
-        if (!field || !eWrap || !window._BattleAssets) { onDone(); return; }
+        if (!field || !eWrap) { onDone(); return; }
 
-        const ball = document.createElement('img');
+        const ballSrc = _ballSrc(itemKey);
+        let ball;
+        if (ballSrc) {
+            ball = document.createElement('img');
+            ball.src = ballSrc;
+        } else {
+            // CSS fallback ball
+            ball = document.createElement('div');
+            ball.style.background = 'radial-gradient(circle at 35% 35%, #ff4444, #cc0000)';
+            ball.style.borderRadius = '50%';
+            ball.style.border = '2px solid #333';
+        }
         ball.id = 'bt-ball-anim';
-        ball.src = _ballSrc(itemKey) || '';
-        ball.style.cssText = 'position:absolute;width:32px;height:32px;image-rendering:pixelated;z-index:20;left:60%;bottom:20%;';
+        ball.style.cssText += 'position:absolute;width:32px;height:32px;image-rendering:pixelated;z-index:20;left:60%;bottom:20%;';
         field.appendChild(ball);
 
         // Phase 1: throw arc

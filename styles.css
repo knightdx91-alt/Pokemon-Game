@@ -775,7 +775,8 @@ body.orient-reverse-landscape #screen-primary {
     pointer-events: none;
     z-index: 0;
 }
-#bt-field > *:not(#bt-terrain-bg) { position: relative; z-index: 1; }
+#bt-enemy-info, #bt-player-info,
+#bt-enemy-sprite-wrap, #bt-player-sprite-wrap { z-index: 1; }
 
 /* ── Pokéball animation layer ───────────────────────────────── */
 #bt-ball-anim {
