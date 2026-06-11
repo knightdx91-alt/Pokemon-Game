@@ -84,11 +84,11 @@ window.GameStartMenu = (function () {
         if (theme === 'LIGHT' || theme === 'VANILLA') {
             // From 1.gbapal: fill=index5=#f8f8f8, hi=index14=#c0b8d8, border=index13=#6860d0
             // From hatlighttheme.gbapal: text=index2=#000000, dim=index3=#b8b8b8
-            return { bg:'#f0e8f8', text:'#000000', dim:'#808080', border:'#6860d0', hi:'#c0b8d8', titleBg:'#d8d0e8' };
+            return { bg:'#f0e8c8', text:'#181818', dim:'#484848', border:'#000000', hi:'#e83030', titleBg:'#e83030' };
         }
         // DARK (default) — from 1d.gbapal: fill=index1=#181818, hi=index14=#18c0f8, border=index13=#0070a8
         // From ryudarktheme.gbapal: text=index2=#d8d8f0, dim=index3=#787888
-        return { bg:'#181818', text:'#d8d8f0', dim:'#787888', border:'#0070a8', hi:'#18c0f8', titleBg:'#0a1830' };
+        return { bg:'#f8f8e0', text:'#181818', dim:'#484848', border:'#000000', hi:'#ee3100', titleBg:'#ee3100' };
     }
 
     function _applyThemeCSS() {
@@ -497,7 +497,7 @@ window.GameStartMenu = (function () {
                     // Draw silhouette backdrop
                     ctx.fillStyle = 'rgba(24,184,200,0.08)';
                     ctx.fillRect(ax - 4*S, ay - 4*S, aw + 8*S, ah + 8*S);
-                    ctx.strokeStyle = '#18b8c8';
+                    ctx.strokeStyle = '#ee3100';
                     ctx.lineWidth = S;
                     ctx.strokeRect(ax - 4*S, ay - 4*S, aw + 8*S, ah + 8*S);
                     ctx.imageSmoothingEnabled = false;
@@ -641,7 +641,7 @@ window.GameStartMenu = (function () {
         var TEXT  = '#ffffff';
         var DIM   = '#888899';
         var BG    = '#000000';
-        var TITLEBG = '#0a1830';
+        var TITLEBG = '#ee3100';
 
         // Hard reset canvas state before every draw
         ctx.globalAlpha = 1;
@@ -2270,7 +2270,7 @@ window.GameStartMenu = (function () {
         if (!screen) return;
 
         var win = document.createElement('div');
-        win.style.cssText = 'position:absolute;inset:0;z-index:200;background:#060610;display:flex;flex-direction:column;font-family:monospace;';
+        win.style.cssText = 'position:absolute;inset:0;z-index:200;background:#f8f8e0;display:flex;flex-direction:column;font-family:monospace;';
         _pokenavMapWin = win;
         screen.appendChild(win);
 
@@ -2295,16 +2295,16 @@ window.GameStartMenu = (function () {
             ctx.fillStyle = grad; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Title bar
-            ctx.fillStyle = '#0a1830';
+            ctx.fillStyle = '#ee3100';
             ctx.fillRect(0, 0, canvas.width, 20*S);
-            ctx.fillStyle = '#18b8c8';
+            ctx.fillStyle = '#ee3100';
             ctx.fillRect(0, 20*S, canvas.width, 2);
-            ctx.textBaseline = 'top'; ctx.fillStyle = '#18b8c8';
+            ctx.textBaseline = 'top'; ctx.fillStyle = '#ee3100';
             ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
             ctx.fillText('POKENAV — MAP', 8*S, 5*S);
 
             // Region name
-            ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = '#80d0e8';
+            ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = '#ffffff';
             ctx.fillText(region.charAt(0).toUpperCase()+region.slice(1)+' Region', 8*S, 30*S);
 
             // Map area visualization — draw a simple schematic grid
@@ -2321,11 +2321,11 @@ window.GameStartMenu = (function () {
             var bx=8, by=50, bw=140, bh=80;
             ctx.fillStyle = ri.color+'44';
             ctx.fillRect(bx*S, by*S, bw*S, bh*S);
-            ctx.strokeStyle = '#18b8c8'; ctx.lineWidth = 2;
+            ctx.strokeStyle = '#ee3100'; ctx.lineWidth = 2;
             ctx.strokeRect(bx*S, by*S, bw*S, bh*S);
 
             // Region label
-            ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = '#18b8c8';
+            ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = '#ee3100';
             ctx.fillText(ri.label, (bx+4)*S, (by+4)*S);
 
             // Player position indicator — pulsing dot in center
@@ -2345,7 +2345,7 @@ window.GameStartMenu = (function () {
 
             // Visited maps count
             var visited = st && st.visitedMaps ? (st.visitedMaps instanceof Set ? st.visitedMaps.size : st.visitedMaps.length) : 0;
-            ctx.font = (7*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = '#c8d8e8';
+            ctx.font = (7*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = '#181818';
             ctx.fillText('Maps visited: '+visited, 8*S, 140*S);
 
             // Coordinates
@@ -2356,8 +2356,8 @@ window.GameStartMenu = (function () {
             }
 
             // Bottom bar
-            ctx.fillStyle = '#0a1830'; ctx.fillRect(0, 148*S, canvas.width, 12*S);
-            ctx.fillStyle = '#18b8c8'; ctx.fillRect(0, 148*S, canvas.width, 1);
+            ctx.fillStyle = '#ee3100'; ctx.fillRect(0, 148*S, canvas.width, 12*S);
+            ctx.fillStyle = '#ee3100'; ctx.fillRect(0, 148*S, canvas.width, 1);
             ctx.font = (7*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = '#6090a8';
             ctx.fillText('B: Back', 8*S, 150*S);
         }
