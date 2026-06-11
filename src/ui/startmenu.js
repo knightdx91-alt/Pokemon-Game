@@ -271,11 +271,22 @@ window.GameStartMenu = (function () {
         // Right panel
         const panel = document.createElement('div');
         panel.className = 'sm-right-panel';
-        panel.style.setProperty('background', 'linear-gradient(#f8f8f0, #f8f8f0)', 'important');
+        panel.style.cssText += 'position:relative;background:transparent!important;';
+
+        // Canvas background — immune to Chrome dark mode inversion
+        const bgC = document.createElement('canvas');
+        bgC.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block;';
+        bgC.width = 200; bgC.height = 400;
+        const bgCtx = bgC.getContext('2d');
+        bgCtx.fillStyle = '#f8f8f0';
+        bgCtx.fillRect(0, 0, bgC.width, bgC.height);
+        panel.appendChild(bgC);
 
         ITEMS.forEach(function (itm, i) {
             const row = document.createElement('div');
             row.className = 'sm-list-item' + (i === selectedIdx ? ' selected' : '');
+            row.style.position = 'relative';
+            row.style.zIndex = '1';
 
             const cursor = document.createElement('span');
             cursor.className = 'sm-list-cursor';

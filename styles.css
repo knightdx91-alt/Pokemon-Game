@@ -226,7 +226,8 @@ html, body {
     width: 48%; min-width: 88px; max-width: 116px;
     color-scheme: light;
     forced-color-adjust: none;
-    background: linear-gradient(#f8f8f0, #f8f8f0) !important;
+    background: transparent !important;
+    position: relative;
     border-left:   2px solid #101010;
     border-top:    2px solid #101010;
     border-bottom: 2px solid #101010;
@@ -239,6 +240,7 @@ html, body {
 /* Menu item rows */
 .sm-list-item {
     color-scheme: light; forced-color-adjust: none;
+    position: relative; z-index: 1;
     display: flex; align-items: center;
     padding: 5px 4px 5px 2px; font-size: 7.5px;
     color: #181818; cursor: pointer;
