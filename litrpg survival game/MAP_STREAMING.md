@@ -40,6 +40,17 @@ Doors / cave-mouths / building entrances are **warps** → a quick **fade transi
 separate spaces, so a short load there matches the Pokémon feel and keeps the outdoor stream light.
 Only the **outdoor** world is seamless.
 
+### 2.1 Transition types (all reuse the warp framework — all buildable)
+| Transition | How it works | Effort |
+|---|---|---|
+| **Door (enter building)** | door tile = warp → fade → load interior map at its entrance; exit at bottom warps back to the overworld door | cheap |
+| **Stairs (multi-floor)** | each floor is its own small interior map; **stair warps** link them; snappy step/slide transition (often no full fade). Multi-story shops/guilds/towers = stacked floor-maps | cheap |
+| **Boat / ship (sea travel)** | a port's **"board ship"** interaction → warp-with-flavor to the destination port. Also the region↔region sea path | medium |
+
+**Boat — two styles (open call):**
+1. **Cinematic crossing** — short sailing sequence/transition, then disembark at the destination port. Simplest.
+2. **Walkable ship** — the ship is its own little map (deck/cabins) you walk while it "sails," then disembark. More immersive, more work.
+
 ---
 
 ## 3. Why the engine fits
@@ -82,3 +93,4 @@ not pop into existence on a fresh load).
 1. **Ring depth** — 1 ring (4 neighbors) or 2 (includes diagonals/corners) for fast travel/biking?
 2. **Sea travel** — seamless ocean stream vs. a short travel scene for long crossings.
 3. **Indoor transition** — instant fade vs. a brief door animation.
+4. **Boat style** — cinematic crossing vs. walkable ship (§2.1).
