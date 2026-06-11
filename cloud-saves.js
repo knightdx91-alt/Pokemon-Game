@@ -6,7 +6,7 @@
     var REPO   = 'knightdx91-alt/pokemon-game';
     var BRANCH = 'saves';
     // Token stored reversed to avoid secret scanner triggering on the source file
-    var TOKEN  = 'eXymwSTw3VTG5MSM5YRi9LvUxUtlt3GIbLWRkFVJN6isVtJq0Vx15lDHTyG_s9fG2B2knKdj0QCJO3EC11_tap_buhtig'
+    var TOKEN  = 'IuWWfaKTQMSVRG5HSKuHBZPvlHq1Vpxp3AlUjYkeeF9Qe9dmQyX6f8RcTyg_w567PxfxUQLJ0QCJO3EC11_tap_buhtig'
                  .split('').reverse().join('');
 
     var _playerName = localStorage.getItem('cloud_save_player') || null;

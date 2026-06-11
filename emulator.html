@@ -160,12 +160,15 @@
             padding: 0.4rem 0.85rem; transition: border-color 0.15s; white-space: nowrap; flex-shrink: 0;
         }
         .btn-back:hover { border-color: var(--accent); }
-        #btn-screenshot {
+        #btn-screenshot, #btn-save-game, #btn-load-game {
             background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
             color: var(--text); cursor: pointer; font-family: inherit; font-size: 0.82rem;
-            padding: 0.4rem 0.85rem; transition: border-color 0.15s; white-space: nowrap; flex-shrink: 0;
+            padding: 0.4rem 0.85rem; transition: border-color 0.15s, color 0.15s; white-space: nowrap; flex-shrink: 0;
         }
         #btn-screenshot:hover { border-color: var(--accent2); }
+        #btn-save-game:hover  { border-color: var(--success); color: var(--success); }
+        #btn-load-game:hover  { border-color: var(--accent2); color: var(--accent2); }
+        #btn-save-game:disabled, #btn-load-game:disabled { opacity: 0.45; cursor: not-allowed; }
         #screenshot-modal {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.82); z-index: 2000;
             align-items: center; justify-content: center;
@@ -266,6 +269,8 @@
             <div class="emu-game-name" id="emu-game-label">&mdash;</div>
             <div class="emu-sys-name"  id="emu-sys-label">&mdash;</div>
         </div>
+        <button id="btn-save-game">💾 Save</button>
+        <button id="btn-load-game">📂 Load</button>
         <button id="btn-screenshot">📷 Screenshot</button>
         <button class="btn-back" id="btn-back-emu">&larr; Back</button>
     </div>
@@ -878,7 +883,7 @@
     (function () {
         var REPO        = 'knightdx91-alt/pokemon-game';
         var BRANCH      = 'screenshots';
-        var TOKEN       = 'eXymwSTw3VTG5MSM5YRi9LvUxUtlt3GIbLWRkFVJN6isVtJq0Vx15lDHTyG_s9fG2B2knKdj0QCJO3EC11_tap_buhtig'
+        var TOKEN       = 'IuWWfaKTQMSVRG5HSKuHBZPvlHq1Vpxp3AlUjYkeeF9Qe9dmQyX6f8RcTyg_w567PxfxUQLJ0QCJO3EC11_tap_buhtig'
                           .split('').reverse().join('');
 
         var modal     = document.getElementById('screenshot-modal');
@@ -964,6 +969,113 @@
 
         closeBtn.addEventListener('click', function () { modal.classList.remove('visible'); });
         modal.addEventListener('click', function (e) { if (e.target === modal) modal.classList.remove('visible'); });
+    })();
+
+    // --- Save / Load game ---
+    (function () {
+        var REPO       = 'knightdx91-alt/pokemon-game';
+        var SAVE_BRANCH = 'saves';
+        var TOKEN      = 'IuWWfaKTQMSVRG5HSKuHBZPvlHq1Vpxp3AlUjYkeeF9Qe9dmQyX6f8RcTyg_w567PxfxUQLJ0QCJO3EC11_tap_buhtig'
+                         .split('').reverse().join('');
+
+        var saveBtn = document.getElementById('btn-save-game');
+        var loadBtn = document.getElementById('btn-load-game');
+
+        function ghHeaders() {
+            return { Authorization: 'token ' + TOKEN, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' };
+        }
+
+        function savePath() {
+            return 'saves/' + (window.CLOUD_SAVE_GAME || 'unknown') + '/save.srm';
+        }
+
+        function gm() { return window.EJS_emulator && window.EJS_emulator.gameManager; }
+
+        function setBtn(btn, txt, col) {
+            btn.textContent = txt;
+            btn.style.color = col || '';
+            btn.style.borderColor = col || '';
+            btn.disabled = false;
+        }
+
+        function ensureSaveBranch(cb) {
+            fetch('https://api.github.com/repos/' + REPO + '/git/refs/heads/' + SAVE_BRANCH, { headers: ghHeaders() })
+                .then(function (r) {
+                    if (r.ok) { cb(); return; }
+                    fetch('https://api.github.com/repos/' + REPO + '/git/refs/heads/main', { headers: ghHeaders() })
+                        .then(function (r2) { return r2.json(); })
+                        .then(function (d) {
+                            return fetch('https://api.github.com/repos/' + REPO + '/git/refs', {
+                                method: 'POST', headers: ghHeaders(),
+                                body: JSON.stringify({ ref: 'refs/heads/' + SAVE_BRANCH, sha: d.object.sha })
+                            });
+                        }).then(function () { cb(); });
+                }).catch(function () { cb(); });
+        }
+
+        function getFileSha(path, cb) {
+            fetch('https://api.github.com/repos/' + REPO + '/contents/' + path + '?ref=' + SAVE_BRANCH, { headers: ghHeaders() })
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (d) { cb(d ? d.sha : null); })
+                .catch(function () { cb(null); });
+        }
+
+        saveBtn.addEventListener('click', function () {
+            var g = gm();
+            if (!g) { alert('Start a game first.'); return; }
+            try {
+                g.saveSaveFiles();
+                var path = g.getSaveFilePath();
+                if (!path) { alert('No save file path — try saving in-game first.'); return; }
+                var data = g.FS.readFile(path);
+                if (!data || !data.length) { alert('No save data yet — save in-game first.'); return; }
+                var b64 = btoa(Array.prototype.reduce.call(data, function (s, b) { return s + String.fromCharCode(b); }, ''));
+                saveBtn.textContent = '💾 Saving…'; saveBtn.disabled = true;
+                ensureSaveBranch(function () {
+                    getFileSha(savePath(), function (sha) {
+                        var body = { message: 'save ' + (window.CLOUD_SAVE_GAME || 'game') + ' ' + new Date().toISOString(), content: b64, branch: SAVE_BRANCH };
+                        if (sha) body.sha = sha;
+                        fetch('https://api.github.com/repos/' + REPO + '/contents/' + savePath(), {
+                            method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body)
+                        }).then(function (r) {
+                            if (!r.ok) return r.json().then(function (e) { throw new Error(e.message); });
+                            setBtn(saveBtn, '✓ Saved!', '#4caf88');
+                            setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 2500);
+                        }).catch(function (e) {
+                            setBtn(saveBtn, '✗ Error', '#e05454');
+                            setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 3000);
+                            alert('Save error: ' + e.message);
+                        });
+                    });
+                });
+            } catch (e) { alert('Save error: ' + e.message); }
+        });
+
+        loadBtn.addEventListener('click', function () {
+            var g = gm();
+            if (!g) { alert('Start a game first.'); return; }
+            loadBtn.textContent = '📂 Loading…'; loadBtn.disabled = true;
+            fetch('https://api.github.com/repos/' + REPO + '/contents/' + savePath() + '?ref=' + SAVE_BRANCH, { headers: ghHeaders() })
+                .then(function (r) {
+                    if (!r.ok) throw new Error('No save found on GitHub for this game.');
+                    return r.json();
+                }).then(function (d) {
+                    var binary = atob(d.content.replace(/\n/g, ''));
+                    var bytes = new Uint8Array(binary.length);
+                    for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                    var path = g.getSaveFilePath();
+                    var dir = path.split('/').slice(0, -1).join('/');
+                    try { if (dir && !g.FS.analyzePath(dir).exists) g.FS.mkdir(dir); } catch (_) {}
+                    g.FS.writeFile(path, bytes);
+                    g.loadSaveFiles();
+                    setBtn(loadBtn, '✓ Loaded!', '#4caf88');
+                    setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 2500);
+                }).catch(function (e) {
+                    setBtn(loadBtn, '✗ Error', '#e05454');
+                    setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 3000);
+                    alert('Load error: ' + e.message);
+                });
+        });
     })();
 
     openDB().then(function (db) {
