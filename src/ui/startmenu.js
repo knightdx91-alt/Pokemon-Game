@@ -268,50 +268,74 @@ window.GameStartMenu = (function () {
         voidEl.className = 'sm-void';
         topRow.appendChild(voidEl);
 
-        // Right panel
-        const panel = document.createElement('div');
-        panel.className = 'sm-right-panel';
-        panel.style.cssText += 'position:relative;background:transparent!important;';
+        // Right panel — fully canvas-rendered so Chrome dark mode cannot touch it
+        const PW = 108, ROW_H = 18, PAD_X = 6, FONT_PX = 8;
+        const PH = ITEMS.length * ROW_H;
+        const panelCanvas = document.createElement('canvas');
+        panelCanvas.width  = PW;
+        panelCanvas.height = PH;
+        panelCanvas.style.cssText = 'display:block;border-left:2px solid #101010;border-top:2px solid #101010;border-bottom:2px solid #101010;cursor:pointer;image-rendering:pixelated;';
+        const pc = panelCanvas.getContext('2d');
 
-        // Canvas background — immune to Chrome dark mode inversion
-        const bgC = document.createElement('canvas');
-        bgC.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block;';
-        bgC.width = 200; bgC.height = 400;
-        const bgCtx = bgC.getContext('2d');
-        bgCtx.fillStyle = '#f8f8f0';
-        bgCtx.fillRect(0, 0, bgC.width, bgC.height);
-        panel.appendChild(bgC);
+        function _drawPanel() {
+            pc.clearRect(0, 0, PW, PH);
+            // White background
+            pc.fillStyle = '#f8f8f0';
+            pc.fillRect(0, 0, PW, PH);
+            // Row highlight for selected
+            pc.fillStyle = 'rgba(0,0,0,0.08)';
+            pc.fillRect(0, selectedIdx * ROW_H, PW, ROW_H);
+            // Text
+            pc.font = 'bold ' + FONT_PX + 'px "Press Start 2P", monospace';
+            pc.textBaseline = 'middle';
+            ITEMS.forEach(function(itm, i) {
+                const y = i * ROW_H + ROW_H / 2;
+                pc.fillStyle = '#181818';
+                if (i === selectedIdx) {
+                    pc.fillText('▶', PAD_X, y);
+                }
+                const label = (itm.id === 'PLAYER') ? _playerName().toUpperCase() : itm.label.toUpperCase();
+                pc.fillText(label, PAD_X + 12, y);
+            });
+        }
+        _drawPanel();
 
-        ITEMS.forEach(function (itm, i) {
-            const row = document.createElement('div');
-            row.className = 'sm-list-item' + (i === selectedIdx ? ' selected' : '');
-            row.style.cssText = 'position:relative;z-index:1;color:#181818!important;-webkit-text-fill-color:#181818;forced-color-adjust:none;';
-
-            const cursor = document.createElement('span');
-            cursor.className = 'sm-list-cursor';
-            cursor.textContent = i === selectedIdx ? '▶' : '';
-            cursor.style.cssText = 'color:#181818!important;-webkit-text-fill-color:#181818;';
-            row.appendChild(cursor);
-
-            const lbl = document.createElement('span');
-            lbl.textContent = (itm.id === 'PLAYER') ? _playerName().toUpperCase() : itm.label.toUpperCase();
-            lbl.style.cssText = 'color:#181818!important;-webkit-text-fill-color:#181818;';
-            row.appendChild(lbl);
-
-            row.addEventListener('click', function () { selectedIdx = i; _confirmSelected(); });
-            panel.appendChild(row);
+        // Map canvas clicks to item selection
+        panelCanvas.addEventListener('click', function(e) {
+            const rect = panelCanvas.getBoundingClientRect();
+            const scaleY = PH / rect.height;
+            const iy = Math.floor((e.clientY - rect.top) * scaleY / ROW_H);
+            if (iy >= 0 && iy < ITEMS.length) { selectedIdx = iy; _confirmSelected(); }
         });
 
-        topRow.appendChild(panel);
+        topRow.appendChild(panelCanvas);
         menuEl.appendChild(topRow);
 
-        // Blue description bar at bottom
-        const desc = document.createElement('div');
-        desc.className = 'sm-desc-bar';
-        desc.style.cssText += 'color:#ffffff!important;-webkit-text-fill-color:#ffffff;forced-color-adjust:none;';
+        // Blue description bar at bottom — also canvas
+        const DW = menuEl.offsetWidth || 240, DH = 34;
+        const descCanvas = document.createElement('canvas');
+        descCanvas.width  = DW || 240;
+        descCanvas.height = DH;
+        descCanvas.style.cssText = 'display:block;width:100%;';
+        const dc = descCanvas.getContext('2d');
+        dc.fillStyle = '#2870c0';
+        dc.fillRect(0, 0, descCanvas.width, DH);
+        dc.fillStyle = '#ffffff';
+        dc.font = '7px "Press Start 2P", monospace';
+        dc.textBaseline = 'top';
         const selItem = ITEMS[selectedIdx];
-        desc.textContent = selItem ? (ITEM_DESCS[selItem.id] || '') : '';
-        menuEl.appendChild(desc);
+        const descText = selItem ? (ITEM_DESCS[selItem.id] || '') : '';
+        // Word-wrap simple: split by space, draw lines
+        const words = descText.split(' ');
+        let line = '', lineY = 6, maxW = descCanvas.width - 12;
+        words.forEach(function(w) {
+            const test = line ? line + ' ' + w : w;
+            if (dc.measureText(test).width > maxW && line) {
+                dc.fillText(line, 6, lineY); lineY += 11; line = w;
+            } else { line = test; }
+        });
+        if (line) dc.fillText(line, 6, lineY);
+        menuEl.appendChild(descCanvas);
     }
 
     // --- Render sub-page overlay ---
