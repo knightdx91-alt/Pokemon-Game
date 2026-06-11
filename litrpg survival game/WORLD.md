@@ -236,6 +236,8 @@ Wild roster: <affinity spread + level band>
 Scavenge nodes / visible-temptation loot: <what you can SEE and risk for>
 Camp anchors: <where a Camp Kit is viable / forward-base spots>
 Surveillance notes: <System offers / Audit risk here>
+Hidden: <secret area? concealment + key skill — see HIDDEN_LAYER.md>
+Relics: <old-system relics here + how gated (skill / hazard / Surveillance)>
 Story beat: <glitch | ruin | vanishing NPC | construct death line | OWPS step>
 Warp unlock: <landmark that becomes fast-travel after first survival>
 Connections: <adjacent zones / sea routes>
