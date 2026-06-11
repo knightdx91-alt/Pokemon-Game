@@ -39,6 +39,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ---
 
 ## CRITICAL RULES — READ FIRST
+- **NEVER use the Agent tool. Handle ALL tasks directly. Do not spawn subagents for any reason — they waste usage and fail silently. Do everything yourself with the available tools (Read, Edit, Write, Bash, Grep, Glob).**
 - **ALL work goes on `main` branch ONLY. Never create feature branches. Never open PRs. Push directly to `main`.**
 - **The EE submodule lives at `source/emerald-enhanced/` — use it as the reference for any UI/visual work.**
 - **No build system. Plain HTML/CSS/JS, all globals (`window.GameXxx`). No npm, no bundler.**
