@@ -156,8 +156,12 @@ window.GameStartMenu = (function () {
     }
     function _loadBagAssets(cb) {
         if (_bagAssets) { cb(_bagAssets); return; }
-        var assets = { bg: null, icons: [], bagFrames: [] };
-        var pending = 1 + 14 + 6; // bg + 7 unsel + 7 sel + 6 bag frames
+        var assets = { bg: null, icons: [], bagFrames: [], bagMale: null };
+        var pending = 1 + 14 + 6 + 1; // bg + 7 unsel + 7 sel + 6 bag frames + FR bag
+        var bm = new Image();
+        bm.onload  = function() { assets.bagMale = bm; done(); };
+        bm.onerror = function() { done(); };
+        bm.src = 'src/assets/bag/bag_male_rgba.png';
         function done() { if (--pending === 0) { _bagAssets = assets; cb(assets); } }
         var bg = new Image();
         bg.onload = function() { assets.bg = bg; done(); };
@@ -1108,14 +1112,12 @@ window.GameStartMenu = (function () {
         function pick(key) {
             return _dictToList(inv[key]);
         }
+        // FireRed has exactly 3 pockets. Medicine/valuables/TMs/berries fold
+        // into ITEMS (TM Case / Berry Pouch come later as key items).
         return [
-            { label: 'Items',      items: pick('items')     },
-            { label: 'Medicine',   items: pick('medicine')  },
-            { label: 'Valuables',  items: pick('valuables') },
-            { label: 'Key Items',  items: pick('keyItems')  },
-            { label: 'Poké Balls', items: pick('pokeBalls') },
-            { label: 'TMs & HMs',  items: pick('tms')       },
-            { label: 'Berries',    items: pick('berries')   },
+            { label: 'ITEMS',      items: pick('items').concat(pick('medicine'), pick('valuables'), pick('tms'), pick('berries')) },
+            { label: 'KEY ITEMS',  items: pick('keyItems')  },
+            { label: 'POKé BALLS', items: pick('pokeBalls') },
         ];
     }
 
@@ -1130,67 +1132,138 @@ window.GameStartMenu = (function () {
         var pocket  = POCKETS[_bagPocket] || POCKETS[0];
         var items   = pocket.items;
         var S = BAG_S;
+        var NP = POCKETS.length;
 
-        // EE dark palette
-        var CYAN    = '#e60808';
-        var TEXT    = '#181818';
-        var DIM     = '#484848';
-        var BG      = '#d5d5bd';
-        var SEL_BG  = 'rgba(230,8,8,0.12)';
+        // FireRed bag palette
+        var TEAL_A   = '#7ad1c2';   // striped background
+        var TEAL_B   = '#6cc4b5';
+        var PLATE_BG = '#f8e0a0';   // title plate tan
+        var PLATE_UL = '#e87830';   // orange underline
+        var LIST_BG  = '#fffbd9';   // cream list panel
+        var LIST_BRD = '#5a4a28';   // list panel border
+        var DASH     = '#e0d8a8';   // empty-row dashes
+        var TEXT     = '#404040';
+        var ARROW    = '#e85820';   // red pocket arrows
+        var DESC_BG  = '#2068c8';   // blue description bar
+        var DESC_BRD = '#0c3870';
 
         ctx.imageSmoothingEnabled = false;
         ctx.clearRect(0, 0, BAG_W, BAG_H);
-        ctx.fillStyle = BG;
-        ctx.fillRect(0, 0, BAG_W, BAG_H);
 
-        // ── Pocket name row (y=0..9 GBA): ( ◄ label ► ) ─────────────────────
+        // ── Teal striped background ──────────────────────────────────────────
+        for (var sy = 0; sy < 160; sy += 4) {
+            ctx.fillStyle = (sy % 8 === 0) ? TEAL_A : TEAL_B;
+            ctx.fillRect(0, sy*S, BAG_W, 4*S);
+        }
+
+        // ── Title plate (top-left): tan box + pocket name + orange underline ─
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(3*S, 3*S, 84*S, 18*S);
+        ctx.fillStyle = PLATE_BG;
+        ctx.fillRect(4*S, 4*S, 82*S, 16*S);
+        ctx.fillStyle = TEXT;
         ctx.font = 'bold ' + (8*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
-        ctx.fillStyle = CYAN;
-        ctx.fillText('(', 2*S, 1*S);
-        ctx.fillText('◄', 8*S, 1*S);
-        ctx.fillStyle = TEXT;
         var labelW = ctx.measureText(pocket.label).width;
-        ctx.fillText(pocket.label, (56*S) - labelW/2, 1*S);
-        ctx.fillStyle = CYAN;
-        ctx.fillText('►', (100*S) - ctx.measureText('►').width, 1*S);
-        ctx.fillText(')', (108*S) - ctx.measureText(')').width, 1*S);
+        ctx.fillText(pocket.label, 45*S - labelW/2, 6*S);
+        ctx.fillStyle = PLATE_UL;
+        ctx.fillRect(8*S, 16*S, 74*S, 3*S);
 
-        // ── Pocket icon row (y=8..15 GBA) ────────────────────────────────────
-        var iconRowY = 8*S;
-        var iconStartX = Math.round((112 - 7*10) / 2) * S; // center 7 icons of 10px each
-        for (var i = 0; i < 7; i++) {
-            var ix = iconStartX + i * 10*S;
-            var icon = assets && assets.icons && assets.icons[i];
-            if (icon) {
-                var img = (i === _bagPocket) ? icon.sel : icon.unsel;
-                if (img) ctx.drawImage(img, ix, iconRowY, 8*S, 8*S);
+        // ── Bag sprite, centered in left panel with conditional arrows ───────
+        var bagImg = (assets && assets.bagMale) || (assets && assets.bagFrames && assets.bagFrames[0]);
+        if (bagImg) ctx.drawImage(bagImg, 14*S, 30*S, 64*S, 64*S);
+
+        function pocketArrow(x, dir) {
+            ctx.fillStyle = ARROW;
+            ctx.beginPath();
+            if (dir < 0) {
+                ctx.moveTo(x + 8*S, 54*S); ctx.lineTo(x, 61*S); ctx.lineTo(x + 8*S, 68*S);
+            } else {
+                ctx.moveTo(x, 54*S); ctx.lineTo(x + 8*S, 61*S); ctx.lineTo(x, 68*S);
+            }
+            ctx.closePath(); ctx.fill();
+        }
+        if (_bagPocket > 0)      pocketArrow(2*S, -1);   // ◄ only if a pocket to the left
+        if (_bagPocket < NP - 1) pocketArrow(80*S, +1);  // ► only if a pocket to the right
+
+        // ── Item list panel (right): cream, rounded, dark border ─────────────
+        ctx.fillStyle = LIST_BRD;
+        ctx.fillRect(89*S, 3*S, 148*S, 110*S);
+        ctx.fillStyle = LIST_BG;
+        ctx.fillRect(91*S, 5*S, 144*S, 106*S);
+
+        var MAX_VIS = 5;
+        var totalRows = items.length + 1; // +1 for CANCEL
+        var scroll = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), totalRows - MAX_VIS));
+        if (scroll < 0) scroll = 0;
+
+        ctx.font = (7*S) + 'px "Press Start 2P", monospace';
+        ctx.textBaseline = 'top';
+
+        for (var j = 0; j < MAX_VIS; j++) {
+            var idx = scroll + j;
+            var row_y = (10 + j * 20) * S;
+            var sel = (idx === _subIdx);
+
+            if (sel && idx < totalRows) {
+                // Black ▶ cursor
+                ctx.fillStyle = '#303030';
+                ctx.beginPath();
+                ctx.moveTo(94*S, row_y);
+                ctx.lineTo(99*S, row_y + 4*S);
+                ctx.lineTo(94*S, row_y + 8*S);
+                ctx.closePath(); ctx.fill();
+            }
+
+            if (idx < items.length) {
+                var item = items[idx];
+                ctx.fillStyle = TEXT;
+                ctx.fillText(item.name || item.itemId || '?', 102*S, row_y);
+                var qty = '\xd7' + String(item.quantity || 1);
+                ctx.fillText(qty, 228*S - ctx.measureText(qty).width, row_y);
+            } else if (idx === items.length) {
+                ctx.fillStyle = TEXT;
+                ctx.fillText('CANCEL', 102*S, row_y);
+            } else {
+                // Empty row: dashed placeholder line
+                ctx.fillStyle = DASH;
+                for (var dx = 102; dx < 226; dx += 10) {
+                    ctx.fillRect(dx*S, (10 + j*20 + 4)*S, 7*S, 2*S);
+                }
             }
         }
 
-        // ── Big bag sprite (y=16..79 GBA, 64×64) ─────────────────────────────
-        var bagFrame = assets && assets.bagFrames && assets.bagFrames[Math.min(_bagPocket, 5)];
-        if (bagFrame) {
-            var bx = Math.round((112 - 64) / 2) * S;
-            ctx.drawImage(bagFrame, bx, 16*S, 64*S, 64*S);
+        // Scroll arrows
+        if (scroll > 0) {
+            ctx.fillStyle = ARROW;
+            ctx.beginPath(); ctx.moveTo(158*S, 8*S); ctx.lineTo(163*S, 4*S); ctx.lineTo(168*S, 8*S); ctx.closePath(); ctx.fill();
+        }
+        if (scroll + MAX_VIS < totalRows) {
+            ctx.fillStyle = ARROW;
+            ctx.beginPath(); ctx.moveTo(158*S, 106*S); ctx.lineTo(163*S, 110*S); ctx.lineTo(168*S, 106*S); ctx.closePath(); ctx.fill();
         }
 
-        // ── Item icon box (x=2..33, y=84..111 GBA) with cyan border ──────────
-        ctx.strokeStyle = CYAN;
+        // ── Blue description bar (bottom, full width) ────────────────────────
+        ctx.fillStyle = DESC_BRD;
+        ctx.fillRect(0, 114*S, BAG_W, 46*S);
+        ctx.fillStyle = DESC_BG;
+        ctx.fillRect(0, 116*S, BAG_W, 42*S);
+
+        // Item icon box at left of desc bar
+        ctx.fillStyle = '#f0f0f8';
+        ctx.fillRect(6*S, 121*S, 28*S, 32*S);
+        ctx.strokeStyle = '#c0c0d0';
         ctx.lineWidth = S;
-        ctx.strokeRect(2*S, 84*S, 32*S, 28*S);
-        if (itemIcon) {
-            ctx.drawImage(itemIcon, 4*S, 86*S, 24*S, 24*S);
-        }
+        ctx.strokeRect(6*S, 121*S, 28*S, 32*S);
+        if (itemIcon) ctx.drawImage(itemIcon, 8*S, 124*S, 24*S, 24*S);
 
-        // ── Description text (y=116..159 GBA) ────────────────────────────────
         var selItem = items[_subIdx];
-        var isClosePack = (!selItem || _subIdx >= items.length);
-        var desc = isClosePack ? 'Return to battle.' : (selItem.desc || selItem.description || '');
-        ctx.fillStyle = TEXT;
+        var isCancel = (!selItem || _subIdx >= items.length);
+        var desc = isCancel ? 'CLOSE BAG' : (selItem.desc || selItem.description || '');
+        ctx.fillStyle = '#ffffff';
         ctx.font = (7*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
-        var words = desc.split(' '), line = '', lx = 2*S, ly = 116*S, maxW = 108*S, lineH = 9*S;
+        var words = desc.split(' '), line = '', lx = 40*S, ly = 122*S, maxW = 192*S, lineH = 10*S;
         for (var w = 0; w < words.length; w++) {
             var test = line ? line + ' ' + words[w] : words[w];
             if (ctx.measureText(test).width > maxW && line) {
@@ -1199,77 +1272,6 @@ window.GameStartMenu = (function () {
             } else { line = test; }
         }
         if (line && ly <= 150*S) ctx.fillText(line, lx, ly);
-
-        // ── Right panel: item list box ────────────────────────────────────────
-        // Outer box border
-        ctx.strokeStyle = CYAN;
-        ctx.lineWidth = S;
-        ctx.strokeRect(113*S, 1*S, 126*S, 158*S);
-
-        var MAX_VIS = 8;
-        var totalRows = items.length + 1; // +1 for Close Pack
-        var scroll = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), totalRows - MAX_VIS));
-        if (scroll < 0) scroll = 0;
-
-        ctx.font = (7*S) + 'px "Press Start 2P", monospace';
-        ctx.textBaseline = 'top';
-
-        function drawCursor(cx, cy, h) {
-            // Filled right-pointing triangle as cursor
-            ctx.fillStyle = CYAN;
-            ctx.beginPath();
-            ctx.moveTo(cx,        cy + 1);
-            ctx.lineTo(cx + 5*S,  cy + Math.floor(h/2));
-            ctx.lineTo(cx,        cy + h - 1);
-            ctx.closePath();
-            ctx.fill();
-        }
-
-        for (var j = 0; j < MAX_VIS; j++) {
-            var idx = scroll + j;
-            if (idx >= items.length) break;
-            var item = items[idx];
-            var row_y = (4 + j * 16) * S;
-            var sel = (idx === _subIdx);
-
-            if (sel) {
-                ctx.fillStyle = SEL_BG;
-                ctx.fillRect(114*S, row_y - 1*S, 124*S, 15*S);
-                drawCursor(115*S, row_y, 13*S);
-            }
-
-            ctx.fillStyle = TEXT;
-            var name = item.name || item.itemId || '?';
-            ctx.fillText(name, 124*S, row_y);
-
-            // quantity: × N right-aligned
-            var qty = '\xd7' + String(item.quantity || 1);
-            var qw = ctx.measureText(qty).width;
-            ctx.fillText(qty, 237*S - qw, row_y);
-        }
-
-        // "Close Pack" entry
-        var closeY = (4 + Math.min(MAX_VIS, items.length) * 16) * S;
-        if (closeY < 152*S) {
-            var closeSel = (_subIdx >= items.length);
-            if (closeSel) {
-                ctx.fillStyle = SEL_BG;
-                ctx.fillRect(114*S, closeY - 1*S, 124*S, 15*S);
-                drawCursor(115*S, closeY, 13*S);
-            }
-            ctx.fillStyle = DIM;
-            ctx.fillText('Close Pack', 124*S, closeY);
-        }
-
-        // Scroll arrows — drawn as triangles too
-        if (scroll > 0) {
-            ctx.fillStyle = CYAN;
-            ctx.beginPath(); ctx.moveTo(232*S, 8*S); ctx.lineTo(236*S, 4*S); ctx.lineTo(240*S, 8*S); ctx.closePath(); ctx.fill();
-        }
-        if (scroll + MAX_VIS < items.length) {
-            ctx.fillStyle = CYAN;
-            ctx.beginPath(); ctx.moveTo(232*S, 150*S); ctx.lineTo(236*S, 154*S); ctx.lineTo(240*S, 150*S); ctx.closePath(); ctx.fill();
-        }
     }
 
     function _buildBag(el) {
@@ -1299,32 +1301,27 @@ window.GameStartMenu = (function () {
             var cy = (e.clientY - rect.top)  * (160 / rect.height);
             var NP = _getBagPockets().length;
 
-            // ◄ arrow: x=8..20, y=0..9
-            if (cy >= 0 && cy < 9 && cx >= 8 && cx < 20) {
-                _bagPocket = (_bagPocket - 1 + NP) % NP; _subIdx = 0; _render(); return;
+            // ◄ arrow beside bag (no wrap — FireRed clamps at first/last pocket)
+            if (cy >= 50 && cy < 72 && cx >= 0 && cx < 14 && _bagPocket > 0) {
+                _bagPocket--; _subIdx = 0; _render(); return;
             }
-            // ► arrow: x=97..112, y=0..9
-            if (cy >= 0 && cy < 9 && cx >= 97 && cx < 112) {
-                _bagPocket = (_bagPocket + 1) % NP; _subIdx = 0; _render(); return;
+            // ► arrow beside bag
+            if (cy >= 50 && cy < 72 && cx >= 78 && cx < 92 && _bagPocket < NP - 1) {
+                _bagPocket++; _subIdx = 0; _render(); return;
             }
-            // Pocket indicator squares: y=16..23, x=24..88 (7 squares of 10px each, centered)
-            if (cy >= 8 && cy < 16 && cx >= 24 && cx < 24 + NP * 10) {
-                var p = Math.floor((cx - 24) / 10);
-                if (p >= 0 && p < NP) { _bagPocket = p; _subIdx = 0; _render(); return; }
-            }
-            // Item list: x=113..239, y=8..152
-            if (cx >= 113 && cy >= 8 && cy < 152) {
-                var row = Math.floor((cy - 8) / 16);
+            // Item list: x=91..235, y=5..111, rows 20px tall starting y=10
+            if (cx >= 91 && cx < 235 && cy >= 5 && cy < 111) {
+                var row = Math.floor((cy - 10) / 20);
                 var POCKETS = _getBagPockets();
                 var items = (POCKETS[_bagPocket] || POCKETS[0]).items;
-                var MAX_VIS = 9;
+                var MAX_VIS = 5;
                 var scroll = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), items.length + 1 - MAX_VIS));
                 if (scroll < 0) scroll = 0;
                 var itemIdx = scroll + row;
                 if (itemIdx >= 0 && itemIdx < items.length) {
                     _subIdx = itemIdx; _render();
                 } else if (itemIdx === items.length) {
-                    // Tapped Close Pack row — confirm it
+                    // Tapped CANCEL — close the bag
                     _subIdx = itemIdx; _confirmSelected();
                 }
             }
@@ -2943,13 +2940,13 @@ window.GameStartMenu = (function () {
         if (!isOpen) return;
         if (page==='main') { return; } // no horizontal nav on vertical list
         if (page==='journal') { _journalTab=(_journalTab-1+4)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
-        if (page==='bag') { var _np=_getBagPockets().length; _bagPocket=(_bagPocket-1+_np)%_np; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
+        if (page==='bag') { if(_bagPocket>0){_bagPocket--;_subIdx=0;if(!_redrawPageEl())_render();} return; }
     }
     function moveRight() {
         if (!isOpen) return;
         if (page==='main') { return; } // no horizontal nav on vertical list
         if (page==='journal') { _journalTab=(_journalTab+1)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
-        if (page==='bag') { var _np=_getBagPockets().length; _bagPocket=(_bagPocket+1)%_np; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
+        if (page==='bag') { if(_bagPocket<_getBagPockets().length-1){_bagPocket++;_subIdx=0;if(!_redrawPageEl())_render();} return; }
     }
     function moveUp() {
         if (!isOpen) return;
