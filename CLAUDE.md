@@ -300,6 +300,29 @@ block. Warp tiles are always walkable.
   Not yet fully extracted or wired as a playable region (needs map metadata
   extraction, a `hns` region index, `INDEX_FILES` registration, connections).
 
+### Planned: fan-game map converters (NOT built yet)
+Two converters discussed as future capability for pulling maps out of other
+Pokémon fan games. Both are feasible; neither is built. **Both need a sample
+input committed to the repo to develop/verify against** — a parser can't be
+trusted until its output renders correctly (the way HnS was verified).
+
+- **RPG Maker XP / Pokémon Essentials** (Reborn, Rejuvenation, Insurgence, most
+  fan games). Maps live in `Data/*.rxdata` (Ruby `Marshal` blobs): `Map###.rxdata`
+  = a `w×h×3`-layer tile grid; `Tilesets.rxdata` = passability/priority flags
+  (→ collision); `MapInfos.rxdata` = names; `Graphics/Tilesets/<name>.png` = art.
+  Approach: Python + a Marshal reader → composite the 3 layers → emit
+  `layout.json` + `tileset.png`. **Catch:** RMXP tiles are **32×32** vs the
+  engine's **16×16** metatiles, so layout/collision convert cleanly but art
+  doesn't natively fit — either downscale (quality loss) or add a 32px-tile mode.
+  Result preserves map *design*; fidelity depends on the source game's art.
+- **Compiled GBA ROM** (`.gba`, no source). Parse the ROM binary: map bank table
+  → map headers → blockdata (same `u16` metatile+collision format we already
+  handle) → tilesets (LZ77 gfx + palettes + metatile defs). **Upside:** produces
+  native **16×16 GBA metatiles** — perfect fidelity, reuses the existing
+  renderer. **Catch:** needs base-game ROM offsets (FireRed vs Emerald differ),
+  LZ77 decompression, varies for repointed/expanded hacks; user supplies the ROM
+  (legal caveat). This is the better path when GBA fidelity matters.
+
 ### Tooling (`tools/`)
 - `build_tileset_index.py` — regenerate `data/tilesets/_index.json` (editor's
   tileset list) after adding tilesets.
