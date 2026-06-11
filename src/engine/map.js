@@ -45,6 +45,7 @@ window.GameMap = (function () {
         hoenn:     'data/maps/hoenn_index.json',
         heartgold: 'data/maps/heartgold_index.json',
         sinnoh:    'data/maps/sinnoh_index.json',
+        custom:    'data/maps/custom_index.json',
     };
 
     async function init(region) {

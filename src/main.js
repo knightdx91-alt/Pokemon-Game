@@ -393,8 +393,14 @@
             GameRenderer.init(canvas);
 
             await GameMap.init();
-            await GameMap.load('PalletTown', currentRegion);
-            window._mapName   = (GameMap.current && GameMap.current.name) || 'PalletTown';
+            // Optional startup override: ?map=VerdantHollow&region=custom lets you
+            // drop straight into any map (e.g. one built in the map editor).
+            const _params   = new URLSearchParams(window.location.search);
+            const _startMap = _params.get('map') || 'PalletTown';
+            const _startReg = _params.get('region') || currentRegion;
+            currentRegion = _startReg;
+            await GameMap.load(_startMap, _startReg);
+            window._mapName   = (GameMap.current && GameMap.current.name) || _startMap;
             window._mapLoaded = true;
 
             player.x    = 7;
