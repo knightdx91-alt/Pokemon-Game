@@ -393,33 +393,55 @@
     setTimeout(function () { download(map.name + '.json', map); }, 250);
   });
 
+  // Apply a parsed layout JSON to the editor. Returns a Promise (tileset load).
+  // `mapMeta` (optional) restores warps + map-info fields from a map JSON.
+  function applyLayout(data, mapMeta) {
+    if (!data || !data.metatiles || !data.width) {
+      return Promise.reject(new Error('Not a layout JSON (needs width/height/metatiles).'));
+    }
+    var finish = function () {
+      state.width = data.width; state.height = data.height;
+      state.metatiles = Int32Array.from(data.metatiles);
+      state.collision = data.collision ? Uint8Array.from(data.collision)
+        : new Uint8Array(data.width * data.height);
+      $('mapW').value = data.width; $('mapH').value = data.height;
+      $('layoutId').value = data.id || 'LAYOUT_IMPORTED';
+      $('statSize').textContent = data.width + ' × ' + data.height;
+      if (mapMeta) {
+        if (mapMeta.name) $('mapName').value = mapMeta.name;
+        if (mapMeta.region) {
+          var sel = $('mapRegion');
+          if (!Array.prototype.some.call(sel.options, function (o) { return o.value === mapMeta.region; })) {
+            var o = document.createElement('option'); o.value = o.textContent = mapMeta.region; sel.appendChild(o);
+          }
+          sel.value = mapMeta.region;
+        }
+        state.warps = (mapMeta.warps || []).map(function (w) {
+          return { x: w.x, y: w.y, dest_map: w.dest_map || 'MAP_NONE', dest_warp_id: w.dest_warp_id || '0' };
+        });
+      } else {
+        state.warps = [];
+      }
+      drawMap(); renderWarpList();
+    };
+    if (data.tileset && data.tileset !== state.tilesetName) {
+      $('tilesetSel').value = data.tileset;
+      return loadTileset(data.tileset).then(finish).catch(function () {
+        alert('Tileset "' + data.tileset + '" not found; keeping current.');
+        finish();
+      });
+    }
+    finish();
+    return Promise.resolve();
+  }
+
   $('importBtn').addEventListener('click', function () { $('importFile').click(); });
   $('importFile').addEventListener('change', function (e) {
     var f = e.target.files[0]; if (!f) return;
     var reader = new FileReader();
     reader.onload = function () {
       try {
-        var data = JSON.parse(reader.result);
-        if (!data.metatiles || !data.width) {
-          alert('Not a layout JSON (needs width/height/metatiles).'); return;
-        }
-        var apply = function () {
-          state.width = data.width; state.height = data.height;
-          state.metatiles = Int32Array.from(data.metatiles);
-          state.collision = data.collision ? Uint8Array.from(data.collision)
-            : new Uint8Array(data.width * data.height);
-          $('mapW').value = data.width; $('mapH').value = data.height;
-          $('layoutId').value = data.id || 'LAYOUT_IMPORTED';
-          $('statSize').textContent = data.width + ' × ' + data.height;
-          drawMap();
-        };
-        if (data.tileset && data.tileset !== state.tilesetName) {
-          $('tilesetSel').value = data.tileset;
-          loadTileset(data.tileset).then(apply).catch(function () {
-            alert('Tileset "' + data.tileset + '" not found; keeping current.');
-            apply();
-          });
-        } else { apply(); }
+        applyLayout(JSON.parse(reader.result)).catch(function (err) { alert(err.message); });
       } catch (err) { alert('Failed to parse JSON: ' + err.message); }
     };
     reader.readAsText(f);
@@ -558,6 +580,100 @@
   }
 
   $('repoSaveBtn').addEventListener('click', saveToRepo);
+
+  // ── Load from repo: browse maps on the 'maps' branch and open one ──
+  // List every map file via the Git Trees API (one recursive call), excluding
+  // region index files.
+  function ghListMaps() {
+    var url = 'https://api.github.com/repos/' + GH_REPO + '/git/trees/' +
+      GH_BRANCH + '?recursive=1';
+    return fetch(url, { headers: ghHeaders() })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (tree) {
+        var maps = [];
+        (tree.tree || []).forEach(function (node) {
+          // data/maps/<region>/<Name>.json  (skip <region>_index.json)
+          var m = /^data\/maps\/([^/]+)\/([^/]+)\.json$/.exec(node.path);
+          if (m && !/_index$/.test(m[2])) {
+            maps.push({ region: m[1], name: m[2], path: node.path });
+          }
+        });
+        maps.sort(function (a, b) {
+          return (a.region + a.name).localeCompare(b.region + b.name);
+        });
+        return maps;
+      });
+  }
+
+  function openRepoModal() {
+    $('repoModal').style.display = 'flex';
+    var body = $('repoModalBody');
+    body.innerHTML = '<div class="hint">Loading map list…</div>';
+    ghListMaps().then(function (maps) {
+      if (!maps.length) {
+        body.innerHTML = '<div class="hint">No maps saved on the "maps" branch yet. ' +
+          'Use ☁ Save to repo first.</div>';
+        return;
+      }
+      body.innerHTML = '';
+      var lastRegion = null;
+      maps.forEach(function (mp) {
+        if (mp.region !== lastRegion) {
+          lastRegion = mp.region;
+          var hdr = document.createElement('div');
+          hdr.textContent = mp.region;
+          hdr.style.cssText = 'color:#18b8c8; font-size:11px; text-transform:uppercase;' +
+            'letter-spacing:.5px; margin:8px 2px 4px;';
+          body.appendChild(hdr);
+        }
+        var row = document.createElement('button');
+        row.textContent = mp.name;
+        row.style.cssText = 'display:block; width:100%; text-align:left; margin:3px 0;';
+        row.addEventListener('click', function () { loadMapFromRepo(mp); });
+        body.appendChild(row);
+      });
+    }).catch(function (e) {
+      body.innerHTML = '<div class="hint" style="color:#e88;">Failed to list maps: ' +
+        e.message + '</div>';
+    });
+  }
+
+  function loadMapFromRepo(mp) {
+    var body = $('repoModalBody');
+    body.innerHTML = '<div class="hint">Loading ' + mp.name + '…</div>';
+    // Fetch the map JSON, then its layout, then apply both.
+    ghGet(mp.path)
+      .then(function (cur) {
+        if (!cur.content) throw new Error('map file empty');
+        var mapObj = JSON.parse(cur.content);
+        var layoutPath = 'data/layouts/' + mp.region + '/' + mapObj.layout + '.json';
+        return ghGet(layoutPath).then(function (lc) {
+          if (!lc.content) throw new Error('layout "' + mapObj.layout + '" not found on branch');
+          return { layout: JSON.parse(lc.content), map: mapObj };
+        });
+      })
+      .then(function (res) {
+        return applyLayout(res.layout, res.map);
+      })
+      .then(function () {
+        $('repoModal').style.display = 'none';
+      })
+      .catch(function (e) {
+        body.innerHTML = '<div class="hint" style="color:#e88;">Failed to load: ' +
+          e.message + '</div>';
+      });
+  }
+
+  $('repoLoadBtn').addEventListener('click', openRepoModal);
+  $('repoModalClose').addEventListener('click', function () {
+    $('repoModal').style.display = 'none';
+  });
+  $('repoModal').addEventListener('click', function (e) {
+    if (e.target === $('repoModal')) $('repoModal').style.display = 'none';
+  });
 
   // ── Boot ──
   loadTilesetList().then(function () {

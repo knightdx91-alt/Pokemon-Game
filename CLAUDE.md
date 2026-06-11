@@ -259,6 +259,9 @@ block. Warp tiles are always walkable.
   `data/` paths so they're trivially merged into `main`:
   `data/layouts/<region>/<LAYOUT_ID>.json`, `data/maps/<region>/<Name>.json`,
   and the region index `data/maps/<region>_index.json` (read-modify-write).
+- **☁ Load from repo** button lists every map on the `maps` branch (Git Trees
+  API, recursive) in a picker modal and re-opens the chosen one for editing —
+  fetches the map JSON + its layout, restores tileset/grid/collision/warps.
 - The `maps` branch is an orphan storage branch (just created maps, no game
   code). To use a saved map in the game, copy its files from `maps` into `data/`
   on `main` and register the region in `INDEX_FILES` if new.

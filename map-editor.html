@@ -96,6 +96,7 @@
       <button id="importBtn">Import…</button>
       <button id="exportBtn">Export ⬇</button>
       <button id="repoSaveBtn" title="Commit this map to the 'maps' branch on GitHub">☁ Save to repo</button>
+      <button id="repoLoadBtn" title="Open a map saved on the 'maps' branch">☁ Load from repo</button>
       <input type="file" id="importFile" accept=".json" style="display:none">
     </div>
   </div>
@@ -160,6 +161,23 @@
     <span id="statTile">—</span>
     <span id="statSize">—</span>
     <span id="statTileset">—</span>
+  </div>
+
+  <!-- Repo map picker -->
+  <div id="repoModal" style="display:none; position:fixed; inset:0; z-index:50;
+      background:rgba(0,0,0,.6); align-items:center; justify-content:center;">
+    <div style="width:420px; max-width:92vw; max-height:80vh; background:#252b3a;
+        border:1px solid #3a4256; border-radius:10px; display:flex; flex-direction:column;
+        box-shadow:0 12px 40px rgba(0,0,0,.6);">
+      <div style="padding:12px 14px; border-bottom:1px solid #3a4256; display:flex;
+          align-items:center; justify-content:space-between;">
+        <strong style="color:#18b8c8;">Load map from repo</strong>
+        <button id="repoModalClose">✕</button>
+      </div>
+      <div id="repoModalBody" style="padding:10px 12px; overflow:auto; flex:1;">
+        <div class="hint">Loading…</div>
+      </div>
+    </div>
   </div>
 
 <script src="map-editor.js"></script>

@@ -35,6 +35,9 @@ server — not `file://`). It's also launchable from the **RetroPlay hub**
   (`data/layouts/<region>/…`, `data/maps/<region>/…`, plus the region index),
   so they can be copied/merged into `main` directly. The `maps` branch is a
   dedicated storage branch for created maps — no game code.
+- **☁ Load from repo** → lists every map saved on the `maps` branch and re-opens
+  the one you pick (restores tileset, grid, collision, and warps) so you can
+  keep editing it.
 
 To install an exported (or repo-saved) map into the game:
 
