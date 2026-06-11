@@ -1162,25 +1162,29 @@ window.GameStartMenu = (function () {
             ctx.fillStyle = RED;
             ctx.beginPath();
             if (dir < 0) {
-                ctx.moveTo(x + 6*S, 4*S); ctx.lineTo(x, 10*S); ctx.lineTo(x + 6*S, 16*S);
+                ctx.moveTo(x + 6*S, 5*S); ctx.lineTo(x, 10*S); ctx.lineTo(x + 6*S, 15*S);
             } else {
-                ctx.moveTo(x, 4*S); ctx.lineTo(x + 6*S, 10*S); ctx.lineTo(x, 16*S);
+                ctx.moveTo(x, 5*S); ctx.lineTo(x + 6*S, 10*S); ctx.lineTo(x, 15*S);
             }
             ctx.closePath(); ctx.fill();
         }
-        pillArrow(20*S, -1);
-        pillArrow(96*S, +1);
+        pillArrow(15*S, -1);
+        pillArrow(99*S, +1);
 
-        // ── Pocket name centered in the pill ─────────────────────────────────
-        ctx.font = 'bold ' + (8*S) + 'px "Press Start 2P", monospace';
+        // ── Pocket name centered in the pill (pill interior x=22..98) ────────
         ctx.textBaseline = 'top';
         ctx.fillStyle = TEXT;
+        ctx.font = 'bold ' + (7*S) + 'px "Press Start 2P", monospace';
         var labelW = ctx.measureText(pocket.label).width;
-        ctx.fillText(pocket.label, (61*S) - labelW/2, 6*S);
+        if (labelW > 72*S) {
+            ctx.font = 'bold ' + (6*S) + 'px "Press Start 2P", monospace';
+            labelW = ctx.measureText(pocket.label).width;
+        }
+        ctx.fillText(pocket.label, (60*S) - labelW/2, 7*S);
 
         // ── Pocket icon row directly under the pill ──────────────────────────
-        var iconRowY = 17*S;
-        var iconStartX = 22*S;
+        var iconRowY = 18*S;
+        var iconStartX = 24*S;
         for (var i = 0; i < NP; i++) {
             var ix = iconStartX + i * 9*S;
             var icon = assets && assets.icons && assets.icons[i];
@@ -1199,15 +1203,15 @@ window.GameStartMenu = (function () {
         var selItem = items[_subIdx];
         var isClosePack = (!selItem || _subIdx >= items.length);
 
-        // ── Item icon box (white box at x≈2..32, y≈84..110) ──────────────────
+        // ── Item icon box (white box interior x=5..34, y=71..96) ─────────────
         if (isClosePack) {
             // EE shows a big grey return arrow for Close Pack
             ctx.fillStyle = '#a0a0a8';
-            ctx.font = (20*S) + 'px sans-serif';
+            ctx.font = (18*S) + 'px sans-serif';
             ctx.textBaseline = 'top';
-            ctx.fillText('↵', 8*S, 84*S);
+            ctx.fillText('↵', 11*S, 72*S);
         } else if (itemIcon) {
-            ctx.drawImage(itemIcon, 6*S, 86*S, 24*S, 24*S);
+            ctx.drawImage(itemIcon, 9*S, 73*S, 22*S, 22*S);
         }
 
         // ── Description text in the white bottom-left box ────────────────────
@@ -1215,7 +1219,7 @@ window.GameStartMenu = (function () {
         ctx.fillStyle = TEXT;
         ctx.font = (7*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
-        var words = desc.split(' '), line = '', lx = 6*S, ly = 120*S, maxW = 94*S, lineH = 9*S;
+        var words = desc.split(' '), line = '', lx = 7*S, ly = 107*S, maxW = 94*S, lineH = 10*S;
         for (var w = 0; w < words.length; w++) {
             var test = line ? line + ' ' + words[w] : words[w];
             if (ctx.measureText(test).width > maxW && line) {
