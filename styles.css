@@ -56,7 +56,7 @@ html, body {
 
 /* === SCREEN CONTAINERS === */
 #screen-primary, #screen-secondary {
-    position: relative; background: #111;
+    position: relative; background: transparent;
     border: 2px solid #333; border-radius: 6px; overflow: hidden;
 }
 #screen-primary {
@@ -195,17 +195,18 @@ html, body {
 #start-menu {
     display: none; position: absolute; inset: 0; z-index: 50;
     pointer-events: none; flex-direction: column; overflow: hidden;
+    background: transparent;
 }
 #start-menu.open { display: flex; }
 
 /* Top section: void + panel side by side */
 .sm-top-row {
     flex: 1; display: flex; flex-direction: row; align-items: flex-start;
-    pointer-events: none;
+    pointer-events: none; background: transparent;
 }
 
 /* Left void — transparent, game world shows through */
-.sm-void { flex: 1; pointer-events: all; }
+.sm-void { flex: 1; pointer-events: all; background: transparent; }
 
 /* Right panel — FireRed style: white bg, border on left+top+bottom, flush right */
 .sm-right-panel {
