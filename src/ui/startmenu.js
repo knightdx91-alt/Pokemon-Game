@@ -1154,7 +1154,7 @@ window.GameStartMenu = (function () {
         // ── Selected pocket icon in the gold circle at top-left ──────────────
         var selIcon = assets && assets.icons && assets.icons[_bagPocket];
         if (selIcon && selIcon.sel) {
-            ctx.drawImage(selIcon.sel, 5*S, 5*S, 10*S, 10*S);
+            ctx.drawImage(selIcon.sel, 6*S, 11*S, 10*S, 10*S);
         }
 
         // ── Red ◄ ► arrows at the pill ends (like EE) ────────────────────────
@@ -1162,14 +1162,14 @@ window.GameStartMenu = (function () {
             ctx.fillStyle = RED;
             ctx.beginPath();
             if (dir < 0) {
-                ctx.moveTo(x + 6*S, 5*S); ctx.lineTo(x, 10*S); ctx.lineTo(x + 6*S, 15*S);
+                ctx.moveTo(x + 6*S, 11*S); ctx.lineTo(x, 15.5*S); ctx.lineTo(x + 6*S, 20*S);
             } else {
-                ctx.moveTo(x, 5*S); ctx.lineTo(x + 6*S, 10*S); ctx.lineTo(x, 15*S);
+                ctx.moveTo(x, 11*S); ctx.lineTo(x + 6*S, 15.5*S); ctx.lineTo(x, 20*S);
             }
             ctx.closePath(); ctx.fill();
         }
-        pillArrow(15*S, -1);
-        pillArrow(99*S, +1);
+        pillArrow(16*S, -1);
+        pillArrow(98*S, +1);
 
         // ── Pocket name centered in the pill (pill interior x=22..98) ────────
         // Text sits directly on the cream pill baked into the EE background.
@@ -1178,10 +1178,10 @@ window.GameStartMenu = (function () {
         ctx.fillStyle = '#484848';
         ctx.font = (8*S) + 'px Arial, "Helvetica Neue", sans-serif';
         var labelW = ctx.measureText(pocket.label).width;
-        ctx.fillText(pocket.label, (60*S) - labelW/2, 6*S);
+        ctx.fillText(pocket.label, (60*S) - labelW/2, 12*S);
 
         // ── Pocket icon row directly under the pill ──────────────────────────
-        var iconRowY = 18*S;
+        var iconRowY = 25*S;
         var iconStartX = 24*S;
         for (var i = 0; i < NP; i++) {
             var ix = iconStartX + i * 9*S;
@@ -1313,14 +1313,14 @@ window.GameStartMenu = (function () {
             var NP = _getBagPockets().length;
 
             // Red ◄ ► arrows at the pill ends (wrap like EE)
-            if (cy >= 2 && cy < 19 && cx >= 14 && cx < 30) {
+            if (cy >= 8 && cy < 24 && cx >= 14 && cx < 30) {
                 _bagPocket = (_bagPocket - 1 + NP) % NP; _subIdx = 0; _render(); return;
             }
-            if (cy >= 2 && cy < 19 && cx >= 92 && cx < 108) {
+            if (cy >= 8 && cy < 24 && cx >= 92 && cx < 108) {
                 _bagPocket = (_bagPocket + 1) % NP; _subIdx = 0; _render(); return;
             }
-            // Pocket icon row under the pill: y=17..25, 9px spacing from x=22
-            if (cy >= 15 && cy < 27 && cx >= 22 && cx < 22 + NP * 9) {
+            // Pocket icon row under the pill: y=25..33, 9px spacing from x=24
+            if (cy >= 24 && cy < 35 && cx >= 22 && cx < 22 + NP * 9) {
                 var p = Math.floor((cx - 22) / 9);
                 if (p >= 0 && p < NP) { _bagPocket = p; _subIdx = 0; _render(); return; }
             }
