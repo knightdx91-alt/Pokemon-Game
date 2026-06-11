@@ -1014,7 +1014,10 @@
         }
 
         function getFileSha(path, cb) {
-            fetch('https://api.github.com/repos/' + REPO + '/contents/' + path + '?ref=' + SAVE_BRANCH, { headers: ghHeaders() })
+            // Timestamp busts browser/CDN cache so we always get the current SHA
+            var url = 'https://api.github.com/repos/' + REPO + '/contents/' + path
+                      + '?ref=' + SAVE_BRANCH + '&t=' + Date.now();
+            fetch(url, { headers: ghHeaders(), cache: 'no-store' })
                 .then(function (r) { return r.ok ? r.json() : null; })
                 .then(function (d) { cb(d ? d.sha : null); })
                 .catch(function () { cb(null); });
