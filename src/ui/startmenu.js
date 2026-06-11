@@ -157,13 +157,13 @@ window.GameStartMenu = (function () {
     function _loadBagAssets(cb) {
         if (_bagAssets) { cb(_bagAssets); return; }
         var assets = { bg: null, icons: [], bagFrames: [] };
-        var pending = 1 + 14 + 6; // bg + 7 unsel + 7 sel + 6 bag frames
+        var pending = 1 + 16 + 6; // bg + 8 unsel + 8 sel + 6 bag frames
         function done() { if (--pending === 0) { _bagAssets = assets; cb(assets); } }
         var bg = new Image();
         bg.onload = function() { assets.bg = bg; done(); };
         bg.onerror = function() { done(); };
         bg.src = _bagBgPath();
-        for (var i = 0; i < 7; i++) {
+        for (var i = 0; i < 8; i++) {
             (function(idx) {
                 var icon = { unsel: null, sel: null };
                 assets.icons.push(icon);
@@ -1108,14 +1108,16 @@ window.GameStartMenu = (function () {
         function pick(key) {
             return _dictToList(inv[key]);
         }
+        // EE pocket order — gPocketNamesStringsTable in source/emerald-enhanced/src/strings.c
         return [
-            { label: 'Items',      items: pick('items')     },
-            { label: 'Medicine',   items: pick('medicine')  },
-            { label: 'Valuables',  items: pick('valuables') },
-            { label: 'Key Items',  items: pick('keyItems')  },
-            { label: 'Poké Balls', items: pick('pokeBalls') },
-            { label: 'TMs & HMs',  items: pick('tms')       },
-            { label: 'Berries',    items: pick('berries')   },
+            { label: 'Items',       items: pick('items')      },
+            { label: 'Medicine',    items: pick('medicine')   },
+            { label: 'Valuables',   items: pick('valuables')  },
+            { label: 'Poké Balls',  items: pick('pokeBalls')  },
+            { label: 'TMs & HMs',   items: pick('tms')        },
+            { label: 'Berries',     items: pick('berries')    },
+            { label: 'Key Items',   items: pick('keyItems')   },
+            { label: 'Mega Stones', items: pick('megaStones') },
         ];
     }
 
@@ -1130,37 +1132,45 @@ window.GameStartMenu = (function () {
         var pocket  = POCKETS[_bagPocket] || POCKETS[0];
         var items   = pocket.items;
         var S = BAG_S;
+        var NP = POCKETS.length;
 
-        // EE dark palette
-        var CYAN    = '#e60808';
-        var TEXT    = '#181818';
-        var DIM     = '#484848';
-        var BG      = '#d5d5bd';
-        var SEL_BG  = 'rgba(230,8,8,0.12)';
+        // Theme-aware text colors (bg asset already matches the theme)
+        var theme  = (localStorage.getItem('pokemon_theme') || 'DARK').toLowerCase();
+        var isLight = (theme === 'light' || theme === 'vanilla');
+        var TEXT   = isLight ? '#404040' : '#c8d8e8';
+        var DIM    = isLight ? '#888878' : '#607080';
+        var ACCENT = '#18b8c8';
+        var SEL_BG = 'rgba(24,184,200,0.15)';
 
         ctx.imageSmoothingEnabled = false;
         ctx.clearRect(0, 0, BAG_W, BAG_H);
-        ctx.fillStyle = BG;
-        ctx.fillRect(0, 0, BAG_W, BAG_H);
 
-        // ── Pocket name row (y=0..9 GBA): ( ◄ label ► ) ─────────────────────
+        // ── EE bag background (full 240×160 screen art from the submodule) ───
+        if (assets && assets.bg) {
+            ctx.drawImage(assets.bg, 0, 0, BAG_W, BAG_H);
+        } else {
+            ctx.fillStyle = isLight ? '#d5d5bd' : '#101820';
+            ctx.fillRect(0, 0, BAG_W, BAG_H);
+        }
+
+        // ── Selected pocket icon in the circle at top-left ───────────────────
+        var selIcon = assets && assets.icons && assets.icons[_bagPocket];
+        if (selIcon && selIcon.sel) {
+            ctx.drawImage(selIcon.sel, 5*S, 5*S, 10*S, 10*S);
+        }
+
+        // ── Pocket name centered in the pill (x≈20..104, y≈4..18) ────────────
         ctx.font = 'bold ' + (8*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
-        ctx.fillStyle = CYAN;
-        ctx.fillText('(', 2*S, 1*S);
-        ctx.fillText('◄', 8*S, 1*S);
         ctx.fillStyle = TEXT;
         var labelW = ctx.measureText(pocket.label).width;
-        ctx.fillText(pocket.label, (56*S) - labelW/2, 1*S);
-        ctx.fillStyle = CYAN;
-        ctx.fillText('►', (100*S) - ctx.measureText('►').width, 1*S);
-        ctx.fillText(')', (108*S) - ctx.measureText(')').width, 1*S);
+        ctx.fillText(pocket.label, (62*S) - labelW/2, 6*S);
 
-        // ── Pocket icon row (y=8..15 GBA) ────────────────────────────────────
-        var iconRowY = 8*S;
-        var iconStartX = Math.round((112 - 7*10) / 2) * S; // center 7 icons of 10px each
-        for (var i = 0; i < 7; i++) {
-            var ix = iconStartX + i * 10*S;
+        // ── Pocket icon row below the pill (8 EE pockets) ────────────────────
+        var iconRowY = 21*S;
+        var iconStartX = Math.round((104 - NP*11) / 2) * S;
+        for (var i = 0; i < NP; i++) {
+            var ix = iconStartX + i * 11*S;
             var icon = assets && assets.icons && assets.icons[i];
             if (icon) {
                 var img = (i === _bagPocket) ? icon.sel : icon.unsel;
@@ -1168,29 +1178,39 @@ window.GameStartMenu = (function () {
             }
         }
 
-        // ── Big bag sprite (y=16..79 GBA, 64×64) ─────────────────────────────
+        // ── Big bag sprite, centered in left area ────────────────────────────
         var bagFrame = assets && assets.bagFrames && assets.bagFrames[Math.min(_bagPocket, 5)];
         if (bagFrame) {
-            var bx = Math.round((112 - 64) / 2) * S;
-            ctx.drawImage(bagFrame, bx, 16*S, 64*S, 64*S);
+            ctx.drawImage(bagFrame, 22*S, 32*S, 56*S, 56*S);
         }
 
-        // ── Item icon box (x=2..33, y=84..111 GBA) with cyan border ──────────
-        ctx.strokeStyle = CYAN;
-        ctx.lineWidth = S;
-        ctx.strokeRect(2*S, 84*S, 32*S, 28*S);
+        // ── ◄ ► pocket arrows flanking the bag ───────────────────────────────
+        function pocketArrow(x, dir) {
+            ctx.fillStyle = ACCENT;
+            ctx.beginPath();
+            if (dir < 0) {
+                ctx.moveTo(x + 7*S, 52*S); ctx.lineTo(x, 59*S); ctx.lineTo(x + 7*S, 66*S);
+            } else {
+                ctx.moveTo(x, 52*S); ctx.lineTo(x + 7*S, 59*S); ctx.lineTo(x, 66*S);
+            }
+            ctx.closePath(); ctx.fill();
+        }
+        pocketArrow(6*S, -1);
+        pocketArrow(88*S, +1);
+
+        // ── Item icon in the bg's box (x≈2..32, y≈84..110) ───────────────────
         if (itemIcon) {
-            ctx.drawImage(itemIcon, 4*S, 86*S, 24*S, 24*S);
+            ctx.drawImage(itemIcon, 6*S, 86*S, 24*S, 24*S);
         }
 
-        // ── Description text (y=116..159 GBA) ────────────────────────────────
+        // ── Description text in the bg's bottom-left box ─────────────────────
         var selItem = items[_subIdx];
         var isClosePack = (!selItem || _subIdx >= items.length);
-        var desc = isClosePack ? 'Return to battle.' : (selItem.desc || selItem.description || '');
+        var desc = isClosePack ? 'Close the Bag.' : (selItem.desc || selItem.description || '');
         ctx.fillStyle = TEXT;
         ctx.font = (7*S) + 'px "Press Start 2P", monospace';
         ctx.textBaseline = 'top';
-        var words = desc.split(' '), line = '', lx = 2*S, ly = 116*S, maxW = 108*S, lineH = 9*S;
+        var words = desc.split(' '), line = '', lx = 6*S, ly = 120*S, maxW = 94*S, lineH = 9*S;
         for (var w = 0; w < words.length; w++) {
             var test = line ? line + ' ' + words[w] : words[w];
             if (ctx.measureText(test).width > maxW && line) {
@@ -1200,14 +1220,9 @@ window.GameStartMenu = (function () {
         }
         if (line && ly <= 150*S) ctx.fillText(line, lx, ly);
 
-        // ── Right panel: item list box ────────────────────────────────────────
-        // Outer box border
-        ctx.strokeStyle = CYAN;
-        ctx.lineWidth = S;
-        ctx.strokeRect(113*S, 1*S, 126*S, 158*S);
-
-        var MAX_VIS = 8;
-        var totalRows = items.length + 1; // +1 for Close Pack
+        // ── Item list inside the bg's right panel (x≈108..236, y≈4..156) ─────
+        var MAX_VIS = 9;
+        var totalRows = items.length + 1; // +1 for Cancel
         var scroll = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), totalRows - MAX_VIS));
         if (scroll < 0) scroll = 0;
 
@@ -1215,8 +1230,7 @@ window.GameStartMenu = (function () {
         ctx.textBaseline = 'top';
 
         function drawCursor(cx, cy, h) {
-            // Filled right-pointing triangle as cursor
-            ctx.fillStyle = CYAN;
+            ctx.fillStyle = ACCENT;
             ctx.beginPath();
             ctx.moveTo(cx,        cy + 1);
             ctx.lineTo(cx + 5*S,  cy + Math.floor(h/2));
@@ -1227,48 +1241,37 @@ window.GameStartMenu = (function () {
 
         for (var j = 0; j < MAX_VIS; j++) {
             var idx = scroll + j;
-            if (idx >= items.length) break;
-            var item = items[idx];
-            var row_y = (4 + j * 16) * S;
+            if (idx > items.length) break;
+            var row_y = (8 + j * 16) * S;
             var sel = (idx === _subIdx);
 
             if (sel) {
                 ctx.fillStyle = SEL_BG;
-                ctx.fillRect(114*S, row_y - 1*S, 124*S, 15*S);
-                drawCursor(115*S, row_y, 13*S);
+                ctx.fillRect(112*S, row_y - 1*S, 122*S, 15*S);
+                drawCursor(113*S, row_y, 13*S);
             }
 
-            ctx.fillStyle = TEXT;
-            var name = item.name || item.itemId || '?';
-            ctx.fillText(name, 124*S, row_y);
-
-            // quantity: × N right-aligned
-            var qty = '\xd7' + String(item.quantity || 1);
-            var qw = ctx.measureText(qty).width;
-            ctx.fillText(qty, 237*S - qw, row_y);
-        }
-
-        // "Close Pack" entry
-        var closeY = (4 + Math.min(MAX_VIS, items.length) * 16) * S;
-        if (closeY < 152*S) {
-            var closeSel = (_subIdx >= items.length);
-            if (closeSel) {
-                ctx.fillStyle = SEL_BG;
-                ctx.fillRect(114*S, closeY - 1*S, 124*S, 15*S);
-                drawCursor(115*S, closeY, 13*S);
+            if (idx < items.length) {
+                var item = items[idx];
+                ctx.fillStyle = TEXT;
+                ctx.fillText(item.name || item.itemId || '?', 122*S, row_y);
+                var qty = '\xd7' + String(item.quantity || 1);
+                ctx.fillText(qty, 232*S - ctx.measureText(qty).width, row_y);
+            } else {
+                // Cancel entry — EE shows CLOSE BAG as last row
+                ctx.fillStyle = DIM;
+                ctx.fillText('CLOSE BAG', 122*S, row_y);
             }
-            ctx.fillStyle = DIM;
-            ctx.fillText('Close Pack', 124*S, closeY);
         }
 
-        // Scroll arrows — drawn as triangles too
+        // Scroll arrows
         if (scroll > 0) {
-            ctx.fillStyle = CYAN;
-            ctx.beginPath(); ctx.moveTo(232*S, 8*S); ctx.lineTo(236*S, 4*S); ctx.lineTo(240*S, 8*S); ctx.closePath(); ctx.fill();
+            ctx.fillStyle = ACCENT;
+            ctx.beginPath(); ctx.moveTo(168*S, 7*S); ctx.lineTo(172*S, 3*S); ctx.lineTo(176*S, 7*S); ctx.closePath(); ctx.fill();
         }
-        if (scroll + MAX_VIS < items.length) {
-            ctx.fillStyle = CYAN;
-            ctx.beginPath(); ctx.moveTo(232*S, 150*S); ctx.lineTo(236*S, 154*S); ctx.lineTo(240*S, 150*S); ctx.closePath(); ctx.fill();
+        if (scroll + MAX_VIS < totalRows) {
+            ctx.fillStyle = ACCENT;
+            ctx.beginPath(); ctx.moveTo(168*S, 152*S); ctx.lineTo(172*S, 156*S); ctx.lineTo(176*S, 152*S); ctx.closePath(); ctx.fill();
         }
     }
 
@@ -1298,13 +1301,23 @@ window.GameStartMenu = (function () {
             var cx = (e.clientX - rect.left) * (240 / rect.width);
             var cy = (e.clientY - rect.top)  * (160 / rect.height);
 
-            // Pocket indicator squares: y=16..23, x=24..88 (8 squares of 8px)
-            if (cy >= 16 && cy < 24 && cx >= 24 && cx < 88) {
-                var p = Math.floor((cx - 24) / 8);
-                if (p >= 0 && p < 8) { _bagPocket = p; _subIdx = 0; _render(); return; }
+            var NP = _getBagPockets().length;
+
+            // ◄ ► arrows beside the bag sprite (wrap like EE)
+            if (cy >= 48 && cy < 70 && cx >= 0 && cx < 18) {
+                _bagPocket = (_bagPocket - 1 + NP) % NP; _subIdx = 0; _render(); return;
             }
-            // Item list: x=113..239, y=8..152
-            if (cx >= 113 && cy >= 8 && cy < 152) {
+            if (cy >= 48 && cy < 70 && cx >= 84 && cx < 104) {
+                _bagPocket = (_bagPocket + 1) % NP; _subIdx = 0; _render(); return;
+            }
+            // Pocket icon row below the pill: y=21..29, 11px spacing
+            var iconStartX = Math.round((104 - NP*11) / 2);
+            if (cy >= 19 && cy < 31 && cx >= iconStartX && cx < iconStartX + NP*11) {
+                var p = Math.floor((cx - iconStartX) / 11);
+                if (p >= 0 && p < NP) { _bagPocket = p; _subIdx = 0; _render(); return; }
+            }
+            // Item list: x=108..236, y=8..152
+            if (cx >= 108 && cy >= 8 && cy < 152) {
                 var row = Math.floor((cy - 8) / 16);
                 var POCKETS = _getBagPockets();
                 var items = (POCKETS[_bagPocket] || POCKETS[0]).items;
