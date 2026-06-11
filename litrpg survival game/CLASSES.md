@@ -122,43 +122,51 @@ double as **story flags** that interact with the cycle truth.
 
 ---
 
-## 3.5 Class Advancement — Designation Grades (the vertical ladder)
+## 3.5 Class Tiers, XP Cost & Evolution (the vertical ladder)
 
-A **second axis** from rarity (§3 / `ECONOMY.md §5`). Rarity = how rare a class is to *obtain*;
-**Grade** = how far you've climbed *within* a class as you level. The System assigns and "upgrades"
-your **Designation Grade** — another act of it classifying you.
+Every class has a **Tier** — its inherent power/rarity. The Tier sets three things at once: how
+strong the class is, how hard it is to obtain, and **how much XP each level costs**. This is the
+single class-power ladder (it replaces the earlier Initiate→Paragon naming; same idea, the names you
+wanted).
 
-> Original ladder (genre-conventional advancement tiers, our own naming). Inspired by the
-> Basic→Legendary advancement feel; named for the System theme.
-
-| Grade | Name | Unlocks at (≈) | What it grants |
+| Tier | XP per level (illustrative) | Obtain | Maps to item rarity |
 |---|---|---|---|
-| I | **Initiate** | start | Base kit, signature mechanic (weak form) |
-| II | **Adept** | early T1 | First advanced skill; minor attribute spike |
-| III | **Master** | T2 | **Specialization branch** (pick a subclass); signature upgraded |
-| IV | **Grandmaster** | T3 | Powerful capstone skill; second branch choice |
-| V | **Ascendant** | T4 | Near-cap power; class identity peaks |
-| VI | **Paragon** | ~soft cap (450) | Top grade — and where System attention is hottest |
+| **Basic** | ~100 to reach Lv1 — cheap, fast | default starters | Standard |
+| **Advanced** | ~350 — noticeably slower | uncommon / low rep | Uncommon |
+| **Master** | much higher | rare; **realistic ceiling for a *starting* pick** | Rare |
+| **Grandmaster** | huge | technically pickable from the long start list, but **glacial** to level | Elite |
+| **Heroic** | enormous | quest / deep rep / big credits | Legendary |
+| **Legendary** | massive | quest / relic only | Mythic |
+| **(Anomalous)** | off-book curve | **found via hidden layer, never sold** | Anomalous |
 
-### How grade-ups work
-- **Gated by level + a Classification Trial** — you don't tier up passively; each grade needs a
-  challenge/quest (often **guild-run**, tying advancement to guild reputation). Earned milestones,
-  not silent thresholds.
-- **Each grade grants:** new skill(s), an attribute spike, a stronger signature mechanic, and at
-  **Master/Grandmaster** a **branch choice** (the subclass trees referenced in §1).
+> Higher Tier = stronger **per level** but levels far slower. A Grandmaster gains huge power each
+> level — and takes forever to gain one.
 
-### Rarity × Grade interaction
-- **Rarity sets the ceiling and power-per-grade.** A higher-rarity class is stronger at each Grade
-  and may **start above Initiate** or reach a hidden **7th grade**. A Standard class and a Legendary
-  class can both be "Master," but the Legendary Master is stronger and advances toward more.
-- **Anomalous (glitch) classes** have **off-book grades** — the System never sanctioned them, so
-  their advancement comes through the hidden layer, not Classification Trials.
+### The starting trade-off (the long class list)
+- Character creation offers a **LONG list** of classes; you can pick higher Tiers up front
+  (realistically up to **Master**; **Grandmaster** is selectable but punishingly slow to level).
+- **Starting high is NOT strictly better.** You get the power Tier immediately, but you pay with
+  brutal XP *and* you forfeit the accumulated skills you'd get by evolving up (see below). Both
+  "start high" and "start low + climb" are valid builds.
+
+### Class Evolution — cumulative skills (the journey wins)
+- Classes form **evolution trees** — e.g. **Warrior → Paladin → …** — gated by level + a quest/
+  **Classification Trial** (often guild-run, tying advancement to guild reputation).
+- **Evolving KEEPS all prior-class skills and ADDS the new class's skills.** A Warrior who evolves to
+  Paladin has *Warrior skills + Paladin skills*.
+- **So evolving up beats starting at the destination:** a Warrior→Paladin ends up with a **bigger
+  total kit** than someone who picked Paladin at creation. The climb is rewarded; the shortcut trades
+  breadth for an early power Tier.
+- Each evolution/Tier-up also grants new skill(s), an attribute spike, and at branch points a
+  **specialization choice** (subclass trees from §1).
 
 ### Theme / endings hook
-- Reaching **Paragon** sits right at the **~450 soft cap** (`PROGRESSION.md §4`) — top-grade power is
-  exactly where **conversion risk** peaks. Climbing the ladder all the way is the System's bait: the
-  stronger you get, the closer you are to becoming its next construct. Off-Grid protection
-  (`HIDDEN_LAYER.md`) is how you survive Paragon — pulling advancement into the finale.
+- The top Tiers (**Heroic / Legendary**) push you toward the **~450 soft cap** (`PROGRESSION.md §4`)
+  where **conversion risk** peaks. Climbing all the way is the System's bait: the stronger you get,
+  the closer you are to becoming its next construct. Off-Grid protection (`HIDDEN_LAYER.md`) is how
+  you survive the top Tiers — pulling advancement into the finale.
+- **Anomalous (glitch) classes** advance **off-book** through the hidden layer, not Classification
+  Trials — the System never sanctioned them.
 
 ---
 

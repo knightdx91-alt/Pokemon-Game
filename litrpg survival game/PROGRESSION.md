@@ -77,6 +77,9 @@ Three categories of acquired power:
 
 - **XP sources:** combat (creature + self), **surviving expeditions** (extraction bonus), discovery
   milestones, crafting, quests/bounties. No daily-quest grind (matches the lean economy).
+- **XP-per-level scales with class Tier** (`CLASSES.md §3.5`): Basic ~100 to Lv1, Advanced ~350,
+  ballooning toward Legendary. Higher Tier = stronger per level but far slower to gain one — the
+  balancing lever that keeps "start high" from being strictly better.
 - **Skills level by use** (espionage/craft/survival skills improve as you use them — the System
   tracks your activity). Separate from character level.
 - **Creature XP** from battles; sharing/route rules TBD (see open calls).
@@ -93,8 +96,8 @@ Three categories of acquired power:
   next cycle's boss). Surviving past it requires Off-Grid / Resolve / hidden-layer protection —
   which ties the cap into the finale rather than being a flat wall.
 - It is a **soft** cap (consistent with the soft-survival philosophy): not a hard stop, a rising danger.
-- **Class Designation Grades** (`CLASSES.md §3.5`) climb alongside level; the top grade (**Paragon**)
-  lands right at the soft cap — top-grade power is exactly where conversion risk peaks.
+- **Class Tiers** (`CLASSES.md §3.5`) climb alongside level via evolution; the top Tiers (**Heroic /
+  Legendary**) push you toward the soft cap — top-Tier power is exactly where conversion risk peaks.
 
 ---
 
