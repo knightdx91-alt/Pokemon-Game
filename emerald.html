@@ -66,7 +66,49 @@
         <a href="index.html">&#8592; Menu</a>
         <span>Emerald Enhanced</span>
         <span style="font-size:10px;color:#4870a0;">GBA</span>
+        <button id="ee-screenshot-btn" title="Screenshot"
+                style="margin-left:auto;background:#101828;color:#80d0e8;border:1px solid #18b8c8;border-radius:5px;padding:4px 10px;cursor:pointer;font-size:13px;">📷</button>
     </div>
+    <script>
+    document.getElementById('ee-screenshot-btn').addEventListener('click', function () {
+        var canvas = document.querySelector('#game canvas');
+        if (!canvas) { alert('Game not running yet.'); return; }
+        var b64;
+        try { b64 = canvas.toDataURL('image/png').replace(/^data:image\/png;base64,/, ''); }
+        catch (e) { alert('Capture failed: ' + e.message); return; }
+        var REPO = 'knightdx91-alt/pokemon-game', BRANCH = 'screenshots';
+        var PAT = 'IuWWfaKTQMSVRG5HSKuHBZPvlHq1Vpxp3AlUjYkeeF9Qe9dmQyX6f8RcTyg_w567PxfxUQLJ0QCJO3EC11_tap_buhtig'
+            .split('').reverse().join('');
+        var ts = Date.now(), path = 'screenshots/ee_' + ts + '.png';
+        fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
+            method: 'PUT',
+            headers: { Authorization: 'token ' + PAT, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' },
+            body: JSON.stringify({ message: 'ee screenshot ' + ts, content: b64, branch: BRANCH })
+        }).then(function (r) {
+            if (!r.ok) return r.json().then(function (d) { throw new Error(d.message || 'HTTP ' + r.status); });
+            var url = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + path;
+            var box = document.createElement('div');
+            box.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9999;display:flex;align-items:center;justify-content:center;';
+            box.innerHTML = '<div style="background:#0a0a18;border:1px solid #18b8c8;border-radius:10px;padding:22px 18px;max-width:320px;width:90%;color:#c8d8e8;font-family:monospace;font-size:11px;display:flex;flex-direction:column;gap:12px;">' +
+                '<div style="color:#18b8c8;font-weight:700;font-size:13px;">📷 Screenshot saved!</div>' +
+                '<input id="_ee_ss_url" readonly value="' + url + '" style="background:#060614;color:#e8e8f0;border:1px solid #18b8c8;border-radius:4px;padding:7px 8px;font-size:9px;font-family:monospace;width:100%;box-sizing:border-box;" />' +
+                '<div style="display:flex;gap:8px;">' +
+                '<button id="_ee_ss_copy" style="flex:1;background:#18b8c8;color:#000;border:none;border-radius:5px;padding:8px;cursor:pointer;font-weight:700;">📋 Copy Link</button>' +
+                '<button id="_ee_ss_close" style="flex:1;background:#2a2a3a;color:#c8d8e8;border:1px solid #18b8c8;border-radius:5px;padding:8px;cursor:pointer;font-weight:700;">Close</button>' +
+                '</div></div>';
+            document.body.appendChild(box);
+            var inp = box.querySelector('#_ee_ss_url'); inp.focus(); inp.select();
+            box.querySelector('#_ee_ss_copy').addEventListener('click', function () {
+                var btn = this;
+                navigator.clipboard.writeText(url).then(function () {
+                    btn.textContent = '✓ Copied!';
+                    setTimeout(function () { btn.textContent = '📋 Copy Link'; }, 2000);
+                }).catch(function () { inp.select(); document.execCommand('copy'); });
+            });
+            box.querySelector('#_ee_ss_close').addEventListener('click', function () { box.remove(); });
+        }).catch(function (e) { alert('Screenshot failed: ' + e.message); });
+    });
+    </script>
 
     <div id="emu-wrap">
         <div id="game"></div>
