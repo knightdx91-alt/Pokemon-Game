@@ -673,14 +673,16 @@
             emuStatus.textContent = _lastMsg + '  \xB7  ' + (mins > 0 ? mins + 'm ' + secs + 's' : elapsed + 's');
         }, 1000);
 
-        window.EJS_player             = '#game';
-        window.EJS_core               = sys.core;
-        window.EJS_gameUrl            = blobUrl;
-        window.EJS_pathtodata         = CDN;
-        window.EJS_color              = '#7c6af7';
-        window.EJS_backgroundColor    = '#0d0d0f';
-        window.EJS_startOnLoaded      = !HEAVY[sys.id];
-        window.EJS_disableContextMenu = true;
+        window.EJS_player                    = '#game';
+        window.EJS_core                      = sys.core;
+        window.EJS_gameUrl                   = blobUrl;
+        window.EJS_pathtodata                = CDN;
+        window.EJS_color                     = '#7c6af7';
+        window.EJS_backgroundColor           = '#0d0d0f';
+        window.EJS_startOnLoaded             = !HEAVY[sys.id];
+        window.EJS_disableContextMenu        = true;
+        window.EJS_gameName                  = sys.id;
+        window.EJS_saveInBrowserLocalStorage = true;
 
         /* Supply stub BIOS directly so desmume2015 never fetches from CDN */
         if (sys.id === 'nds') {
