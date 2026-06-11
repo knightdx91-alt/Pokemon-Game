@@ -1567,8 +1567,6 @@ window.GameStartMenu = (function () {
     function _openPartySummary(mon, idx, filled, returnCb) {
         var subEl = document.getElementById('start-menu-sub');
         if (!subEl) return;
-        // Canvas-full-screen pages replace .sm-sub-overlay, so overlay directly onto subEl
-        var overlay = subEl.querySelector('.sm-sub-overlay') || subEl;
         // Remove any existing summary overlay
         var existing = subEl.querySelector('.party-summary-overlay');
         if (existing) existing.remove();
@@ -1585,9 +1583,22 @@ window.GameStartMenu = (function () {
         var ctx = canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false;
 
-        var TABS = ['Profile', 'Skills', 'Battle Moves'];
+        var TABS = ['Info', 'Skills', 'Moves', 'Contest'];
         var _tab = 0;
         var _frontImg = null;
+
+        var TYPE_COLORS_SUM = {
+            Normal:'#a8a878',Fire:'#f08030',Water:'#6890f0',Electric:'#f8d030',
+            Grass:'#78c850',Ice:'#98d8d8',Fighting:'#c03028',Poison:'#a040a0',
+            Ground:'#e0c068',Flying:'#a890f0',Psychic:'#f85888',Bug:'#a8b820',
+            Rock:'#b8a038',Ghost:'#705898',Dragon:'#7038f8',Dark:'#705848',Steel:'#b8b8d0'
+        };
+
+        function _monDisplayName(m) {
+            if (m.nickname) return m.nickname;
+            if (typeof m.speciesId === 'string') return m.speciesId.toUpperCase();
+            return '???';
+        }
 
         // Load front sprite
         _getPokedexNumMap(function(map) {
@@ -1600,138 +1611,274 @@ window.GameStartMenu = (function () {
         });
 
         function drawSummary() {
-            var _tc = _getThemeColors();
-            var BG = _tc.bg, TITLEBG = _tc.titleBg, CYAN = _tc.hi, TEXT = _tc.text, DIM = _tc.dim;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = BG; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.imageSmoothingEnabled = false;
 
-            // Title bar
-            ctx.fillStyle = TITLEBG; ctx.fillRect(0, 0, canvas.width, 20*S);
-            ctx.fillStyle = CYAN; ctx.fillRect(0, 20*S, canvas.width, S);
-            ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = CYAN; ctx.textBaseline = 'top';
-            ctx.fillText(TABS[_tab].toUpperCase(), 8*S, 4*S);
+            // ── Right panel background (full canvas first, left panel drawn on top)
+            ctx.fillStyle = '#f0f4f8';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Tab strip (L/R hint)
-            ctx.font = (7*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = DIM;
-            ctx.fillText('◀ L', 2*S, 4*S);
-            ctx.fillText('R ▶', (GBA_W-18)*S, 4*S);
+            // ── Header bar  y=0..14 GBA (0..28 canvas)
+            var hdrGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            hdrGrad.addColorStop(0,   '#8848b8');
+            hdrGrad.addColorStop(0.6, '#c878e8');
+            hdrGrad.addColorStop(1,   '#e8a8f8');
+            ctx.fillStyle = hdrGrad;
+            ctx.fillRect(0, 0, canvas.width, 14*S);
 
-            // Mon name + level bar (top section)
-            var barH = 18;
-            ctx.fillStyle = '#0a1820'; ctx.fillRect(0, 21*S, canvas.width, barH*S);
-            ctx.fillStyle = CYAN; ctx.fillRect(0, (21+barH)*S, canvas.width, S);
-            ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = TEXT; ctx.textBaseline = 'top';
-            var gStr = mon.gender==='M' ? ' ♂' : mon.gender==='F' ? ' ♀' : '';
-            ctx.fillText(_monDisplayName(mon)+gStr, 8*S, 23*S);
-            ctx.font = (7*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = DIM;
-            var _dexNum = (typeof mon.speciesId === 'number') ? mon.speciesId : ((_pokedexNumMap && Object.keys(_pokedexNumMap).find(function(k){ return _pokedexNumMap[k] === (mon.speciesId||'').toLowerCase(); })) || '?');
-            ctx.fillText('No. '+_dexNum, (GBA_W-60)*S, 23*S);
-            ctx.fillStyle = TEXT;
-            ctx.fillText('Lv.'+(mon.level||1), (GBA_W-28)*S, 23*S);
+            // Tab name left
+            ctx.font = 'bold '+(6*S)+'px "Press Start 2P", monospace';
+            ctx.fillStyle = '#ffffff';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(TABS[_tab].toUpperCase(), 6*S, 7*S);
 
-            // Front sprite (right side all tabs)
+            // 4 tab dots centered
+            for (var ti = 0; ti < 4; ti++) {
+                var dotX = (GBA_W/2 - 14 + ti*10)*S;
+                ctx.fillStyle = ti === _tab ? '#ffffff' : 'rgba(255,255,255,0.4)';
+                ctx.beginPath();
+                ctx.arc(dotX, 7*S, 2*S, 0, Math.PI*2);
+                ctx.fill();
+            }
+
+            // "A: Back" right
+            ctx.font = (5*S)+'px "Press Start 2P", monospace';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'right';
+            ctx.fillText('A: Back', (GBA_W-4)*S, 7*S);
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+
+            // ── Left panel  x=0..87 GBA
+            ctx.fillStyle = '#189878';
+            ctx.fillRect(0, 14*S, 88*S, (148-14)*S);
+            // Lighter border on right edge
+            ctx.fillStyle = '#40c898';
+            ctx.fillRect(87*S, 14*S, S, (148-14)*S);
+
+            // No. NNN at top-left of panel
+            ctx.font = (5*S)+'px "Press Start 2P", monospace';
+            ctx.fillStyle = '#ffffff';
+            ctx.textBaseline = 'top';
+            var _dexNum = (typeof mon.speciesId === 'number') ? mon.speciesId :
+                ((_pokedexNumMap && Object.keys(_pokedexNumMap).find(function(k){ return _pokedexNumMap[k] === (mon.speciesId||'').toLowerCase(); })) || '???');
+            ctx.fillText('No.' + String(_dexNum).padStart(3,'0'), 4*S, 16*S);
+
+            // Large sprite centered in panel, upper portion
             if (_frontImg) {
-                ctx.drawImage(_frontImg, (GBA_W-72)*S, 42*S, 64*S, 64*S);
-            }
-
-            var lx = 8, ty = 42;
-            if (_tab === 0) {
-                // Profile: OT / ID / Type / Ability / Nature
-                var rows = [
-                    ['OT/',       (mon.otName || 'Player')],
-                    ['ID No.',    String(mon.otId||'00000').padStart(5,'0')],
-                    ['Type',      (mon.type||'Normal')],
-                    ['Ability',   (mon.ability||'—')],
-                    ['Nature',    (mon.nature||'Hardy')],
-                    ['Item',      (mon.heldItem||'None')],
-                ];
-                ctx.font = (7*S)+'px "Press Start 2P", monospace'; ctx.textBaseline = 'top';
-                rows.forEach(function(r, i) {
-                    var ry = ty + i*14;
-                    ctx.fillStyle = DIM; ctx.fillText(r[0], lx*S, ry*S);
-                    ctx.fillStyle = TEXT; ctx.fillText(r[1], (lx+40)*S, ry*S);
-                });
-                // Caught level
-                ctx.fillStyle = DIM; ctx.fillText('Met Lv.', lx*S, (ty+6*14)*S);
-                ctx.fillStyle = TEXT; ctx.fillText(String(mon.caughtLevel||mon.level||1), (lx+40)*S, (ty+6*14)*S);
-            } else if (_tab === 1) {
-                // Skills: Stats + Item/Ribbon/Exp
-                var stats = [
-                    ['HP',    mon.maxHp||0],
-                    ['Atk',   mon.atk||0],
-                    ['Def',   mon.def||0],
-                    ['Sp.Atk',mon.spAtk||0],
-                    ['Sp.Def',mon.spDef||0],
-                    ['Speed', mon.speed||0],
-                ];
-                ctx.font = (7*S)+'px "Press Start 2P", monospace'; ctx.textBaseline = 'top';
-                stats.forEach(function(st, i) {
-                    var ry = ty + i*13;
-                    ctx.fillStyle = DIM; ctx.fillText(st[0], lx*S, ry*S);
-                    ctx.fillStyle = TEXT; ctx.fillText(String(st[1]), (lx+36)*S, ry*S);
-                    // Small stat bar
-                    var barW = 48, barMax = 255;
-                    var pct = Math.min(1, st[1]/barMax);
-                    var col = st[1] >= 100 ? '#20c840' : st[1] >= 50 ? '#e8c000' : '#e82020';
-                    ctx.fillStyle = '#111122'; ctx.fillRect((lx+52)*S, (ry+1)*S, barW*S, 4*S);
-                    ctx.fillStyle = col; ctx.fillRect((lx+52)*S, (ry+1)*S, Math.round(pct*barW)*S, 4*S);
-                });
-                var ey = ty + 6*13 + 4;
-                ctx.fillStyle = DIM; ctx.fillText('Exp.', lx*S, ey*S);
-                ctx.fillStyle = TEXT; ctx.fillText(String(mon.exp||0), (lx+36)*S, ey*S);
-                ctx.fillStyle = DIM; ctx.fillText('Item', lx*S, (ey+13)*S);
-                ctx.fillStyle = TEXT; ctx.fillText(mon.heldItem||'None', (lx+36)*S, (ey+13)*S);
+                var sprX = Math.round((88/2 - 32)*S);
+                ctx.drawImage(_frontImg, sprX, 22*S, 64*S, 64*S);
             } else {
-                // Battle Moves
-                ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace'; ctx.textBaseline = 'top';
-                ctx.fillStyle = DIM; ctx.fillText('MOVES', lx*S, ty*S);
-                var moves = (mon.moves||[]).slice(0,4);
-                var moveColors = { Normal:'#a8a878',Fire:'#f08030',Water:'#6890f0',Electric:'#f8d030',
-                    Grass:'#78c850',Ice:'#98d8d8',Fighting:'#c03028',Poison:'#a040a0',Psychic:'#f85888' };
-                ctx.font = (7*S)+'px "Press Start 2P", monospace';
-                moves.forEach(function(mv, i) {
-                    var ry = ty + 12 + i*20;
-                    if (!mv) {
-                        ctx.fillStyle = '#223344';
-                        ctx.fillRect(lx*S, ry*S, 110*S, 18*S);
-                        ctx.fillStyle = DIM; ctx.fillText('—', (lx+4)*S, (ry+4)*S);
-                        return;
-                    }
-                    var mCol = moveColors[mv.type||'Normal'] || '#a8a878';
-                    ctx.fillStyle = '#101828'; ctx.fillRect(lx*S, ry*S, 110*S, 18*S);
-                    ctx.strokeStyle = mCol; ctx.lineWidth = S;
-                    ctx.strokeRect(lx*S+S/2, ry*S+S/2, 110*S-S, 18*S-S);
-                    // Type badge
-                    ctx.fillStyle = mCol; ctx.fillRect(lx*S, ry*S, 28*S, 18*S);
-                    ctx.fillStyle = '#d5d5bd';
-                    ctx.fillText(mv.type||'NRM', (lx+2)*S, (ry+4)*S);
-                    // Move name
-                    ctx.fillStyle = TEXT;
-                    ctx.fillText(typeof mv==='string' ? mv : (mv.name||'???'), (lx+32)*S, (ry+4)*S);
-                    // PP
-                    var pp = typeof mv === 'object' ? ((mv.pp||'?')+'/'+( mv.maxPp||'?')) : '';
-                    if (pp) { ctx.fillStyle = DIM; ctx.fillText('PP '+pp, (lx+32)*S, (ry+12)*S); }
-                });
+                // Placeholder circle
+                ctx.fillStyle = 'rgba(255,255,255,0.15)';
+                ctx.beginPath();
+                ctx.arc(44*S, 54*S, 28*S, 0, Math.PI*2);
+                ctx.fill();
             }
 
-            // Bottom hint bar
-            ctx.fillStyle = TITLEBG; ctx.fillRect(0, (GBA_H-12)*S, canvas.width, 12*S);
-            ctx.fillStyle = CYAN; ctx.fillRect(0, (GBA_H-12)*S, canvas.width, S);
-            ctx.font = (7*S)+'px "Press Start 2P", monospace'; ctx.fillStyle = DIM; ctx.textBaseline = 'top';
-            ctx.fillText('B: Back   L/R: Tab', 8*S, (GBA_H-10)*S);
+            // Species name below sprite
+            ctx.font = 'bold '+(6*S)+'px "Press Start 2P", monospace';
+            ctx.fillStyle = '#ffffff';
+            ctx.textBaseline = 'top';
+            var speciesStr = (typeof mon.speciesId === 'string') ? mon.speciesId.toUpperCase() : ('No.'+_dexNum);
+            // center in left panel
+            var sw = ctx.measureText(speciesStr).width;
+            ctx.fillText(speciesStr, Math.max(2*S, (44*S - sw/2)), 90*S);
+
+            // Nickname (if different)
+            var nick = _monDisplayName(mon);
+            if (nick !== speciesStr) {
+                ctx.font = (5*S)+'px "Press Start 2P", monospace';
+                ctx.fillStyle = '#b8f0d0';
+                var nw = ctx.measureText(nick).width;
+                ctx.fillText(nick, Math.max(2*S, (44*S - nw/2)), 100*S);
+            }
+
+            // Ball + Lv + gender at bottom of left panel  (y ~130 GBA)
+            ctx.font = (5*S)+'px "Press Start 2P", monospace';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('● Lv.' + (mon.level||1), 4*S, 130*S);
+            if (mon.gender === 'M' || mon.gender === 'F') {
+                ctx.fillStyle = mon.gender === 'M' ? '#80b8ff' : '#ffb0c8';
+                ctx.fillText(mon.gender === 'M' ? '♂' : '♀', 66*S, 130*S);
+            }
+
+            // ── Right panel content  x=88..239 GBA
+            var rx = 92, ry0 = 16, rowH = 13;
+            ctx.textBaseline = 'top';
+
+            if (_tab === 0) {
+                // PROFILE section header
+                ctx.fillStyle = '#284870';
+                ctx.fillRect(88*S, 14*S, (GBA_W-88)*S, 10*S);
+                ctx.font = 'bold '+(5*S)+'px "Press Start 2P", monospace';
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText('PROFILE', (rx)*S, 16*S);
+
+                var profRows = [
+                    ['OT/',    (mon.otName || 'Player')],
+                    ['ID No.', String(mon.otId||'00000').padStart(5,'0')],
+                    ['Nature', (mon.nature||'Hardy')],
+                    ['Item',   (mon.heldItem||'None')],
+                ];
+                ctx.font = (5*S)+'px "Press Start 2P", monospace';
+                var py = 28;
+                profRows.forEach(function(r) {
+                    ctx.fillStyle = '#607090'; ctx.fillText(r[0], rx*S, py*S);
+                    ctx.fillStyle = '#182838'; ctx.fillText(r[1], (rx+36)*S, py*S);
+                    py += rowH;
+                });
+
+                // Type badge(s)
+                py += 2;
+                ctx.fillStyle = '#607090'; ctx.fillText('Type', rx*S, py*S);
+                var types = Array.isArray(mon.type) ? mon.type : [mon.type||'Normal'];
+                types.forEach(function(t, ti) {
+                    var tCol = TYPE_COLORS_SUM[t] || '#a8a878';
+                    ctx.fillStyle = tCol;
+                    ctx.fillRect((rx+34+ti*36)*S, py*S, 32*S, (rowH-2)*S);
+                    ctx.font = (4*S)+'px "Press Start 2P", monospace';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(t.slice(0,6).toUpperCase(), (rx+35+ti*36)*S, (py+2)*S);
+                    ctx.font = (5*S)+'px "Press Start 2P", monospace';
+                });
+                py += rowH + 4;
+
+                // ABILITY section header
+                ctx.fillStyle = '#284870';
+                ctx.fillRect(88*S, py*S, (GBA_W-88)*S, 10*S);
+                ctx.font = 'bold '+(5*S)+'px "Press Start 2P", monospace';
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText('ABILITY', rx*S, py*S);
+                py += 12;
+                ctx.font = (5*S)+'px "Press Start 2P", monospace';
+                ctx.fillStyle = '#182838';
+                ctx.fillText(mon.ability||'—', rx*S, py*S);
+
+            } else if (_tab === 1) {
+                // ITEM section header
+                ctx.fillStyle = '#284870';
+                ctx.fillRect(88*S, 14*S, (GBA_W-88)*S, 10*S);
+                ctx.font = 'bold '+(5*S)+'px "Press Start 2P", monospace';
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText('ITEM', rx*S, 16*S);
+
+                ctx.font = (5*S)+'px "Press Start 2P", monospace';
+                ctx.fillStyle = '#182838';
+                ctx.fillText(mon.heldItem||'None', rx*S, 28*S);
+
+                // STATS header
+                var sy0 = 42;
+                ctx.fillStyle = '#284870';
+                ctx.fillRect(88*S, sy0*S, (GBA_W-88)*S, 10*S);
+                ctx.font = 'bold '+(5*S)+'px "Press Start 2P", monospace';
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText('STATS', rx*S, sy0*S);
+
+                var stats = [
+                    ['HP',     mon.maxHp||0],
+                    ['Atk',    mon.atk||0],
+                    ['Def',    mon.def||0],
+                    ['Sp.Atk', mon.spAtk||0],
+                    ['Sp.Def', mon.spDef||0],
+                    ['Speed',  mon.speed||0],
+                ];
+                ctx.font = (5*S)+'px "Press Start 2P", monospace';
+                var sry = sy0 + 12;
+                stats.forEach(function(st) {
+                    ctx.fillStyle = '#607090'; ctx.fillText(st[0], rx*S, sry*S);
+                    ctx.fillStyle = '#182838'; ctx.fillText(String(st[1]), (rx+40)*S, sry*S);
+                    // Small bar
+                    var bw = 44, bmax = 255;
+                    var pct = Math.min(1, st[1]/bmax);
+                    var bcol = st[1] >= 100 ? '#20c840' : st[1] >= 50 ? '#e8c000' : '#e82020';
+                    ctx.fillStyle = '#c8d0d8'; ctx.fillRect((rx+56)*S, (sry+2)*S, bw*S, 4*S);
+                    ctx.fillStyle = bcol;      ctx.fillRect((rx+56)*S, (sry+2)*S, Math.round(pct*bw)*S, 4*S);
+                    sry += rowH;
+                });
+
+                // EXP section
+                sry += 2;
+                ctx.fillStyle = '#284870';
+                ctx.fillRect(88*S, sry*S, (GBA_W-88)*S, 10*S);
+                ctx.font = 'bold '+(5*S)+'px "Press Start 2P", monospace';
+                ctx.fillStyle = '#ffffff'; ctx.fillText('EXP', rx*S, sry*S);
+                sry += 12;
+                ctx.font = (5*S)+'px "Press Start 2P", monospace';
+                ctx.fillStyle = '#182838'; ctx.fillText(String(mon.exp||0), rx*S, sry*S);
+                // Tiny exp bar
+                var expMax = 1000000;
+                var expPct = Math.min(1, (mon.exp||0)/expMax);
+                ctx.fillStyle = '#c8d0d8'; ctx.fillRect(rx*S, (sry+9)*S, 100*S, 3*S);
+                ctx.fillStyle = '#3080f0'; ctx.fillRect(rx*S, (sry+9)*S, Math.round(expPct*100)*S, 3*S);
+
+            } else if (_tab === 2 || _tab === 3) {
+                // MOVES / CONTEST MOVES
+                var moveLabel = _tab === 2 ? 'MOVES' : 'CONTEST MOVES';
+                ctx.fillStyle = '#284870';
+                ctx.fillRect(88*S, 14*S, (GBA_W-88)*S, 10*S);
+                ctx.font = 'bold '+(5*S)+'px "Press Start 2P", monospace';
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(moveLabel, rx*S, 16*S);
+
+                var moves = (mon.moves||[]).slice(0,4);
+                ctx.font = (5*S)+'px "Press Start 2P", monospace';
+                for (var mi = 0; mi < 4; mi++) {
+                    var mv = moves[mi] || null;
+                    var mry = 28 + mi * 30;
+                    if (!mv) {
+                        ctx.fillStyle = '#d8dce0';
+                        ctx.fillRect((rx-2)*S, mry*S, 146*S, 26*S);
+                        ctx.fillStyle = '#a0a8b0';
+                        ctx.fillText('—', rx*S, (mry+8)*S);
+                    } else {
+                        var mtype = (typeof mv === 'object') ? (mv.type||'Normal') : 'Normal';
+                        var mname = (typeof mv === 'string') ? mv : (mv.name||'???');
+                        var mCol = TYPE_COLORS_SUM[mtype] || '#a8a878';
+                        // Move row bg
+                        ctx.fillStyle = '#e8ecf0';
+                        ctx.fillRect((rx-2)*S, mry*S, 146*S, 26*S);
+                        // Type badge
+                        ctx.fillStyle = mCol;
+                        ctx.fillRect((rx-2)*S, mry*S, 28*S, 26*S);
+                        ctx.font = (4*S)+'px "Press Start 2P", monospace';
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillText(mtype.slice(0,4).toUpperCase(), rx*S, (mry+9)*S);
+                        ctx.font = (5*S)+'px "Press Start 2P", monospace';
+                        // Name
+                        ctx.fillStyle = '#182838';
+                        ctx.fillText(mname, (rx+30)*S, (mry+4)*S);
+                        // PP
+                        var ppStr = (typeof mv === 'object') ? ('PP ' + (mv.pp||'?') + '/' + (mv.maxPp||'?')) : '';
+                        if (ppStr) {
+                            ctx.fillStyle = '#607090';
+                            ctx.fillText(ppStr, (rx+30)*S, (mry+15)*S);
+                        }
+                    }
+                }
+            }
+
+            // ── Bottom hint bar  y=148..159 GBA (296..318 canvas)
+            ctx.fillStyle = '#316a73';
+            ctx.fillRect(0, 148*S, canvas.width, 12*S);
+            ctx.font = (5*S)+'px "Press Start 2P", monospace';
+            ctx.fillStyle = '#ffffff';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('B: Back   L/R: Tab', 8*S, 154*S);
+            ctx.textBaseline = 'top';
         }
 
         // Tab navigation via click
         canvas.addEventListener('click', function(e) {
             var rect = canvas.getBoundingClientRect();
             var gx = (e.clientX - rect.left) * (GBA_W / rect.width);
-            if (gx < 30) { _tab = (_tab-1+3)%3; drawSummary(); }
-            else if (gx > GBA_W-30) { _tab = (_tab+1)%3; drawSummary(); }
+            if (gx < 30) { _tab = (_tab - 1 + 4) % 4; drawSummary(); }
+            else if (gx > GBA_W - 30) { _tab = (_tab + 1) % 4; drawSummary(); }
         });
 
         // Expose tab navigation so L/R can be wired if needed
-        win._tabLeft  = function() { _tab = (_tab-1+3)%3; drawSummary(); };
-        win._tabRight = function() { _tab = (_tab+1)%3; drawSummary(); };
+        win._tabLeft  = function() { _tab = (_tab - 1 + 4) % 4; drawSummary(); };
+        win._tabRight = function() { _tab = (_tab + 1) % 4; drawSummary(); };
 
         var backBtn = document.createElement('button');
         backBtn.textContent = 'B BACK'; backBtn.className = 'sm-back-btn';
@@ -1747,22 +1894,18 @@ window.GameStartMenu = (function () {
         var S = PARTY_S; // 2
         var _tc = _getThemeColors();
         var COL_TEXT = _tc.text, COL_DIM = _tc.dim, COL_CYAN = _tc.hi;
-        var COL_SLOT0  = '#1a3a1a'; // green card for lead Pokémon (EE style)
-        var COL_SLOT0S = '#2a5a2a'; // selected lead
-        var COL_BOX    = '#101828'; // grey-blue for slots 1-5
-        var COL_BOXS   = '#182840'; // selected slot 1-5
+        var COL_SLOT0  = '#5898c8'; // blue card top for lead Pokémon (EE style)
+        var COL_SLOT0S = '#6aacdc'; // selected lead
+        var COL_BOX    = '#182038'; // dark blue-slate for slots 1-5
+        var COL_BOXS   = '#283858'; // selected slot 1-5
         var COL_SEL    = 'rgba(24,184,200,0.15)'; // selection highlight
         var STATUS_COLOR = { PAR:'#e8c000', BRN:'#e85020', PSN:'#a820e8', FRZ:'#18c8e8', SLP:'#888888', FNT:'#e83020' };
 
-        // Green-tinted background (EE party screen is outdoorsy/green)
-        ctx.fillStyle = '#0a180a';
-        ctx.fillRect(0, 0, PARTY_W, PARTY_H);
-        // subtle green gradient overlay on left panel
-        var grad = ctx.createLinearGradient(0, 0, 0, PARTY_H);
-        grad.addColorStop(0, 'rgba(20,60,20,0.6)');
-        grad.addColorStop(1, 'rgba(10,30,10,0.3)');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 88*S, PARTY_H);
+        // Horizontal olive-green stripes across full canvas (EE party screen)
+        for (var sy = 0; sy < PARTY_H; sy += 4) {
+            ctx.fillStyle = (Math.floor(sy / 4) % 2 === 0) ? '#8c9a29' : '#cecb7b';
+            ctx.fillRect(0, sy, PARTY_W, 4);
+        }
 
         var party  = _getParty();
         var filled = party.filter(Boolean);
@@ -1771,13 +1914,21 @@ window.GameStartMenu = (function () {
 
         // ── Helper: draw a GBA-style slot box
         function drawBox(x, y, w, h, selected, isLead) {
-            var bg = isLead ? (selected ? COL_SLOT0S : COL_SLOT0) : (selected ? COL_BOXS : COL_BOX);
-            ctx.fillStyle = bg;
+            if (isLead) {
+                // Blue gradient card for lead Pokémon (EE ref: top blue, bottom darker)
+                var leadGrad = ctx.createLinearGradient(x*S, y*S, x*S, (y+h)*S);
+                leadGrad.addColorStop(0, selected ? COL_SLOT0S : '#5898c8');
+                leadGrad.addColorStop(1, selected ? '#4070a0' : '#285880');
+                ctx.fillStyle = leadGrad;
+            } else {
+                ctx.fillStyle = selected ? COL_BOXS : COL_BOX;
+            }
             ctx.fillRect(x*S, y*S, w*S, h*S);
-            ctx.strokeStyle = selected ? COL_CYAN : '#62737b';
-            ctx.lineWidth = S;
-            ctx.strokeRect(x*S + S/2, y*S + S/2, w*S - S, h*S - S);
-            if (selected) {
+            ctx.strokeStyle = selected ? COL_CYAN : (isLead ? '#c84100' : '#3a5a7a');
+            ctx.lineWidth = isLead ? 2*S : S;
+            ctx.strokeRect(x*S + (isLead ? S : S/2), y*S + (isLead ? S : S/2),
+                           w*S - (isLead ? 2*S : S), h*S - (isLead ? 2*S : S));
+            if (selected && !isLead) {
                 ctx.fillStyle = COL_CYAN;
                 ctx.fillRect(x*S, y*S, 2*S, h*S);
             }
@@ -1898,47 +2049,65 @@ window.GameStartMenu = (function () {
                 false, _subIdx === (i+1));
         }
 
-        // ── CANCEL button  GBA (192, 136, 48, 16) — no background bar, just the button
+        // ── Message bar  GBA y=120..159 (cream background, EE ref)
+        ctx.fillStyle = '#fffbff';
+        ctx.fillRect(0, 120*S, PARTY_W, 40*S);
+        // Top border separator (olive)
+        ctx.fillStyle = '#b5b25a';
+        ctx.fillRect(0, 120*S, PARTY_W, S);
+        // "Choose a POKéMON." centered text
+        if (!_partyActionOpen) {
+            ctx.font = (6*S)+'px "Press Start 2P", monospace';
+            ctx.fillStyle = '#181818';
+            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'center';
+            ctx.fillText('Choose a POKéMON.', PARTY_W/2, 132*S);
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+        }
+
+        // ── CANCEL button  bottom-right of message bar, orange EE style
         var cancelSel = (_subIdx >= filled.length);
-        ctx.fillStyle = cancelSel ? COL_CYAN : _tc.bg;
-        ctx.fillRect(192*S, 136*S, 48*S, 16*S);
-        ctx.strokeStyle = cancelSel ? COL_CYAN : '#62737b';
+        ctx.fillStyle = cancelSel ? '#d06000' : '#b54100';
+        ctx.fillRect(180*S, 140*S, 56*S, 16*S);
+        ctx.strokeStyle = cancelSel ? '#ffb870' : '#8a3000';
         ctx.lineWidth = S;
-        ctx.strokeRect(192*S + S/2, 136*S + S/2, 48*S - S, 16*S - S);
-        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
-        ctx.fillStyle = cancelSel ? '#d5d5bd' : COL_TEXT;
+        ctx.strokeRect(180*S + S/2, 140*S + S/2, 56*S - S, 16*S - S);
+        ctx.font = 'bold '+(6*S)+'px "Press Start 2P", monospace';
+        ctx.fillStyle = '#ffffff';
         ctx.textBaseline = 'top';
-        ctx.fillText('CANCEL', 196*S, 139*S);
+        ctx.fillText('◉ Cancel', 183*S, 142*S);
 
         // ── Action sub-menu overlay  (GBA coords: x=130, y=50, w=100, rowH=14)
         if (_partyActionOpen && _partyActionMon) {
             var opts = _battlePartyCallback ? ['Switch', 'Cancel'] : ['Details', 'Item', 'Cancel'];
             var ax = 130, ay = 48, aw = 102, rowH = 14;
-            // "Do what with this [Name]?" bar in message area
-            ctx.fillStyle = _tc.titleBg;
-            ctx.fillRect(0, 120*S, 240*S, 40*S);
-            ctx.fillStyle = COL_CYAN;
-            ctx.fillRect(0, 120*S, 240*S, S);
-            ctx.font = (7*S)+'px "Press Start 2P", monospace';
-            ctx.fillStyle = COL_TEXT;
+            // "Do what with [Name]?" bar — redraw message bar in action style
+            ctx.fillStyle = '#fffbff';
+            ctx.fillRect(0, 120*S, PARTY_W, 40*S);
+            ctx.fillStyle = '#b5b25a';
+            ctx.fillRect(0, 120*S, PARTY_W, S);
+            ctx.font = (6*S)+'px "Press Start 2P", monospace';
+            ctx.fillStyle = '#181818';
             ctx.textBaseline = 'top';
-            ctx.fillText('Do what with this', 8*S, 124*S);
-            ctx.fillText((_partyActionMon.nickname || (typeof _partyActionMon.speciesId==='string' ? _partyActionMon.speciesId.toUpperCase() : '???')) + '?', 8*S, 134*S);
+            ctx.fillText('Do what with', 8*S, 122*S);
+            ctx.fillText((_partyActionMon.nickname || (typeof _partyActionMon.speciesId==='string' ? _partyActionMon.speciesId.toUpperCase() : '???')) + '?', 8*S, 132*S);
 
-            ctx.fillStyle = _tc.bg;
+            // Action menu popup — EE cream style
+            ctx.fillStyle = '#f0ece8';
             ctx.fillRect(ax*S, ay*S, aw*S, (opts.length*rowH+6)*S);
-            ctx.strokeStyle = COL_CYAN; ctx.lineWidth = S;
+            ctx.strokeStyle = '#484848'; ctx.lineWidth = S;
             ctx.strokeRect(ax*S + S/2, ay*S + S/2, aw*S - S, (opts.length*rowH+6)*S - S);
             ctx.font = (7*S)+'px "Press Start 2P", monospace';
             opts.forEach(function(opt, oi) {
                 var oy = ay + 3 + oi * rowH;
                 if (oi === _partyActionSel) {
-                    ctx.fillStyle = COL_SEL;
+                    ctx.fillStyle = 'rgba(180,160,100,0.25)';
                     ctx.fillRect(ax*S, oy*S, aw*S, rowH*S);
-                    ctx.fillStyle = COL_CYAN;
+                    ctx.fillStyle = '#b54100';
                     ctx.fillText('▶', (ax+2)*S, oy*S);
                 }
-                ctx.fillStyle = oi === _partyActionSel ? COL_CYAN : COL_TEXT;
+                ctx.fillStyle = oi === _partyActionSel ? '#b54100' : '#282828';
                 ctx.fillText(opt, (ax+12)*S, oy*S);
             });
         }
