@@ -77,12 +77,62 @@ Three categories of acquired power:
 
 - **XP sources:** combat (creature + self), **surviving expeditions** (extraction bonus), discovery
   milestones, crafting, quests/bounties. No daily-quest grind (matches the lean economy).
-- **XP-per-level scales with class Tier** (`CLASSES.md §3.5`): Basic ~100 to Lv1, Advanced ~350,
-  ballooning toward Legendary. Higher Tier = stronger per level but far slower to gain one — the
-  balancing lever that keeps "start high" from being strictly better.
+- **XP-per-level scales with class Tier** — see the full curve model in §3.7.
 - **Skills level by use** (espionage/craft/survival skills improve as you use them — the System
   tracks your activity). Separate from character level.
 - **Creature XP** from battles; sharing/route rules TBD (see open calls).
+
+---
+
+## 3.7 The XP Curve — how leveling actually works
+
+Defined as a **formula** so it scales cleanly across 1→500 and any class Tier. Constants below are
+**starting values tuned to the ~60h pacing** — playtest-adjustable, not final.
+
+### Cost: XP to go from level L → L+1
+```
+XP_needed(L, Tier) = B * L^p * m(Tier)
+```
+- **B = 100** (base; makes a Basic Lv1 cost 100).
+- **p ≈ 2.2** (curve steepness; tunable 2.0–2.5 — higher = harsher late grind). Power curve, NOT
+  exponential (exponential overflows long before Lv500).
+- **m(Tier)** = class-Tier multiplier (`CLASSES.md §3.5`):
+
+| Tier | m(Tier) | Lv1 cost | Why |
+|---|---|---|---|
+| Basic | 1.0 | 100 | default, fast |
+| Advanced | 3.5 | 350 | the worked example |
+| Master | 10 | 1,000 | realistic starting ceiling |
+| Grandmaster | 30 | 3,000 | pickable but **glacial** |
+| Heroic | 90 | 9,000 | quest/rep |
+| Legendary | 270 | 27,000 | quest/relic |
+
+(~×3 per Tier. A Grandmaster pays 30× a Basic's cost *from level 1* — that's the "takes forever.")
+
+### Income: mob XP must scale SLOWER than cost
+```
+mob_XP(mobLevel) = K * mobLevel^q     // q ≈ 1.6  (vs cost's p ≈ 2.2)
+```
+Because **p > q**, kills-per-level slowly rises as you climb → early levels quick, Lv400 a real wall,
+**with no hard wall**. The **level-difference modifier** layers on top:
+- Red/lethal-gap kill → **bonus XP** · White/matched → full · Grey/trivial → **near-zero**.
+This kills low-mob farming and pushes you into appropriate-danger zones (feeds danger-by-depth).
+
+### Auto-level
+Leveling is automatic when the XP threshold is met; each level grants attribute points (§2). Total XP
+to reach level L ≈ `B/(p+1) · L^(p+1) · m(Tier)`.
+
+### Evolution interaction
+On class evolution (`CLASSES.md §3.5`) you **keep your current level**, but **future** levels use the
+**new (higher) Tier's multiplier**. Evolving = more power/skills now, slower leveling after. This is
+what keeps "start high" balanced against "start low + climb": a fresh high-Tier is stronger per level
+with its full base kit immediately; an evolved character has more *total* skills but climbed at cheap
+Tiers. (Power-per-level numbers are a separate tuning pass; this section defines the XP side only.)
+
+### Tuning methodology
+To finalize constants: pick target hours per era band (T1 ~0–12h … T4 ~38–60h), estimate kills/hour
+from encounter rates (`ENCOUNTERS.md`), then solve B, p, K, q so cumulative XP at each band boundary
+(Lv125/250/375/500) lands on the target hours for a reference Basic playthrough.
 
 ---
 
@@ -96,6 +146,8 @@ Three categories of acquired power:
   next cycle's boss). Surviving past it requires Off-Grid / Resolve / hidden-layer protection —
   which ties the cap into the finale rather than being a flat wall.
 - It is a **soft** cap (consistent with the soft-survival philosophy): not a hard stop, a rising danger.
+- **XP past 450** uses the same §3.7 formula — the barrier is **conversion risk (narrative)**, not a
+  grind wall. (Optional: a steepening XP penalty past 450, but keep the real wall story-driven.)
 - **Class Tiers** (`CLASSES.md §3.5`) climb alongside level via evolution; the top Tiers (**Heroic /
   Legendary**) push you toward the soft cap — top-Tier power is exactly where conversion risk peaks.
 

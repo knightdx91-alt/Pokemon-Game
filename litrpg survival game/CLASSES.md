@@ -129,7 +129,10 @@ strong the class is, how hard it is to obtain, and **how much XP each level cost
 single class-power ladder (it replaces the earlier Initiate→Paragon naming; same idea, the names you
 wanted).
 
-| Tier | XP per level (illustrative) | Obtain | Maps to item rarity |
+> **XP per level is a formula** — `XP_needed = 100 · L^2.2 · m(Tier)`. Full model, mob-XP income, and
+> tuning methodology in `PROGRESSION.md §3.7`. The per-level costs below are the resulting Lv1 values.
+
+| Tier | XP per level (Lv1) | Obtain | Maps to item rarity |
 |---|---|---|---|
 | **Basic** | ~100 to reach Lv1 — cheap, fast | default starters | Standard |
 | **Advanced** | ~350 — noticeably slower | uncommon / low rep | Uncommon |
