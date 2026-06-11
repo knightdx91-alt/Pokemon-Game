@@ -274,7 +274,7 @@ window.GameStartMenu = (function () {
         const panelCanvas = document.createElement('canvas');
         panelCanvas.width  = PW;
         panelCanvas.height = PH;
-        panelCanvas.style.cssText = 'display:block;border-left:2px solid #101010;border-top:2px solid #101010;border-bottom:2px solid #101010;cursor:pointer;image-rendering:pixelated;';
+        panelCanvas.style.cssText = 'display:block;flex:none;width:48%;min-width:88px;max-width:116px;height:auto;pointer-events:all;border-left:2px solid #101010;border-top:2px solid #101010;border-bottom:2px solid #101010;cursor:pointer;image-rendering:pixelated;';
         const pc = panelCanvas.getContext('2d');
 
         function _drawPanel() {
@@ -316,7 +316,7 @@ window.GameStartMenu = (function () {
         const descCanvas = document.createElement('canvas');
         descCanvas.width  = DW || 240;
         descCanvas.height = DH;
-        descCanvas.style.cssText = 'display:block;width:100%;';
+        descCanvas.style.cssText = 'display:block;flex:none;width:100%;height:34px;pointer-events:none;';
         const dc = descCanvas.getContext('2d');
         dc.fillStyle = '#2870c0';
         dc.fillRect(0, 0, descCanvas.width, DH);
