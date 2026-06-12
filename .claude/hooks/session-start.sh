@@ -1,32 +1,51 @@
 #!/bin/bash
-# SessionStart hook: keep the local checkout in sync with remote main so
-# Claude never works against a stale tree (missing/old files).
-set -euo pipefail
+# SessionStart hook: force every session onto `main` for every repo.
+#
+# Policy (see each repo's CLAUDE.md): we develop directly on `main` — no
+# feature branches, no PRs, straight commits. Claude Code on the web creates a
+# fresh per-session branch and instructs the agent to use it; this hook undoes
+# that by switching every checked-out repo back to `main` at session start.
+#
+# This script is intentionally self-contained and does NOT rely on
+# $CLAUDE_PROJECT_DIR (which can be unset in multi-repo workspaces). It scans
+# the workspace for git repos and switches each one to `main`. The same script
+# is installed in every repo, so whichever one loads it, all repos get fixed.
+set -uo pipefail
 
-# Only run in the Claude Code on the web remote environment.
+# Only act in the remote (web) environment.
 if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
   exit 0
 fi
 
-cd "${CLAUDE_PROJECT_DIR:-.}"
+# Workspace root that holds the repos (the primary working dir on the web).
+WORKSPACE="${CLAUDE_WORKSPACE_DIR:-/home/user}"
 
-# Don't touch a dirty tree — surface it instead of clobbering work.
-if [ -n "$(git status --porcelain)" ]; then
-  echo "Working tree has uncommitted changes; skipping auto-sync." >&2
-  exit 0
-fi
+switched=()
+for gitdir in "$WORKSPACE"/*/.git; do
+  [ -e "$gitdir" ] || continue
+  repo="$(dirname "$gitdir")"
+  name="$(basename "$repo")"
 
-git fetch origin main --quiet || exit 0
+  git -C "$repo" fetch origin main --quiet 2>/dev/null || true
 
-# Make sure we're on main, then fast-forward to the latest remote main.
-current_branch="$(git rev-parse --abbrev-ref HEAD)"
-if [ "$current_branch" != "main" ]; then
-  git checkout main --quiet || exit 0
-fi
+  # Only switch if the working tree is clean, so we never clobber changes.
+  if [ -n "$(git -C "$repo" status --porcelain 2>/dev/null)" ]; then
+    switched+=("$name: SKIPPED (uncommitted changes, still on $(git -C "$repo" branch --show-current))")
+    continue
+  fi
 
-git merge --ff-only origin/main --quiet || {
-  echo "Could not fast-forward main (diverged); leaving tree as-is." >&2
-  exit 0
-}
+  if git -C "$repo" checkout main --quiet 2>/dev/null \
+     || git -C "$repo" checkout -b main --quiet origin/main 2>/dev/null; then
+    git -C "$repo" pull --ff-only origin main --quiet 2>/dev/null || true
+    switched+=("$name -> main")
+  else
+    switched+=("$name: could not switch to main")
+  fi
+done
 
-echo "Synced local main to origin/main ($(git rev-parse --short HEAD))."
+# Build a one-line summary for the session context.
+summary="${switched[*]}"
+
+cat <<JSON
+{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Session policy: work directly on \`main\` for ALL repos in this workspace - commit straight to main, NEVER create feature branches, NEVER open PRs. session-start hook result: ${summary}"}}
+JSON
