@@ -351,31 +351,75 @@ svg.append(gSea,gRegion,gEdge,gThreat,gNode,gLabel);
 
 // ocean background + gradient
 const defs=el('defs',{});
-defs.innerHTML=`<radialGradient id="ocean" cx="42%" cy="40%" r="75%">
-  <stop offset="0%" stop-color="#0e2742"/><stop offset="55%" stop-color="#0a1830"/><stop offset="100%" stop-color="#05101e"/></radialGradient>
+defs.innerHTML=`<radialGradient id="ocean" cx="44%" cy="38%" r="80%">
+  <stop offset="0%" stop-color="#3686ad"/><stop offset="55%" stop-color="#256a92"/><stop offset="100%" stop-color="#163f5c"/></radialGradient>
   <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="3.5" result="b"/>
-  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="landshadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="3" dy="9" stdDeviation="9" flood-color="#0c2c40" flood-opacity="0.55"/></filter>
+  <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="6"/></filter>`;
 svg.append(defs);
-gSea.append(el('rect',{x:-400,y:-400,width:3400,height:3600,fill:'url(#ocean)'}));
-// faint lat/long grid
-for(let gx=0;gx<=2400;gx+=200) gSea.append(el('line',{x1:gx,y1:-400,x2:gx,y2:3300,stroke:'#11324f',"stroke-width":0.5,opacity:.4}));
-for(let gy=-400;gy<=2700;gy+=200) gSea.append(el('line',{x1:-400,y1:gy,x2:3000,y2:gy,stroke:'#11324f',"stroke-width":0.5,opacity:.4}));
+gSea.append(el('rect',{x:-600,y:-600,width:3800,height:4000,fill:'url(#ocean)'}));
+// soft depth contour rings (subtle, clean)
+for(let i=0;i<3;i++) gSea.append(el('ellipse',{cx:1180,cy:1380,rx:1500-i*120,ry:1500-i*120,fill:'none',
+  stroke:'#2c6f93',"stroke-width":1,opacity:.18}));
 
-// region landmasses
-REGIONS.forEach(R=>{
-  gRegion.append(el('ellipse',{cx:R.cx,cy:R.cy,rx:R.rx,ry:R.ry,fill:R.c,opacity:.30,
-    stroke:'#1a4e6a',"stroke-width":2,"stroke-dasharray":"3 5"}));
-  const t=el('text',{x:R.cx,y:R.cy-R.ry+30,"text-anchor":"middle","font-size":30,fill:'#bcd6ea',opacity:.16,"font-weight":"bold","letter-spacing":3});
+// ---- irregular landmasses (Pokémon town-map style, clean modern palette) ----
+function smoothPath(pts){ // closed Catmull-Rom -> bezier = smooth coastline
+  const n=pts.length; let d=`M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+  for(let i=0;i<n;i++){
+    const p0=pts[(i-1+n)%n],p1=pts[i],p2=pts[(i+1)%n],p3=pts[(i+2)%n];
+    const c1x=p1[0]+(p2[0]-p0[0])/6, c1y=p1[1]+(p2[1]-p0[1])/6;
+    const c2x=p2[0]-(p3[0]-p1[0])/6, c2y=p2[1]-(p3[1]-p1[1])/6;
+    d+=` C${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+  }
+  return d+'Z';
+}
+function island(cx,cy,rx,ry){const p=[],k=9;for(let i=0;i<k;i++){const a=i/k*Math.PI*2;
+  const j=0.74+0.26*(((i*37)%5)/5); p.push([cx+Math.cos(a)*rx*j, cy+Math.sin(a)*ry*j]);}return p;}
+
+// biome fills + coast colours per region
+const BIOME=[
+  {fill:"#5fae66",coast:"#2f7e47"}, // Verdara temperate green
+  {fill:"#9bb24f",coast:"#6c7e33"}, // Halveth golden country
+  {fill:"#3fa886",coast:"#2c7d61"}, // Calderra tropical
+  {fill:"#dbe7f0",coast:"#9bb3c6"}, // Vael snow
+];
+const LANDS=[
+ {r:0,pts:[[150,2200],[165,2030],[245,1915],[370,1850],[470,1795],[545,1865],[605,1815],[710,1900],[830,1985],[862,2120],[842,2245],[875,2360],[775,2450],[600,2478],[440,2468],[298,2456],[198,2372]]},
+ {r:1,pts:[[1060,2210],[1075,2020],[1185,1925],[1290,1875],[1410,1898],[1505,1900],[1575,1975],[1705,1975],[1835,1985],[1900,2090],[1875,2215],[1885,2335],[1760,2432],[1560,2452],[1380,2448],[1180,2452],[1095,2452],[1062,2340]]},
+ {r:2,pts:[[1035,1450],[1060,1350],[1180,1300],[1320,1300],[1480,1320],[1620,1308],[1740,1295],[1842,1342],[1872,1432],[1846,1532],[1800,1622],[1700,1690],[1560,1662],[1430,1702],[1300,1726],[1180,1690],[1090,1600],[1045,1520]]},
+ {r:3,pts:[[410,560],[430,440],[520,360],[640,330],[780,335],[900,330],[1000,360],[1120,355],[1240,400],[1342,470],[1356,580],[1320,662],[1240,722],[1100,746],[960,730],[820,756],[700,746],[580,710],[470,650]]},
+];
+const ISLANDS=[
+ {r:0,pts:island(905,2120,34,27)},  {r:0,pts:island(912,2382,30,24)},   // Emberreach, Cinderhold
+ {r:1,pts:island(1185,2474,42,22)}, {r:1,pts:island(1382,2452,34,18)},  // Maelstrom, Bell Islets
+ {r:2,pts:island(1912,1452,30,22)},                                     // Mirror Pair
+ {r:3,pts:island(1010,772,48,30)},                                      // Irongrave
+];
+function drawLand(pts,b,big){
+  const d=smoothPath(pts);
+  gRegion.append(el('path',{d,fill:b.coast,opacity:.9,filter:'url(#landshadow)'})); // shadow base
+  gRegion.append(el('path',{d,fill:'none',stroke:'#bfe6f2',"stroke-width":big?11:7,opacity:.45,filter:'url(#soft)'})); // shore halo
+  gRegion.append(el('path',{d,fill:b.fill,stroke:b.coast,"stroke-width":big?3:2,"stroke-linejoin":"round"}));
+}
+LANDS.forEach(L=>drawLand(L.pts,BIOME[L.r],true));
+ISLANDS.forEach(L=>drawLand(L.pts,BIOME[L.r],false));
+// region name labels on each landmass
+const LY=[1900,1872,1278,352];
+REGIONS.forEach((R,i)=>{
+  const t=el('text',{x:R.cx,y:LY[i],"text-anchor":"middle","font-size":30,fill:'#ffffff',opacity:.62,
+    "font-weight":"bold","letter-spacing":4,"paint-order":"stroke",stroke:'#0c3048',"stroke-width":4,"stroke-linejoin":"round"});
   t.textContent=R.n; gRegion.append(t);
-  const s=el('text',{x:R.cx,y:R.cy-R.ry+50,"text-anchor":"middle","font-size":12,fill:'#9fb8cc',opacity:.20});
+  const s=el('text',{x:R.cx,y:LY[i]+18,"text-anchor":"middle","font-size":11,fill:'#eaf4ff',opacity:.55,
+    "paint-order":"stroke",stroke:'#0c3048',"stroke-width":3});
   s.textContent=R.sub; gRegion.append(s);
 });
 
 function edgeStyle(kind){
-  if(kind==='sea')   return {stroke:'#3f86c8',"stroke-width":1.6,"stroke-dasharray":"7 6",opacity:.55};
-  if(kind==='hidden')return {stroke:'#b060c8',"stroke-width":1.4,"stroke-dasharray":"2 6",opacity:.5};
-  if(kind==='under') return {stroke:'#2f9aa0',"stroke-width":1.4,"stroke-dasharray":"2 6",opacity:.5};
-  return {stroke:'#5c7d96',"stroke-width":2,opacity:.5}; // land road
+  if(kind==='sea')   return {stroke:'#bfe6f5',"stroke-width":1.8,"stroke-dasharray":"7 6",opacity:.7};
+  if(kind==='hidden')return {stroke:'#e07cf0',"stroke-width":1.6,"stroke-dasharray":"2 6",opacity:.7};
+  if(kind==='under') return {stroke:'#46e0d0',"stroke-width":1.6,"stroke-dasharray":"2 6",opacity:.6};
+  return {stroke:'#fbf1cf',"stroke-width":2.4,opacity:.85}; // land road (cream, pops on land)
 }
 function drawEdge(a,b,kind){
   const A=byId[a],B=byId[b]; if(!A||!B)return;
@@ -402,7 +446,7 @@ function marker(n){
   switch(n.t){
     case 'safe':     shape=el('path',{d:diamond(n.x,n.y,10),fill:col,stroke:'#fff',"stroke-width":1.5,filter:'url(#glow)'}); break;
     case 'hold':     shape=el('rect',{x:n.x-7,y:n.y-7,width:14,height:14,fill:col,stroke:'#3a1d00',"stroke-width":1.5,transform:`rotate(45 ${n.x} ${n.y})`}); break;
-    case 'route':    shape=el('circle',{cx:n.x,cy:n.y,r:4.2,fill:col,stroke:'#0a2a12',"stroke-width":1}); break;
+    case 'route':    shape=el('circle',{cx:n.x,cy:n.y,r:4.6,fill:col,stroke:'#ffffff',"stroke-width":1.4}); break;
     case 'dungeon':  shape=el('path',{d:tri(n.x,n.y,8),fill:col,stroke:'#1c0a30',"stroke-width":1.2}); break;
     case 'calamity': shape=el('path',{d:star(n.x,n.y,11,5),fill:col,stroke:'#3a0008',"stroke-width":1.2,filter:'url(#glow)'}); break;
     case 'hidden':   shape=el('circle',{cx:n.x,cy:n.y,r:6,fill:'none',stroke:col,"stroke-width":2,"stroke-dasharray":"2 3"}); break;
