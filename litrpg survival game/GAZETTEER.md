@@ -51,7 +51,7 @@ in flooded cities below the waves — so the ocean is the game's strongest **bur
 
 ---
 
-# 1. VERDARA — the Onramp (Kanto-based · Hrs 0–12)
+# 1. VERDARA — the Onramp (Hrs 0–12)
 
 Temperate forests, grassland, low mountains, a fishing coast, a volcanic isle. Teaches every system.
 **4 true Safe Zones, far apart** — the rest is long wildland, a tutorial sea, and the first underwater OWPS tease.
@@ -162,7 +162,7 @@ Verdara fills **slowly** (tutorial pacing). *(Calamity-dungeons use their Constr
 
 ---
 
-# 2. HALVETH — Specialization (Johto-based · Hrs 10–24)
+# 2. HALVETH — Specialization (Hrs 10–24)
 
 Old-growth forest, rolling country, shrine ruins, sea cliffs, dragon highlands. **3 Safe Zones**, a
 shrine sea of whirlpool isles, and a drowned bell-town below it.
@@ -248,7 +248,7 @@ Fills **faster** than Verdara. Threatened settlement is the nearest Safe Zone/Ho
 
 ---
 
-# 3. CALDERRA — Mastery (Hoenn-based · Hrs 22–40)
+# 3. CALDERRA — Mastery (Hrs 22–40)
 
 Tropical coast, rainforest, active volcano, **the great ocean**, sky towers, desert. **3 Safe Zones** in a
 huge naval region — coral metropolis, hydrothermal vents, a drowned R&D capital.
@@ -339,7 +339,7 @@ Fills **fast**; weather (storm/heatwave) can accelerate a Break. Naval region �
 
 ---
 
-# 4. VAEL — Ascension / Endgame (Sinnoh-based · Hrs 38–60+)
+# 4. VAEL — Ascension / Endgame (Hrs 38–60+)
 
 Snow highlands, the great Spine, ancient ruins, a haunted estate, a frozen temple, the Distortion.
 **3 Safe Zones** in the harshest region — a frozen sea, an under-ice temple, the oldest drowned city.

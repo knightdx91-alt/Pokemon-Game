@@ -213,7 +213,7 @@ Mirrors the Drive doc's phased order (Phase 0 walk → Phase 1 System layer → 
 ## 8. Open / Next
 
 Sequenced plan from the brainstorm:
-1. **Maps + story together** (next) — author each Kanto zone with its **hazard type**, **Stamina-distance
+1. **Maps + story together** (next) — author each Verdara zone with its **hazard type**, **Stamina-distance
    budget**, and the **buried-truth beat it carries** in one pass (first glitch, first ruin, first
    vanishing NPC, first boss death line seeded alongside the geography).
 2. **Creatures & affinities** — sketch the *own* monster framework (the real DMCA divergence) after maps/story.

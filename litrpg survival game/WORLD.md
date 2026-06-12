@@ -2,9 +2,8 @@
 
 > World map plan for the LitRPG survival game. **Overview altitude** — each region drilled
 > into town-by-town and zone-by-zone in later passes. Names are **original** (IP-clean).
-> Each region is built on existing real-region map data as its geographic foundation
-> (noted per region) — the layouts are reused; the names, encounters, tiers, hazards, and
-> story are ours.
+> The Four Reaches are **wholly original areas** — invented geography, towns, zones, encounters,
+> tiers, hazards, and story. They are **not** based on or modeled after any existing game's regions.
 >
 > Companion to `DESIGN.md`. **Status:** brainstorming / pre-implementation.
 
@@ -41,12 +40,12 @@ keeps you in.** Hours come from seven pillars, not from walking distance.
 Four open regions, each dominated by one era-tier but containing pockets of all four.
 "Safe" towns are System-protected; everything else is Wildlands.
 
-| Region | Builds on | Role | Hour band | Dominant tier | Signature hazards |
+| Region | Terrain character | Role | Hour band | Dominant tier | Signature hazards |
 |---|---|---|---|---|---|
-| **Verdara** | Kanto data | Onramp / tutorial-by-attrition | 0–12 | T1 (~60%) | mostly none; Gloom, pockets of Heat/Toxic |
-| **Halveth** | Johto data | Specialization | 10–24 | T2 (~55%) | Gloom, Cold, Toxic |
-| **Calderra** | Hoenn data | Mastery | 22–40 | T3 (~50%) | Heat, Tempest, Tide |
-| **Vael** | Sinnoh data | Ascension / endgame | 38–60+ | T4 (~50%) | Cold, Gloom |
+| **Verdara** | temperate forest, grassland & fishing coast | Onramp / tutorial-by-attrition | 0–12 | T1 (~60%) | mostly none; Gloom, pockets of Heat/Toxic |
+| **Halveth** | old-growth woods, rolling country & dragon highlands | Specialization | 10–24 | T2 (~55%) | Gloom, Cold, Toxic |
+| **Calderra** | tropics, active volcano & open ocean | Mastery | 22–40 | T3 (~50%) | Heat, Tempest, Tide |
+| **Vael** | snow highlands, the great Spine & ancient ruins | Ascension / endgame | 38–60+ | T4 (~50%) | Cold, Gloom |
 
 Hazard legend (player-facing): **Heat · Cold · Toxic · Gloom · Tempest** (defended by affinity
 gear/creatures — see `DESIGN.md §3`). Tiers T1–T4 = era danger bands.
@@ -61,7 +60,7 @@ gear/creatures — see `DESIGN.md §3`). Tiers T1–T4 = era danger bands.
 
 ## 3. Region Overviews
 
-### 3.1 VERDARA — the Onramp (Kanto data · Hrs 0–12)
+### 3.1 VERDARA — the Onramp (Hrs 0–12)
 Temperate forests, grassland, low mountains, caves, a volcanic isle. Teaches every core system.
 
 **Towns (Safe Zones) & guilds**
@@ -92,7 +91,7 @@ Dawnhearth (leaves a note); The Ashlab opens the OWPS thread.
 
 ---
 
-### 3.2 HALVETH — Specialization (Johto data · Hrs 10–24)
+### 3.2 HALVETH — Specialization (Hrs 10–24)
 Old-growth forest, rolling country, shrine ruins, sea cliffs, dragon highlands. Pick a vertical.
 
 **Towns & guilds**
@@ -114,15 +113,15 @@ Old-growth forest, rolling country, shrine ruins, sea cliffs, dragon highlands. 
 | **the Three Reburned** (roaming) | T3 | — | **Gale / Spark / Cinder Warden** — siblings who died in the spire fire, re-bound by the System |
 | **Mortar Deep** | T3 | Stone | Combat trial |
 | **Drake Hollow** | T3 | — | Dragon-marrow farming |
-| **The Maelstrom Isles** | T4 | Tide/Tempest | **Tide Warden "Aether"** Calamity (Lugia-equiv) |
-| **Silvercrown Summit** | T4 | Heat | **Pyre Sovereign "Phoenix"** Calamity (Ho-Oh-equiv) — reachable from Verdara too; you still die |
+| **The Maelstrom Isles** | T4 | Tide/Tempest | **Tide Warden "Aether"** Calamity |
+| **Silvercrown Summit** | T4 | Heat | **Pyre Sovereign "Phoenix"** Calamity — reachable from Verdara too; you still die |
 
 **Story tells:** "remember-before" NPCs more common; roamer death lines; **first encrypted System
 archive** (needs Encryption skill) — deepens the OWPS chain.
 
 ---
 
-### 3.3 CALDERRA — Mastery (Hoenn data · Hrs 22–40)
+### 3.3 CALDERRA — Mastery (Hrs 22–40)
 Tropical coast, rainforest, active volcano, vast ocean, sky towers, desert. Endgame gear loops,
 weather warfare. The cycle's cruelty becomes clear here.
 
@@ -142,18 +141,18 @@ weather warfare. The cycle's cruelty becomes clear here.
 | **The Stormworks** | T3 | Tempest | Engineering guild HQ (weather institute) |
 | **The Orbital Spire** | T3 | — | Cosmic-dust factory |
 | **Origin Hollow** | T3 | — | Pre-Calamity trial |
-| **The Sealed Chambers** | T4 | varies | **the Three Wardens of the Door** (Regi-equiv) — *"guarding the door is all I remember"* |
-| **Heaven's Spine** | T4 | Tempest | **Sky Sovereign "the sky belonged to us"** (Rayquaza-equiv) |
-| **The Sunken Vault** | T4 | Tide | **Abyss Warden** (Kyogre-equiv) — pre-Awakening archive in lore |
-| **The Caldera Maw** | T4 | Heat | **Magma Warden** (Groudon-equiv) — the two made to keep fighting forever |
-| **the Mirror Pair** (open sea) | T4 | Tide/Tempest | twins who speak only to each other in death (Lati-equiv) |
+| **The Sealed Chambers** | T4 | varies | **the Three Wardens of the Door** — *"guarding the door is all I remember"* |
+| **Heaven's Spine** | T4 | Tempest | **Sky Sovereign "the sky belonged to us"** |
+| **The Sunken Vault** | T4 | Tide | **Abyss Warden** — pre-Awakening archive in lore |
+| **The Caldera Maw** | T4 | Heat | **Magma Warden** — the two made to keep fighting forever |
+| **the Mirror Pair** (open sea) | T4 | Tide/Tempest | twins who speak only to each other in death |
 
 **Story tells:** pre-Awakening R&D ruin (corporate archive); the Abyss/Magma "made to keep
 fighting" reveal; the regional **Disguise uniform artifact** is found here.
 
 ---
 
-### 3.4 VAEL — Ascension / Endgame (Sinnoh data · Hrs 38–60+)
+### 3.4 VAEL — Ascension / Endgame (Hrs 38–60+)
 Snow highlands, a vast mountain spine, ancient ruins, a haunted estate, a frozen temple, and the
 Distortion. The buried truth fully surfaces here.
 
@@ -173,11 +172,11 @@ Distortion. The buried truth fully surfaces here.
 | **Greypall Estate** | T4 | Gloom | Shadow-residue super-node, haunted manor |
 | **The Sunken Ruins** | T4 | Gloom | **MAJOR OWPS site — oldest System interfaces, full buried truth** |
 | **Irongrave Isle** | T4 | Stone | Steel-grandmaster crafting |
-| **Pyrecore** | T4 | Heat | **Forge Warden "I crawled in to hide"** (Heatran-equiv) |
-| **The Frozen Vault** | T4 | Cold | **Origin Warden** — the first Awakened of cycle −1, the *previous loop's tutorial boss* (Regigigas-equiv) |
-| **The Ledgerpoint** | T4 | Tempest | **the Bookkeepers** — twin Calamity who run the System's time-and-space ledgers (Dialga/Palkia-equiv) |
-| **the Three Who Saw** (lakes) | T4 | — | children who saw too much (lake-trio-equiv) |
-| **the Severed Lovers** | T4 | Gloom | lovers split by a cycle reset (Cresselia/Darkrai-equiv) |
+| **Pyrecore** | T4 | Heat | **Forge Warden "I crawled in to hide"** |
+| **The Frozen Vault** | T4 | Cold | **Origin Warden** — the first Awakened of cycle −1, the *previous loop's tutorial boss* |
+| **The Ledgerpoint** | T4 | Tempest | **the Bookkeepers** — twin Calamity who run the System's time-and-space ledgers |
+| **the Three Who Saw** (lakes) | T4 | — | children who saw too much |
+| **the Severed Lovers** | T4 | Gloom | lovers split by a cycle reset |
 | **The Distortion** | T4+ | all | **the Exile / Sidewise One** — first Awakened to attempt escape, pushed sideways, knows everything. **Persistent raid, true-endgame entry.** |
 
 **Story tells:** the Sunken Ruins lay the cycle bare; the Origin Warden reveals previous loops;
@@ -234,7 +233,7 @@ Every zone gets authored with all of this in one pass so world, survival tuning,
 
 ```
 Zone: <name>
-Region / builds-on: <region> / <real-area layout>
+Region: <region>   (original area — no external basis)
 Tier: T1–T4(+)        Battle format: single | surge-lanes
 Hazard(s): Heat|Cold|Toxic|Gloom|Tempest (+ intensity)
 Stamina budget: <approx tiles edge-to-objective>   Recommended gear/affinity counters: <...>

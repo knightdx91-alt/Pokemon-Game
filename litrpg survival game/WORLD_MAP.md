@@ -28,7 +28,7 @@
 
 ---
 
-## 1. VERDARA — Onramp (Kanto-based · Hrs 0–12)
+## 1. VERDARA — Onramp (Hrs 0–12)
 
 ```
                  [Frostfoam Caverns]*Rime Warden       --> (Silvercrown Summit / HALVETH, far N)
@@ -68,7 +68,7 @@
 
 ---
 
-## 2. HALVETH — Specialization (Johto-based · Hrs 10–24)
+## 2. HALVETH — Specialization (Hrs 10–24)
 
 ```
    (VERDARA, Silvercrown Summit, far S/W) --> [Silvercrown Summit]*Pyre Sovereign
@@ -102,7 +102,7 @@
 
 ---
 
-## 3. CALDERRA — Mastery (Hoenn-based · Hrs 22–40)
+## 3. CALDERRA — Mastery (Hrs 22–40)
 
 ```
    (HALVETH ferry) ~~boat~~ [Tidecrown]--Reefway--[Bastion]--Granite Deep--[Galehold]~~boat~~(VAEL)
@@ -128,14 +128,14 @@
 | **Emberfall** | Town | — | Heat(pocket) | Origin Hollow(N), Cinder Trail(E) | Emberforge (volcano-foot) |
 | **Cinder Trail** | Route | T3 | Heat | Emberfall(W), Caldera Maw(E) | volcanic flats |
 | **Sealed Chambers** | Landmark/Calamity | T4 | varies | Bastion approach(S) | **Three Wardens of the Door** |
-| **Sunken Vault** | Landmark/Calamity | T4 | Tide | Bastion(S) | **Abyss Warden** (Kyogre-equiv) |
-| **Caldera Maw** | Landmark/Calamity | T4 | Heat | Cinder Trail(E) | **Magma Warden** (Groudon-equiv) |
-| **Heaven's Spine** | Landmark/Calamity | T4 | Tempest | (sky tower, S reach) | **Sky Sovereign** (Rayquaza-equiv) |
+| **Sunken Vault** | Landmark/Calamity | T4 | Tide | Bastion(S) | **Abyss Warden** |
+| **Caldera Maw** | Landmark/Calamity | T4 | Heat | Cinder Trail(E) | **Magma Warden** |
+| **Heaven's Spine** | Landmark/Calamity | T4 | Tempest | (sky tower, S reach) | **Sky Sovereign** |
 | **Mirror Pair** | Calamity (open sea) | T4 | Tide/Tempest | boat (open ocean) | the twins who speak in death |
 
 ---
 
-## 4. VAEL — Ascension / Endgame (Sinnoh-based · Hrs 38–60+)
+## 4. VAEL — Ascension / Endgame (Hrs 38–60+)
 
 ```
    (CALDERRA) ~~boat~~ [Auronpoint]--Frostway--[Hollowmere]--The Spine--[Veilharrow]--Hollow Road--[Cestmark]
@@ -159,9 +159,9 @@
 | **Sunken Ruins** | Dungeon | T4 | Gloom | Cestmark(adj) | **MAJOR OWPS site — full buried truth** |
 | **Irongrave Isle** | Dungeon | T4 | Stone | Eldwood(S) / boat | steel grandmaster crafting |
 | **Frozen Vault** | Landmark/Calamity | T4 | Cold | Auronpoint(N) | **Origin Warden** (prev-cycle tutorial boss) |
-| **Ledgerpoint** | Landmark/Calamity | T4 | Tempest | Veilharrow(N) | **the Bookkeepers** (Dialga/Palkia-equiv) |
+| **Ledgerpoint** | Landmark/Calamity | T4 | Tempest | Veilharrow(N) | **the Bookkeepers** |
 | **Lake Trio sites** | Calamity (3) | T4 | — | scattered (lakes) | **the Three Who Saw**; **Severed Lovers** |
-| **Pyrecore** | Landmark/Calamity | T4 | Heat | Veilharrow(S) | **Forge Warden** (Heatran-equiv) |
+| **Pyrecore** | Landmark/Calamity | T4 | Heat | Veilharrow(S) | **Forge Warden** |
 | **The Distortion** | Landmark/Calamity | T4+ | all | Cestmark(E) | **the Exile** — true-endgame entry, persistent raid |
 
 ---
