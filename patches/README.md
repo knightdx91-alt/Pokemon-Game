@@ -11,6 +11,7 @@ applied before a ROM rebuild.
 git submodule update --init source/emerald-enhanced
 cd source/emerald-enhanced
 git apply ../../patches/ee_enable_devmode_from_start.patch
+git apply ../../patches/ee_random_starters.patch
 # (apply any other patches here)
 ```
 
@@ -25,3 +26,10 @@ arm-none-eabi-gcc + build deps) and copy the resulting `.gba` over
   Mode (and thus the full Debug menu via Start → SELECT) can be unlocked from
   the very start without reaching the Battle Frontier dev switch. Reuses the
   existing `Ryu_enableDevMode` script; touches only `src/start_menu.c`.
+
+- **ee_random_starters.patch** — Every starter slot is rolled randomly across
+  all real species (1..NUM_SPECIES-1, skipping empty base-stat slots) each time
+  the starter screen opens, so the shown sprites match what you get. EE's
+  existing boss/alpha roll (`RyuLegendaryDoBossRoll`) still runs on the chosen
+  one, so any random starter can become a boss (special name icon + all-31
+  IVs). Touches only `src/starter_choose.c`.

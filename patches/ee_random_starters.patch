@@ -1,0 +1,80 @@
+diff --git a/src/starter_choose.c b/src/starter_choose.c
+index bd907c66..4c39f21a 100644
+--- a/src/starter_choose.c
++++ b/src/starter_choose.c
+@@ -10,6 +10,7 @@
+ #include "palette.h"
+ #include "pokedex.h"
+ #include "pokemon.h"
++#include "random.h"
+ #include "scanline_effect.h"
+ #include "sound.h"
+ #include "sprite.h"
+@@ -125,6 +126,7 @@ static const u8 sStarterLabelCoords[STARTER_MON_COUNT][2] =
+     {0x08, 0x02},
+ };
+ 
++// Fallback list, used only if randomization hasn't run yet.
+ static const u16 sStarterMon[STARTER_MON_COUNT] =
+ {
+     SPECIES_PAWNIARD,//
+@@ -136,6 +138,30 @@ static const u16 sStarterMon[STARTER_MON_COUNT] =
+     SPECIES_MEOWTH//
+ };
+ 
++// Each starter slot is rolled randomly across every real species when the
++// starter screen opens. The boss/alpha roll in Task_HandleStarterMenuInput
++// still runs on whichever one is chosen, so any random starter can become a
++// boss (special icon + all-31 IVs).
++static u16 sRandomizedStarters[STARTER_MON_COUNT];
++static bool8 sStartersRandomized = FALSE;
++
++static u16 GetRandomStarterSpecies(void)
++{
++    u16 species;
++    do {
++        species = (Random() % (NUM_SPECIES - 1)) + 1;   // 1 .. NUM_SPECIES-1
++    } while (gBaseStats[species].baseHP == 0);           // skip empty/placeholder slots
++    return species;
++}
++
++static void RandomizeStarters(void)
++{
++    u8 i;
++    for (i = 0; i < STARTER_MON_COUNT; i++)
++        sRandomizedStarters[i] = GetRandomStarterSpecies();
++    sStartersRandomized = TRUE;
++}
++
+ static const struct BgTemplate sBgTemplates[3] =
+ {
+     {
+@@ -375,7 +401,9 @@ u16 GetStarterPokemon(u16 chosenStarterId)
+ {
+     if (chosenStarterId > STARTER_MON_COUNT)
+         chosenStarterId = 0;
+-    return sStarterMon[chosenStarterId];
++    if (!sStartersRandomized)
++        return sStarterMon[chosenStarterId];
++    return sRandomizedStarters[chosenStarterId];
+ }
+ 
+ static void VblankCB_StarterChoose(void)
+@@ -458,6 +486,8 @@ void CB2_ChooseStarter(void)
+     ShowBg(2);
+     ShowBg(3);
+ 
++    RandomizeStarters();
++
+     taskId = CreateTask(Task_StarterChoose, 0);
+     gTasks[taskId].tStarterSelection = 3;
+ 
+@@ -599,7 +629,7 @@ static void Task_HandleConfirmStarterInput(u8 taskId)
+         FlagSet(FLAG_SYS_POKEMON_GET);
+         gSpecialVar_Result = gTasks[taskId].tStarterSelection;
+         RyuLegendaryDoBossRoll();
+-        CreateMon(&gPlayerParty[0], sStarterMon[gSpecialVar_Result], 10, 32, 0, 0, OT_ID_PLAYER_ID, FALSE);
++        CreateMon(&gPlayerParty[0], GetStarterPokemon(gSpecialVar_Result), 10, 32, 0, 0, OT_ID_PLAYER_ID, FALSE);
+         if(FlagGet(FLAG_RYU_BOSS_WILD) == TRUE)
+         {
+             bool8 tru = TRUE;
