@@ -151,8 +151,12 @@
         }
         .btn-del-row:hover { color: var(--danger); border-color: var(--danger); }
         #cache-empty { padding: 32px; text-align: center; font-size: 13px; color: #4a4a5a; }
-        #emu-screen { display: none; flex-direction: column; height: 100vh; }
+        /* Pin to the viewport so the top bar can't be scrolled/bumped off when
+           the game starts and the mobile address bar resizes. */
+        #emu-screen { display: none; position: fixed; inset: 0; z-index: 50;
+            flex-direction: column; background: var(--bg); }
         #emu-screen.visible { display: flex; }
+        .emu-topbar { position: sticky; top: 0; z-index: 2; }
         .emu-topbar {
             background: var(--surface); border-bottom: 1px solid var(--border);
             padding: calc(0.5rem + env(safe-area-inset-top, 0px)) 0.6rem 0.5rem;
@@ -815,6 +819,15 @@
 
             // Periodic + on-hide battery-save flushing (the actual fix).
             startSaveFlushing();
+
+            // Make sure the persisted battery save is pulled in from IndexedDB
+            // after boot (in case the core started before it was synced).
+            setTimeout(function () {
+                var g = _gm();
+                if (g && g.FS && typeof g.FS.syncfs === 'function') {
+                    try { g.FS.syncfs(true, function () { try { g.loadSaveFiles(); } catch (e) {} }); } catch (e) {}
+                }
+            }, 1800);
 
             // Apply any saved screen offset once the canvas exists.
             applyShiftY();
