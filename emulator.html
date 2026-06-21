@@ -464,8 +464,18 @@
 
     var _accessToken = null;
     var _selectedSys = null;
-    var _cachedIds   = {};
-    var _metaMap     = {};
+    /* _games: IndexedDB key -> meta ({ sysId, label, filename, size }).
+       ROMs are keyed per-game (sysId + '::' + filename) so multiple games
+       can be cached for the same system. Old entries keyed by bare sysId
+       still load (their meta carries sysId), so this is backward-compatible. */
+    var _games = {};
+    function gameKeyFor(sys, fileName) { return sys.id + '::' + (fileName || sys.label); }
+    function gamesForSystem(sysId) {
+        return Object.keys(_games)
+            .filter(function (k) { return _games[k].sysId === sysId; })
+            .map(function (k) { return { key: k, meta: _games[k] }; });
+    }
+    function systemHasCache(sysId) { return gamesForSystem(sysId).length > 0; }
     var _gapiLoaded  = false;
     var _gsiLoaded   = false;
 
@@ -753,12 +763,13 @@
 
     function cacheAndLaunch(sys, blob, fileName) {
         setDl('Saving to cache…'); setProgress(100);
+        var key = gameKeyFor(sys, fileName);
         var meta = { sysId: sys.id, label: sys.label, filename: fileName || sys.label, size: blob.size };
         openDB().then(function (db) {
-            return idbPut(db, ROM_STORE, sys.id, blob)
-                .then(function () { return idbPut(db, META_STORE, sys.id, meta); })
+            return idbPut(db, ROM_STORE, key, blob)
+                .then(function () { return idbPut(db, META_STORE, key, meta); })
                 .then(function () {
-                    _cachedIds[sys.id] = true; _metaMap[sys.id] = meta;
+                    _games[key] = meta;
                     refreshCard(sys.id);
                     launchEJS(sys, URL.createObjectURL(blob), fileName || sys.label);
                 });
@@ -808,11 +819,11 @@
             .catch(function (err) { hideLoading(); btnDrive.disabled = false; alert('Download failed: ' + err.message); });
     }
 
-    function playFromCache(id) {
-        var sys = SYS_BY_ID[id], meta = _metaMap[id] || {};
+    function playFromCache(key) {
+        var meta = _games[key] || {}, sys = SYS_BY_ID[meta.sysId];
         if (!sys) return;
         cacheOverlay.classList.remove('visible');
-        openDB().then(function (db) { return idbGet(db, ROM_STORE, id); }).then(function (blob) {
+        openDB().then(function (db) { return idbGet(db, ROM_STORE, key); }).then(function (blob) {
             if (!blob) { alert('Cache miss — please re-download.'); return; }
             launchEJS(sys, URL.createObjectURL(blob), meta.filename || sys.label);
         });
@@ -874,28 +885,39 @@
 
     function openCachePanel() {
         cacheList.innerHTML = '';
-        var keys = Object.keys(_cachedIds);
+        /* Sort games by system label, then filename, so multiple games for the
+           same system group together. */
+        var keys = Object.keys(_games).sort(function (a, b) {
+            var ma = _games[a], mb = _games[b];
+            var la = (SYS_BY_ID[ma.sysId] || {}).label || ma.label || ma.sysId;
+            var lb = (SYS_BY_ID[mb.sysId] || {}).label || mb.label || mb.sysId;
+            if (la !== lb) return la < lb ? -1 : 1;
+            return (ma.filename || '') < (mb.filename || '') ? -1 : 1;
+        });
         if (!keys.length) {
             cacheList.innerHTML = '<div id="cache-empty">No ROMs cached yet.</div>';
             document.getElementById('offline-summary').style.display = 'none';
         }
         else {
-            keys.forEach(function (id) {
-                var meta = _metaMap[id] || {}, sys = SYS_BY_ID[id] || {};
+            keys.forEach(function (key) {
+                var meta = _games[key] || {}, sys = SYS_BY_ID[meta.sysId] || {};
                 var row = document.createElement('div');
                 row.className = 'cache-row';
                 row.innerHTML =
                     '<button class="btn-play-row">&#9654; Play</button>' +
-                    '<div class="cache-info"><div class="cache-sys">' + (meta.label || sys.label || id) + '</div>' +
-                    '<div class="cache-file">' + (meta.filename || 'unknown') + '</div></div>' +
-                    '<span class="cache-offline" data-sys="' + id + '">checking…</span>' +
+                    '<div class="cache-info"><div class="cache-sys">' + (meta.filename || 'unknown') + '</div>' +
+                    '<div class="cache-file">' + (sys.label || meta.label || meta.sysId) + '</div></div>' +
+                    '<span class="cache-offline" data-sys="' + meta.sysId + '">checking…</span>' +
                     '<div class="cache-size">' + (meta.size ? fmtMB(meta.size) : '—') + '</div>' +
                     '<button class="btn-del-row">Delete</button>';
-                row.querySelector('.btn-play-row').addEventListener('click', function () { playFromCache(id); });
+                row.querySelector('.btn-play-row').addEventListener('click', function () { playFromCache(key); });
                 row.querySelector('.btn-del-row').addEventListener('click', function () {
-                    openDB().then(function (db) { return idbDel(db, id); }).then(function () {
-                        delete _cachedIds[id]; delete _metaMap[id]; refreshCard(id); openCachePanel();
-                        if (_selectedSys && _selectedSys.id === id) { btnPlayCached.style.display = 'none'; btnClear.style.display = 'none'; }
+                    var sysId = meta.sysId;
+                    openDB().then(function (db) { return idbDel(db, key); }).then(function () {
+                        delete _games[key]; refreshCard(sysId); openCachePanel();
+                        if (_selectedSys && _selectedSys.id === sysId && !systemHasCache(sysId)) {
+                            btnPlayCached.style.display = 'none'; btnClear.style.display = 'none';
+                        }
                     });
                 });
                 cacheList.appendChild(row);
@@ -923,14 +945,19 @@
         document.getElementById('sel-icon-txt').innerHTML = sys.icon || '&#127918;';
         document.getElementById('sel-name-txt').textContent = sys.label;
         document.getElementById('sel-ext-txt').textContent  = sys.exts.join(', ');
-        var cached = !!_cachedIds[sys.id];
+        var games = gamesForSystem(sys.id);
+        var cached = games.length > 0;
         btnPlayCached.style.display = cached ? '' : 'none'; btnClear.style.display = cached ? '' : 'none';
+        btnPlayCached.innerHTML = (games.length > 1)
+            ? '&#9654; Play cached (' + games.length + ')'
+            : '&#9654; Play cached';
+        btnClear.textContent = (games.length > 1) ? 'Delete cache (' + games.length + ')' : 'Delete cache';
         btnDrive.disabled = false; btnUrlLoad.disabled = !urlInput.value.trim();
     }
     function refreshCard(sysId) {
         var card = document.querySelector('.sys-card[data-id="' + sysId + '"]');
         if (!card) return;
-        if (_cachedIds[sysId]) card.classList.add('has-cache'); else card.classList.remove('has-cache');
+        if (systemHasCache(sysId)) card.classList.add('has-cache'); else card.classList.remove('has-cache');
     }
     function buildGrid() {
         var groups = [], groupMap = {};
@@ -944,7 +971,7 @@
             var grid = document.createElement('div'); grid.className = 'system-grid';
             groupMap[g].forEach(function (sys) {
                 var btn = document.createElement('button');
-                btn.className = 'sys-card' + (_cachedIds[sys.id] ? ' has-cache' : '');
+                btn.className = 'sys-card' + (systemHasCache(sys.id) ? ' has-cache' : '');
                 btn.dataset.id = sys.id;
                 btn.innerHTML = '<span class="sys-icon">' + sys.icon + '</span><span class="sys-name">' + sys.label + '</span>';
                 btn.addEventListener('click', function () { selectSystem(sys); });
@@ -961,17 +988,25 @@
     btnDrive.addEventListener('click', startDrivePicker);
     btnPlayCached.addEventListener('click', function () {
         if (!_selectedSys) return;
-        openDB().then(function (db) { return idbGet(db, ROM_STORE, _selectedSys.id); }).then(function (blob) {
-            if (!blob) { alert('Cache miss — please re-download.'); return; }
-            var meta = _metaMap[_selectedSys.id] || {};
-            launchEJS(_selectedSys, URL.createObjectURL(blob), meta.filename || _selectedSys.label);
-        });
+        var games = gamesForSystem(_selectedSys.id);
+        if (!games.length) return;
+        /* One game: play it directly. Several: open the panel so the user
+           picks which one. */
+        if (games.length === 1) playFromCache(games[0].key);
+        else openCachePanel();
     });
     btnClear.addEventListener('click', function () {
         if (!_selectedSys) return;
-        openDB().then(function (db) { return idbDel(db, _selectedSys.id); }).then(function () {
-            delete _cachedIds[_selectedSys.id]; delete _metaMap[_selectedSys.id];
-            refreshCard(_selectedSys.id); btnPlayCached.style.display = 'none'; btnClear.style.display = 'none';
+        var sysId = _selectedSys.id;
+        var games = gamesForSystem(sysId);
+        if (!games.length) return;
+        if (!confirm('Delete ' + games.length + ' cached ' + _selectedSys.label + ' game' +
+                     (games.length === 1 ? '' : 's') + '?')) return;
+        openDB().then(function (db) {
+            return Promise.all(games.map(function (g) { return idbDel(db, g.key); }));
+        }).then(function () {
+            games.forEach(function (g) { delete _games[g.key]; });
+            refreshCard(sysId); btnPlayCached.style.display = 'none'; btnClear.style.display = 'none';
         });
     });
     document.getElementById('btn-back-emu').addEventListener('click', function () { location.reload(); });
@@ -1265,9 +1300,14 @@
     })();
 
     openDB().then(function (db) {
-        return Promise.all([idbAllKeys(db), idbAllMeta(db), idbAllMetaKeys(db)]).then(function (results) {
-            results[0].forEach(function (k) { _cachedIds[k] = true; });
-            results[2].forEach(function (k, i) { _metaMap[k] = results[1][i]; });
+        return Promise.all([idbAllMeta(db), idbAllMetaKeys(db)]).then(function (results) {
+            var metas = results[0], metaKeys = results[1];
+            metaKeys.forEach(function (k, i) {
+                var meta = metas[i] || {};
+                /* Backfill sysId for legacy entries keyed by bare system id. */
+                if (!meta.sysId) meta.sysId = (k.indexOf('::') !== -1) ? k.split('::')[0] : k;
+                _games[k] = meta;
+            });
             buildGrid();
         });
     }).catch(function () { buildGrid(); });
