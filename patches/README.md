@@ -15,9 +15,35 @@ git apply ../../patches/ee_random_starters.patch
 # (apply any other patches here)
 ```
 
-Then build the ROM (needs the GBA decomp toolchain: agbcc + devkitARM /
-arm-none-eabi-gcc + build deps) and copy the resulting `.gba` over
-`pokeemerald_ee_debug.gba` in the repo root.
+## Build (verified recipe)
+
+Tested on Ubuntu (root). Needs network to github.com (not api.github.com).
+
+```sh
+# 1. ARM toolchain (binutils as/ld/objcopy + cpp)
+apt-get install -y binutils-arm-none-eabi gcc-arm-none-eabi
+
+# 2. agbcc (the GBA C compiler) -> installs into the EE tree
+git clone --depth 1 https://github.com/pret/agbcc.git /tmp/agbcc
+cd /tmp/agbcc && ./build.sh
+./install.sh /path/to/source/emerald-enhanced
+
+# 3. poryscript (compiles .pory scripts) -> tools/poryscript/
+apt-get install -y golang-go    # or use existing Go
+git clone --depth 1 https://github.com/huderlem/poryscript.git /tmp/poryscript
+cd /tmp/poryscript && go build -o poryscript .
+mkdir -p /path/to/source/emerald-enhanced/tools/poryscript
+cp poryscript *.json /path/to/source/emerald-enhanced/tools/poryscript/
+
+# 4. apply patches (see above) then build the debug ROM
+cd /path/to/source/emerald-enhanced
+make tools -j$(nproc)
+make DEBUG=1 -j$(nproc)        # produces pokeemerald.gba
+cp pokeemerald.gba ../../pokeemerald_ee_debug.gba
+```
+
+Note: mutable file-scope data added in patches must use the `EWRAM_DATA`
+macro, or agbcc linking fails with `referenced in discarded section .data`.
 
 ## Patches
 

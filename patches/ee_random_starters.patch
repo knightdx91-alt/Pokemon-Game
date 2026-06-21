@@ -1,5 +1,5 @@
 diff --git a/src/starter_choose.c b/src/starter_choose.c
-index bd907c66..4c39f21a 100644
+index bd907c66..122e5bf9 100644
 --- a/src/starter_choose.c
 +++ b/src/starter_choose.c
 @@ -10,6 +10,7 @@
@@ -26,8 +26,8 @@ index bd907c66..4c39f21a 100644
 +// starter screen opens. The boss/alpha roll in Task_HandleStarterMenuInput
 +// still runs on whichever one is chosen, so any random starter can become a
 +// boss (special icon + all-31 IVs).
-+static u16 sRandomizedStarters[STARTER_MON_COUNT];
-+static bool8 sStartersRandomized = FALSE;
++EWRAM_DATA static u16 sRandomizedStarters[STARTER_MON_COUNT] = {0};
++EWRAM_DATA static bool8 sStartersRandomized = FALSE;
 +
 +static u16 GetRandomStarterSpecies(void)
 +{
