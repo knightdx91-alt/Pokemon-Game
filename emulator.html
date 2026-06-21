@@ -1289,86 +1289,50 @@
             if (!g) { alert('Start a game first.'); return; }
             saveBtn.textContent = '💾 Saving…'; saveBtn.disabled = true;
 
-            grabState(g).then(function (data) {
-                if (!data) {
-                    setBtn(saveBtn, '✗ No state', '#e05454');
-                    setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 3000);
-                    alert('Could not capture a save state from the emulator.');
-                    return;
+            // Flush the core's battery save (SRAM/flash, incl. RTC) to the FS…
+            try { g.saveSaveFiles(); } catch (e) {}
+
+            function report() {
+                var bytes = 0;
+                try {
+                    var p = g.getSaveFilePath && g.getSaveFilePath();
+                    if (p && g.FS.analyzePath(p).exists) {
+                        var d = g.FS.readFile(p);
+                        bytes = d ? d.length : 0;
+                    }
+                } catch (e) {}
+                if (bytes > 0) {
+                    setBtn(saveBtn, '✓ Saved ' + Math.round(bytes / 1024) + 'K', '#4caf88');
+                    setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 2500);
+                } else {
+                    setBtn(saveBtn, '✗ No save', '#e05454');
+                    setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 4000);
+                    alert('No battery save was written.\n\nSave INSIDE the game first (open the game menu → SAVE), then tap 💾 Save. If it still shows 0 K, this ROM\'s save type isn\'t being detected.');
                 }
-                var b64 = '';
-                // Chunked btoa — large states overflow the call stack otherwise
-                var CHUNK = 0x8000, bin = '';
-                for (var i = 0; i < data.length; i += CHUNK) {
-                    bin += String.fromCharCode.apply(null, data.subarray(i, i + CHUNK));
-                }
-                b64 = btoa(bin);
-                ensureSaveBranch(function () {
-                    getFileSha(statePath(), function (sha) {
-                        var body = { message: 'state ' + (window.CLOUD_SAVE_GAME || 'game') + ' ' + new Date().toISOString(), content: b64, branch: SAVE_BRANCH };
-                        if (sha) body.sha = sha;
-                        fetch('https://api.github.com/repos/' + REPO + '/contents/' + statePath(), {
-                            method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body)
-                        }).then(function (r) {
-                            if (!r.ok) return r.json().then(function (e) { throw new Error(e.message); });
-                            setBtn(saveBtn, '✓ Saved!', '#4caf88');
-                            setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 2500);
-                        }).catch(function (e) {
-                            setBtn(saveBtn, '✗ Error', '#e05454');
-                            setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 3000);
-                            alert('Save error: ' + e.message);
-                        });
-                    });
-                });
-            });
+            }
+            // …then persist the FS to IndexedDB, and report once that completes.
+            try {
+                if (g.FS && typeof g.FS.syncfs === 'function') g.FS.syncfs(false, function () { report(); });
+                else report();
+            } catch (e) { report(); }
         });
 
         loadBtn.addEventListener('click', function () {
             var g = gm();
             if (!g) { alert('Start a game first.'); return; }
             loadBtn.textContent = '📂 Loading…'; loadBtn.disabled = true;
-            fetch('https://api.github.com/repos/' + REPO + '/contents/' + statePath() + '?ref=' + SAVE_BRANCH + '&t=' + Date.now(), {
-                headers: ghHeaders(), cache: 'no-store'
-            }).then(function (r) {
-                if (!r.ok) throw new Error('No save state found on GitHub for this game.');
-                return r.json();
-            }).then(function (d) {
-                var binary = atob(d.content.replace(/\n/g, ''));
-                var bytes = new Uint8Array(binary.length);
-                for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-
-                // Apply directly via EmulatorJS's own loadState API (same as
-                // the context-menu Load State button)
-                var mgr = window.EJS_emulator && window.EJS_emulator.gameManager;
-                if (mgr && typeof mgr.loadState === 'function') {
-                    mgr.loadState(bytes);
-                    setBtn(loadBtn, '✓ Loaded!', '#4caf88');
-                    setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 2500);
-                } else {
-                    // Fallback: write to FS candidate paths and quickLoad
-                    var name = window.EJS_gameName || '';
-                    [
-                        '/home/web_user/retroarch/userdata/states/' + name + '.state',
-                        '/data/states/' + name,
-                        '/data/states/1',
-                    ].forEach(function (p) {
-                        try {
-                            var dir = p.split('/').slice(0, -1).join('/');
-                            try { g.FS.mkdir(dir); } catch (_) {}
-                            g.FS.writeFile(p, bytes);
-                        } catch (_) {}
-                    });
-                    try {
-                        if (window.EJS_emulator && window.EJS_emulator.quickLoad) window.EJS_emulator.quickLoad();
-                    } catch (_) {}
-                    setBtn(loadBtn, '✓ Loaded!', '#4caf88');
-                    setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 2500);
-                }
-            }).catch(function (e) {
-                setBtn(loadBtn, '✗ Error', '#e05454');
-                setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 3000);
-                alert('Load error: ' + e.message);
-            });
+            // Pull the latest battery save from IndexedDB into the running core.
+            function done(ok) {
+                if (ok) { setBtn(loadBtn, '✓ Loaded!', '#4caf88'); }
+                else    { setBtn(loadBtn, '✗ Error', '#e05454'); }
+                setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 2500);
+            }
+            try {
+                g.FS.syncfs(true, function () {
+                    try { g.loadSaveFiles(); } catch (e) {}
+                    done(true);
+                });
+            } catch (e) { done(false); }
         });
     })();
 
