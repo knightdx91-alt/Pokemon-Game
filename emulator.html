@@ -744,7 +744,7 @@
         }
     }
 
-    function launchEJS(sys, blobUrl, label) {
+    function launchEJS(sys, blob, label) {
         hideLoading();
         setupScreen.style.display = 'none';
         emuScreen.classList.add('visible');
@@ -783,7 +783,14 @@
 
         window.EJS_player                    = '#game';
         window.EJS_core                      = sys.core;
-        window.EJS_gameUrl                   = blobUrl;
+        /* Pass the ROM as a File with a STABLE name (derived from the game) so
+           EmulatorJS derives a stable battery-save (.srm) filename. Passing a
+           blob: URL gives a random name each session, so the save is written
+           under one name and never found on reload ("No Continue"). */
+        var _ext = (String(label || '').match(/\.[^.\/]+$/) || ['.bin'])[0];
+        window.EJS_gameUrl                   = (typeof blob === 'string')
+            ? blob
+            : new File([blob], _romName + _ext, { type: 'application/octet-stream' });
         window.EJS_pathtodata                = CDN;
         window.EJS_color                     = '#7c6af7';
         window.EJS_backgroundColor           = '#0d0d0f';
@@ -855,7 +862,7 @@
                 .then(function () {
                     _games[key] = meta;
                     refreshCard(sys.id);
-                    launchEJS(sys, URL.createObjectURL(blob), fileName || sys.label);
+                    launchEJS(sys, blob, fileName || sys.label);
                 });
         });
     }
@@ -909,7 +916,7 @@
         cacheOverlay.classList.remove('visible');
         openDB().then(function (db) { return idbGet(db, ROM_STORE, key); }).then(function (blob) {
             if (!blob) { alert('Cache miss — please re-download.'); return; }
-            launchEJS(sys, URL.createObjectURL(blob), meta.filename || sys.label);
+            launchEJS(sys, blob, meta.filename || sys.label);
         });
     }
 
