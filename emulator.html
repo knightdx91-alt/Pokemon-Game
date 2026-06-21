@@ -461,6 +461,7 @@
     var IDB_DB     = 'ejs-roms-v2';
     var ROM_STORE  = 'roms';
     var META_STORE = 'meta';
+    var SAVE_STORE = 'saves';   // battery saves (.srm, incl. RTC) per game, for offline
 
     var _accessToken = null;
     var _selectedSys = null;
@@ -595,11 +596,12 @@
 
     function openDB() {
         return new Promise(function (res, rej) {
-            var r = indexedDB.open(IDB_DB, 1);
+            var r = indexedDB.open(IDB_DB, 2);
             r.onupgradeneeded = function (e) {
                 var db = e.target.result;
                 if (!db.objectStoreNames.contains(ROM_STORE))  db.createObjectStore(ROM_STORE);
                 if (!db.objectStoreNames.contains(META_STORE)) db.createObjectStore(META_STORE);
+                if (!db.objectStoreNames.contains(SAVE_STORE)) db.createObjectStore(SAVE_STORE);
             };
             r.onsuccess = function (e) { res(e.target.result); };
             r.onerror   = function (e) { rej(e.target.error); };
@@ -665,6 +667,108 @@
             }
             setDl('Downloading…'); setProgress(50); return resp.blob();
         });
+    }
+
+    /* ---- Local battery-save persistence (offline) ----
+       The in-game SAVE writes the cartridge SRAM (and, for Pokémon Emerald,
+       the RTC) into the emulator's in-memory filesystem. EmulatorJS doesn't
+       reliably flush that to durable storage on a locked browser, so progress
+       is lost on reload. Here we copy the live SRAM into IndexedDB on a timer
+       and whenever the page is hidden/closed, and restore it on launch — no
+       connection needed. A synchronous localStorage mirror is the last-ditch
+       backup for abrupt closes (IndexedDB writes may not finish on pagehide). */
+    var _saveKey = null;          // IndexedDB key for the current game's save
+    var _saveTimer = null;
+    var _lastSaveSig = '';        // cheap change signature to skip redundant writes
+    var _saveHooksInstalled = false;
+    var LS_BACKUP = 'ejs_lastsave';
+
+    function _gm() { return window.EJS_emulator && window.EJS_emulator.gameManager; }
+
+    function _readLiveSave() {
+        var g = _gm(); if (!g) return null;
+        try {
+            g.saveSaveFiles();
+            var path = g.getSaveFilePath(); if (!path) return null;
+            var data = g.FS.readFile(path);
+            return (data && data.length) ? data : null;
+        } catch (e) { return null; }
+    }
+    function _writeLiveSave(bytes) {
+        var g = _gm(); if (!g || !bytes || !bytes.length) return false;
+        try {
+            var path = g.getSaveFilePath(); if (!path) return false;
+            var dir = path.split('/').slice(0, -1).join('/');
+            try { if (dir && !g.FS.analyzePath(dir).exists) g.FS.mkdir(dir); } catch (_) {}
+            g.FS.writeFile(path, bytes);
+            g.loadSaveFiles();
+            return true;
+        } catch (e) { return false; }
+    }
+    function _sig(bytes) {
+        var n = bytes.length, s = n + ':';
+        var step = Math.max(1, (n / 512) | 0);
+        for (var i = 0; i < n; i += step) s += bytes[i].toString(36);
+        return s;
+    }
+    function _b64(bytes) {
+        var bin = '';
+        for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+        return btoa(bin);
+    }
+    function _unb64(b64) {
+        var bin = atob(b64), out = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+        return out;
+    }
+
+    /* Persist the current SRAM to IndexedDB (+ localStorage mirror). */
+    function persistLocalSave(force) {
+        if (!_saveKey) return;
+        var bytes = _readLiveSave();
+        if (!bytes) return;
+        var sig = _sig(bytes);
+        if (!force && sig === _lastSaveSig) return;   // unchanged since last write
+        _lastSaveSig = sig;
+        var rec = { bytes: bytes, time: Date.now(), key: _saveKey };
+        openDB().then(function (db) { return idbPut(db, SAVE_STORE, _saveKey, rec); }).catch(function () {});
+        try { localStorage.setItem(LS_BACKUP, JSON.stringify({ key: _saveKey, time: rec.time, b64: _b64(bytes) })); } catch (e) {}
+    }
+
+    /* Restore the saved SRAM for a game into the running core. */
+    function restoreLocalSave(saveKey, cb) {
+        openDB().then(function (db) { return idbGet(db, SAVE_STORE, saveKey); }).then(function (rec) {
+            var chosen = rec && rec.bytes ? { bytes: rec.bytes, time: rec.time || 0 } : null;
+            /* Prefer the synchronous backup if it's for this game and newer. */
+            try {
+                var raw = localStorage.getItem(LS_BACKUP);
+                if (raw) {
+                    var ls = JSON.parse(raw);
+                    if (ls && ls.key === saveKey && (!chosen || (ls.time || 0) > chosen.time)) {
+                        chosen = { bytes: _unb64(ls.b64), time: ls.time || 0 };
+                    }
+                }
+            } catch (e) {}
+            if (chosen && chosen.bytes && chosen.bytes.length) {
+                if (_writeLiveSave(chosen.bytes)) { _lastSaveSig = _sig(chosen.bytes); }
+            }
+            if (cb) cb();
+        }).catch(function () { if (cb) cb(); });
+    }
+
+    function startLocalSaveLoop(saveKey) {
+        _saveKey = saveKey;
+        _lastSaveSig = '';
+        if (_saveTimer) clearInterval(_saveTimer);
+        _saveTimer = setInterval(function () { persistLocalSave(false); }, 8000);
+        if (!_saveHooksInstalled) {
+            _saveHooksInstalled = true;
+            document.addEventListener('visibilitychange', function () {
+                if (document.visibilityState === 'hidden') persistLocalSave(true);
+            });
+            window.addEventListener('pagehide', function () { persistLocalSave(true); });
+            window.addEventListener('beforeunload', function () { persistLocalSave(true); });
+        }
     }
 
     function launchEJS(sys, blobUrl, label) {
@@ -748,6 +852,13 @@
 
             // Also sync every 5s as a safety net
             setInterval(_fsSync, 5000);
+
+            // Durable, offline battery-save persistence: restore this game's
+            // saved SRAM (incl. RTC), then autosave it to IndexedDB.
+            var _skey = sys.id + '::' + _romName;
+            setTimeout(function () {
+                restoreLocalSave(_skey, function () { startLocalSaveLoop(_skey); });
+            }, 1000);
         };
         window.EJS_Buttons = {
             playPause:true, restart:true, mute:true, settings:true, fullscreen:true,
