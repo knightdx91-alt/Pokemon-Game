@@ -138,6 +138,12 @@
         .cache-sys  { font-size: 13px; font-weight: 600; }
         .cache-file { font-size: 11px; color: #4a4a5a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
         .cache-size { font-size: 11px; color: var(--muted); white-space: nowrap; }
+        .cache-offline { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; border: 1px solid var(--border); color: var(--muted); }
+        .cache-offline.ready   { color: var(--success); border-color: #234a3a; }
+        .cache-offline.partial { color: #e0b054;        border-color: #4a3f23; }
+        #offline-summary { padding: 9px 16px; font-size: 11px; border-bottom: 1px solid var(--border); color: var(--muted); }
+        #offline-summary b { color: var(--success); }
+        #offline-summary.partial b { color: #e0b054; }
         .btn-del-row {
             background: none; color: #4a4a5a; border: 1px solid var(--border); border-radius: 6px;
             padding: 4px 8px; font-size: 11px; cursor: pointer; font-family: inherit;
@@ -264,6 +270,7 @@
 <div id="cache-overlay">
     <div id="cache-panel">
         <div id="cache-header"><span>Cached ROMs</span><button id="btn-close-cache">&#x2715; Close</button></div>
+        <div id="offline-summary" style="display:none"></div>
         <div id="cache-list"></div>
     </div>
 </div>
@@ -811,10 +818,67 @@
         });
     }
 
+    /* ---- Offline readiness ----
+       A cached ROM can be played with no connection only once the service
+       worker has also stored the EmulatorJS engine AND that system's core.
+       Both arrive the first time you play that system online. We inspect the
+       service worker cache to report this per game. */
+    var OFFLINE_CACHE_NAME = 'retroplay-offline-v1';
+    function readOfflineCacheUrls() {
+        if (!('caches' in window)) return Promise.resolve(null);
+        return caches.open(OFFLINE_CACHE_NAME)
+            .then(function (c) { return c.keys(); })
+            .then(function (reqs) { return reqs.map(function (r) { return r.url; }); })
+            .catch(function () { return null; });
+    }
+    function offlineStatusFor(sys, urls) {
+        if (!urls) return 'unknown';
+        var engineReady = urls.some(function (u) { return u.indexOf('emulator.min.js') !== -1; });
+        var core = (sys.core || '').toLowerCase();
+        var coreReady = !!core && urls.some(function (u) {
+            return u.indexOf('/cores/') !== -1 && u.toLowerCase().indexOf(core) !== -1;
+        });
+        return (engineReady && coreReady) ? 'ready' : 'partial';
+    }
+    function updateOfflineBadges() {
+        var summary = document.getElementById('offline-summary');
+        readOfflineCacheUrls().then(function (urls) {
+            var badges = cacheList.querySelectorAll('.cache-offline');
+            var ready = 0;
+            badges.forEach(function (b) {
+                var sys = SYS_BY_ID[b.dataset.sys] || {};
+                var st = (urls === null) ? 'unknown' : offlineStatusFor(sys, urls);
+                if (st === 'ready') {
+                    b.className = 'cache-offline ready'; b.textContent = '✓ Offline ready'; ready++;
+                } else if (st === 'partial') {
+                    b.className = 'cache-offline partial'; b.textContent = 'Play once online';
+                } else {
+                    b.className = 'cache-offline'; b.textContent = 'Offline: n/a';
+                }
+            });
+            if (!badges.length) { summary.style.display = 'none'; return; }
+            summary.style.display = '';
+            if (urls === null) {
+                summary.className = 'partial';
+                summary.innerHTML = 'Offline support unavailable in this browser.';
+            } else if (ready === badges.length) {
+                summary.className = '';
+                summary.innerHTML = '<b>✓ All ' + ready + ' game' + (ready === 1 ? '' : 's') + ' ready to play offline.</b>';
+            } else {
+                summary.className = 'partial';
+                summary.innerHTML = '<b>' + ready + ' of ' + badges.length + '</b> ready offline. ' +
+                    'Play the others once while online to finish caching.';
+            }
+        });
+    }
+
     function openCachePanel() {
         cacheList.innerHTML = '';
         var keys = Object.keys(_cachedIds);
-        if (!keys.length) { cacheList.innerHTML = '<div id="cache-empty">No ROMs cached yet.</div>'; }
+        if (!keys.length) {
+            cacheList.innerHTML = '<div id="cache-empty">No ROMs cached yet.</div>';
+            document.getElementById('offline-summary').style.display = 'none';
+        }
         else {
             keys.forEach(function (id) {
                 var meta = _metaMap[id] || {}, sys = SYS_BY_ID[id] || {};
@@ -824,6 +888,7 @@
                     '<button class="btn-play-row">&#9654; Play</button>' +
                     '<div class="cache-info"><div class="cache-sys">' + (meta.label || sys.label || id) + '</div>' +
                     '<div class="cache-file">' + (meta.filename || 'unknown') + '</div></div>' +
+                    '<span class="cache-offline" data-sys="' + id + '">checking…</span>' +
                     '<div class="cache-size">' + (meta.size ? fmtMB(meta.size) : '—') + '</div>' +
                     '<button class="btn-del-row">Delete</button>';
                 row.querySelector('.btn-play-row').addEventListener('click', function () { playFromCache(id); });
@@ -835,6 +900,7 @@
                 });
                 cacheList.appendChild(row);
             });
+            updateOfflineBadges();
         }
         cacheOverlay.classList.add('visible');
     }
