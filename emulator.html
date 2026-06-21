@@ -6,6 +6,10 @@
     <meta name="color-scheme" content="light only">
     <meta name="darkreader-lock">
     <title>Emulator — RetroPlay</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#0d0d0f">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
         :root {
             --bg:       #0d0d0f;
@@ -1206,5 +1210,16 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
 <script src="cloud-saves.js?v=__CACHE_BUST__"></script>
+<script>
+/* Register the offline service worker so the page, the EmulatorJS engine,
+   and the per-system cores can be served with no connection. Your cached
+   ROMs (IndexedDB) and saves (localStorage) already persist offline; this
+   makes the engine itself available too. */
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+    });
+}
+</script>
 </body>
 </html>
