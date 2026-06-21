@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offline Capability Test</title>
+<style>
+  :root { --bg:#0d0d0f; --card:#17171a; --bd:#2a2a30; --tx:#f0eeff; --mut:#888;
+          --ok:#4caf88; --bad:#e05454; --warn:#e0b054; --acc:#7c6af7; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--tx); font-family:system-ui,'Segoe UI',sans-serif;
+         padding:18px; line-height:1.45; }
+  h1 { font-size:1.25rem; margin-bottom:4px; }
+  .sub { color:var(--mut); font-size:.85rem; margin-bottom:14px; }
+  .origin { font-size:.8rem; padding:8px 12px; border-radius:10px; margin-bottom:16px;
+            border:1px solid var(--bd); background:var(--card); word-break:break-all; }
+  .origin b { color:var(--acc); }
+  .verdict { padding:14px; border-radius:12px; margin-bottom:16px; font-weight:600;
+             font-size:.95rem; border:1px solid var(--bd); }
+  .verdict.go  { background:#13251c; border-color:var(--ok);  color:var(--ok); }
+  .verdict.no  { background:#251313; border-color:var(--bad); color:var(--bad); }
+  .verdict.wait{ background:var(--card); color:var(--mut); }
+  .row { display:flex; align-items:flex-start; gap:10px; padding:11px 13px; border:1px solid var(--bd);
+         border-radius:10px; background:var(--card); margin-bottom:8px; }
+  .ic { font-size:1.15rem; line-height:1.3; flex-shrink:0; width:1.4em; text-align:center; }
+  .ttl { font-weight:600; font-size:.9rem; }
+  .dsc { color:var(--mut); font-size:.78rem; margin-top:2px; }
+  .crit { color:var(--acc); font-size:.65rem; text-transform:uppercase; letter-spacing:.05em; }
+  .dlbtn { display:block; width:100%; margin:18px 0 6px; padding:13px; border:none; border-radius:11px;
+           background:var(--acc); color:#fff; font-size:.95rem; font-weight:600; font-family:inherit; cursor:pointer; }
+  .note { color:var(--mut); font-size:.75rem; margin-top:10px; }
+</style>
+</head>
+<body>
+  <h1>🔬 Offline Capability Test</h1>
+  <div class="sub">Checks whether a self-contained emulator file can run in this browser.</div>
+
+  <div class="origin" id="origin">Checking how this page was opened…</div>
+  <div class="verdict wait" id="verdict">Running tests…</div>
+  <div id="results"></div>
+
+  <button class="dlbtn" id="dl">⬇️ Save this test file (to open from Files)</button>
+  <div class="note" id="dlnote">
+    Tap to download a copy as <b>offline-test.html</b>. Then go to your <b>Files</b> app,
+    open it, and these results will show what works when run as a local file.
+    <b>The result that matters is when you open it FROM Files (it should say file://).</b>
+  </div>
+
+<script>
+(function () {
+  var results = document.getElementById('results');
+  var verdict = document.getElementById('verdict');
+  var critical = { wasm:true, worker:true, canvas:true }; // must pass to build the real file
+
+  // Show how the page was opened.
+  var proto = location.protocol;
+  var oEl = document.getElementById('origin');
+  if (proto === 'file:') {
+    oEl.innerHTML = "Opened as a <b>local file (file://)</b> — this is the real test. ✅";
+  } else {
+    oEl.innerHTML = "Opened over <b>" + proto + "//</b> — useful, but NOT the real test. " +
+      "Download this file (button below) and re-open it from your <b>Files</b> app to test file:// mode.";
+  }
+
+  var state = {}; // id -> bool|null
+  function add(id, title, desc, isCritical) {
+    var row = document.createElement('div'); row.className = 'row'; row.id = 'r-' + id;
+    row.innerHTML = '<div class="ic" id="ic-' + id + '">⏳</div>' +
+      '<div><div class="ttl">' + title +
+      (isCritical ? ' <span class="crit">required</span>' : '') +
+      '</div><div class="dsc" id="ds-' + id + '">' + desc + '</div></div>';
+    results.appendChild(row);
+    state[id] = null;
+  }
+  function set(id, ok, msg) {
+    state[id] = ok;
+    var ic = document.getElementById('ic-' + id);
+    var ds = document.getElementById('ds-' + id);
+    ic.textContent = ok ? '✅' : (critical[id] ? '❌' : '⚠️');
+    if (msg) ds.textContent = msg;
+    refreshVerdict();
+  }
+  function refreshVerdict() {
+    var pending = false, critFail = false;
+    Object.keys(critical).forEach(function (k) {
+      if (state[k] === null) pending = true;
+      if (state[k] === false) critFail = true;
+    });
+    if (pending) { verdict.className = 'verdict wait'; verdict.textContent = 'Running tests…'; return; }
+    if (critFail) {
+      verdict.className = 'verdict no';
+      verdict.innerHTML = '✖ This browser can NOT run a local emulator file.<br>' +
+        'A required capability failed (see ❌ below). Building the big file would not work here.';
+    } else {
+      verdict.className = 'verdict go';
+      verdict.innerHTML = '✔ Looks good — the core requirements pass' +
+        (proto === 'file:' ? ' as a local file.' : '. Re-test from Files to be sure.') +
+        '<br>A self-contained emulator file should work here.';
+    }
+  }
+
+  // Define the checks.
+  add('wasm',   'WebAssembly', 'The emulator engine is WebAssembly. Without this, nothing runs.', true);
+  add('worker', 'Web Worker (from Blob)', 'EmulatorJS runs the core in a background worker.', true);
+  add('canvas', 'Canvas + WebGL', 'Needed to draw the game screen.', true);
+  add('coi',    'Multi-thread (SharedArrayBuffer)', 'Only some heavy cores need this; GBA does not.', false);
+  add('ls',     'localStorage', 'One place to keep saves. Often blocked for local files.', false);
+  add('idb',    'IndexedDB', 'Another place to keep saves. Often blocked for local files.', false);
+  add('blob',   'Blob URLs', 'Used to feed the embedded ROM to the engine.', false);
+
+  // ---- WebAssembly: actually instantiate a tiny module that adds 1 + 2 ----
+  try {
+    var wasmBytes = new Uint8Array([
+      0,97,115,109, 1,0,0,0,
+      1,7,1, 96,2,127,127,1,127,
+      3,2,1,0,
+      7,7,1, 3,97,100,100, 0,0,
+      10,9,1, 7,0, 32,0, 32,1, 106, 11
+    ]);
+    WebAssembly.instantiate(wasmBytes).then(function (m) {
+      var r = m.instance.exports.add(1, 2);
+      set('wasm', r === 3, r === 3 ? 'Ran a WASM module (1+2=3). ✓' : 'WASM ran but gave wrong result.');
+    }).catch(function (e) {
+      set('wasm', false, 'WebAssembly.instantiate failed: ' + e.message);
+    });
+  } catch (e) { set('wasm', false, 'WebAssembly unavailable: ' + e.message); }
+
+  // ---- Web Worker from a Blob URL (no external file) ----
+  try {
+    var wsrc = 'onmessage=function(e){postMessage(e.data*2)}';
+    var wurl = URL.createObjectURL(new Blob([wsrc], { type: 'text/javascript' }));
+    var w = new Worker(wurl);
+    var done = false;
+    var to = setTimeout(function () { if (!done) set('worker', false, 'Worker did not respond (likely blocked on file://).'); }, 2500);
+    w.onmessage = function (e) { done = true; clearTimeout(to); set('worker', e.data === 42, 'Worker replied correctly. ✓'); w.terminate(); };
+    w.onerror = function (e) { done = true; clearTimeout(to); set('worker', false, 'Worker error: ' + (e.message || 'blocked')); };
+    w.postMessage(21);
+  } catch (e) { set('worker', false, 'Worker creation failed: ' + e.message); }
+
+  // ---- Canvas + WebGL ----
+  try {
+    var cv = document.createElement('canvas');
+    var c2d = !!cv.getContext('2d');
+    var gl = cv.getContext('webgl') || cv.getContext('experimental-webgl') || cv.getContext('webgl2');
+    set('canvas', c2d && !!gl, c2d && gl ? '2D + WebGL both available. ✓' :
+        (c2d ? '2D works but WebGL is missing.' : 'Canvas unavailable.'));
+  } catch (e) { set('canvas', false, 'Canvas error: ' + e.message); }
+
+  // ---- crossOriginIsolated / SharedArrayBuffer ----
+  try {
+    var hasSAB = (typeof SharedArrayBuffer !== 'undefined');
+    set('coi', hasSAB, hasSAB ? 'Threads available.' : 'No threads (fine for GBA — uses single-thread core).');
+  } catch (e) { set('coi', false, 'Not available (fine for GBA).'); }
+
+  // ---- localStorage ----
+  try {
+    localStorage.setItem('__t', '1'); var ok = localStorage.getItem('__t') === '1';
+    localStorage.removeItem('__t');
+    set('ls', ok, ok ? 'Read/write works. ✓' : 'Not persisted.');
+  } catch (e) { set('ls', false, 'Blocked here — saves would use file export instead.'); }
+
+  // ---- IndexedDB ----
+  try {
+    if (!window.indexedDB) { set('idb', false, 'Not present — saves would use file export instead.'); }
+    else {
+      var req = indexedDB.open('__test_db', 1);
+      var idone = false;
+      var ito = setTimeout(function () { if (!idone) set('idb', false, 'Timed out (commonly blocked on file://).'); }, 2500);
+      req.onsuccess = function () { idone = true; clearTimeout(ito); set('idb', true, 'Available. ✓'); try { req.result.close(); indexedDB.deleteDatabase('__test_db'); } catch (e) {} };
+      req.onerror = function () { idone = true; clearTimeout(ito); set('idb', false, 'Blocked — saves would use file export instead.'); };
+    }
+  } catch (e) { set('idb', false, 'Blocked: ' + e.message); }
+
+  // ---- Blob URL ----
+  try {
+    var burl = URL.createObjectURL(new Blob(['x']));
+    set('blob', !!burl && burl.indexOf('blob:') === 0, 'Blob URLs work. ✓');
+    URL.revokeObjectURL(burl);
+  } catch (e) { set('blob', false, 'Blob URLs blocked: ' + e.message); }
+
+  // ---- Self-download so the user can open this from the Files app ----
+  document.getElementById('dl').addEventListener('click', function () {
+    try {
+      var html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      var url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+      var a = document.createElement('a');
+      a.href = url; a.download = 'offline-test.html';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+      document.getElementById('dlnote').innerHTML =
+        '✅ Download triggered. Now open your <b>Files</b> app → find <b>offline-test.html</b> ' +
+        '(usually in Downloads) → open it. Check that the top says <b>file://</b>, then read the results.';
+    } catch (e) { alert('Download failed: ' + e.message); }
+  });
+})();
+</script>
+</body>
+</html>
