@@ -205,10 +205,18 @@
         #screenshot-close-btn:hover { border-color: var(--danger); }
         #screenshot-status { font-size: 0.75rem; color: var(--muted); min-height: 1em; }
         #game {
-            width: 100%; flex: 1; background: #000; min-height: 0;
+            width: 100%; flex: 1; background: #000; min-height: 0; overflow: hidden;
             -webkit-touch-callout: none; -webkit-user-select: none;
             user-select: none; touch-action: manipulation;
         }
+        /* Manual vertical pan so a clipped top/bottom can be brought into view. */
+        #game canvas { transform: translateY(var(--game-shift-y, 0px)); }
+        .emu-nudge {
+            background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+            color: var(--text); cursor: pointer; font-family: inherit; font-size: 0.9rem;
+            padding: 0.4rem 0.6rem; flex-shrink: 0; line-height: 1;
+        }
+        .emu-nudge:hover { border-color: var(--accent2); color: var(--accent2); }
         #emu-progress-wrap { width: 100%; height: 4px; background: var(--surface2); flex-shrink: 0; }
         #emu-progress-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.3s ease; }
         #emu-status {
@@ -282,6 +290,9 @@
             <div class="emu-game-name" id="emu-game-label">&mdash;</div>
             <div class="emu-sys-name"  id="emu-sys-label">&mdash;</div>
         </div>
+        <button class="emu-nudge" id="btn-game-up"    title="Move screen up">▲</button>
+        <button class="emu-nudge" id="btn-game-down"  title="Move screen down">▼</button>
+        <button class="emu-nudge" id="btn-game-reset" title="Reset screen position">⌖</button>
         <button id="btn-save-game">💾 Save</button>
         <button id="btn-load-game">📂 Load</button>
         <button id="btn-screenshot">📷 Screenshot</button>
@@ -677,97 +688,54 @@
        and whenever the page is hidden/closed, and restore it on launch — no
        connection needed. A synchronous localStorage mirror is the last-ditch
        backup for abrupt closes (IndexedDB writes may not finish on pagehide). */
-    var _saveKey = null;          // IndexedDB key for the current game's save
     var _saveTimer = null;
-    var _lastSaveSig = '';        // cheap change signature to skip redundant writes
     var _saveHooksInstalled = false;
-    var LS_BACKUP = 'ejs_lastsave';
+
+    /* ---- Manual vertical screen position (persisted) ----
+       Some devices clip the top/bottom of the emulator screen; this lets the
+       player pan the game view up/down. Applied as a CSS var on #game, which
+       the canvas inherits even when EmulatorJS recreates it. */
+    var GAME_SHIFT_KEY = 'emu_game_shift_y';
+    function getShiftY() { return parseInt(localStorage.getItem(GAME_SHIFT_KEY) || '0', 10) || 0; }
+    function applyShiftY() {
+        var el = document.getElementById('game');
+        if (el) el.style.setProperty('--game-shift-y', getShiftY() + 'px');
+    }
+    function nudgeGame(delta) {
+        var v = Math.max(-300, Math.min(300, getShiftY() + delta));
+        localStorage.setItem(GAME_SHIFT_KEY, String(v));
+        applyShiftY();
+    }
 
     function _gm() { return window.EJS_emulator && window.EJS_emulator.gameManager; }
 
-    function _readLiveSave() {
-        var g = _gm(); if (!g) return null;
-        try {
-            g.saveSaveFiles();
-            var path = g.getSaveFilePath(); if (!path) return null;
-            var data = g.FS.readFile(path);
-            return (data && data.length) ? data : null;
-        } catch (e) { return null; }
-    }
-    function _writeLiveSave(bytes) {
-        var g = _gm(); if (!g || !bytes || !bytes.length) return false;
-        try {
-            var path = g.getSaveFilePath(); if (!path) return false;
-            var dir = path.split('/').slice(0, -1).join('/');
-            try { if (dir && !g.FS.analyzePath(dir).exists) g.FS.mkdir(dir); } catch (_) {}
-            g.FS.writeFile(path, bytes);
-            g.loadSaveFiles();
-            return true;
-        } catch (e) { return false; }
-    }
-    function _sig(bytes) {
-        var n = bytes.length, s = n + ':';
-        var step = Math.max(1, (n / 512) | 0);
-        for (var i = 0; i < n; i += step) s += bytes[i].toString(36);
-        return s;
-    }
-    function _b64(bytes) {
-        var bin = '';
-        for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
-        return btoa(bin);
-    }
-    function _unb64(b64) {
-        var bin = atob(b64), out = new Uint8Array(bin.length);
-        for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
-        return out;
+    /* Force the core's current battery save (SRAM/flash — incl. RTC for
+       Pokémon Emerald) out to the IndexedDB-backed save filesystem.
+
+       EmulatorJS mounts /data/saves as IDBFS (autoPersist) and auto-loads it on
+       boot, so we don't need a custom restore. The bug was that the core only
+       writes its save file when told to: syncing the filesystem without first
+       calling saveSaveFiles() persisted STALE data, so in-game saves "saved"
+       in RAM but vanished on reload. Calling saveSaveFiles() first fixes it. */
+    function flushSave() {
+        var g = _gm();
+        if (!g) return;
+        try { g.saveSaveFiles(); } catch (e) {}
+        try { if (g.FS && typeof g.FS.syncfs === 'function') g.FS.syncfs(false, function () {}); } catch (e) {}
     }
 
-    /* Persist the current SRAM to IndexedDB (+ localStorage mirror). */
-    function persistLocalSave(force) {
-        if (!_saveKey) return;
-        var bytes = _readLiveSave();
-        if (!bytes) return;
-        var sig = _sig(bytes);
-        if (!force && sig === _lastSaveSig) return;   // unchanged since last write
-        _lastSaveSig = sig;
-        var rec = { bytes: bytes, time: Date.now(), key: _saveKey };
-        openDB().then(function (db) { return idbPut(db, SAVE_STORE, _saveKey, rec); }).catch(function () {});
-        try { localStorage.setItem(LS_BACKUP, JSON.stringify({ key: _saveKey, time: rec.time, b64: _b64(bytes) })); } catch (e) {}
-    }
-
-    /* Restore the saved SRAM for a game into the running core. */
-    function restoreLocalSave(saveKey, cb) {
-        openDB().then(function (db) { return idbGet(db, SAVE_STORE, saveKey); }).then(function (rec) {
-            var chosen = rec && rec.bytes ? { bytes: rec.bytes, time: rec.time || 0 } : null;
-            /* Prefer the synchronous backup if it's for this game and newer. */
-            try {
-                var raw = localStorage.getItem(LS_BACKUP);
-                if (raw) {
-                    var ls = JSON.parse(raw);
-                    if (ls && ls.key === saveKey && (!chosen || (ls.time || 0) > chosen.time)) {
-                        chosen = { bytes: _unb64(ls.b64), time: ls.time || 0 };
-                    }
-                }
-            } catch (e) {}
-            if (chosen && chosen.bytes && chosen.bytes.length) {
-                if (_writeLiveSave(chosen.bytes)) { _lastSaveSig = _sig(chosen.bytes); }
-            }
-            if (cb) cb();
-        }).catch(function () { if (cb) cb(); });
-    }
-
-    function startLocalSaveLoop(saveKey) {
-        _saveKey = saveKey;
-        _lastSaveSig = '';
+    function startSaveFlushing() {
         if (_saveTimer) clearInterval(_saveTimer);
-        _saveTimer = setInterval(function () { persistLocalSave(false); }, 8000);
+        _saveTimer = setInterval(flushSave, 5000);   // periodic safety net
         if (!_saveHooksInstalled) {
             _saveHooksInstalled = true;
+            // Force a flush the moment the page is hidden/closed (critical on a
+            // locked browser that may kill the tab right after an in-game save).
             document.addEventListener('visibilitychange', function () {
-                if (document.visibilityState === 'hidden') persistLocalSave(true);
+                if (document.visibilityState === 'hidden') flushSave();
             });
-            window.addEventListener('pagehide', function () { persistLocalSave(true); });
-            window.addEventListener('beforeunload', function () { persistLocalSave(true); });
+            window.addEventListener('pagehide', flushSave);
+            window.addEventListener('beforeunload', flushSave);
         }
     }
 
@@ -817,7 +785,8 @@
         window.EJS_startOnLoaded             = !HEAVY[sys.id];
         window.EJS_disableContextMenu        = false;
         window.EJS_gameName                  = _romName;
-        window.EJS_saveInBrowserLocalStorage = true;
+        // Battery saves persist via EmulatorJS's IDBFS (/data/saves, autoPersist)
+        // plus our flushSave() on a timer and on page hide. See flushSave().
 
         /* Supply stub BIOS directly so desmume2015 never fetches from CDN */
         if (sys.id === 'nds') {
@@ -831,34 +800,24 @@
             emuStatus.textContent = 'Running \xB7 ' + (label || sys.label);
             if (window.cloudSaveOnStart) window.cloudSaveOnStart();
 
-            function _fsSync() {
-                var g = window.EJS_emulator && window.EJS_emulator.gameManager;
-                if (g && g.FS && typeof g.FS.syncfs === 'function') {
-                    g.FS.syncfs(false, function () {});
-                }
-            }
-
-            // Watch EJS notification toasts — sync immediately when a save state happens
+            // Sync immediately when an in-game/save-state toast appears.
             var _notifObs = new MutationObserver(function (mutations) {
                 mutations.forEach(function (m) {
                     m.addedNodes.forEach(function (node) {
                         if (node.textContent && /saved|state/i.test(node.textContent)) {
-                            setTimeout(_fsSync, 200);
+                            setTimeout(flushSave, 200);
                         }
                     });
                 });
             });
             _notifObs.observe(document.body, { childList: true, subtree: true });
 
-            // Also sync every 5s as a safety net
-            setInterval(_fsSync, 5000);
+            // Periodic + on-hide battery-save flushing (the actual fix).
+            startSaveFlushing();
 
-            // Durable, offline battery-save persistence: restore this game's
-            // saved SRAM (incl. RTC), then autosave it to IndexedDB.
-            var _skey = sys.id + '::' + _romName;
-            setTimeout(function () {
-                restoreLocalSave(_skey, function () { startLocalSaveLoop(_skey); });
-            }, 1000);
+            // Apply any saved screen offset once the canvas exists.
+            applyShiftY();
+            setTimeout(applyShiftY, 1200);
         };
         window.EJS_Buttons = {
             playPause:true, restart:true, mute:true, settings:true, fullscreen:true,
@@ -1121,6 +1080,9 @@
         });
     });
     document.getElementById('btn-back-emu').addEventListener('click', function () { location.reload(); });
+    document.getElementById('btn-game-up').addEventListener('click',    function () { nudgeGame(-16); });
+    document.getElementById('btn-game-down').addEventListener('click',  function () { nudgeGame(16); });
+    document.getElementById('btn-game-reset').addEventListener('click', function () { localStorage.setItem(GAME_SHIFT_KEY, '0'); applyShiftY(); });
 
     // --- Screenshot ---
     (function () {
