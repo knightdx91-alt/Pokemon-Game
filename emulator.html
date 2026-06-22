@@ -157,6 +157,47 @@
         }
         .btn-drive-row:hover { color: var(--accent); border-color: var(--accent); }
         #cache-empty { padding: 32px; text-align: center; font-size: 13px; color: #4a4a5a; }
+        /* --- Drive copy selection modal --- */
+        #copy-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; padding: 20px;
+        }
+        #copy-overlay.visible { display: flex; }
+        #copy-panel {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+            width: 100%; max-width: 480px; max-height: 75vh; display: flex; flex-direction: column; overflow: hidden;
+        }
+        #copy-header {
+            padding: 16px 20px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        #copy-header span { font-size: 14px; font-weight: 600; }
+        #copy-toolbar {
+            padding: 10px 16px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        }
+        #copy-count { font-size: 11px; color: var(--muted); }
+        #copy-list { overflow-y: auto; flex: 1; }
+        .copy-row {
+            display: flex; align-items: center; gap: 10px; padding: 9px 16px;
+            border-bottom: 1px solid #1a1a20; cursor: pointer;
+        }
+        .copy-row:last-child { border-bottom: none; }
+        .copy-row input { flex-shrink: 0; width: 16px; height: 16px; accent-color: var(--accent); }
+        .copy-name { flex: 1; min-width: 0; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        #copy-footer {
+            padding: 12px 16px; border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+        }
+        .copy-btn {
+            border-radius: 8px; padding: 6px 14px; font-size: 12px; cursor: pointer;
+            font-family: inherit; border: 1px solid var(--border);
+        }
+        .copy-btn.ghost { background: none; color: var(--muted); }
+        .copy-btn.ghost:hover { color: var(--text); }
+        .copy-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+        .copy-btn.primary:hover { background: #9080ff; }
+        .copy-btn:disabled { opacity: 0.5; cursor: default; }
         /* Pin to the viewport so the top bar can't be scrolled/bumped off when
            the game starts and the mobile address bar resizes. */
         #emu-screen { display: none; position: fixed; inset: 0; z-index: 50;
@@ -293,6 +334,24 @@
         <div id="cache-header"><span>Cached ROMs</span><button id="btn-close-cache">&#x2715; Close</button></div>
         <div id="offline-summary" style="display:none"></div>
         <div id="cache-list"></div>
+    </div>
+</div>
+
+<div id="copy-overlay">
+    <div id="copy-panel">
+        <div id="copy-header"><span>&#128229; Copy to my Drive</span><button class="copy-btn ghost" id="btn-copy-close">&#x2715;</button></div>
+        <div id="copy-toolbar">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;">
+                <input type="checkbox" id="copy-select-all" checked style="width:16px;height:16px;accent-color:var(--accent);">
+                Select all
+            </label>
+            <span id="copy-count"></span>
+        </div>
+        <div id="copy-list"></div>
+        <div id="copy-footer">
+            <button class="copy-btn ghost" id="btn-copy-cancel">Cancel</button>
+            <button class="copy-btn primary" id="btn-copy-start">Copy selected</button>
+        </div>
     </div>
 </div>
 
@@ -655,10 +714,19 @@
     });
 
     /* Bulk copy files that already live in Google Drive (e.g. a folder shared
-       from another account) straight into a folder in your own Drive. Uses the
+       from another account) straight into a folder in your own Drive. You can
+       pick individual files OR whole folders — folders are expanded (recursively)
+       into their files, then shown in a selection modal with a "Select all"
+       toggle. Chosen files are copied one at a time (a queue), using the
        server-side Drive `files.copy` endpoint so nothing round-trips through the
        browser; falls back to stream-download + re-upload if a copy is denied.
        Independent of the selected system. */
+    var FOLDER_MIME = 'application/vnd.google-apps.folder';
+    var copyOverlay   = document.getElementById('copy-overlay');
+    var copyListEl    = document.getElementById('copy-list');
+    var copyCountEl   = document.getElementById('copy-count');
+    var copySelectAll = document.getElementById('copy-select-all');
+
     btnDriveCopy.addEventListener('click', function () {
         showLoading('Authorizing Google Drive…');
         getDriveWriteToken()
@@ -667,20 +735,25 @@
                 loadGoogleScripts(function () {
                     gapi.load('picker', function () {
                         var view = new google.picker.DocsView(google.picker.ViewId.DOCS)
-                            .setIncludeFolders(true)        // let the user navigate into the shared folder
-                            .setSelectFolderEnabled(false); // but pick the files themselves
+                            .setIncludeFolders(true)       // navigate into / pick the shared folder
+                            .setSelectFolderEnabled(true); // allow whole-folder selection
                         new google.picker.PickerBuilder()
                             .addView(view)
                             .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
-                            .setTitle('Select the game files to copy into your Drive (hold to select multiple)')
+                            .setTitle('Pick files and/or folders to copy into your Drive (hold to select multiple)')
                             .setOAuthToken(token)
                             .setCallback(function (data) {
                                 if (data[google.picker.Response.ACTION] !== google.picker.Action.PICKED) return;
-                                var docs = data[google.picker.Response.DOCUMENTS] || [];
-                                if (!docs.length) return;
-                                chooseDriveFolder(token)
-                                    .then(function (destId) { copyManyToDrive(docs, destId, token); })
-                                    .catch(function (err) { hideLoading(); alert('Cancelled: ' + err.message); });
+                                var picked = data[google.picker.Response.DOCUMENTS] || [];
+                                if (!picked.length) return;
+                                showLoading('Listing files…');
+                                expandPicked(picked, token)
+                                    .then(function (files) {
+                                        hideLoading();
+                                        if (!files.length) { alert('No files found in the selection.'); return; }
+                                        openCopyModal(files, token);
+                                    })
+                                    .catch(function (err) { hideLoading(); alert('Could not list files: ' + err.message); });
                             })
                             .build().setVisible(true);
                     });
@@ -688,6 +761,96 @@
             })
             .catch(function (err) { hideLoading(); alert('Authorization failed: ' + err.message); });
     });
+
+    /* Turn a mix of picked files/folders into a flat list of {id,name},
+       recursing into any folders. De-duplicates by file id. */
+    function expandPicked(picked, token) {
+        var out = [], seen = {};
+        function add(id, name) { if (id && !seen[id]) { seen[id] = 1; out.push({ id: id, name: name || id }); } }
+        function walk(items) {
+            return items.reduce(function (chain, doc) {
+                return chain.then(function () {
+                    var id   = doc[google.picker.Document.ID] || doc.id;
+                    var name = doc[google.picker.Document.NAME] || doc.name;
+                    var mime = doc[google.picker.Document.MIME_TYPE] || doc.mimeType;
+                    if (mime === FOLDER_MIME) return listFolderChildren(id, token).then(walk);
+                    add(id, name);
+                });
+            }, Promise.resolve());
+        }
+        return walk(picked).then(function () { return out; });
+    }
+
+    /* List every child of a folder (handles pagination). Children that are
+       themselves folders are returned too, so expandPicked recurses into them. */
+    function listFolderChildren(folderId, token) {
+        var results = [];
+        function page(pageToken) {
+            var url = 'https://www.googleapis.com/drive/v3/files?q=' +
+                encodeURIComponent("'" + folderId + "' in parents and trashed=false") +
+                '&fields=nextPageToken,files(id,name,mimeType)&pageSize=1000&supportsAllDrives=true&includeItemsFromAllDrives=true' +
+                (pageToken ? '&pageToken=' + pageToken : '');
+            return fetch(url, { headers: { 'Authorization': 'Bearer ' + token } })
+                .then(function (resp) {
+                    if (!resp.ok) return resp.text().then(function (t) { throw new Error('HTTP ' + resp.status + ' ' + t); });
+                    return resp.json();
+                })
+                .then(function (j) {
+                    (j.files || []).forEach(function (f) {
+                        results.push({ id: f.id, name: f.name, mimeType: f.mimeType });
+                    });
+                    if (j.nextPageToken) return page(j.nextPageToken);
+                });
+        }
+        return page(null).then(function () { return results; });
+    }
+
+    function openCopyModal(files, token) {
+        copyListEl.innerHTML = '';
+        files.forEach(function (f, idx) {
+            var row = document.createElement('label');
+            row.className = 'copy-row';
+            var cb = document.createElement('input');
+            cb.type = 'checkbox'; cb.checked = true; cb.dataset.idx = idx;
+            cb.addEventListener('change', updateCopyCount);
+            var nm = document.createElement('div');
+            nm.className = 'copy-name'; nm.textContent = f.name;
+            row.appendChild(cb); row.appendChild(nm);
+            copyListEl.appendChild(row);
+        });
+        copySelectAll.checked = true;
+        updateCopyCount();
+        copyOverlay.classList.add('visible');
+
+        copySelectAll.onchange = function () {
+            copyListEl.querySelectorAll('input[type=checkbox]').forEach(function (cb) { cb.checked = copySelectAll.checked; });
+            updateCopyCount();
+        };
+        document.getElementById('btn-copy-close').onclick  = closeCopyModal;
+        document.getElementById('btn-copy-cancel').onclick = closeCopyModal;
+        document.getElementById('btn-copy-start').onclick  = function () {
+            var chosen = [];
+            copyListEl.querySelectorAll('input[type=checkbox]').forEach(function (cb) {
+                if (cb.checked) chosen.push(files[+cb.dataset.idx]);
+            });
+            if (!chosen.length) { alert('Select at least one file.'); return; }
+            closeCopyModal();
+            showLoading('Choose a destination…');
+            chooseDriveFolder(token)
+                .then(function (destId) { copyManyToDrive(chosen, destId, token); })
+                .catch(function (err) { hideLoading(); alert('Cancelled: ' + err.message); });
+        };
+    }
+
+    function updateCopyCount() {
+        var boxes = copyListEl.querySelectorAll('input[type=checkbox]');
+        var checked = copyListEl.querySelectorAll('input[type=checkbox]:checked').length;
+        copyCountEl.textContent = checked + ' of ' + boxes.length + ' selected';
+        copySelectAll.checked = checked === boxes.length && boxes.length > 0;
+        copySelectAll.indeterminate = checked > 0 && checked < boxes.length;
+    }
+
+    function closeCopyModal() { copyOverlay.classList.remove('visible'); }
 
     function copyDriveFileServerSide(fileId, name, destId, token) {
         var body = { name: name };
@@ -713,8 +876,8 @@
                 return;
             }
             var doc  = docs[i];
-            var id   = doc[google.picker.Document.ID];
-            var name = doc[google.picker.Document.NAME] || ('file-' + (i + 1));
+            var id   = doc.id;
+            var name = doc.name || ('file-' + (i + 1));
             showLoading('Copying ' + (i + 1) + '/' + total + ' \xB7 ' + name);
             copyDriveFileServerSide(id, name, destId, token)
                 .then(function () { ok++; step(i + 1); })
