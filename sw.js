@@ -32,6 +32,7 @@ var BYPASS_HOSTS = [
 var PRECACHE = [
     './emulator.html',
     './index.html',
+    './reader.html',
     'https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js'
 ];
 
