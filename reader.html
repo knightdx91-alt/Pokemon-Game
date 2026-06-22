@@ -219,6 +219,11 @@
                 <option value="azw3">AZW3</option>
                 <option value="txt">TXT</option>
             </select>
+            <select id="z-sort" title="Sort results">
+                <option value="">Sort: relevance</option>
+                <option value="lang-az">Language A–Z</option>
+                <option value="lang-za">Language Z–A</option>
+            </select>
             <button class="btn primary" id="z-search">Search</button>
         </div>
         <div class="zstatus" id="z-status"></div>
@@ -803,7 +808,8 @@
 
     var zPanel = $('zlib');
     var zDomain = $('z-domain'), zEmail = $('z-email'), zPass = $('z-pass');
-    var zQuery = $('z-query'), zExt = $('z-ext'), zStatus = $('z-status'), zResults = $('z-results');
+    var zQuery = $('z-query'), zExt = $('z-ext'), zSort = $('z-sort'), zStatus = $('z-status'), zResults = $('z-results');
+    var zLastBooks = [];   // raw results from the last search, for re-sorting
     var zLoginState = $('z-login-state'), zProxy = $('z-proxy');
 
     /* Build a relay function from the user's custom URL and make it the first
@@ -937,9 +943,30 @@
         zRequest('/eapi/book/search', params).then(function (res) {
             var books = (res && (res.books || res.exactBooks)) || [];
             if (!books.length) { zSetStatus('No results.'); return; }
+            zLastBooks = books;
             zSetStatus(books.length + ' result(s).', 'ok');
-            books.forEach(function (b) { zResults.appendChild(zResultCard(b)); });
+            zRenderResults();
         }).catch(function (e) { zSetStatus(e.message, 'err'); });
+    }
+
+    /* Render zLastBooks into the results list, applying the current sort mode.
+       Sorting is purely client-side so changing the order never re-queries. */
+    function zRenderResults() {
+        var books = zLastBooks.slice();
+        var mode = zSort.value;
+        if (mode === 'lang-az' || mode === 'lang-za') {
+            var dir = mode === 'lang-za' ? -1 : 1;
+            books.sort(function (a, b) {
+                var la = (a.language || '').toLowerCase(), lb = (b.language || '').toLowerCase();
+                // books with no language always sort to the bottom
+                if (!la && !lb) return 0;
+                if (!la) return 1;
+                if (!lb) return -1;
+                return la < lb ? -dir : (la > lb ? dir : 0);
+            });
+        }
+        zResults.innerHTML = '';
+        books.forEach(function (b) { zResults.appendChild(zResultCard(b)); });
     }
 
     function zResultCard(b) {
@@ -1027,6 +1054,7 @@
     $('z-login').addEventListener('click', zLogin);
     $('z-logout').addEventListener('click', zLogout);
     $('z-search').addEventListener('click', zSearch);
+    zSort.addEventListener('change', zRenderResults);
     zProxy.addEventListener('change', applyCustomProxy);
     $('z-test').addEventListener('click', zTestRelay);
     zQuery.addEventListener('keyup', function (e) { if (e.key === 'Enter') zSearch(); });
