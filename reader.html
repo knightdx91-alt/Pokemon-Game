@@ -84,9 +84,18 @@
     .reader-bar button { background: none; border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: 14px; }
     .reader-bar button:hover { border-color: var(--accent); color: var(--accent); }
     #viewer { flex: 1; min-height: 0; overflow: auto; background: #fff; position: relative; }
-    #viewer.dark { background: #15151a; }
     #viewer .txt { padding: 24px; max-width: 720px; margin: 0 auto; line-height: 1.7; font-size: 17px; color: #15151a; white-space: pre-wrap; word-wrap: break-word; }
-    #viewer.dark .txt { color: #e8e8f0; }
+    /* Reading themes — background drives PDF/CBZ canvas backdrop, .txt color drives plain text */
+    #viewer[data-theme="light"]   { background: #ffffff; }
+    #viewer[data-theme="light"]   .txt { color: #15151a; }
+    #viewer[data-theme="sepia"]   { background: #f4ecd8; }
+    #viewer[data-theme="sepia"]   .txt { color: #5b4636; }
+    #viewer[data-theme="gray"]    { background: #3a3a40; }
+    #viewer[data-theme="gray"]    .txt { color: #e3e3ea; }
+    #viewer[data-theme="dark"]    { background: #15151a; }
+    #viewer[data-theme="dark"]    .txt { color: #e8e8f0; }
+    #viewer[data-theme="black"]   { background: #000000; }
+    #viewer[data-theme="black"]   .txt { color: #c8c8d0; }
     #viewer .cbz-img, #viewer canvas { display: block; margin: 0 auto; max-width: 100%; }
     .nav-zone { position: absolute; top: 0; bottom: 0; width: 50%; z-index: 5; cursor: pointer;
         -webkit-tap-highlight-color: transparent; user-select: none; }
@@ -146,7 +155,7 @@
     <a class="home" href="index.html" title="Home">🏠</a>
     <div class="title">Book Reader<small>EPUB · PDF · CBZ · TXT</small></div>
     <button class="btn" id="btn-zlib" title="Search Z-Library">🔍 Z-Library</button>
-    <button class="btn" id="btn-theme" title="Toggle reading theme">🌙</button>
+    <button class="btn" id="btn-theme" title="Reading theme">🎨 Theme</button>
 </div>
 
 <!-- Library -->
@@ -398,6 +407,7 @@
         rTitle.textContent = meta.title;
         viewer.innerHTML = '';
         rPos.textContent = '';
+        applyReaderTheme();   // theme the backdrop before content loads
         // history entry so the device/browser Back button returns to the library
         history.pushState({ reader: true }, '');
     }
@@ -428,10 +438,11 @@
     function openEpub(key, blob, prog) {
         return blob.arrayBuffer().then(function (buf) {
             if (typeof ePub === 'undefined') throw new Error('EPUB engine not loaded');
-            viewer.classList.remove('dark');
             var book = ePub(buf);
             var rendition = book.renderTo('viewer', { width: '100%', height: '100%', flow: 'paginated', spread: 'none' });
             var startCfi = prog && prog.cfi ? prog.cfi : undefined;
+            // re-assert the theme on every chapter render (new iframe each time)
+            rendition.hooks.content.register(function () { applyEpubTheme(); });
             rendition.display(startCfi);
             rendition.on('relocated', function (loc) {
                 var pct = (loc && loc.start && typeof loc.start.percentage === 'number') ? loc.start.percentage : 0;
@@ -447,10 +458,11 @@
             zoneR.addEventListener('click', function (e) { e.stopPropagation(); rendition.next(); });
             viewer.appendChild(zoneL); viewer.appendChild(zoneR);
             current = {
-                key: key,
+                key: key, rendition: rendition,
                 teardown: function () { try { book.destroy(); } catch (_) {} zoneL.remove(); zoneR.remove(); },
                 prev: function () { rendition.prev(); }, next: function () { rendition.next(); }
             };
+            applyReaderTheme();
             // arrow-key support
             rendition.on('keyup', onKey);
         });
@@ -460,7 +472,7 @@
     function openPdf(key, blob, prog) {
         return blob.arrayBuffer().then(function (buf) {
             if (typeof pdfjsLib === 'undefined') throw new Error('PDF engine not loaded');
-            viewer.classList.remove('dark');
+            applyReaderTheme();
             return pdfjsLib.getDocument({ data: buf }).promise.then(function (pdf) {
                 var pageNum = (prog && prog.page) ? Math.min(prog.page, pdf.numPages) : 1;
                 var canvas = document.createElement('canvas');
@@ -603,11 +615,42 @@
         else current.next();
     });
 
-    // ---- Theme toggle (applies to text/epub readers) ----
+    // ---- Reading themes (applies to text / epub / pdf / cbz backdrop) ----
+    var READER_THEMES = [
+        { id: 'light', label: '☀️ Light', bg: '#ffffff', fg: '#15151a' },
+        { id: 'sepia', label: '📜 Sepia', bg: '#f4ecd8', fg: '#5b4636' },
+        { id: 'gray',  label: '🌫️ Gray',  bg: '#3a3a40', fg: '#e3e3ea' },
+        { id: 'dark',  label: '🌙 Dark',  bg: '#15151a', fg: '#e8e8f0' },
+        { id: 'black', label: '🌑 Black', bg: '#000000', fg: '#c8c8d0' }
+    ];
+    var THEME_KEY = 'reader_theme_v1';
+    var readerTheme = localStorage.getItem(THEME_KEY) || 'light';
+    if (!READER_THEMES.some(function (t) { return t.id === readerTheme; })) readerTheme = 'light';
+
+    function themeDef() {
+        return READER_THEMES.filter(function (t) { return t.id === readerTheme; })[0] || READER_THEMES[0];
+    }
+    // Push the current theme into an epub.js rendition's iframe content.
+    function applyEpubTheme() {
+        if (!current || !current.rendition || !current.rendition.themes) return;
+        var t = themeDef();
+        try {
+            current.rendition.themes.override('color', t.fg, true);
+            current.rendition.themes.override('background', t.bg, true);
+        } catch (_) {}
+    }
+    function applyReaderTheme() {
+        viewer.dataset.theme = readerTheme;
+        applyEpubTheme();
+    }
     $('btn-theme').addEventListener('click', function () {
-        viewer.classList.toggle('dark');
-        this.textContent = viewer.classList.contains('dark') ? '☀️' : '🌙';
+        var i = READER_THEMES.findIndex(function (t) { return t.id === readerTheme; });
+        readerTheme = READER_THEMES[(i + 1) % READER_THEMES.length].id;
+        localStorage.setItem(THEME_KEY, readerTheme);
+        this.textContent = themeDef().label;
+        applyReaderTheme();
     });
+    $('btn-theme').textContent = themeDef().label;
 
     // ---- Add via file input ----
     btnFile.addEventListener('click', function () { fileInput.click(); });
