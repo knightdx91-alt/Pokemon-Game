@@ -516,6 +516,30 @@
         var m = url.match(/drive\.google\.com\/file\/d\/([^/?]+)/);
         return m ? 'https://drive.google.com/uc?export=download&id=' + m[1] : url;
     }
+
+    /* Public CORS relays, tried in order if a direct fetch is blocked. The file
+       passes through a third-party server, so this is a fallback only. */
+    var CORS_PROXIES = [
+        function (u) { return 'https://corsproxy.io/?url=' + encodeURIComponent(u); },
+        function (u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); },
+        function (u) { return 'https://thingproxy.freeboard.io/fetch/' + u; }
+    ];
+
+    /* Fetch a URL as a Blob. Tries direct first; on a CORS/network failure,
+       retries through each proxy until one works. onStatus(msg) for UI. */
+    function fetchBlobWithFallback(url, onStatus) {
+        function asBlob(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); }
+        return fetch(url).then(asBlob).catch(function (directErr) {
+            function tryProxy(i) {
+                if (i >= CORS_PROXIES.length) {
+                    throw new Error('Blocked by the source (CORS). Direct and all proxies failed.');
+                }
+                if (onStatus) onStatus('Direct blocked — trying relay ' + (i + 1) + '…');
+                return fetch(CORS_PROXIES[i](url)).then(asBlob).catch(function () { return tryProxy(i + 1); });
+            }
+            return tryProxy(0);
+        });
+    }
     urlInput.addEventListener('input', function () {
         var has = !!urlInput.value.trim();
         btnUrl.disabled = !has; btnDriveSave.disabled = !has;
@@ -525,17 +549,14 @@
         var url = rewriteGDrive(raw);
         var name = decodeURIComponent(url.split('/').pop().split('?')[0]) || 'book';
         showOverlay('Downloading…');
-        fetch(url).then(function (r) {
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            return r.blob();
-        }).then(function (blob) {
+        fetchBlobWithFallback(url, showOverlay).then(function (blob) {
             return addBook(name, blob);
         }).then(function () {
             urlInput.value = ''; btnUrl.disabled = true; btnDriveSave.disabled = true;
             hideOverlay(); refreshLibrary();
         }).catch(function (e) {
             hideOverlay();
-            alert('Download failed: ' + e.message + '\n\nThe source must allow cross-origin (CORS) downloads.');
+            alert('Download failed: ' + e.message);
         });
     });
 
@@ -575,7 +596,7 @@
         var url = rewriteGDrive(raw);
         var name = decodeURIComponent(url.split('/').pop().split('?')[0]) || 'book';
         showOverlay('Downloading…');
-        fetch(url).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); })
+        fetchBlobWithFallback(url, showOverlay)
             .then(function (blob) {
                 showOverlay('Authorizing Google Drive…');
                 return driveToken().then(function (t) { showOverlay('Uploading to Drive…'); return uploadToDrive(blob, name, t); });
