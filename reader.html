@@ -772,8 +772,8 @@
         function fail(msg, definitive) { var e = new Error(msg); e.definitive = definitive; return e; }
         function parse(r) {
             if (r.status === 502 || r.status === 521) throw fail('relay→target error: HTTP ' + r.status + ' (target host refused/unreachable)', false);
-            if (!r.ok) throw fail('HTTP ' + r.status + ' from target', true);
             return r.text().then(function (t) {
+                if (!r.ok) throw fail('HTTP ' + r.status + ': ' + (t ? t.replace(/\s+/g, ' ').slice(0, 160) : '(empty)'), true);
                 if (!t) throw fail('Empty response from target', true);
                 try { return JSON.parse(t); }
                 catch (_) {
