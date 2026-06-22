@@ -192,6 +192,7 @@
         </div>
         <div class="zrow">
             <input type="text" id="z-proxy" placeholder="Custom relay URL (recommended) — ends with ?url=" class="grow">
+            <button class="btn" id="z-test">Test relay</button>
         </div>
         <div class="zhint">
             Credentials are stored <b>only on this device</b> (localStorage). Z-Library blocks direct
@@ -884,6 +885,23 @@
             });
     }
 
+    /* Real cross-origin test of the user's relay from the page (unlike typing
+       the URL in the address bar, this verifies the CORS header is present). */
+    function zTestRelay() {
+        applyCustomProxy();
+        if (!EXTRA_PROXIES.length) { zSetStatus('No custom relay set — paste your Worker URL first.', 'err'); return; }
+        var probe = EXTRA_PROXIES[0]('https://example.com/');
+        zSetStatus('Testing relay…');
+        fetch(probe).then(function (r) {
+            return r.text().then(function (t) {
+                if (r.ok && /example/i.test(t)) zSetStatus('Relay OK — CORS working. ✔', 'ok');
+                else zSetStatus('Relay reachable but returned HTTP ' + r.status + ' (' + t.slice(0, 80) + ')', 'err');
+            });
+        }).catch(function (e) {
+            zSetStatus('Relay FAILED (' + e.message + ') — your Worker is missing the CORS header or the URL is wrong.', 'err');
+        });
+    }
+
     // ---- Z-Library panel wiring ----
     function openZlib() {
         zDomain.value = zAuth.domain || '1lib.sk';
@@ -900,6 +918,7 @@
     $('z-logout').addEventListener('click', zLogout);
     $('z-search').addEventListener('click', zSearch);
     zProxy.addEventListener('change', applyCustomProxy);
+    $('z-test').addEventListener('click', zTestRelay);
     zQuery.addEventListener('keyup', function (e) { if (e.key === 'Enter') zSearch(); });
     zPass.addEventListener('keyup', function (e) { if (e.key === 'Enter') zLogin(); });
 
