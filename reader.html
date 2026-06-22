@@ -616,13 +616,15 @@
     function fetchBlobWithFallback(url, onStatus) {
         function asBlob(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); }
         var proxies = proxyList();
+        var lastErr = null;
         return fetch(url).then(asBlob).catch(function (directErr) {
+            lastErr = directErr;
             function tryProxy(i) {
                 if (i >= proxies.length) {
-                    throw new Error('Blocked by the source (CORS). Direct and all proxies failed.');
+                    throw new Error('all proxies failed (' + ((lastErr && lastErr.message) || 'CORS') + ')');
                 }
-                if (onStatus) onStatus('Direct blocked — trying relay ' + (i + 1) + '…');
-                return fetch(proxies[i](url)).then(asBlob).catch(function () { return tryProxy(i + 1); });
+                if (onStatus) onStatus(i === 0 && EXTRA_PROXIES.length ? 'Fetching via your relay…' : 'Trying relay ' + (i + 1) + '…');
+                return fetch(proxies[i](url)).then(asBlob).catch(function (e) { lastErr = e; return tryProxy(i + 1); });
             }
             return tryProxy(0);
         });
@@ -857,25 +859,29 @@
         if (!book.id || !book.hash) { zSetStatus('This result has no downloadable file.', 'err'); return; }
         btn.disabled = true; btn.textContent = '…';
         showOverlay('Resolving download…');
-        zRequest('/eapi/book/' + book.id + '/' + book.hash + '/file', {}, 'GET').then(function (res) {
-            var file = (res && (res.file || res)) || {};
-            var link = file.downloadLink || file.dlink;
-            if (!link) throw new Error((res && res.message) || 'No download link (out of downloads or login expired).');
-            var ext = (file.extension || book.extension || 'epub').toLowerCase();
-            var base = (book.title || file.description || 'book').replace(/[^a-zA-Z0-9 _\-.]/g, '').trim() || 'book';
-            var name = base + '.' + ext;
-            showOverlay('Downloading book…');
-            return fetchBlobWithFallback(link, showOverlay).then(function (blob) {
-                return addBook(name, blob);
-            }).then(function () {
-                hideOverlay();
-                btn.textContent = '✓ Saved';
-                zSetStatus('“' + base + '” saved to your offline library.', 'ok');
+        // stage labels so a failure tells us which half broke
+        zRequest('/eapi/book/' + book.id + '/' + book.hash + '/file', {}, 'GET')
+            .catch(function (e) { throw new Error('[resolve link] ' + e.message); })
+            .then(function (res) {
+                var file = (res && (res.file || res)) || {};
+                var link = file.downloadLink || file.dlink;
+                if (!link) throw new Error((res && res.message) || 'No download link (out of downloads or login expired).');
+                var ext = (file.extension || book.extension || 'epub').toLowerCase();
+                var base = (book.title || file.description || 'book').replace(/[^a-zA-Z0-9 _\-.]/g, '').trim() || 'book';
+                var name = base + '.' + ext;
+                showOverlay('Downloading book…');
+                return fetchBlobWithFallback(link, showOverlay)
+                    .catch(function (e) { throw new Error('[fetch file] ' + e.message); })
+                    .then(function (blob) { return addBook(name, blob); })
+                    .then(function () {
+                        hideOverlay();
+                        btn.textContent = '✓ Saved';
+                        zSetStatus('“' + base + '” saved to your offline library.', 'ok');
+                    });
+            }).catch(function (e) {
+                hideOverlay(); btn.disabled = false; btn.textContent = '⬇ Get';
+                zSetStatus('Download failed: ' + e.message, 'err');
             });
-        }).catch(function (e) {
-            hideOverlay(); btn.disabled = false; btn.textContent = '⬇ Get';
-            zSetStatus('Download failed: ' + e.message, 'err');
-        });
     }
 
     // ---- Z-Library panel wiring ----
