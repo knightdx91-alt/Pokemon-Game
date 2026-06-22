@@ -84,7 +84,7 @@
     #viewer .txt { padding: 24px; max-width: 720px; margin: 0 auto; line-height: 1.7; font-size: 17px; color: #15151a; white-space: pre-wrap; word-wrap: break-word; }
     #viewer.dark .txt { color: #e8e8f0; }
     #viewer .cbz-img, #viewer canvas { display: block; margin: 0 auto; max-width: 100%; }
-    .nav-zone { position: absolute; top: 0; bottom: 0; width: 22%; z-index: 5; }
+    .nav-zone { position: absolute; top: 0; bottom: 0; width: 50%; z-index: 5; cursor: pointer; }
     .nav-zone.left { left: 0; } .nav-zone.right { right: 0; }
 
     /* Loading overlay */
@@ -420,20 +420,21 @@
                 rPos.textContent = Math.round(pct * 100) + '%';
                 saveProgress(key, { type: 'epub', cfi: loc.start.cfi, pct: pct });
             });
+            // Tap zones sit OVER the iframe in the outer document — inside the
+            // paginated iframe the content is transform-shifted, so clientX there
+            // is unreliable and would flip direction after each turn.
+            var zoneL = document.createElement('div'); zoneL.className = 'nav-zone left';
+            var zoneR = document.createElement('div'); zoneR.className = 'nav-zone right';
+            zoneL.addEventListener('click', function (e) { e.stopPropagation(); rendition.prev(); });
+            zoneR.addEventListener('click', function (e) { e.stopPropagation(); rendition.next(); });
+            viewer.appendChild(zoneL); viewer.appendChild(zoneR);
             current = {
-                key: key, teardown: function () { try { book.destroy(); } catch (_) {} },
+                key: key,
+                teardown: function () { try { book.destroy(); } catch (_) {} zoneL.remove(); zoneR.remove(); },
                 prev: function () { rendition.prev(); }, next: function () { rendition.next(); }
             };
             // arrow-key support
             rendition.on('keyup', onKey);
-            // tap left half = previous, right half = next (inside the epub iframe)
-            rendition.hooks.content.register(function (contents) {
-                contents.document.addEventListener('click', function (e) {
-                    var w = contents.document.documentElement.clientWidth || contents.window.innerWidth;
-                    if (e.clientX < w / 2) rendition.prev();
-                    else rendition.next();
-                });
-            });
         });
     }
 
