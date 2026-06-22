@@ -137,8 +137,8 @@
         }
         .btn-play-row:hover { background: #9080ff; }
         .cache-info { flex: 1; min-width: 0; }
-        .cache-sys  { font-size: 13px; font-weight: 600; }
-        .cache-file { font-size: 11px; color: #4a4a5a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+        .cache-sys  { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; }
+        .cache-file { font-size: 11px; color: #4a4a5a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; line-height: 1.3; }
         .cache-size { font-size: 11px; color: var(--muted); white-space: nowrap; }
         .cache-offline { font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; border: 1px solid var(--border); color: var(--muted); }
         .cache-offline.ready   { color: var(--success); border-color: #234a3a; }
@@ -1608,6 +1608,77 @@
         });
     }
 
+    /* Extract the real internal game title from a ROM header (so the cache list
+       can show "Pokemon Emerald" instead of "pokeemerald_ee_debug.gba"). Reads
+       only the first 64KB. Returns '' when there's no usable title. */
+    function cleanRomTitle(s) {
+        return s.replace(/[^\x20-\x7E]/g, '').replace(/\s+/g, ' ').trim();
+    }
+    function romTitleFromHeader(sysId, buf) {
+        try {
+            var b = new Uint8Array(buf);
+            function ascii(off, len) {
+                var s = '';
+                for (var i = 0; i < len; i++) {
+                    var c = b[off + i];
+                    if (c === 0) break;
+                    s += String.fromCharCode(c);
+                }
+                return cleanRomTitle(s);
+            }
+            var t = '';
+            switch (sysId) {
+                case 'gba': t = ascii(0xA0, 12); break;
+                case 'gb':
+                case 'gbc': t = ascii(0x134, 16); break;
+                case 'nds': t = ascii(0x0, 12); break;
+                case 'genesis':
+                case 'segacd':
+                case 'sega32x': t = ascii(0x150, 48) || ascii(0x120, 48); break;
+                case 'snes': {
+                    var locs = [0x7FC0, 0xFFC0];
+                    for (var j = 0; j < locs.length; j++) {
+                        var c = ascii(locs[j], 21);
+                        if (c && /[A-Za-z]/.test(c)) { t = c; break; }
+                    }
+                    break;
+                }
+                default: t = '';
+            }
+            // Require at least one letter so we don't show garbage/codes.
+            return /[A-Za-z]/.test(t) ? t : '';
+        } catch (e) { return ''; }
+    }
+    /* Read a cached ROM's header bytes and resolve its internal title (cached
+       into meta so we only parse once). Resolves '' if unavailable. */
+    function resolveRomTitle(key, meta) {
+        if (meta.title) return Promise.resolve(meta.title);
+        var fn = meta.filename || '';
+        if (/\.zip$/i.test(fn)) return Promise.resolve('');   // can't read inside a zip
+        return openDB().then(function (db) {
+            return idbGet(db, ROM_STORE, key).then(function (blob) {
+                if (!blob || !blob.slice) return '';
+                var slice = blob.slice(0, 0x10000);
+                var ab = slice.arrayBuffer ? slice.arrayBuffer()
+                                           : new Response(slice).arrayBuffer();
+                return ab.then(function (buf) {
+                    var title = romTitleFromHeader(meta.sysId, buf);
+                    if (title) {
+                        meta.title = title;
+                        idbPut(db, META_STORE, key, meta).catch(function () {});
+                    }
+                    return title;
+                });
+            });
+        }).catch(function () { return ''; });
+    }
+    /* Pretty display name: real ROM title if we have one, else the filename
+       without its extension. */
+    function displayName(meta) {
+        if (meta.title) return meta.title;
+        return (meta.filename || 'unknown').replace(/\.[^.]+$/, '');
+    }
+
     function openCachePanel() {
         cacheList.innerHTML = '';
         /* Sort games by system label, then filename, so multiple games for the
@@ -1630,12 +1701,19 @@
                 row.className = 'cache-row';
                 row.innerHTML =
                     '<button class="btn-play-row">&#9654; Play</button>' +
-                    '<div class="cache-info"><div class="cache-sys">' + (meta.filename || 'unknown') + '</div>' +
+                    '<div class="cache-info"><div class="cache-sys"></div>' +
                     '<div class="cache-file">' + (sys.label || meta.label || meta.sysId) + '</div></div>' +
                     '<span class="cache-offline" data-sys="' + meta.sysId + '">checking…</span>' +
                     '<div class="cache-size">' + (meta.size ? fmtMB(meta.size) : '—') + '</div>' +
                     '<button class="btn-drive-row" title="Send to Google Drive">&#9729; Drive</button>' +
                     '<button class="btn-del-row">Delete</button>';
+                var nameEl = row.querySelector('.cache-sys');
+                nameEl.textContent = displayName(meta);
+                nameEl.title = meta.filename || '';
+                // Upgrade to the real internal ROM title once parsed.
+                resolveRomTitle(key, meta).then(function (t) {
+                    if (t) nameEl.textContent = t;
+                });
                 row.querySelector('.btn-play-row').addEventListener('click', function () { playFromCache(key); });
                 row.querySelector('.btn-drive-row').addEventListener('click', function () { sendRomToDrive(key, meta); });
                 row.querySelector('.btn-del-row').addEventListener('click', function () {
