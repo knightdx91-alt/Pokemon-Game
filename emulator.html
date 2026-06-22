@@ -838,11 +838,60 @@
        writes its save file when told to: syncing the filesystem without first
        calling saveSaveFiles() persisted STALE data, so in-game saves "saved"
        in RAM but vanished on reload. Calling saveSaveFiles() first fixes it. */
+    /* Stable per-ROM key for the battery save in our own IndexedDB. */
+    function batterySaveKey() {
+        return 'sram::' + (window.EJS_gameName || window.CLOUD_SAVE_GAME || 'unknown');
+    }
+
+    /* Read the core's current battery save (SRAM/flash) bytes from the FS. */
+    function readBatteryBytes(g) {
+        try {
+            g.saveSaveFiles();
+            var p = g.getSaveFilePath && g.getSaveFilePath();
+            if (p && g.FS.analyzePath(p).exists) {
+                var d = g.FS.readFile(p);
+                if (d && d.length) return d;
+            }
+        } catch (e) {}
+        return null;
+    }
+
+    /* Write battery save bytes back into the core's FS and tell it to reload. */
+    function writeBatteryBytes(g, bytes) {
+        try {
+            var p = g.getSaveFilePath && g.getSaveFilePath();
+            if (!p) return false;
+            var dir = p.split('/').slice(0, -1).join('/');
+            try {
+                if (dir && !g.FS.analyzePath(dir).exists) {
+                    if (g.FS.mkdirTree) g.FS.mkdirTree(dir); else g.FS.mkdir(dir);
+                }
+            } catch (_) {}
+            g.FS.writeFile(p, bytes);
+            g.loadSaveFiles();
+            return true;
+        } catch (e) { return false; }
+    }
+
+    /* Persist the live battery save into our own IndexedDB. This is the durable
+       store (like save states) — it does NOT depend on IDBFS autoPersist, which
+       was unreliable and caused in-game saves to vanish on reload. */
+    function persistBatteryToIDB() {
+        var g = _gm();
+        if (!g) return;
+        var bytes = readBatteryBytes(g);
+        if (!bytes || !bytes.length) return;
+        openDB().then(function (db) {
+            return idbPut(db, SAVE_STORE, batterySaveKey(), bytes);
+        }).catch(function () {});
+    }
+
     function flushSave() {
         var g = _gm();
         if (!g) return;
         try { g.saveSaveFiles(); } catch (e) {}
         try { if (g.FS && typeof g.FS.syncfs === 'function') g.FS.syncfs(false, function () {}); } catch (e) {}
+        persistBatteryToIDB();   // durable mirror in our own IndexedDB
     }
 
     function startSaveFlushing() {
@@ -943,13 +992,21 @@
             // Periodic + on-hide battery-save flushing (the actual fix).
             startSaveFlushing();
 
-            // Make sure the persisted battery save is pulled in from IndexedDB
-            // after boot (in case the core started before it was synced).
+            // Restore the battery save after boot. Prefer our own IndexedDB copy
+            // (durable, like save states); fall back to IDBFS for legacy saves.
             setTimeout(function () {
                 var g = _gm();
-                if (g && g.FS && typeof g.FS.syncfs === 'function') {
-                    try { g.FS.syncfs(true, function () { try { g.loadSaveFiles(); } catch (e) {} }); } catch (e) {}
-                }
+                if (!g) return;
+                openDB().then(function (db) {
+                    return idbGet(db, SAVE_STORE, batterySaveKey());
+                }).then(function (bytes) {
+                    if (bytes && bytes.length) {
+                        writeBatteryBytes(g, bytes);
+                    } else if (g.FS && typeof g.FS.syncfs === 'function') {
+                        // Legacy fallback: pull from the old IDBFS-backed store.
+                        try { g.FS.syncfs(true, function () { try { g.loadSaveFiles(); } catch (e) {} }); } catch (e) {}
+                    }
+                }).catch(function () {});
             }, 1800);
 
             // Apply any saved screen offset once the canvas exists.
@@ -1458,7 +1515,9 @@
                     alert('No battery save was written.\n\nSave INSIDE the game first (open the game menu → SAVE), then tap 💾 Save. If it still shows 0 K, this ROM\'s save type isn\'t being detected.');
                 }
             }
-            // …then persist the FS to IndexedDB, and report once that completes.
+            // Persist durably to our own IndexedDB (the reliable store), and also
+            // sync the legacy IDBFS, then report once done.
+            persistBatteryToIDB();
             try {
                 if (g.FS && typeof g.FS.syncfs === 'function') g.FS.syncfs(false, function () { report(); });
                 else report();
@@ -1475,12 +1534,19 @@
                 else    { setBtn(loadBtn, '✗ Error', '#e05454'); }
                 setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 2500);
             }
-            try {
-                g.FS.syncfs(true, function () {
-                    try { g.loadSaveFiles(); } catch (e) {}
+            // Prefer our durable IndexedDB copy; fall back to legacy IDBFS.
+            openDB().then(function (db) {
+                return idbGet(db, SAVE_STORE, batterySaveKey());
+            }).then(function (bytes) {
+                if (bytes && bytes.length && writeBatteryBytes(g, bytes)) {
                     done(true);
-                });
-            } catch (e) { done(false); }
+                } else {
+                    g.FS.syncfs(true, function () {
+                        try { g.loadSaveFiles(); } catch (e) {}
+                        done(true);
+                    });
+                }
+            }).catch(function () { done(false); });
         });
     })();
 
