@@ -325,7 +325,7 @@
             <button class="btn-primary" id="btn-url-save" disabled>&#128190; Save to Drive</button>
             <button class="btn-primary" id="btn-drive-copy">&#128229; Copy Drive &rarr; my Drive</button>
         </div>
-        <div class="url-hint">ZIP files are automatically handled. Google Drive: Share &rarr; copy link and paste as-is.<br>&#128190; Save to Drive saves the file at the URL straight to your Google Drive (any file type).<br>&#128229; Copy Drive &rarr; my Drive: multi-select files from a shared/other Drive and copy them all into a folder in your own Drive (no system needs to be selected).</div>
+        <div class="url-hint">ZIP files are automatically handled. Google Drive: Share &rarr; copy link and paste as-is.<br>&#128190; Save to Drive saves the file at the URL straight to your Google Drive (any file type).<br>&#128229; Copy Drive &rarr; my Drive: paste a shared Drive FOLDER link (or pick files/folders manually) and copy them all into a folder in your own Drive (no system needs to be selected).</div>
     </div>
 </div>
 
@@ -728,9 +728,29 @@
     var copySelectAll = document.getElementById('copy-select-all');
 
     btnDriveCopy.addEventListener('click', function () {
+        var link = prompt('Paste a Google Drive FOLDER link to copy all ROMs from it.\n\n(Leave blank to pick files/folders manually instead.)', '');
+        if (link === null) return;                     // cancelled
+        link = link.trim();
+        var folderId = parseDriveFolderId(link);
+        if (link && !folderId) { alert('That doesn\'t look like a Google Drive folder link.\nExpected something like:\nhttps://drive.google.com/drive/folders/<id>'); return; }
+
         showLoading('Authorizing Google Drive…');
         getDriveWriteToken()
             .then(function (token) {
+                if (folderId) {
+                    // Paste-a-link path: list the folder (recursively) with the readonly scope.
+                    showLoading('Listing files…');
+                    return expandPicked([{ id: folderId, name: 'folder', mimeType: FOLDER_MIME }], token)
+                        .then(function (files) {
+                            hideLoading();
+                            if (!files.length) {
+                                alert('No files found in that folder.\n\nMake sure the folder is shared with this Google account (or set to "Anyone with the link"), and that you signed in with the account it\'s shared to.');
+                                return;
+                            }
+                            openCopyModal(files, token);
+                        });
+                }
+                // Manual path: open the Google picker.
                 hideLoading();
                 loadGoogleScripts(function () {
                     gapi.load('picker', function () {
@@ -761,6 +781,14 @@
             })
             .catch(function (err) { hideLoading(); alert('Authorization failed: ' + err.message); });
     });
+
+    // Pull the folder id out of any Google Drive folder link.
+    function parseDriveFolderId(url) {
+        if (!url) return null;
+        var m = url.match(/\/folders\/([a-zA-Z0-9_-]+)/) ||
+                url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+        return m ? m[1] : null;
+    }
 
     /* Turn a mix of picked files/folders into a flat list of {id,name},
        recursing into any folders. De-duplicates by file id. */
