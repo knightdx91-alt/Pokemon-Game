@@ -595,6 +595,7 @@
     /* Public CORS relays, tried in order if a direct fetch is blocked. The file
        passes through a third-party server, so this is a fallback only. */
     var CORS_PROXIES = [
+        function (u) { return 'https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(u); },
         function (u) { return 'https://corsproxy.io/?url=' + encodeURIComponent(u); },
         function (u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); },
         function (u) { return 'https://thingproxy.freeboard.io/fetch/' + u; }
@@ -713,11 +714,11 @@
         return 'https://' + d;
     }
 
-    /* Proxied request returning parsed JSON. Tries direct, then relays. The
-       relays forward method + body; allorigins is GET-only so it's skipped for
-       POST. URLSearchParams body works for the eapi form endpoints. */
-    function zRequest(path, params, method) {
-        method = method || 'GET';
+    /* Proxied request returning parsed JSON. Everything goes out as GET (params
+       in the query string) — the eapi accepts it and it lets us use the stable
+       GET-only relays in CORS_PROXIES. Tries direct first, then each relay in
+       turn. The second arg `method` is kept for call-site clarity but ignored. */
+    function zRequest(path, params) {
         var base = zBase();
         // auth + language travel as params (no cross-origin cookies available)
         var all = Object.assign({ siteLanguageV2: 'en' }, params || {});
@@ -726,34 +727,27 @@
 
         var qs = new URLSearchParams();
         Object.keys(all).forEach(function (k) { if (all[k] != null && all[k] !== '') qs.append(k, all[k]); });
+        var getUrl = base + path + '?' + qs.toString();
 
-        var getUrl = base + path + (method === 'GET' ? '?' + qs.toString() : '');
-        var relays = [
-            function (u) { return { url: 'https://corsproxy.io/?url=' + encodeURIComponent(u), proxied: true }; },
-            function (u) { return { url: 'https://thingproxy.freeboard.io/fetch/' + u, proxied: true }; }
-        ];
-        if (method === 'GET') {
-            relays.push(function (u) { return { url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u), proxied: true }; });
-        }
-
-        function opts() {
-            return method === 'POST'
-                ? { method: 'POST', body: qs, headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-                : { method: 'GET' };
-        }
         function parse(r) {
             if (!r.ok) throw new Error('HTTP ' + r.status);
             return r.text().then(function (t) {
+                if (!t) throw new Error('Empty response (relay or domain down)');
                 try { return JSON.parse(t); }
-                catch (_) { throw new Error('Bad response (relay or domain may be down)'); }
+                catch (_) {
+                    // some relays wrap errors in HTML — surface a useful hint
+                    throw new Error(/cloudflare|captcha|<title/i.test(t)
+                        ? 'Blocked by domain (Cloudflare/captcha) — try another domain'
+                        : 'Bad response (relay or domain may be down)');
+                }
             });
         }
-        // direct first, then each relay
-        return fetch(getUrl, opts()).then(parse).catch(function () {
+        // direct first, then every proxy in CORS_PROXIES
+        return fetch(getUrl).then(parse).catch(function () {
             function tryRelay(i) {
-                if (i >= relays.length) throw new Error('All relays failed — try a different domain.');
-                var r = relays[i](getUrl);
-                return fetch(r.url, opts()).then(parse).catch(function () { return tryRelay(i + 1); });
+                if (i >= CORS_PROXIES.length) throw new Error('All relays failed — try a different domain or wait a moment.');
+                if (zStatus.textContent.indexOf('relay') === -1) zSetStatus(zStatus.textContent + ' (relay ' + (i + 1) + ')');
+                return fetch(CORS_PROXIES[i](getUrl)).then(parse).catch(function () { return tryRelay(i + 1); });
             }
             return tryRelay(0);
         });
@@ -764,7 +758,7 @@
         if (!email || !pass) { zSetStatus('Enter email and password.', 'err'); return; }
         zAuth.domain = (zDomain.value || '1lib.sk').trim();
         zSetStatus('Signing in…');
-        zRequest('/eapi/user/login', { email: email, password: pass }, 'POST').then(function (res) {
+        zRequest('/eapi/user/login', { email: email, password: pass }).then(function (res) {
             var u = res && (res.user || res);
             var uid = u && (u.id || u.remix_userid);
             var ukey = u && (u.remix_userkey || u.userkey);
@@ -787,7 +781,7 @@
         var params = { message: q, limit: 30 };
         if (zExt.value) params['extensions[]'] = zExt.value;
         zSetStatus('Searching…'); zResults.innerHTML = '';
-        zRequest('/eapi/book/search', params, 'POST').then(function (res) {
+        zRequest('/eapi/book/search', params).then(function (res) {
             var books = (res && (res.books || res.exactBooks)) || [];
             if (!books.length) { zSetStatus('No results.'); return; }
             zSetStatus(books.length + ' result(s).', 'ok');
