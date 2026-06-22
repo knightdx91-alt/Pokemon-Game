@@ -746,6 +746,7 @@
        GET-only relays in CORS_PROXIES. Tries direct first, then each relay in
        turn. The second arg `method` is kept for call-site clarity but ignored. */
     function zRequest(path, params) {
+        applyCustomProxy();   // always honor the current Custom relay field value
         var base = zBase();
         // auth + language travel as params (no cross-origin cookies available)
         var all = Object.assign({ siteLanguageV2: 'en' }, params || {});
@@ -781,7 +782,7 @@
                         : 'All relays unreachable. Add a personal relay (Custom relay field) or try later.';
                     throw new Error(hint);
                 }
-                zSetStatus('Trying relay ' + (i + 1) + '/' + proxies.length + '…');
+                zSetStatus((EXTRA_PROXIES.length && i === 0 ? 'Trying your relay…' : 'Trying public relay ' + (i + 1) + '/' + proxies.length + '…'));
                 return fetch(proxies[i](getUrl)).then(parse).catch(function (err) { lastErr = err; return tryRelay(i + 1); });
             }
             return tryRelay(0);
