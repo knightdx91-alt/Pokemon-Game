@@ -14,7 +14,7 @@
      network, never cached.
 */
 
-var CACHE = 'retroplay-offline-v1';
+var CACHE = 'retroplay-offline-v2';
 
 /* Hosts we must never cache or intercept (auth, Drive picker, uploads). */
 var BYPASS_HOSTS = [
