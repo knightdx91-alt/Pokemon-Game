@@ -426,6 +426,14 @@
             };
             // arrow-key support
             rendition.on('keyup', onKey);
+            // tap left half = previous, right half = next (inside the epub iframe)
+            rendition.hooks.content.register(function (contents) {
+                contents.document.addEventListener('click', function (e) {
+                    var w = contents.document.documentElement.clientWidth || contents.window.innerWidth;
+                    if (e.clientX < w / 2) rendition.prev();
+                    else rendition.next();
+                });
+            });
         });
     }
 
@@ -564,12 +572,12 @@
     rPrev.addEventListener('click', function () { if (current && current.prev) current.prev(); });
     rNext.addEventListener('click', function () { if (current && current.next) current.next(); });
     rBack.addEventListener('click', closeReader);
-    // edge tap zones for paged formats
+    // tap left half = previous page, right half = next page
     viewer.addEventListener('click', function (e) {
         if (!current || !current.prev) return;
-        var x = e.clientX, w = viewer.clientWidth;
-        if (x < w * 0.25) current.prev();
-        else if (x > w * 0.75) current.next();
+        var rect = viewer.getBoundingClientRect();
+        if (e.clientX - rect.left < rect.width / 2) current.prev();
+        else current.next();
     });
 
     // ---- Theme toggle (applies to text/epub readers) ----
