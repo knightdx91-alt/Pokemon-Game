@@ -282,8 +282,9 @@
             <input type="url" id="url-input" placeholder="Paste direct download URL (ZIP or ROM)" />
             <button class="btn-primary" id="btn-url-load" disabled>&#9654; Load</button>
             <button class="btn-primary" id="btn-url-save" disabled>&#128190; Save to Drive</button>
+            <button class="btn-primary" id="btn-drive-copy">&#128229; Copy Drive &rarr; my Drive</button>
         </div>
-        <div class="url-hint">ZIP files are automatically handled. Google Drive: Share &rarr; copy link and paste as-is.<br>&#128190; Save to Drive saves the file at the URL straight to your Google Drive (any file type).</div>
+        <div class="url-hint">ZIP files are automatically handled. Google Drive: Share &rarr; copy link and paste as-is.<br>&#128190; Save to Drive saves the file at the URL straight to your Google Drive (any file type).<br>&#128229; Copy Drive &rarr; my Drive: multi-select files from a shared/other Drive and copy them all into a folder in your own Drive (no system needs to be selected).</div>
     </div>
 </div>
 
@@ -523,6 +524,7 @@
     var urlInput      = document.getElementById('url-input');
     var btnUrlLoad    = document.getElementById('btn-url-load');
     var btnUrlSave    = document.getElementById('btn-url-save');
+    var btnDriveCopy  = document.getElementById('btn-drive-copy');
 
     function setDl(msg, color) { if (loadingText) { loadingText.textContent = msg || ''; loadingText.style.color = color || 'var(--muted)'; } }
     function setProgress(pct) { if (loadingProg) loadingProg.style.width = Math.min(100, Math.max(0, pct)) + '%'; }
@@ -651,6 +653,83 @@
                 alert('Save failed: ' + err.message + '\n\nIf the source is Google Drive or another host, it must allow cross-origin (CORS) downloads.');
             });
     });
+
+    /* Bulk copy files that already live in Google Drive (e.g. a folder shared
+       from another account) straight into a folder in your own Drive. Uses the
+       server-side Drive `files.copy` endpoint so nothing round-trips through the
+       browser; falls back to stream-download + re-upload if a copy is denied.
+       Independent of the selected system. */
+    btnDriveCopy.addEventListener('click', function () {
+        showLoading('Authorizing Google Drive…');
+        getDriveWriteToken()
+            .then(function (token) {
+                hideLoading();
+                loadGoogleScripts(function () {
+                    gapi.load('picker', function () {
+                        var view = new google.picker.DocsView(google.picker.ViewId.DOCS)
+                            .setIncludeFolders(true)        // let the user navigate into the shared folder
+                            .setSelectFolderEnabled(false); // but pick the files themselves
+                        new google.picker.PickerBuilder()
+                            .addView(view)
+                            .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+                            .setTitle('Select the game files to copy into your Drive (hold to select multiple)')
+                            .setOAuthToken(token)
+                            .setCallback(function (data) {
+                                if (data[google.picker.Response.ACTION] !== google.picker.Action.PICKED) return;
+                                var docs = data[google.picker.Response.DOCUMENTS] || [];
+                                if (!docs.length) return;
+                                chooseDriveFolder(token)
+                                    .then(function (destId) { copyManyToDrive(docs, destId, token); })
+                                    .catch(function (err) { hideLoading(); alert('Cancelled: ' + err.message); });
+                            })
+                            .build().setVisible(true);
+                    });
+                });
+            })
+            .catch(function (err) { hideLoading(); alert('Authorization failed: ' + err.message); });
+    });
+
+    function copyDriveFileServerSide(fileId, name, destId, token) {
+        var body = { name: name };
+        if (destId) body.parents = [destId];
+        return fetch('https://www.googleapis.com/drive/v3/files/' + fileId + '/copy?fields=id,name', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        }).then(function (resp) {
+            if (!resp.ok) return resp.text().then(function (t) { throw new Error('HTTP ' + resp.status + ' ' + t); });
+            return resp.json();
+        });
+    }
+
+    function copyManyToDrive(docs, destId, token) {
+        var total = docs.length, ok = 0, failed = [];
+        function step(i) {
+            if (i >= total) {
+                hideLoading();
+                var msg = 'Copied ' + ok + ' of ' + total + ' file(s) into your Drive.';
+                if (failed.length) msg += '\n\nFailed:\n' + failed.join('\n');
+                alert(msg);
+                return;
+            }
+            var doc  = docs[i];
+            var id   = doc[google.picker.Document.ID];
+            var name = doc[google.picker.Document.NAME] || ('file-' + (i + 1));
+            showLoading('Copying ' + (i + 1) + '/' + total + ' \xB7 ' + name);
+            copyDriveFileServerSide(id, name, destId, token)
+                .then(function () { ok++; step(i + 1); })
+                .catch(function () {
+                    // Server-side copy denied — fall back to download + re-upload.
+                    showLoading('Copying ' + (i + 1) + '/' + total + ' (transfer) \xB7 ' + name);
+                    streamFetch('https://www.googleapis.com/drive/v3/files/' + id + '?alt=media',
+                        { 'Authorization': 'Bearer ' + token }, name)
+                        .then(function (blob) { return uploadToDrive(blob, name, token, destId); })
+                        .then(function () { ok++; step(i + 1); })
+                        .catch(function (err) { failed.push(name + ' — ' + err.message); step(i + 1); });
+                });
+        }
+        step(0);
+    }
 
     function getDriveWriteToken() {
         return new Promise(function (res, rej) {
