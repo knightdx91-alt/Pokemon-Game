@@ -10,9 +10,11 @@ applied before a ROM rebuild.
 ```sh
 git submodule update --init source/emerald-enhanced
 cd source/emerald-enhanced
-git apply ../../patches/ee_enable_devmode_from_start.patch
 git apply ../../patches/ee_random_starters.patch
-# (apply any other patches here)
+git apply ../../patches/ee_random_wild.patch
+# NOTE: ee_enable_devmode_from_start.patch is intentionally NOT applied in the
+# current build (dev mode disabled by request). Apply it only to restore the
+# L+SELECT dev-mode unlock.
 ```
 
 ## Build (verified recipe)
@@ -58,4 +60,11 @@ macro, or agbcc linking fails with `referenced in discarded section .data`.
   the starter screen opens, so the shown sprites match what you get. EE's
   existing boss/alpha roll (`RyuLegendaryDoBossRoll`) still runs on the chosen
   one, so any random starter can become a boss (special name icon + all-31
-  IVs). Touches only `src/starter_choose.c`.
+  IVs). Touches only `src/starter_choose.c`. The **center slot (index 3, the
+  default cursor position) is forced to Ralts**; the other six remain random.
+
+- **ee_random_wild.patch** — Every wild encounter (grass/water/fishing/Feebas)
+  is randomized: `CreateWildMon` rolls a random real species (1..NUM_SPECIES-1,
+  skipping empty base-stat slots) before creating the mon, re-rolled on every
+  encounter. The route's natural **level range is kept**, so the difficulty
+  curve still scales by area. Touches only `src/wild_encounter.c`.

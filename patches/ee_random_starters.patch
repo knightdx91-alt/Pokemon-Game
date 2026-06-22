@@ -1,5 +1,5 @@
 diff --git a/src/starter_choose.c b/src/starter_choose.c
-index bd907c66..122e5bf9 100644
+index bd907c66b..b5905d832 100644
 --- a/src/starter_choose.c
 +++ b/src/starter_choose.c
 @@ -10,6 +10,7 @@
@@ -18,7 +18,7 @@ index bd907c66..122e5bf9 100644
  static const u16 sStarterMon[STARTER_MON_COUNT] =
  {
      SPECIES_PAWNIARD,//
-@@ -136,6 +138,30 @@ static const u16 sStarterMon[STARTER_MON_COUNT] =
+@@ -136,6 +138,32 @@ static const u16 sStarterMon[STARTER_MON_COUNT] =
      SPECIES_MEOWTH//
  };
  
@@ -43,13 +43,15 @@ index bd907c66..122e5bf9 100644
 +    u8 i;
 +    for (i = 0; i < STARTER_MON_COUNT; i++)
 +        sRandomizedStarters[i] = GetRandomStarterSpecies();
++    // The center starter slot (the default cursor position) is always Ralts.
++    sRandomizedStarters[3] = SPECIES_RALTS;
 +    sStartersRandomized = TRUE;
 +}
 +
  static const struct BgTemplate sBgTemplates[3] =
  {
      {
-@@ -375,7 +401,9 @@ u16 GetStarterPokemon(u16 chosenStarterId)
+@@ -375,7 +403,9 @@ u16 GetStarterPokemon(u16 chosenStarterId)
  {
      if (chosenStarterId > STARTER_MON_COUNT)
          chosenStarterId = 0;
@@ -60,7 +62,7 @@ index bd907c66..122e5bf9 100644
  }
  
  static void VblankCB_StarterChoose(void)
-@@ -458,6 +486,8 @@ void CB2_ChooseStarter(void)
+@@ -458,6 +488,8 @@ void CB2_ChooseStarter(void)
      ShowBg(2);
      ShowBg(3);
  
@@ -69,7 +71,7 @@ index bd907c66..122e5bf9 100644
      taskId = CreateTask(Task_StarterChoose, 0);
      gTasks[taskId].tStarterSelection = 3;
  
-@@ -599,7 +629,7 @@ static void Task_HandleConfirmStarterInput(u8 taskId)
+@@ -599,7 +631,7 @@ static void Task_HandleConfirmStarterInput(u8 taskId)
          FlagSet(FLAG_SYS_POKEMON_GET);
          gSpecialVar_Result = gTasks[taskId].tStarterSelection;
          RyuLegendaryDoBossRoll();

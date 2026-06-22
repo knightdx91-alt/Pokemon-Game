@@ -1,0 +1,30 @@
+diff --git a/src/wild_encounter.c b/src/wild_encounter.c
+index 94bbbaeea..d38bc1ed4 100644
+--- a/src/wild_encounter.c
++++ b/src/wild_encounter.c
+@@ -328,10 +328,25 @@ u32 RyuChooseWildLevel(void)
+     );
+ }
+ 
++// Roll a random real species (1..NUM_SPECIES-1), skipping empty/placeholder
++// base-stat slots. Re-rolled on every wild encounter so every route/patch of
++// grass/water/fishing spot produces random Pokemon.
++static u16 GetRandomWildSpecies(void)
++{
++    u16 species;
++    do {
++        species = (Random() % (NUM_SPECIES - 1)) + 1;
++    } while (gBaseStats[species].baseHP == 0);
++    return species;
++}
++
+ void CreateWildMon(u16 species, u8 level)
+ {
+     bool32 checkCuteCharm;
+ 
++    // Every wild encounter is randomized; the route's natural level is kept.
++    species = GetRandomWildSpecies();
++
+     ZeroEnemyPartyMons();
+     checkCuteCharm = TRUE;
+ 
