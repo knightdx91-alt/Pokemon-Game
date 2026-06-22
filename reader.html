@@ -770,10 +770,9 @@
                 if (!t) throw new Error('Empty response (relay or domain down)');
                 try { return JSON.parse(t); }
                 catch (_) {
-                    // some relays wrap errors in HTML — surface a useful hint
-                    throw new Error(/cloudflare|captcha|<title/i.test(t)
-                        ? 'Blocked by domain (Cloudflare/captcha) — try another domain'
-                        : 'Bad response (relay or domain may be down)');
+                    if (/cloudflare|captcha/i.test(t)) throw new Error('Blocked by domain (Cloudflare/captcha) — try another domain');
+                    // show a snippet of the unexpected (non-JSON) body to aid debugging
+                    throw new Error('Non-JSON reply: ' + t.replace(/\s+/g, ' ').slice(0, 120));
                 }
             });
         }
@@ -784,10 +783,7 @@
             lastErr = e;
             function tryRelay(i) {
                 if (i >= proxies.length) {
-                    var hint = (lastErr && /Cloudflare|captcha|Blocked|HTTP \d/.test(lastErr.message))
-                        ? lastErr.message
-                        : 'All relays unreachable. Add a personal relay (Custom relay field) or try later.';
-                    throw new Error(hint);
+                    throw new Error((lastErr && lastErr.message) || 'All relays failed');
                 }
                 zSetStatus((EXTRA_PROXIES.length && i === 0 ? 'Trying your relay…' : 'Trying public relay ' + (i + 1) + '/' + proxies.length + '…'));
                 return fetch(proxies[i](targetUrl), opts()).then(parse).catch(function (err) { lastErr = err; return tryRelay(i + 1); });
