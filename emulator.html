@@ -576,17 +576,19 @@
         });
     }
 
-    function prepareAndLaunch(sys, blob, fileName) {
-        if (ZIP_NATIVE[sys.id]) { cacheAndLaunch(sys, blob, fileName); return; }
-        isZipBlob(blob).then(function (isZip) {
-            if (!isZip) { cacheAndLaunch(sys, blob, fileName); return; }
+    /* launch defaults to true. Pass false to only cache (used for batch
+       Drive selections, where we launch just the first game). Returns a
+       Promise that resolves once the ROM is cached. */
+    function prepareAndLaunch(sys, blob, fileName, launch) {
+        if (ZIP_NATIVE[sys.id]) { return cacheAndLaunch(sys, blob, fileName, launch); }
+        return isZipBlob(blob).then(function (isZip) {
+            if (!isZip) { return cacheAndLaunch(sys, blob, fileName, launch); }
             if (typeof fflate === 'undefined') {
                 /* fflate not loaded — treat ZIP as native pass-through */
-                cacheAndLaunch(sys, blob, fileName);
-                return;
+                return cacheAndLaunch(sys, blob, fileName, launch);
             }
-            extractFromZip(blob, sys)
-                .then(function (r) { cacheAndLaunch(sys, r.blob, r.name); })
+            return extractFromZip(blob, sys)
+                .then(function (r) { return cacheAndLaunch(sys, r.blob, r.name, launch); })
                 .catch(function (err) { hideLoading(); alert('ZIP extraction failed: ' + err.message); });
         });
     }
@@ -844,22 +846,65 @@
     }
 
     /* Read the core's current battery save (SRAM/flash) bytes from the FS. */
+    /* Directories EmulatorJS cores write battery saves into (varies by core). */
+    var SAVE_DIRS = ['/data/saves', '/home/web_user/retroarch/userdata/saves'];
+    var SAVE_EXT_RE = /\.(srm|sav|fla|flash|eep|sa1|sa2|rtc|dsv|sram|brm|mcd|bin)$/i;
+
+    /* Find the on-FS battery-save file. Returns { path, data } or null.
+       Tries the core's reported path first, then scans the save directories —
+       some cores/games name the .srm differently than getSaveFilePath() claims,
+       which is why the old single-path check reported "save type not detected". */
+    function findSaveFile(g) {
+        var candidates = [];
+        try { var p = g.getSaveFilePath && g.getSaveFilePath(); if (p) candidates.push(p); } catch (e) {}
+        SAVE_DIRS.forEach(function (dir) {
+            try {
+                g.FS.readdir(dir).forEach(function (f) {
+                    if (f === '.' || f === '..') return;
+                    candidates.push(dir + '/' + f);
+                });
+            } catch (e) {}
+        });
+        var best = null;
+        for (var i = 0; i < candidates.length; i++) {
+            try {
+                var info = g.FS.analyzePath(candidates[i]);
+                if (!info || !info.exists || (info.object && info.object.isFolder)) continue;
+                // In the save dirs, accept any non-empty file; for explicit paths, accept too.
+                var name = candidates[i].split('/').pop();
+                var inSaveDir = SAVE_DIRS.some(function (d) { return candidates[i].indexOf(d + '/') === 0; });
+                if (inSaveDir && !SAVE_EXT_RE.test(name) && candidates[i] !== (g.getSaveFilePath && g.getSaveFilePath())) {
+                    // skip non-save-looking files (e.g. state files), unless it's the reported path
+                    if (!/\.(srm|sav|fla|eep|dsv|sram)$/i.test(name)) continue;
+                }
+                var data = g.FS.readFile(candidates[i]);
+                if (data && data.length && (!best || data.length > best.data.length)) {
+                    best = { path: candidates[i], data: data };
+                }
+            } catch (e) {}
+        }
+        return best;
+    }
+
     function readBatteryBytes(g) {
+        try { g.saveSaveFiles(); } catch (e) {}
+        // 1) Direct EmulatorJS API if present in this build.
         try {
-            g.saveSaveFiles();
-            var p = g.getSaveFilePath && g.getSaveFilePath();
-            if (p && g.FS.analyzePath(p).exists) {
-                var d = g.FS.readFile(p);
-                if (d && d.length) return d;
+            if (typeof g.getSaveFile === 'function') {
+                var d0 = g.getSaveFile();
+                if (d0 && d0.length) return d0;
             }
         } catch (e) {}
-        return null;
+        // 2) Scan the filesystem for the actual save file.
+        var hit = findSaveFile(g);
+        return hit ? hit.data : null;
     }
 
     /* Write battery save bytes back into the core's FS and tell it to reload. */
     function writeBatteryBytes(g, bytes) {
         try {
-            var p = g.getSaveFilePath && g.getSaveFilePath();
+            var p = (g.getSaveFilePath && g.getSaveFilePath()) || null;
+            if (!p) { var hit = findSaveFile(g); if (hit) p = hit.path; }
             if (!p) return false;
             var dir = p.split('/').slice(0, -1).join('/');
             try {
@@ -1025,17 +1070,17 @@
         document.body.appendChild(s);
     }
 
-    function cacheAndLaunch(sys, blob, fileName) {
+    function cacheAndLaunch(sys, blob, fileName, launch) {
         setDl('Saving to cache…'); setProgress(100);
         var key = gameKeyFor(sys, fileName);
         var meta = { sysId: sys.id, label: sys.label, filename: fileName || sys.label, size: blob.size };
-        openDB().then(function (db) {
+        return openDB().then(function (db) {
             return idbPut(db, ROM_STORE, key, blob)
                 .then(function () { return idbPut(db, META_STORE, key, meta); })
                 .then(function () {
                     _games[key] = meta;
                     refreshCard(sys.id);
-                    launchEJS(sys, blob, fileName || sys.label);
+                    if (launch !== false) launchEJS(sys, blob, fileName || sys.label);
                 });
         });
     }
@@ -1073,12 +1118,18 @@
             if (q) view.setQuery(q);   // pre-filters to files matching this system's extension
             new google.picker.PickerBuilder()
                 .addView(view)
-                .setTitle('Pick a ' + (sys ? sys.label : '') + ' file')
+                .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)  // pick several at once
+                .setTitle('Pick ' + (sys ? sys.label : '') + ' file(s) — hold to select multiple')
                 .setOAuthToken(token)
                 .setCallback(function (data) {
                     if (data[google.picker.Response.ACTION] === google.picker.Action.PICKED) {
-                        var doc = data[google.picker.Response.DOCUMENTS][0];
-                        downloadFromDrive(sys, doc[google.picker.Document.ID], doc[google.picker.Document.NAME], token);
+                        var docs = data[google.picker.Response.DOCUMENTS] || [];
+                        if (docs.length <= 1) {
+                            var doc = docs[0];
+                            downloadFromDrive(sys, doc[google.picker.Document.ID], doc[google.picker.Document.NAME], token);
+                        } else {
+                            downloadManyFromDrive(sys, docs, token);
+                        }
                     }
                 })
                 .build().setVisible(true);
@@ -1092,6 +1143,43 @@
             { 'Authorization': 'Bearer ' + token }, fileName)
             .then(function (blob) { btnDrive.disabled = false; prepareAndLaunch(sys, blob, fileName); })
             .catch(function (err) { hideLoading(); btnDrive.disabled = false; alert('Download failed: ' + err.message); });
+    }
+
+    /* Download several Drive files in sequence, caching each. The first one is
+       launched; the rest stay in the cache library to play later. */
+    function downloadManyFromDrive(sys, docs, token) {
+        btnDrive.disabled = true;
+        var total = docs.length, ok = 0, failed = [], firstLaunch = null;
+        function step(i) {
+            if (i >= total) {
+                btnDrive.disabled = false;
+                if (failed.length) {
+                    hideLoading();
+                    alert('Cached ' + ok + ' of ' + total + ' file(s).\n\nFailed:\n' + failed.join('\n'));
+                }
+                // Launch the first successfully cached game (overlay hidden by launch).
+                if (firstLaunch) playFromCache(firstLaunch.key);
+                else hideLoading();
+                return;
+            }
+            var doc = docs[i];
+            var id = doc[google.picker.Document.ID], name = doc[google.picker.Document.NAME];
+            showLoading('Downloading ' + (i + 1) + '/' + total + ' \xB7 ' + name);
+            streamFetch('https://www.googleapis.com/drive/v3/files/' + id + '?alt=media',
+                { 'Authorization': 'Bearer ' + token }, name)
+                .then(function (blob) { return prepareAndLaunch(sys, blob, name, false); })  // cache only
+                .then(function () {
+                    ok++;
+                    // Remember the first cached ROM so we can launch it at the end.
+                    if (!firstLaunch) {
+                        var key = gameKeyFor(sys, name);
+                        if (_games[key]) firstLaunch = { key: key };
+                    }
+                    step(i + 1);
+                })
+                .catch(function (err) { failed.push(name + ' — ' + err.message); step(i + 1); });
+        }
+        step(0);
     }
 
     function playFromCache(key) {
@@ -1498,14 +1586,8 @@
             try { g.saveSaveFiles(); } catch (e) {}
 
             function report() {
-                var bytes = 0;
-                try {
-                    var p = g.getSaveFilePath && g.getSaveFilePath();
-                    if (p && g.FS.analyzePath(p).exists) {
-                        var d = g.FS.readFile(p);
-                        bytes = d ? d.length : 0;
-                    }
-                } catch (e) {}
+                var data = readBatteryBytes(g);
+                var bytes = data ? data.length : 0;
                 if (bytes > 0) {
                     setBtn(saveBtn, '✓ Saved ' + Math.round(bytes / 1024) + 'K', '#4caf88');
                     setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 2500);
