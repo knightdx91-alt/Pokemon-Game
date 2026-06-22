@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>CodeLab — Assembly · Binary · Hex</title>
+<style>
+:root{
+  --bg:#0d0d0f; --surface:#16161a; --surface2:#1e1e26; --border:#2a2a35;
+  --text:#e8e8f0; --muted:#8a8a9a; --dim:#4a4a5a;
+  --accent:#7c6af7; --accent2:#e06af7; --good:#5ad17c; --bad:#f76a6a; --warn:#f7c66a;
+  --mono:"SFMono-Regular",ui-monospace,"Cascadia Code","Courier New",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  min-height:100vh; padding:0 0 40px;
+}
+.topbar{
+  display:flex; align-items:center; gap:14px; padding:14px 20px;
+  border-bottom:1px solid var(--border); position:sticky; top:0; background:var(--bg); z-index:10;
+}
+.brand{font-size:18px;font-weight:700;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.back{margin-left:auto;font-size:12px;color:var(--muted);text-decoration:none;
+  border:1px solid var(--border);padding:6px 12px;border-radius:8px;}
+.back:hover{border-color:var(--accent);color:var(--text);}
+.tabs{display:flex;gap:8px;padding:16px 20px 0;flex-wrap:wrap;}
+.tab{font-size:13px;font-weight:600;color:var(--muted);background:var(--surface);
+  border:1px solid var(--border);padding:8px 16px;border-radius:10px;cursor:pointer;}
+.tab.active{color:var(--text);border-color:var(--accent);background:var(--surface2);}
+.wrap{max-width:920px;margin:0 auto;padding:20px;}
+.panel{display:none;}
+.panel.active{display:block;}
+h2{font-size:15px;margin-bottom:4px;}
+.hint{font-size:12px;color:var(--dim);margin-bottom:16px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px;}
+label{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+input[type=text],textarea,select{
+  width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;
+  color:var(--text);font-family:var(--mono);font-size:14px;padding:10px 12px;}
+input[type=text]:focus,textarea:focus{outline:none;border-color:var(--accent);}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+.row>div{flex:1;min-width:120px;}
+button{font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;
+  background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:9px 16px;}
+button:hover{border-color:var(--accent);}
+button.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;}
+/* ---- bits ---- */
+.bits{display:flex;gap:4px;flex-wrap:wrap;margin:10px 0;}
+.bit{width:30px;height:38px;border:1px solid var(--border);border-radius:7px;background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:16px;cursor:pointer;
+  position:relative;user-select:none;}
+.bit.on{background:rgba(124,106,247,0.25);border-color:var(--accent);color:#fff;}
+.bit .pl{position:absolute;top:-15px;font-size:9px;color:var(--dim);}
+.bit.byteedge{margin-right:8px;}
+.conv{display:grid;grid-template-columns:auto 1fr;gap:10px 14px;align-items:center;}
+.conv label{margin:0;}
+.conv input{font-size:15px;}
+.opres{font-family:var(--mono);font-size:13px;color:var(--good);word-break:break-all;}
+/* ---- CPU ---- */
+.cpu{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:760px){.cpu{grid-template-columns:1.1fr 0.9fr;}}
+textarea#code{height:300px;resize:vertical;line-height:1.5;}
+.regs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.reg{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-family:var(--mono);}
+.reg.changed{border-color:var(--warn);background:rgba(247,198,106,0.1);}
+.reg .rn{font-size:10px;color:var(--muted);}
+.reg .rv{font-size:15px;}
+.reg .rh{font-size:10px;color:var(--dim);}
+.flags{display:flex;gap:8px;margin-top:8px;font-family:var(--mono);font-size:12px;}
+.flag{padding:4px 8px;border:1px solid var(--border);border-radius:6px;color:var(--dim);}
+.flag.set{color:var(--good);border-color:var(--good);}
+.mem{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin-top:8px;font-family:var(--mono);font-size:11px;}
+.mc{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:5px 2px;text-align:center;}
+.mc.hl{border-color:var(--accent);color:#fff;background:rgba(124,106,247,0.2);}
+.out{font-family:var(--mono);font-size:13px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:10px;min-height:60px;white-space:pre-wrap;margin-top:8px;color:var(--good);}
+.out .err{color:var(--bad);}
+.line-cur{color:var(--warn);}
+small.k{color:var(--muted);font-family:var(--mono);}
+.deck{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
+.pill{font-size:11px;color:var(--muted);font-family:var(--mono);}
+details{margin-top:10px;}
+summary{cursor:pointer;font-size:12px;color:var(--muted);}
+.ref{font-size:12px;color:var(--muted);font-family:var(--mono);line-height:1.7;margin-top:8px;}
+.ref b{color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="brand">CodeLab</span>
+  <span style="font-size:12px;color:var(--dim)">Assembly · Binary · Hex</span>
+  <a class="back" href="index.html">‹ Hub</a>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="conv">Converter</div>
+  <div class="tab" data-tab="bitwise">Bitwise</div>
+  <div class="tab" data-tab="asm">Assembly CPU</div>
+</div>
+
+<div class="wrap">
+
+<!-- ============ CONVERTER ============ -->
+<div class="panel active" id="conv">
+  <h2>Number Converter</h2>
+  <p class="hint">Type in any field — the others update live. Click bits to toggle them.</p>
+  <div class="card">
+    <div class="conv">
+      <label>DEC</label><input type="text" id="c-dec" inputmode="numeric" value="42">
+      <label>HEX</label><input type="text" id="c-hex" value="2A">
+      <label>BIN</label><input type="text" id="c-bin" value="101010">
+      <label>OCT</label><input type="text" id="c-oct" value="52">
+      <label>ASCII</label><input type="text" id="c-asc" value="*">
+    </div>
+    <div style="margin-top:14px">
+      <label>Bits <small class="k" id="c-width">(8-bit)</small></label>
+      <div class="bits" id="c-bits"></div>
+    </div>
+    <div class="btnrow" style="margin-top:6px">
+      <button data-w="8">8-bit</button>
+      <button data-w="16">16-bit</button>
+      <button data-w="32">32-bit</button>
+      <button id="c-signed">Signed: off</button>
+    </div>
+    <div class="ref" id="c-signedval"></div>
+  </div>
+</div>
+
+<!-- ============ BITWISE ============ -->
+<div class="panel" id="bitwise">
+  <h2>Bitwise Playground</h2>
+  <p class="hint">Two operands, every operation shown bit-by-bit (8-bit).</p>
+  <div class="card">
+    <div class="row">
+      <div><label>A (dec or 0x..)</label><input type="text" id="b-a" value="0xC3"></div>
+      <div><label>B (dec or 0x..)</label><input type="text" id="b-b" value="0x0F"></div>
+      <div><label>Shift amount</label><input type="text" id="b-sh" value="2"></div>
+    </div>
+    <div id="b-out"></div>
+  </div>
+</div>
+
+<!-- ============ ASSEMBLY ============ -->
+<div class="panel" id="asm">
+  <h2>Tiny CPU — Assembly Simulator</h2>
+  <p class="hint">An 8-register, 256-byte educational machine. Write asm, Step or Run, watch registers / flags / memory change.</p>
+  <div class="cpu">
+    <div>
+      <div class="deck">
+        <button class="primary" id="a-run">▶ Run</button>
+        <button id="a-step">⏭ Step</button>
+        <button id="a-reset">⟲ Reset</button>
+        <span class="pill" id="a-status">ready</span>
+      </div>
+      <textarea id="code" spellcheck="false">; sum 1..5 into R0
+      MOV R1, 5      ; counter
+      MOV R0, 0      ; accumulator
+loop: ADD R0, R1    ; R0 += R1
+      SUB R1, 1      ; R1--
+      CMP R1, 0
+      JNE loop       ; loop while R1 != 0
+      OUT R0         ; print result (15)
+      HLT</textarea>
+      <details>
+        <summary>Instruction reference</summary>
+        <div class="ref">
+<b>MOV</b> Rd, Rs|imm — copy<br>
+<b>ADD/SUB/MUL</b> Rd, Rs|imm — arithmetic<br>
+<b>AND/OR/XOR</b> Rd, Rs|imm — bitwise<br>
+<b>SHL/SHR</b> Rd, imm — bit shift<br>
+<b>INC/DEC</b> Rd<br>
+<b>CMP</b> a, b — set flags (Zero, Negative, Carry)<br>
+<b>JMP</b> label · <b>JE/JZ</b> · <b>JNE/JNZ</b> · <b>JG</b> · <b>JL</b><br>
+<b>LD</b> Rd, [addr] · <b>ST</b> [addr], Rs|imm — memory<br>
+<b>OUT</b> Rd|imm — print · <b>HLT</b> — stop<br>
+Registers R0–R7 · values wrap 0–255 · <b>label:</b> defines a jump target
+        </div>
+      </details>
+      <div class="out" id="a-out"></div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:12px">
+        <label>Registers</label>
+        <div class="regs" id="a-regs"></div>
+        <div class="flags" id="a-flags"></div>
+        <div class="ref" style="margin-top:8px">PC: <span id="a-pc">0</span></div>
+      </div>
+      <div class="card">
+        <label>Memory (0x00–0xFF)</label>
+        <div class="mem" id="a-mem"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* ===================== TABS ===================== */
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById(t.dataset.tab).classList.add('active');
+});
+
+/* ===================== CONVERTER ===================== */
+let cWidth=8, cSigned=false, cVal=42n;
+const $=id=>document.getElementById(id);
+function maxFor(){return (1n<<BigInt(cWidth))-1n;}
+function clamp(v){const m=maxFor()+1n;v=((v%m)+m)%m;return v;}
+function renderConv(src){
+  const v=cVal;
+  if(src!=='dec') $('c-dec').value=v.toString(10);
+  if(src!=='hex') $('c-hex').value=v.toString(16).toUpperCase();
+  if(src!=='bin') $('c-bin').value=v.toString(2);
+  if(src!=='oct') $('c-oct').value=v.toString(8);
+  if(src!=='asc'){const n=Number(v&0xFFn);$('c-asc').value=(n>=32&&n<127)?String.fromCharCode(n):'';}
+  $('c-width').textContent='('+cWidth+'-bit)';
+  // bits
+  const box=$('c-bits');box.innerHTML='';
+  for(let i=cWidth-1;i>=0;i--){
+    const on=((v>>BigInt(i))&1n)===1n;
+    const d=document.createElement('div');
+    d.className='bit'+(on?' on':'')+((i%8===0&&i!==0)?' byteedge':'');
+    d.textContent=on?'1':'0';
+    if(i%8===0||i===cWidth-1){const p=document.createElement('span');p.className='pl';p.textContent=i;d.appendChild(p);}
+    d.onclick=()=>{cVal=clamp(v^(1n<<BigInt(i)));renderConv();};
+    box.appendChild(d);
+  }
+  // signed interpretation
+  let sv=v;
+  if(cSigned && (v>>BigInt(cWidth-1)&1n)===1n) sv=v-(1n<<BigInt(cWidth));
+  $('c-signedval').innerHTML=cSigned?('Signed value: <b>'+sv.toString()+'</b>'):'';
+}
+function setFrom(src,radix){
+  return ()=>{
+    let s=$('c-'+src).value.trim();
+    try{
+      let v;
+      if(src==='asc'){v=s.length?BigInt(s.charCodeAt(0)):0n;}
+      else{s=s.replace(/^0[xbo]/i,'');if(s===''){return;}v=BigInt(parseInt(s,radix));if(isNaN(Number(v)))return;}
+      cVal=clamp(v);renderConv(src);
+    }catch(e){}
+  };
+}
+$('c-dec').oninput=setFrom('dec',10);
+$('c-hex').oninput=setFrom('hex',16);
+$('c-bin').oninput=setFrom('bin',2);
+$('c-oct').oninput=setFrom('oct',8);
+$('c-asc').oninput=setFrom('asc',0);
+document.querySelectorAll('#conv [data-w]').forEach(b=>b.onclick=()=>{cWidth=+b.dataset.w;cVal=clamp(cVal);renderConv();});
+$('c-signed').onclick=()=>{cSigned=!cSigned;$('c-signed').textContent='Signed: '+(cSigned?'on':'off');renderConv();};
+renderConv();
+
+/* ===================== BITWISE ===================== */
+function parseNum(s){s=s.trim();if(/^0x/i.test(s))return parseInt(s,16)&0xFF;if(/^0b/i.test(s))return parseInt(s.slice(2),2)&0xFF;return (parseInt(s,10)||0)&0xFF;}
+function bin8(n){return (n&0xFF).toString(2).padStart(8,'0');}
+function bitRow(label,n){
+  const b=bin8(n);
+  let cells='';
+  for(let i=0;i<8;i++)cells+='<div class="bit'+(b[i]==='1'?' on':'')+(i===3?' byteedge':'')+'" style="cursor:default">'+b[i]+'</div>';
+  return '<div style="margin:10px 0"><label>'+label+' &nbsp;<small class="k">= '+n+' = 0x'+(n).toString(16).toUpperCase().padStart(2,'0')+'</small></label><div class="bits">'+cells+'</div></div>';
+}
+function renderBitwise(){
+  const a=parseNum($('b-a').value), b=parseNum($('b-b').value), sh=(parseInt($('b-sh').value,10)||0);
+  let h='';
+  h+=bitRow('A',a);
+  h+=bitRow('B',b);
+  h+='<hr style="border:none;border-top:1px solid var(--border);margin:14px 0">';
+  h+=bitRow('A AND B',a&b);
+  h+=bitRow('A OR B',a|b);
+  h+=bitRow('A XOR B',a^b);
+  h+=bitRow('NOT A',(~a)&0xFF);
+  h+=bitRow('A SHL '+sh,(a<<sh)&0xFF);
+  h+=bitRow('A SHR '+sh,(a>>sh)&0xFF);
+  $('b-out').innerHTML=h;
+}
+['b-a','b-b','b-sh'].forEach(id=>$(id).oninput=renderBitwise);
+renderBitwise();
+
+/* ===================== TINY CPU ===================== */
+const REGN=8, MEMN=256;
+let cpu, prog, labels, prevRegs;
+function resetCpu(){
+  cpu={reg:new Array(REGN).fill(0),mem:new Array(MEMN).fill(0),pc:0,Z:false,N:false,C:false,halt:false,out:''};
+  prevRegs=cpu.reg.slice();
+  assemble();
+  renderCpu();$('a-status').textContent='ready';$('a-out').textContent='';
+}
+function assemble(){
+  prog=[];labels={};
+  const lines=$('code').value.split('\n');
+  lines.forEach(raw=>{
+    let line=raw.replace(/;.*/,'').trim();
+    if(!line)return;
+    const m=line.match(/^([A-Za-z_]\w*):\s*(.*)$/);
+    if(m){labels[m[1].toLowerCase()]=prog.length;line=m[2].trim();if(!line)return;}
+    const parts=line.split(/\s+/);
+    const op=parts.shift().toUpperCase();
+    const args=line.slice(line.indexOf(parts.length?parts[0]:'')).split(',').map(s=>s.trim()).filter(s=>s);
+    // re-split args properly
+    const aidx=line.indexOf(' ');
+    const argStr=aidx<0?'':line.slice(aidx+1);
+    const a=argStr.split(',').map(s=>s.trim()).filter(s=>s);
+    prog.push({op,a});
+  });
+}
+function reg(s){const m=/^R([0-7])$/i.exec(s.trim());return m?+m[1]:null;}
+function val(s){
+  s=s.trim();const r=reg(s);if(r!==null)return cpu.reg[r];
+  if(/^0x/i.test(s))return parseInt(s,16)&0xFF;
+  if(/^0b/i.test(s))return parseInt(s.slice(2),2)&0xFF;
+  return (parseInt(s,10)||0)&0xFF;
+}
+function memAddr(s){s=s.trim().replace(/^\[|\]$/g,'');return val(s)&0xFF;}
+function setFlags(v){cpu.Z=(v&0xFF)===0;cpu.N=(v&0x80)!==0;}
+function wrap(v){cpu.C=v>255||v<0;return ((v%256)+256)%256;}
+function step(){
+  if(cpu.halt||cpu.pc>=prog.length){cpu.halt=true;return false;}
+  prevRegs=cpu.reg.slice();
+  const ins=prog[cpu.pc];const {op,a}=ins;let jumped=false;
+  const rd=()=>reg(a[0]);
+  try{
+    switch(op){
+      case 'MOV': cpu.reg[rd()]=val(a[1]);break;
+      case 'ADD': {let v=wrap(cpu.reg[rd()]+val(a[1]));cpu.reg[rd()]=v;setFlags(v);break;}
+      case 'SUB': {let v=wrap(cpu.reg[rd()]-val(a[1]));cpu.reg[rd()]=v;setFlags(v);break;}
+      case 'MUL': {let v=wrap(cpu.reg[rd()]*val(a[1]));cpu.reg[rd()]=v;setFlags(v);break;}
+      case 'AND': {let v=cpu.reg[rd()]&val(a[1]);cpu.reg[rd()]=v;setFlags(v);break;}
+      case 'OR':  {let v=cpu.reg[rd()]|val(a[1]);cpu.reg[rd()]=v;setFlags(v);break;}
+      case 'XOR': {let v=cpu.reg[rd()]^val(a[1]);cpu.reg[rd()]=v;setFlags(v);break;}
+      case 'SHL': {let v=(cpu.reg[rd()]<<val(a[1]))&0xFF;cpu.reg[rd()]=v;setFlags(v);break;}
+      case 'SHR': {let v=cpu.reg[rd()]>>val(a[1]);cpu.reg[rd()]=v;setFlags(v);break;}
+      case 'INC': {let v=wrap(cpu.reg[rd()]+1);cpu.reg[rd()]=v;setFlags(v);break;}
+      case 'DEC': {let v=wrap(cpu.reg[rd()]-1);cpu.reg[rd()]=v;setFlags(v);break;}
+      case 'CMP': {let v=wrap(val(a[0])-val(a[1]));setFlags(v);break;}
+      case 'LD':  cpu.reg[rd()]=cpu.mem[memAddr(a[1])]&0xFF;break;
+      case 'ST':  cpu.mem[memAddr(a[0])]=val(a[1])&0xFF;break;
+      case 'JMP': cpu.pc=getLabel(a[0]);jumped=true;break;
+      case 'JE': case 'JZ': if(cpu.Z){cpu.pc=getLabel(a[0]);jumped=true;}break;
+      case 'JNE':case 'JNZ':if(!cpu.Z){cpu.pc=getLabel(a[0]);jumped=true;}break;
+      case 'JG':  if(!cpu.Z&&!cpu.N){cpu.pc=getLabel(a[0]);jumped=true;}break;
+      case 'JL':  if(cpu.N){cpu.pc=getLabel(a[0]);jumped=true;}break;
+      case 'OUT': cpu.out+=val(a[0])+'\n';break;
+      case 'HLT': cpu.halt=true;break;
+      default: throw new Error('Unknown instruction: '+op);
+    }
+  }catch(e){cpu.halt=true;cpu.out+='[error] '+e.message+'\n';renderCpu();return false;}
+  if(!jumped)cpu.pc++;
+  return !cpu.halt;
+}
+function getLabel(s){const k=s.trim().toLowerCase();if(!(k in labels))throw new Error('Unknown label: '+s);return labels[k];}
+function renderCpu(){
+  const rb=$('a-regs');rb.innerHTML='';
+  for(let i=0;i<REGN;i++){
+    const v=cpu.reg[i];const ch=prevRegs[i]!==v;
+    rb.innerHTML+='<div class="reg'+(ch?' changed':'')+'"><div class="rn">R'+i+'</div><div class="rv">'+v+
+      '</div><div class="rh">0x'+v.toString(16).toUpperCase().padStart(2,'0')+' '+v.toString(2).padStart(8,'0')+'</div></div>';
+  }
+  $('a-flags').innerHTML=['Z','N','C'].map(f=>'<span class="flag'+(cpu[f]?' set':'')+'">'+f+':'+(cpu[f]?1:0)+'</span>').join('');
+  $('a-pc').textContent=cpu.pc;
+  const mb=$('a-mem');mb.innerHTML='';
+  // show first 64 memory cells (enough for learning)
+  for(let i=0;i<64;i++){
+    const v=cpu.mem[i];
+    mb.innerHTML+='<div class="mc'+(v?' hl':'')+'" title="0x'+i.toString(16).padStart(2,'0')+'">'+v.toString(16).toUpperCase().padStart(2,'0')+'</div>';
+  }
+  $('a-out').textContent=cpu.out||'';
+}
+$('a-step').onclick=()=>{if(cpu.halt){$('a-status').textContent='halted';return;}assembleIfEdited();step();renderCpu();$('a-status').textContent=cpu.halt?'halted':'pc='+cpu.pc;};
+$('a-run').onclick=()=>{
+  assembleIfEdited();let n=0;
+  while(!cpu.halt && n++<100000)step();
+  renderCpu();$('a-status').textContent=cpu.halt?'done ('+n+' steps)':'step limit';
+};
+$('a-reset').onclick=resetCpu;
+let lastCode='';
+function assembleIfEdited(){if($('code').value!==lastCode){lastCode=$('code').value;assemble();cpu.pc=0;cpu.halt=false;cpu.out='';cpu.reg.fill(0);cpu.mem.fill(0);cpu.Z=cpu.N=cpu.C=false;prevRegs=cpu.reg.slice();}}
+$('code').addEventListener('input',()=>{$('a-status').textContent='edited — will reassemble on Run/Step';});
+resetCpu();lastCode=$('code').value;
+</script>
+</body>
+</html>
