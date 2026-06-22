@@ -371,6 +371,7 @@
         <button class="emu-nudge" id="btn-game-reset" title="Reset screen position">⌖</button>
         <button id="btn-save-game">💾 Save</button>
         <button id="btn-load-game">📂 Load</button>
+        <button id="btn-save-diag" title="Save diagnostics">🛠</button>
         <button id="btn-screenshot">📷 Screenshot</button>
         <button class="btn-back" id="btn-back-emu">&larr; Back</button>
     </div>
@@ -1919,6 +1920,58 @@
                 }, 800);
             });
         }
+
+        /* On-screen save diagnostics — for devices with no console access.
+           Reports: ROM name, the core's reported save path, every save-looking
+           file on the FS with sizes, and what's currently stored in IndexedDB. */
+        var diagBtn = document.getElementById('btn-save-diag');
+        function listFsSaveFiles(g) {
+            var out = [], seen = {};
+            function walk(dir, depth) {
+                if (depth > 6 || seen[dir]) return; seen[dir] = 1;
+                var entries; try { entries = g.FS.readdir(dir); } catch (e) { return; }
+                entries.forEach(function (f) {
+                    if (f === '.' || f === '..') return;
+                    var p = (dir === '/' ? '' : dir) + '/' + f, info;
+                    try { info = g.FS.analyzePath(p); } catch (e) { return; }
+                    if (info && info.object && info.object.isFolder) { walk(p, depth + 1); return; }
+                    var name = p.split('/').pop();
+                    if (!/\/saves?\//i.test(p) && !SAVE_EXT_RE.test(name)) return;
+                    try { var d = g.FS.readFile(p); out.push(p + '  (' + d.length + 'b)'); } catch (e) {}
+                });
+            }
+            ['/data', '/home', '/saves', '/tmp'].forEach(function (r) { walk(r, 0); });
+            return out;
+        }
+        if (diagBtn) diagBtn.addEventListener('click', function () {
+            var g = gm();
+            if (!g) { alert('Start a game first.'); return; }
+            try { g.saveSaveFiles(); } catch (e) {}
+            var reported = '';
+            try { reported = (g.getSaveFilePath && g.getSaveFilePath()) || '(none)'; } catch (e) { reported = '(error)'; }
+            var files = listFsSaveFiles(g);
+            var batt = readBatteryBytes(g);
+            var lines = [
+                'ROM name: ' + (window.EJS_gameName || '?'),
+                'Core path: ' + reported,
+                'readBattery: ' + (batt ? batt.length + ' bytes' : 'NONE'),
+                '',
+                'Save files on disk (' + files.length + '):',
+                files.length ? files.join('\n') : '  (none found)'
+            ];
+            openDB().then(function (db) {
+                return Promise.all([
+                    idbGet(db, SAVE_STORE, batterySaveKey()),
+                    idbGet(db, SAVE_STORE, stateSaveKey())
+                ]);
+            }).then(function (r) {
+                lines.push('');
+                lines.push('In IndexedDB:');
+                lines.push('  battery: ' + (r[0] && r[0].length ? r[0].length + ' bytes' : 'none'));
+                lines.push('  state:   ' + (r[1] && r[1].length ? r[1].length + ' bytes' : 'none'));
+                alert(lines.join('\n'));
+            }).catch(function () { alert(lines.join('\n')); });
+        });
 
         saveBtn.addEventListener('click', function () {
             var g = gm();
