@@ -1135,38 +1135,49 @@
     var SAVE_EXT_RE = /\.(srm|sav|fla|flash|eep|sa1|sa2|rtc|dsv|sram|brm|mcd|bin)$/i;
 
     /* Find the on-FS battery-save file. Returns { path, data } or null.
-       Tries the core's reported path first, then scans the save directories —
-       some cores/games name the .srm differently than getSaveFilePath() claims,
-       which is why the old single-path check reported "save type not detected". */
+       Different EmulatorJS cores/builds write the .srm to different paths, so
+       rather than guess a fixed directory we WALK the emulated filesystem and
+       accept any file that lives in a "saves" folder or has a save extension.
+       This is what lets in-game saves be found, stored and restored reliably. */
     function findSaveFile(g) {
-        var candidates = [];
-        try { var p = g.getSaveFilePath && g.getSaveFilePath(); if (p) candidates.push(p); } catch (e) {}
-        SAVE_DIRS.forEach(function (dir) {
-            try {
-                g.FS.readdir(dir).forEach(function (f) {
-                    if (f === '.' || f === '..') return;
-                    candidates.push(dir + '/' + f);
-                });
-            } catch (e) {}
-        });
         var best = null;
-        for (var i = 0; i < candidates.length; i++) {
+        var seen = {};
+        var STATE_RE = /\.(state\d*|st\d+|ss\d+)$/i;
+
+        function consider(path) {
             try {
-                var info = g.FS.analyzePath(candidates[i]);
-                if (!info || !info.exists || (info.object && info.object.isFolder)) continue;
-                // In the save dirs, accept any non-empty file; for explicit paths, accept too.
-                var name = candidates[i].split('/').pop();
-                var inSaveDir = SAVE_DIRS.some(function (d) { return candidates[i].indexOf(d + '/') === 0; });
-                if (inSaveDir && !SAVE_EXT_RE.test(name) && candidates[i] !== (g.getSaveFilePath && g.getSaveFilePath())) {
-                    // skip non-save-looking files (e.g. state files), unless it's the reported path
-                    if (!/\.(srm|sav|fla|eep|dsv|sram)$/i.test(name)) continue;
-                }
-                var data = g.FS.readFile(candidates[i]);
+                var info = g.FS.analyzePath(path);
+                if (!info || !info.exists || (info.object && info.object.isFolder)) return;
+                var name = path.split('/').pop();
+                var inSavesDir = /\/saves?\//i.test(path);
+                if (STATE_RE.test(name)) return;                 // never treat save STATES as battery saves
+                if (!inSavesDir && !SAVE_EXT_RE.test(name)) return;
+                var data = g.FS.readFile(path);
                 if (data && data.length && (!best || data.length > best.data.length)) {
-                    best = { path: candidates[i], data: data };
+                    best = { path: path, data: data };
                 }
             } catch (e) {}
         }
+        function walk(dir, depth) {
+            if (depth > 6 || seen[dir]) return;
+            seen[dir] = 1;
+            var entries;
+            try { entries = g.FS.readdir(dir); } catch (e) { return; }
+            entries.forEach(function (f) {
+                if (f === '.' || f === '..') return;
+                var p = (dir === '/' ? '' : dir) + '/' + f;
+                var info;
+                try { info = g.FS.analyzePath(p); } catch (e) { return; }
+                if (info && info.object && info.object.isFolder) walk(p, depth + 1);
+                else consider(p);
+            });
+        }
+
+        // The core's reported path first (most authoritative when present)…
+        try { var ep = g.getSaveFilePath && g.getSaveFilePath(); if (ep) consider(ep); } catch (e) {}
+        // …then the known save dirs, then a broad walk as a safety net.
+        SAVE_DIRS.forEach(function (d) { walk(d, 5); });
+        ['/data', '/home', '/saves', '/tmp'].forEach(function (r) { walk(r, 0); });
         return best;
     }
 
@@ -1330,10 +1341,15 @@
                     return idbGet(db, SAVE_STORE, batterySaveKey());
                 }).then(function (bytes) {
                     if (bytes && bytes.length) {
-                        writeBatteryBytes(g, bytes);
+                        var ok = writeBatteryBytes(g, bytes);
+                        console.log('[Save] restored battery', bytes.length, 'bytes ->', ok ? 'ok' : 'FAILED');
+                        // Also persist into EmulatorJS's native IDBFS so its own
+                        // auto-load picks it up on subsequent boots too.
+                        try { if (g.FS && g.FS.syncfs) g.FS.syncfs(false, function () {}); } catch (e) {}
                     } else if (g.FS && typeof g.FS.syncfs === 'function') {
-                        // Legacy fallback: pull from the old IDBFS-backed store.
+                        // No copy yet: pull from the old IDBFS-backed store.
                         try { g.FS.syncfs(true, function () { try { g.loadSaveFiles(); } catch (e) {} }); } catch (e) {}
+                        console.log('[Save] no IndexedDB battery copy; tried IDBFS sync');
                     }
                 }).catch(function () {});
             }, 1800);
