@@ -66,6 +66,12 @@
     }
     .book:hover .del { display: block; }
     .book .del:hover { color: var(--danger); }
+    .book .drive {
+        position: absolute; top: 6px; right: 32px; width: 22px; height: 22px; border-radius: 6px;
+        background: rgba(0,0,0,.4); border: none; color: var(--muted); font-size: 12px; cursor: pointer; display: none;
+    }
+    .book:hover .drive { display: block; }
+    .book .drive:hover { color: var(--accent); }
     .empty { color: var(--muted); font-size: 13px; text-align: center; padding: 40px 0; }
 
     /* Reader screen */
@@ -349,6 +355,7 @@
                 card.className = 'book';
                 card.innerHTML =
                     '<button class="del" title="Delete">✕</button>' +
+                    '<button class="drive" title="Send to Google Drive">☁</button>' +
                     '<div class="cover">' + fmtIcon(meta.format) + '</div>' +
                     '<div class="bt"></div>' +
                     '<div class="bs">' + meta.format + ' · ' + fmtMB(meta.size || 0) + '</div>' +
@@ -361,6 +368,10 @@
                     openDB().then(function (db) {
                         return Promise.all([idbDel(db, BOOKS, key), idbDel(db, META, key), idbDel(db, PROG, key)]);
                     }).then(refreshLibrary);
+                });
+                card.querySelector('.drive').addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    sendBookToDrive(key, meta);
                 });
                 shelf.appendChild(card);
                 // progress bar
@@ -698,6 +709,23 @@
             return r.json();
         });
     }
+    // Upload an already-cached book (from IndexedDB) to Google Drive.
+    function sendBookToDrive(key, meta) {
+        var name = meta.filename || (cleanTitle(meta.title) + '.' + (meta.format || 'bin'));
+        showOverlay('Reading from cache…');
+        openDB().then(function (db) { return idbGet(db, BOOKS, key); }).then(function (blob) {
+            if (!blob) throw new Error('Book not found in cache');
+            showOverlay('Authorizing Google Drive…');
+            return driveToken().then(function (t) {
+                showOverlay('Uploading to Drive…');
+                return uploadToDrive(blob, name, t);
+            });
+        }).then(function (file) {
+            hideOverlay();
+            alert('Saved to Google Drive: ' + (file && file.name ? file.name : name));
+        }).catch(function (e) { hideOverlay(); alert('Send to Drive failed: ' + e.message); });
+    }
+
     btnDriveSave.addEventListener('click', function () {
         var raw = urlInput.value.trim(); if (!raw) return;
         var url = rewriteGDrive(raw);

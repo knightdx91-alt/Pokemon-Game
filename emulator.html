@@ -150,6 +150,12 @@
             flex-shrink: 0; transition: color 0.1s, border-color 0.1s;
         }
         .btn-del-row:hover { color: var(--danger); border-color: var(--danger); }
+        .btn-drive-row {
+            background: none; color: #9aa0c0; border: 1px solid var(--border); border-radius: 6px;
+            padding: 4px 8px; font-size: 11px; cursor: pointer; font-family: inherit;
+            flex-shrink: 0; transition: color 0.1s, border-color 0.1s;
+        }
+        .btn-drive-row:hover { color: var(--accent); border-color: var(--accent); }
         #cache-empty { padding: 32px; text-align: center; font-size: 13px; color: #4a4a5a; }
         /* Pin to the viewport so the top bar can't be scrolled/bumped off when
            the game starts and the mobile address bar resizes. */
@@ -1192,6 +1198,28 @@
         });
     }
 
+    /* Upload an already-cached ROM (from IndexedDB) to Google Drive, reusing the
+       same write-token + folder-picker flow as the URL "Save to Drive" button. */
+    function sendRomToDrive(key, meta) {
+        var fileName = meta.filename || (key + '');
+        showLoading('Reading from cache…');
+        openDB().then(function (db) { return idbGet(db, ROM_STORE, key); }).then(function (blob) {
+            if (!blob) throw new Error('Cache miss — please re-download.');
+            showLoading('Authorizing Google Drive…');
+            return getDriveWriteToken().then(function (token) {
+                return chooseDriveFolder(token).then(function (parentId) {
+                    return uploadToDrive(blob, fileName, token, parentId);
+                });
+            });
+        }).then(function (file) {
+            hideLoading();
+            alert('Saved to Google Drive: ' + (file && file.name ? file.name : fileName));
+        }).catch(function (err) {
+            hideLoading();
+            alert('Send to Drive failed: ' + err.message);
+        });
+    }
+
     /* ---- Offline readiness ----
        A cached ROM can be played with no connection only once the service
        worker has also stored the EmulatorJS engine AND that system's core.
@@ -1272,8 +1300,10 @@
                     '<div class="cache-file">' + (sys.label || meta.label || meta.sysId) + '</div></div>' +
                     '<span class="cache-offline" data-sys="' + meta.sysId + '">checking…</span>' +
                     '<div class="cache-size">' + (meta.size ? fmtMB(meta.size) : '—') + '</div>' +
+                    '<button class="btn-drive-row" title="Send to Google Drive">&#9729; Drive</button>' +
                     '<button class="btn-del-row">Delete</button>';
                 row.querySelector('.btn-play-row').addEventListener('click', function () { playFromCache(key); });
+                row.querySelector('.btn-drive-row').addEventListener('click', function () { sendRomToDrive(key, meta); });
                 row.querySelector('.btn-del-row').addEventListener('click', function () {
                     var sysId = meta.sysId;
                     openDB().then(function (db) { return idbDel(db, key); }).then(function () {
