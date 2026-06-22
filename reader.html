@@ -84,8 +84,10 @@
     #viewer .txt { padding: 24px; max-width: 720px; margin: 0 auto; line-height: 1.7; font-size: 17px; color: #15151a; white-space: pre-wrap; word-wrap: break-word; }
     #viewer.dark .txt { color: #e8e8f0; }
     #viewer .cbz-img, #viewer canvas { display: block; margin: 0 auto; max-width: 100%; }
-    .nav-zone { position: absolute; top: 0; bottom: 0; width: 50%; z-index: 5; cursor: pointer; }
+    .nav-zone { position: absolute; top: 0; bottom: 0; width: 50%; z-index: 5; cursor: pointer;
+        -webkit-tap-highlight-color: transparent; user-select: none; }
     .nav-zone.left { left: 0; } .nav-zone.right { right: 0; }
+    #viewer, #viewer * { -webkit-tap-highlight-color: transparent; }
 
     /* Loading overlay */
     #overlay {
@@ -382,6 +384,8 @@
         rTitle.textContent = meta.title;
         viewer.innerHTML = '';
         rPos.textContent = '';
+        // history entry so the device/browser Back button returns to the library
+        history.pushState({ reader: true }, '');
     }
     function closeReader() {
         if (current && current.teardown) { try { current.teardown(); } catch (_) {} }
@@ -572,7 +576,11 @@
     document.addEventListener('keyup', onKey);
     rPrev.addEventListener('click', function () { if (current && current.prev) current.prev(); });
     rNext.addEventListener('click', function () { if (current && current.next) current.next(); });
-    rBack.addEventListener('click', closeReader);
+    // Back button (and device Back) pop the history entry → returns to library
+    rBack.addEventListener('click', function () { history.back(); });
+    window.addEventListener('popstate', function () {
+        if (reader.classList.contains('visible')) closeReader();
+    });
     // tap left half = previous page, right half = next page
     viewer.addEventListener('click', function (e) {
         if (!current || !current.prev) return;
