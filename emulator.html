@@ -714,19 +714,96 @@
 
     function _gm() { return window.EJS_emulator && window.EJS_emulator.gameManager; }
 
-    /* Force the core's current battery save (SRAM/flash — incl. RTC for
-       Pokémon Emerald) out to the IndexedDB-backed save filesystem.
+    /* ---- Explicit battery-save persistence in our own IndexedDB ----
+       Relying on EmulatorJS's IDBFS autoPersist alone proved unreliable: the
+       core only loads its save file at boot, so a save synced after boot never
+       made the title screen show "Continue" on the next launch. We instead copy
+       the live SRAM/flash bytes (incl. Pokémon Emerald's RTC) into our own
+       SAVE_STORE on every flush, and restore them into the freshly-booted core
+       before the title screen reads SRAM. See restorePersistedSave(). */
 
-       EmulatorJS mounts /data/saves as IDBFS (autoPersist) and auto-loads it on
-       boot, so we don't need a custom restore. The bug was that the core only
-       writes its save file when told to: syncing the filesystem without first
-       calling saveSaveFiles() persisted STALE data, so in-game saves "saved"
-       in RAM but vanished on reload. Calling saveSaveFiles() first fixes it. */
+    // Stable per-game key for the battery save (mirrors the .srm filename).
+    function saveSlotKey() {
+        return 'srm::' + (window.EJS_gameName || window.CLOUD_SAVE_GAME || 'unknown');
+    }
+
+    // GBA flash/SRAM that has never been written is uniformly 0xFF (or 0x00);
+    // treat that — or a missing file — as "no real save" so we don't clobber.
+    function isBlankSave(d) {
+        if (!d || !d.length) return true;
+        var first = d[0];
+        for (var i = 0; i < d.length; i += 64) { if (d[i] !== first) return false; }
+        return first === 0xFF || first === 0x00;
+    }
+
+    function readCoreSaveBytes(g) {
+        try {
+            var p = g.getSaveFilePath && g.getSaveFilePath();
+            if (p && g.FS.analyzePath(p).exists) {
+                var d = g.FS.readFile(p);
+                return d && d.length ? d : null;
+            }
+        } catch (e) {}
+        return null;
+    }
+
+    function writeCoreSaveBytes(g, bytes) {
+        try {
+            var p = g.getSaveFilePath && g.getSaveFilePath();
+            if (!p) return false;
+            var dir = p.split('/').slice(0, -1).join('/');
+            try { if (dir && !g.FS.analyzePath(dir).exists) g.FS.mkdir(dir); } catch (_) {}
+            g.FS.writeFile(p, bytes);
+            return true;
+        } catch (e) { return false; }
+    }
+
+    function persistSaveBytes(bytes) {
+        if (!bytes || !bytes.length) return Promise.resolve();
+        // Store a plain copy so the value isn't a view over a detached buffer.
+        var copy = new Uint8Array(bytes);
+        return openDB()
+            .then(function (db) { return idbPut(db, SAVE_STORE, saveSlotKey(), copy); })
+            .catch(function () {});
+    }
+
+    function loadPersistedSaveBytes() {
+        return openDB()
+            .then(function (db) { return idbGet(db, SAVE_STORE, saveSlotKey()); })
+            .catch(function () { return null; });
+    }
+
+    var _saveRestoreDone = false;
+
+    /* Inject the persisted battery save into the running core. By default this
+       only runs when the freshly-booted core has no real save of its own, so we
+       never overwrite newer in-core progress with a stale copy. Pass force=true
+       (the manual "Load" button) to restore unconditionally. */
+    function restorePersistedSave(force) {
+        var g = _gm();
+        if (!g || (_saveRestoreDone && !force)) return Promise.resolve(false);
+        return loadPersistedSaveBytes().then(function (stored) {
+            if (!stored || !stored.length) return false;
+            var bytes = (stored instanceof Uint8Array) ? stored : new Uint8Array(stored);
+            if (!force && !isBlankSave(readCoreSaveBytes(g))) { _saveRestoreDone = true; return false; }
+            if (!writeCoreSaveBytes(g, bytes)) return false;
+            try { g.loadSaveFiles(); } catch (e) {}
+            _saveRestoreDone = true;
+            console.log('[Save] Restored battery save from IndexedDB (' + bytes.length + ' bytes)');
+            return true;
+        }).catch(function () { return false; });
+    }
+
+    /* Force the core's current battery save (SRAM/flash — incl. RTC for
+       Pokémon Emerald) out to durable storage: EmulatorJS's IDBFS *and* our own
+       SAVE_STORE. Calling saveSaveFiles() first is required — it writes the live
+       SRAM to the FS; syncing without it persisted stale data. */
     function flushSave() {
         var g = _gm();
         if (!g) return;
         try { g.saveSaveFiles(); } catch (e) {}
         try { if (g.FS && typeof g.FS.syncfs === 'function') g.FS.syncfs(false, function () {}); } catch (e) {}
+        try { var b = readCoreSaveBytes(g); if (b && !isBlankSave(b)) persistSaveBytes(b); } catch (e) {}
     }
 
     function startSaveFlushing() {
@@ -827,13 +904,20 @@
             // Periodic + on-hide battery-save flushing (the actual fix).
             startSaveFlushing();
 
-            // Make sure the persisted battery save is pulled in from IndexedDB
-            // after boot (in case the core started before it was synced).
+            // Restore the persisted battery save into the freshly-booted core
+            // BEFORE the title screen finishes its intro and reads SRAM, so
+            // "Continue" appears. Try early (covers fast intros), then once more
+            // after EmulatorJS has set up its own (empty) save file as a safety
+            // net. restorePersistedSave() is idempotent and won't clobber a real
+            // in-core save.
+            _saveRestoreDone = false;
+            setTimeout(function () { restorePersistedSave(false); }, 600);
             setTimeout(function () {
                 var g = _gm();
                 if (g && g.FS && typeof g.FS.syncfs === 'function') {
-                    try { g.FS.syncfs(true, function () { try { g.loadSaveFiles(); } catch (e) {} }); } catch (e) {}
-                }
+                    try { g.FS.syncfs(true, function () { restorePersistedSave(false); }); }
+                    catch (e) { restorePersistedSave(false); }
+                } else { restorePersistedSave(false); }
             }, 1800);
 
             // Apply any saved screen offset once the canvas exists.
@@ -1320,6 +1404,9 @@
                     if (p && g.FS.analyzePath(p).exists) {
                         var d = g.FS.readFile(p);
                         bytes = d ? d.length : 0;
+                        // Persist to our own IndexedDB so it survives reloads and
+                        // is restored at next boot (makes "Continue" appear).
+                        if (bytes > 0) persistSaveBytes(d);
                     }
                 } catch (e) {}
                 if (bytes > 0) {
@@ -1348,12 +1435,16 @@
                 else    { setBtn(loadBtn, '✗ Error', '#e05454'); }
                 setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 2500);
             }
-            try {
-                g.FS.syncfs(true, function () {
-                    try { g.loadSaveFiles(); } catch (e) {}
-                    done(true);
-                });
-            } catch (e) { done(false); }
+            // Restore from our own SAVE_STORE first (the authoritative copy),
+            // then fall back to syncing EmulatorJS's IDBFS.
+            restorePersistedSave(true).then(function (ok) {
+                try {
+                    g.FS.syncfs(true, function () {
+                        try { g.loadSaveFiles(); } catch (e) {}
+                        done(true);
+                    });
+                } catch (e) { done(ok); }
+            });
         });
     })();
 
