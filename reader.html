@@ -96,6 +96,42 @@
     .spinner { width: 38px; height: 38px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     #overlay .msg { font-size: 13px; color: var(--muted); }
+
+    /* Z-Library panel */
+    #zlib {
+        position: fixed; inset: 0; background: var(--bg); display: none;
+        flex-direction: column; z-index: 40;
+    }
+    #zlib.visible { display: flex; }
+    #zlib .zbar {
+        display: flex; align-items: center; gap: 10px; padding: 12px 16px;
+        border-bottom: 1px solid var(--border); background: var(--panel); flex-shrink: 0;
+    }
+    #zlib .zbar .zt { flex: 1; font-size: 15px; font-weight: 700; }
+    #zlib .zbody { flex: 1; overflow: auto; padding: 16px; max-width: 760px; margin: 0 auto; width: 100%; }
+    #zlib .zrow { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    #zlib input, #zlib select {
+        background: var(--panel2); border: 1px solid var(--border); color: var(--text);
+        border-radius: 10px; padding: 10px 12px; font-size: 13px;
+    }
+    #zlib input::placeholder { color: var(--muted); }
+    #zlib input.grow { flex: 1; min-width: 160px; }
+    #zlib .zhint { font-size: 11px; color: var(--muted); line-height: 1.6; margin: 4px 0 14px; }
+    #zlib .zhint b { color: var(--text); }
+    #zlib .zstatus { font-size: 12px; color: var(--muted); min-height: 18px; margin-bottom: 10px; }
+    #zlib .zstatus.err { color: var(--danger); }
+    #zlib .zstatus.ok { color: var(--success); }
+    .zres { display: flex; gap: 12px; background: var(--panel); border: 1px solid var(--border);
+        border-radius: 12px; padding: 12px; margin-bottom: 10px; align-items: flex-start; }
+    .zres .zcover { width: 56px; height: 80px; border-radius: 6px; background: var(--panel2);
+        flex-shrink: 0; object-fit: cover; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+    .zres .zinfo { flex: 1; min-width: 0; }
+    .zres .zbt { font-size: 14px; font-weight: 600; line-height: 1.3; }
+    .zres .zby { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .zres .zmeta { font-size: 11px; color: var(--muted); margin-top: 6px; text-transform: uppercase; letter-spacing: 1px; }
+    .zres .zact { flex-shrink: 0; }
+    .zlogin-state { font-size: 11px; color: var(--muted); }
+    .zlogin-state.in { color: var(--success); }
 </style>
 </head>
 <body>
@@ -103,6 +139,7 @@
 <div class="topbar">
     <a class="home" href="index.html" title="Home">🏠</a>
     <div class="title">Book Reader<small>EPUB · PDF · CBZ · TXT</small></div>
+    <button class="btn" id="btn-zlib" title="Search Z-Library">🔍 Z-Library</button>
     <button class="btn" id="btn-theme" title="Toggle reading theme">🌙</button>
 </div>
 
@@ -137,6 +174,44 @@
 </div>
 
 <div id="overlay"><div class="spinner"></div><div class="msg" id="overlay-msg">Loading…</div></div>
+
+<!-- Z-Library search -->
+<div id="zlib">
+    <div class="zbar">
+        <div class="zt">🔍 Z-Library</div>
+        <span class="zlogin-state" id="z-login-state">not signed in</span>
+        <button class="btn" id="z-close">Close</button>
+    </div>
+    <div class="zbody">
+        <div class="zrow">
+            <input type="text" id="z-domain" placeholder="domain (e.g. 1lib.sk)" style="min-width:150px">
+            <input type="email" id="z-email" placeholder="email" class="grow">
+            <input type="password" id="z-pass" placeholder="password" class="grow">
+            <button class="btn primary" id="z-login">Sign in</button>
+            <button class="btn" id="z-logout" title="Forget saved login">Forget</button>
+        </div>
+        <div class="zhint">
+            Credentials are stored <b>only on this device</b> (localStorage) and sent to Z-Library
+            through a public relay (needed because Z-Library blocks direct browser calls). If a
+            domain stops working, Z-Library has rotated it — try another (e.g. <b>z-lib.gs</b>,
+            <b>1lib.sk</b>, <b>z-library.sk</b>). Downloads are limited per day by your account.
+        </div>
+        <div class="zrow">
+            <input type="text" id="z-query" placeholder="Search by title, author, ISBN…" class="grow">
+            <select id="z-ext">
+                <option value="">Any format</option>
+                <option value="epub">EPUB</option>
+                <option value="pdf">PDF</option>
+                <option value="mobi">MOBI</option>
+                <option value="azw3">AZW3</option>
+                <option value="txt">TXT</option>
+            </select>
+            <button class="btn primary" id="z-search">Search</button>
+        </div>
+        <div class="zstatus" id="z-status"></div>
+        <div id="z-results"></div>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
@@ -604,6 +679,186 @@
             .then(function (file) { hideOverlay(); alert('Saved to Google Drive: ' + (file && file.name ? file.name : name)); })
             .catch(function (e) { hideOverlay(); alert('Save failed: ' + e.message + '\n\nThe source must allow cross-origin (CORS) downloads.'); });
     });
+
+    // ================= Z-Library (in-browser port of Zlibrary-API) =================
+    /* Z-Library blocks direct cross-origin browser calls, so every request is
+       routed through the same public CORS relays used for URL downloads. Auth
+       uses the account's remix tokens (returned by login) passed as request
+       params — cookies can't be set cross-origin from fetch. Domains rotate, so
+       the base host is user-editable and persisted. */
+    var ZKEY = 'zlib_auth_v1';           // { domain, userid, userkey, email }
+    var zAuth = loadZAuth();
+
+    var zPanel = $('zlib');
+    var zDomain = $('z-domain'), zEmail = $('z-email'), zPass = $('z-pass');
+    var zQuery = $('z-query'), zExt = $('z-ext'), zStatus = $('z-status'), zResults = $('z-results');
+    var zLoginState = $('z-login-state');
+
+    function loadZAuth() {
+        try { return JSON.parse(localStorage.getItem(ZKEY)) || {}; } catch (_) { return {}; }
+    }
+    function saveZAuth() { try { localStorage.setItem(ZKEY, JSON.stringify(zAuth)); } catch (_) {} }
+
+    function zSetStatus(msg, kind) {
+        zStatus.textContent = msg || '';
+        zStatus.className = 'zstatus' + (kind ? ' ' + kind : '');
+    }
+    function zRenderLoginState() {
+        var inn = !!(zAuth.userid && zAuth.userkey);
+        zLoginState.textContent = inn ? ('signed in' + (zAuth.email ? ' · ' + zAuth.email : '')) : 'not signed in';
+        zLoginState.className = 'zlogin-state' + (inn ? ' in' : '');
+    }
+    function zBase() {
+        var d = (zDomain.value || zAuth.domain || '1lib.sk').trim().replace(/^https?:\/\//, '').replace(/\/+$/, '');
+        return 'https://' + d;
+    }
+
+    /* Proxied request returning parsed JSON. Tries direct, then relays. The
+       relays forward method + body; allorigins is GET-only so it's skipped for
+       POST. URLSearchParams body works for the eapi form endpoints. */
+    function zRequest(path, params, method) {
+        method = method || 'GET';
+        var base = zBase();
+        // auth + language travel as params (no cross-origin cookies available)
+        var all = Object.assign({ siteLanguageV2: 'en' }, params || {});
+        if (zAuth.userid)  all.remix_userid = zAuth.userid;
+        if (zAuth.userkey) all.remix_userkey = zAuth.userkey;
+
+        var qs = new URLSearchParams();
+        Object.keys(all).forEach(function (k) { if (all[k] != null && all[k] !== '') qs.append(k, all[k]); });
+
+        var getUrl = base + path + (method === 'GET' ? '?' + qs.toString() : '');
+        var relays = [
+            function (u) { return { url: 'https://corsproxy.io/?url=' + encodeURIComponent(u), proxied: true }; },
+            function (u) { return { url: 'https://thingproxy.freeboard.io/fetch/' + u, proxied: true }; }
+        ];
+        if (method === 'GET') {
+            relays.push(function (u) { return { url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u), proxied: true }; });
+        }
+
+        function opts() {
+            return method === 'POST'
+                ? { method: 'POST', body: qs, headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+                : { method: 'GET' };
+        }
+        function parse(r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.text().then(function (t) {
+                try { return JSON.parse(t); }
+                catch (_) { throw new Error('Bad response (relay or domain may be down)'); }
+            });
+        }
+        // direct first, then each relay
+        return fetch(getUrl, opts()).then(parse).catch(function () {
+            function tryRelay(i) {
+                if (i >= relays.length) throw new Error('All relays failed — try a different domain.');
+                var r = relays[i](getUrl);
+                return fetch(r.url, opts()).then(parse).catch(function () { return tryRelay(i + 1); });
+            }
+            return tryRelay(0);
+        });
+    }
+
+    function zLogin() {
+        var email = zEmail.value.trim(), pass = zPass.value;
+        if (!email || !pass) { zSetStatus('Enter email and password.', 'err'); return; }
+        zAuth.domain = (zDomain.value || '1lib.sk').trim();
+        zSetStatus('Signing in…');
+        zRequest('/eapi/user/login', { email: email, password: pass }, 'POST').then(function (res) {
+            var u = res && (res.user || res);
+            var uid = u && (u.id || u.remix_userid);
+            var ukey = u && (u.remix_userkey || u.userkey);
+            if (!uid || !ukey) throw new Error((res && res.message) || 'Login rejected — check credentials/domain.');
+            zAuth.userid = String(uid); zAuth.userkey = ukey; zAuth.email = email;
+            saveZAuth(); zRenderLoginState();
+            zSetStatus('Signed in.', 'ok');
+        }).catch(function (e) { zSetStatus(e.message, 'err'); });
+    }
+
+    function zLogout() {
+        zAuth = { domain: zAuth.domain };
+        saveZAuth(); zRenderLoginState(); zSetStatus('Saved login forgotten.');
+    }
+
+    function zSearch() {
+        var q = zQuery.value.trim();
+        if (!q) { zSetStatus('Enter a search term.', 'err'); return; }
+        if (!zAuth.userid) { zSetStatus('Sign in first.', 'err'); return; }
+        var params = { message: q, limit: 30 };
+        if (zExt.value) params['extensions[]'] = zExt.value;
+        zSetStatus('Searching…'); zResults.innerHTML = '';
+        zRequest('/eapi/book/search', params, 'POST').then(function (res) {
+            var books = (res && (res.books || res.exactBooks)) || [];
+            if (!books.length) { zSetStatus('No results.'); return; }
+            zSetStatus(books.length + ' result(s).', 'ok');
+            books.forEach(function (b) { zResults.appendChild(zResultCard(b)); });
+        }).catch(function (e) { zSetStatus(e.message, 'err'); });
+    }
+
+    function zResultCard(b) {
+        var card = document.createElement('div');
+        card.className = 'zres';
+        var ext = (b.extension || '').toLowerCase();
+        var size = b.filesizeString || b.filesize || '';
+        card.innerHTML =
+            '<div class="zcover">' + fmtIcon(ext === 'pdf' ? 'pdf' : (ext === 'cbz' ? 'cbz' : 'epub')) + '</div>' +
+            '<div class="zinfo">' +
+                '<div class="zbt"></div>' +
+                '<div class="zby"></div>' +
+                '<div class="zmeta"></div>' +
+            '</div>' +
+            '<div class="zact"><button class="btn primary">⬇ Get</button></div>';
+        card.querySelector('.zbt').textContent = b.title || 'Untitled';
+        card.querySelector('.zby').textContent = (b.author || '') + (b.year ? ' · ' + b.year : '');
+        card.querySelector('.zmeta').textContent = [ext, size, b.language].filter(Boolean).join(' · ');
+        var btn = card.querySelector('button');
+        btn.addEventListener('click', function () { zDownload(b, btn); });
+        return card;
+    }
+
+    /* Resolve the personalized download link, fetch the bytes through the proxy
+       chain, then hand off to the existing cache+library pipeline so the book is
+       available offline exactly like a manually added file. */
+    function zDownload(book, btn) {
+        if (!book.id || !book.hash) { zSetStatus('This result has no downloadable file.', 'err'); return; }
+        btn.disabled = true; btn.textContent = '…';
+        showOverlay('Resolving download…');
+        zRequest('/eapi/book/' + book.id + '/' + book.hash + '/file', {}, 'GET').then(function (res) {
+            var file = (res && (res.file || res)) || {};
+            var link = file.downloadLink || file.dlink;
+            if (!link) throw new Error((res && res.message) || 'No download link (out of downloads or login expired).');
+            var ext = (file.extension || book.extension || 'epub').toLowerCase();
+            var base = (book.title || file.description || 'book').replace(/[^a-zA-Z0-9 _\-.]/g, '').trim() || 'book';
+            var name = base + '.' + ext;
+            showOverlay('Downloading book…');
+            return fetchBlobWithFallback(link, showOverlay).then(function (blob) {
+                return addBook(name, blob);
+            }).then(function () {
+                hideOverlay();
+                btn.textContent = '✓ Saved';
+                zSetStatus('“' + base + '” saved to your offline library.', 'ok');
+            });
+        }).catch(function (e) {
+            hideOverlay(); btn.disabled = false; btn.textContent = '⬇ Get';
+            zSetStatus('Download failed: ' + e.message, 'err');
+        });
+    }
+
+    // ---- Z-Library panel wiring ----
+    function openZlib() {
+        zDomain.value = zAuth.domain || '1lib.sk';
+        zEmail.value = zAuth.email || '';
+        zRenderLoginState();
+        zPanel.classList.add('visible');
+        zQuery.focus();
+    }
+    $('btn-zlib').addEventListener('click', openZlib);
+    $('z-close').addEventListener('click', function () { zPanel.classList.remove('visible'); });
+    $('z-login').addEventListener('click', zLogin);
+    $('z-logout').addEventListener('click', zLogout);
+    $('z-search').addEventListener('click', zSearch);
+    zQuery.addEventListener('keyup', function (e) { if (e.key === 'Enter') zSearch(); });
+    zPass.addEventListener('keyup', function (e) { if (e.key === 'Enter') zLogin(); });
 
     // ---- Boot ----
     refreshLibrary();
