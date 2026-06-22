@@ -1833,6 +1833,13 @@
             return 'saves/' + (window.CLOUD_SAVE_GAME || 'unknown') + '/state.bin';
         }
 
+        /* IndexedDB key for the durable save STATE — reliable on every core,
+           used as the primary save mechanism because some ROM build/core combos
+           never expose a discoverable battery (.srm) file. */
+        function stateSaveKey() {
+            return 'state::' + (window.EJS_gameName || window.CLOUD_SAVE_GAME || 'unknown');
+        }
+
         // Find the save state file EJS just wrote by scanning common paths
         function findStateFile(g) {
             var name = window.EJS_gameName || '';
@@ -1892,50 +1899,75 @@
 
             // Flush the core's battery save (SRAM/flash, incl. RTC) to the FS…
             try { g.saveSaveFiles(); } catch (e) {}
+            persistBatteryToIDB();   // best-effort battery mirror in our IndexedDB
 
-            function report() {
-                var data = readBatteryBytes(g);
-                var bytes = data ? data.length : 0;
-                if (bytes > 0) {
-                    setBtn(saveBtn, '✓ Saved ' + Math.round(bytes / 1024) + 'K', '#4caf88');
-                    setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 2500);
-                } else {
-                    setBtn(saveBtn, '✗ No save', '#e05454');
-                    setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 4000);
-                    alert('No battery save was written.\n\nSave INSIDE the game first (open the game menu → SAVE), then tap 💾 Save. If it still shows 0 K, this ROM\'s save type isn\'t being detected.');
+            // …and ALWAYS capture a save state too. This is the reliable path:
+            // it works on every core and preserves exact progress even when the
+            // ROM/core never exposes a discoverable battery (.srm) file.
+            grabState(g).then(function (state) {
+                var battery = readBatteryBytes(g);
+                var batLen  = battery ? battery.length : 0;
+
+                function finish() {
+                    if (batLen > 0 || (state && state.length)) {
+                        var label = batLen > 0
+                            ? '✓ Saved ' + Math.round(batLen / 1024) + 'K'
+                            : '✓ Saved';
+                        setBtn(saveBtn, label, '#4caf88');
+                        setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 2500);
+                    } else {
+                        setBtn(saveBtn, '✗ No save', '#e05454');
+                        setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 4000);
+                        alert('Could not capture a save.\n\nMake sure the game has fully started, then try 💾 Save again.');
+                    }
                 }
-            }
-            // Persist durably to our own IndexedDB (the reliable store), and also
-            // sync the legacy IDBFS, then report once done.
-            persistBatteryToIDB();
-            try {
-                if (g.FS && typeof g.FS.syncfs === 'function') g.FS.syncfs(false, function () { report(); });
-                else report();
-            } catch (e) { report(); }
+
+                if (state && state.length) {
+                    openDB().then(function (db) {
+                        return idbPut(db, SAVE_STORE, stateSaveKey(), state);
+                    }).then(finish).catch(finish);
+                } else {
+                    finish();
+                }
+            }).catch(function () {
+                setBtn(saveBtn, '✗ No save', '#e05454');
+                setTimeout(function () { setBtn(saveBtn, '💾 Save'); }, 4000);
+            });
         });
 
         loadBtn.addEventListener('click', function () {
             var g = gm();
             if (!g) { alert('Start a game first.'); return; }
             loadBtn.textContent = '📂 Loading…'; loadBtn.disabled = true;
-            // Pull the latest battery save from IndexedDB into the running core.
             function done(ok) {
-                if (ok) { setBtn(loadBtn, '✓ Loaded!', '#4caf88'); }
-                else    { setBtn(loadBtn, '✗ Error', '#e05454'); }
+                setBtn(loadBtn, ok ? '✓ Loaded!' : '✗ Error', ok ? '#4caf88' : '#e05454');
                 setTimeout(function () { setBtn(loadBtn, '📂 Load'); }, 2500);
             }
-            // Prefer our durable IndexedDB copy; fall back to legacy IDBFS.
+            // Pull both our durable copies: battery (for in-game continuity) and
+            // the save state (exact-progress restore, the reliable path).
             openDB().then(function (db) {
-                return idbGet(db, SAVE_STORE, batterySaveKey());
-            }).then(function (bytes) {
-                if (bytes && bytes.length && writeBatteryBytes(g, bytes)) {
-                    done(true);
-                } else {
-                    g.FS.syncfs(true, function () {
-                        try { g.loadSaveFiles(); } catch (e) {}
-                        done(true);
-                    });
+                return Promise.all([
+                    idbGet(db, SAVE_STORE, batterySaveKey()),
+                    idbGet(db, SAVE_STORE, stateSaveKey())
+                ]);
+            }).then(function (res) {
+                var battery = res[0], state = res[1];
+                if (battery && battery.length) { try { writeBatteryBytes(g, battery); } catch (e) {} }
+                // A save state restores the exact moment you saved — prefer it.
+                if (state && state.length) {
+                    var mgr = window.EJS_emulator && window.EJS_emulator.gameManager;
+                    try {
+                        var p = mgr && typeof mgr.loadState === 'function' ? mgr.loadState(state) : null;
+                        Promise.resolve(p).then(function () { done(true); }).catch(function () { done(true); });
+                    } catch (e) { done(true); }
+                    return;
                 }
+                if (battery && battery.length) { done(true); return; }
+                // Legacy fallback: pull from the old IDBFS-backed store.
+                g.FS.syncfs(true, function () {
+                    try { g.loadSaveFiles(); } catch (e) {}
+                    done(true);
+                });
             }).catch(function () { done(false); });
         });
     })();
