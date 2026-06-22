@@ -741,21 +741,28 @@
         return 'https://' + d;
     }
 
-    /* Proxied request returning parsed JSON. Everything goes out as GET (params
-       in the query string) — the eapi accepts it and it lets us use the stable
-       GET-only relays in CORS_PROXIES. Tries direct first, then each relay in
-       turn. The second arg `method` is kept for call-site clarity but ignored. */
-    function zRequest(path, params) {
+    /* Proxied request returning parsed JSON. The eapi expects POST (form body)
+       for login/search like the original library; the file endpoint is GET.
+       Auth tokens travel as params since cross-origin cookies aren't available.
+       A personal relay (Cloudflare Worker) must forward method + body. */
+    function zRequest(path, params, method) {
         applyCustomProxy();   // always honor the current Custom relay field value
+        method = (method || 'POST').toUpperCase();
+        var isPost = method === 'POST';
         var base = zBase();
-        // auth + language travel as params (no cross-origin cookies available)
         var all = Object.assign({ siteLanguageV2: 'en' }, params || {});
         if (zAuth.userid)  all.remix_userid = zAuth.userid;
         if (zAuth.userkey) all.remix_userkey = zAuth.userkey;
 
         var qs = new URLSearchParams();
         Object.keys(all).forEach(function (k) { if (all[k] != null && all[k] !== '') qs.append(k, all[k]); });
-        var getUrl = base + path + '?' + qs.toString();
+        // POST: params in the body; GET: params in the query string
+        var targetUrl = base + path + (isPost ? '' : '?' + qs.toString());
+        function opts() {
+            return isPost
+                ? { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: qs.toString() }
+                : { method: 'GET' };
+        }
 
         function parse(r) {
             if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -773,7 +780,7 @@
         // direct first, then every relay; remember the most useful error seen
         var proxies = proxyList();
         var lastErr = null;
-        return fetch(getUrl).then(parse).catch(function (e) {
+        return fetch(targetUrl, opts()).then(parse).catch(function (e) {
             lastErr = e;
             function tryRelay(i) {
                 if (i >= proxies.length) {
@@ -783,7 +790,7 @@
                     throw new Error(hint);
                 }
                 zSetStatus((EXTRA_PROXIES.length && i === 0 ? 'Trying your relay…' : 'Trying public relay ' + (i + 1) + '/' + proxies.length + '…'));
-                return fetch(proxies[i](getUrl)).then(parse).catch(function (err) { lastErr = err; return tryRelay(i + 1); });
+                return fetch(proxies[i](targetUrl), opts()).then(parse).catch(function (err) { lastErr = err; return tryRelay(i + 1); });
             }
             return tryRelay(0);
         });
