@@ -627,7 +627,9 @@
             .then(function (blob) {
                 showLoading('Authorizing Google Drive…');
                 return getDriveWriteToken().then(function (token) {
-                    return uploadToDrive(blob, fileName, token);
+                    return chooseDriveFolder(token).then(function (parentId) {
+                        return uploadToDrive(blob, fileName, token, parentId);
+                    });
                 });
             })
             .then(function (file) {
@@ -659,9 +661,58 @@
         });
     }
 
-    function uploadToDrive(blob, fileName, token) {
+    // Let the user pick where the file goes: create a new folder, pick an existing one, or My Drive root.
+    // Resolves to a folder ID, or null for the Drive root.
+    function chooseDriveFolder(token) {
+        return new Promise(function (resolve, reject) {
+            hideLoading();
+            var name = prompt('Save into a NEW folder? Type a folder name to create it.\n\nLeave blank to choose an existing folder (or My Drive root) instead.', '');
+            if (name === null) { reject(new Error('Cancelled')); return; }
+            name = name.trim();
+            if (name) {
+                showLoading('Creating folder \xB7 ' + name);
+                createDriveFolder(name, token).then(function (id) { resolve(id); }).catch(reject);
+                return;
+            }
+            // No name → open a folder picker; cancel = save to root
+            loadGoogleScripts(function () {
+                gapi.load('picker', function () {
+                    var view = new google.picker.DocsView(google.picker.ViewId.FOLDERS)
+                        .setSelectFolderEnabled(true)
+                        .setMimeTypes('application/vnd.google-apps.folder');
+                    new google.picker.PickerBuilder()
+                        .addView(view)
+                        .setTitle('Choose destination folder (close to use My Drive)')
+                        .setOAuthToken(token)
+                        .setCallback(function (data) {
+                            var action = data[google.picker.Response.ACTION];
+                            if (action === google.picker.Action.PICKED) {
+                                resolve(data[google.picker.Response.DOCUMENTS][0][google.picker.Document.ID]);
+                            } else if (action === google.picker.Action.CANCEL) {
+                                resolve(null);  // My Drive root
+                            }
+                        })
+                        .build().setVisible(true);
+                });
+            });
+        });
+    }
+
+    function createDriveFolder(name, token) {
+        return fetch('https://www.googleapis.com/drive/v3/files?fields=id', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name, mimeType: 'application/vnd.google-apps.folder' })
+        }).then(function (resp) {
+            if (!resp.ok) return resp.text().then(function (t) { throw new Error('Folder create failed: ' + t); });
+            return resp.json().then(function (j) { return j.id; });
+        });
+    }
+
+    function uploadToDrive(blob, fileName, token, parentId) {
         showLoading('Uploading to Drive \xB7 ' + fileName);
         var metadata = { name: fileName };
+        if (parentId) metadata.parents = [parentId];
         var form = new FormData();
         form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
         form.append('file', blob);
@@ -951,10 +1002,21 @@
         });
     }
 
+    // Primary ROM extension keyword for a system (e.g. 'gba'), used to pre-filter the Drive picker
+    function sysQuery(sys) {
+        if (!sys || !sys.exts) return '';
+        var ext = sys.exts.filter(function (e) { return e !== '.zip'; })[0] || sys.exts[0] || '';
+        return ext.replace(/^\./, '');
+    }
+
     function openDrivePicker(sys, token) {
         gapi.load('picker', function () {
+            var view = new google.picker.DocsView(google.picker.ViewId.DOCS);
+            var q = sysQuery(sys);
+            if (q) view.setQuery(q);   // pre-filters to files matching this system's extension
             new google.picker.PickerBuilder()
-                .addView(new google.picker.DocsView(google.picker.ViewId.DOCS))
+                .addView(view)
+                .setTitle('Pick a ' + (sys ? sys.label : '') + ' file')
                 .setOAuthToken(token)
                 .setCallback(function (data) {
                     if (data[google.picker.Response.ACTION] === google.picker.Action.PICKED) {
