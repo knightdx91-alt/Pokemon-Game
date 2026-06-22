@@ -767,29 +767,35 @@
                 : { method: 'GET' };
         }
 
+        // an error is "definitive" when the relay actually responded (a real
+        // HTTP status / body) — no point trying other relays after that.
+        function fail(msg, definitive) { var e = new Error(msg); e.definitive = definitive; return e; }
         function parse(r) {
-            if (!r.ok) throw new Error('HTTP ' + r.status);
+            if (r.status === 502 || r.status === 521) throw fail('relay→target error: HTTP ' + r.status + ' (target host refused/unreachable)', false);
+            if (!r.ok) throw fail('HTTP ' + r.status + ' from target', true);
             return r.text().then(function (t) {
-                if (!t) throw new Error('Empty response (relay or domain down)');
+                if (!t) throw fail('Empty response from target', true);
                 try { return JSON.parse(t); }
                 catch (_) {
-                    if (/cloudflare|captcha/i.test(t)) throw new Error('Blocked by domain (Cloudflare/captcha) — try another domain');
-                    // show a snippet of the unexpected (non-JSON) body to aid debugging
-                    throw new Error('Non-JSON reply: ' + t.replace(/\s+/g, ' ').slice(0, 120));
+                    if (/cloudflare|captcha/i.test(t)) throw fail('Blocked by domain (Cloudflare/captcha) — try another domain', true);
+                    throw fail('Non-JSON reply: ' + t.replace(/\s+/g, ' ').slice(0, 140), true);
                 }
             });
         }
-        // direct first, then every relay; remember the most useful error seen
+        // direct first, then every relay; stop early on a definitive answer
         var proxies = proxyList();
         var lastErr = null;
         return fetch(targetUrl, opts()).then(parse).catch(function (e) {
             lastErr = e;
+            if (e.definitive) throw e;
             function tryRelay(i) {
-                if (i >= proxies.length) {
-                    throw new Error((lastErr && lastErr.message) || 'All relays failed');
-                }
+                if (i >= proxies.length) throw new Error((lastErr && lastErr.message) || 'All relays failed');
                 zSetStatus((EXTRA_PROXIES.length && i === 0 ? 'Trying your relay…' : 'Trying public relay ' + (i + 1) + '/' + proxies.length + '…'));
-                return fetch(proxies[i](targetUrl), opts()).then(parse).catch(function (err) { lastErr = err; return tryRelay(i + 1); });
+                return fetch(proxies[i](targetUrl), opts()).then(parse).catch(function (err) {
+                    lastErr = err;
+                    if (err.definitive) throw err;   // real answer from target — stop
+                    return tryRelay(i + 1);
+                });
             }
             return tryRelay(0);
         });
