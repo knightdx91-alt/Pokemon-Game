@@ -190,11 +190,17 @@
             <button class="btn primary" id="z-login">Sign in</button>
             <button class="btn" id="z-logout" title="Forget saved login">Forget</button>
         </div>
+        <div class="zrow">
+            <input type="text" id="z-proxy" placeholder="Custom relay URL (recommended) — ends with ?url=" class="grow">
+        </div>
         <div class="zhint">
-            Credentials are stored <b>only on this device</b> (localStorage) and sent to Z-Library
-            through a public relay (needed because Z-Library blocks direct browser calls). If a
-            domain stops working, Z-Library has rotated it — try another (e.g. <b>z-lib.gs</b>,
-            <b>1lib.sk</b>, <b>z-library.sk</b>). Downloads are limited per day by your account.
+            Credentials are stored <b>only on this device</b> (localStorage). Z-Library blocks direct
+            browser calls, so requests go through a relay. <b>Public relays are unreliable</b> — for
+            a relay that actually works, deploy your own free <b>Cloudflare Worker</b> (no app needed):
+            create a Worker at <b>dash.cloudflare.com</b>, paste the proxy code (ask me for it), then
+            put its URL here ending in <b>?url=</b> (e.g. <i>https://my-proxy.workers.dev/?url=</i>).
+            If a domain stops working, Z-Library rotated it — try <b>z-lib.gs</b>, <b>1lib.sk</b>,
+            <b>z-library.sk</b>. Downloads are limited per day by your account.
         </div>
         <div class="zrow">
             <input type="text" id="z-query" placeholder="Search by title, author, ISBN…" class="grow">
@@ -600,18 +606,23 @@
         function (u) { return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u); },
         function (u) { return 'https://thingproxy.freeboard.io/fetch/' + u; }
     ];
+    /* User-supplied relays (e.g. a personal Cloudflare Worker) tried before the
+       shared public ones. Populated from the Z-Library panel's "Custom relay". */
+    var EXTRA_PROXIES = [];
+    function proxyList() { return EXTRA_PROXIES.concat(CORS_PROXIES); }
 
     /* Fetch a URL as a Blob. Tries direct first; on a CORS/network failure,
        retries through each proxy until one works. onStatus(msg) for UI. */
     function fetchBlobWithFallback(url, onStatus) {
         function asBlob(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); }
+        var proxies = proxyList();
         return fetch(url).then(asBlob).catch(function (directErr) {
             function tryProxy(i) {
-                if (i >= CORS_PROXIES.length) {
+                if (i >= proxies.length) {
                     throw new Error('Blocked by the source (CORS). Direct and all proxies failed.');
                 }
                 if (onStatus) onStatus('Direct blocked — trying relay ' + (i + 1) + '…');
-                return fetch(CORS_PROXIES[i](url)).then(asBlob).catch(function () { return tryProxy(i + 1); });
+                return fetch(proxies[i](url)).then(asBlob).catch(function () { return tryProxy(i + 1); });
             }
             return tryProxy(0);
         });
@@ -693,7 +704,23 @@
     var zPanel = $('zlib');
     var zDomain = $('z-domain'), zEmail = $('z-email'), zPass = $('z-pass');
     var zQuery = $('z-query'), zExt = $('z-ext'), zStatus = $('z-status'), zResults = $('z-results');
-    var zLoginState = $('z-login-state');
+    var zLoginState = $('z-login-state'), zProxy = $('z-proxy');
+
+    /* Build a relay function from the user's custom URL and make it the first
+       choice for both API calls and file downloads. Supports a {url} placeholder
+       or a trailing ?url= / = that the target URL is appended to (encoded). */
+    function applyCustomProxy() {
+        var p = (zProxy.value || '').trim();
+        zAuth.proxy = p; saveZAuth();
+        EXTRA_PROXIES = [];
+        if (p) {
+            EXTRA_PROXIES = [function (u) {
+                return p.indexOf('{url}') >= 0 ? p.replace('{url}', encodeURIComponent(u))
+                     : /[?&=]$/.test(p)        ? p + encodeURIComponent(u)
+                     :                            p + (p.indexOf('?') >= 0 ? '&' : '?') + 'url=' + encodeURIComponent(u);
+            }];
+        }
+    }
 
     function loadZAuth() {
         try { return JSON.parse(localStorage.getItem(ZKEY)) || {}; } catch (_) { return {}; }
@@ -742,12 +769,20 @@
                 }
             });
         }
-        // direct first, then every proxy in CORS_PROXIES
-        return fetch(getUrl).then(parse).catch(function () {
+        // direct first, then every relay; remember the most useful error seen
+        var proxies = proxyList();
+        var lastErr = null;
+        return fetch(getUrl).then(parse).catch(function (e) {
+            lastErr = e;
             function tryRelay(i) {
-                if (i >= CORS_PROXIES.length) throw new Error('All relays failed — try a different domain or wait a moment.');
-                if (zStatus.textContent.indexOf('relay') === -1) zSetStatus(zStatus.textContent + ' (relay ' + (i + 1) + ')');
-                return fetch(CORS_PROXIES[i](getUrl)).then(parse).catch(function () { return tryRelay(i + 1); });
+                if (i >= proxies.length) {
+                    var hint = (lastErr && /Cloudflare|captcha|Blocked|HTTP \d/.test(lastErr.message))
+                        ? lastErr.message
+                        : 'All relays unreachable. Add a personal relay (Custom relay field) or try later.';
+                    throw new Error(hint);
+                }
+                zSetStatus('Trying relay ' + (i + 1) + '/' + proxies.length + '…');
+                return fetch(proxies[i](getUrl)).then(parse).catch(function (err) { lastErr = err; return tryRelay(i + 1); });
             }
             return tryRelay(0);
         });
@@ -756,6 +791,7 @@
     function zLogin() {
         var email = zEmail.value.trim(), pass = zPass.value;
         if (!email || !pass) { zSetStatus('Enter email and password.', 'err'); return; }
+        applyCustomProxy();
         zAuth.domain = (zDomain.value || '1lib.sk').trim();
         zSetStatus('Signing in…');
         zRequest('/eapi/user/login', { email: email, password: pass }).then(function (res) {
@@ -842,6 +878,8 @@
     function openZlib() {
         zDomain.value = zAuth.domain || '1lib.sk';
         zEmail.value = zAuth.email || '';
+        zProxy.value = zAuth.proxy || '';
+        applyCustomProxy();
         zRenderLoginState();
         zPanel.classList.add('visible');
         zQuery.focus();
@@ -851,6 +889,7 @@
     $('z-login').addEventListener('click', zLogin);
     $('z-logout').addEventListener('click', zLogout);
     $('z-search').addEventListener('click', zSearch);
+    zProxy.addEventListener('change', applyCustomProxy);
     zQuery.addEventListener('keyup', function (e) { if (e.key === 'Enter') zSearch(); });
     zPass.addEventListener('keyup', function (e) { if (e.key === 'Enter') zLogin(); });
 
