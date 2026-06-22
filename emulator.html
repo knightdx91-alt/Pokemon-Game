@@ -1614,6 +1614,22 @@
     function cleanRomTitle(s) {
         return s.replace(/[^\x20-\x7E]/g, '').replace(/\s+/g, ' ').trim();
     }
+    /* Make a cart title human-readable: title-case + a couple of fixups. */
+    function prettyTitle(s) {
+        s = cleanRomTitle(s);
+        if (!s) return '';
+        // If it's ALL CAPS (typical cart title), title-case it; leave mixed case.
+        if (s === s.toUpperCase()) {
+            s = s.toLowerCase().replace(/\b([a-z])/g, function (m, c) { return c.toUpperCase(); });
+        }
+        return s.replace(/\bPokemon\b/gi, 'Pokémon');
+    }
+    /* Product-code → full name. The 4-char code is more reliable than the
+       12-char (truncated) cart title for well-known games. */
+    var GBA_CODE_NAMES = {
+        BPEE: 'Pokémon Emerald', AXVE: 'Pokémon Ruby', AXPE: 'Pokémon Sapphire',
+        BPRE: 'Pokémon FireRed', BPGE: 'Pokémon LeafGreen', BPES: 'Pokémon Emerald'
+    };
     function romTitleFromHeader(sysId, buf) {
         try {
             var b = new Uint8Array(buf);
@@ -1628,18 +1644,23 @@
             }
             var t = '';
             switch (sysId) {
-                case 'gba': t = ascii(0xA0, 12); break;
+                case 'gba': {
+                    var code = ascii(0xAC, 4);
+                    if (GBA_CODE_NAMES[code]) return GBA_CODE_NAMES[code];
+                    t = prettyTitle(ascii(0xA0, 12));
+                    break;
+                }
                 case 'gb':
-                case 'gbc': t = ascii(0x134, 16); break;
-                case 'nds': t = ascii(0x0, 12); break;
+                case 'gbc': t = prettyTitle(ascii(0x134, 16)); break;
+                case 'nds': t = prettyTitle(ascii(0x0, 12)); break;
                 case 'genesis':
                 case 'segacd':
-                case 'sega32x': t = ascii(0x150, 48) || ascii(0x120, 48); break;
+                case 'sega32x': t = prettyTitle(ascii(0x150, 48) || ascii(0x120, 48)); break;
                 case 'snes': {
                     var locs = [0x7FC0, 0xFFC0];
                     for (var j = 0; j < locs.length; j++) {
                         var c = ascii(locs[j], 21);
-                        if (c && /[A-Za-z]/.test(c)) { t = c; break; }
+                        if (c && /[A-Za-z]/.test(c)) { t = prettyTitle(c); break; }
                     }
                     break;
                 }
@@ -1651,8 +1672,9 @@
     }
     /* Read a cached ROM's header bytes and resolve its internal title (cached
        into meta so we only parse once). Resolves '' if unavailable. */
+    var TITLE_PARSER_VER = 2;   // bump when romTitleFromHeader logic changes
     function resolveRomTitle(key, meta) {
-        if (meta.title) return Promise.resolve(meta.title);
+        if (meta.title && meta.titleV === TITLE_PARSER_VER) return Promise.resolve(meta.title);
         var fn = meta.filename || '';
         if (/\.zip$/i.test(fn)) return Promise.resolve('');   // can't read inside a zip
         return openDB().then(function (db) {
@@ -1665,6 +1687,7 @@
                     var title = romTitleFromHeader(meta.sysId, buf);
                     if (title) {
                         meta.title = title;
+                        meta.titleV = TITLE_PARSER_VER;
                         idbPut(db, META_STORE, key, meta).catch(function () {});
                     }
                     return title;
