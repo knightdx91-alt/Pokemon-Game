@@ -695,8 +695,55 @@
             });
         });
     }
-    function uploadToDrive(blob, name, token) {
+    // Let the user pick where the file goes: create a new folder, pick an existing
+    // one, or My Drive root. Resolves to a folder ID, or null for the Drive root.
+    function chooseDriveFolder(token) {
+        return new Promise(function (resolve, reject) {
+            hideOverlay();
+            var name = prompt('Save into a NEW folder? Type a folder name to create it.\n\nLeave blank to choose an existing folder (or My Drive root) instead.', '');
+            if (name === null) { reject(new Error('Cancelled')); return; }
+            name = name.trim();
+            if (name) {
+                showOverlay('Creating folder \xB7 ' + name);
+                createDriveFolder(name, token).then(resolve).catch(reject);
+                return;
+            }
+            // No name → open a folder picker; cancel = save to root
+            loadGoogleScripts(function () {
+                gapi.load('picker', function () {
+                    var view = new google.picker.DocsView(google.picker.ViewId.FOLDERS)
+                        .setSelectFolderEnabled(true)
+                        .setMimeTypes('application/vnd.google-apps.folder');
+                    new google.picker.PickerBuilder()
+                        .addView(view)
+                        .setTitle('Choose destination folder (close to use My Drive)')
+                        .setOAuthToken(token)
+                        .setCallback(function (data) {
+                            var action = data[google.picker.Response.ACTION];
+                            if (action === google.picker.Action.PICKED) {
+                                resolve(data[google.picker.Response.DOCUMENTS][0][google.picker.Document.ID]);
+                            } else if (action === google.picker.Action.CANCEL) {
+                                resolve(null);  // My Drive root
+                            }
+                        })
+                        .build().setVisible(true);
+                });
+            });
+        });
+    }
+    function createDriveFolder(name, token) {
+        return fetch('https://www.googleapis.com/drive/v3/files?fields=id', {
+            method: 'POST',
+            headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name, mimeType: 'application/vnd.google-apps.folder' })
+        }).then(function (r) {
+            if (!r.ok) return r.text().then(function (t) { throw new Error('Folder create failed: ' + t); });
+            return r.json().then(function (j) { return j.id; });
+        });
+    }
+    function uploadToDrive(blob, name, token, parentId) {
         var meta = { name: name };
+        if (parentId) meta.parents = [parentId];
         var form = new FormData();
         form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
         form.append('file', blob);
@@ -715,8 +762,10 @@
             if (!blob) throw new Error('Book not found in cache');
             showOverlay('Authorizing Google Drive…');
             return driveToken().then(function (t) {
-                showOverlay('Uploading to Drive…');
-                return uploadToDrive(blob, name, t);
+                return chooseDriveFolder(t).then(function (parentId) {
+                    showOverlay('Uploading to Drive…');
+                    return uploadToDrive(blob, name, t, parentId);
+                });
             });
         }).then(function (file) {
             hideOverlay();
@@ -732,7 +781,12 @@
         fetchBlobWithFallback(url, showOverlay)
             .then(function (blob) {
                 showOverlay('Authorizing Google Drive…');
-                return driveToken().then(function (t) { showOverlay('Uploading to Drive…'); return uploadToDrive(blob, name, t); });
+                return driveToken().then(function (t) {
+                    return chooseDriveFolder(t).then(function (parentId) {
+                        showOverlay('Uploading to Drive…');
+                        return uploadToDrive(blob, name, t, parentId);
+                    });
+                });
             })
             .then(function (file) { hideOverlay(); alert('Saved to Google Drive: ' + (file && file.name ? file.name : name)); })
             .catch(function (e) { hideOverlay(); alert('Save failed: ' + e.message + '\n\nThe source must allow cross-origin (CORS) downloads.'); });
