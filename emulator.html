@@ -1182,7 +1182,30 @@
         return best;
     }
 
+    /* Make sure the directory the core writes its .srm into actually exists.
+       Some cores report a nested save path (e.g. /data/saves/mGBA/<game>.srm)
+       whose subfolder is never created, so the flush silently fails and in-game
+       saves vanish on reload. Creating the tree up front fixes that. */
+    function ensureSaveDir(g) {
+        try {
+            var p = g.getSaveFilePath && g.getSaveFilePath();
+            if (!p) return;
+            var dir = p.split('/').slice(0, -1).join('/');
+            if (!dir) return;
+            if (g.FS.analyzePath(dir).exists) return;
+            if (g.FS.mkdirTree) { g.FS.mkdirTree(dir); return; }
+            // Manual recursive mkdir for builds without mkdirTree.
+            var parts = dir.split('/'), cur = '';
+            parts.forEach(function (seg) {
+                if (!seg) return;
+                cur += '/' + seg;
+                try { if (!g.FS.analyzePath(cur).exists) g.FS.mkdir(cur); } catch (e) {}
+            });
+        } catch (e) {}
+    }
+
     function readBatteryBytes(g) {
+        ensureSaveDir(g);                       // create save dir before flushing
         try { g.saveSaveFiles(); } catch (e) {}
         // 1) Direct EmulatorJS API if present in this build.
         try {
@@ -1329,6 +1352,10 @@
                 });
             });
             _notifObs.observe(document.body, { childList: true, subtree: true });
+
+            // Create the core's save directory up front so the very first
+            // in-game save can actually be flushed to disk (and survive reload).
+            setTimeout(function () { var g = _gm(); if (g) ensureSaveDir(g); }, 1200);
 
             // Periodic + on-hide battery-save flushing (the actual fix).
             startSaveFlushing();
@@ -1949,11 +1976,17 @@
             try { g.saveSaveFiles(); } catch (e) {}
             var reported = '';
             try { reported = (g.getSaveFilePath && g.getSaveFilePath()) || '(none)'; } catch (e) { reported = '(error)'; }
+            var dirExists = '?';
+            try {
+                var dd = reported && reported !== '(none)' ? reported.split('/').slice(0, -1).join('/') : '';
+                dirExists = dd ? (g.FS.analyzePath(dd).exists ? 'yes' : 'NO') : 'n/a';
+            } catch (e) { dirExists = 'err'; }
             var files = listFsSaveFiles(g);
             var batt = readBatteryBytes(g);
             var lines = [
                 'ROM name: ' + (window.EJS_gameName || '?'),
                 'Core path: ' + reported,
+                'Save dir exists: ' + dirExists,
                 'readBattery: ' + (batt ? batt.length + ' bytes' : 'NONE'),
                 '',
                 'Save files on disk (' + files.length + '):',
