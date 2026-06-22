@@ -98,15 +98,69 @@ summary{cursor:pointer;font-size:12px;color:var(--muted);}
 </div>
 
 <div class="tabs">
-  <div class="tab active" data-tab="conv">Converter</div>
+  <div class="tab active" data-tab="quest">🎮 Quests</div>
+  <div class="tab" data-tab="conv">Converter</div>
   <div class="tab" data-tab="bitwise">Bitwise</div>
   <div class="tab" data-tab="asm">Assembly CPU</div>
 </div>
 
 <div class="wrap">
 
+<!-- ============ QUESTS ============ -->
+<div class="panel active" id="quest">
+  <div class="card" id="q-hud">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+      <div style="flex:1;min-width:160px">
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Trainer Level</div>
+        <div style="font-size:22px;font-weight:700"><span id="q-level">1</span> <small style="font-size:12px;color:var(--muted)">· <span id="q-xp">0</span> XP</small></div>
+        <div style="height:8px;background:var(--surface2);border-radius:6px;overflow:hidden;margin-top:6px">
+          <div id="q-xpbar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2))"></div>
+        </div>
+      </div>
+      <div style="text-align:center"><div style="font-size:11px;color:var(--muted)">STREAK</div><div style="font-size:22px;font-weight:700;color:var(--warn)">🔥<span id="q-streak">0</span></div></div>
+      <div style="text-align:center"><div style="font-size:11px;color:var(--muted)">BEST</div><div style="font-size:22px;font-weight:700;color:var(--good)"><span id="q-best">0</span></div></div>
+    </div>
+  </div>
+
+  <div class="card" id="q-menu">
+    <h2>Choose a mode</h2>
+    <p class="hint">Answer fast and keep your streak. Each correct answer = XP. Wrong answers reset the streak.</p>
+    <div class="btnrow">
+      <button class="primary" data-mode="conv">🔢 Number Conversion</button>
+      <button class="primary" data-mode="bit">⚡ Bitwise Ops</button>
+      <button class="primary" data-mode="asm">🤖 Assembly Missions</button>
+    </div>
+  </div>
+
+  <div class="card" id="q-play" style="display:none">
+    <div class="deck">
+      <span class="pill">Q <b id="q-num">1</b>/<span id="q-total">10</span></span>
+      <span class="pill">Score: <b id="q-score">0</b></span>
+      <span class="pill" id="q-timer"></span>
+      <button id="q-quit" style="margin-left:auto">✕ Quit</button>
+    </div>
+    <div id="q-prompt" style="font-size:16px;margin:14px 0;line-height:1.5"></div>
+    <div id="q-input-wrap"></div>
+    <div id="q-feedback" class="ref" style="min-height:20px;margin-top:10px"></div>
+    <div class="btnrow" style="margin-top:12px">
+      <button class="primary" id="q-submit">Submit</button>
+      <button id="q-skip">Skip ▶</button>
+    </div>
+  </div>
+
+  <div class="card" id="q-end" style="display:none;text-align:center">
+    <h2 id="q-end-title">Round complete!</h2>
+    <div style="font-size:40px;margin:10px 0" id="q-end-emoji">🎉</div>
+    <div class="ref" id="q-end-stats"></div>
+    <div class="btnrow" style="justify-content:center;margin-top:14px">
+      <button class="primary" id="q-again">Play again</button>
+      <button id="q-menu-btn">Back to modes</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ CONVERTER ============ -->
-<div class="panel active" id="conv">
+<div class="panel" id="conv">
   <h2>Number Converter</h2>
   <p class="hint">Type in any field — the others update live. Click bits to toggle them.</p>
   <div class="card">
@@ -384,6 +438,174 @@ let lastCode='';
 function assembleIfEdited(){if($('code').value!==lastCode){lastCode=$('code').value;assemble();cpu.pc=0;cpu.halt=false;cpu.out='';cpu.reg.fill(0);cpu.mem.fill(0);cpu.Z=cpu.N=cpu.C=false;prevRegs=cpu.reg.slice();}}
 $('code').addEventListener('input',()=>{$('a-status').textContent='edited — will reassemble on Run/Step';});
 resetCpu();lastCode=$('code').value;
+
+/* ===================== QUEST GAME ===================== */
+/* Standalone asm runner for validating missions (independent of the CPU UI) */
+function runAsm(source){
+  const m={reg:new Array(8).fill(0),mem:new Array(256).fill(0),pc:0,Z:false,N:false,C:false,out:[]};
+  const P=[],L={};
+  source.split('\n').forEach(raw=>{
+    let line=raw.replace(/;.*/,'').trim();if(!line)return;
+    const lm=line.match(/^([A-Za-z_]\w*):\s*(.*)$/);
+    if(lm){L[lm[1].toLowerCase()]=P.length;line=lm[2].trim();if(!line)return;}
+    const i=line.indexOf(' ');
+    const op=(i<0?line:line.slice(0,i)).toUpperCase();
+    const a=(i<0?'':line.slice(i+1)).split(',').map(s=>s.trim()).filter(s=>s);
+    P.push({op,a});
+  });
+  const reg=s=>{const r=/^R([0-7])$/i.exec(s.trim());return r?+r[1]:null;};
+  const val=s=>{s=s.trim();const r=reg(s);if(r!==null)return m.reg[r];
+    if(/^0x/i.test(s))return parseInt(s,16)&0xFF;if(/^0b/i.test(s))return parseInt(s.slice(2),2)&0xFF;return (parseInt(s,10)||0)&0xFF;};
+  const wrap=v=>{m.C=v>255||v<0;return ((v%256)+256)%256;};
+  const fl=v=>{m.Z=(v&0xFF)===0;m.N=(v&0x80)!==0;};
+  const addr=s=>val(s.trim().replace(/^\[|\]$/g,''))&0xFF;
+  const lbl=s=>{const k=s.trim().toLowerCase();if(!(k in L))throw new Error('bad label '+s);return L[k];};
+  let steps=0;
+  while(m.pc<P.length && steps++<200000){
+    const {op,a}=P[m.pc];const rd=()=>reg(a[0]);let j=false;
+    switch(op){
+      case 'MOV':m.reg[rd()]=val(a[1]);break;
+      case 'ADD':{let v=wrap(m.reg[rd()]+val(a[1]));m.reg[rd()]=v;fl(v);break;}
+      case 'SUB':{let v=wrap(m.reg[rd()]-val(a[1]));m.reg[rd()]=v;fl(v);break;}
+      case 'MUL':{let v=wrap(m.reg[rd()]*val(a[1]));m.reg[rd()]=v;fl(v);break;}
+      case 'AND':{let v=m.reg[rd()]&val(a[1]);m.reg[rd()]=v;fl(v);break;}
+      case 'OR': {let v=m.reg[rd()]|val(a[1]);m.reg[rd()]=v;fl(v);break;}
+      case 'XOR':{let v=m.reg[rd()]^val(a[1]);m.reg[rd()]=v;fl(v);break;}
+      case 'SHL':{let v=(m.reg[rd()]<<val(a[1]))&0xFF;m.reg[rd()]=v;fl(v);break;}
+      case 'SHR':{let v=m.reg[rd()]>>val(a[1]);m.reg[rd()]=v;fl(v);break;}
+      case 'INC':{let v=wrap(m.reg[rd()]+1);m.reg[rd()]=v;fl(v);break;}
+      case 'DEC':{let v=wrap(m.reg[rd()]-1);m.reg[rd()]=v;fl(v);break;}
+      case 'CMP':{fl(wrap(val(a[0])-val(a[1])));break;}
+      case 'LD': m.reg[rd()]=m.mem[addr(a[1])]&0xFF;break;
+      case 'ST': m.mem[addr(a[0])]=val(a[1])&0xFF;break;
+      case 'JMP':m.pc=lbl(a[0]);j=true;break;
+      case 'JE':case 'JZ':if(m.Z){m.pc=lbl(a[0]);j=true;}break;
+      case 'JNE':case 'JNZ':if(!m.Z){m.pc=lbl(a[0]);j=true;}break;
+      case 'JG':if(!m.Z&&!m.N){m.pc=lbl(a[0]);j=true;}break;
+      case 'JL':if(m.N){m.pc=lbl(a[0]);j=true;}break;
+      case 'OUT':m.out.push(val(a[0]));break;
+      case 'HLT':m.pc=P.length;j=true;break;
+      default:throw new Error('unknown op '+op);
+    }
+    if(!j)m.pc++;
+  }
+  return m;
+}
+
+const QKEY='codelab_quest_v1';
+let Q={xp:0,best:0};
+try{Q=Object.assign(Q,JSON.parse(localStorage.getItem(QKEY))||{});}catch(e){}
+function qLevel(xp){return Math.floor(Math.sqrt(xp/50))+1;}
+function qLevelFloor(lv){return 50*(lv-1)*(lv-1);}
+function saveQ(){try{localStorage.setItem(QKEY,JSON.stringify({xp:Q.xp,best:Q.best}));}catch(e){}}
+function renderHud(){
+  const lv=qLevel(Q.xp),floor=qLevelFloor(lv),next=qLevelFloor(lv+1);
+  $('q-level').textContent=lv;$('q-xp').textContent=Q.xp;$('q-best').textContent=Q.best;
+  $('q-xpbar').style.width=Math.round(100*(Q.xp-floor)/(next-floor))+'%';
+}
+function gainXP(n){Q.xp+=n;saveQ();renderHud();}
+
+let game=null;
+const rnd=n=>Math.floor(Math.random()*n);
+function genConv(lv){
+  const max=lv<3?15:lv<6?255:65535;
+  const v=rnd(max)+1;
+  const forms=[['decimal','binary',v.toString(2)],['decimal','hexadecimal',v.toString(16).toUpperCase()],
+    ['binary','decimal',v.toString(10),v.toString(2)],['hexadecimal','decimal',v.toString(10),v.toString(16).toUpperCase()],
+    ['hexadecimal','binary',v.toString(2),v.toString(16).toUpperCase()]];
+  const f=forms[rnd(forms.length)];
+  const shown=f[3]!==undefined?f[3]:v.toString(10);
+  const pre=f[0]==='hexadecimal'?'0x':f[0]==='binary'?'0b':'';
+  return {prompt:'Convert <b>'+pre+shown+'</b> from <b>'+f[0]+'</b> to <b>'+f[1]+'</b>:',
+    answer:f[2].toLowerCase().replace(/^0[xb]/,''),
+    check:a=>a.trim().toLowerCase().replace(/^0[xb]/,'')===f[2].toLowerCase(),
+    explain:'Answer: '+f[2]};
+}
+function genBit(lv){
+  const a=rnd(256),b=rnd(256);
+  const ops=[['AND',a&b],['OR',a|b],['XOR',a^b],['SHL 1',(a<<1)&0xFF],['SHR 1',a>>1],['NOT',(~a)&0xFF]];
+  const o=ops[lv<3?rnd(3):rnd(ops.length)];
+  let pr;
+  if(o[0]==='NOT')pr='Compute <b>NOT 0x'+a.toString(16).toUpperCase()+'</b> (8-bit). Answer in hex:';
+  else if(o[0].startsWith('SH'))pr='Compute <b>0x'+a.toString(16).toUpperCase()+' '+o[0]+'</b> (8-bit). Answer in hex:';
+  else pr='Compute <b>0x'+a.toString(16).toUpperCase()+' '+o[0]+' 0x'+b.toString(16).toUpperCase()+'</b>. Answer in hex:';
+  const ans=o[1].toString(16).toUpperCase();
+  return {prompt:pr,answer:ans,check:x=>(parseInt(x.replace(/^0x/i,''),16)&0xFF)===o[1],explain:'Answer: 0x'+ans+' ('+o[1]+')'};
+}
+const MISSIONS=[
+  {p:'Make register <b>R0 = 7</b>.',check:m=>m.reg[0]===7,xp:15},
+  {p:'Set <b>R0 = 10</b> and <b>R1 = 20</b>, then put their sum in <b>R2</b> (R2 should = 30).',check:m=>m.reg[2]===30,xp:25},
+  {p:'Put the value <b>0xFF</b> into <b>R3</b> using hex.',check:m=>m.reg[3]===255,xp:15},
+  {p:'Compute <b>6 × 7</b> and leave the result (42) in <b>R0</b>.',check:m=>m.reg[0]===42,xp:25},
+  {p:'Use <b>OUT</b> to print the number <b>99</b>.',check:m=>m.out.includes(99),xp:20},
+  {p:'Loop to put the sum of <b>1..10</b> (=55) into <b>R0</b>. (Hint: counter + ADD + JNE)',check:m=>m.reg[0]===55,xp:50},
+  {p:'Store <b>42</b> into memory address <b>0x05</b>, then load it back into <b>R1</b>.',check:m=>m.mem[5]===42&&m.reg[1]===42,xp:35},
+  {p:'Use bitwise ops to isolate the low nibble of <b>0xAB</b> into <b>R0</b> (R0 should = 0x0B = 11).',check:m=>m.reg[0]===11,xp:35},
+];
+function genAsm(lv){
+  const ms=MISSIONS.filter(m=>true);
+  const m=ms[rnd(ms.length)];
+  return {asm:true,prompt:m.p+'<br><small style="color:var(--dim)">Write asm below, then Submit. Reference is in the Assembly CPU tab.</small>',
+    check:src=>{try{return m.check(runAsm(src));}catch(e){return false;}},xp:m.xp,explain:''};
+}
+function startGame(mode){
+  const lv=qLevel(Q.xp);
+  game={mode,n:0,total:mode==='asm'?5:10,score:0,correct:0,q:null};
+  $('q-menu').style.display='none';$('q-end').style.display='none';$('q-play').style.display='';
+  $('q-total').textContent=game.total;
+  nextQ();
+}
+function nextQ(){
+  if(game.n>=game.total){return endGame();}
+  game.n++;$('q-num').textContent=game.n;$('q-score').textContent=game.score;
+  $('q-feedback').innerHTML='';
+  const lv=qLevel(Q.xp);
+  game.q=game.mode==='conv'?genConv(lv):game.mode==='bit'?genBit(lv):genAsm(lv);
+  $('q-prompt').innerHTML=game.q.prompt;
+  const w=$('q-input-wrap');
+  if(game.q.asm){
+    w.innerHTML='<textarea id="q-asm" spellcheck="false" style="width:100%;height:160px;font-family:var(--mono);font-size:14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);padding:10px;line-height:1.5">MOV R0, 0\nHLT</textarea>';
+  }else{
+    w.innerHTML='<input type="text" id="q-ans" autocomplete="off" placeholder="your answer" style="font-size:16px">';
+    const el=$('q-ans');el.focus();el.onkeydown=e=>{if(e.key==='Enter')submitQ();};
+  }
+  $('q-submit').disabled=false;$('q-skip').disabled=false;
+}
+function submitQ(){
+  if(!game||!game.q)return;
+  const q=game.q;
+  let val=game.q.asm?$('q-asm').value:$('q-ans').value;
+  let ok=false;try{ok=q.check(val);}catch(e){ok=false;}
+  $('q-submit').disabled=true;$('q-skip').disabled=true;
+  if(ok){
+    const base=q.xp||10;const bonus=Math.min(game.streak||0,5)*2;
+    game.score+=base+bonus;game.correct++;Q.streak=(Q.streak||0)+1;game.streak=Q.streak;
+    $('q-streak').textContent=Q.streak;
+    gainXP(base);
+    $('q-feedback').innerHTML='<span style="color:var(--good)">✅ Correct! +'+(base+bonus)+'</span>';
+  }else{
+    Q.streak=0;game.streak=0;$('q-streak').textContent=0;
+    $('q-feedback').innerHTML='<span style="color:var(--bad)">❌ Not quite.</span> '+(q.explain||'');
+  }
+  $('q-score').textContent=game.score;
+  setTimeout(nextQ,ok?700:1600);
+}
+function endGame(){
+  $('q-play').style.display='none';$('q-end').style.display='';
+  if(game.score>Q.best){Q.best=game.score;saveQ();}
+  renderHud();
+  const pct=Math.round(100*game.correct/game.total);
+  $('q-end-emoji').textContent=pct>=90?'🏆':pct>=60?'🎉':pct>=30?'👍':'💪';
+  $('q-end-title').textContent=pct>=90?'Flawless!':pct>=60?'Round complete!':'Keep practicing!';
+  $('q-end-stats').innerHTML='Score: <b>'+game.score+'</b> · Correct: <b>'+game.correct+'/'+game.total+'</b> ('+pct+'%)<br>Total XP: <b>'+Q.xp+'</b> · Level <b>'+qLevel(Q.xp)+'</b>';
+}
+document.querySelectorAll('#q-menu [data-mode]').forEach(b=>b.onclick=()=>startGame(b.dataset.mode));
+$('q-submit').onclick=submitQ;
+$('q-skip').onclick=()=>{Q.streak=0;game.streak=0;$('q-streak').textContent=0;$('q-feedback').innerHTML='<span style="color:var(--muted)">Skipped. '+(game.q.explain||'')+'</span>';$('q-submit').disabled=true;$('q-skip').disabled=true;setTimeout(nextQ,1100);};
+$('q-quit').onclick=()=>{$('q-play').style.display='none';$('q-menu').style.display='';};
+$('q-again').onclick=()=>startGame(game.mode);
+$('q-menu-btn').onclick=()=>{$('q-end').style.display='none';$('q-menu').style.display='';};
+Q.streak=0;renderHud();
 </script>
 </body>
 </html>
