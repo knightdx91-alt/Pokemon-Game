@@ -1503,12 +1503,24 @@
        worker has also stored the EmulatorJS engine AND that system's core.
        Both arrive the first time you play that system online. We inspect the
        service worker cache to report this per game. */
-    var OFFLINE_CACHE_NAME = 'retroplay-offline-v1';
+    /* Runtime cache holding the engine + cores (see sw.js RUNTIME). We scan ANY
+       cache named retroplay-offline* so a version bump can't desync this check. */
     function readOfflineCacheUrls() {
         if (!('caches' in window)) return Promise.resolve(null);
-        return caches.open(OFFLINE_CACHE_NAME)
-            .then(function (c) { return c.keys(); })
-            .then(function (reqs) { return reqs.map(function (r) { return r.url; }); })
+        return caches.keys()
+            .then(function (names) {
+                var offline = names.filter(function (n) { return n.indexOf('retroplay-offline') === 0; });
+                if (!offline.length) return [];
+                return Promise.all(offline.map(function (n) {
+                    return caches.open(n).then(function (c) { return c.keys(); });
+                })).then(function (lists) {
+                    var urls = [];
+                    lists.forEach(function (reqs) {
+                        reqs.forEach(function (r) { urls.push(r.url); });
+                    });
+                    return urls;
+                });
+            })
             .catch(function () { return null; });
     }
     function offlineStatusFor(sys, urls) {

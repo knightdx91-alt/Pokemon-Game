@@ -1,20 +1,25 @@
 /* RetroPlay offline service worker.
    Scope: site root (/Pokemon-Game/). Controls index, emulator, game pages.
 
+   Two caches, on purpose:
+   - RUNTIME ('retroplay-offline-v2'): the EmulatorJS engine + per-system cores +
+     static assets. This is what makes cached games playable offline. Its name is
+     STABLE and MUST match OFFLINE_CACHE_NAME in emulator.html. NEVER rename it on
+     a normal update — doing so purges every downloaded core (games stop being
+     offline-ready until replayed online).
+   - SHELL ('retroplay-shell-vN'): the precached HTML pages only. Safe to bump
+     when you need to force a fresh page; bumping it does NOT touch the cores.
+
    Strategy:
-   - Navigations (HTML pages): network-first, fall back to cached page when
-     offline. This keeps pages fresh when online but lets you open them with
-     no connection. The cached HTML references versioned (?v=) asset URLs, and
-     those exact versions are cached alongside it, so offline references resolve.
-   - Static assets + EmulatorJS engine/cores (cdn.emulatorjs.org) + fflate:
-     cache-first, populated at runtime. The first time you play a given system
-     ONLINE, that system's core is downloaded and cached; afterwards it loads
-     with no connection.
-   - Google Drive / auth / upload hosts and non-GET requests: always go to the
-     network, never cached.
+   - Navigations (HTML): network-first → SHELL, fall back to cached page offline.
+   - Static assets + EmulatorJS engine/cores + fflate: cache-first → RUNTIME.
+   - Google Drive / auth / upload hosts and non-GET: always network, never cached.
 */
 
-var CACHE = 'retroplay-offline-v2';
+/* STABLE — holds cores/assets. Keep in sync with OFFLINE_CACHE_NAME in emulator.html. */
+var RUNTIME = 'retroplay-offline-v2';
+/* Versioned — holds precached HTML. Bump this (only) to force fresh pages. */
+var SHELL   = 'retroplay-shell-v1';
 
 /* Hosts we must never cache or intercept (auth, Drive picker, uploads). */
 var BYPASS_HOSTS = [
@@ -39,7 +44,7 @@ var PRECACHE = [
 self.addEventListener('install', function (e) {
     self.skipWaiting();
     e.waitUntil(
-        caches.open(CACHE).then(function (c) {
+        caches.open(SHELL).then(function (c) {
             /* Don't let one failed (e.g. offline) precache abort install. */
             return Promise.all(PRECACHE.map(function (url) {
                 return c.add(url).catch(function () {});
@@ -53,7 +58,9 @@ self.addEventListener('activate', function (e) {
         caches.keys()
             .then(function (keys) {
                 return Promise.all(keys.map(function (k) {
-                    if (k !== CACHE) return caches.delete(k);
+                    /* Keep the runtime core cache AND the current shell; drop only
+                       stale shells. The runtime cache is never purged on update. */
+                    if (k !== RUNTIME && k !== SHELL) return caches.delete(k);
                 }));
             })
             .then(function () { return self.clients.claim(); })
@@ -73,12 +80,12 @@ self.addEventListener('fetch', function (e) {
         (req.destination === 'document');
 
     if (isNavigation) {
-        /* Network-first for pages. */
+        /* Network-first for pages → SHELL cache. */
         e.respondWith(
             fetch(req).then(function (resp) {
                 if (resp && resp.status === 200) {
                     var clone = resp.clone();
-                    caches.open(CACHE).then(function (c) { c.put(req, clone); });
+                    caches.open(SHELL).then(function (c) { c.put(req, clone); });
                 }
                 return resp;
             }).catch(function () {
@@ -90,7 +97,7 @@ self.addEventListener('fetch', function (e) {
         return;
     }
 
-    /* Cache-first for assets / engine / cores. */
+    /* Cache-first for assets / engine / cores → RUNTIME cache. */
     e.respondWith(
         caches.match(req).then(function (hit) {
             if (hit) return hit;
@@ -99,7 +106,7 @@ self.addEventListener('fetch', function (e) {
                    responses so cross-origin engine files persist offline. */
                 if (resp && (resp.status === 200 || resp.type === 'opaque')) {
                     var clone = resp.clone();
-                    caches.open(CACHE).then(function (c) { c.put(req, clone); });
+                    caches.open(RUNTIME).then(function (c) { c.put(req, clone); });
                 }
                 return resp;
             });
