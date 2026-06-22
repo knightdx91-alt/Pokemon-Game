@@ -764,7 +764,13 @@
                             .setOAuthToken(token)
                             .setCallback(function (data) {
                                 if (data[google.picker.Response.ACTION] !== google.picker.Action.PICKED) return;
-                                var picked = data[google.picker.Response.DOCUMENTS] || [];
+                                var picked = (data[google.picker.Response.DOCUMENTS] || []).map(function (d) {
+                                    return {
+                                        id:       d[google.picker.Document.ID],
+                                        name:     d[google.picker.Document.NAME],
+                                        mimeType: d[google.picker.Document.MIME_TYPE]
+                                    };
+                                });
                                 if (!picked.length) return;
                                 showLoading('Listing files…');
                                 expandPicked(picked, token)
@@ -779,7 +785,7 @@
                     });
                 });
             })
-            .catch(function (err) { hideLoading(); alert('Authorization failed: ' + err.message); });
+            .catch(function (err) { hideLoading(); console.error('Drive copy error:', err); alert('Drive copy failed: ' + (err && err.message ? err.message : err)); });
     });
 
     // Pull the folder id out of any Google Drive folder link.
@@ -798,9 +804,7 @@
         function walk(items) {
             return items.reduce(function (chain, doc) {
                 return chain.then(function () {
-                    var id   = doc[google.picker.Document.ID] || doc.id;
-                    var name = doc[google.picker.Document.NAME] || doc.name;
-                    var mime = doc[google.picker.Document.MIME_TYPE] || doc.mimeType;
+                    var id = doc.id, name = doc.name, mime = doc.mimeType;
                     if (mime === FOLDER_MIME) return listFolderChildren(id, token).then(walk);
                     add(id, name);
                 });
