@@ -718,9 +718,16 @@
         EXTRA_PROXIES = [];
         if (p) {
             EXTRA_PROXIES = [function (u) {
-                return p.indexOf('{url}') >= 0 ? p.replace('{url}', encodeURIComponent(u))
-                     : /[?&=]$/.test(p)        ? p + encodeURIComponent(u)
-                     :                            p + (p.indexOf('?') >= 0 ? '&' : '?') + 'url=' + encodeURIComponent(u);
+                var r = p.indexOf('{url}') >= 0 ? p.replace('{url}', encodeURIComponent(u))
+                      : /[?&=]$/.test(p)        ? p + encodeURIComponent(u)
+                      :                           p + (p.indexOf('?') >= 0 ? '&' : '?') + 'url=' + encodeURIComponent(u);
+                // pass auth tokens so the Worker can set them as cookies upstream
+                // (Z-Library authenticates downloads via cookies, not params)
+                if (zAuth.userid && zAuth.userkey) {
+                    r += (r.indexOf('?') >= 0 ? '&' : '?') +
+                         'rid=' + encodeURIComponent(zAuth.userid) + '&rkey=' + encodeURIComponent(zAuth.userkey);
+                }
+                return r;
             }];
         }
     }
