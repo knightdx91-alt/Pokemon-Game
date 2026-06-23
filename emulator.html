@@ -1067,7 +1067,15 @@
         });
     }
 
-    function streamFetch(url, headers, label) {
+    /* CORS relay (same Cloudflare Worker proxy used by the book reader).
+       Most arbitrary hosts (and Google Drive's uc?export=download) don't send
+       Access-Control-Allow-Origin, so a direct browser fetch is blocked. When
+       that happens we retry the request through the proxy, which adds the CORS
+       headers. The proxy URL ends in ?url= and takes a single encoded URL. */
+    var DL_PROXY = 'https://z-lib.knightdx91.workers.dev/?url=';
+    function proxify(url) { return DL_PROXY + encodeURIComponent(url); }
+
+    function streamFetchOnce(url, headers, label) {
         return fetch(url, { headers: headers || {} }).then(function (resp) {
             if (!resp.ok) throw new Error('HTTP ' + resp.status);
             var total = parseInt(resp.headers.get('content-length') || '0', 10);
@@ -1086,6 +1094,16 @@
                 return pump();
             }
             setDl('Downloading…'); setProgress(50); return resp.blob();
+        });
+    }
+
+    function streamFetch(url, headers, label) {
+        // Already going through the proxy? Don't double-wrap.
+        if (url.indexOf(DL_PROXY) === 0) return streamFetchOnce(url, headers, label);
+        return streamFetchOnce(url, headers, label).catch(function (err) {
+            // Direct fetch failed (usually CORS / network) — retry via the relay.
+            setDl('Retrying via relay…'); setProgress(0);
+            return streamFetchOnce(proxify(url), headers, label);
         });
     }
 
