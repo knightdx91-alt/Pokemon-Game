@@ -334,6 +334,23 @@
         overlayProgPct.textContent = detail || (Math.round(p) + '%');
     }
 
+    /* Read a Blob into an ArrayBuffer reliably. blob.arrayBuffer() can reject
+       with NotReadableError on large blobs (esp. mobile / IndexedDB-backed),
+       so fall back to a chunked FileReader read, which is more forgiving. */
+    function readArrayBuffer(blob) {
+        return blob.arrayBuffer().catch(function (err) {
+            return new Promise(function (resolve, reject) {
+                var fr = new FileReader();
+                fr.onload = function () { resolve(fr.result); };
+                fr.onerror = function () {
+                    reject(new Error('The book data could not be read — the file may be corrupted or too large for this device\'s memory.'));
+                };
+                try { fr.readAsArrayBuffer(blob); }
+                catch (e) { reject(new Error('The book data could not be read (' + (e && e.message || err && err.message || 'unknown') + ').')); }
+            });
+        });
+    }
+
     // ---- Format detection ----
     function extOf(name) { var m = String(name || '').toLowerCase().match(/\.([a-z0-9]+)$/); return m ? m[1] : ''; }
     function detectFormat(name, bytes) {
@@ -363,7 +380,7 @@
     function bookKey(name) { return name.replace(/[^a-zA-Z0-9_\-.]/g, '_') + '::' + Date.now().toString(36); }
 
     function addBook(name, blob) {
-        return blob.arrayBuffer().then(function (buf) {
+        return readArrayBuffer(blob).then(function (buf) {
             var bytes = new Uint8Array(buf);
             var format = detectFormat(name, bytes);
             var key = bookKey(name);
@@ -441,10 +458,27 @@
         refreshLibrary();
     }
 
+    function deleteBook(key) {
+        return openDB().then(function (db) {
+            return Promise.all([idbDel(db, BOOKS, key), idbDel(db, META, key), idbDel(db, PROG, key)]);
+        });
+    }
+
     function openBook(key, meta) {
         showOverlay('Opening…');
         openDB().then(function (db) { return idbGet(db, BOOKS, key); }).then(function (blob) {
             if (!blob) { hideOverlay(); alert('Book data missing — please re-add it.'); return; }
+            // Integrity check: if the stored size doesn't match what we recorded,
+            // the download was truncated/corrupted — opening will fail.
+            if (meta && meta.size && blob.size !== meta.size) {
+                hideOverlay();
+                if (confirm('“' + meta.title + '” looks incomplete or corrupted (' +
+                    fmtMB(blob.size) + ' of ' + fmtMB(meta.size) + ' saved).\n\n' +
+                    'Remove it so you can download it again?')) {
+                    deleteBook(key).then(refreshLibrary);
+                }
+                return;
+            }
             return getProgress(key).then(function (prog) {
                 showReader(meta);
                 var done = function () { hideOverlay(); };
@@ -453,12 +487,19 @@
                 if (meta.format === 'cbz')       return openCbz(key, blob, prog).then(done);
                 return openTxt(key, blob, prog, meta).then(done);
             });
-        }).catch(function (e) { hideOverlay(); alert('Could not open book: ' + e.message); });
+        }).catch(function (e) {
+            hideOverlay();
+            if (reader.classList.contains('visible')) closeReader();
+            // Offer to remove an unreadable/corrupted book so the shelf isn't stuck on it.
+            if (confirm('Could not open book: ' + e.message + '\n\nRemove this book from the device so you can download it again?')) {
+                deleteBook(key).then(refreshLibrary);
+            }
+        });
     }
 
     // ---- EPUB (epub.js) ----
     function openEpub(key, blob, prog) {
-        return blob.arrayBuffer().then(function (buf) {
+        return readArrayBuffer(blob).then(function (buf) {
             if (typeof ePub === 'undefined') throw new Error('EPUB engine not loaded');
             var book = ePub(buf);
             var rendition = book.renderTo('viewer', { width: '100%', height: '100%', flow: 'paginated', spread: 'none' });
@@ -492,7 +533,7 @@
 
     // ---- PDF (pdf.js) ----
     function openPdf(key, blob, prog) {
-        return blob.arrayBuffer().then(function (buf) {
+        return readArrayBuffer(blob).then(function (buf) {
             if (typeof pdfjsLib === 'undefined') throw new Error('PDF engine not loaded');
             applyReaderTheme();
             return pdfjsLib.getDocument({ data: buf }).promise.then(function (pdf) {
@@ -531,7 +572,7 @@
 
     // ---- CBZ (comic: zip of images) ----
     function openCbz(key, blob, prog) {
-        return blob.arrayBuffer().then(function (buf) {
+        return readArrayBuffer(blob).then(function (buf) {
             if (typeof fflate === 'undefined') throw new Error('Unzip engine not loaded');
             return new Promise(function (resolve, reject) {
                 fflate.unzip(new Uint8Array(buf), function (err, files) {

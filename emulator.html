@@ -1303,6 +1303,9 @@
         hideLoading();
         setupScreen.style.display = 'none';
         emuScreen.classList.add('visible');
+        // Push a history entry so the device/browser Back button returns to the
+        // system list (handled in popstate) instead of leaving for the hub.
+        try { history.pushState({ emu: true }, '', location.href); } catch (e) {}
         emuGameLabel.textContent = (label || sys.label).replace(/\.[^.]+$/, '');
         emuSysLabel.textContent  = sys.label;
         window.CLOUD_SAVE_GAME   = sys.id;
@@ -1865,7 +1868,20 @@
             refreshCard(sysId); btnPlayCached.style.display = 'none'; btnClear.style.display = 'none';
         });
     });
-    document.getElementById('btn-back-emu').addEventListener('click', function () { location.reload(); });
+    /* Return from a running game to the system-picker screen (not the hub).
+       We reload so EmulatorJS is fully torn down, but strip any pushed history
+       state first and replace the URL so reload lands on the setup screen. */
+    function backToSystems() { location.reload(); }
+    document.getElementById('btn-back-emu').addEventListener('click', function () {
+        // Drop the history entry we pushed on launch, then reload to systems.
+        if (history.state && history.state.emu) { history.back(); }
+        else { backToSystems(); }
+    });
+    // Device/browser Back while a game is running → go to the system list,
+    // not back out to the hub.
+    window.addEventListener('popstate', function () {
+        if (emuScreen.classList.contains('visible')) { backToSystems(); }
+    });
     document.getElementById('btn-game-up').addEventListener('click',    function () { nudgeGame(-16); });
     document.getElementById('btn-game-down').addEventListener('click',  function () { nudgeGame(16); });
     document.getElementById('btn-game-reset').addEventListener('click', function () { localStorage.setItem(GAME_SHIFT_KEY, '0'); applyShiftY(); });
