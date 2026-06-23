@@ -192,6 +192,7 @@
         <button id="r-prev" title="Previous">◀</button>
         <div class="pos" id="r-pos"></div>
         <button id="r-next" title="Next">▶</button>
+        <button id="r-text" title="Show/hide translation text layer">🅰</button>
     </div>
     <div id="viewer"></div>
 </div>
@@ -261,7 +262,9 @@
 (function () {
     'use strict';
 
-    var READER_VERSION = 'v1.0.35';
+    var READER_VERSION = 'v1.0.36';
+    // Hide manga translation/OCR text overlay by default (toggle in reader bar).
+    var _hideTextLayer = (function () { try { return localStorage.getItem('reader_hide_text') !== '0'; } catch (_) { return true; } })();
 
     // ---- Google Drive (reused OAuth client from the emulator page) ----
     var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
@@ -805,6 +808,21 @@
                         });
                         return Promise.all(jobs).then(function () {
                             if (seq !== loadSeq) return;
+                            // Hide the OCR/translation TEXT layer these manga embed
+                            // (it otherwise shows as stray text). Keep anything that
+                            // contains artwork — an <img>/<image>/<svg> OR a CSS
+                            // background-image (now a rewritten inline url(...)).
+                            if (_hideTextLayer) {
+                                var all = Array.prototype.slice.call(doc.body ? doc.body.querySelectorAll('*') : []);
+                                all.forEach(function (el) {
+                                    var st = (el.getAttribute && el.getAttribute('style')) || '';
+                                    var hasArt = (el.querySelector && el.querySelector('img,image,svg,canvas,picture')) ||
+                                                 /url\(|background/i.test(st);
+                                    if (hasArt) return;
+                                    var t = (el.textContent || '').replace(/\s+/g, '');
+                                    if (t) el.style.display = 'none';
+                                });
+                            }
                             recordPage({ extracted: totalBytes, imgs: imgCount, resolved: urls.length });
                             iframe.onload = function () { if (seq === loadSeq) fitIframe(); };
                             iframe.srcdoc = '<!doctype html>' + doc.documentElement.outerHTML;
@@ -855,7 +873,8 @@
                 current = {
                     key: key,
                     teardown: function () { clearUrls(); zoneL.remove(); zoneR.remove(); },
-                    prev: function () { show(idx - 1); }, next: function () { show(idx + 1); }
+                    prev: function () { show(idx - 1); }, next: function () { show(idx + 1); },
+                    rerender: function () { show(idx); }
                 };
             });
         });
@@ -1090,6 +1109,17 @@
     document.addEventListener('keyup', onKey);
     rPrev.addEventListener('click', function () { if (current && current.prev) current.prev(); });
     rNext.addEventListener('click', function () { if (current && current.next) current.next(); });
+    // Toggle the manga translation/OCR text overlay (default hidden). Re-renders
+    // the current page so the change takes effect immediately.
+    var rText = $('r-text');
+    function syncTextBtn() { rText.style.opacity = _hideTextLayer ? '0.45' : '1'; }
+    rText.addEventListener('click', function () {
+        _hideTextLayer = !_hideTextLayer;
+        try { localStorage.setItem('reader_hide_text', _hideTextLayer ? '1' : '0'); } catch (_) {}
+        syncTextBtn();
+        if (current && current.rerender) current.rerender();
+    });
+    syncTextBtn();
     // Back button (and device Back) pop the history entry → returns to library
     rBack.addEventListener('click', function () { history.back(); });
     window.addEventListener('popstate', function () {
