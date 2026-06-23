@@ -262,7 +262,7 @@
 (function () {
     'use strict';
 
-    var READER_VERSION = 'v1.0.36';
+    var READER_VERSION = 'v1.0.37';
     // Hide manga translation/OCR text overlay by default (toggle in reader bar).
     var _hideTextLayer = (function () { try { return localStorage.getItem('reader_hide_text') !== '0'; } catch (_) { return true; } })();
 
@@ -732,30 +732,52 @@
                         { n: idx + 1, path: (pg.path || '').split('/').pop() }, extra || {});
                 }
 
-                // Scale the rendered fixed-layout page to fit the viewer width.
-                function fitIframe() {
-                    try {
-                        var d = iframe.contentDocument; if (!d || !d.body) return;
-                        var W = 0, H = 0;
-                        var vp = d.querySelector('meta[name="viewport"]');
-                        if (vp) {
-                            var c = vp.getAttribute('content') || '';
-                            var mw = c.match(/width\s*=\s*(\d+)/), mh = c.match(/height\s*=\s*(\d+)/);
-                            if (mw) W = +mw[1]; if (mh) H = +mh[1];
-                        }
-                        if (!W) W = d.body.scrollWidth || d.documentElement.scrollWidth;
-                        if (!W) return;
-                        var vw = viewer.clientWidth || W;
-                        var s = vw / W;
-                        d.documentElement.style.margin = '0'; d.documentElement.style.padding = '0';
-                        d.body.style.margin = '0'; d.body.style.padding = '0';
-                        d.body.style.transformOrigin = 'top left';
-                        d.body.style.transform = 'scale(' + s + ')';
-                        d.body.style.width = W + 'px';
-                        if (!H) H = d.body.scrollHeight || d.documentElement.scrollHeight;
-                        iframe.style.height = Math.ceil(H * s) + 'px';
-                        recordPage({ fit: W + 'x' + H + ' @' + s.toFixed(3) });
-                    } catch (e) { recordPage({ fitError: e.message }); }
+                // Wait for the iframe's images to decode, then scale the page to
+                // fit the viewer width. MUST wait — measuring before the images
+                // load gives a tiny/empty size and mis-scales the page.
+                function whenImagesReady(d) {
+                    var arr = Array.prototype.slice.call(d.images || []);
+                    var pending = arr.filter(function (im) { return !im.complete; });
+                    if (!pending.length) return Promise.resolve();
+                    return new Promise(function (res) {
+                        var n = pending.length;
+                        var done = function () { if (--n <= 0) res(); };
+                        pending.forEach(function (im) { im.addEventListener('load', done); im.addEventListener('error', done); });
+                        setTimeout(res, 8000); // safety: never hang
+                    });
+                }
+                function fitIframe(seq) {
+                    var d = iframe.contentDocument; if (!d || !d.body) return Promise.resolve();
+                    return whenImagesReady(d).then(function () {
+                        if (seq !== undefined && seq !== loadSeq) return;
+                        try {
+                            d.documentElement.style.margin = '0'; d.documentElement.style.padding = '0';
+                            d.body.style.margin = '0'; d.body.style.padding = '0';
+                            // Reset any prior transform so we measure the natural size.
+                            d.body.style.transform = 'none'; d.body.style.width = '';
+                            var W = 0, H = 0;
+                            var vp = d.querySelector('meta[name="viewport"]');
+                            if (vp) {
+                                var c = vp.getAttribute('content') || '';
+                                var mw = c.match(/width\s*=\s*(\d+)/), mh = c.match(/height\s*=\s*(\d+)/);
+                                if (mw) W = +mw[1]; if (mh) H = +mh[1];
+                            }
+                            if (!W) W = Math.max(d.body.scrollWidth, d.documentElement.scrollWidth);
+                            if (!H) H = Math.max(d.body.scrollHeight, d.documentElement.scrollHeight);
+                            if (!W || !H) return;
+                            var vw = viewer.clientWidth || W;
+                            var vh = viewer.clientHeight || H;
+                            // "Contain": fit the WHOLE page on screen (no scrolling),
+                            // centered. Width-fit alone forced scrolling on tall pages.
+                            var s = Math.min(vw / W, vh / H);
+                            var tx = Math.max(0, (vw - W * s) / 2);
+                            d.body.style.transformOrigin = 'top left';
+                            d.body.style.transform = 'translate(' + tx + 'px,0) scale(' + s + ')';
+                            d.body.style.width = W + 'px';
+                            iframe.style.height = vh + 'px';
+                            recordPage({ fit: W + 'x' + H + ' @' + s.toFixed(3) });
+                        } catch (e) { recordPage({ fitError: e.message }); }
+                    });
                 }
 
                 function renderDoc(pg, seq) {
@@ -824,7 +846,7 @@
                                 });
                             }
                             recordPage({ extracted: totalBytes, imgs: imgCount, resolved: urls.length });
-                            iframe.onload = function () { if (seq === loadSeq) fitIframe(); };
+                            iframe.onload = function () { if (seq === loadSeq) fitIframe(seq); };
                             iframe.srcdoc = '<!doctype html>' + doc.documentElement.outerHTML;
                         });
                     });
@@ -833,16 +855,14 @@
                 function renderDirectImage(pg, seq) {
                     return makeUrl(pg.path, {}, urls).then(function (u) {
                         if (seq !== loadSeq || !u) return;
+                        // Image at natural size; fitIframe waits for it to load then
+                        // scales the page to fit the viewer width.
                         var html = '<!doctype html><html><head><meta charset="utf-8">' +
-                            '<style>html,body{margin:0;padding:0;background:#fff;}img{display:block;width:100%;height:auto;}</style>' +
+                            '<style>html,body{margin:0;padding:0;background:#fff;}img{display:block;}</style>' +
                             '</head><body><img src="' + u + '"></body></html>';
-                        iframe.onload = function () {
-                            try { var d = iframe.contentDocument; var im = d && d.images[0];
-                                  if (im) { iframe.style.height = Math.ceil((viewer.clientWidth || 1) * (im.naturalHeight / im.naturalWidth)) + 'px';
-                                            recordPage({ decoded: im.naturalWidth + 'x' + im.naturalHeight }); } } catch (e) {}
-                        };
+                        if (byName[pg.path]) recordPage({ extracted: byName[pg.path].uncompSize || 0, imgs: 1, resolved: 1 });
+                        iframe.onload = function () { if (seq === loadSeq) fitIframe(seq); };
                         iframe.srcdoc = html;
-                        if (byName[pg.path]) recordPage({ extracted: byName[pg.path].uncompSize || 0, imgs: 1 });
                     });
                 }
 
