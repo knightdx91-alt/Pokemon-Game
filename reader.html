@@ -258,7 +258,7 @@
 (function () {
     'use strict';
 
-    var READER_VERSION = 'v1.0.30';
+    var READER_VERSION = 'v1.0.31';
 
     // ---- Google Drive (reused OAuth client from the emulator page) ----
     var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
@@ -541,12 +541,13 @@
                     if (cd.getUint32(p, true) !== 0x02014b50) break;
                     var method = cd.getUint16(p + 10, true);
                     var compSize = cd.getUint32(p + 20, true);
+                    var uncompSize = cd.getUint32(p + 24, true);
                     var nameLen = cd.getUint16(p + 28, true);
                     var extraLen = cd.getUint16(p + 30, true);
                     var commentLen = cd.getUint16(p + 32, true);
                     var lho = cd.getUint32(p + 42, true);
                     var name = dec.decode(new Uint8Array(cdBuf, p + 46, nameLen));
-                    entries.push({ name: name, method: method, compSize: compSize, offset: lho });
+                    entries.push({ name: name, method: method, compSize: compSize, uncompSize: uncompSize, offset: lho });
                     p += 46 + nameLen + extraLen + commentLen;
                 }
                 return entries;
@@ -554,7 +555,33 @@
         });
     }
 
-    // Extract one entry's bytes (small slice reads + per-entry inflate).
+    /* Read a byte range from the blob in small sub-chunks and concatenate.
+       A single large slice().arrayBuffer() can come back short / fail on some
+       mobile browsers (the cause of half-loaded pages), so we cap each read. */
+    function readRange(blob, start, length) {
+        var CHUNK = 2 * 1048576;   // 2 MB per read
+        var out = new Uint8Array(length);
+        var pos = 0;
+        function next() {
+            if (pos >= length) {
+                if (pos !== length) throw new Error('short read: got ' + pos + ' of ' + length);
+                return out;
+            }
+            var s = start + pos;
+            var e = Math.min(s + CHUNK, start + length);
+            return readSlice(blob, s, e).then(function (buf) {
+                var part = new Uint8Array(buf);
+                if (part.length === 0) throw new Error('empty read at ' + s);
+                out.set(part, pos);
+                pos += part.length;
+                return next();
+            });
+        }
+        return Promise.resolve().then(next);
+    }
+
+    // Extract one entry's bytes (chunked slice reads + per-entry inflate),
+    // verifying we got the full, uncorrupted image.
     function readZipEntry(blob, entry) {
         return readSlice(blob, entry.offset, entry.offset + 30).then(function (hbuf) {
             var h = new DataView(hbuf);
@@ -562,11 +589,15 @@
             var nameLen = h.getUint16(26, true);
             var extraLen = h.getUint16(28, true);
             var dataStart = entry.offset + 30 + nameLen + extraLen;
-            return readSlice(blob, dataStart, dataStart + entry.compSize).then(function (dbuf) {
-                var data = new Uint8Array(dbuf);
-                if (entry.method === 0) return data;                 // stored
-                if (entry.method === 8) return fflate.inflateSync(data); // deflate
-                throw new Error('unsupported ZIP method ' + entry.method);
+            return readRange(blob, dataStart, entry.compSize).then(function (data) {
+                var out;
+                if (entry.method === 0) out = data;                 // stored
+                else if (entry.method === 8) out = fflate.inflateSync(data); // deflate
+                else throw new Error('unsupported ZIP method ' + entry.method);
+                if (entry.uncompSize && out.length !== entry.uncompSize) {
+                    throw new Error('size mismatch ' + out.length + '/' + entry.uncompSize);
+                }
+                return out;
             });
         });
     }
@@ -590,18 +621,27 @@
             img.className = 'cbz-img';
             viewer.innerHTML = ''; viewer.appendChild(img);
             var curUrl = null, loadSeq = 0;
-            function show(i) {
-                idx = Math.max(0, Math.min(imgs.length - 1, i));
-                rPos.textContent = (idx + 1) + ' / ' + imgs.length;
-                saveProgress(key, { type: 'cbz', index: idx, pct: (idx + 1) / imgs.length });
-                var seq = ++loadSeq;
-                readZipEntry(blob, imgs[idx]).then(function (bytes) {
+            function load(seq, attempt) {
+                return readZipEntry(blob, imgs[idx]).then(function (bytes) {
                     if (seq !== loadSeq) return;   // a newer page was requested
                     if (curUrl) { try { URL.revokeObjectURL(curUrl); } catch (_) {} }
                     curUrl = URL.createObjectURL(new Blob([bytes]));
                     img.src = curUrl;
                     viewer.scrollTop = 0;
-                }).catch(function (e) { rPos.textContent = 'page ' + (idx + 1) + ' failed: ' + e.message; });
+                }).catch(function (e) {
+                    if (seq !== loadSeq) return;
+                    if (attempt < 2) return load(seq, attempt + 1);   // one retry
+                    rPos.textContent = 'page ' + (idx + 1) + ' failed: ' + e.message;
+                });
+            }
+            function show(i) {
+                idx = Math.max(0, Math.min(imgs.length - 1, i));
+                rPos.textContent = 'page ' + (idx + 1) + '/' + imgs.length + '…';
+                saveProgress(key, { type: 'cbz', index: idx, pct: (idx + 1) / imgs.length });
+                var seq = ++loadSeq;
+                load(seq, 0).then(function () {
+                    if (seq === loadSeq) rPos.textContent = (idx + 1) + ' / ' + imgs.length;
+                });
             }
             show(idx);
             current = {
