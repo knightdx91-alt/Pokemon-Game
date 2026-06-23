@@ -739,6 +739,9 @@
 
     /* Public CORS relays, tried in order if a direct fetch is blocked. The file
        passes through a third-party server, so this is a fallback only. */
+    /* Default personal relay (Cloudflare Worker). Everything in the reader is
+       routed through this first; the Custom relay field can override it. */
+    var DEFAULT_PROXY = 'https://z-lib.knightdx91.workers.dev/?url=';
     var CORS_PROXIES = [
         function (u) { return 'https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(u); },
         function (u) { return 'https://corsproxy.io/?url=' + encodeURIComponent(u); },
@@ -746,7 +749,8 @@
         function (u) { return 'https://thingproxy.freeboard.io/fetch/' + u; }
     ];
     /* User-supplied relays (e.g. a personal Cloudflare Worker) tried before the
-       shared public ones. Populated from the Z-Library panel's "Custom relay". */
+       shared public ones. Populated from the Z-Library panel's "Custom relay",
+       defaulting to DEFAULT_PROXY when the field is empty. */
     var EXTRA_PROXIES = [];
     function proxyList() { return EXTRA_PROXIES.concat(CORS_PROXIES); }
 
@@ -776,25 +780,29 @@
         return pump();
     }
 
+    /* Everything is routed through the relay first (the user's/default proxy,
+       then public ones); a direct fetch is only the last resort. */
     function fetchBlobWithFallback(url, onStatus) {
+        applyCustomProxy();
         var proxies = proxyList();
         var lastErr = null;
-        setOverlayProgress(0);
-        return fetch(url).then(function (r) { return streamToBlob(r); }).catch(function (directErr) {
-            lastErr = directErr;
-            function tryProxy(i) {
-                if (i >= proxies.length) {
-                    setOverlayProgress(null);
-                    throw new Error('all proxies failed (' + ((lastErr && lastErr.message) || 'CORS') + ')');
-                }
-                var label = i === 0 && EXTRA_PROXIES.length ? 'Fetching via your relay…' : 'Trying relay ' + (i + 1) + '…';
-                if (onStatus) onStatus(label);
+        function tryProxy(i) {
+            if (i >= proxies.length) {
+                // last resort: try direct (works for already-CORS-friendly hosts)
                 setOverlayProgress(0);
-                return fetch(proxies[i](url)).then(function (r) { return streamToBlob(r, label); })
-                    .catch(function (e) { lastErr = e; return tryProxy(i + 1); });
+                return fetch(url).then(function (r) { return streamToBlob(r); })
+                    .catch(function (e) {
+                        setOverlayProgress(null);
+                        throw new Error('all relays failed (' + ((lastErr && lastErr.message) || e.message || 'CORS') + ')');
+                    });
             }
-            return tryProxy(0);
-        });
+            var label = i === 0 ? 'Fetching via your relay…' : 'Trying relay ' + (i + 1) + '…';
+            if (onStatus) onStatus(label);
+            setOverlayProgress(0);
+            return fetch(proxies[i](url)).then(function (r) { return streamToBlob(r, label); })
+                .catch(function (e) { lastErr = e; return tryProxy(i + 1); });
+        }
+        return tryProxy(0);
     }
     urlInput.addEventListener('input', function () {
         var has = !!urlInput.value.trim();
@@ -954,6 +962,9 @@
         var p = (zProxy.value || '').trim();
         zAuth.proxy = p; saveZAuth();
         EXTRA_PROXIES = [];
+        // Fall back to the built-in default relay so every request is proxied
+        // even when the user hasn't typed a custom one.
+        if (!p) p = DEFAULT_PROXY;
         if (p) {
             EXTRA_PROXIES = [function (u) {
                 var r = p.indexOf('{url}') >= 0 ? p.replace('{url}', encodeURIComponent(u))
@@ -1027,23 +1038,25 @@
                 }
             });
         }
-        // direct first, then every relay; stop early on a definitive answer
+        // relay first (user/default, then public), direct as last resort;
+        // stop early on a definitive answer
         var proxies = proxyList();
         var lastErr = null;
-        return fetch(targetUrl, opts()).then(parse).catch(function (e) {
-            lastErr = e;
-            if (e.definitive) throw e;
-            function tryRelay(i) {
-                if (i >= proxies.length) throw new Error((lastErr && lastErr.message) || 'All relays failed');
-                zSetStatus((EXTRA_PROXIES.length && i === 0 ? 'Trying your relay…' : 'Trying public relay ' + (i + 1) + '/' + proxies.length + '…'));
-                return fetch(proxies[i](targetUrl), opts()).then(parse).catch(function (err) {
-                    lastErr = err;
-                    if (err.definitive) throw err;   // real answer from target — stop
-                    return tryRelay(i + 1);
+        function tryRelay(i) {
+            if (i >= proxies.length) {
+                // last resort: try direct
+                return fetch(targetUrl, opts()).then(parse).catch(function (err) {
+                    throw new Error((lastErr && lastErr.message) || err.message || 'All relays failed');
                 });
             }
-            return tryRelay(0);
-        });
+            zSetStatus(i === 0 ? 'Trying your relay…' : 'Trying public relay ' + (i + 1) + '/' + proxies.length + '…');
+            return fetch(proxies[i](targetUrl), opts()).then(parse).catch(function (err) {
+                lastErr = err;
+                if (err.definitive) throw err;   // real answer from target — stop
+                return tryRelay(i + 1);
+            });
+        }
+        return tryRelay(0);
     }
 
     function zLogin() {
