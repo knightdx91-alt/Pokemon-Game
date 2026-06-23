@@ -154,6 +154,15 @@
             <span class="card-arrow">›</span>
         </a>
 
+        <a class="launch-card" href="#" id="card-drive-upload">
+            <div class="card-icon">☁️</div>
+            <div class="card-text">
+                <div class="card-title">Drive → GitHub Upload</div>
+                <div class="card-sub">Pick a Drive file · commits to the uploads branch</div>
+            </div>
+            <span class="card-arrow">›</span>
+        </a>
+
         <a class="launch-card" href="codelab.html?v=__CACHE_BUST__">
             <div class="card-icon">🧮</div>
             <div class="card-text">
@@ -215,6 +224,14 @@
         </a>
 
     </div>
+
+    <script src="drive-to-github.js?v=__CACHE_BUST__"></script>
+    <script>
+        document.getElementById('card-drive-upload').addEventListener('click', function (e) {
+            e.preventDefault();
+            window.DriveToGitHub.start();
+        });
+    </script>
 
 </body>
 </html>
