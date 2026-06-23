@@ -258,7 +258,7 @@
 (function () {
     'use strict';
 
-    var READER_VERSION = 'v1.0.31';
+    var READER_VERSION = 'v1.0.32';
 
     // ---- Google Drive (reused OAuth client from the emulator page) ----
     var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
@@ -621,9 +621,26 @@
             img.className = 'cbz-img';
             viewer.innerHTML = ''; viewer.appendChild(img);
             var curUrl = null, loadSeq = 0;
+            // Record the currently-shown page for the 🛠 diagnostic so we can see
+            // exactly what a "not loading all the way" page actually contains.
+            function recordPage(extra) {
+                if (!_epubInfo) return;
+                var e = imgs[idx];
+                _epubInfo.page = Object.assign({
+                    n: idx + 1, name: e.name, method: e.method,
+                    compSize: e.compSize, uncompSize: e.uncompSize
+                }, extra || {});
+            }
+            img.addEventListener('load', function () {
+                recordPage({ decoded: img.naturalWidth + 'x' + img.naturalHeight });
+            });
+            img.addEventListener('error', function () {
+                recordPage({ decoded: 'DECODE-ERROR' });
+            });
             function load(seq, attempt) {
                 return readZipEntry(blob, imgs[idx]).then(function (bytes) {
                     if (seq !== loadSeq) return;   // a newer page was requested
+                    recordPage({ extracted: bytes.length });
                     if (curUrl) { try { URL.revokeObjectURL(curUrl); } catch (_) {} }
                     curUrl = URL.createObjectURL(new Blob([bytes]));
                     img.src = curUrl;
@@ -631,6 +648,7 @@
                 }).catch(function (e) {
                     if (seq !== loadSeq) return;
                     if (attempt < 2) return load(seq, attempt + 1);   // one retry
+                    recordPage({ extractError: e.message });
                     rPos.textContent = 'page ' + (idx + 1) + ' failed: ' + e.message;
                 });
             }
@@ -640,7 +658,7 @@
                 saveProgress(key, { type: 'cbz', index: idx, pct: (idx + 1) / imgs.length });
                 var seq = ++loadSeq;
                 load(seq, 0).then(function () {
-                    if (seq === loadSeq) rPos.textContent = (idx + 1) + ' / ' + imgs.length;
+                    if (seq === loadSeq && img.src) rPos.textContent = (idx + 1) + ' / ' + imgs.length;
                 });
             }
             show(idx);
@@ -1483,6 +1501,13 @@
                 L.push('— last EPUB open —');
                 L.push('spine sections: ' + _epubInfo.spine + ' · toc: ' + _epubInfo.nav + ' · layout: ' + _epubInfo.layout);
                 L.push('steps: ' + (_epubInfo.steps || []).join(' → '));
+                if (_epubInfo.page) {
+                    var pg = _epubInfo.page;
+                    L.push('current page #' + pg.n + ' ' + (pg.name || '').split('/').pop());
+                    L.push('  method=' + pg.method + ' comp=' + pg.compSize + ' uncomp=' + pg.uncompSize +
+                           ' extracted=' + pg.extracted + (pg.extractError ? ' err=' + pg.extractError : '') +
+                           ' decoded=' + pg.decoded);
+                }
             }
             if (!_lastError) return;
             L.push('— last open error —');
