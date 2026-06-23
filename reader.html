@@ -258,7 +258,7 @@
 (function () {
     'use strict';
 
-    var READER_VERSION = 'v1.0.28';
+    var READER_VERSION = 'v1.0.29';
 
     // ---- Google Drive (reused OAuth client from the emulator page) ----
     var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
@@ -505,11 +505,63 @@
         });
     }
 
+    // Natural sort so "page2" < "page10" (manga pages are numbered).
+    function naturalCmp(a, b) {
+        return String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' });
+    }
+
+    /* Manga / image-heavy EPUB fallback: an EPUB is just a ZIP, and manga
+       EPUBs are basically a CBZ with XHTML wrappers. epub.js tries to load and
+       reflow the WHOLE 300 MB+ archive at once, which hangs on mobile. Instead
+       we unzip, pull the page images out, and show them one at a time (lazy),
+       exactly like the comic viewer — no full-book reflow. */
+    function openMangaEpub(key, blob, prog) {
+        showOverlay('Opening manga…');
+        return readArrayBuffer(blob).then(function (buf) {
+            if (typeof fflate === 'undefined') throw new Error('Unzip engine not loaded');
+            return new Promise(function (resolve, reject) {
+                fflate.unzip(new Uint8Array(buf), function (err, files) {
+                    if (err) { reject(err); return; }
+                    var names = Object.keys(files).filter(function (n) {
+                        return /\.(jpe?g|png|gif|webp|bmp|avif)$/i.test(n);
+                    }).sort(naturalCmp);
+                    if (!names.length) { reject(new Error('No page images found in EPUB')); return; }
+                    var urls = names.map(function (n) { return URL.createObjectURL(new Blob([files[n]])); });
+                    var idx = (prog && typeof prog.index === 'number') ? Math.min(prog.index, urls.length - 1) : 0;
+                    var img = document.createElement('img');
+                    img.className = 'cbz-img';
+                    viewer.innerHTML = ''; viewer.appendChild(img);
+                    function show(i) {
+                        idx = Math.max(0, Math.min(urls.length - 1, i));
+                        img.src = urls[idx];
+                        viewer.scrollTop = 0;
+                        rPos.textContent = (idx + 1) + ' / ' + urls.length;
+                        saveProgress(key, { type: 'cbz', index: idx, pct: (idx + 1) / urls.length });
+                    }
+                    show(idx);
+                    current = {
+                        key: key,
+                        teardown: function () { urls.forEach(function (u) { try { URL.revokeObjectURL(u); } catch (_) {} }); },
+                        prev: function () { show(idx - 1); }, next: function () { show(idx + 1); }
+                    };
+                    if (_epubInfo) _epubInfo.steps.push('manga fallback: ' + urls.length + ' images');
+                    resolve();
+                });
+            });
+        });
+    }
+
     // ---- EPUB (epub.js) ----
     var _epubInfo = null;   // captured for the 🛠 diagnostic
     function openEpub(key, blob, prog) {
         _epubInfo = { key: key, steps: [] };
         function step(s) { _epubInfo.steps.push(s); }
+        // Very large EPUBs are almost always manga (image-per-page). epub.js
+        // chokes on them, so go straight to the image-pager fallback.
+        if (blob.size > 60 * 1048576) {
+            step('large EPUB (' + Math.round(blob.size / 1048576) + ' MB) → manga pager');
+            return openMangaEpub(key, blob, prog);
+        }
         return Promise.resolve().then(function () {
             if (typeof ePub === 'undefined') throw new Error('EPUB engine not loaded');
             // Open via a blob: URL so epub.js loads the archive itself instead of
@@ -560,27 +612,33 @@
             applyReaderTheme();
             // Wait for the archive to parse, record spine info, then render the
             // first (or last-read) section and surface any failure.
-            return book.ready.then(function () {
+            var renderChain = book.ready.then(function () {
                 step('book.ready');
                 try { _epubInfo.spine = book.spine && book.spine.length; } catch (_) {}
                 try { _epubInfo.nav = book.navigation && book.navigation.toc && book.navigation.toc.length; } catch (_) {}
-                // Fixed-layout (pre-paginated) manga needs flow:'paginated' but
-                // honoring the per-page viewport; epub.js does this when the
-                // layout metadata is present. Record it for diagnostics.
                 try {
                     var layout = book.packaging && book.packaging.metadata && book.packaging.metadata.layout;
                     _epubInfo.layout = layout || 'reflowable';
-                    if (layout === 'pre-paginated') {
-                        rendition.spread('none');
-                    }
+                    if (layout === 'pre-paginated') { rendition.spread('none'); }
                 } catch (_) {}
                 return rendition.display(startCfi);
             }).then(function () {
                 step('display resolved');
                 rendition.on('keyup', onKey);   // arrow-key support
-            }).catch(function (err) {
-                step('ERROR: ' + (err && (err.message || err)));
-                throw new Error('EPUB render failed: ' + (err && (err.message || err)) + ' (tap 🛠 for details)');
+            });
+            // Never hang the "Opening…" spinner forever: if epub.js can't parse/
+            // render within the timeout (typical for huge manga archives), tear it
+            // down and fall back to the image pager.
+            var timedOut = false;
+            var timeout = new Promise(function (_, rej) {
+                setTimeout(function () { timedOut = true; rej(new Error('epub.js timed out')); }, 25000);
+            });
+            return Promise.race([renderChain, timeout]).catch(function (err) {
+                step((timedOut ? 'TIMEOUT' : 'ERROR') + ': ' + (err && (err.message || err)));
+                try { book.destroy(); } catch (_) {}
+                try { URL.revokeObjectURL(objUrl); } catch (_) {}
+                zoneL.remove(); zoneR.remove();
+                return openMangaEpub(key, blob, prog);
             });
         });
     }
