@@ -111,6 +111,10 @@
     .spinner { width: 38px; height: 38px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     #overlay .msg { font-size: 13px; color: var(--muted); }
+    #overlay .prog-wrap { width: 240px; max-width: 80vw; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; display: none; }
+    #overlay .prog-wrap.show { display: block; }
+    #overlay .prog-fill { height: 100%; width: 0%; background: var(--accent); border-radius: 3px; transition: width .1s linear; }
+    #overlay .prog-pct { font-size: 12px; color: var(--accent); font-variant-numeric: tabular-nums; }
 
     /* Z-Library panel */
     #zlib {
@@ -188,7 +192,12 @@
     <div id="viewer"></div>
 </div>
 
-<div id="overlay"><div class="spinner"></div><div class="msg" id="overlay-msg">Loading…</div></div>
+<div id="overlay">
+    <div class="spinner"></div>
+    <div class="msg" id="overlay-msg">Loading…</div>
+    <div class="prog-wrap" id="overlay-prog-wrap"><div class="prog-fill" id="overlay-prog-fill"></div></div>
+    <div class="prog-pct" id="overlay-prog-pct"></div>
+</div>
 
 <!-- Z-Library search -->
 <div id="zlib">
@@ -307,10 +316,23 @@
     var urlInput = $('url-input'), btnUrl = $('btn-url'), btnFile = $('btn-file'), fileInput = $('file-input');
     var btnDriveSave = $('btn-drive-save');
     var overlay = $('overlay'), overlayMsg = $('overlay-msg');
+    var overlayProgWrap = $('overlay-prog-wrap'), overlayProgFill = $('overlay-prog-fill'), overlayProgPct = $('overlay-prog-pct');
     var rTitle = $('r-title'), rPos = $('r-pos'), rPrev = $('r-prev'), rNext = $('r-next'), rBack = $('r-back');
 
     function showOverlay(msg) { overlayMsg.textContent = msg || 'Loading…'; overlay.classList.add('visible'); }
-    function hideOverlay() { overlay.classList.remove('visible'); }
+    function hideOverlay() { overlay.classList.remove('visible'); setOverlayProgress(null); }
+    /* pct: 0–100 to show a determinate bar, or null to hide the bar.
+       detail: optional secondary text (e.g. "3.2 MB / 8.0 MB"). */
+    function setOverlayProgress(pct, detail) {
+        if (pct === null || pct === undefined) {
+            overlayProgWrap.classList.remove('show'); overlayProgFill.style.width = '0%'; overlayProgPct.textContent = '';
+            return;
+        }
+        overlayProgWrap.classList.add('show');
+        var p = Math.min(100, Math.max(0, pct));
+        overlayProgFill.style.width = p + '%';
+        overlayProgPct.textContent = detail || (Math.round(p) + '%');
+    }
 
     // ---- Format detection ----
     function extOf(name) { var m = String(name || '').toLowerCase().match(/\.([a-z0-9]+)$/); return m ? m[1] : ''; }
@@ -688,18 +710,46 @@
 
     /* Fetch a URL as a Blob. Tries direct first; on a CORS/network failure,
        retries through each proxy until one works. onStatus(msg) for UI. */
+    /* Read a Response body as a Blob while reporting byte progress to the
+       overlay bar. Falls back to resp.blob() if streaming isn't available. */
+    function streamToBlob(resp, label) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        var total = parseInt(resp.headers.get('content-length') || '0', 10);
+        if (!resp.body || !resp.body.getReader) {
+            setOverlayProgress(null);
+            return resp.blob();
+        }
+        var reader = resp.body.getReader(), chunks = [], loaded = 0;
+        function fmt(b) { return (b / 1048576).toFixed(1) + ' MB'; }
+        function pump() {
+            return reader.read().then(function (r) {
+                if (r.done) { setOverlayProgress(null); return new Blob(chunks); }
+                chunks.push(r.value); loaded += r.value.length;
+                if (total) setOverlayProgress(loaded / total * 100, fmt(loaded) + ' / ' + fmt(total));
+                else setOverlayProgress(100, fmt(loaded));  // unknown size: show activity + bytes
+                if (label) overlayMsg.textContent = label;
+                return pump();
+            });
+        }
+        return pump();
+    }
+
     function fetchBlobWithFallback(url, onStatus) {
-        function asBlob(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.blob(); }
         var proxies = proxyList();
         var lastErr = null;
-        return fetch(url).then(asBlob).catch(function (directErr) {
+        setOverlayProgress(0);
+        return fetch(url).then(function (r) { return streamToBlob(r); }).catch(function (directErr) {
             lastErr = directErr;
             function tryProxy(i) {
                 if (i >= proxies.length) {
+                    setOverlayProgress(null);
                     throw new Error('all proxies failed (' + ((lastErr && lastErr.message) || 'CORS') + ')');
                 }
-                if (onStatus) onStatus(i === 0 && EXTRA_PROXIES.length ? 'Fetching via your relay…' : 'Trying relay ' + (i + 1) + '…');
-                return fetch(proxies[i](url)).then(asBlob).catch(function (e) { lastErr = e; return tryProxy(i + 1); });
+                var label = i === 0 && EXTRA_PROXIES.length ? 'Fetching via your relay…' : 'Trying relay ' + (i + 1) + '…';
+                if (onStatus) onStatus(label);
+                setOverlayProgress(0);
+                return fetch(proxies[i](url)).then(function (r) { return streamToBlob(r, label); })
+                    .catch(function (e) { lastErr = e; return tryProxy(i + 1); });
             }
             return tryProxy(0);
         });
