@@ -258,7 +258,7 @@
 (function () {
     'use strict';
 
-    var READER_VERSION = 'v1.0.25';
+    var READER_VERSION = 'v1.0.26';
 
     // ---- Google Drive (reused OAuth client from the emulator page) ----
     var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
@@ -383,7 +383,10 @@
     function bookKey(name) { return name.replace(/[^a-zA-Z0-9_\-.]/g, '_') + '::' + Date.now().toString(36); }
 
     function addBook(name, blob) {
-        return readArrayBuffer(blob).then(function (buf) {
+        // Only read the first chunk for magic-byte sniffing — NEVER the whole
+        // file. Reading a large blob (e.g. 330 MB) fully into one ArrayBuffer
+        // fails on memory-constrained devices and would block saving the book.
+        return blob.slice(0, 512).arrayBuffer().then(function (buf) {
             var bytes = new Uint8Array(buf);
             var format = detectFormat(name, bytes);
             var key = bookKey(name);
