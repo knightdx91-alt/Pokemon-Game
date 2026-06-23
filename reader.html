@@ -258,7 +258,7 @@
 (function () {
     'use strict';
 
-    var READER_VERSION = 'v1.0.29';
+    var READER_VERSION = 'v1.0.30';
 
     // ---- Google Drive (reused OAuth client from the emulator page) ----
     var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
@@ -510,44 +510,105 @@
         return String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' });
     }
 
-    /* Manga / image-heavy EPUB fallback: an EPUB is just a ZIP, and manga
-       EPUBs are basically a CBZ with XHTML wrappers. epub.js tries to load and
-       reflow the WHOLE 300 MB+ archive at once, which hangs on mobile. Instead
-       we unzip, pull the page images out, and show them one at a time (lazy),
-       exactly like the comic viewer — no full-book reflow. */
+    /* ---- Random-access ZIP reader (for huge archives) ----
+       Large blobs (e.g. a 330 MB manga EPUB) can't be read whole on mobile:
+       blob.arrayBuffer() / fetch(blobURL) throw NotReadableError, while small
+       blob.slice() reads still work. So we parse the ZIP central directory and
+       extract individual entries with tiny slice reads — never loading the whole
+       file into memory. Standard ZIP only (our files are < 4 GB). */
+    function readSlice(blob, start, end) { return blob.slice(start, end).arrayBuffer(); }
+
+    function parseZipCentralDir(blob) {
+        var size = blob.size;
+        var tailLen = Math.min(size, 65557); // 22-byte EOCD + max 65535 comment
+        return readSlice(blob, size - tailLen, size).then(function (buf) {
+            var dv = new DataView(buf);
+            var eocd = -1;
+            for (var i = buf.byteLength - 22; i >= 0; i--) {
+                if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+            }
+            if (eocd < 0) throw new Error('ZIP end-of-directory not found');
+            var entryCount = dv.getUint16(eocd + 10, true);
+            var cdSize = dv.getUint32(eocd + 12, true);
+            var cdOffset = dv.getUint32(eocd + 16, true);
+            if (cdOffset === 0xffffffff || entryCount === 0xffff) {
+                throw new Error('ZIP64 archives are not supported');
+            }
+            return readSlice(blob, cdOffset, cdOffset + cdSize).then(function (cdBuf) {
+                var cd = new DataView(cdBuf), dec = new TextDecoder();
+                var entries = [], p = 0;
+                for (var n = 0; n < entryCount; n++) {
+                    if (cd.getUint32(p, true) !== 0x02014b50) break;
+                    var method = cd.getUint16(p + 10, true);
+                    var compSize = cd.getUint32(p + 20, true);
+                    var nameLen = cd.getUint16(p + 28, true);
+                    var extraLen = cd.getUint16(p + 30, true);
+                    var commentLen = cd.getUint16(p + 32, true);
+                    var lho = cd.getUint32(p + 42, true);
+                    var name = dec.decode(new Uint8Array(cdBuf, p + 46, nameLen));
+                    entries.push({ name: name, method: method, compSize: compSize, offset: lho });
+                    p += 46 + nameLen + extraLen + commentLen;
+                }
+                return entries;
+            });
+        });
+    }
+
+    // Extract one entry's bytes (small slice reads + per-entry inflate).
+    function readZipEntry(blob, entry) {
+        return readSlice(blob, entry.offset, entry.offset + 30).then(function (hbuf) {
+            var h = new DataView(hbuf);
+            if (h.getUint32(0, true) !== 0x04034b50) throw new Error('bad local header for ' + entry.name);
+            var nameLen = h.getUint16(26, true);
+            var extraLen = h.getUint16(28, true);
+            var dataStart = entry.offset + 30 + nameLen + extraLen;
+            return readSlice(blob, dataStart, dataStart + entry.compSize).then(function (dbuf) {
+                var data = new Uint8Array(dbuf);
+                if (entry.method === 0) return data;                 // stored
+                if (entry.method === 8) return fflate.inflateSync(data); // deflate
+                throw new Error('unsupported ZIP method ' + entry.method);
+            });
+        });
+    }
+
+    /* Manga / image-heavy EPUB fallback. An EPUB is just a ZIP, and manga EPUBs
+       are basically a CBZ with XHTML wrappers. We read the directory, then show
+       page images one at a time via the random-access reader — so a 330 MB book
+       works on a phone without ever holding the whole file in memory. */
     function openMangaEpub(key, blob, prog) {
         showOverlay('Opening manga…');
-        return readArrayBuffer(blob).then(function (buf) {
-            if (typeof fflate === 'undefined') throw new Error('Unzip engine not loaded');
-            return new Promise(function (resolve, reject) {
-                fflate.unzip(new Uint8Array(buf), function (err, files) {
-                    if (err) { reject(err); return; }
-                    var names = Object.keys(files).filter(function (n) {
-                        return /\.(jpe?g|png|gif|webp|bmp|avif)$/i.test(n);
-                    }).sort(naturalCmp);
-                    if (!names.length) { reject(new Error('No page images found in EPUB')); return; }
-                    var urls = names.map(function (n) { return URL.createObjectURL(new Blob([files[n]])); });
-                    var idx = (prog && typeof prog.index === 'number') ? Math.min(prog.index, urls.length - 1) : 0;
-                    var img = document.createElement('img');
-                    img.className = 'cbz-img';
-                    viewer.innerHTML = ''; viewer.appendChild(img);
-                    function show(i) {
-                        idx = Math.max(0, Math.min(urls.length - 1, i));
-                        img.src = urls[idx];
-                        viewer.scrollTop = 0;
-                        rPos.textContent = (idx + 1) + ' / ' + urls.length;
-                        saveProgress(key, { type: 'cbz', index: idx, pct: (idx + 1) / urls.length });
-                    }
-                    show(idx);
-                    current = {
-                        key: key,
-                        teardown: function () { urls.forEach(function (u) { try { URL.revokeObjectURL(u); } catch (_) {} }); },
-                        prev: function () { show(idx - 1); }, next: function () { show(idx + 1); }
-                    };
-                    if (_epubInfo) _epubInfo.steps.push('manga fallback: ' + urls.length + ' images');
-                    resolve();
-                });
-            });
+        if (typeof fflate === 'undefined') throw new Error('Unzip engine not loaded');
+        return parseZipCentralDir(blob).then(function (entries) {
+            var imgs = entries.filter(function (e) {
+                return /\.(jpe?g|png|gif|webp|bmp|avif)$/i.test(e.name);
+            }).sort(function (a, b) { return naturalCmp(a.name, b.name); });
+            if (!imgs.length) throw new Error('No page images found in EPUB');
+            if (_epubInfo) _epubInfo.steps.push('manga pager: ' + imgs.length + ' images (random-access)');
+
+            var idx = (prog && typeof prog.index === 'number') ? Math.min(prog.index, imgs.length - 1) : 0;
+            var img = document.createElement('img');
+            img.className = 'cbz-img';
+            viewer.innerHTML = ''; viewer.appendChild(img);
+            var curUrl = null, loadSeq = 0;
+            function show(i) {
+                idx = Math.max(0, Math.min(imgs.length - 1, i));
+                rPos.textContent = (idx + 1) + ' / ' + imgs.length;
+                saveProgress(key, { type: 'cbz', index: idx, pct: (idx + 1) / imgs.length });
+                var seq = ++loadSeq;
+                readZipEntry(blob, imgs[idx]).then(function (bytes) {
+                    if (seq !== loadSeq) return;   // a newer page was requested
+                    if (curUrl) { try { URL.revokeObjectURL(curUrl); } catch (_) {} }
+                    curUrl = URL.createObjectURL(new Blob([bytes]));
+                    img.src = curUrl;
+                    viewer.scrollTop = 0;
+                }).catch(function (e) { rPos.textContent = 'page ' + (idx + 1) + ' failed: ' + e.message; });
+            }
+            show(idx);
+            current = {
+                key: key,
+                teardown: function () { if (curUrl) { try { URL.revokeObjectURL(curUrl); } catch (_) {} } },
+                prev: function () { show(idx - 1); }, next: function () { show(idx + 1); }
+            };
         });
     }
 
