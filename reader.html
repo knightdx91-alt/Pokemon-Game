@@ -258,7 +258,7 @@
 (function () {
     'use strict';
 
-    var READER_VERSION = 'v1.0.27';
+    var READER_VERSION = 'v1.0.28';
 
     // ---- Google Drive (reused OAuth client from the emulator page) ----
     var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
@@ -518,8 +518,24 @@
             var objUrl = URL.createObjectURL(blob);
             var book = ePub(objUrl, { openAs: 'epub' });
             step('book created');
-            var rendition = book.renderTo('viewer', { width: '100%', height: '100%', flow: 'paginated', spread: 'none' });
+            var rendition = book.renderTo('viewer', {
+                width: '100%', height: '100%', flow: 'paginated', spread: 'none',
+                manager: 'default', allowScriptedContent: true
+            });
             var startCfi = prog && prog.cfi ? prog.cfi : undefined;
+            // Image-heavy / manga EPUBs: make every image fit the page instead of
+            // overflowing off-screen (which reads as a black/blank page).
+            try {
+                rendition.themes.default({
+                    'body': { 'margin': '0 !important', 'padding': '0 !important' },
+                    'img, image, svg': {
+                        'max-width': '100% !important', 'max-height': '100vh !important',
+                        'height': 'auto !important', 'width': 'auto !important',
+                        'object-fit': 'contain !important',
+                        'display': 'block !important', 'margin': '0 auto !important'
+                    }
+                });
+            } catch (_) {}
             // re-assert the theme on every chapter render (new iframe each time)
             rendition.hooks.content.register(function () { applyEpubTheme(); });
             rendition.on('relocated', function (loc) {
@@ -548,6 +564,16 @@
                 step('book.ready');
                 try { _epubInfo.spine = book.spine && book.spine.length; } catch (_) {}
                 try { _epubInfo.nav = book.navigation && book.navigation.toc && book.navigation.toc.length; } catch (_) {}
+                // Fixed-layout (pre-paginated) manga needs flow:'paginated' but
+                // honoring the per-page viewport; epub.js does this when the
+                // layout metadata is present. Record it for diagnostics.
+                try {
+                    var layout = book.packaging && book.packaging.metadata && book.packaging.metadata.layout;
+                    _epubInfo.layout = layout || 'reflowable';
+                    if (layout === 'pre-paginated') {
+                        rendition.spread('none');
+                    }
+                } catch (_) {}
                 return rendition.display(startCfi);
             }).then(function () {
                 step('display resolved');
@@ -1296,7 +1322,7 @@
         }).then(function () {
             if (_epubInfo) {
                 L.push('— last EPUB open —');
-                L.push('spine sections: ' + _epubInfo.spine + ' · toc: ' + _epubInfo.nav);
+                L.push('spine sections: ' + _epubInfo.spine + ' · toc: ' + _epubInfo.nav + ' · layout: ' + _epubInfo.layout);
                 L.push('steps: ' + (_epubInfo.steps || []).join(' → '));
             }
             if (!_lastError) return;
