@@ -668,6 +668,7 @@
     // Back button (and device Back) pop the history entry → returns to library
     rBack.addEventListener('click', function () { history.back(); });
     window.addEventListener('popstate', function () {
+        if (zPanel.classList.contains('visible')) { closeZlib(); return; }
         if (reader.classList.contains('visible')) closeReader();
     });
     // tap left half = previous page, right half = next page
@@ -1181,10 +1182,17 @@
         applyCustomProxy();
         zRenderLoginState();
         zPanel.classList.add('visible');
+        // history entry so the device/browser Back button closes the panel
+        // (returning to the library) instead of leaving for the hub
+        history.pushState({ zlib: true }, '');
         zQuery.focus();
     }
+    function closeZlib() { zPanel.classList.remove('visible'); }
     $('btn-zlib').addEventListener('click', openZlib);
-    $('z-close').addEventListener('click', function () { zPanel.classList.remove('visible'); });
+    $('z-close').addEventListener('click', function () {
+        if (history.state && history.state.zlib) history.back();
+        else closeZlib();
+    });
     $('z-login').addEventListener('click', zLogin);
     $('z-logout').addEventListener('click', zLogout);
     $('z-search').addEventListener('click', zSearch);
