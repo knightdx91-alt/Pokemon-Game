@@ -157,9 +157,10 @@
 
 <div class="topbar">
     <a class="home" href="index.html" title="Home">🏠</a>
-    <div class="title">Book Reader<small>EPUB · PDF · CBZ · TXT</small></div>
+    <div class="title">Book Reader<small id="reader-ver">EPUB · PDF · CBZ · TXT</small></div>
     <button class="btn" id="btn-zlib" title="Search Z-Library">🔍 Z-Library</button>
     <button class="btn" id="btn-theme" title="Reading theme">🎨 Theme</button>
+    <button class="btn" id="btn-diag" title="Diagnostics">🛠</button>
 </div>
 
 <!-- Library -->
@@ -256,6 +257,8 @@
 <script>
 (function () {
     'use strict';
+
+    var READER_VERSION = 'v1.0.25';
 
     // ---- Google Drive (reused OAuth client from the emulator page) ----
     var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
@@ -490,6 +493,8 @@
         }).catch(function (e) {
             hideOverlay();
             if (reader.classList.contains('visible')) closeReader();
+            _lastError = { key: key, title: meta && meta.title, format: meta && meta.format,
+                           message: e && e.message, stack: e && e.stack, when: new Date().toISOString() };
             // Offer to remove an unreadable/corrupted book so the shelf isn't stuck on it.
             if (confirm('Could not open book: ' + e.message + '\n\nRemove this book from the device so you can download it again?')) {
                 deleteBook(key).then(refreshLibrary);
@@ -1222,7 +1227,89 @@
     zQuery.addEventListener('keyup', function (e) { if (e.key === 'Enter') zSearch(); });
     zPass.addEventListener('keyup', function (e) { if (e.key === 'Enter') zLogin(); });
 
+    // ---- Diagnostics (mobile-friendly: alert-based, no DevTools needed) ----
+    var _lastError = null;
+    function fmtBytes(n) { if (n == null) return '?'; return n < 1048576 ? Math.round(n / 1024) + ' KB' : (n / 1048576).toFixed(1) + ' MB'; }
+
+    function runDiag() {
+        var L = [];
+        L.push('📖 Reader ' + READER_VERSION);
+        L.push('online: ' + navigator.onLine + ' · UA: ' + (navigator.userAgent || '').slice(0, 60));
+        if (navigator.deviceMemory) L.push('device RAM (approx): ' + navigator.deviceMemory + ' GB');
+        L.push('engines: epub=' + (typeof ePub !== 'undefined') + ' pdf=' + (typeof pdfjsLib !== 'undefined') +
+               ' jszip=' + (typeof JSZip !== 'undefined') + ' fflate=' + (typeof fflate !== 'undefined'));
+
+        var pre = Promise.resolve();
+        if (navigator.storage && navigator.storage.estimate) {
+            pre = navigator.storage.estimate().then(function (est) {
+                L.push('storage: ' + fmtBytes(est.usage) + ' used / ' + fmtBytes(est.quota) + ' quota');
+            }).catch(function () {});
+        }
+
+        pre.then(function () {
+            return openDB().then(function (db) { return idbAll(db, META); });
+        }).then(function (rows) {
+            rows.sort(function (a, b) { return (b.val.added || 0) - (a.val.added || 0); });
+            L.push('— books: ' + rows.length + ' —');
+            // Check each book's stored blob vs recorded size + a tiny read test.
+            return rows.reduce(function (chain, r) {
+                return chain.then(function () {
+                    return openDB().then(function (db) { return idbGet(db, BOOKS, r.key); }).then(function (blob) {
+                        var meta = r.val;
+                        var line = '• ' + (meta.title || r.key).slice(0, 28) +
+                                   ' [' + meta.format + '] meta=' + fmtBytes(meta.size) +
+                                   ' stored=' + (blob ? fmtBytes(blob.size) : 'MISSING');
+                        if (blob && meta.size && blob.size !== meta.size) line += ' ⚠ size mismatch';
+                        if (!blob) { L.push(line); return; }
+                        // read-test: read first 16 bytes only (cheap)
+                        return blob.slice(0, 16).arrayBuffer().then(function (buf) {
+                            var b = new Uint8Array(buf);
+                            var magic = String.fromCharCode(b[0], b[1], b[2], b[3]);
+                            line += ' magic="' + magic.replace(/[^\x20-\x7e]/g, '.') + '"';
+                            // full-read test for THIS book if it's the one that failed
+                            L.push(line);
+                        }).catch(function (e) {
+                            L.push(line + ' ⚠ READ-FAIL: ' + e.name + ' ' + e.message);
+                        });
+                    });
+                });
+            }, Promise.resolve());
+        }).then(function () {
+            if (!_lastError) return;
+            L.push('— last open error —');
+            L.push((_lastError.title || _lastError.key || '?') + ' [' + _lastError.format + ']');
+            L.push(_lastError.message || '(no message)');
+            // Full-read test on the failing book: proves whether the whole file
+            // can be pulled into memory at all (the suspected limit).
+            return openDB().then(function (db) { return idbGet(db, BOOKS, _lastError.key); }).then(function (blob) {
+                if (!blob) { L.push('full-read: blob MISSING'); return; }
+                var t0 = Date.now();
+                return blob.arrayBuffer().then(function (buf) {
+                    L.push('full-read OK: ' + fmtBytes(buf.byteLength) + ' in ' + (Date.now() - t0) + 'ms');
+                }).catch(function (e) {
+                    L.push('full-read FAIL (arrayBuffer): ' + e.name + ' ' + e.message);
+                    // try blob: URL fetch route (what the new opener uses)
+                    var u = URL.createObjectURL(blob);
+                    return fetch(u).then(function (r) { return r.arrayBuffer(); }).then(function (buf) {
+                        L.push('blobURL-read OK: ' + fmtBytes(buf.byteLength));
+                    }).catch(function (e2) {
+                        L.push('blobURL-read FAIL: ' + e2.name + ' ' + e2.message);
+                    }).then(function () { try { URL.revokeObjectURL(u); } catch (_) {} });
+                });
+            });
+        }).then(function () {
+            // Show in an alert AND copy to clipboard so it can be pasted back.
+            var report = L.join('\n');
+            try { if (navigator.clipboard) navigator.clipboard.writeText(report); } catch (_) {}
+            alert(report + '\n\n(copied to clipboard)');
+        }).catch(function (e) {
+            alert('Diag failed: ' + (e && e.message));
+        });
+    }
+    $('btn-diag').addEventListener('click', runDiag);
+
     // ---- Boot ----
+    $('reader-ver').textContent = READER_VERSION;
     refreshLibrary();
 })();
 </script>
