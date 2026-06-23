@@ -261,7 +261,7 @@
 (function () {
     'use strict';
 
-    var READER_VERSION = 'v1.0.34';
+    var READER_VERSION = 'v1.0.35';
 
     // ---- Google Drive (reused OAuth client from the emulator page) ----
     var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
@@ -778,11 +778,12 @@
                         styleEls.forEach(function (st) {
                             jobs.push(rewriteCssUrls(st.textContent || '', pg.dir, urlMap, urls).then(function (out) { st.textContent = out; }));
                         });
-                        var totalBytes = 0;
+                        var totalBytes = 0, imgCount = 0;
                         imgEls.forEach(function (el) {
                             var ref = el.getAttribute('src') || el.getAttributeNS('http://www.w3.org/1999/xlink', 'href') || el.getAttribute('xlink:href') || el.getAttribute('href');
                             if (!ref || /^data:|^https?:/i.test(ref)) return;
                             var ip = resolvePath(pg.dir, decodeURIComponent(ref));
+                            imgCount++;
                             jobs.push(makeUrl(ip, urlMap, urls).then(function (u) {
                                 if (!u) return;
                                 if (byName[ip]) totalBytes += byName[ip].uncompSize || 0;
@@ -792,9 +793,19 @@
                                 } else { el.setAttribute('src', u); }
                             }));
                         });
+                        // Inline style="...url(...)..." (manga often sets the page
+                        // image as a CSS background on an element) — rewrite those too.
+                        var styledEls = Array.prototype.slice.call(doc.querySelectorAll('[style*="url("]'));
+                        styledEls.forEach(function (el) {
+                            var sv = el.getAttribute('style') || '';
+                            imgCount++;
+                            jobs.push(rewriteCssUrls(sv, pg.dir, urlMap, urls).then(function (out) {
+                                el.setAttribute('style', out);
+                            }));
+                        });
                         return Promise.all(jobs).then(function () {
                             if (seq !== loadSeq) return;
-                            recordPage({ extracted: totalBytes, imgs: imgEls.length });
+                            recordPage({ extracted: totalBytes, imgs: imgCount, resolved: urls.length });
                             iframe.onload = function () { if (seq === loadSeq) fitIframe(); };
                             iframe.srcdoc = '<!doctype html>' + doc.documentElement.outerHTML;
                         });
@@ -1684,7 +1695,7 @@
                 if (_epubInfo.page) {
                     var pg = _epubInfo.page;
                     L.push('current page #' + pg.n + ' ' + (pg.path || ''));
-                    L.push('  imgs=' + pg.imgs + ' extracted=' + pg.extracted +
+                    L.push('  imgs=' + pg.imgs + ' resolved=' + pg.resolved + ' extracted=' + pg.extracted +
                            ' fit=' + (pg.fit || pg.decoded || '?') +
                            (pg.fitError ? ' fitErr=' + pg.fitError : ''));
                 }
