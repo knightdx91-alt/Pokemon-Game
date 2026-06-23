@@ -258,7 +258,7 @@
 (function () {
     'use strict';
 
-    var READER_VERSION = 'v1.0.26';
+    var READER_VERSION = 'v1.0.27';
 
     // ---- Google Drive (reused OAuth client from the emulator page) ----
     var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
@@ -506,7 +506,10 @@
     }
 
     // ---- EPUB (epub.js) ----
+    var _epubInfo = null;   // captured for the 🛠 diagnostic
     function openEpub(key, blob, prog) {
+        _epubInfo = { key: key, steps: [] };
+        function step(s) { _epubInfo.steps.push(s); }
         return Promise.resolve().then(function () {
             if (typeof ePub === 'undefined') throw new Error('EPUB engine not loaded');
             // Open via a blob: URL so epub.js loads the archive itself instead of
@@ -514,16 +517,17 @@
             // books on memory-constrained devices). epub.js fetches + unzips it.
             var objUrl = URL.createObjectURL(blob);
             var book = ePub(objUrl, { openAs: 'epub' });
+            step('book created');
             var rendition = book.renderTo('viewer', { width: '100%', height: '100%', flow: 'paginated', spread: 'none' });
             var startCfi = prog && prog.cfi ? prog.cfi : undefined;
             // re-assert the theme on every chapter render (new iframe each time)
             rendition.hooks.content.register(function () { applyEpubTheme(); });
-            rendition.display(startCfi);
             rendition.on('relocated', function (loc) {
                 var pct = (loc && loc.start && typeof loc.start.percentage === 'number') ? loc.start.percentage : 0;
                 rPos.textContent = Math.round(pct * 100) + '%';
                 saveProgress(key, { type: 'epub', cfi: loc.start.cfi, pct: pct });
             });
+            rendition.on('rendered', function () { step('rendered section'); });
             // Tap zones sit OVER the iframe in the outer document — inside the
             // paginated iframe the content is transform-shifted, so clientX there
             // is unreliable and would flip direction after each turn.
@@ -538,8 +542,20 @@
                 prev: function () { rendition.prev(); }, next: function () { rendition.next(); }
             };
             applyReaderTheme();
-            // arrow-key support
-            rendition.on('keyup', onKey);
+            // Wait for the archive to parse, record spine info, then render the
+            // first (or last-read) section and surface any failure.
+            return book.ready.then(function () {
+                step('book.ready');
+                try { _epubInfo.spine = book.spine && book.spine.length; } catch (_) {}
+                try { _epubInfo.nav = book.navigation && book.navigation.toc && book.navigation.toc.length; } catch (_) {}
+                return rendition.display(startCfi);
+            }).then(function () {
+                step('display resolved');
+                rendition.on('keyup', onKey);   // arrow-key support
+            }).catch(function (err) {
+                step('ERROR: ' + (err && (err.message || err)));
+                throw new Error('EPUB render failed: ' + (err && (err.message || err)) + ' (tap 🛠 for details)');
+            });
         });
     }
 
@@ -1278,6 +1294,11 @@
                 });
             }, Promise.resolve());
         }).then(function () {
+            if (_epubInfo) {
+                L.push('— last EPUB open —');
+                L.push('spine sections: ' + _epubInfo.spine + ' · toc: ' + _epubInfo.nav);
+                L.push('steps: ' + (_epubInfo.steps || []).join(' → '));
+            }
             if (!_lastError) return;
             L.push('— last open error —');
             L.push((_lastError.title || _lastError.key || '?') + ' [' + _lastError.format + ']');
