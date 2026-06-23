@@ -499,9 +499,13 @@
 
     // ---- EPUB (epub.js) ----
     function openEpub(key, blob, prog) {
-        return readArrayBuffer(blob).then(function (buf) {
+        return Promise.resolve().then(function () {
             if (typeof ePub === 'undefined') throw new Error('EPUB engine not loaded');
-            var book = ePub(buf);
+            // Open via a blob: URL so epub.js loads the archive itself instead of
+            // us forcing the whole file into one ArrayBuffer (which fails on large
+            // books on memory-constrained devices). epub.js fetches + unzips it.
+            var objUrl = URL.createObjectURL(blob);
+            var book = ePub(objUrl, { openAs: 'epub' });
             var rendition = book.renderTo('viewer', { width: '100%', height: '100%', flow: 'paginated', spread: 'none' });
             var startCfi = prog && prog.cfi ? prog.cfi : undefined;
             // re-assert the theme on every chapter render (new iframe each time)
@@ -522,7 +526,7 @@
             viewer.appendChild(zoneL); viewer.appendChild(zoneR);
             current = {
                 key: key, rendition: rendition,
-                teardown: function () { try { book.destroy(); } catch (_) {} zoneL.remove(); zoneR.remove(); },
+                teardown: function () { try { book.destroy(); } catch (_) {} try { URL.revokeObjectURL(objUrl); } catch (_) {} zoneL.remove(); zoneR.remove(); },
                 prev: function () { rendition.prev(); }, next: function () { rendition.next(); }
             };
             applyReaderTheme();
@@ -533,10 +537,13 @@
 
     // ---- PDF (pdf.js) ----
     function openPdf(key, blob, prog) {
-        return readArrayBuffer(blob).then(function (buf) {
+        return Promise.resolve().then(function () {
             if (typeof pdfjsLib === 'undefined') throw new Error('PDF engine not loaded');
             applyReaderTheme();
-            return pdfjsLib.getDocument({ data: buf }).promise.then(function (pdf) {
+            // Load from a blob: URL so pdf.js streams pages on demand rather than
+            // requiring the entire file as one in-memory ArrayBuffer.
+            var objUrl = URL.createObjectURL(blob);
+            return pdfjsLib.getDocument({ url: objUrl }).promise.then(function (pdf) {
                 var pageNum = (prog && prog.page) ? Math.min(prog.page, pdf.numPages) : 1;
                 var canvas = document.createElement('canvas');
                 viewer.innerHTML = ''; viewer.appendChild(canvas);
@@ -562,7 +569,7 @@
                 }
                 render(pageNum);
                 current = {
-                    key: key, teardown: function () { try { pdf.destroy(); } catch (_) {} },
+                    key: key, teardown: function () { try { pdf.destroy(); } catch (_) {} try { URL.revokeObjectURL(objUrl); } catch (_) {} },
                     prev: function () { if (pageNum > 1) render(--pageNum); },
                     next: function () { if (pageNum < pdf.numPages) render(++pageNum); }
                 };
