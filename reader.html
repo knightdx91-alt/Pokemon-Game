@@ -97,6 +97,9 @@
     #viewer[data-theme="black"]   { background: #000000; }
     #viewer[data-theme="black"]   .txt { color: #c8c8d0; }
     #viewer .cbz-img, #viewer canvas { display: block; margin: 0 auto; max-width: 100%; }
+    /* Stacked strips of one manga page must sit flush (no gaps between slices). */
+    #viewer .manga-page { line-height: 0; font-size: 0; }
+    #viewer .manga-page .cbz-img { margin: 0 auto; }
     .nav-zone { position: absolute; top: 0; bottom: 0; width: 50%; z-index: 5; cursor: pointer;
         -webkit-tap-highlight-color: transparent; user-select: none; }
     .nav-zone.left { left: 0; } .nav-zone.right { right: 0; }
@@ -258,7 +261,7 @@
 (function () {
     'use strict';
 
-    var READER_VERSION = 'v1.0.32';
+    var READER_VERSION = 'v1.0.33';
 
     // ---- Google Drive (reused OAuth client from the emulator page) ----
     var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
@@ -602,71 +605,165 @@
         });
     }
 
-    /* Manga / image-heavy EPUB fallback. An EPUB is just a ZIP, and manga EPUBs
-       are basically a CBZ with XHTML wrappers. We read the directory, then show
-       page images one at a time via the random-access reader — so a 330 MB book
-       works on a phone without ever holding the whole file in memory. */
+    // Read a ZIP entry as UTF-8 text.
+    function readTextEntry(blob, entry) {
+        return readZipEntry(blob, entry).then(function (bytes) { return new TextDecoder().decode(bytes); });
+    }
+    function dirOf(path) { var i = path.lastIndexOf('/'); return i < 0 ? '' : path.slice(0, i); }
+    // Resolve a relative href against a base directory into a normalized path.
+    function resolvePath(baseDir, rel) {
+        rel = String(rel).replace(/[?#].*$/, '');
+        var stack = rel.charAt(0) === '/' ? [] : (baseDir ? baseDir.split('/').filter(Boolean) : []);
+        rel.split('/').forEach(function (s) {
+            if (s === '' || s === '.') return;
+            if (s === '..') stack.pop(); else stack.push(s);
+        });
+        return stack.join('/');
+    }
+    function imgRefsFromDoc(doc) {
+        var refs = [];
+        var nodes = doc.querySelectorAll('img, image');
+        for (var i = 0; i < nodes.length; i++) {
+            var el = nodes[i];
+            var src = el.getAttribute('src') ||
+                      el.getAttributeNS('http://www.w3.org/1999/xlink', 'href') ||
+                      el.getAttribute('xlink:href') || el.getAttribute('href');
+            if (src) refs.push(decodeURIComponent(src));
+        }
+        return refs;
+    }
+
+    /* Manga / image-heavy EPUB fallback. An EPUB is just a ZIP; we read it with
+       the random-access reader so a 330 MB book works on a phone without ever
+       holding the whole file in memory. Crucially we follow the EPUB's SPINE:
+       each XHTML page lists the image(s) it stacks, so split pages (a page cut
+       into horizontal strips like image_0003_01/_02) are shown together as one
+       page instead of one strip at a time. */
     function openMangaEpub(key, blob, prog) {
         showOverlay('Opening manga…');
         if (typeof fflate === 'undefined') throw new Error('Unzip engine not loaded');
         return parseZipCentralDir(blob).then(function (entries) {
-            var imgs = entries.filter(function (e) {
-                return /\.(jpe?g|png|gif|webp|bmp|avif)$/i.test(e.name);
-            }).sort(function (a, b) { return naturalCmp(a.name, b.name); });
-            if (!imgs.length) throw new Error('No page images found in EPUB');
-            if (_epubInfo) _epubInfo.steps.push('manga pager: ' + imgs.length + ' images (random-access)');
+            var byName = {};
+            entries.forEach(function (e) { byName[e.name] = e; });
+            var isImg = function (n) { return /\.(jpe?g|png|gif|webp|bmp|avif)$/i.test(n); };
 
-            var idx = (prog && typeof prog.index === 'number') ? Math.min(prog.index, imgs.length - 1) : 0;
-            var img = document.createElement('img');
-            img.className = 'cbz-img';
-            viewer.innerHTML = ''; viewer.appendChild(img);
-            var curUrl = null, loadSeq = 0;
-            // Record the currently-shown page for the 🛠 diagnostic so we can see
-            // exactly what a "not loading all the way" page actually contains.
-            function recordPage(extra) {
-                if (!_epubInfo) return;
-                var e = imgs[idx];
-                _epubInfo.page = Object.assign({
-                    n: idx + 1, name: e.name, method: e.method,
-                    compSize: e.compSize, uncompSize: e.uncompSize
-                }, extra || {});
-            }
-            img.addEventListener('load', function () {
-                recordPage({ decoded: img.naturalWidth + 'x' + img.naturalHeight });
-            });
-            img.addEventListener('error', function () {
-                recordPage({ decoded: 'DECODE-ERROR' });
-            });
-            function load(seq, attempt) {
-                return readZipEntry(blob, imgs[idx]).then(function (bytes) {
-                    if (seq !== loadSeq) return;   // a newer page was requested
-                    recordPage({ extracted: bytes.length });
-                    if (curUrl) { try { URL.revokeObjectURL(curUrl); } catch (_) {} }
-                    curUrl = URL.createObjectURL(new Blob([bytes]));
-                    img.src = curUrl;
-                    viewer.scrollTop = 0;
-                }).catch(function (e) {
-                    if (seq !== loadSeq) return;
-                    if (attempt < 2) return load(seq, attempt + 1);   // one retry
-                    recordPage({ extractError: e.message });
-                    rPos.textContent = 'page ' + (idx + 1) + ' failed: ' + e.message;
+            // Build the list of "pages", each an array of image entries, by
+            // walking container.xml → OPF → spine → each XHTML's images.
+            function buildFromSpine() {
+                var container = byName['META-INF/container.xml'];
+                if (!container) throw new Error('no container.xml');
+                return readTextEntry(blob, container).then(function (cx) {
+                    var cdoc = new DOMParser().parseFromString(cx, 'application/xml');
+                    var rf = cdoc.querySelector('rootfile');
+                    var opfPath = rf && rf.getAttribute('full-path');
+                    if (!opfPath || !byName[opfPath]) throw new Error('no OPF');
+                    return readTextEntry(blob, byName[opfPath]).then(function (ox) {
+                        var odoc = new DOMParser().parseFromString(ox, 'application/xml');
+                        var opfDir = dirOf(opfPath);
+                        var manifest = {};
+                        odoc.querySelectorAll('manifest > item').forEach(function (it) {
+                            manifest[it.getAttribute('id')] = {
+                                href: it.getAttribute('href'),
+                                type: it.getAttribute('media-type') || ''
+                            };
+                        });
+                        var spine = [];
+                        odoc.querySelectorAll('spine > itemref').forEach(function (ir) {
+                            var it = manifest[ir.getAttribute('idref')];
+                            if (it) spine.push(it);
+                        });
+                        // For each spine doc, read it and collect its image entries.
+                        var pages = [];
+                        return spine.reduce(function (chain, it) {
+                            return chain.then(function () {
+                                var path = resolvePath(opfDir, it.href);
+                                var ent = byName[path];
+                                if (!ent) return;
+                                // Image item directly in spine (rare): treat as a page.
+                                if (isImg(path)) { pages.push([ent]); return; }
+                                return readTextEntry(blob, ent).then(function (html) {
+                                    var doc = new DOMParser().parseFromString(html, 'text/html');
+                                    var docDir = dirOf(path);
+                                    var pageEntries = [];
+                                    imgRefsFromDoc(doc).forEach(function (ref) {
+                                        var ip = resolvePath(docDir, ref);
+                                        if (byName[ip]) pageEntries.push(byName[ip]);
+                                    });
+                                    if (pageEntries.length) pages.push(pageEntries);
+                                }).catch(function () {});
+                            });
+                        }, Promise.resolve()).then(function () { return pages; });
+                    });
                 });
             }
-            function show(i) {
-                idx = Math.max(0, Math.min(imgs.length - 1, i));
-                rPos.textContent = 'page ' + (idx + 1) + '/' + imgs.length + '…';
-                saveProgress(key, { type: 'cbz', index: idx, pct: (idx + 1) / imgs.length });
-                var seq = ++loadSeq;
-                load(seq, 0).then(function () {
-                    if (seq === loadSeq && img.src) rPos.textContent = (idx + 1) + ' / ' + imgs.length;
-                });
-            }
-            show(idx);
-            current = {
-                key: key,
-                teardown: function () { if (curUrl) { try { URL.revokeObjectURL(curUrl); } catch (_) {} } },
-                prev: function () { show(idx - 1); }, next: function () { show(idx + 1); }
-            };
+
+            return buildFromSpine().catch(function () { return []; }).then(function (pages) {
+                // Fallback: if the spine yielded nothing, treat each image as a page.
+                if (!pages || !pages.length) {
+                    pages = entries.filter(function (e) { return isImg(e.name); })
+                                   .sort(function (a, b) { return naturalCmp(a.name, b.name); })
+                                   .map(function (e) { return [e]; });
+                    if (_epubInfo) _epubInfo.steps.push('manga pager (flat): ' + pages.length + ' pages');
+                } else if (_epubInfo) {
+                    _epubInfo.steps.push('manga pager (spine): ' + pages.length + ' pages');
+                }
+                if (!pages.length) throw new Error('No page images found in EPUB');
+
+                var idx = (prog && typeof prog.index === 'number') ? Math.min(prog.index, pages.length - 1) : 0;
+                var urls = [], loadSeq = 0;
+                function clearUrls() { urls.forEach(function (u) { try { URL.revokeObjectURL(u); } catch (_) {} }); urls = []; }
+                function recordPage(extra) {
+                    if (!_epubInfo) return;
+                    var pg = pages[idx];
+                    _epubInfo.page = Object.assign(_epubInfo.page && _epubInfo.page.n === idx + 1 ? _epubInfo.page : {}, {
+                        n: idx + 1, strips: pg.length, names: pg.map(function (e) { return e.name.split('/').pop(); }).join(',')
+                    }, extra || {});
+                }
+                function load(seq) {
+                    var pg = pages[idx];
+                    // Read every strip of this page, then render them stacked.
+                    return Promise.all(pg.map(function (ent) {
+                        return readZipEntry(blob, ent).then(function (bytes) {
+                            return { ent: ent, url: URL.createObjectURL(new Blob([bytes])), len: bytes.length };
+                        });
+                    })).then(function (parts) {
+                        if (seq !== loadSeq) { parts.forEach(function (p) { try { URL.revokeObjectURL(p.url); } catch (_) {} }); return; }
+                        clearUrls();
+                        var frag = document.createElement('div');
+                        frag.className = 'manga-page';
+                        var decoded = 0;
+                        parts.forEach(function (p) {
+                            urls.push(p.url);
+                            var im = document.createElement('img');
+                            im.className = 'cbz-img';
+                            im.addEventListener('load', function () { decoded++; recordPage({ decoded: decoded + '/' + parts.length + ' last=' + im.naturalWidth + 'x' + im.naturalHeight }); });
+                            im.addEventListener('error', function () { recordPage({ decoded: 'DECODE-ERROR' }); });
+                            im.src = p.url;
+                            frag.appendChild(im);
+                        });
+                        recordPage({ extracted: parts.reduce(function (a, p) { return a + p.len; }, 0) });
+                        viewer.innerHTML = ''; viewer.appendChild(frag);
+                        viewer.scrollTop = 0;
+                    });
+                }
+                function show(i) {
+                    idx = Math.max(0, Math.min(pages.length - 1, i));
+                    rPos.textContent = 'page ' + (idx + 1) + '/' + pages.length + '…';
+                    saveProgress(key, { type: 'cbz', index: idx, pct: (idx + 1) / pages.length });
+                    var seq = ++loadSeq;
+                    load(seq).then(function () {
+                        if (seq === loadSeq) rPos.textContent = (idx + 1) + ' / ' + pages.length;
+                    }).catch(function (e) {
+                        if (seq === loadSeq) rPos.textContent = 'page ' + (idx + 1) + ' failed: ' + e.message;
+                    });
+                }
+                show(idx);
+                current = {
+                    key: key,
+                    teardown: clearUrls,
+                    prev: function () { show(idx - 1); }, next: function () { show(idx + 1); }
+                };
+            });
         });
     }
 
@@ -1503,10 +1600,9 @@
                 L.push('steps: ' + (_epubInfo.steps || []).join(' → '));
                 if (_epubInfo.page) {
                     var pg = _epubInfo.page;
-                    L.push('current page #' + pg.n + ' ' + (pg.name || '').split('/').pop());
-                    L.push('  method=' + pg.method + ' comp=' + pg.compSize + ' uncomp=' + pg.uncompSize +
-                           ' extracted=' + pg.extracted + (pg.extractError ? ' err=' + pg.extractError : '') +
-                           ' decoded=' + pg.decoded);
+                    L.push('current page #' + pg.n + ' (' + pg.strips + ' strip(s)): ' + pg.names);
+                    L.push('  extracted=' + pg.extracted + ' decoded=' + pg.decoded +
+                           (pg.extractError ? ' err=' + pg.extractError : ''));
                 }
             }
             if (!_lastError) return;
