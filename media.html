@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Media Downloader — RetroPlay</title>
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        background: #0d0d0f; color: #e8e8f0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+        min-height: 100vh; padding: 24px 16px 60px;
+        display: flex; flex-direction: column; align-items: center; gap: 18px;
+    }
+    a.back { align-self: flex-start; color: #7c6af7; text-decoration: none; font-size: 13px; }
+    .logo-title {
+        font-size: 24px; font-weight: 700; letter-spacing: -0.5px;
+        background: linear-gradient(135deg,#7c6af7 0%,#e06af7 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        text-align: center;
+    }
+    .logo-sub { font-size: 10px; color: #4a4a5a; letter-spacing: 3px; text-transform: uppercase; text-align: center; margin-top: 4px; }
+    .panel {
+        width: 100%; max-width: 460px; background: #16161a; border: 1px solid #2a2a35;
+        border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px;
+    }
+    label { font-size: 11px; color: #8a8a9a; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 5px; }
+    input[type=text], input[type=url], textarea {
+        width: 100%; background: #0d0d0f; border: 1px solid #2a2a35; border-radius: 10px;
+        color: #e8e8f0; padding: 11px 12px; font-size: 14px; font-family: inherit;
+    }
+    textarea { resize: vertical; min-height: 64px; font-family: "Courier New", monospace; font-size: 12px; }
+    input:focus, textarea:focus { outline: none; border-color: #7c6af7; }
+    .fmt { display: flex; gap: 8px; }
+    .fmt button {
+        flex: 1; padding: 11px; border-radius: 10px; border: 1px solid #2a2a35;
+        background: #0d0d0f; color: #8a8a9a; font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .fmt button.on { border-color: #7c6af7; background: #1e1830; color: #e8e8f0; }
+    .go {
+        width: 100%; padding: 14px; border: none; border-radius: 12px; cursor: pointer;
+        background: linear-gradient(135deg,#7c6af7 0%,#e06af7 100%); color: #fff;
+        font-size: 15px; font-weight: 700;
+    }
+    .go:disabled { opacity: .5; cursor: default; }
+    details { border-top: 1px solid #1e1e24; padding-top: 10px; }
+    summary { cursor: pointer; font-size: 12px; color: #8a8a9a; }
+    .hint { font-size: 11px; color: #4a4a5a; line-height: 1.5; }
+    .status {
+        width: 100%; max-width: 460px; min-height: 20px; font-size: 13px;
+        text-align: center; color: #b8b8c8;
+    }
+    .status.err { color: #f77; }
+    .status.ok { color: #6ad07c; }
+    .thumb { width: 100%; border-radius: 10px; margin-top: 4px; display: none; }
+    .meta { font-size: 12px; color: #b8b8c8; }
+    .save-row button {
+        width: 100%; padding: 10px; border: 1px solid #2a2a35; border-radius: 10px;
+        background: #0d0d0f; color: #e8e8f0; font-size: 13px; cursor: pointer; margin-top: 6px;
+    }
+</style>
+</head>
+<body>
+<a class="back" href="index.html?v=__CACHE_BUST__">‹ Back to hub</a>
+<div>
+    <div class="logo-title">Media Downloader</div>
+    <div class="logo-sub">Video link → MP4 / MP3 → Drive</div>
+</div>
+
+<div class="panel">
+    <div>
+        <label>Video link</label>
+        <input type="url" id="url" placeholder="https://www.youtube.com/watch?v=…" autocomplete="off">
+    </div>
+
+    <div>
+        <label>Format</label>
+        <div class="fmt">
+            <button id="fmt-mp4" class="on" data-fmt="mp4">🎬 MP4 video</button>
+            <button id="fmt-mp3" data-fmt="mp3">🎵 MP3 audio</button>
+        </div>
+    </div>
+
+    <button class="go" id="go">Download &amp; save to Drive</button>
+    <div class="save-row">
+        <button id="dl-device" type="button">⬇ Just download to this device</button>
+    </div>
+
+    <img class="thumb" id="thumb" alt="">
+    <div class="meta" id="meta"></div>
+
+    <details id="settings">
+        <summary>⚙ Backend &amp; cookies</summary>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px;">
+            <div>
+                <label>Backend URL</label>
+                <input type="url" id="backend" placeholder="https://retroplay-media.onrender.com">
+                <p class="hint">Deploy <code>media-backend/</code> to Render (free) — see its README. The hub can't download videos without it.</p>
+            </div>
+            <div>
+                <label>Backend access key (optional)</label>
+                <input type="text" id="key" placeholder="must match the server's ACCESS_KEY">
+            </div>
+            <div>
+                <label>YouTube cookies (optional)</label>
+                <textarea id="cookies" placeholder="Paste Netscape-format cookies.txt here if a video is age/bot-gated. Refresh when they stop working."></textarea>
+                <p class="hint">Use a “Get cookies.txt” browser extension on youtube.com, paste here. Sent per request; the server deletes them right after.</p>
+            </div>
+        </div>
+    </details>
+</div>
+
+<div class="status" id="status"></div>
+
+<script>
+var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
+var DRIVE_RW  = 'https://www.googleapis.com/auth/drive.file';
+
+var $ = function (id) { return document.getElementById(id); };
+var fmt = 'mp4';
+var lastBlob = null, lastName = null;
+
+// ---- persisted settings ----
+['backend', 'key', 'cookies'].forEach(function (k) {
+    var el = $(k);
+    el.value = localStorage.getItem('media_' + k) || '';
+    el.addEventListener('input', function () { localStorage.setItem('media_' + k, el.value); });
+});
+if ($('backend').value) $('settings').open = false; else $('settings').open = true;
+
+// ---- format toggle ----
+function setFmt(f) {
+    fmt = f;
+    $('fmt-mp4').classList.toggle('on', f === 'mp4');
+    $('fmt-mp3').classList.toggle('on', f === 'mp3');
+}
+$('fmt-mp4').onclick = function () { setFmt('mp4'); };
+$('fmt-mp3').onclick = function () { setFmt('mp3'); };
+
+function status(msg, cls) { var s = $('status'); s.textContent = msg || ''; s.className = 'status' + (cls ? ' ' + cls : ''); }
+
+function backendBase() {
+    var b = ($('backend').value || '').trim().replace(/\/+$/, '');
+    return b;
+}
+
+function fetchMedia() {
+    var url = ($('url').value || '').trim();
+    if (!url) { status('Paste a video link first.', 'err'); return Promise.reject(new Error('no url')); }
+    var base = backendBase();
+    if (!base) { $('settings').open = true; status('Set the Backend URL first (⚙ below).', 'err'); return Promise.reject(new Error('no backend')); }
+
+    status('Contacting backend… (free servers can take ~30–60s to wake)');
+    var headers = { 'Content-Type': 'application/json' };
+    if ($('key').value.trim()) headers['X-Access-Key'] = $('key').value.trim();
+
+    return fetch(base + '/api/download', {
+        method: 'POST', headers: headers,
+        body: JSON.stringify({ url: url, format: fmt, cookies: $('cookies').value || null })
+    }).then(function (r) {
+        if (!r.ok) return r.text().then(function (t) { throw new Error('Backend: ' + r.status + ' ' + t); });
+        // derive filename from Content-Disposition
+        var cd = r.headers.get('Content-Disposition') || '';
+        var m = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(cd);
+        lastName = m ? decodeURIComponent(m[1]) : ('media.' + fmt);
+        status('Downloading from backend…');
+        return r.blob();
+    }).then(function (blob) {
+        lastBlob = blob;
+        status('Got ' + lastName + ' (' + (blob.size / 1048576).toFixed(1) + ' MB).', 'ok');
+        return blob;
+    });
+}
+
+// ---- Google Drive (same flow as reader.html / emulator.html) ----
+function loadGoogleScripts(cb) {
+    if (window._gReady) { cb(); return; }
+    var pending = 2; function done() { if (--pending === 0) { window._gReady = true; cb(); } }
+    var a = document.createElement('script'); a.src = 'https://apis.google.com/js/api.js'; a.onload = done; a.onerror = done; document.body.appendChild(a);
+    var b = document.createElement('script'); b.src = 'https://accounts.google.com/gsi/client'; b.onload = done; b.onerror = done; document.body.appendChild(b);
+}
+function driveToken() {
+    return new Promise(function (res, rej) {
+        loadGoogleScripts(function () {
+            gapi.load('client', function () {
+                google.accounts.oauth2.initTokenClient({
+                    client_id: CLIENT_ID, scope: DRIVE_RW,
+                    callback: function (resp) { resp.error ? rej(new Error(resp.error)) : res(resp.access_token); }
+                }).requestAccessToken();
+            });
+        });
+    });
+}
+function chooseDriveFolder(token) {
+    return new Promise(function (resolve, reject) {
+        var name = prompt('Save into a NEW folder? Type a folder name to create it.\n\nLeave blank to pick an existing folder (or My Drive root).', '');
+        if (name === null) { reject(new Error('Cancelled')); return; }
+        name = name.trim();
+        if (name) {
+            status('Creating folder · ' + name);
+            return createDriveFolder(name, token).then(resolve).catch(reject);
+        }
+        loadGoogleScripts(function () {
+            gapi.load('picker', function () {
+                var view = new google.picker.DocsView(google.picker.ViewId.FOLDERS)
+                    .setSelectFolderEnabled(true).setMimeTypes('application/vnd.google-apps.folder');
+                new google.picker.PickerBuilder().addView(view)
+                    .setTitle('Choose destination folder (close to use My Drive)')
+                    .setOAuthToken(token)
+                    .setCallback(function (data) {
+                        var action = data[google.picker.Response.ACTION];
+                        if (action === google.picker.Action.PICKED) resolve(data[google.picker.Response.DOCUMENTS][0][google.picker.Document.ID]);
+                        else if (action === google.picker.Action.CANCEL) resolve(null);
+                    }).build().setVisible(true);
+            });
+        });
+    });
+}
+function createDriveFolder(name, token) {
+    return fetch('https://www.googleapis.com/drive/v3/files?fields=id', {
+        method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, mimeType: 'application/vnd.google-apps.folder' })
+    }).then(function (r) {
+        if (!r.ok) return r.text().then(function (t) { throw new Error('Folder create failed: ' + t); });
+        return r.json().then(function (j) { return j.id; });
+    });
+}
+function uploadToDrive(blob, name, token, parentId) {
+    var meta = { name: name }; if (parentId) meta.parents = [parentId];
+    var form = new FormData();
+    form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
+    form.append('file', blob);
+    return fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name', {
+        method: 'POST', headers: { Authorization: 'Bearer ' + token }, body: form
+    }).then(function (r) {
+        if (!r.ok) return r.text().then(function (t) { throw new Error('HTTP ' + r.status + ' ' + t); });
+        return r.json();
+    });
+}
+
+// ---- buttons ----
+$('go').onclick = function () {
+    $('go').disabled = true;
+    fetchMedia().then(function (blob) {
+        status('Authorizing Google Drive…');
+        return driveToken().then(function (t) {
+            return chooseDriveFolder(t).then(function (parentId) {
+                status('Uploading to Drive…');
+                return uploadToDrive(blob, lastName, t, parentId);
+            });
+        });
+    }).then(function (file) {
+        status('Saved to Google Drive: ' + (file && file.name ? file.name : lastName), 'ok');
+    }).catch(function (e) {
+        if (e && e.message && e.message !== 'no url' && e.message !== 'no backend')
+            status('Failed: ' + e.message, 'err');
+    }).finally(function () { $('go').disabled = false; });
+};
+
+$('dl-device').onclick = function () {
+    var p = lastBlob ? Promise.resolve(lastBlob) : fetchMedia();
+    p.then(function (blob) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob); a.download = lastName;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 30000);
+        status('Downloaded to device: ' + lastName, 'ok');
+    }).catch(function (e) {
+        if (e && e.message && e.message !== 'no url' && e.message !== 'no backend')
+            status('Failed: ' + e.message, 'err');
+    });
+};
+</script>
+</body>
+</html>

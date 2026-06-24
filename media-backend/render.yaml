@@ -1,0 +1,18 @@
+# Render Blueprint — deploy with one click from the repo.
+# In Render: New > Blueprint > pick this repo. Render reads this file.
+services:
+  - type: web
+    name: retroplay-media
+    runtime: docker
+    dockerfilePath: ./media-backend/Dockerfile
+    dockerContext: ./media-backend
+    plan: free
+    envVars:
+      # Set a long random string here in the Render dashboard, then paste the
+      # same value into media.html's "Backend access key" field. Leave unset to
+      # run the service open (anyone with the URL can use it).
+      - key: ACCESS_KEY
+        sync: false
+      # Optional: default YouTube cookies (Netscape format) for gated videos.
+      - key: YT_COOKIES
+        sync: false
