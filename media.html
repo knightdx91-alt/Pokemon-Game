@@ -117,10 +117,16 @@
                 2. Set capture mode to <b>“Include cookies and credentials”</b><br>
                 3. Tap <b>Start Logging</b> → choose a save location<br>
                 4. New tab → open <b>youtube.com</b> (signed in), let it load<br>
-                5. Back to the net-export tab → <b>Stop Logging</b><br>
-                6. Pick that <b>.json</b> log file here:</p>
-                <input type="file" id="netlog" accept=".json,application/json">
-                <p class="hint">The file is read locally in your browser — only the extracted YouTube/Google cookies are kept; nothing else from the log leaves your device.</p>
+                5. Back to the net-export tab → <b>Stop Logging</b> → when asked, <b>Save to Google Drive</b><br>
+                6. Tap the button below and pick that <b>.json</b> log from your Drive:</p>
+                <div class="save-row">
+                    <button id="netlog-drive" type="button">📥 Import netlog from Google Drive</button>
+                </div>
+                <p class="hint">On a phone, net-export saves the log to Drive — pick it here, no file upload needed.</p>
+                <details><summary class="hint" style="cursor:pointer">…or pick a local .json file (desktop)</summary>
+                    <input type="file" id="netlog" accept=".json,application/json" style="margin-top:8px">
+                </details>
+                <p class="hint">The log is read in your browser — only the extracted YouTube/Google cookies are kept; nothing else leaves your device.</p>
             </div>
         </div>
     </details>
@@ -232,15 +238,44 @@ $('netlog').addEventListener('change', function (ev) {
     status('Reading net-export log (' + (f.size / 1048576).toFixed(1) + ' MB)…');
     var fr = new FileReader();
     fr.onerror = function () { status('Could not read that file.', 'err'); };
-    fr.onload = function () {
-        var jar = parseNetlogText(String(fr.result));
-        var n = 0; Object.keys(jar).forEach(function (d) { n += Object.keys(jar[d]).length; });
-        if (!n) { status('No YouTube/Google cookies found. Did you pick “Include cookies and credentials” before logging?', 'err'); return; }
-        var txt = netscape(jar);
-        $('cookies').value = txt; localStorage.setItem('media_cookies', txt);
-        status('Imported ' + n + ' cookies from the log. Now tap “Save to backend”.', 'ok');
-    };
+    fr.onload = function () { useNetlogText(String(fr.result)); };
     fr.readAsText(f);
+});
+function useNetlogText(text) {
+    var jar = parseNetlogText(text);
+    var n = 0; Object.keys(jar).forEach(function (d) { n += Object.keys(jar[d]).length; });
+    if (!n) { status('No YouTube/Google cookies found. Did you pick “Include cookies and credentials” before logging?', 'err'); return; }
+    var txt = netscape(jar);
+    $('cookies').value = txt; localStorage.setItem('media_cookies', txt);
+    status('Imported ' + n + ' cookies from the log. Now tap “Save to backend”.', 'ok');
+}
+
+// ---- pick the net-export log straight from Google Drive (no local file) ----
+$('netlog-drive').addEventListener('click', function () {
+    status('Authorizing Google Drive…');
+    driveToken().then(function (token) {
+        loadGoogleScripts(function () {
+            gapi.load('picker', function () {
+                var view = new google.picker.DocsView(google.picker.ViewId.DOCS)
+                    .setIncludeFolders(true).setSelectFolderEnabled(false);
+                new google.picker.PickerBuilder().addView(view)
+                    .setTitle('Pick your net-export .json log')
+                    .setOAuthToken(token)
+                    .setCallback(function (data) {
+                        if (data[google.picker.Response.ACTION] !== google.picker.Action.PICKED) return;
+                        var doc = data[google.picker.Response.DOCUMENTS][0];
+                        var id = doc[google.picker.Document.ID];
+                        status('Downloading log from Drive…');
+                        fetch('https://www.googleapis.com/drive/v3/files/' + id + '?alt=media', {
+                            headers: { Authorization: 'Bearer ' + token }
+                        }).then(function (r) {
+                            if (!r.ok) return r.text().then(function (t) { throw new Error('Drive: ' + r.status + ' ' + t); });
+                            return r.text();
+                        }).then(useNetlogText).catch(function (e) { status('Failed: ' + e.message, 'err'); });
+                    }).build().setVisible(true);
+            });
+        });
+    }).catch(function (e) { status('Drive auth failed: ' + e.message, 'err'); });
 });
 
 // ---- store cookies on the backend (shared by all devices) ----
