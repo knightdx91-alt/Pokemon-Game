@@ -35,6 +35,14 @@ import yt_dlp
 
 ACCESS_KEY = os.environ.get("ACCESS_KEY", "").strip()
 DEFAULT_COOKIES = os.environ.get("YT_COOKIES", "")
+# YouTube blocks datacenter IPs with "confirm you're not a bot". Requesting via
+# certain internal player clients often slips past that without any login.
+# Override the order with YT_PLAYER_CLIENTS (comma-separated) if YouTube shifts.
+PLAYER_CLIENTS = [
+    c.strip() for c in
+    os.environ.get("YT_PLAYER_CLIENTS", "android,ios,tv,web_safari,default").split(",")
+    if c.strip()
+]
 
 app = FastAPI(title="RetroPlay media backend")
 
@@ -61,6 +69,15 @@ def _safe_name(s: str, fallback: str = "media") -> str:
     s = re.sub(r"[^\w\-. ]", "_", (s or "").strip())
     s = re.sub(r"\s+", " ", s).strip()
     return s[:120] or fallback
+
+
+def _base_opts():
+    """Shared yt-dlp options, incl. the player-client bypass for YouTube."""
+    return {
+        "quiet": True,
+        "noplaylist": True,
+        "extractor_args": {"youtube": {"player_client": PLAYER_CLIENTS}},
+    }
 
 
 def _cookiefile(cookies: str):
@@ -90,7 +107,8 @@ def root():
 def info(request: Request, url: str):
     _check_key(request)
     cf = _cookiefile("")
-    opts = {"quiet": True, "skip_download": True, "noplaylist": True}
+    opts = _base_opts()
+    opts["skip_download"] = True
     if cf:
         opts["cookiefile"] = cf
     try:
@@ -127,12 +145,9 @@ def download(request: Request, body: DownloadBody):
     workdir = tempfile.mkdtemp(prefix="rp_dl_")
     cf = _cookiefile(body.cookies or "")
 
-    opts = {
-        "quiet": True,
-        "noplaylist": True,
-        "outtmpl": os.path.join(workdir, "%(title)s.%(ext)s"),
-        "restrictfilenames": False,
-    }
+    opts = _base_opts()
+    opts["outtmpl"] = os.path.join(workdir, "%(title)s.%(ext)s")
+    opts["restrictfilenames"] = False
     if cf:
         opts["cookiefile"] = cf
 
