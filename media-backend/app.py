@@ -35,6 +35,17 @@ import yt_dlp
 
 ACCESS_KEY = os.environ.get("ACCESS_KEY", "").strip()
 DEFAULT_COOKIES = os.environ.get("YT_COOKIES", "")
+# Cookies pushed at runtime via POST /api/set-cookies are persisted here so all
+# devices share them (survives until the free instance restarts/redeploys, at
+# which point just push again). Falls back to the YT_COOKIES env var.
+STORED_COOKIES_PATH = os.environ.get("STORED_COOKIES_PATH", "/tmp/yt_cookies.txt")
+
+
+def _load_stored_cookies() -> str:
+    with contextlib.suppress(OSError):
+        with open(STORED_COOKIES_PATH) as f:
+            return f.read()
+    return ""
 # YouTube blocks datacenter IPs with "confirm you're not a bot". Requesting via
 # certain internal player clients often slips past that without any login.
 # Override the order with YT_PLAYER_CLIENTS (comma-separated) if YouTube shifts.
@@ -81,8 +92,11 @@ def _base_opts():
 
 
 def _cookiefile(cookies: str):
-    """Write cookies (Netscape format) to a temp file; return its path or None."""
-    cookies = (cookies or DEFAULT_COOKIES or "").strip()
+    """Write cookies (Netscape format) to a temp file; return its path or None.
+
+    Priority: per-request cookies > server-stored cookies > YT_COOKIES env var.
+    """
+    cookies = (cookies or _load_stored_cookies() or DEFAULT_COOKIES or "").strip()
     if not cookies:
         return None
     fd, path = tempfile.mkstemp(suffix=".txt", prefix="cookies_")
@@ -101,6 +115,34 @@ def root():
         "GET  /api/info?url=...\n"
         + ("Access key REQUIRED (X-Access-Key).\n" if ACCESS_KEY else "No access key set (open).\n")
     )
+
+
+class CookiesBody(BaseModel):
+    cookies: str
+
+
+@app.post("/api/set-cookies")
+def set_cookies(request: Request, body: CookiesBody):
+    """Store cookies server-side so every device shares them. Protected by key."""
+    _check_key(request)
+    data = (body.cookies or "").strip()
+    if not data:
+        # empty body clears stored cookies
+        with contextlib.suppress(OSError):
+            os.remove(STORED_COOKIES_PATH)
+        return {"stored": False, "length": 0}
+    if not data.startswith("# Netscape"):
+        data = "# Netscape HTTP Cookie File\n" + data
+    with open(STORED_COOKIES_PATH, "w") as f:
+        f.write(data + "\n")
+    return {"stored": True, "length": len(data)}
+
+
+@app.get("/api/cookies-status")
+def cookies_status(request: Request):
+    _check_key(request)
+    stored = _load_stored_cookies()
+    return {"stored": bool(stored.strip()), "length": len(stored), "env_fallback": bool(DEFAULT_COOKIES)}
 
 
 @app.get("/api/info")

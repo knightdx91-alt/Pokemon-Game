@@ -102,9 +102,25 @@
                 <input type="text" id="key" placeholder="must match the server's ACCESS_KEY">
             </div>
             <div>
-                <label>YouTube cookies (optional)</label>
-                <textarea id="cookies" placeholder="Paste Netscape-format cookies.txt here if a video is age/bot-gated. Refresh when they stop working."></textarea>
-                <p class="hint">Use a “Get cookies.txt” browser extension on youtube.com, paste here. Sent per request; the server deletes them right after.</p>
+                <label>YouTube cookies</label>
+                <textarea id="cookies" placeholder="Cookies in Netscape format. On a locked / app-restricted phone, use the Chrome net-export importer below instead of typing."></textarea>
+                <div class="save-row">
+                    <button id="ck-save" type="button">☁ Save these cookies to backend (all devices)</button>
+                </div>
+                <p class="hint" id="ck-status">Sent per request; the server deletes per-request copies right after. “Save to backend” stores them once so every device works.</p>
+            </div>
+
+            <div>
+                <label>📡 Import cookies from a Chrome net-export log</label>
+                <p class="hint">No app/extension needed — works on a locked Chrome-only phone:<br>
+                1. Open a new Chrome tab → go to <b>chrome://net-export</b><br>
+                2. Set capture mode to <b>“Include cookies and credentials”</b><br>
+                3. Tap <b>Start Logging</b> → choose a save location<br>
+                4. New tab → open <b>youtube.com</b> (signed in), let it load<br>
+                5. Back to the net-export tab → <b>Stop Logging</b><br>
+                6. Pick that <b>.json</b> log file here:</p>
+                <input type="file" id="netlog" accept=".json,application/json">
+                <p class="hint">The file is read locally in your browser — only the extracted YouTube/Google cookies are kept; nothing else from the log leaves your device.</p>
             </div>
         </div>
     </details>
@@ -146,6 +162,102 @@ function backendBase() {
     var b = ($('backend').value || '').trim().replace(/\/+$/, '');
     return b;
 }
+
+// ---- Chrome net-export log → Netscape cookies.txt -----------------------
+// HttpOnly cookies can't be read by JS, but they ARE sent in the Cookie request
+// header, which net-export records (when "Include cookies and credentials" is
+// chosen). We pull those out and rebuild a cookies.txt yt-dlp can use.
+var REG_DOMAINS = ['youtube.com', 'google.com'];
+function regDomain(host) {
+    host = (host || '').toLowerCase().replace(/:\d+$/, '');
+    for (var i = 0; i < REG_DOMAINS.length; i++)
+        if (host === REG_DOMAINS[i] || host.endsWith('.' + REG_DOMAINS[i])) return '.' + REG_DOMAINS[i];
+    return null;
+}
+function netscape(jar) {
+    var out = ['# Netscape HTTP Cookie File'];
+    Object.keys(jar).forEach(function (dom) {
+        var c = jar[dom];
+        Object.keys(c).forEach(function (name) {
+            out.push([dom, 'TRUE', '/', 'TRUE', '2147483647', name, c[name]].join('\t'));
+        });
+    });
+    return out.join('\n') + '\n';
+}
+function addCookieHeader(jar, dom, cookieVal) {
+    if (!jar[dom]) jar[dom] = {};
+    cookieVal.split(';').forEach(function (kv) {
+        var i = kv.indexOf('=');
+        if (i < 0) return;
+        var name = kv.slice(0, i).trim(), val = kv.slice(i + 1).trim();
+        if (name) jar[dom][name] = val;
+    });
+}
+function parseNetlogText(text) {
+    var jar = {};
+    // Structured parse: walk events, match each request's authority/host to its cookie header.
+    try {
+        var log = JSON.parse(text);
+        var events = log.events || [];
+        events.forEach(function (e) {
+            var h = e && e.params && e.params.headers;
+            if (!h) return;
+            var arr = Array.isArray(h) ? h : Object.keys(h).map(function (k) { return k + ': ' + h[k]; });
+            var host = null, cookie = null;
+            arr.forEach(function (line) {
+                var m = /^:?(authority|host)\s*:\s*(.+)$/i.exec(line);
+                if (m) host = m[2].trim();
+                var c = /^cookie\s*:\s*(.+)$/i.exec(line);
+                if (c) cookie = c[1].trim();
+            });
+            if (host && cookie) {
+                var dom = regDomain(host);
+                if (dom) addCookieHeader(jar, dom, cookie);
+            }
+        });
+    } catch (err) { /* truncated / not pure JSON — fall through to regex */ }
+
+    if (!Object.keys(jar).length) {
+        // Fallback: grab the longest Cookie header that looks like a logged-in
+        // Google session and apply it to both registrable domains.
+        var best = '';
+        var re = /cookie\s*:\s*([^"\\]+)/gi, m;
+        while ((m = re.exec(text))) { if (m[1].length > best.length && /SAPISID|SID=|SSID=/.test(m[1])) best = m[1]; }
+        if (best) REG_DOMAINS.forEach(function (d) { addCookieHeader(jar, '.' + d, best); });
+    }
+    return jar;
+}
+$('netlog').addEventListener('change', function (ev) {
+    var f = ev.target.files[0]; if (!f) return;
+    status('Reading net-export log (' + (f.size / 1048576).toFixed(1) + ' MB)…');
+    var fr = new FileReader();
+    fr.onerror = function () { status('Could not read that file.', 'err'); };
+    fr.onload = function () {
+        var jar = parseNetlogText(String(fr.result));
+        var n = 0; Object.keys(jar).forEach(function (d) { n += Object.keys(jar[d]).length; });
+        if (!n) { status('No YouTube/Google cookies found. Did you pick “Include cookies and credentials” before logging?', 'err'); return; }
+        var txt = netscape(jar);
+        $('cookies').value = txt; localStorage.setItem('media_cookies', txt);
+        status('Imported ' + n + ' cookies from the log. Now tap “Save to backend”.', 'ok');
+    };
+    fr.readAsText(f);
+});
+
+// ---- store cookies on the backend (shared by all devices) ----
+$('ck-save').addEventListener('click', function () {
+    var base = backendBase(); if (!base) { status('Set the Backend URL first.', 'err'); return; }
+    var headers = { 'Content-Type': 'application/json' };
+    if ($('key').value.trim()) headers['X-Access-Key'] = $('key').value.trim();
+    status('Saving cookies to backend…');
+    fetch(base + '/api/set-cookies', {
+        method: 'POST', headers: headers, body: JSON.stringify({ cookies: $('cookies').value || '' })
+    }).then(function (r) {
+        if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
+        return r.json();
+    }).then(function (j) {
+        status(j.stored ? 'Cookies saved to backend — all devices will use them now.' : 'Cookies cleared on backend.', 'ok');
+    }).catch(function (e) { status('Save failed: ' + e.message, 'err'); });
+});
 
 function fetchMedia() {
     var url = ($('url').value || '').trim();
