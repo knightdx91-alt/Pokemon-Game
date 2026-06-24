@@ -115,6 +115,9 @@
 <script>
 var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
 var DRIVE_RW  = 'https://www.googleapis.com/auth/drive.file';
+// Deployed Render backend (media-backend/). The access key is NOT stored here —
+// paste it once into the ⚙ field; it's kept in localStorage per device.
+var DEFAULT_BACKEND = 'https://retroplay-media-dkmr.onrender.com';
 
 var $ = function (id) { return document.getElementById(id); };
 var fmt = 'mp4';
@@ -123,7 +126,7 @@ var lastBlob = null, lastName = null;
 // ---- persisted settings ----
 ['backend', 'key', 'cookies'].forEach(function (k) {
     var el = $(k);
-    el.value = localStorage.getItem('media_' + k) || '';
+    el.value = localStorage.getItem('media_' + k) || (k === 'backend' ? DEFAULT_BACKEND : '');
     el.addEventListener('input', function () { localStorage.setItem('media_' + k, el.value); });
 });
 if ($('backend').value) $('settings').open = false; else $('settings').open = true;
