@@ -262,7 +262,7 @@
 (function () {
     'use strict';
 
-    var READER_VERSION = 'v1.0.37';
+    var READER_VERSION = 'v1.0.38';
     // Hide manga translation/OCR text overlay by default (toggle in reader bar).
     var _hideTextLayer = (function () { try { return localStorage.getItem('reader_hide_text') !== '0'; } catch (_) { return true; } })();
 
@@ -1208,8 +1208,45 @@
 
     // ---- Add via URL ----
     function rewriteGDrive(url) {
-        var m = url.match(/drive\.google\.com\/file\/d\/([^/?]+)/);
-        return m ? 'https://drive.google.com/uc?export=download&id=' + m[1] : url;
+        // file/d/<id>/... or open?id=<id> or uc?id=<id>
+        var m = url.match(/drive\.google\.com\/file\/d\/([^/?]+)/) ||
+                url.match(/drive\.google\.com\/(?:open|uc)\?(?:[^#]*&)?id=([^&]+)/);
+        // Use the usercontent download host with confirm=t — the classic
+        // drive.google.com/uc endpoint returns an HTML "can't scan for viruses"
+        // interstitial for anything but tiny files, which then gets saved as a
+        // broken book. usercontent + confirm=t streams the real file directly.
+        return m ? 'https://drive.usercontent.google.com/download?id=' + m[1] +
+                   '&export=download&confirm=t' : url;
+    }
+
+    /* The relay returns whatever the source served — which may be gzip-compressed
+       bytes or an HTML interstitial (Drive virus-scan page, a github.com /blob/
+       viewer page), not the actual book. Saving that produces a file that won't
+       open. So: transparently gunzip gzipped bodies, and reject HTML pages with a
+       clear message instead of storing garbage. */
+    function sanitizeDownload(name, blob) {
+        return blob.slice(0, 512).arrayBuffer().then(function (buf) {
+            var b = new Uint8Array(buf);
+            // gzip magic 1f 8b — relay handed back still-compressed bytes
+            if (b.length > 2 && b[0] === 0x1f && b[1] === 0x8b) {
+                if (typeof fflate === 'undefined') throw new Error('Got gzip data but the unzip engine is not loaded.');
+                return blob.arrayBuffer().then(function (full) {
+                    return new Blob([fflate.gunzipSync(new Uint8Array(full))]);
+                });
+            }
+            // HTML page instead of a file (skip a UTF-8 BOM / leading whitespace)
+            var i = 0; while (i < b.length && (b[i] === 0x20 || b[i] === 0x09 || b[i] === 0x0a || b[i] === 0x0d || b[i] === 0xEF || b[i] === 0xBB || b[i] === 0xBF)) i++;
+            if (b[i] === 0x3c) { // '<'
+                var head = '';
+                try { head = new TextDecoder().decode(b).toLowerCase(); } catch (_) {}
+                if (head.indexOf('<!doctype') !== -1 || head.indexOf('<html') !== -1) {
+                    throw new Error('The link returned a web page, not a file. ' +
+                        'For Google Drive, make sure the file is shared "Anyone with the link". ' +
+                        'For GitHub, use the raw.githubusercontent.com URL (the "Raw" button), not the /blob/ page.');
+                }
+            }
+            return blob;
+        });
     }
 
     /* Public CORS relays, tried in order if a direct fetch is blocked. The file
@@ -1289,6 +1326,8 @@
         var name = decodeURIComponent(url.split('/').pop().split('?')[0]) || 'book';
         showOverlay('Downloading…');
         fetchBlobWithFallback(url, showOverlay).then(function (blob) {
+            return sanitizeDownload(name, blob);
+        }).then(function (blob) {
             return addBook(name, blob);
         }).then(function () {
             urlInput.value = ''; btnUrl.disabled = true; btnDriveSave.disabled = true;
