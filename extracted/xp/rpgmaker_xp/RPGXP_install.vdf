@@ -1,0 +1,108 @@
+"installscript"
+{
+	"Registry"
+	{
+		"HKEY_LOCAL_MACHINE\\Software\\Enterbrain\\RPGXP"
+		{
+			"string"
+			{
+				"ApplicationPath"		"%INSTALLDIR%"
+			}
+		}
+		"HKEY_LOCAL_MACHINE\\Software\\Enterbrain\\RGSS\\RTP"
+		{
+			"string"
+			{
+				"Standard"		"%INSTALLDIR%\\rtp"
+			}
+		}
+		"HKEY_CLASSES_ROOT\\RPGXP.Project"
+		{
+			"string"
+			{
+				"(Default)"		"RPGXP Project"
+			}
+		}
+		"HKEY_CLASSES_ROOT\\RPGXP.Project\\DefaultIcon"
+		{
+			"string"
+			{
+				"(Default)"		"\"%INSTALLDIR%\\RPGXP.exe\",1"
+			}
+		}
+		"HKEY_CLASSES_ROOT\\RPGXP.Project\\shell\\open\\command"
+		{
+			"string"
+			{
+				"(Default)"		"\"%INSTALLDIR%\\RPGXP.exe\"  \"%1\""
+			}
+		}
+		"HKEY_CLASSES_ROOT\\.rxproj"
+		{
+			"string"
+			{
+				"(Default)"		"RPGXP.Project"
+			}
+		}
+		"HKEY_CLASSES_ROOT\\RPGXP.Data"
+		{
+			"string"
+			{
+				"(Default)"		"RPGXP Data"
+			}
+		}
+		"HKEY_CLASSES_ROOT\\RPGXP.Data\\DefaultIcon"
+		{
+			"string"
+			{
+				"(Default)"		"\"%INSTALLDIR%\\RPGXP.exe\",2"
+			}
+		}
+		"HKEY_CLASSES_ROOT\\RPGXP.Data\\shell\\open\\command"
+		{
+			"string"
+			{
+				"(Default)"		"\"%INSTALLDIR%\\RPGXP.exe\" \"%1\""
+			}
+		}
+		"HKEY_CLASSES_ROOT\\.rxdata"
+		{
+			"string"
+			{
+				"(Default)"		"RPGXP.Data"
+			}
+		}
+		"HKEY_CLASSES_ROOT\\RPGXP.Archive"
+		{
+			"string"
+			{
+				"(Default)"		"RGSS Encrypted Archive"
+			}
+		}
+		"HKEY_CLASSES_ROOT\\RPGXP.Archive\\DefaultIcon"
+		{
+			"string"
+			{
+				"(Default)"		"\"%INSTALLDIR%\\RPGXP.exe\",3"
+			}
+		}
+		"HKEY_CLASSES_ROOT\\RPGXP.Archive\\shell\\open\\command"
+		{
+			"string"
+			{
+				"(Default)"		"\"%INSTALLDIR%\\RPGXP.exe\" \"%1\""
+			}
+		}
+		"HKEY_CLASSES_ROOT\\.rgssad"
+		{
+			"string"
+			{
+				"(Default)"		"RPGXP.Archive"
+			}
+		}
+	}
+}
+"kvsignatures"
+{
+	"installscript"		"9ee8fb0a188e0e49c33f569ae5817c2a534aece02d062127163ed730ae5cd15f3654afa3250647e913f79a0f855eb7697a125aa459d827ad8b6a262801c8bd526e3bc0baf9b3769cd5a9c5e2595255bd3a9835f847152fa9252396c17ca8951d39fe5267d46ce6dbf4ed51a05f722ce6fb5a6e198593681d656d687c426cafd7"
+}
