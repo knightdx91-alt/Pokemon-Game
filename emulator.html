@@ -1079,7 +1079,7 @@
        Access-Control-Allow-Origin, so a direct browser fetch is blocked. When
        that happens we retry the request through the proxy, which adds the CORS
        headers. The proxy URL ends in ?url= and takes a single encoded URL. */
-    var DL_PROXY = 'https://summer-union-2383.knightdx91.workers.dev/?url=';
+    var DL_PROXY = 'https://postpeleos.knightdx91.workers.dev/?url=';
     function proxify(url) { return DL_PROXY + encodeURIComponent(url); }
 
     function streamFetchOnce(url, headers, label) {
