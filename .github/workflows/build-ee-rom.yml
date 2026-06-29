@@ -1,0 +1,95 @@
+name: Build EE ROM (randomized)
+
+# Builds Emerald Enhanced from source with the randomizer patches applied:
+#   - ee_random_wild.patch     : every wild encounter is a random species (route levels kept)
+#   - ee_random_starters.patch : all 7 starter slots random EXCEPT center (index 3) = Ralts
+# Produces pokeemerald_ee_debug.gba as a downloadable artifact.
+#
+# Run it from the Actions tab -> "Build EE ROM (randomized)" -> "Run workflow".
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/pokemon-emerald-rom-build-9ckl7c
+    paths:
+      - '.github/workflows/build-ee-rom.yml'
+      - 'patches/**'
+
+# Pin EE to the exact commit the patches were generated against, so they apply cleanly.
+env:
+  EE_REPO: https://github.com/Enhanced-Projects/Emerald-Enhanced
+  EE_SHA: 4cfcdcfed81416a11ee6e88d2dbd08d4b8b140f6
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repo (for patches/)
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential binutils-arm-none-eabi gcc-arm-none-eabi \
+            git make gcc g++ libpng-dev pkg-config golang-go
+
+      - name: Clone Emerald Enhanced source (pinned commit)
+        run: |
+          git clone "$EE_REPO" ee
+          cd ee
+          git checkout "$EE_SHA"
+
+      - name: Build & install agbcc into the EE tree
+        run: |
+          git clone --depth 1 https://github.com/pret/agbcc.git agbcc
+          cd agbcc
+          ./build.sh
+          ./install.sh "$GITHUB_WORKSPACE/ee"
+
+      - name: Build poryscript and place it in the EE tree
+        run: |
+          git clone --depth 1 https://github.com/huderlem/poryscript.git poryscript
+          cd poryscript
+          go build -o poryscript .
+          mkdir -p "$GITHUB_WORKSPACE/ee/tools/poryscript"
+          cp poryscript *.json "$GITHUB_WORKSPACE/ee/tools/poryscript/"
+
+      - name: Apply randomizer patches
+        run: |
+          cd ee
+          git apply --whitespace=nowarn \
+            "$GITHUB_WORKSPACE/patches/ee_random_wild.patch" \
+            "$GITHUB_WORKSPACE/patches/ee_random_starters.patch"
+          echo "Patches applied:"
+          git --no-pager diff --stat
+
+      - name: Build the ROM
+        run: |
+          cd ee
+          make tools -j"$(nproc)"
+          make DEBUG=1 -j"$(nproc)"
+          test -f pokeemerald.gba
+          cp pokeemerald.gba "$GITHUB_WORKSPACE/pokeemerald_ee_debug.gba"
+          ls -la "$GITHUB_WORKSPACE/pokeemerald_ee_debug.gba"
+
+      - name: Upload ROM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pokeemerald_ee_debug
+          path: pokeemerald_ee_debug.gba
+          if-no-files-found: error
+
+      - name: Commit built ROM back to this branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f pokeemerald_ee_debug.gba
+          git commit -m "CI: publish freshly built randomized ROM [skip ci]" || echo "no change"
+          git push origin HEAD:${GITHUB_REF_NAME}
