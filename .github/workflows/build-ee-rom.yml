@@ -9,6 +9,12 @@ name: Build EE ROM (randomized)
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - claude/pokemon-emerald-rom-build-9ckl7c
+    paths:
+      - '.github/workflows/build-ee-rom.yml'
+      - 'patches/**'
 
 # Pin EE to the exact commit the patches were generated against, so they apply cleanly.
 env:
