@@ -1,0 +1,166 @@
+{
+  "id": "MAP_FALLARBOR_TOWN",
+  "name": "FallarborTown",
+  "region": "johto",
+  "layout": "LAYOUT_FALLARBOR_TOWN",
+  "music": "MUS_FALLARBOR",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_TOWN",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE114",
+      "offset": 0,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_ROUTE113",
+      "offset": 0,
+      "direction": "right"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GIRL_1",
+      "x": 8,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FallarborTown_EventScript_Girl",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 11,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FallarborTown_EventScript_ExpertM",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 11,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FallarborTown_EventScript_Gentleman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_AZURILL",
+      "x": 8,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FallarborTown_EventScript_Azurill",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 16,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 17,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 8,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 15,
+      "y": 15,
+      "dest_map": "MAP_FALLARBOR_TOWN_MART",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 8,
+      "y": 7,
+      "dest_map": "MAP_FALLARBOR_TOWN_BATTLE_TENT_LOBBY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 14,
+      "y": 7,
+      "dest_map": "MAP_FALLARBOR_TOWN_POKEMON_CENTER_1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 6,
+      "y": 17,
+      "dest_map": "MAP_FALLARBOR_TOWN_COZMOS_HOUSE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "dest_map": "MAP_FALLARBOR_TOWN_MOVE_RELEARNERS_HOUSE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 16,
+      "y": 15,
+      "script": "Common_EventScript_ShowPokemartSign"
+    },
+    {
+      "x": 15,
+      "y": 7,
+      "script": "Common_EventScript_ShowPokemonCenterSign"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "script": "FallarborTown_EventScript_BattleTentSign"
+    },
+    {
+      "x": 16,
+      "y": 7,
+      "script": "Common_EventScript_ShowPokemonCenterSign"
+    },
+    {
+      "x": 10,
+      "y": 11,
+      "script": "FallarborTown_EventScript_TownSign"
+    },
+    {
+      "x": 17,
+      "y": 15,
+      "script": "Common_EventScript_ShowPokemartSign"
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "script": "FallarborTown_EventScript_MoveTutorSign"
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "id": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE2",
+  "name": "Route110_TrickHousePuzzle2",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE110_TRICK_HOUSE_PUZZLE2",
+  "music": "MUS_TRICK_HOUSE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_BOY",
+      "x": 13,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route110_TrickHousePuzzle2_EventScript_Ted",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_BOY",
+      "x": 10,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route110_TrickHousePuzzle2_EventScript_Paul",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 11,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route110_TrickHousePuzzle2_EventScript_Georgia",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 8,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route110_TrickHousePuzzle2_EventScript_ItemWaveMail",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 3,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route110_TrickHousePuzzle2_EventScript_ItemHarborMail",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 0,
+      "y": 21,
+      "dest_map": "MAP_ROUTE110_TRICK_HOUSE_ENTRANCE",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 1,
+      "y": 21,
+      "dest_map": "MAP_ROUTE110_TRICK_HOUSE_ENTRANCE",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 13,
+      "y": 1,
+      "dest_map": "MAP_ROUTE110_TRICK_HOUSE_END",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 11,
+      "y": 12,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "Route110_TrickHousePuzzle2_EventScript_Button1"
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "var": "VAR_TEMP_2",
+      "var_value": "0",
+      "script": "Route110_TrickHousePuzzle2_EventScript_Button2"
+    },
+    {
+      "x": 14,
+      "y": 5,
+      "var": "VAR_TEMP_3",
+      "var_value": "0",
+      "script": "Route110_TrickHousePuzzle2_EventScript_Button3"
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "var": "VAR_TEMP_4",
+      "var_value": "0",
+      "script": "Route110_TrickHousePuzzle2_EventScript_Button4"
+    }
+  ],
+  "signs": [
+    {
+      "x": 14,
+      "y": 14,
+      "script": "Route110_TrickHousePuzzle2_EventScript_Scroll"
+    }
+  ]
+}

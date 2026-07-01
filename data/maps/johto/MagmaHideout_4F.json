@@ -1,0 +1,111 @@
+{
+  "id": "MAP_MAGMA_HIDEOUT_4F",
+  "name": "MagmaHideout_4F",
+  "region": "johto",
+  "layout": "LAYOUT_MAGMA_HIDEOUT_4F",
+  "music": "MUS_AQUA_MAGMA_HIDEOUT",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_GROUDON",
+      "x": 16,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 31,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MagmaHideout_4F_EventScript_Grunt11",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 30,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MagmaHideout_4F_EventScript_Grunt12",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 26,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MagmaHideout_4F_EventScript_Grunt13",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 22,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MagmaHideout_4F_EventScript_Tabitha",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ARCHER",
+      "x": 16,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MagmaHideout_4F_EventScript_Maxie",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_GROUDON",
+      "x": 16,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 3,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MagmaHideout_4F_EventScript_ItemMaxRevive",
+      "flag": "FLAG_ITEM_MAGMA_HIDEOUT_4F_MAX_REVIVE"
+    }
+  ],
+  "warps": [
+    {
+      "x": 46,
+      "y": 7,
+      "dest_map": "MAP_MAGMA_HIDEOUT_3F_1R",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 20,
+      "y": 21,
+      "dest_map": "MAP_MAGMA_HIDEOUT_3F_3R",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

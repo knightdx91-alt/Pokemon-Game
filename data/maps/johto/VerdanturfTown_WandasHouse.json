@@ -1,0 +1,81 @@
+{
+  "id": "MAP_VERDANTURF_TOWN_WANDAS_HOUSE",
+  "name": "VerdanturfTown_WandasHouse",
+  "region": "johto",
+  "layout": "LAYOUT_VERDANTURF_TOWN_WANDAS_HOUSE",
+  "music": "MUS_VERDANTURF",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SILVER",
+      "x": 14,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VerdanturfTown_WandasHouse_EventScript_Wally",
+      "flag": "FLAG_HIDE_VERDANTURF_TOWN_WANDAS_HOUSE_WALLY"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 5,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VerdanturfTown_WandasHouse_EventScript_WandasBoyfriend",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ATTENDANT_M",
+      "x": 7,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VerdanturfTown_WandasHouse_EventScript_WallysUncle",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BILL",
+      "x": 2,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VerdanturfTown_WandasHouse_EventScript_WallysAunt",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 5,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VerdanturfTown_WandasHouse_EventScript_Wanda",
+      "flag": "FLAG_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 7,
+      "dest_map": "MAP_VERDANTURF_TOWN",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 8,
+      "y": 7,
+      "dest_map": "MAP_VERDANTURF_TOWN",
+      "dest_warp_id": "3"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

@@ -1,0 +1,55 @@
+{
+  "id": "MAP_LILYCOVE_CITY_COVE_LILY_MOTEL_1F",
+  "name": "LilycoveCity_CoveLilyMotel_1F",
+  "region": "johto",
+  "layout": "LAYOUT_LILYCOVE_CITY_COVE_LILY_MOTEL_1F",
+  "music": "MUS_LILYCOVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 10,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_CoveLilyMotel_1F_EventScript_MotelOwner",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_LILYCOVE_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "dest_map": "MAP_LILYCOVE_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "dest_map": "MAP_LILYCOVE_CITY_COVE_LILY_MOTEL_2F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 10,
+      "y": 2,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "LilycoveCity_CoveLilyMotel_1F_EventScript_BlockingTV"
+    }
+  ],
+  "signs": []
+}

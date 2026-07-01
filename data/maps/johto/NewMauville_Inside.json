@@ -1,0 +1,223 @@
+{
+  "id": "MAP_NEW_MAUVILLE_INSIDE",
+  "name": "NewMauville_Inside",
+  "region": "johto",
+  "layout": "LAYOUT_NEW_MAUVILLE_INSIDE",
+  "music": "MUS_MT_PYRE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 32,
+      "y": 25,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NewMauville_Inside_EventScript_ItemUltraBall",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 16,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NewMauville_Inside_EventScript_ItemEscapeRope",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 39,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NewMauville_Inside_EventScript_ItemThunderStone",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 17,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NewMauville_Inside_EventScript_ItemFullHeal",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 2,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NewMauville_Inside_EventScript_ItemParalyzeHeal",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 25,
+      "y": 18,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NewMauville_Inside_EventScript_Voltorb1",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 6,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NewMauville_Inside_EventScript_Voltorb2",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 13,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NewMauville_Inside_EventScript_Voltorb3",
+      "flag": "FLAG_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 32,
+      "y": 33,
+      "dest_map": "MAP_NEW_MAUVILLE_ENTRANCE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 20,
+      "y": 34,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 30,
+      "y": 38,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "NewMauville_Inside_EventScript_BlueButton"
+    },
+    {
+      "x": 18,
+      "y": 36,
+      "var": "VAR_TEMP_2",
+      "var_value": "0",
+      "script": "NewMauville_Inside_EventScript_GreenButton"
+    },
+    {
+      "x": 4,
+      "y": 26,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "NewMauville_Inside_EventScript_BlueButton"
+    },
+    {
+      "x": 16,
+      "y": 22,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "NewMauville_Inside_EventScript_BlueButton"
+    },
+    {
+      "x": 25,
+      "y": 18,
+      "var": "VAR_TEMP_2",
+      "var_value": "0",
+      "script": "NewMauville_Inside_EventScript_GreenButton"
+    },
+    {
+      "x": 2,
+      "y": 11,
+      "var": "VAR_TEMP_2",
+      "var_value": "0",
+      "script": "NewMauville_Inside_EventScript_GreenButton"
+    },
+    {
+      "x": 6,
+      "y": 11,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "NewMauville_Inside_EventScript_BlueButton"
+    },
+    {
+      "x": 13,
+      "y": 10,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "NewMauville_Inside_EventScript_BlueButton"
+    },
+    {
+      "x": 17,
+      "y": 10,
+      "var": "VAR_TEMP_2",
+      "var_value": "0",
+      "script": "NewMauville_Inside_EventScript_GreenButton"
+    },
+    {
+      "x": 33,
+      "y": 6,
+      "var": "VAR_NEW_MAUVILLE_STATE",
+      "var_value": "1",
+      "script": "NewMauville_Inside_EventScript_RedButton"
+    }
+  ],
+  "signs": [
+    {
+      "x": 32,
+      "y": 4,
+      "script": "NewMauville_Inside_EventScript_Generator"
+    },
+    {
+      "x": 32,
+      "y": 3,
+      "script": "NewMauville_Inside_EventScript_Generator"
+    },
+    {
+      "x": 32,
+      "y": 2,
+      "script": "NewMauville_Inside_EventScript_Generator"
+    },
+    {
+      "x": 33,
+      "y": 4,
+      "script": "NewMauville_Inside_EventScript_Generator"
+    },
+    {
+      "x": 34,
+      "y": 4,
+      "script": "NewMauville_Inside_EventScript_Generator"
+    },
+    {
+      "x": 35,
+      "y": 4,
+      "script": "NewMauville_Inside_EventScript_Generator"
+    },
+    {
+      "x": 35,
+      "y": 3,
+      "script": "NewMauville_Inside_EventScript_Generator"
+    },
+    {
+      "x": 35,
+      "y": 2,
+      "script": "NewMauville_Inside_EventScript_Generator"
+    }
+  ]
+}

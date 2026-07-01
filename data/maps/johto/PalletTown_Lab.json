@@ -1,0 +1,71 @@
+{
+  "id": "MAP_PALLET_TOWN_LAB",
+  "name": "PalletTown_Lab",
+  "region": "johto",
+  "layout": "LAYOUT_PALLET_TOWN_LAB",
+  "music": "MUS_HG_OAK",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PROF_OAK",
+      "x": 13,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_Lab_EventScript_Oak",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_M",
+      "x": 9,
+      "y": 18,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_Lab_EventScript_Assistant2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_F",
+      "x": 16,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_Lab_EventScript_Assistant1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_F",
+      "x": 17,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PalletTown_Lab_EventScript_Assistant3",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 13,
+      "y": 20,
+      "dest_map": "MAP_PALLET_TOWN",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 10,
+      "y": 9,
+      "script": "PalletTown_Lab_EventScript_PC"
+    }
+  ]
+}

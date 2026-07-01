@@ -1,0 +1,56 @@
+{
+  "id": "MAP_VIRIDIAN_CITY_GYM",
+  "name": "ViridianCity_Gym",
+  "region": "johto",
+  "layout": "LAYOUT_VIRIDIAN_CITY_GYM",
+  "music": "MUS_RG_GYM",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 6,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_Gym_EventScript_GymGuy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLUE",
+      "x": 5,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_Gym_EventScript_Blue",
+      "flag": "FLAG_HIDE_VIRIDIAN_BLUE"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 20,
+      "dest_map": "MAP_VIRIDIAN_CITY",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 3,
+      "y": 16,
+      "script": "ViridianCity_Gym_EventScript_GymStatue"
+    },
+    {
+      "x": 7,
+      "y": 16,
+      "script": "ViridianCity_Gym_EventScript_GymStatue"
+    }
+  ]
+}

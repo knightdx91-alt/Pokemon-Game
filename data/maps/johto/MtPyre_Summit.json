@@ -1,0 +1,180 @@
+{
+  "id": "MAP_MT_PYRE_SUMMIT",
+  "name": "MtPyre_Summit",
+  "region": "johto",
+  "layout": "LAYOUT_MT_PYRE_SUMMIT",
+  "music": "MUS_MT_PYRE_EXTERIOR",
+  "weather": "WEATHER_FOG_HORIZONTAL",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_2",
+      "x": 22,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtPyre_Summit_EventScript_OldMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PROTON",
+      "x": 23,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "x": 23,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtPyre_Summit_EventScript_OldLady",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 21,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtPyre_Summit_EventScript_Grunt1",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 25,
+      "y": 18,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtPyre_Summit_EventScript_Grunt2",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 21,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtPyre_Summit_EventScript_Grunt3",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_F",
+      "x": 25,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtPyre_Summit_EventScript_Grunt4",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ARCHER",
+      "x": 23,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 21,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 25,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 22,
+      "y": 31,
+      "dest_map": "MAP_MT_PYRE_EXTERIOR",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 23,
+      "y": 31,
+      "dest_map": "MAP_MT_PYRE_EXTERIOR",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 24,
+      "y": 31,
+      "dest_map": "MAP_MT_PYRE_EXTERIOR",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 22,
+      "y": 7,
+      "var": "VAR_MT_PYRE_STATE",
+      "var_value": "0",
+      "script": "MtPyre_Summit_EventScript_TeamAquaTrigger0"
+    },
+    {
+      "x": 23,
+      "y": 7,
+      "var": "VAR_MT_PYRE_STATE",
+      "var_value": "0",
+      "script": "MtPyre_Summit_EventScript_TeamAquaTrigger1"
+    },
+    {
+      "x": 24,
+      "y": 7,
+      "var": "VAR_MT_PYRE_STATE",
+      "var_value": "0",
+      "script": "MtPyre_Summit_EventScript_TeamAquaTrigger2"
+    },
+    {
+      "x": 22,
+      "y": 9,
+      "var": "VAR_MT_PYRE_STATE",
+      "var_value": "2",
+      "script": "MtPyre_Summit_EventScript_ArchieMaxieTrigger0"
+    },
+    {
+      "x": 23,
+      "y": 9,
+      "var": "VAR_MT_PYRE_STATE",
+      "var_value": "2",
+      "script": "MtPyre_Summit_EventScript_ArchieMaxieTrigger1"
+    },
+    {
+      "x": 24,
+      "y": 9,
+      "var": "VAR_MT_PYRE_STATE",
+      "var_value": "2",
+      "script": "MtPyre_Summit_EventScript_ArchieMaxieTrigger2"
+    }
+  ],
+  "signs": []
+}

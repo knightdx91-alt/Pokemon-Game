@@ -1,0 +1,251 @@
+{
+  "id": "MAP_PETALBURG_WOODS",
+  "name": "PetalburgWoods",
+  "region": "johto",
+  "layout": "LAYOUT_PETALBURG_WOODS",
+  "music": "MUS_PETALBURG_WOODS",
+  "weather": "WEATHER_SHADE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 19,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_11"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 19,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_12"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 26,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_PETALBURG_WOODS_AQUA_GRUNT"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 26,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_PETALBURG_WOODS_DEVON_EMPLOYEE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 43,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_EventScript_ItemGreatBall",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 35,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_EventScript_ItemXAttack",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 4,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_EventScript_ItemEther",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY",
+      "x": 15,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_EventScript_Boy1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 7,
+      "y": 32,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "PetalburgWoods_EventScript_Lyle",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 4,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_UP_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "PetalburgWoods_EventScript_James",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_M",
+      "x": 30,
+      "y": 34,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_EventScript_Boy2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 4,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_EventScript_ItemParalyzeHeal",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAPTAIN",
+      "x": 35,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_EventScript_Girl",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BROCK",
+      "x": 47,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_CelebiEvent",
+      "flag": "FLAG_DEFEATEDCELEBI"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_2",
+      "x": 48,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_Celebi_Sign",
+      "flag": "FLAG_OLD_MAN_AND_DUSCLOPS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_DUSCLOPS",
+      "x": 44,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PetalburgWoods_Dusclops",
+      "flag": "FLAG_OLD_MAN_AND_DUSCLOPS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_CELEBI",
+      "x": 47,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_DEFEATEDCELEBI"
+    }
+  ],
+  "warps": [
+    {
+      "x": 14,
+      "y": 5,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 15,
+      "y": 5,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 16,
+      "y": 38,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 17,
+      "y": 38,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 36,
+      "y": 38,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 37,
+      "y": 38,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "7"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 26,
+      "y": 23,
+      "var": "VAR_GARBAGEVAR",
+      "var_value": "0",
+      "script": "PetalburgWoods_EventScript_DevonResearcherLeft"
+    },
+    {
+      "x": 27,
+      "y": 23,
+      "var": "VAR_GARBAGEVAR",
+      "var_value": "0",
+      "script": "PetalburgWoods_EventScript_DevonResearcherRight"
+    }
+  ],
+  "signs": [
+    {
+      "x": 14,
+      "y": 32,
+      "script": "PetalburgWoods_EventScript_Sign1"
+    },
+    {
+      "x": 11,
+      "y": 8,
+      "script": "PetalburgWoods_EventScript_Sign2"
+    }
+  ]
+}

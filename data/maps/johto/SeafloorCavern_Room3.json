@@ -1,0 +1,127 @@
+{
+  "id": "MAP_SEAFLOOR_CAVERN_ROOM3",
+  "name": "SeafloorCavern_Room3",
+  "region": "johto",
+  "layout": "LAYOUT_SEAFLOOR_CAVERN_ROOM3",
+  "music": "MUS_MT_CHIMNEY",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 13,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "FLAG_TEMP_12"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 11,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "FLAG_TEMP_14"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 12,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "FLAG_TEMP_15"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 12,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "FLAG_TEMP_16"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 11,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "FLAG_TEMP_17"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 12,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "FLAG_TEMP_18"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 13,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "FLAG_TEMP_19"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_F",
+      "x": 9,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SeafloorCavern_Room3_EventScript_Shelly",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 5,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SeafloorCavern_Room3_EventScript_Grunt5",
+      "flag": "FLAG_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 8,
+      "y": 1,
+      "dest_map": "MAP_SEAFLOOR_CAVERN_ROOM8",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 9,
+      "y": 13,
+      "dest_map": "MAP_SEAFLOOR_CAVERN_ROOM7",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 4,
+      "y": 15,
+      "dest_map": "MAP_SEAFLOOR_CAVERN_ROOM6",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

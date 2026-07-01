@@ -1,0 +1,83 @@
+{
+  "id": "MAP_POKEMON_LEAGUE_CHAMPIONS_ROOM",
+  "name": "PokemonLeague_ChampionsRoom",
+  "region": "johto",
+  "layout": "LAYOUT_POKEMON_LEAGUE_CHAMPIONS_ROOM",
+  "music": "MUS_HG_POKEMON_LEAGUE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LANCE",
+      "x": 6,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "PokemonLeague_WillsRoom_EventScript_Lance",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GIRL_1",
+      "x": 6,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_HIDE_INDIGO_PLATEAU_MARY_OAK"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PROF_OAK",
+      "x": 6,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_HIDE_INDIGO_PLATEAU_MARY_OAK"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 19,
+      "dest_map": "MAP_POKEMON_LEAGUE_KARENS_ROOM",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "dest_map": "MAP_POKEMON_LEAGUE_HALL_OF_FAME",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 5,
+      "y": 14,
+      "var": "VAR_TEMP_0",
+      "var_value": "1",
+      "script": "ChampionRoom_Trigger"
+    },
+    {
+      "x": 6,
+      "y": 14,
+      "var": "VAR_TEMP_0",
+      "var_value": "1",
+      "script": "ChampionRoom_Trigger"
+    },
+    {
+      "x": 7,
+      "y": 14,
+      "var": "VAR_TEMP_0",
+      "var_value": "1",
+      "script": "ChampionRoom_Trigger"
+    }
+  ],
+  "signs": []
+}

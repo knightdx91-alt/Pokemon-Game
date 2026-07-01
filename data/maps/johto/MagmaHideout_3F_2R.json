@@ -1,0 +1,45 @@
+{
+  "id": "MAP_MAGMA_HIDEOUT_3F_2R",
+  "name": "MagmaHideout_3F_2R",
+  "region": "johto",
+  "layout": "LAYOUT_MAGMA_HIDEOUT_3F_2R",
+  "music": "MUS_AQUA_MAGMA_HIDEOUT",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 16,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MagmaHideout_3F_2R_EventScript_Grunt10",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 5,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MagmaHideout_3F_2R_EventScript_ItemPPMax",
+      "flag": "FLAG_ITEM_MAGMA_HIDEOUT_3F_2R_PP_MAX"
+    }
+  ],
+  "warps": [
+    {
+      "x": 12,
+      "y": 15,
+      "dest_map": "MAP_MAGMA_HIDEOUT_3F_1R",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

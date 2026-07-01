@@ -1,0 +1,30 @@
+{
+  "id": "MAP_SAFARI_ZONE_ENTERANCE",
+  "name": "SafariZone_Enterance",
+  "region": "johto",
+  "layout": "LAYOUT_SAFARI_ZONE_ENTERANCE",
+  "music": "MUS_HG_SAFARI_ZONE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": [
+    {
+      "map": "MAP_SAFARI_ZONE_LOW_MID",
+      "offset": -4,
+      "direction": "up"
+    }
+  ],
+  "npcs": [],
+  "warps": [
+    {
+      "x": 14,
+      "y": 9,
+      "dest_map": "MAP_SAFARI_ZONE_GATE_SAFARI_ZONE_ENTRANCE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

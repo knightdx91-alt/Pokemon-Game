@@ -1,0 +1,49 @@
+{
+  "id": "MAP_SAFARI_ZONE_NORTHWEST",
+  "name": "SafariZone_Northwest",
+  "region": "johto",
+  "layout": "LAYOUT_SAFARI_ZONE_NORTHWEST",
+  "music": "MUS_SAFARI_ZONE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_SAFARI_ZONE_NORTH",
+      "offset": 0,
+      "direction": "right"
+    },
+    {
+      "map": "MAP_SAFARI_ZONE_SOUTHWEST",
+      "offset": 0,
+      "direction": "down"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 8,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZone_Northwest_EventScript_Man",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 33,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZone_Northwest_EventScript_ItemTMSolarBeam",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    }
+  ],
+  "warps": [],
+  "triggers": [],
+  "signs": []
+}

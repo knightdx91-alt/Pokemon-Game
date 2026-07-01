@@ -1,0 +1,215 @@
+{
+  "id": "MAP_LAVARIDGE_TOWN",
+  "name": "LavaridgeTown",
+  "region": "johto",
+  "layout": "LAYOUT_LAVARIDGE_TOWN",
+  "music": "MUS_OLDALE",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_TOWN",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE112",
+      "offset": -40,
+      "direction": "right"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "x": 8,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavaridgeTown_EventScript_ExpertF",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 5,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavaridgeTown_EventScript_ExpertM",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_2",
+      "x": 5,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavaridgeTown_EventScript_OldMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TWIN",
+      "x": 10,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavaridgeTown_EventScript_Twin",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HOT_SPRINGS_OLD_WOMAN",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavaridgeTown_EventScript_HotSpringsOldWoman1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HOT_SPRINGS_OLD_WOMAN",
+      "x": 5,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavaridgeTown_EventScript_HotSpringsOldWoman2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_VAR_3",
+      "x": 6,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_VAR_0",
+      "x": 12,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "x": 4,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavaridgeTown_EventScript_EggWoman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 11,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 17,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 12,
+      "y": 15,
+      "dest_map": "MAP_LAVARIDGE_TOWN_HERB_SHOP",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 5,
+      "y": 15,
+      "dest_map": "MAP_LAVARIDGE_TOWN_GYM_1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 15,
+      "y": 5,
+      "dest_map": "MAP_LAVARIDGE_TOWN_MART",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 9,
+      "y": 6,
+      "dest_map": "MAP_LAVARIDGE_TOWN_POKEMON_CENTER_1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 16,
+      "y": 15,
+      "dest_map": "MAP_LAVARIDGE_TOWN_HOUSE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "dest_map": "MAP_LAVARIDGE_TOWN_POKEMON_CENTER_1F",
+      "dest_warp_id": "3"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 6,
+      "y": 3,
+      "var": "TRIGGER_RUN_IMMEDIATELY",
+      "var_value": "0",
+      "script": "LavaridgeTown_EventScript_HotSpringsTrigger"
+    }
+  ],
+  "signs": [
+    {
+      "x": 14,
+      "y": 16,
+      "script": "LavaridgeTown_EventScript_HerbShopSign"
+    },
+    {
+      "x": 7,
+      "y": 15,
+      "script": "LavaridgeTown_EventScript_GymSign"
+    },
+    {
+      "x": 17,
+      "y": 5,
+      "script": "Common_EventScript_ShowPokemartSign"
+    },
+    {
+      "x": 13,
+      "y": 8,
+      "script": "LavaridgeTown_EventScript_TownSign"
+    },
+    {
+      "x": 10,
+      "y": 6,
+      "script": "Common_EventScript_ShowPokemonCenterSign"
+    },
+    {
+      "x": 16,
+      "y": 5,
+      "script": "Common_EventScript_ShowPokemartSign"
+    },
+    {
+      "x": 11,
+      "y": 6,
+      "script": "Common_EventScript_ShowPokemonCenterSign"
+    }
+  ]
+}

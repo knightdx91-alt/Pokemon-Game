@@ -1,0 +1,57 @@
+{
+  "id": "MAP_RUSTBORO_CITY_FLAT1_1F",
+  "name": "RustboroCity_Flat1_1F",
+  "region": "johto",
+  "layout": "LAYOUT_RUSTBORO_CITY_FLAT1_1F",
+  "music": "MUS_RUSTBORO",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN",
+      "x": 9,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_Flat1_1F_EventScript_Man",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_F",
+      "x": 12,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_Flat1_1F_EventScript_Woman",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 7,
+      "dest_map": "MAP_RUSTBORO_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "dest_map": "MAP_RUSTBORO_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "dest_map": "MAP_RUSTBORO_CITY_FLAT1_2F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

@@ -1,0 +1,321 @@
+{
+  "id": "MAP_ROUTE39",
+  "name": "Route39",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE39",
+  "music": "MUS_HG_ROUTE38",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE38",
+      "offset": 0,
+      "direction": "right"
+    },
+    {
+      "map": "MAP_OLIVINE_CITY",
+      "offset": 6,
+      "direction": "down"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PSYCHIC_M",
+      "x": 29,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route39_EventScript_Norman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 31,
+      "y": 27,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_ENABLE_BAOBA_MATCH_CALL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_1",
+      "x": 22,
+      "y": 38,
+      "movement_type": "MOVEMENT_TYPE_WALK_RIGHT_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route39_EventScript_Ruth",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 29,
+      "y": 40,
+      "movement_type": "MOVEMENT_TYPE_WALK_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route39_EventScript_Derek",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 22,
+      "y": 42,
+      "movement_type": "MOVEMENT_TYPE_WALK_RIGHT_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route39_EventScript_Eugene",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MILTANK",
+      "x": 16,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route39_EventScript_Miltank",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MILTANK",
+      "x": 17,
+      "y": 27,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route39_EventScript_Miltank",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MILTANK",
+      "x": 23,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route39_EventScript_Miltank",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MILTANK",
+      "x": 24,
+      "y": 27,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route39_EventScript_Miltank",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 11,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route39_EventScript_Item_TM",
+      "flag": "FLAG_ITEM_ROUTE39_TM_BRICK_BREAK"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_PONYTA",
+      "x": 8,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_DOWN_LEFT_UP_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_PONYTA",
+      "x": 8,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_LEFT_UP_RIGHT_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_NOCTOWL",
+      "x": 31,
+      "y": 41,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_NIGHT_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MAGNEMITE",
+      "x": 9,
+      "y": 36,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_NIGHT_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MAGNEMITE",
+      "x": 10,
+      "y": 38,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_NIGHT_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 12,
+      "y": 27,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LEGENDARY_SHADOW",
+      "x": 30,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_HIDE_ROUTE39_SHADOW"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 16,
+      "y": 45,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_UP_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route39_EventScript_Jamie",
+      "flag": "FLAG_NIGHT_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 16,
+      "y": 32,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route39_EventScript_Item_Nugget",
+      "flag": "FLAG_ITEM_ROUTE39_NUGGET"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_3",
+      "x": 37,
+      "y": 30,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route39_EventScript_Woman",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 21,
+      "y": 15,
+      "dest_map": "MAP_ROUTE39_FARM_HOUSE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 15,
+      "y": 15,
+      "dest_map": "MAP_ROUTE39_BARN",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 16,
+      "y": 15,
+      "dest_map": "MAP_ROUTE39_BARN",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 35,
+      "y": 20,
+      "var": "VAR_LUGIA_OR_HOOH",
+      "var_value": "0",
+      "script": "Route39_EventScript_LegendaryTrigger"
+    },
+    {
+      "x": 35,
+      "y": 21,
+      "var": "VAR_LUGIA_OR_HOOH",
+      "var_value": "0",
+      "script": "Route39_EventScript_LegendaryTrigger"
+    },
+    {
+      "x": 35,
+      "y": 22,
+      "var": "VAR_LUGIA_OR_HOOH",
+      "var_value": "0",
+      "script": "Route39_EventScript_LegendaryTrigger"
+    },
+    {
+      "x": 35,
+      "y": 23,
+      "var": "VAR_LUGIA_OR_HOOH",
+      "var_value": "0",
+      "script": "Route39_EventScript_LegendaryTrigger"
+    },
+    {
+      "x": 24,
+      "y": 53,
+      "var": "VAR_OLIVINE_CITY_STATE",
+      "var_value": "0",
+      "script": "OlivineCity_EventScript_CityTrigger"
+    },
+    {
+      "x": 25,
+      "y": 53,
+      "var": "VAR_OLIVINE_CITY_STATE",
+      "var_value": "0",
+      "script": "OlivineCity_EventScript_CityTrigger"
+    },
+    {
+      "x": 26,
+      "y": 53,
+      "var": "VAR_OLIVINE_CITY_STATE",
+      "var_value": "0",
+      "script": "OlivineCity_EventScript_CityTrigger"
+    },
+    {
+      "x": 27,
+      "y": 53,
+      "var": "VAR_OLIVINE_CITY_STATE",
+      "var_value": "0",
+      "script": "OlivineCity_EventScript_CityTrigger"
+    }
+  ],
+  "signs": [
+    {
+      "x": 25,
+      "y": 31,
+      "script": "Route39_EventScript_Sign3"
+    },
+    {
+      "x": 22,
+      "y": 46,
+      "script": "Route39_EventScript_Sign1"
+    },
+    {
+      "x": 25,
+      "y": 17,
+      "script": "Route39_EventScript_Sign2"
+    }
+  ]
+}

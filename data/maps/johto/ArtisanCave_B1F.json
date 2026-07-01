@@ -1,0 +1,41 @@
+{
+  "id": "MAP_ARTISAN_CAVE_B1F",
+  "name": "ArtisanCave_B1F",
+  "region": "johto",
+  "layout": "LAYOUT_ARTISAN_CAVE_B1F",
+  "music": "MUS_RG_SEVII_CAVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 12,
+      "y": 36,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ArtisanCave_B1F_EventScript_ItemHPUp",
+      "flag": "FLAG_ITEM_ARTISAN_CAVE_B1F_HP_UP"
+    }
+  ],
+  "warps": [
+    {
+      "x": 8,
+      "y": 48,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_WEST",
+      "dest_warp_id": "10"
+    },
+    {
+      "x": 38,
+      "y": 5,
+      "dest_map": "MAP_ARTISAN_CAVE_1F",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

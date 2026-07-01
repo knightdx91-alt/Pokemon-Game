@@ -1,0 +1,179 @@
+{
+  "id": "MAP_ROUTE11",
+  "name": "Route11",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE11",
+  "music": "MUS_HG_ROUTE11",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE12",
+      "offset": -51,
+      "direction": "right"
+    },
+    {
+      "map": "MAP_VERMILION_CITY",
+      "offset": 3,
+      "direction": "left"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PSYCHIC_M",
+      "x": 50,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route11_EventScript_Fidel",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 48,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_UP_RIGHT_DOWN_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route11_EventScript_Owen",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 34,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route11_EventScript_Jason",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ENGINEER",
+      "x": 19,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_WALK_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route11_EventScript_Engineer",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PSYCHIC_M",
+      "x": 18,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_UP_RIGHT_DOWN_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route11_EventScript_Herman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_DROWZEE",
+      "x": 21,
+      "y": 31,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_NIGHT_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_HYPNO",
+      "x": 37,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_NIGHT_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MEOWTH",
+      "x": 40,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_ROTATE_CLOCKWISE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_NIGHT_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MEOWTH",
+      "x": 41,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_ROTATE_COUNTERCLOCKWISE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_NIGHT_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_HYPNO",
+      "x": 44,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_NIGHT_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 57,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MAGNEMITE",
+      "x": 52,
+      "y": 29,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_RIGHT_DOWN_LEFT_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MAGNEMITE",
+      "x": 57,
+      "y": 29,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_DOWN_LEFT_UP_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_HOPPIP",
+      "x": 13,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_DAY_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_SLAKOTH",
+      "x": 24,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_NIGHT_POKEMON"
+    }
+  ],
+  "warps": [],
+  "triggers": [],
+  "signs": []
+}

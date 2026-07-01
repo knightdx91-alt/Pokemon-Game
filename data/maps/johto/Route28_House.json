@@ -1,0 +1,35 @@
+{
+  "id": "MAP_ROUTE28_HOUSE",
+  "name": "Route28_House",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE28_HOUSE",
+  "music": "MUS_HG_ROUTE26",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_F",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route28House_EventScript_Celebrity",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_ROUTE28",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

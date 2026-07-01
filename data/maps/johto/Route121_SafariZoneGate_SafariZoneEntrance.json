@@ -1,0 +1,87 @@
+{
+  "id": "MAP_ROUTE121_SAFARI_ZONE_GATE_SAFARI_ZONE_ENTRANCE",
+  "name": "Route121_SafariZoneGate_SafariZoneEntrance",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE121_SAFARI_ZONE_GATE_SAFARI_ZONE_ENTRANCE",
+  "music": "MUS_FORTREE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 17,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route121_SafariZoneGate_SafariZoneEntrance_EventScript_WelcomeAttendant",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 10,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route121_SafariZoneGate_SafariZoneEntrance_EventScript_InfoAttendant",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 8,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 2,
+      "y": 5,
+      "dest_map": "MAP_SAFARI_ZONE_SOUTH",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 3,
+      "y": 5,
+      "dest_map": "MAP_SAFARI_ZONE_SOUTH",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 14,
+      "y": 13,
+      "dest_map": "MAP_ROUTE121",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 15,
+      "y": 13,
+      "dest_map": "MAP_ROUTE121",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 8,
+      "y": 4,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "Route121_SafariZoneGate_SafariZoneEntrance_EventScript_EntranceCounterTrigger"
+    }
+  ],
+  "signs": [
+    {
+      "x": 15,
+      "y": 1,
+      "script": "Route121_SafariZoneGate_SafariZoneEntrance_EventScript_TrainerTipSign"
+    }
+  ]
+}

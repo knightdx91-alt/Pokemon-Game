@@ -1,0 +1,51 @@
+{
+  "id": "MAP_GATE_ILEX_FOREST_ROUTE34",
+  "name": "Gate_IlexForest_Route34",
+  "region": "johto",
+  "layout": "LAYOUT_GATE_ILEX_FOREST_ROUTE34",
+  "music": "MUS_HG_ROUTE34",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 9,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route34IlexForestGate_EventScript_Lass",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_BUTTERFREE",
+      "x": 9,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route34IlexForestGate_EventScript_Butterfree",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 9,
+      "dest_map": "MAP_ILEX_FOREST",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "dest_map": "MAP_ROUTE34",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

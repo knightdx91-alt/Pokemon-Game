@@ -1,0 +1,154 @@
+{
+  "id": "MAP_SAFARI_ZONE_TOP_MID",
+  "name": "SafariZone_Top_Mid",
+  "region": "johto",
+  "layout": "LAYOUT_SAFARI_ZONE_TOP_MID",
+  "music": "MUS_HG_SAFARI_ZONE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": [
+    {
+      "map": "MAP_SAFARI_ZONE_TOP_RIGHT",
+      "offset": 0,
+      "direction": "right"
+    },
+    {
+      "map": "MAP_SAFARI_ZONE_LOW_MID",
+      "offset": 0,
+      "direction": "down"
+    },
+    {
+      "map": "MAP_SAFARI_ZONE_TOP_LEFT",
+      "offset": 0,
+      "direction": "left"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ENGINEER",
+      "x": 28,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZoneGate_SafariZoneEntrance_EventScript_Engineer",
+      "flag": "FLAG_SAFARI_ZONE_EAST_EXPANSION"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ENGINEER",
+      "x": 29,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZoneGate_SafariZoneEntrance_EventScript_Engineer",
+      "flag": "FLAG_SAFARI_ZONE_EAST_EXPANSION"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ENGINEER",
+      "x": 7,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZoneGate_SafariZoneEntrance_EventScript_Engineer",
+      "flag": "FLAG_SAFARI_ZONE_WEST_EXPANSION"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ENGINEER",
+      "x": 8,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZoneGate_SafariZoneEntrance_EventScript_Engineer",
+      "flag": "FLAG_SAFARI_ZONE_WEST_EXPANSION"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MISDREAVUS",
+      "x": 28,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_HAUNTER",
+      "x": 10,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_HAUNTER",
+      "x": 16,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_PIDGEOTTO",
+      "x": 23,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_WEEPINBELL",
+      "x": 18,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_ARBOK",
+      "x": 33,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MURKROW",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_LEFT_DOWN_RIGHT_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MR_MIME",
+      "x": 17,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [],
+  "triggers": [],
+  "signs": []
+}

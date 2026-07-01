@@ -1,0 +1,92 @@
+{
+  "id": "MAP_ROUTE106",
+  "name": "Route106",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE106",
+  "music": "MUS_ROUTE104",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE105",
+      "offset": 0,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_DEWFORD_TOWN",
+      "offset": 60,
+      "direction": "down"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M_WATER",
+      "x": 18,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_WALK_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route106_EventScript_Douglas",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F_WATER",
+      "x": 29,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route106_EventScript_Kyla",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 51,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route106_EventScript_Elliot",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 65,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route106_EventScript_Ned",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 29,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route106_EventScript_ItemProtein",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 48,
+      "y": 16,
+      "dest_map": "MAP_GRANITE_CAVE_1F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 59,
+      "y": 13,
+      "script": "Route106_EventScript_TrainerTipsSign"
+    }
+  ]
+}

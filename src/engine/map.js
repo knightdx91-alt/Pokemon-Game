@@ -18,15 +18,19 @@ window.GameMap = (function () {
     // Index loading
     // ---------------------------------------------------------------
     async function init() {
-        try {
-            const resp = await fetch('data/maps/kanto_index.json');
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            _nameIndex = await resp.json();
-            console.log(`[Map] Loaded index: ${Object.keys(_nameIndex).length} entries`);
-        } catch (e) {
-            console.error('[Map] Failed to load kanto_index.json:', e);
-            _nameIndex = {};
+        _nameIndex = {};
+        // Merge per-region MAP_CONST -> filename indexes. Warps reference
+        // MAP_* constants that may live in any region (e.g. Kanto <-> Johto).
+        for (const region of ['kanto', 'johto', 'hoenn', 'sinnoh']) {
+            try {
+                const resp = await fetch(`data/maps/${region}_index.json`);
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                Object.assign(_nameIndex, await resp.json());
+            } catch (e) {
+                console.warn(`[Map] Could not load ${region}_index.json:`, e);
+            }
         }
+        console.log(`[Map] Loaded index: ${Object.keys(_nameIndex).length} entries`);
     }
 
     // ---------------------------------------------------------------

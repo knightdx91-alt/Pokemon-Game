@@ -1,0 +1,71 @@
+{
+  "id": "MAP_ROUTE109_SEASHORE_HOUSE",
+  "name": "Route109_SeashoreHouse",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE109_SEASHORE_HOUSE",
+  "music": "MUS_DEWFORD",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ATTENDANT_M",
+      "x": 6,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route109_SeashoreHouse_EventScript_Owner",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 2,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route109_SeashoreHouse_EventScript_Dwayne",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BURGLAR",
+      "x": 14,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route109_SeashoreHouse_EventScript_Simon",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 10,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route109_SeashoreHouse_EventScript_Johanna",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 9,
+      "dest_map": "MAP_ROUTE109",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 7,
+      "y": 9,
+      "dest_map": "MAP_ROUTE109",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

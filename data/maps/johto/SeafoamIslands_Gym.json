@@ -1,0 +1,152 @@
+{
+  "id": "MAP_SEAFOAM_ISLANDS_GYM",
+  "name": "SeafoamIslands_Gym",
+  "region": "johto",
+  "layout": "LAYOUT_SEAFOAM_ISLANDS_GYM",
+  "music": "MUS_HG_ICE_PATH",
+  "weather": "WEATHER_SHADE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLAINE",
+      "x": 18,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SeafoamIslands_Gym_EventScript_Blaine",
+      "flag": "FLAG_HIDE_SEAFOAM_BLAINE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FIREBREATHER",
+      "x": 21,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_TEMP_1"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FIREBREATHER",
+      "x": 13,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_TEMP_1"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FIREBREATHER",
+      "x": 25,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_TEMP_1"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FIREBREATHER",
+      "x": 15,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_TEMP_1"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FIREBREATHER",
+      "x": 21,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_TEMP_1"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MAGMAR",
+      "x": 28,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MAGMAR",
+      "x": 9,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MAGMAR",
+      "x": 26,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MAGMAR",
+      "x": 10,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 20,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SeafomIslands2_EventScript_GymGuide",
+      "flag": "FLAG_HIDE_SEAFOAM_GYMGUY"
+    }
+  ],
+  "warps": [
+    {
+      "x": 18,
+      "y": 23,
+      "dest_map": "MAP_SEAFOAM_ISLANDS_1F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 18,
+      "y": 7,
+      "dest_map": "MAP_SEAFOAM_ISLANDS_SECRET_CAVE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 15,
+      "y": 23,
+      "script": "SeafoamIslands_Gym_EventScript_GymStatue"
+    },
+    {
+      "x": 21,
+      "y": 23,
+      "script": "SeafoamIslands_Gym_EventScript_GymStatue"
+    }
+  ]
+}

@@ -1,0 +1,201 @@
+{
+  "id": "MAP_MT_SILVER_SNOW",
+  "name": "MtSilver_Snow",
+  "region": "johto",
+  "layout": "LAYOUT_MT_SILVER_SNOW",
+  "music": "MUS_HG_LIGHTHOUSE",
+  "weather": "WEATHER_SNOW",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": false,
+  "allow_cycling": true,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 10,
+      "y": 40,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtSilver_Snow_EventScript_RareCandy",
+      "flag": "FLAG_ITEM_MTSILVER_RARECANDY"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 31,
+      "y": 41,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtSilver_Snow_EventScript_NevermeltIce",
+      "flag": "FLAG_ITEM_MTSILVER_NERVERMELTICE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_ANNIHILAPE",
+      "x": 6,
+      "y": 40,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_NIGHT_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MISMAGIUS",
+      "x": 42,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_WALK_DOWN_AND_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_NIGHT_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MISMAGIUS",
+      "x": 42,
+      "y": 38,
+      "movement_type": "MOVEMENT_TYPE_WALK_DOWN_AND_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_NIGHT_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MACHOKE",
+      "x": 3,
+      "y": 45,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_DAY_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_PILOSWINE",
+      "x": 35,
+      "y": 35,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_PILOSWINE",
+      "x": 35,
+      "y": 31,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MAMOSWINE",
+      "x": 36,
+      "y": 33,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_WEAVILE",
+      "x": 9,
+      "y": 52,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_RAPIDASH",
+      "x": 37,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_WALK_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_HOUNDOOM",
+      "x": 30,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_WEAVILE",
+      "x": 44,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_URSARING",
+      "x": 36,
+      "y": 25,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 14,
+      "y": 39,
+      "dest_map": "MAP_MT_SILVER_3F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 18,
+      "y": 51,
+      "dest_map": "MAP_MT_SILVER_2F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 32,
+      "y": 51,
+      "dest_map": "MAP_MT_SILVER_2F",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 39,
+      "y": 43,
+      "dest_map": "MAP_MT_SILVER_2F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 39,
+      "y": 34,
+      "dest_map": "MAP_MT_SILVER_2F",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 39,
+      "y": 23,
+      "dest_map": "MAP_MT_SILVER_2F",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 24,
+      "y": 17,
+      "dest_map": "MAP_MT_SILVER_2F",
+      "dest_warp_id": "6"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

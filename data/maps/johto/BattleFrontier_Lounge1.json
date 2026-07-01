@@ -1,0 +1,55 @@
+{
+  "id": "MAP_BATTLE_FRONTIER_LOUNGE1",
+  "name": "BattleFrontier_Lounge1",
+  "region": "johto",
+  "layout": "LAYOUT_UNUSED_CAVE1",
+  "music": "MUS_B_TOWER_RS",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN",
+      "x": 7,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Lounge1_EventScript_Boy1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY",
+      "x": 3,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Lounge1_EventScript_Boy2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 8,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Lounge1_EventScript_Breeder",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 9,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_WEST",
+      "dest_warp_id": "10"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

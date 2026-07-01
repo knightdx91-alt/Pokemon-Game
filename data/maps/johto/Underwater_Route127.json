@@ -1,0 +1,46 @@
+{
+  "id": "MAP_UNDERWATER_ROUTE127",
+  "name": "Underwater_Route127",
+  "region": "johto",
+  "layout": "LAYOUT_UNDERWATER_ROUTE127",
+  "music": "MUS_UNDERWATER",
+  "weather": "WEATHER_UNDERWATER_BUBBLES",
+  "map_type": "MAP_TYPE_UNDERWATER",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE127",
+      "offset": 0,
+      "direction": "emerge"
+    },
+    {
+      "map": "MAP_UNDERWATER_ROUTE126",
+      "offset": 0,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_UNDERWATER_ROUTE128",
+      "offset": 0,
+      "direction": "down"
+    }
+  ],
+  "npcs": [],
+  "warps": [
+    {
+      "x": 57,
+      "y": 5,
+      "dest_map": "MAP_UNDERWATER_MARINE_CAVE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 67,
+      "y": 38,
+      "dest_map": "MAP_UNDERWATER_MARINE_CAVE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

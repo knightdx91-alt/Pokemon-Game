@@ -1,0 +1,76 @@
+{
+  "id": "MAP_LILYCOVE_CITY_DEPARTMENT_STORE_ROOFTOP",
+  "name": "LilycoveCity_DepartmentStoreRooftop",
+  "region": "johto",
+  "layout": "LAYOUT_LILYCOVE_CITY_DEPARTMENT_STORE_ROOFTOP",
+  "music": "MUS_LILYCOVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_CITY",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_DepartmentStoreRooftop_EventScript_Man",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN",
+      "x": 7,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_DepartmentStoreRooftop_EventScript_ThirstyMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_1",
+      "x": 6,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_DepartmentStoreRooftop_EventScript_SaleWoman",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_F",
+      "x": 15,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_DepartmentStoreRooftop_EventScript_SubstituteTutor",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 13,
+      "y": 3,
+      "dest_map": "MAP_LILYCOVE_CITY_DEPARTMENT_STORE_5F",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 9,
+      "y": 1,
+      "script": "LilycoveCity_DepartmentStoreRooftop_EventScript_VendingMachine"
+    },
+    {
+      "x": 10,
+      "y": 1,
+      "script": "LilycoveCity_DepartmentStoreRooftop_EventScript_VendingMachine"
+    }
+  ]
+}

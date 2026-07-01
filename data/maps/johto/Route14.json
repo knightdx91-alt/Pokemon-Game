@@ -1,0 +1,155 @@
+{
+  "id": "MAP_ROUTE14",
+  "name": "Route14",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE14",
+  "music": "MUS_HG_ROUTE11",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE15",
+      "offset": 40,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_ROUTE13",
+      "offset": 0,
+      "direction": "right"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": -3,
+      "y": 28,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_3"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 7,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route14_EventScript_Carter",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 7,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_2"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BIKER",
+      "x": 15,
+      "y": 31,
+      "movement_type": "MOVEMENT_TYPE_WALK_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route14_EventScript_Roy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_SUICUNE",
+      "x": 21,
+      "y": 42,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_HIDE_ROUTE14_SUICUNE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_EUSINE",
+      "x": 16,
+      "y": 49,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_HIDE_ROUTE14_EUSINE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_SHROOMISH",
+      "x": 0,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_JUGGLER",
+      "x": 7,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route14_EventScript_Trevor",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_PIDGEOTTO",
+      "x": 23,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route14_EventScript_Pidgeotto",
+      "flag": "0"
+    }
+  ],
+  "warps": [],
+  "triggers": [
+    {
+      "x": 14,
+      "y": 42,
+      "var": "VAR_SUICUNE_ENCOUNTERS",
+      "var_value": "4",
+      "script": "Route14_TriggerSuicune_5"
+    },
+    {
+      "x": 15,
+      "y": 42,
+      "var": "VAR_SUICUNE_ENCOUNTERS",
+      "var_value": "4",
+      "script": "Route14_TriggerSuicune_4"
+    },
+    {
+      "x": 16,
+      "y": 42,
+      "var": "VAR_SUICUNE_ENCOUNTERS",
+      "var_value": "4",
+      "script": "Route14_TriggerSuicune_3"
+    },
+    {
+      "x": 17,
+      "y": 42,
+      "var": "VAR_SUICUNE_ENCOUNTERS",
+      "var_value": "4",
+      "script": "Route14_TriggerSuicune_2"
+    },
+    {
+      "x": 18,
+      "y": 42,
+      "var": "VAR_SUICUNE_ENCOUNTERS",
+      "var_value": "4",
+      "script": "Route14_TriggerSuicune_1"
+    }
+  ],
+  "signs": []
+}

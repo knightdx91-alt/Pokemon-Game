@@ -1,0 +1,51 @@
+{
+  "id": "MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM",
+  "name": "ShoalCave_LowTideIceRoom",
+  "region": "johto",
+  "layout": "LAYOUT_SHOAL_CAVE_LOW_TIDE_ICE_ROOM",
+  "music": "MUS_MT_PYRE",
+  "weather": "WEATHER_SNOW",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 12,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ShoalCave_LowTideIceRoom_EventScript_ItemTMHail",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 12,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ShoalCave_LowTideIceRoom_EventScript_ItemNeverMeltIce",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 17,
+      "y": 10,
+      "dest_map": "MAP_SHOAL_CAVE_LOW_TIDE_LOWER_ROOM",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 12,
+      "y": 1,
+      "dest_map": "MAP_SHOAL_CAVE_LOW_TIDE_ICE_ROOM_SUICUNE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

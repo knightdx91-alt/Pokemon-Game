@@ -1,0 +1,55 @@
+{
+  "id": "MAP_VERMILION_CITY_MART",
+  "name": "VermilionCity_Mart",
+  "region": "johto",
+  "layout": "LAYOUT_VERMILION_CITY_MART",
+  "music": "MUS_HG_POKE_MART",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKER",
+      "x": 7,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_Mart_EventScript_BirdMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 6,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_Mart_EventScript_Woman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CLERK",
+      "x": 2,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Cherrygrove_Pokemart_EventScript_Clerk",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_VERMILION_CITY",
+      "dest_warp_id": "5"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

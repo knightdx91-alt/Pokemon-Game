@@ -1,0 +1,95 @@
+{
+  "id": "MAP_ABANDONED_SHIP_ROOMS_1F",
+  "name": "AbandonedShip_Rooms_1F",
+  "region": "johto",
+  "layout": "LAYOUT_ABANDONED_SHIP_ROOMS_1F",
+  "music": "MUS_ABANDONED_SHIP",
+  "weather": "WEATHER_SHADE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 12,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "AbandonedShip_Rooms_1F_EventScript_Gentleman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 4,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "AbandonedShip_Rooms_1F_EventScript_ItemHarborMail",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 10,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "AbandonedShip_Rooms_1F_EventScript_Thalia",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 10,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "AbandonedShip_Rooms_1F_EventScript_Demetrius",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 16,
+      "dest_map": "MAP_ABANDONED_SHIP_CORRIDORS_1F",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 5,
+      "y": 16,
+      "dest_map": "MAP_ABANDONED_SHIP_CORRIDORS_1F",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "dest_map": "MAP_ABANDONED_SHIP_CORRIDORS_1F",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 13,
+      "y": 16,
+      "dest_map": "MAP_ABANDONED_SHIP_CORRIDORS_1F",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 13,
+      "y": 1,
+      "dest_map": "MAP_ABANDONED_SHIP_CORRIDORS_1F",
+      "dest_warp_id": "7"
+    },
+    {
+      "x": 14,
+      "y": 16,
+      "dest_map": "MAP_ABANDONED_SHIP_CORRIDORS_1F",
+      "dest_warp_id": "5"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

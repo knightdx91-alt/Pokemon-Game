@@ -1,0 +1,205 @@
+{
+  "id": "MAP_FORTREE_CITY",
+  "name": "FortreeCity",
+  "region": "johto",
+  "layout": "LAYOUT_FORTREE_CITY",
+  "music": "MUS_FORTREE",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_CITY",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE119",
+      "offset": 0,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_ROUTE120",
+      "offset": 0,
+      "direction": "right"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 31,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FortreeCity_EventScript_Man",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GIRL_1",
+      "x": 32,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FortreeCity_EventScript_Girl",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_F",
+      "x": 32,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FortreeCity_EventScript_Woman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MR_FUJI",
+      "x": 11,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FortreeCity_EventScript_Boy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_2",
+      "x": 8,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FortreeCity_EventScript_OldMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GBA_KID",
+      "x": 9,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FortreeCity_EventScript_GameboyKid",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_KECLEON",
+      "x": 25,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FortreeCity_EventScript_Kecleon",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 7,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 6,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 6,
+      "dest_map": "MAP_FORTREE_CITY_POKEMON_CENTER_1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 10,
+      "y": 3,
+      "dest_map": "MAP_FORTREE_CITY_HOUSE1",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 22,
+      "y": 11,
+      "dest_map": "MAP_FORTREE_CITY_GYM",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 4,
+      "y": 14,
+      "dest_map": "MAP_FORTREE_CITY_MART",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 17,
+      "y": 3,
+      "dest_map": "MAP_FORTREE_CITY_HOUSE2",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 25,
+      "y": 3,
+      "dest_map": "MAP_FORTREE_CITY_HOUSE3",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 32,
+      "y": 2,
+      "dest_map": "MAP_FORTREE_CITY_HOUSE4",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 12,
+      "y": 13,
+      "dest_map": "MAP_FORTREE_CITY_HOUSE5",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 37,
+      "y": 13,
+      "dest_map": "MAP_FORTREE_CITY_DECORATION_SHOP",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 6,
+      "y": 9,
+      "script": "FortreeCity_EventScript_CitySign"
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "script": "Common_EventScript_ShowPokemonCenterSign"
+    },
+    {
+      "x": 5,
+      "y": 14,
+      "script": "Common_EventScript_ShowPokemartSign"
+    },
+    {
+      "x": 26,
+      "y": 10,
+      "script": "FortreeCity_EventScript_GymSign"
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "script": "Common_EventScript_ShowPokemonCenterSign"
+    },
+    {
+      "x": 6,
+      "y": 14,
+      "script": "Common_EventScript_ShowPokemartSign"
+    }
+  ]
+}

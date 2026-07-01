@@ -1,7 +1,7 @@
 """
 Extract map data from all decomp repos into unified JSON.
 Usage: python3 tools/extract_maps.py
-Output: data/maps/kanto/, data/maps/hoenn/, data/maps/heartgold/, data/maps/sinnoh/
+Output: data/maps/kanto/, data/maps/hoenn/, data/maps/johto/, data/maps/sinnoh/
 """
 
 import json
@@ -96,63 +96,6 @@ def extract_gba_maps(repo_name, region):
     return count
 
 
-def extract_hgss_maps():
-    """Extract HeartGold/SoulSilver zone event data into unified format."""
-    zone_dir = os.path.join(
-        SOURCE_DIR, "pokeheartgold", "files", "fielddata", "eventdata", "zone_event"
-    )
-    out_dir = os.path.join(DATA_DIR, "heartgold")
-    os.makedirs(out_dir, exist_ok=True)
-
-    if not os.path.isdir(zone_dir):
-        print(f"[pokeheartgold] zone_event dir not found: {zone_dir}", file=sys.stderr)
-        return 0
-
-    count = 0
-    for filename in sorted(os.listdir(zone_dir)):
-        if not filename.endswith(".json"):
-            continue
-
-        zone_id = filename.replace(".json", "")
-        with open(os.path.join(zone_dir, filename)) as f:
-            raw = json.load(f)
-
-        unified = {
-            "id": zone_id,
-            "region": "johto",
-            "source": "heartgold",
-            "script_header": raw.get("header"),
-            "warps": [
-                {
-                    "x": w.get("x"),
-                    "y": w.get("y"),
-                    "z": w.get("z"),
-                    "dest_map": w.get("header"),
-                    "dest_anchor": w.get("anchor"),
-                }
-                for w in raw.get("warps", [])
-            ],
-            "signs": [
-                {
-                    "x": b.get("x"),
-                    "y": b.get("y"),
-                    "z": b.get("z"),
-                    "script_id": b.get("scriptId"),
-                    "type": b.get("type"),
-                }
-                for b in raw.get("bgs", [])
-            ],
-        }
-
-        out_path = os.path.join(out_dir, f"{zone_id}.json")
-        with open(out_path, "w") as f:
-            json.dump(unified, f, indent=2)
-        count += 1
-
-    print(f"[pokeheartgold] Extracted {count} zones → data/maps/heartgold/")
-    return count
-
-
 def extract_platinum_maps():
     """
     Extract Platinum event data (NPCs, warps, signs) into unified format.
@@ -236,7 +179,7 @@ if __name__ == "__main__":
     total = 0
     total += extract_gba_maps("pokefirered", "kanto")
     total += extract_gba_maps("pokeemerald", "hoenn")
-    total += extract_hgss_maps()
+    total += extract_gba_maps("pokemonHnS", "johto")
     total += extract_platinum_maps()
 
     print(f"\nTotal: {total} map/zone files extracted.")

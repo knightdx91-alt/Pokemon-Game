@@ -1,0 +1,71 @@
+{
+  "id": "MAP_NEW_BARK_TOWN_PLAYERS_HOUSE_2F",
+  "name": "NewBarkTown_PlayersHouse_2F",
+  "region": "johto",
+  "layout": "LAYOUT_NEW_BARK_TOWN_PLAYERS_HOUSE_2F",
+  "music": "MUS_HG_NEW_BARK",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 9,
+      "y": 2,
+      "dest_map": "MAP_NEW_BARK_TOWN_PLAYERS_HOUSE_1F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "dest_map": "MAP_NEW_BARK_TOWN_PLAYERS_HOUSE_2F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 9,
+      "y": 3,
+      "var": "VAR_NEWBARK_TOWN_STATE",
+      "var_value": "0",
+      "script": "NewBarkTown_PlayersHouse_2F_Script_ClockSetupTrigger1"
+    },
+    {
+      "x": 10,
+      "y": 3,
+      "var": "VAR_NEWBARK_TOWN_STATE",
+      "var_value": "0",
+      "script": "NewBarkTown_PlayersHouse_2F_Script_ClockSetupTrigger2"
+    }
+  ],
+  "signs": [
+    {
+      "x": 10,
+      "y": 1,
+      "script": "LittlerootTown_BrendansHouse_2F_EventScript_WallClock"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "script": "LittlerootTown_BrendansHouse_2F_EventScript_PC"
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "script": "NewBarkTown_PlayersHouse_2F_EventScript_NES"
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "script": "EventScript_BookShelf"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "script": "EventScript_BookShelf"
+    }
+  ]
+}

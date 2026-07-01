@@ -1,0 +1,86 @@
+{
+  "id": "MAP_BIRTH_ISLAND_EXTERIOR",
+  "name": "BirthIsland_Exterior",
+  "region": "johto",
+  "layout": "LAYOUT_BIRTH_ISLAND_EXTERIOR",
+  "music": "MUS_NONE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_DEOXYS_TRIANGLE",
+      "x": 15,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BirthIsland_Exterior_EventScript_Triangle",
+      "flag": "FLAG_HIDE_BIRTH_ISLAND_DEOXYS_TRIANGLE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_DEOXYS",
+      "x": 15,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_DEOXYS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SS_TIDAL",
+      "x": 13,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 13,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FarawayIsland_Entrance_EventScript_Sailor",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 8,
+      "y": 19,
+      "dest_map": "MAP_BIRTH_ISLAND_HARBOR",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 24,
+      "y": 16,
+      "script": "ChangeDeoxysFormNormal"
+    },
+    {
+      "x": 22,
+      "y": 12,
+      "script": "ChangeDeoxysFormDefense"
+    },
+    {
+      "x": 6,
+      "y": 15,
+      "script": "ChangeDeoxysFormAttack"
+    },
+    {
+      "x": 14,
+      "y": 6,
+      "script": "ChangeDeoxysFormSpeed"
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "id": "MAP_ROUTE12",
+  "name": "Route12",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE12",
+  "music": "MUS_HG_ROUTE11",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE13",
+      "offset": -48,
+      "direction": "down"
+    },
+    {
+      "map": "MAP_ROUTE11",
+      "offset": 51,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_LAVENDER_TOWN",
+      "offset": -4,
+      "direction": "up"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 14,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route12_EventScript_Martin",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 8,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route12_EventScript_NewFisher",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 19,
+      "y": 48,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route12_EventScript_Stephen",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 17,
+      "y": 91,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route12_EventScript_Barney",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 18,
+      "y": 102,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route12_EventScript_Kyle",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 11,
+      "y": 100,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_1"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 9,
+      "y": 99,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route12_EventScript_Elixir",
+      "flag": "FLAG_ITEM_ROUTE12_ELIXIR"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 13,
+      "y": 110,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_2"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 9,
+      "y": 114,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route12_EventScript_Calcium",
+      "flag": "FLAG_ITEM_ROUTE12_CALCIUM"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_TENTACRUEL",
+      "x": 11,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_WALK_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route12_EventScript_Tentacruel",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_TENTACRUEL",
+      "x": 9,
+      "y": 72,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_RIGHT_DOWN_LEFT_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route12_EventScript_Tentacruel",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_CARVANHA",
+      "x": 28,
+      "y": 85,
+      "movement_type": "MOVEMENT_TYPE_WALK_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 12,
+      "y": 85,
+      "dest_map": "MAP_ROUTE12_HOUSE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 15,
+      "y": 68,
+      "script": "Route12_EventScript_Sign"
+    },
+    {
+      "x": 17,
+      "y": 12,
+      "script": "Route12_EventScript_FishingSign"
+    }
+  ]
+}

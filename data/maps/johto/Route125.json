@@ -1,0 +1,141 @@
+{
+  "id": "MAP_ROUTE125",
+  "name": "Route125",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE125",
+  "music": "MUS_ROUTE120",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_OCEAN_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_MOSSDEEP_CITY",
+      "offset": 0,
+      "direction": "down"
+    },
+    {
+      "map": "MAP_ROUTE124",
+      "offset": 0,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_UNDERWATER_ROUTE125",
+      "offset": 0,
+      "direction": "dive"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M_WATER",
+      "x": 7,
+      "y": 31,
+      "movement_type": "MOVEMENT_TYPE_WALK_RIGHT_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route125_EventScript_Nolen",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M_WATER",
+      "x": 45,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route125_EventScript_Stan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F_WATER",
+      "x": 38,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_WALK_RIGHT_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route125_EventScript_Tanya",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F_WATER",
+      "x": 30,
+      "y": 28,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_RIGHT_DOWN_LEFT_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route125_EventScript_Sharon",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 21,
+      "y": 30,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route125_EventScript_Ernest",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PSYCHIC_M",
+      "x": 17,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route125_EventScript_Kim",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PSYCHIC_M",
+      "x": 18,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route125_EventScript_Iris",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKER",
+      "x": 43,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_WALK_RIGHT_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route125_EventScript_Presley",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 48,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_WALK_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route125_EventScript_Auron",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 46,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route125_EventScript_ItemBigPearl",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 22,
+      "y": 19,
+      "dest_map": "MAP_SHOAL_CAVE_LOW_TIDE_ENTRANCE_ROOM",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

@@ -1,0 +1,142 @@
+{
+  "id": "MAP_BATTLE_FRONTIER_LOUNGE9",
+  "name": "BattleFrontier_Lounge9",
+  "region": "johto",
+  "layout": "LAYOUT_BATTLE_FRONTIER_LOUNGE2",
+  "music": "MUS_HG_B_TOWER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 8,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Lounge9_EV_HP",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Lounge9_EV_DEF",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 6,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Lounge9_EV_ATK",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_UNUSED_WOMAN_4",
+      "x": 18,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Lounge9_EV_SATK",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CHEF",
+      "x": 22,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Lounge9_EV_SDEF",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 22,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Lounge9_IV_Man",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ATTENDANT",
+      "x": 11,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Lounge9_Nurse",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 18,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Lounge9_EV_SetZero",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MYSTERY_GIFT_MAN",
+      "x": 14,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Lounge9_EV_SPD",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_NURSE",
+      "x": 13,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Lounge9_Heal",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 12,
+      "y": 9,
+      "dest_map": "MAP_LILYCOVE_CITY",
+      "dest_warp_id": "14"
+    },
+    {
+      "x": 13,
+      "y": 9,
+      "dest_map": "MAP_LILYCOVE_CITY",
+      "dest_warp_id": "14"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 16,
+      "y": 5,
+      "script": "BattleFrontier_Lounge9_EV_Column"
+    },
+    {
+      "x": 9,
+      "y": 5,
+      "script": "BattleFrontier_Lounge9_EV_Column"
+    }
+  ]
+}

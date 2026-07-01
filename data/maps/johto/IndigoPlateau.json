@@ -1,0 +1,66 @@
+{
+  "id": "MAP_INDIGO_PLATEAU",
+  "name": "IndigoPlateau",
+  "region": "johto",
+  "layout": "LAYOUT_INDIGO_PLATEAU",
+  "music": "MUS_HG_POKEMON_LEAGUE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_TOWN",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE23",
+      "offset": 0,
+      "direction": "down"
+    }
+  ],
+  "npcs": [],
+  "warps": [
+    {
+      "x": 11,
+      "y": 6,
+      "dest_map": "MAP_INDIGO_PLATEAU_POKEMON_CENTER",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 8,
+      "y": 10,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 14,
+      "y": 10,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 14,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 8,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 8,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 14,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 13,
+      "y": 7,
+      "script": "IndigoPlateau_Sign"
+    }
+  ]
+}

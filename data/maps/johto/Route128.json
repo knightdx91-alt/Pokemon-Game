@@ -1,0 +1,139 @@
+{
+  "id": "MAP_ROUTE128",
+  "name": "Route128",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE128",
+  "music": "MUS_ROUTE120",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_OCEAN_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE127",
+      "offset": 0,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_ROUTE129",
+      "offset": 0,
+      "direction": "down"
+    },
+    {
+      "map": "MAP_EVER_GRANDE_CITY",
+      "offset": -40,
+      "direction": "right"
+    },
+    {
+      "map": "MAP_UNDERWATER_ROUTE128",
+      "offset": 0,
+      "direction": "dive"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M_WATER",
+      "x": 35,
+      "y": 33,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_RIGHT_UP_LEFT_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route128_EventScript_Isaiah",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F_WATER",
+      "x": 78,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_WALK_RIGHT_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route128_EventScript_Katelyn",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_STEVEN",
+      "x": 40,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PROTON",
+      "x": 37,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ARCHER",
+      "x": 38,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 63,
+      "y": 28,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route128_EventScript_Wayne",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAN",
+      "x": 47,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route128_EventScript_Ruben",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_F",
+      "x": 24,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route128_EventScript_Alexa",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F_WATER",
+      "x": 101,
+      "y": 29,
+      "movement_type": "MOVEMENT_TYPE_WALK_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route128_EventScript_Carlee",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M_WATER",
+      "x": 101,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_WALK_DOWN_AND_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route128_EventScript_Harrison",
+      "flag": "0"
+    }
+  ],
+  "warps": [],
+  "triggers": [],
+  "signs": []
+}

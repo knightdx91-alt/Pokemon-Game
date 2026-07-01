@@ -1,0 +1,108 @@
+{
+  "id": "MAP_ROUTE119_WEATHER_INSTITUTE_1F",
+  "name": "Route119_WeatherInstitute_1F",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE119_WEATHER_INSTITUTE_1F",
+  "music": "MUS_RUSTBORO",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 15,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route119_WeatherInstitute_1F_EventScript_Grunt1",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_F",
+      "x": 10,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route119_WeatherInstitute_1F_EventScript_Grunt4",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_M",
+      "x": 5,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route119_WeatherInstitute_1F_EventScript_InstituteWorker2",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_M",
+      "x": 2,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route119_WeatherInstitute_1F_EventScript_InstituteWorker1",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
+      "x": 14,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route119_WeatherInstitute_1F_EventScript_LittleBoy",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 9,
+      "y": 12,
+      "dest_map": "MAP_ROUTE119",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 10,
+      "y": 12,
+      "dest_map": "MAP_ROUTE119",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 17,
+      "y": 1,
+      "dest_map": "MAP_ROUTE119_WEATHER_INSTITUTE_2F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 1,
+      "y": 2,
+      "script": "Route119_WeatherInstitute_1F_EventScript_Bed"
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "script": "Route119_WeatherInstitute_1F_EventScript_Bed"
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "script": "Route119_WeatherInstitute_1F_EventScript_Bed"
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "script": "Route119_WeatherInstitute_1F_EventScript_Bed"
+    }
+  ]
+}

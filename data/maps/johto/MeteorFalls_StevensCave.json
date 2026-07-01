@@ -1,0 +1,35 @@
+{
+  "id": "MAP_METEOR_FALLS_STEVENS_CAVE",
+  "name": "MeteorFalls_StevensCave",
+  "region": "johto",
+  "layout": "LAYOUT_METEOR_FALLS_STEVENS_CAVE",
+  "music": "MUS_CAVE_OF_ORIGIN",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_STEVEN",
+      "x": 19,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MeteorFalls_StevensCave_EventScript_Steven",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 10,
+      "y": 29,
+      "dest_map": "MAP_METEOR_FALLS_1F_1R",
+      "dest_warp_id": "5"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

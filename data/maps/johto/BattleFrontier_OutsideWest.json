@@ -1,0 +1,579 @@
+{
+  "id": "MAP_BATTLE_FRONTIER_OUTSIDE_WEST",
+  "name": "BattleFrontier_OutsideWest",
+  "region": "johto",
+  "layout": "LAYOUT_BATTLE_FRONTIER_OUTSIDE_WEST",
+  "music": "MUS_B_FRONTIER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_BATTLE_FRONTIER_OUTSIDE_EAST",
+      "offset": 0,
+      "direction": "right"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY",
+      "x": 26,
+      "y": 38,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Boy1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SS_TIDAL",
+      "x": 20,
+      "y": 70,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 20,
+      "y": 68,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Sailor",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 26,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_ExpertM",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_M",
+      "x": 27,
+      "y": 30,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Man1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 33,
+      "y": 41,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Woman1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 28,
+      "y": 43,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_FatMan1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 17,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Gentleman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SUPER_NERD",
+      "x": 13,
+      "y": 44,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Maniac1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SUPER_NERD",
+      "x": 14,
+      "y": 44,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Maniac2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKER",
+      "x": 23,
+      "y": 47,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Man2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GIRL_1",
+      "x": 38,
+      "y": 27,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Girl",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_F",
+      "x": 45,
+      "y": 18,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Woman2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 9,
+      "y": 47,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Camper",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PSYCHIC_M",
+      "x": 35,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Lass",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 11,
+      "y": 66,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Man3",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 31,
+      "y": 31,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Fisherman1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 42,
+      "y": 48,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Fisherman2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 38,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_WANDER_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_FatMan2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 12,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Woman3",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 12,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Boy2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_2",
+      "x": 11,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_ROTATE_COUNTERCLOCKWISE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_OldMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_M",
+      "x": 8,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Man4",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_M",
+      "x": 4,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_ROTATE_CLOCKWISE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_PokefanF",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 26,
+      "y": 47,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 26,
+      "y": 52,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 26,
+      "y": 57,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 26,
+      "y": 63,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 43,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 41,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 21,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 17,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 18,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 19,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 20,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ENGINEER",
+      "x": 41,
+      "y": 56,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_DOWN_LEFT_UP_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ENGINEER",
+      "x": 50,
+      "y": 45,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Engineer3",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ENGINEER",
+      "x": 50,
+      "y": 47,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Engineer4",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ENGINEER",
+      "x": 44,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Engineer",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ENGINEER",
+      "x": 44,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Engineer2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MACHOKE",
+      "x": 58,
+      "y": 49,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ENGINEER",
+      "x": 54,
+      "y": 50,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ENGINEER",
+      "x": 49,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MACHAMP",
+      "x": 50,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_SMEARGLE",
+      "x": 37,
+      "y": 56,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_RIGHT_DOWN_LEFT_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MILOTIC",
+      "x": 32,
+      "y": 31,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_RIGHT_DOWN_LEFT_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_OutsideWest_EventScript_Fisherman_Milotic",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 42,
+      "y": 27,
+      "dest_map": "MAP_BATTLE_FRONTIER_BATTLE_PIKE_LOBBY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 19,
+      "y": 17,
+      "dest_map": "MAP_BATTLE_FRONTIER_BATTLE_DOME_LOBBY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 11,
+      "y": 38,
+      "dest_map": "MAP_BATTLE_FRONTIER_BATTLE_FACTORY_LOBBY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 45,
+      "y": 44,
+      "dest_map": "MAP_BATTLE_FRONTIER_LOUNGE2",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 42,
+      "y": 5,
+      "dest_map": "MAP_BATTLE_FRONTIER_SCOTTS_HOUSE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 37,
+      "y": 47,
+      "dest_map": "MAP_BATTLE_FRONTIER_LOUNGE4",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 5,
+      "y": 20,
+      "dest_map": "MAP_BATTLE_FRONTIER_LOUNGE7",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 26,
+      "y": 65,
+      "dest_map": "MAP_BATTLE_FRONTIER_RECEPTION_GATE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 26,
+      "y": 61,
+      "dest_map": "MAP_BATTLE_FRONTIER_RECEPTION_GATE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 39,
+      "y": 55,
+      "dest_map": "MAP_ARTISAN_CAVE_B1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 49,
+      "y": 51,
+      "dest_map": "MAP_BATTLE_FRONTIER_LOUNGE1",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 50,
+      "y": 46,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_EAST",
+      "dest_warp_id": "13"
+    },
+    {
+      "x": 44,
+      "y": 7,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_EAST",
+      "dest_warp_id": "14"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 15,
+      "y": 18,
+      "script": "BattleFrontier_OutsideWest_EventScript_BattleDomeSign"
+    },
+    {
+      "x": 45,
+      "y": 30,
+      "script": "BattleFrontier_OutsideWest_EventScript_BattlePikeSign"
+    },
+    {
+      "x": 16,
+      "y": 43,
+      "script": "BattleFrontier_OutsideWest_EventScript_BattleFactorySign"
+    }
+  ]
+}

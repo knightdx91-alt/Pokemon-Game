@@ -1,0 +1,175 @@
+{
+  "id": "MAP_ROUTE33",
+  "name": "Route33",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE33",
+  "music": "MUS_HG_ROUTE30",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE32",
+      "offset": 1,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_AZALEA_TOWN",
+      "offset": -1,
+      "direction": "left"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 17,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route33_EventScript_HikerAnthony",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_1",
+      "x": 25,
+      "y": 27,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route33_EventScript_Lass",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MACHOP",
+      "x": 33,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_WALK_DOWN_AND_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MACHOP",
+      "x": 33,
+      "y": 27,
+      "movement_type": "MOVEMENT_TYPE_WALK_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_EKANS",
+      "x": 18,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_EKANS",
+      "x": 21,
+      "y": 31,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_EKANS",
+      "x": 5,
+      "y": 29,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_EKANS",
+      "x": 10,
+      "y": 33,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_RATTATA",
+      "x": 5,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_LAPRAS",
+      "x": 37,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_UP_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 30,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 27,
+      "y": 17,
+      "dest_map": "MAP_UNION_CAVE_1F",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 0,
+      "y": 23,
+      "var": "VAR_AZALEA_TOWN_STATE",
+      "var_value": "0",
+      "script": "AzaleaTown_EventScript_Trigger"
+    },
+    {
+      "x": 0,
+      "y": 22,
+      "var": "VAR_AZALEA_TOWN_STATE",
+      "var_value": "0",
+      "script": "AzaleaTown_EventScript_Trigger"
+    },
+    {
+      "x": 0,
+      "y": 24,
+      "var": "VAR_AZALEA_TOWN_STATE",
+      "var_value": "0",
+      "script": "AzaleaTown_EventScript_Trigger"
+    },
+    {
+      "x": 0,
+      "y": 25,
+      "var": "VAR_AZALEA_TOWN_STATE",
+      "var_value": "0",
+      "script": "AzaleaTown_EventScript_Trigger"
+    }
+  ],
+  "signs": []
+}

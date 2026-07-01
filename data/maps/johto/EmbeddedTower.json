@@ -1,0 +1,35 @@
+{
+  "id": "MAP_EMBEDDED_TOWER",
+  "name": "EmbeddedTower",
+  "region": "johto",
+  "layout": "LAYOUT_EMBEDDED_TOWER",
+  "music": "MUS_HG_ROUTE47",
+  "weather": "WEATHER_SHADE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_RAYQUAZA",
+      "x": 14,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EmbeddedTower_EventScript_Rayquaza",
+      "flag": "FLAG_HIDE_RAYQUAZA"
+    }
+  ],
+  "warps": [
+    {
+      "x": 14,
+      "y": 29,
+      "dest_map": "MAP_ROUTE47",
+      "dest_warp_id": "4"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

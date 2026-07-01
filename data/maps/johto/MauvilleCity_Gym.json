@@ -1,0 +1,141 @@
+{
+  "id": "MAP_MAUVILLE_CITY_GYM",
+  "name": "MauvilleCity_Gym",
+  "region": "johto",
+  "layout": "LAYOUT_MAUVILLE_CITY_GYM",
+  "music": "MUS_GYM",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WHITNEY",
+      "x": 5,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MauvilleCity_Gym_EventScript_Wattson",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKER",
+      "x": 7,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MauvilleCity_Gym_EventScript_Shawn",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 1,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MauvilleCity_Gym_EventScript_Vivian",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 5,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MauvilleCity_Gym_EventScript_Ben",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKER",
+      "x": 1,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MauvilleCity_Gym_EventScript_Kirk",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 7,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MauvilleCity_Gym_EventScript_GymGuide",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SUPER_NERD",
+      "x": 7,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MauvilleCity_Gym_EventScript_Angelo",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 20,
+      "dest_map": "MAP_MAUVILLE_CITY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 5,
+      "y": 20,
+      "dest_map": "MAP_MAUVILLE_CITY",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 4,
+      "y": 12,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "MauvilleCity_Gym_EventScript_Switch2"
+    },
+    {
+      "x": 3,
+      "y": 9,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "MauvilleCity_Gym_EventScript_Switch3"
+    },
+    {
+      "x": 0,
+      "y": 15,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "MauvilleCity_Gym_EventScript_Switch1"
+    },
+    {
+      "x": 8,
+      "y": 9,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "MauvilleCity_Gym_EventScript_Switch4"
+    }
+  ],
+  "signs": [
+    {
+      "x": 3,
+      "y": 18,
+      "script": "MauvilleCity_Gym_EventScript_LeftGymStatue"
+    },
+    {
+      "x": 6,
+      "y": 18,
+      "script": "MauvilleCity_Gym_EventScript_RightGymStatue"
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "id": "MAP_ROUTE105",
+  "name": "Route105",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE105",
+  "music": "MUS_ROUTE104",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE104",
+      "offset": 0,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_ROUTE106",
+      "offset": 0,
+      "direction": "down"
+    },
+    {
+      "map": "MAP_UNDERWATER_ROUTE105",
+      "offset": 0,
+      "direction": "dive"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M_WATER",
+      "x": 19,
+      "y": 60,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route105_EventScript_Luis",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M_WATER",
+      "x": 27,
+      "y": 36,
+      "movement_type": "MOVEMENT_TYPE_WALK_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route105_EventScript_Dominik",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F_WATER",
+      "x": 8,
+      "y": 45,
+      "movement_type": "MOVEMENT_TYPE_WALK_UP_AND_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route105_EventScript_Beverly",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SWIMMER_F_WATER",
+      "x": 19,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_ROTATE_CLOCKWISE",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route105_EventScript_Imani",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 8,
+      "y": 73,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route105_EventScript_ItemIron",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 17,
+      "y": 48,
+      "movement_type": "MOVEMENT_TYPE_WALK_DOWN_AND_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route105_EventScript_Foster",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKER",
+      "x": 4,
+      "y": 54,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route105_EventScript_Josue",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 4,
+      "y": 58,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route105_EventScript_Andres",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 9,
+      "y": 20,
+      "dest_map": "MAP_ISLAND_CAVE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

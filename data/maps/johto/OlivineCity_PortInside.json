@@ -1,0 +1,95 @@
+{
+  "id": "MAP_OLIVINE_CITY_PORT_INSIDE",
+  "name": "OlivineCity_PortInside",
+  "region": "johto",
+  "layout": "LAYOUT_OLIVINE_CITY_PORT_INSIDE",
+  "music": "MUS_HG_CHERRYGROVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 8,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OlivinePort_EventScript_Sailor",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 5,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OlivinePort_EventScript_Youngster",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_F",
+      "x": 12,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OlivinePort_EventScript_CooltrainerF",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 3,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OlivinePort_EventScript_Fisher2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 14,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OlivinePort_EventScript_Fisher1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SS_TIDAL",
+      "x": 8,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PROF_OAK",
+      "x": 8,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OlivineCity_PortInside_EventScript_Oak",
+      "flag": "FLAG_HIDE_OLIVINE_PORT_OAK"
+    }
+  ],
+  "warps": [
+    {
+      "x": 8,
+      "y": 9,
+      "dest_map": "MAP_OLIVINE_CITY_PORT_OUTSIDE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

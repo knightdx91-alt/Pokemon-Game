@@ -1,0 +1,35 @@
+{
+  "id": "MAP_ROUTE26_HOUSE2",
+  "name": "Route26_House2",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE26_HOUSE2",
+  "music": "MUS_HG_ROUTE26",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_ROUTE26",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 6,
+      "y": 4,
+      "script": "Route26_House2_EventScript_Book"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "script": "Route26_House2_EventScript_Book"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "id": "MAP_CELADON_CITY_APARTMENTS_ROOF_NIGHT",
+  "name": "CeladonCity_Apartments_RoofNight",
+  "region": "johto",
+  "layout": "LAYOUT_CELADON_CITY_APARTMENTS_ROOF_NIGHT",
+  "music": "MUS_HG_CELADON",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 10,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CeladonCity_Apartments_RoofDay_EventScript_Fisher",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 10,
+      "y": 2,
+      "dest_map": "MAP_CELADON_CITY_APARTMENTS_3F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "dest_map": "MAP_CELADON_CITY_APARTMENTS_3F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 2,
+      "y": 12,
+      "dest_map": "MAP_CELADON_CITY_APARTMENTS_ROOF_HOUSE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 3,
+      "y": 12,
+      "script": "CeladonCity_Apartments_RoofDay_EventScript_Sign"
+    },
+    {
+      "x": 4,
+      "y": 12,
+      "script": "CeladonCity_Apartments_RoofDay_EventScript_Sign"
+    }
+  ]
+}

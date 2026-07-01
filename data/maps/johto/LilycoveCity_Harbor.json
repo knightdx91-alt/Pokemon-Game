@@ -1,0 +1,81 @@
+{
+  "id": "MAP_LILYCOVE_CITY_HARBOR",
+  "name": "LilycoveCity_Harbor",
+  "region": "johto",
+  "layout": "LAYOUT_HARBOR",
+  "music": "MUS_LILYCOVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 8,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_Harbor_EventScript_FerryAttendant",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SS_TIDAL",
+      "x": 8,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 3,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_Harbor_EventScript_Sailor",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 8,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 8,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 14,
+      "dest_map": "MAP_LILYCOVE_CITY",
+      "dest_warp_id": "12"
+    },
+    {
+      "x": 12,
+      "y": 14,
+      "dest_map": "MAP_LILYCOVE_CITY",
+      "dest_warp_id": "12"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

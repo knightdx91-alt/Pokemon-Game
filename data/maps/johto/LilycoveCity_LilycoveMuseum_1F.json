@@ -1,0 +1,218 @@
+{
+  "id": "MAP_LILYCOVE_CITY_LILYCOVE_MUSEUM_1F",
+  "name": "LilycoveCity_LilycoveMuseum_1F",
+  "region": "johto",
+  "layout": "LAYOUT_LILYCOVE_CITY_LILYCOVE_MUSEUM_1F",
+  "music": "MUS_LILYCOVE_MUSEUM",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 5,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_Greeter",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 16,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_Curator",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_BOY",
+      "x": 13,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_SchoolKidM",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_UNUSED_WOMAN_4",
+      "x": 13,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_Artist1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
+      "x": 2,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_NinjaBoy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 3,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_Woman1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 11,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_Woman2",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_UNUSED_WOMAN_4",
+      "x": 19,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_Artist2",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 2,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_FatMan",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRAINER_TOWER_DUDE",
+      "x": 6,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_PsychicM",
+      "flag": "FLAG_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 9,
+      "y": 13,
+      "dest_map": "MAP_LILYCOVE_CITY",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 10,
+      "y": 13,
+      "dest_map": "MAP_LILYCOVE_CITY",
+      "dest_warp_id": "13"
+    },
+    {
+      "x": 16,
+      "y": 1,
+      "dest_map": "MAP_LILYCOVE_CITY_LILYCOVE_MUSEUM_2F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 1,
+      "y": 1,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_FantasyPainting"
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_FantasyPainting"
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_BerryPainting"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_BerryPainting"
+    },
+    {
+      "x": 9,
+      "y": 1,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_OldPainting"
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_WomanPainting"
+    },
+    {
+      "x": 2,
+      "y": 6,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_WomanPainting"
+    },
+    {
+      "x": 15,
+      "y": 12,
+      "script": "LilycoveCity_LilycoveMuseum_EventScript_BirdSculpture"
+    },
+    {
+      "x": 11,
+      "y": 1,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_OldPainting"
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_GrassPokemonPainting"
+    },
+    {
+      "x": 17,
+      "y": 9,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_StoneTablet"
+    },
+    {
+      "x": 19,
+      "y": 1,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_LegendaryPokemonPainting"
+    },
+    {
+      "x": 20,
+      "y": 1,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_LegendaryPokemonPainting"
+    },
+    {
+      "x": 18,
+      "y": 9,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_StoneTablet"
+    },
+    {
+      "x": 18,
+      "y": 11,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_PokeBallSculpture"
+    },
+    {
+      "x": 16,
+      "y": 9,
+      "script": "LilycoveCity_LilycoveMuseum_1F_EventScript_StoneTablet"
+    }
+  ]
+}

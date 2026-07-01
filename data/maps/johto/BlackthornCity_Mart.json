@@ -1,0 +1,55 @@
+{
+  "id": "MAP_BLACKTHORN_CITY_MART",
+  "name": "BlackthornCity_Mart",
+  "region": "johto",
+  "layout": "LAYOUT_BLACKTHORN_CITY_MART",
+  "music": "MUS_HG_POKE_MART",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 5,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BlackthornMart_EventScript_BlackBelt",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_M",
+      "x": 8,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BlackthornMart_EventScript_CoolTrainerM",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CLERK",
+      "x": 2,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Cherrygrove_Pokemart_EventScript_Clerk",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_BLACKTHORN_CITY",
+      "dest_warp_id": "5"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

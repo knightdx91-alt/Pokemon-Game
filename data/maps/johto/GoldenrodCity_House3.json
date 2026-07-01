@@ -1,0 +1,55 @@
+{
+  "id": "MAP_GOLDENROD_CITY_HOUSE3",
+  "name": "GoldenrodCity_House3",
+  "region": "johto",
+  "layout": "LAYOUT_GOLDENROD_CITY_HOUSE3",
+  "music": "MUS_HG_GOLDENROD",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 4,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VerdanturfTown_FriendshipRatersHouse_EventScript_FriendshipRater",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 7,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodCity_House3_EventScript_PokefanM",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TWIN",
+      "x": 7,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodCity_House3_EventScript_Twin",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_GOLDENROD_CITY",
+      "dest_warp_id": "9"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

@@ -1,0 +1,94 @@
+{
+  "id": "MAP_MAGMA_HIDEOUT_3F_1R_ENTEI",
+  "name": "MagmaHideout_3F_1R_Entei",
+  "region": "johto",
+  "layout": "LAYOUT_MAGMA_HIDEOUT_3F_1R_ENTEI",
+  "music": "MUS_DP_MT_CORONET",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_ENTEI",
+      "x": 32,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MagmaHideout_3F_1R_Entei_EnteiFinalBattle",
+      "flag": "FLAG_DEFEATED_ENTEI"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_ENTEI",
+      "x": 27,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MagmaHideout_3F_1R_Entei_EnteiBattle3",
+      "flag": "FLAG_ENTEI_BATTLE_3"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_ENTEI",
+      "x": 15,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MagmaHideout_3F_1R_Entei_EnteiBattle2",
+      "flag": "FLAG_ENTEI_BATTLE_2"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_ENTEI",
+      "x": 11,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MagmaHideout_3F_1R_Entei_EnteiBattle1",
+      "flag": "FLAG_ENTEI_BATTLE_1"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 3,
+      "dest_map": "MAP_MAGMA_HIDEOUT_3F_1R",
+      "dest_warp_id": "3"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 22,
+      "y": 13,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "MagmaHideout_3F_1R_DroughtTrigger"
+    },
+    {
+      "x": 21,
+      "y": 13,
+      "var": "VAR_TEMP_0",
+      "var_value": "1",
+      "script": "MagmaHideout_3F_1R_NormalWeatherTrigger"
+    },
+    {
+      "x": 9,
+      "y": 5,
+      "var": "VAR_ENTEI_EVENT",
+      "var_value": "0",
+      "script": "MagmaHideout_3F_1R_EntranceTrigger"
+    },
+    {
+      "x": 9,
+      "y": 4,
+      "var": "VAR_ENTEI_EVENT",
+      "var_value": "0",
+      "script": "MagmaHideout_3F_1R_EntranceTrigger"
+    }
+  ],
+  "signs": []
+}

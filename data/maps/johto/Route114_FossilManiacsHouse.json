@@ -1,0 +1,68 @@
+{
+  "id": "MAP_ROUTE114_FOSSIL_MANIACS_HOUSE",
+  "name": "Route114_FossilManiacsHouse",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE114_FOSSIL_MANIACS_HOUSE",
+  "music": "MUS_FALLARBOR",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
+      "x": 3,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route114_FossilManiacsHouse_EventScript_FossilManiacsBrother",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_ROUTE114",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "dest_map": "MAP_ROUTE114",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "dest_map": "MAP_ROUTE114_FOSSIL_MANIACS_TUNNEL",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 5,
+      "y": 3,
+      "script": "Route114_FossilManiacsHouse_EventScript_RockDisplay"
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "script": "Route114_FossilManiacsHouse_EventScript_RockDisplay"
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "script": "Route114_FossilManiacsHouse_EventScript_Bookshelf"
+    },
+    {
+      "x": 8,
+      "y": 2,
+      "script": "Route114_FossilManiacsHouse_EventScript_Bookshelf"
+    }
+  ]
+}

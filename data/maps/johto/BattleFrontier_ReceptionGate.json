@@ -1,0 +1,93 @@
+{
+  "id": "MAP_BATTLE_FRONTIER_RECEPTION_GATE",
+  "name": "BattleFrontier_ReceptionGate",
+  "region": "johto",
+  "layout": "LAYOUT_BATTLE_FRONTIER_RECEPTION_GATE",
+  "music": "MUS_B_TOWER_RS",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ATTENDANT",
+      "x": 0,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_ReceptionGate_EventScript_Greeter",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ATTENDANT",
+      "x": 8,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_ReceptionGate_EventScript_FacilityGuide",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_F",
+      "x": 8,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_ReceptionGate_EventScript_RulesGuide",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCOTT",
+      "x": 4,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_HIDE_BATTLE_FRONTIER_RECEPTION_GATE_SCOTT"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_F",
+      "x": 0,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_ReceptionGate_EventScript_FrontierPassGuide",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 13,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_WEST",
+      "dest_warp_id": "7"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_WEST",
+      "dest_warp_id": "8"
+    },
+    {
+      "x": 3,
+      "y": 13,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_WEST",
+      "dest_warp_id": "7"
+    },
+    {
+      "x": 5,
+      "y": 13,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_WEST",
+      "dest_warp_id": "7"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

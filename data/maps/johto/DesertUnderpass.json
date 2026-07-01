@@ -1,0 +1,35 @@
+{
+  "id": "MAP_DESERT_UNDERPASS",
+  "name": "DesertUnderpass",
+  "region": "johto",
+  "layout": "LAYOUT_DESERT_UNDERPASS",
+  "music": "MUS_MT_CHIMNEY",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FOSSIL",
+      "x": 132,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "DesertUnderpass_EventScript_Fossil",
+      "flag": "FLAG_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 10,
+      "y": 12,
+      "dest_map": "MAP_ROUTE114_FOSSIL_MANIACS_TUNNEL",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

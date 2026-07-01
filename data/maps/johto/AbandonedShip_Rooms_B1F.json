@@ -1,0 +1,57 @@
+{
+  "id": "MAP_ABANDONED_SHIP_ROOMS_B1F",
+  "name": "AbandonedShip_Rooms_B1F",
+  "region": "johto",
+  "layout": "LAYOUT_ABANDONED_SHIP_ROOMS_B1F",
+  "music": "MUS_ABANDONED_SHIP",
+  "weather": "WEATHER_SHADE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 25,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "AbandonedShip_Rooms_B1F_EventScript_FatMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 6,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "AbandonedShip_Rooms_B1F_EventScript_ItemEscapeRope",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 1,
+      "dest_map": "MAP_ABANDONED_SHIP_CORRIDORS_B1F",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 13,
+      "y": 1,
+      "dest_map": "MAP_ABANDONED_SHIP_CORRIDORS_B1F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 22,
+      "y": 1,
+      "dest_map": "MAP_ABANDONED_SHIP_CORRIDORS_B1F",
+      "dest_warp_id": "4"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

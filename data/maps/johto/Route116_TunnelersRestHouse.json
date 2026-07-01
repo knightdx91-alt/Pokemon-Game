@@ -1,0 +1,61 @@
+{
+  "id": "MAP_ROUTE116_TUNNELERS_REST_HOUSE",
+  "name": "Route116_TunnelersRestHouse",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE116_TUNNELERS_REST_HOUSE",
+  "music": "MUS_RUSTBORO",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ATTENDANT_M",
+      "x": 6,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route116_TunnelersRestHouse_EventScript_Tunneler1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ATTENDANT_M",
+      "x": 3,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route116_TunnelersRestHouse_EventScript_Tunneler3",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ATTENDANT_M",
+      "x": 7,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route116_TunnelersRestHouse_EventScript_Tunneler2",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_ROUTE116",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_ROUTE116",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

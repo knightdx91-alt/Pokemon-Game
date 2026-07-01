@@ -1,0 +1,111 @@
+{
+  "id": "MAP_ABANDONED_SHIP_CORRIDORS_1F",
+  "name": "AbandonedShip_Corridors_1F",
+  "region": "johto",
+  "layout": "LAYOUT_ABANDONED_SHIP_CORRIDORS_1F",
+  "music": "MUS_ABANDONED_SHIP",
+  "weather": "WEATHER_SHADE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 17,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "AbandonedShip_Corridors_1F_EventScript_Youngster",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BURGLAR",
+      "x": 5,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_UP_LEFT_DOWN_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "AbandonedShip_Corridors_1F_EventScript_Charlie",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 9,
+      "y": 11,
+      "dest_map": "MAP_ABANDONED_SHIP_DECK",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 8,
+      "y": 11,
+      "dest_map": "MAP_ABANDONED_SHIP_DECK",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "dest_map": "MAP_ABANDONED_SHIP_DECK",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 1,
+      "y": 11,
+      "dest_map": "MAP_ABANDONED_SHIP_DECK",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 11,
+      "y": 9,
+      "dest_map": "MAP_ABANDONED_SHIP_ROOMS_1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 14,
+      "y": 9,
+      "dest_map": "MAP_ABANDONED_SHIP_ROOMS_1F",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 11,
+      "y": 3,
+      "dest_map": "MAP_ABANDONED_SHIP_ROOMS_1F",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 14,
+      "y": 3,
+      "dest_map": "MAP_ABANDONED_SHIP_ROOMS_1F",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 3,
+      "y": 9,
+      "dest_map": "MAP_ABANDONED_SHIP_ROOMS2_1F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 16,
+      "y": 2,
+      "dest_map": "MAP_ABANDONED_SHIP_CORRIDORS_B1F",
+      "dest_warp_id": "7"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "dest_map": "MAP_ABANDONED_SHIP_CORRIDORS_B1F",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "dest_map": "MAP_ABANDONED_SHIP_ROOMS2_1F",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

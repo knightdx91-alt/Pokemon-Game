@@ -1,0 +1,103 @@
+{
+  "id": "MAP_MAGMA_HIDEOUT_1F",
+  "name": "MagmaHideout_1F",
+  "region": "johto",
+  "layout": "LAYOUT_MAGMA_HIDEOUT_1F",
+  "music": "MUS_AQUA_MAGMA_HIDEOUT",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 4,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MagmaHideout_1F_EventScript_Grunt1",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 3,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MagmaHideout_1F_EventScript_ItemRareCandy",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 30,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MagmaHideout_1F_EventScript_Grunt2",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 5,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "FLAG_TEMP_11"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 7,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "FLAG_TEMP_12"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 6,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "FLAG_TEMP_13"
+    }
+  ],
+  "warps": [
+    {
+      "x": 10,
+      "y": 34,
+      "dest_map": "MAP_JAGGED_PASS",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 25,
+      "y": 34,
+      "dest_map": "MAP_MAGMA_HIDEOUT_2F_1R",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 31,
+      "y": 3,
+      "dest_map": "MAP_MAGMA_HIDEOUT_2F_2R",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 20,
+      "y": 22,
+      "dest_map": "MAP_MAGMA_HIDEOUT_2F_3R",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

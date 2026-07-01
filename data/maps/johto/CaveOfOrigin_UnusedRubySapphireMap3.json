@@ -1,0 +1,51 @@
+{
+  "id": "MAP_CAVE_OF_ORIGIN_UNUSED_RUBY_SAPPHIRE_MAP3",
+  "name": "CaveOfOrigin_UnusedRubySapphireMap3",
+  "region": "johto",
+  "layout": "LAYOUT_CAVE_OF_ORIGIN_UNUSED_RUBY_SAPPHIRE_MAP3",
+  "music": "MUS_ROUTE119",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE132",
+      "offset": -5,
+      "direction": "down"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 10,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "CaveOfOrigin_UnusedRubySapphireMap3_Hiker",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 13,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 9,
+      "y": 7,
+      "dest_map": "MAP_AQUA_HIDEOUT_UNUSED_RUBY_MAP1",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

@@ -1,0 +1,41 @@
+{
+  "id": "MAP_GATE_RUINS_OF_ALPH_ROUTE32",
+  "name": "Gate_RuinsOfAlph_Route32",
+  "region": "johto",
+  "layout": "LAYOUT_GATE_RUINS_OF_ALPH_ROUTE32",
+  "music": "MUS_HG_ROUTE30",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY",
+      "x": 7,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Gate_RuinsOfAlph_Route32_EventScript_Youngster",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 5,
+      "dest_map": "MAP_ROUTE32",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "dest_map": "MAP_RUINS_OF_ALPH_OUTSIDE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

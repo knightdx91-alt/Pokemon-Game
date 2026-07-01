@@ -1,0 +1,41 @@
+{
+  "id": "MAP_GATE_ECRUTEAK_CITY_ROUTE42",
+  "name": "Gate_EcruteakCity_Route42",
+  "region": "johto",
+  "layout": "LAYOUT_GATE_ECRUTEAK_CITY_ROUTE42",
+  "music": "MUS_HG_ROUTE42",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 6,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Gate_EcruteakCity_Route42_EventScript_Policeman",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 1,
+      "y": 5,
+      "dest_map": "MAP_ECRUTEAK_CITY",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 11,
+      "y": 5,
+      "dest_map": "MAP_ROUTE42",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

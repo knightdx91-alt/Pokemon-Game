@@ -1,0 +1,121 @@
+{
+  "id": "MAP_UNION_ROOM",
+  "name": "UnionRoom",
+  "region": "johto",
+  "layout": "LAYOUT_UNION_ROOM",
+  "music": "MUS_EVER_GRANDE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_RED_NORMAL",
+      "x": 3,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "UnionRoom_EventScript_Attendant",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_VAR_3",
+      "x": 1,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "UnionRoom_EventScript_Player4",
+      "flag": "FLAG_HIDE_UNION_ROOM_PLAYER_4"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_VAR_7",
+      "x": 7,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "UnionRoom_EventScript_Player8",
+      "flag": "FLAG_HIDE_UNION_ROOM_PLAYER_8"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_VAR_6",
+      "x": 1,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "UnionRoom_EventScript_Player7",
+      "flag": "FLAG_HIDE_UNION_ROOM_PLAYER_7"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_VAR_5",
+      "x": 7,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "UnionRoom_EventScript_Player6",
+      "flag": "FLAG_HIDE_UNION_ROOM_PLAYER_6"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_VAR_4",
+      "x": 13,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "UnionRoom_EventScript_Player5",
+      "flag": "FLAG_HIDE_UNION_ROOM_PLAYER_5"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_VAR_2",
+      "x": 10,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "UnionRoom_EventScript_Player3",
+      "flag": "FLAG_HIDE_UNION_ROOM_PLAYER_3"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_VAR_1",
+      "x": 13,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "UnionRoom_EventScript_Player2",
+      "flag": "FLAG_HIDE_UNION_ROOM_PLAYER_2"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_VAR_0",
+      "x": 4,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "UnionRoom_EventScript_Player1",
+      "flag": "FLAG_HIDE_UNION_ROOM_PLAYER_1"
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 11,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    },
+    {
+      "x": 8,
+      "y": 11,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

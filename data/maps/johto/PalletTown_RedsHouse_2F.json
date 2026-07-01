@@ -1,0 +1,35 @@
+{
+  "id": "MAP_PALLET_TOWN_REDS_HOUSE_2F",
+  "name": "PalletTown_RedsHouse_2F",
+  "region": "johto",
+  "layout": "LAYOUT_PALLET_TOWN_REDS_HOUSE_2F",
+  "music": "MUS_HG_PALLET",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 9,
+      "y": 2,
+      "dest_map": "MAP_PALLET_TOWN_REDS_HOUSE_1F",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 2,
+      "y": 1,
+      "script": "PalletTown_RedsHouse_2F_EventScript_PC"
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "script": "PalletTown_RedsHouse_2F_EventScript_NES"
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "id": "MAP_TIN_TOWER_1F",
+  "name": "TinTower_1F",
+  "region": "johto",
+  "layout": "LAYOUT_TIN_TOWER_1F",
+  "music": "MUS_HG_BELL_TOWER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAGE",
+      "x": 7,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TinTower_1F_EventScript_SageB",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAGE",
+      "x": 3,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TinTower_1F_EventScript_SageA",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_RAYQUAZA",
+      "x": 9,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_TOWER_BEAM",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAGE",
+      "x": 14,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TinTower_1F_EventScript_SageC",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 9,
+      "y": 17,
+      "dest_map": "MAP_BELLCHIME_TRAIL",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 9,
+      "y": 4,
+      "dest_map": "MAP_TIN_TOWER_2F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 11,
+      "y": 17,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 15,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 15,
+      "y": 9,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 7,
+      "y": 17,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 3,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 3,
+      "y": 9,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 11,
+      "y": 3,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    }
+  ]
+}

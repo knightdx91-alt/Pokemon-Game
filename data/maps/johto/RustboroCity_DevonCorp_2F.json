@@ -1,0 +1,91 @@
+{
+  "id": "MAP_RUSTBORO_CITY_DEVON_CORP_2F",
+  "name": "RustboroCity_DevonCorp_2F",
+  "region": "johto",
+  "layout": "LAYOUT_RUSTBORO_CITY_DEVON_CORP_2F",
+  "music": "MUS_RUSTBORO",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_M",
+      "x": 6,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_DevonCorp_2F_EventScript_TalkToPokemonScientist",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_M",
+      "x": 1,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_DevonCorp_2F_EventScript_BallScientist",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_M",
+      "x": 2,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_DevonCorp_2F_EventScript_PokenavScientist",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_M",
+      "x": 10,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_DevonCorp_2F_EventScript_PokemonDreamsScientist",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_M",
+      "x": 14,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_DevonCorp_2F_EventScript_FossilScientist",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_M",
+      "x": 14,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_DevonCorp_2F_EventScript_MatchCallScientist",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 14,
+      "y": 1,
+      "dest_map": "MAP_RUSTBORO_CITY_DEVON_CORP_1F",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "dest_map": "MAP_RUSTBORO_CITY_DEVON_CORP_3F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

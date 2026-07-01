@@ -1,0 +1,205 @@
+{
+  "id": "MAP_MT_MORTAR_1F_NORTH",
+  "name": "MtMortar_1F_North",
+  "region": "johto",
+  "layout": "LAYOUT_MT_MORTAR_1F_NORTH",
+  "music": "MUS_HG_UNION_CAVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 16,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtMortar_1F_North_EventScript_Item_MaxRepel",
+      "flag": "FLAG_ITEM_MTMORTAR2_MAX_REPEL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 35,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtMortar_1F_North_EventScript_Item_EscapeRope",
+      "flag": "FLAG_ITEM_MTMORTAR2_ESCAPE_ROPE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 22,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtMortar_1F_North_EventScript_Item_UltraBall",
+      "flag": "FLAG_ITEM_MTMORTAR2_ULTRA_BALL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 16,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtMortar_1F_North_EventScript_Item_Nugget",
+      "flag": "FLAG_ITEM_MTMORTAR2_NUGGET"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 8,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtMortar_1F_North_EventScript_Item_MaxPotion",
+      "flag": "FLAG_ITEM_MTMORTAR2_MAX_POTION"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 11,
+      "y": 27,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtMortar_1F_North_EventScript_Item_FullIncense",
+      "flag": "FLAG_ITEM_MTMORTAR2_REVIVE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 35,
+      "y": 38,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtMortar_1F_North_EventScript_Item_KingsRock",
+      "flag": "FLAG_ITEM_MTMORTAR2_KINGS_ROCK"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SUPER_NERD",
+      "x": 23,
+      "y": 27,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtMortar_1F_North_EventScript_Markus",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 34,
+      "y": 44,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtMortar_1F_North_EventScript_Miller",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 22,
+      "y": 43,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_StrengthBoulder",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MARILL",
+      "x": 25,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_NIGHT_POKEMON"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MACHOP",
+      "x": 28,
+      "y": 35,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_RHYHORN",
+      "x": 5,
+      "y": 36,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_GOLBAT",
+      "x": 35,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_GOLBAT",
+      "x": 3,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 47,
+      "dest_map": "MAP_MT_MORTAR_1F_SOUTH",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 29,
+      "y": 47,
+      "dest_map": "MAP_MT_MORTAR_1F_SOUTH",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 9,
+      "y": 9,
+      "dest_map": "MAP_MT_MORTAR_2F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 5,
+      "y": 39,
+      "dest_map": "MAP_MT_MORTAR_1F_SOUTH",
+      "dest_warp_id": "7"
+    },
+    {
+      "x": 33,
+      "y": 41,
+      "dest_map": "MAP_MT_MORTAR_1F_SOUTH",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 3,
+      "y": 19,
+      "dest_map": "MAP_MT_MORTAR_B1F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

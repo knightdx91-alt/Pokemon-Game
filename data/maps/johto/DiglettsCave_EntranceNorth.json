@@ -1,0 +1,41 @@
+{
+  "id": "MAP_DIGLETTS_CAVE_ENTRANCE_NORTH",
+  "name": "DiglettsCave_EntranceNorth",
+  "region": "johto",
+  "layout": "LAYOUT_DIGLETTS_CAVE_ENTRANCE_NORTH",
+  "music": "MUS_HG_ROCK_TUNNEL",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BROCK",
+      "x": 2,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "DiglettsCave_EntranceNorth_EventScript_Brock",
+      "flag": "FLAG_HIDE_DIGLETT_BROCK"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 5,
+      "dest_map": "MAP_ROUTE2",
+      "dest_warp_id": "7"
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "dest_map": "MAP_DIGLETTS_CAVE_TUNNEL",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

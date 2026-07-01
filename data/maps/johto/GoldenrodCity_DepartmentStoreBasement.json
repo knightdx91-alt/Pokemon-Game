@@ -1,0 +1,163 @@
+{
+  "id": "MAP_GOLDENROD_CITY_DEPARTMENT_STORE_BASEMENT",
+  "name": "GoldenrodCity_DepartmentStoreBasement",
+  "region": "johto",
+  "layout": "LAYOUT_GOLDENROD_CITY_DEPARTMENT_STORE_BASEMENT",
+  "music": "MUS_HG_POKE_MART",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 4,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 13,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PUSHABLE_BOULDER",
+      "x": 13,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 16,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodCity_DepartmentStoreBasement_EventScript_Item_AmuletCoin",
+      "flag": "FLAG_ITEM_GOLDENROD_UNDERGROUND_AMULET_COIN"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 7,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodCity_DepartmentStoreBasement_EventScript_Item_UltraBall",
+      "flag": "FLAG_ITEM_GOLDENROD_UNDERGROUND_ULTRA_BALL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 17,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodCity_DepartmentStoreBasement_EventScript_Item_ExpShare",
+      "flag": "FLAG_ITEM_GOLDENROD_UNDERGROUND_EXP_SHARE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 10,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodCity_DepartmentStoreBasement_EventScript_Item_Ether",
+      "flag": "FLAG_ITEM_GOLDENROD_UNDERGROUND_ETHER"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 16,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodCity_DepartmentStoreBasement_EventScript_BlackBelt2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 5,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodCity_DepartmentStoreBasement_EventScript_BlackBelt1",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 12,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodCity_DepartmentStoreBasement_EventScript_BlackBelt3",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MACHOKE",
+      "x": 5,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodCity_DepartmentStoreBasement_EventScript_Machoke",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MACHOKE",
+      "x": 14,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodCity_DepartmentStoreBasement_EventScript_Machoke",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MACHOKE",
+      "x": 12,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodCity_DepartmentStoreBasement_EventScript_Machoke",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 20,
+      "y": 2,
+      "dest_map": "MAP_GOLDENROD_CITY_UNDERGROUND_STORAGE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 10,
+      "y": 7,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "GoldenrodDeptElevator_EventScript_Elevator"
+    }
+  ],
+  "signs": []
+}

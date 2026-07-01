@@ -1,0 +1,68 @@
+{
+  "id": "MAP_SOOTOPOLIS_CITY_GYM_1F",
+  "name": "SootopolisCity_Gym_1F",
+  "region": "johto",
+  "layout": "LAYOUT_SOOTOPOLIS_CITY_GYM_1F",
+  "music": "MUS_GYM",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CLAIR",
+      "x": 8,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SootopolisCity_Gym_1F_EventScript_Juan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 7,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SootopolisCity_Gym_1F_EventScript_GymGuide",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 8,
+      "y": 25,
+      "dest_map": "MAP_SOOTOPOLIS_CITY",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 9,
+      "y": 25,
+      "dest_map": "MAP_SOOTOPOLIS_CITY",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 11,
+      "y": 22,
+      "dest_map": "MAP_SOOTOPOLIS_CITY_GYM_B1F",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 6,
+      "y": 24,
+      "script": "SootopolisCity_Gym_1F_EventScript_LeftGymStatue"
+    },
+    {
+      "x": 10,
+      "y": 24,
+      "script": "SootopolisCity_Gym_1F_EventScript_RightGymStatue"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "MAP_VERMILION_CITY_HOUSE1",
+  "name": "VermilionCity_House1",
+  "region": "johto",
+  "layout": "LAYOUT_VERMILION_CITY_HOUSE1",
+  "music": "MUS_HG_VERMILION",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FISHER",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_House1_EventScript_Fisher",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_VERMILION_CITY",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 3,
+      "y": 1,
+      "script": "VermilionCity_House1_EventScript_Photo"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "script": "VermilionCity_House1_EventScript_Photo"
+    }
+  ]
+}

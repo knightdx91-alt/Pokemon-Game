@@ -1,0 +1,860 @@
+{
+  "id": "MAP_RUINS_OF_ALPH_B1F",
+  "name": "RuinsOfAlph_B1F",
+  "region": "johto",
+  "layout": "LAYOUT_RUINS_OF_ALPH_B1F",
+  "music": "MUS_HG_RUINS_OF_ALPH",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 18,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RuinsOfAlph_B1F_EventScript_Hiker",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 13,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RuinsOfAlph_B1F_EventScript_Gramps",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 19,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RuinsOfAlph_B1F_EventScript_Teacher",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_UNOWN",
+      "x": 28,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_TOWER_BEAM",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_UNOWN",
+      "x": 1,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_TOWER_BEAM",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_UNOWN",
+      "x": 1,
+      "y": 18,
+      "movement_type": "MOVEMENT_TYPE_TOWER_BEAM",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_UNOWN",
+      "x": 1,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_TOWER_BEAM",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_UNOWN",
+      "x": 28,
+      "y": 18,
+      "movement_type": "MOVEMENT_TYPE_TOWER_BEAM",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_UNOWN",
+      "x": 28,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_TOWER_BEAM",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_UNOWN",
+      "x": 1,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_TOWER_BEAM",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_UNOWN",
+      "x": 28,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_TOWER_BEAM",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FOSSIL",
+      "x": 21,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_EventScript_DomeFossil",
+      "flag": "FLAG_ITEM_DOME_FOSSIL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FOSSIL",
+      "x": 21,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_EventScript_OldAmber",
+      "flag": "FLAG_ITEM_OLD_AMBER"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FOSSIL",
+      "x": 5,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_EventScript_HelixFossil",
+      "flag": "FLAG_ITEM_HELIX_FOSSIL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 5,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_EventScript_GSBALL",
+      "flag": "FLAG_ITEM_GS_BALL"
+    }
+  ],
+  "warps": [
+    {
+      "x": 15,
+      "y": 16,
+      "dest_map": "MAP_RUINS_OF_ALPH_OUTSIDE",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 5,
+      "y": 6,
+      "dest_map": "MAP_RUINS_OF_ALPH_PUZZLE_AND_REWARD_CHAMBERS",
+      "dest_warp_id": "8"
+    },
+    {
+      "x": 21,
+      "y": 6,
+      "dest_map": "MAP_RUINS_OF_ALPH_PUZZLE_AND_REWARD_CHAMBERS",
+      "dest_warp_id": "10"
+    },
+    {
+      "x": 5,
+      "y": 23,
+      "dest_map": "MAP_RUINS_OF_ALPH_PUZZLE_AND_REWARD_CHAMBERS",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 21,
+      "y": 23,
+      "dest_map": "MAP_RUINS_OF_ALPH_PUZZLE_AND_REWARD_CHAMBERS",
+      "dest_warp_id": "4"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 22,
+      "y": 22,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 19,
+      "y": 22,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 16,
+      "y": 22,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 13,
+      "y": 22,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 10,
+      "y": 22,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 7,
+      "y": 22,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 7,
+      "y": 16,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 22,
+      "y": 16,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 22,
+      "y": 10,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 19,
+      "y": 10,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 16,
+      "y": 10,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 13,
+      "y": 10,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 10,
+      "y": 10,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 7,
+      "y": 10,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 10,
+      "y": 4,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 13,
+      "y": 4,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 16,
+      "y": 4,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 19,
+      "y": 4,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 22,
+      "y": 4,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 7,
+      "y": 28,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 10,
+      "y": 28,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 13,
+      "y": 28,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 16,
+      "y": 28,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 19,
+      "y": 28,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 22,
+      "y": 28,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 10,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 11,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 12,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 13,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 14,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 15,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 16,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 17,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 18,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 19,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 20,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 21,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 22,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 23,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 23,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 22,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 19,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 18,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 17,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 16,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 15,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 14,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 13,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 12,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 11,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 10,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 9,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 8,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 7,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 6,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 6,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 7,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 10,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 11,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 12,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 13,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 14,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 15,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 16,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 17,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 18,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 19,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 20,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 21,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 22,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 23,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 23,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 22,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 19,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 18,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 17,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 16,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 15,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 14,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 13,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 12,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 11,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 10,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 9,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 8,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 7,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 6,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 25,
+      "y": 4,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 25,
+      "y": 10,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 4,
+      "y": 10,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 4,
+      "y": 16,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 25,
+      "y": 16,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 25,
+      "y": 22,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 25,
+      "y": 28,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 4,
+      "y": 28,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 4,
+      "y": 22,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 27,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 26,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 25,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 24,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 27,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 26,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 25,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 24,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 27,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 26,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 25,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 24,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 5,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 4,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 3,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 2,
+      "y": 13,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 5,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 4,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 3,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 2,
+      "y": 19,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 5,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 4,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 3,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 2,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 27,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 26,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 25,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    },
+    {
+      "x": 24,
+      "y": 25,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_UnownText"
+    }
+  ]
+}

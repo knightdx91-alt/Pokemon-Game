@@ -1,0 +1,144 @@
+{
+  "id": "MAP_ABANDONED_SHIP_HIDDEN_FLOOR_ROOMS",
+  "name": "AbandonedShip_HiddenFloorRooms",
+  "region": "johto",
+  "layout": "LAYOUT_ABANDONED_SHIP_HIDDEN_FLOOR_ROOMS",
+  "music": "MUS_ABANDONED_SHIP",
+  "weather": "WEATHER_SHADE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 41,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "AbandonedShip_HiddenFloorRooms_EventScript_ItemLuxuryBall",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 16,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "AbandonedShip_HiddenFloorRooms_EventScript_ItemScanner",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 5,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "AbandonedShip_HiddenFloorRooms_EventScript_ItemTMRainDance",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 31,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "AbandonedShip_HiddenFloorRooms_EventScript_ItemWaterStone",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 14,
+      "dest_map": "MAP_ABANDONED_SHIP_HIDDEN_FLOOR_CORRIDORS",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 7,
+      "y": 14,
+      "dest_map": "MAP_ABANDONED_SHIP_HIDDEN_FLOOR_CORRIDORS",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 21,
+      "y": 14,
+      "dest_map": "MAP_ABANDONED_SHIP_HIDDEN_FLOOR_CORRIDORS",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 22,
+      "y": 14,
+      "dest_map": "MAP_ABANDONED_SHIP_HIDDEN_FLOOR_CORRIDORS",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 36,
+      "y": 14,
+      "dest_map": "MAP_ABANDONED_SHIP_HIDDEN_FLOOR_CORRIDORS",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 37,
+      "y": 14,
+      "dest_map": "MAP_ABANDONED_SHIP_HIDDEN_FLOOR_CORRIDORS",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "dest_map": "MAP_ABANDONED_SHIP_HIDDEN_FLOOR_CORRIDORS",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 21,
+      "y": 1,
+      "dest_map": "MAP_ABANDONED_SHIP_HIDDEN_FLOOR_CORRIDORS",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 36,
+      "y": 1,
+      "dest_map": "MAP_ABANDONED_SHIP_HIDDEN_FLOOR_CORRIDORS",
+      "dest_warp_id": "5"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 8,
+      "y": 5,
+      "script": "AbandonedShip_HiddenFloorRooms_EventScript_Trash"
+    },
+    {
+      "x": 11,
+      "y": 3,
+      "script": "AbandonedShip_HiddenFloorRooms_EventScript_Trash"
+    },
+    {
+      "x": 10,
+      "y": 10,
+      "script": "AbandonedShip_HiddenFloorRooms_EventScript_Trash"
+    },
+    {
+      "x": 16,
+      "y": 3,
+      "script": "AbandonedShip_HiddenFloorRooms_EventScript_Trash"
+    },
+    {
+      "x": 25,
+      "y": 2,
+      "script": "AbandonedShip_HiddenFloorRooms_EventScript_Trash"
+    },
+    {
+      "x": 24,
+      "y": 6,
+      "script": "AbandonedShip_HiddenFloorRooms_EventScript_Trash"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "id": "MAP_SSAQUA_ROOM_NW",
+  "name": "SSAqua_RoomNW",
+  "region": "johto",
+  "layout": "LAYOUT_SSAQUA_ROOM_NW",
+  "music": "MUS_HG_SS_AQUA",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 2,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SSAqua_RoomNW_EventScript_Stanly",
+      "flag": "FLAG_HIDE_SSAQUA_SAILOR"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 4,
+      "y": -5,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SSAqua_RoomNW_EventScript_Edward",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BURGLAR",
+      "x": 5,
+      "y": -5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SSAqua_RoomNW_EventScript_Corey",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 2,
+      "y": 1,
+      "dest_map": "MAP_SSAQUA_1F",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

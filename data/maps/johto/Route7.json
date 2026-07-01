@@ -1,0 +1,83 @@
+{
+  "id": "MAP_ROUTE7",
+  "name": "Route7",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE7",
+  "music": "MUS_HG_ROUTE3",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_CELADON_CITY",
+      "offset": 10,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_SAFFRON_CITY",
+      "offset": 3,
+      "direction": "right"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_JIGGLYPUFF",
+      "x": 17,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 16,
+      "y": 35,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_RALTS",
+      "x": 11,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 15,
+      "y": 30,
+      "dest_map": "MAP_GATE_SAFFRON_CITY_ROUTE7",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 7,
+      "y": 33,
+      "dest_map": "MAP_ROUTE7_TUNNEL_ENTRANCE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 5,
+      "y": 34,
+      "script": "Route7_EventScript_Sign"
+    },
+    {
+      "x": 7,
+      "y": 34,
+      "script": "Route7_EventScript_Door"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "MAP_TRAINER_HILL_ROOF",
+  "name": "TrainerHill_Roof",
+  "region": "johto",
+  "layout": "LAYOUT_TRAINER_HILL_ROOF",
+  "music": "MUS_HG_POKEATHLON_WINNER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 12,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TrainerHill_Roof_EventScript_Owner",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 9,
+      "y": 5,
+      "dest_map": "MAP_TRAINER_HILL_4F",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 15,
+      "y": 5,
+      "dest_map": "MAP_TRAINER_HILL_ELEVATOR",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

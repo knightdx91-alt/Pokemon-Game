@@ -1,0 +1,91 @@
+{
+  "id": "MAP_BATTLE_FRONTIER_MART",
+  "name": "BattleFrontier_Mart",
+  "region": "johto",
+  "layout": "LAYOUT_MART",
+  "music": "MUS_POKE_MART",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CLERK",
+      "x": 2,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Mart_EventScript_Clerk",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_3",
+      "x": 6,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Mart_EventScript_OldWoman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_2",
+      "x": 6,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Mart_EventScript_OldMan",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY",
+      "x": 9,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Mart_EventScript_Boy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CLERK",
+      "x": 1,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Mart_EventScript_Clerk2",
+      "flag": "FLAG_FRONTIER_SECOND_CLERK"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CLERK",
+      "x": 2,
+      "y": 1,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BattleFrontier_Mart_EventScript_ClerkTMs",
+      "flag": "FLAG_FINITE_TMS_CLERK"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_EAST",
+      "dest_warp_id": "12"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_BATTLE_FRONTIER_OUTSIDE_WEST",
+      "dest_warp_id": "4"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

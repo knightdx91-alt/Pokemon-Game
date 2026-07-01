@@ -1,0 +1,126 @@
+{
+  "id": "MAP_LILYCOVE_CITY_LILYCOVE_MUSEUM_2F",
+  "name": "LilycoveCity_LilycoveMuseum_2F",
+  "region": "johto",
+  "layout": "LAYOUT_LILYCOVE_CITY_LILYCOVE_MUSEUM_2F",
+  "music": "MUS_LILYCOVE_MUSEUM",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 10,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_LilycoveMuseum_2F_EventScript_Curator",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAPTAIN",
+      "x": 19,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_LilycoveMuseum_2F_EventScript_Girl",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 7,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_LilycoveMuseum_2F_EventScript_ExpertM",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 14,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_LilycoveMuseum_2F_EventScript_RichBoy",
+      "flag": "FLAG_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 13,
+      "y": 1,
+      "dest_map": "MAP_LILYCOVE_CITY_LILYCOVE_MUSEUM_1F",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 14,
+      "y": 10,
+      "script": "LilycoveCity_LilycoveMuseum_2F_EventScript_CutePainting"
+    },
+    {
+      "x": 15,
+      "y": 10,
+      "script": "LilycoveCity_LilycoveMuseum_2F_EventScript_CutePainting"
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "script": "LilycoveCity_LilycoveMuseum_2F_EventScript_ToughPainting"
+    },
+    {
+      "x": 2,
+      "y": 6,
+      "script": "LilycoveCity_LilycoveMuseum_2F_EventScript_ToughPainting"
+    },
+    {
+      "x": 10,
+      "y": 6,
+      "script": "LilycoveCity_LilycoveMuseum_2F_EventScript_CoolPainting"
+    },
+    {
+      "x": 11,
+      "y": 6,
+      "script": "LilycoveCity_LilycoveMuseum_2F_EventScript_CoolPainting"
+    },
+    {
+      "x": 19,
+      "y": 6,
+      "script": "LilycoveCity_LilycoveMuseum_2F_EventScript_BeautyPainting"
+    },
+    {
+      "x": 18,
+      "y": 6,
+      "script": "LilycoveCity_LilycoveMuseum_2F_EventScript_BeautyPainting"
+    },
+    {
+      "x": 6,
+      "y": 10,
+      "script": "LilycoveCity_LilycoveMuseum_2F_EventScript_SmartPainting"
+    },
+    {
+      "x": 7,
+      "y": 10,
+      "script": "LilycoveCity_LilycoveMuseum_2F_EventScript_SmartPainting"
+    },
+    {
+      "x": 11,
+      "y": 2,
+      "script": "LilycoveCity_LilycoveMuseum_EventScript_BirdSculpture"
+    },
+    {
+      "x": 15,
+      "y": 2,
+      "script": "LilycoveCity_LilycoveMuseum_EventScript_BirdSculpture"
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "id": "MAP_ROUTE104_PRETTY_PETAL_FLOWER_SHOP",
+  "name": "Route104_PrettyPetalFlowerShop",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE104_PRETTY_PETAL_FLOWER_SHOP",
+  "music": "MUS_PETALBURG",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 0,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route104_PrettyPetalFlowerShop_EventScript_ShopOwner",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 7,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route104_PrettyPetalFlowerShop_EventScript_WailmerPailGirl",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GIRL_1",
+      "x": 11,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route104_PrettyPetalFlowerShop_EventScript_RandomBerryGirl",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ATTENDANT",
+      "x": 0,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route104_PrettyPetalFlowerShop_EventScript_MintOwner",
+      "flag": "FLAG_MINTS_CLERK"
+    }
+  ],
+  "warps": [
+    {
+      "x": 2,
+      "y": 8,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 3,
+      "y": 8,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

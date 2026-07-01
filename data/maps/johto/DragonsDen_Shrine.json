@@ -1,0 +1,98 @@
+{
+  "id": "MAP_DRAGONS_DEN_SHRINE",
+  "name": "DragonsDen_Shrine",
+  "region": "johto",
+  "layout": "LAYOUT_DRAGONS_DEN_SHRINE",
+  "music": "MUS_HG_DRAGONS_DEN",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 6,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "DragonsDen_Shrine_EventScript_Elder",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAGE",
+      "x": 3,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "DragonsDen_Shrine_EventScript_Elder2",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAGE",
+      "x": 9,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "DragonsDen_Shrine_EventScript_Elder3",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CLAIR",
+      "x": 5,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_HIDE_DRAGONS_DEN_SHRINE_CLAIR"
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 16,
+      "dest_map": "MAP_DRAGONS_DEN_CAVERN",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 6,
+      "y": 15,
+      "var": "VAR_BLACKTHORN_CITY_STATE",
+      "var_value": "2",
+      "script": "DragonsDen_Shrine_Trigger_ElderQuizTop"
+    },
+    {
+      "x": 7,
+      "y": 16,
+      "var": "VAR_BLACKTHORN_CITY_STATE",
+      "var_value": "2",
+      "script": "DragonsDen_Shrine_Trigger_ElderQuizRight"
+    },
+    {
+      "x": 5,
+      "y": 16,
+      "var": "VAR_BLACKTHORN_CITY_STATE",
+      "var_value": "2",
+      "script": "DragonsDen_Shrine_Trigger_ElderQuizLeft"
+    }
+  ],
+  "signs": [
+    {
+      "x": 4,
+      "y": 15,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    },
+    {
+      "x": 8,
+      "y": 15,
+      "script": "RuinsOfAlph_PuzzleAndRewardChambers_MapScript_StatueDescription"
+    }
+  ]
+}

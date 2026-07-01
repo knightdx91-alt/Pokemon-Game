@@ -1,0 +1,213 @@
+{
+  "id": "MAP_ROUTE2",
+  "name": "Route2",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE2",
+  "music": "MUS_HG_ROUTE1",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_VIRIDIAN_CITY",
+      "offset": -12,
+      "direction": "down"
+    },
+    {
+      "map": "MAP_PEWTER_CITY",
+      "offset": -14,
+      "direction": "up"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 20,
+      "y": 55,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route2_EventScript_Carbos",
+      "flag": "FLAG_ITEM_ROUTE2_CARBOS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 15,
+      "y": 62,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_2"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 15,
+      "y": 70,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_3"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 15,
+      "y": 69,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_4"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 17,
+      "y": 75,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route2_EventScript_Nugget",
+      "flag": "FLAG_ITEM_ROUTE2_NUGGET"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 18,
+      "y": 26,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_1"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_CATERPIE",
+      "x": 14,
+      "y": 54,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_WEEDLE",
+      "x": 1,
+      "y": 62,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 11,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_5"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_ZIGZAGOON",
+      "x": 23,
+      "y": 77,
+      "movement_type": "MOVEMENT_TYPE_WALK_RIGHT_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 51,
+      "dest_map": "MAP_GATE_ROUTE2_VIRIDIAN_FOREST",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 5,
+      "y": 13,
+      "dest_map": "MAP_GATE_VIRIDIAN_FOREST_ROUTE2",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 4,
+      "y": 13,
+      "dest_map": "MAP_GATE_VIRIDIAN_FOREST_ROUTE2",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 18,
+      "y": 46,
+      "dest_map": "MAP_GATE_ROUTE2",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 18,
+      "y": 40,
+      "dest_map": "MAP_GATE_ROUTE2",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 19,
+      "y": 40,
+      "dest_map": "MAP_GATE_ROUTE2",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 17,
+      "y": 22,
+      "dest_map": "MAP_ROUTE2_HOUSE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 17,
+      "y": 11,
+      "dest_map": "MAP_DIGLETTS_CAVE_ENTRANCE_NORTH",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 6,
+      "y": 51,
+      "dest_map": "MAP_GATE_ROUTE2_VIRIDIAN_FOREST",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 19,
+      "y": 46,
+      "dest_map": "MAP_GATE_ROUTE2",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 6,
+      "y": 13,
+      "dest_map": "MAP_GATE_VIRIDIAN_FOREST_ROUTE2",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 7,
+      "y": 13,
+      "dest_map": "MAP_GATE_VIRIDIAN_FOREST_ROUTE2",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 14,
+      "y": 12,
+      "script": "Route2_EventScript_CaveSign"
+    },
+    {
+      "x": 7,
+      "y": 73,
+      "script": "Route2_EventScript_Sign"
+    }
+  ]
+}

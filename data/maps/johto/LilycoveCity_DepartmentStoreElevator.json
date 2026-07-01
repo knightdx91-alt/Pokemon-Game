@@ -1,0 +1,41 @@
+{
+  "id": "MAP_LILYCOVE_CITY_DEPARTMENT_STORE_ELEVATOR",
+  "name": "LilycoveCity_DepartmentStoreElevator",
+  "region": "johto",
+  "layout": "LAYOUT_LILYCOVE_CITY_DEPARTMENT_STORE_ELEVATOR",
+  "music": "MUS_LILYCOVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_KURT",
+      "x": 0,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_DepartmentStoreElevator_EventScript_Attendant",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 1,
+      "y": 5,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

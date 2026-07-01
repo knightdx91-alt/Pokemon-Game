@@ -1,0 +1,71 @@
+{
+  "id": "MAP_ROUTE111_WINSTRATE_FAMILYS_HOUSE",
+  "name": "Route111_WinstrateFamilysHouse",
+  "region": "johto",
+  "layout": "LAYOUT_HOUSE2",
+  "music": "MUS_RUSTBORO",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PSYCHIC_M",
+      "x": 7,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route111_WinstrateFamilysHouse_EventScript_Vivi",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 4,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route111_WinstrateFamilysHouse_EventScript_Victor",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BILL",
+      "x": 7,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route111_WinstrateFamilysHouse_EventScript_Victoria",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route111_WinstrateFamilysHouse_EventScript_Vicky",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 7,
+      "dest_map": "MAP_ROUTE111",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_ROUTE111",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

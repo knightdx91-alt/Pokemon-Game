@@ -1,0 +1,115 @@
+{
+  "id": "MAP_INSIDE_OF_TRUCK",
+  "name": "InsideOfTruck",
+  "region": "johto",
+  "layout": "LAYOUT_INSIDE_OF_TRUCK",
+  "music": "MUS_NONE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TUBER_M",
+      "x": 0,
+      "y": 0,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "InsideOfTruck_EventScript_MovingBox",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TUBER_M",
+      "x": 0,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "InsideOfTruck_EventScript_MovingBox",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TUBER_M",
+      "x": 2,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "InsideOfTruck_EventScript_MovingBox",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 1,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "dest_map": "MAP_DYNAMIC",
+      "dest_warp_id": "WARP_ID_DYNAMIC"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 3,
+      "y": 1,
+      "var": "VAR_GARBAGEVAR",
+      "var_value": "0",
+      "script": "InsideOfTruck_EventScript_SetIntroFlags"
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "var": "VAR_GARBAGEVAR",
+      "var_value": "0",
+      "script": "InsideOfTruck_EventScript_SetIntroFlags"
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "var": "VAR_GARBAGEVAR",
+      "var_value": "0",
+      "script": "InsideOfTruck_EventScript_SetIntroFlags"
+    }
+  ],
+  "signs": [
+    {
+      "x": 1,
+      "y": 0,
+      "script": "InsideOfTruck_EventScript_MovingBox"
+    },
+    {
+      "x": 3,
+      "y": 4,
+      "script": "InsideOfTruck_EventScript_MovingBox"
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "script": "InsideOfTruck_EventScript_MovingBox"
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "script": "InsideOfTruck_EventScript_MovingBox"
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "script": "InsideOfTruck_EventScript_MovingBox"
+    }
+  ]
+}

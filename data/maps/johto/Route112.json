@@ -1,0 +1,237 @@
+{
+  "id": "MAP_ROUTE112",
+  "name": "Route112",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE112",
+  "music": "MUS_ROUTE110",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE113",
+      "offset": -60,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_LAVARIDGE_TOWN",
+      "offset": 40,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_ROUTE111",
+      "offset": -20,
+      "direction": "right"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 26,
+      "y": 30,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route112_EventScript_MagmaGrunts",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 24,
+      "y": 34,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route112_EventScript_Brice",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 29,
+      "y": 49,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route112_EventScript_Larry",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 22,
+      "y": 46,
+      "movement_type": "MOVEMENT_TYPE_ROTATE_COUNTERCLOCKWISE",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route112_EventScript_Carol",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 15,
+      "y": 40,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route112_EventScript_Trent",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 27,
+      "y": 30,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route112_EventScript_MagmaGrunts",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 27,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 28,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 29,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BERRY_TREE",
+      "x": 30,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_BERRY_TREE_GROWTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryTreeScript",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 8,
+      "y": 50,
+      "movement_type": "MOVEMENT_TYPE_WALK_DOWN_AND_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route112_EventScript_Hiker",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 14,
+      "y": 43,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route112_EventScript_ItemNugget",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKER",
+      "x": 31,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route112_EventScript_Bryant",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 31,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "Route112_EventScript_Shayla",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": -3,
+      "y": 45,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 28,
+      "y": 27,
+      "dest_map": "MAP_ROUTE112_CABLE_CAR_STATION",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 29,
+      "y": 27,
+      "dest_map": "MAP_ROUTE112_CABLE_CAR_STATION",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 6,
+      "y": 46,
+      "dest_map": "MAP_JAGGED_PASS",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 7,
+      "y": 46,
+      "dest_map": "MAP_JAGGED_PASS",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 11,
+      "y": 36,
+      "dest_map": "MAP_FIERY_PATH",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 22,
+      "y": 10,
+      "dest_map": "MAP_FIERY_PATH",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 19,
+      "y": 44,
+      "script": "Route112_EventScript_MtChimneySign"
+    },
+    {
+      "x": 22,
+      "y": 37,
+      "script": "Route112_EventScript_MtChimneyCableCarSign"
+    },
+    {
+      "x": 4,
+      "y": 49,
+      "script": "Route112_EventScript_RouteSignLavaridge"
+    }
+  ]
+}

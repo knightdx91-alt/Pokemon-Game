@@ -1,0 +1,95 @@
+{
+  "id": "MAP_SAFFRON_CITY_COPY_CATS_HOUSE_2F",
+  "name": "SaffronCity_CopyCatsHouse_2F",
+  "region": "johto",
+  "layout": "LAYOUT_SAFFRON_CITY_COPY_CATS_HOUSE_2F",
+  "music": "MUS_HG_GOLDENROD",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TWIN",
+      "x": 3,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_CopyCatsHouse_2F_EventScript_Copycat",
+      "flag": "FLAG_TEMP_1"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_DITTO_DOLL",
+      "x": 1,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_CopyCatsHouse_2F_EventScript_Dolls",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CYNDAQUIL_DOLL",
+      "x": 2,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_CopyCatsHouse_2F_EventScript_Dolls",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CLEFAIRY_DOLL",
+      "x": 3,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_CopyCatsHouse_2F_EventScript_Dolls",
+      "flag": "FLAG_HIDE_COPYCAT_CLEFAIRY_DOLL"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_DODRIO",
+      "x": 5,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_CopyCatsHouse_2F_EventScript_Dodrio",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MAY_NORMAL",
+      "x": 3,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_TEMP_2"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BRENDAN_NORMAL",
+      "x": 3,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_TEMP_3"
+    }
+  ],
+  "warps": [
+    {
+      "x": 9,
+      "y": 2,
+      "dest_map": "MAP_SAFFRON_CITY_COPY_CATS_HOUSE_1F",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

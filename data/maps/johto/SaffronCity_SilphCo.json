@@ -1,0 +1,66 @@
+{
+  "id": "MAP_SAFFRON_CITY_SILPH_CO",
+  "name": "SaffronCity_SilphCo",
+  "region": "johto",
+  "layout": "LAYOUT_SAFFRON_CITY_SILPH_CO",
+  "music": "MUS_HG_GOLDENROD",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 31,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_SilphCo_EventScript_Officer",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_STEVEN",
+      "x": 17,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_SilphCo_EventScript_Steven",
+      "flag": "FLAG_GOT_HOENN_STARTER"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 5,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SaffronCity_SilphCo_EventScript_Receptionist",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 8,
+      "y": 20,
+      "dest_map": "MAP_SAFFRON_CITY",
+      "dest_warp_id": "11"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 30,
+      "y": 1,
+      "script": "SaffronCity_SilphCo_EventScript_Sign1"
+    },
+    {
+      "x": 24,
+      "y": 3,
+      "script": "SaffronCity_SilphCo_EventScript_Sign2"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "id": "MAP_BATTLE_FRONTIER_BATTLE_PIKE_ROOM_WILD_MONS",
+  "name": "BattleFrontier_BattlePikeRoomWildMons",
+  "region": "johto",
+  "layout": "LAYOUT_BATTLE_FRONTIER_BATTLE_PIKE_ROOM_WILD_MONS",
+  "music": "MUS_B_PIKE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [],
+  "warps": [],
+  "triggers": [
+    {
+      "x": 4,
+      "y": 3,
+      "var": "VAR_TEMP_1",
+      "var_value": "0",
+      "script": "BattleFrontier_BattlePikeRoomWildMons_EventScript_Exit"
+    },
+    {
+      "x": 3,
+      "y": 18,
+      "var": "VAR_TEMP_2",
+      "var_value": "0",
+      "script": "BattleFrontier_BattlePikeRoomWildMons_EventScript_SetEnteredRoom"
+    },
+    {
+      "x": 4,
+      "y": 18,
+      "var": "VAR_TEMP_2",
+      "var_value": "0",
+      "script": "BattleFrontier_BattlePikeRoomWildMons_EventScript_SetEnteredRoom"
+    },
+    {
+      "x": 5,
+      "y": 18,
+      "var": "VAR_TEMP_2",
+      "var_value": "0",
+      "script": "BattleFrontier_BattlePikeRoomWildMons_EventScript_SetEnteredRoom"
+    },
+    {
+      "x": 3,
+      "y": 19,
+      "var": "VAR_TEMP_3",
+      "var_value": "1",
+      "script": "BattleFrontier_BattlePikeRoomWildMons_EventScript_NoTurningBack"
+    },
+    {
+      "x": 4,
+      "y": 19,
+      "var": "VAR_TEMP_3",
+      "var_value": "1",
+      "script": "BattleFrontier_BattlePikeRoomWildMons_EventScript_NoTurningBack"
+    },
+    {
+      "x": 5,
+      "y": 19,
+      "var": "VAR_TEMP_3",
+      "var_value": "1",
+      "script": "BattleFrontier_BattlePikeRoomWildMons_EventScript_NoTurningBack"
+    }
+  ],
+  "signs": []
+}

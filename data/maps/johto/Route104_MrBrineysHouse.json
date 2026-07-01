@@ -1,0 +1,51 @@
+{
+  "id": "MAP_ROUTE104_MR_BRINEYS_HOUSE",
+  "name": "Route104_MrBrineysHouse",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE104_MR_BRINEYS_HOUSE",
+  "music": "MUS_PETALBURG",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 5,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_DOWN_LEFT_UP_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route104_MrBrineysHouse_EventScript_Briney",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_WINGULL",
+      "x": 6,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route104_MrBrineysHouse_EventScript_Peeko",
+      "flag": "FLAG_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "dest_map": "MAP_ROUTE104",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

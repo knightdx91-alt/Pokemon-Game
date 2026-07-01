@@ -1,0 +1,169 @@
+{
+  "id": "MAP_ROUTE101",
+  "name": "Route101",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE101",
+  "music": "MUS_ROUTE101",
+  "weather": "WEATHER_SUNNY",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_OLDALE_TOWN",
+      "offset": 0,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_LITTLEROOT_TOWN",
+      "offset": 0,
+      "direction": "down"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 16,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route101_EventScript_Youngster",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PROF_ELM",
+      "x": 9,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_JOG_IN_PLACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ANABEL",
+      "x": 7,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route101_EventScript_BirchsBag",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_ZIGZAGOON",
+      "x": 10,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_JOG_IN_PLACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PROF_ELM",
+      "x": 5,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ProfBirch_EventScript_RatePokedexOrRegister",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY",
+      "x": 2,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route101_EventScript_Boy",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 8,
+      "y": -4,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [],
+  "triggers": [
+    {
+      "x": 10,
+      "y": 19,
+      "var": "VAR_GARBAGEVAR",
+      "var_value": "1",
+      "script": "Route101_EventScript_StartBirchRescue"
+    },
+    {
+      "x": 11,
+      "y": 19,
+      "var": "VAR_GARBAGEVAR",
+      "var_value": "1",
+      "script": "Route101_EventScript_StartBirchRescue"
+    },
+    {
+      "x": 10,
+      "y": 18,
+      "var": "VAR_GARBAGEVAR",
+      "var_value": "2",
+      "script": "Route101_EventScript_PreventExitSouth"
+    },
+    {
+      "x": 11,
+      "y": 18,
+      "var": "VAR_GARBAGEVAR",
+      "var_value": "2",
+      "script": "Route101_EventScript_PreventExitSouth"
+    },
+    {
+      "x": 6,
+      "y": 16,
+      "var": "VAR_GARBAGEVAR",
+      "var_value": "2",
+      "script": "Route101_EventScript_PreventExitWest"
+    },
+    {
+      "x": 6,
+      "y": 15,
+      "var": "VAR_GARBAGEVAR",
+      "var_value": "2",
+      "script": "Route101_EventScript_PreventExitWest"
+    },
+    {
+      "x": 6,
+      "y": 17,
+      "var": "VAR_GARBAGEVAR",
+      "var_value": "2",
+      "script": "Route101_EventScript_PreventExitWest"
+    },
+    {
+      "x": 6,
+      "y": 18,
+      "var": "VAR_GARBAGEVAR",
+      "var_value": "2",
+      "script": "Route101_EventScript_PreventExitWest"
+    },
+    {
+      "x": 7,
+      "y": 13,
+      "var": "VAR_GARBAGEVAR",
+      "var_value": "2",
+      "script": "Route101_EventScript_PreventExitNorth"
+    }
+  ],
+  "signs": [
+    {
+      "x": 5,
+      "y": 9,
+      "script": "Route101_EventScript_RouteSign"
+    }
+  ]
+}

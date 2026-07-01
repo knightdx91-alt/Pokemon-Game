@@ -1,0 +1,35 @@
+{
+  "id": "MAP_SSAQUA_PLAYERS_ROOM",
+  "name": "SSAqua_PlayersRoom",
+  "region": "johto",
+  "layout": "LAYOUT_SSAQUA_PLAYERS_ROOM",
+  "music": "MUS_HG_SS_AQUA",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 2,
+      "y": 1,
+      "dest_map": "MAP_SSAQUA_1F",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 6,
+      "y": 4,
+      "script": "SSAquaRooms_EventScript_Bed"
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "script": "SSAquaRooms_EventScript_Bed"
+    }
+  ]
+}

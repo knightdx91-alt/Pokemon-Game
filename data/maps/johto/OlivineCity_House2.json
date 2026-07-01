@@ -1,0 +1,45 @@
+{
+  "id": "MAP_OLIVINE_CITY_HOUSE2",
+  "name": "OlivineCity_House2",
+  "region": "johto",
+  "layout": "LAYOUT_OLIVINE_CITY_HOUSE2",
+  "music": "MUS_HG_CHERRYGROVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_BOY",
+      "x": 8,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OlivineCity_EventScript_PunisherBoy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_M",
+      "x": 1,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "OlivineCity_EventScript_Punisher",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_OLIVINE_CITY",
+      "dest_warp_id": "5"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

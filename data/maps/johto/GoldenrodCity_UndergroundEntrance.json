@@ -1,0 +1,63 @@
+{
+  "id": "MAP_GOLDENROD_CITY_UNDERGROUND_ENTRANCE",
+  "name": "GoldenrodCity_UndergroundEntrance",
+  "region": "johto",
+  "layout": "LAYOUT_GOLDENROD_CITY_UNDERGROUND_ENTRANCE",
+  "music": "MUS_HG_GOLDENROD",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 5,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodUnderground_EventScript_Teacher",
+      "flag": "FLAG_HIDE_GOLDENROD_NPCS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 22,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodUnderground_EventScript_SuperNerd",
+      "flag": "FLAG_HIDE_GOLDENROD_NPCS"
+    }
+  ],
+  "warps": [
+    {
+      "x": 23,
+      "y": 3,
+      "dest_map": "MAP_GOLDENROD_CITY_UNDERGROUND_TUNNEL",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "dest_map": "MAP_GOLDENROD_CITY_UNDERGROUND_TUNNEL",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 22,
+      "y": 7,
+      "dest_map": "MAP_GOLDENROD_CITY",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "dest_map": "MAP_GOLDENROD_CITY",
+      "dest_warp_id": "15"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

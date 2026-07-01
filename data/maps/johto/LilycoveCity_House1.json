@@ -1,0 +1,51 @@
+{
+  "id": "MAP_LILYCOVE_CITY_HOUSE1",
+  "name": "LilycoveCity_House1",
+  "region": "johto",
+  "layout": "LAYOUT_HOUSE1",
+  "music": "MUS_LILYCOVE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": null,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 4,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_House1_EventScript_ExpertM",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_KECLEON",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_House1_EventScript_Kecleon",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 8,
+      "dest_map": "MAP_LILYCOVE_CITY",
+      "dest_warp_id": "8"
+    },
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_LILYCOVE_CITY",
+      "dest_warp_id": "8"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

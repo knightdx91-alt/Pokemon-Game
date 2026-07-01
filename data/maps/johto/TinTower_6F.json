@@ -1,0 +1,51 @@
+{
+  "id": "MAP_TIN_TOWER_6F",
+  "name": "TinTower_6F",
+  "region": "johto",
+  "layout": "LAYOUT_TIN_TOWER_6F",
+  "music": "MUS_HG_BELL_TOWER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 7,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "TinTower_5F_EventScript_Item_MaxPotion",
+      "flag": "FLAG_ITEM_TIN_TOWER_5F_MAX_POTION"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_RAYQUAZA",
+      "x": 9,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_TOWER_BEAM",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 10,
+      "y": 16,
+      "dest_map": "MAP_TIN_TOWER_5F",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 2,
+      "y": 11,
+      "dest_map": "MAP_TIN_TOWER_7F",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

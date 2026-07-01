@@ -1,0 +1,51 @@
+{
+  "id": "MAP_SLATEPORT_CITY_HOUSE",
+  "name": "SlateportCity_House",
+  "region": "johto",
+  "layout": "LAYOUT_HOUSE2",
+  "music": "MUS_SLATEPORT",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ATTENDANT_M",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SlateportCity_House_EventScript_PokefanM",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PICNICKER",
+      "x": 7,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SlateportCity_House_EventScript_Girl",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 7,
+      "dest_map": "MAP_SLATEPORT_CITY",
+      "dest_warp_id": "10"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_SLATEPORT_CITY",
+      "dest_warp_id": "10"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

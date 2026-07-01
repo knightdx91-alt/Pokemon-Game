@@ -1,0 +1,146 @@
+{
+  "id": "MAP_ROUTE48",
+  "name": "Route48",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE48",
+  "music": "MUS_HG_ROUTE47",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE47",
+      "offset": -19,
+      "direction": "down"
+    },
+    {
+      "map": "MAP_SAFARI_ZONE_GATE",
+      "offset": 7,
+      "direction": "up"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_TAUROS",
+      "x": 39,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_GROWLITHE",
+      "x": 41,
+      "y": 18,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_VULPIX",
+      "x": 42,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_GLOOM",
+      "x": 11,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_SKIPLOOM",
+      "x": 43,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_GIRAFARIG",
+      "x": 18,
+      "y": 28,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [],
+  "triggers": [
+    {
+      "x": 21,
+      "y": 0,
+      "var": "VAR_SAFARI_ZONE_GATE_STATE",
+      "var_value": "2",
+      "script": "SafariZoneGate_EventScript_Trigger"
+    },
+    {
+      "x": 22,
+      "y": 0,
+      "var": "VAR_SAFARI_ZONE_GATE_STATE",
+      "var_value": "2",
+      "script": "SafariZoneGate_EventScript_Trigger"
+    },
+    {
+      "x": 23,
+      "y": 0,
+      "var": "VAR_SAFARI_ZONE_GATE_STATE",
+      "var_value": "2",
+      "script": "SafariZoneGate_EventScript_Trigger"
+    },
+    {
+      "x": 24,
+      "y": 0,
+      "var": "VAR_SAFARI_ZONE_GATE_STATE",
+      "var_value": "2",
+      "script": "SafariZoneGate_EventScript_Trigger"
+    },
+    {
+      "x": 21,
+      "y": 1,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "SafariZoneGate_EventScript_BackupTrigger"
+    },
+    {
+      "x": 22,
+      "y": 1,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "SafariZoneGate_EventScript_BackupTrigger"
+    },
+    {
+      "x": 23,
+      "y": 1,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "SafariZoneGate_EventScript_BackupTrigger"
+    },
+    {
+      "x": 24,
+      "y": 1,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "SafariZoneGate_EventScript_BackupTrigger"
+    }
+  ],
+  "signs": []
+}

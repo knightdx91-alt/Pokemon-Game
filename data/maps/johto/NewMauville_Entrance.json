@@ -1,0 +1,38 @@
+{
+  "id": "MAP_NEW_MAUVILLE_ENTRANCE",
+  "name": "NewMauville_Entrance",
+  "region": "johto",
+  "layout": "LAYOUT_NEW_MAUVILLE_ENTRANCE",
+  "music": "MUS_MT_PYRE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 4,
+      "y": 6,
+      "dest_map": "MAP_ROUTE110",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 4,
+      "y": 2,
+      "var": "VAR_NEW_MAUVILLE_STATE",
+      "var_value": "0",
+      "script": "NewMauville_Entrance_EventScript_Door"
+    }
+  ],
+  "signs": []
+}

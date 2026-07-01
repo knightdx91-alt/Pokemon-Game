@@ -1,0 +1,317 @@
+{
+  "id": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+  "name": "NewMauville_Inside_Raikou",
+  "region": "johto",
+  "layout": "LAYOUT_NEW_MAUVILLE_INSIDE_RAIKOU",
+  "music": "MUS_DP_MT_CORONET",
+  "weather": "WEATHER_SHADE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_RAIKOU",
+      "x": 47,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NewMauville_Inside_Raikou_RaikouBattle",
+      "flag": "FLAG_DEFEATED_RAIKOU"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_RAIKOU",
+      "x": 35,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NewMauville_Inside_Raikou_RaikouBattle_2",
+      "flag": "FLAG_RAIKOU_BATTLE_2"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_RAIKOU",
+      "x": 18,
+      "y": 18,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NewMauville_Inside_Raikou_RaikouBattle_1",
+      "flag": "FLAG_RAIKOU_BATTLE_1"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 1,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 15,
+      "y": 4,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 18,
+      "y": 7,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "4"
+    },
+    {
+      "x": 18,
+      "y": 13,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 18,
+      "y": 19,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 18,
+      "y": 26,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "5"
+    },
+    {
+      "x": 21,
+      "y": 29,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "8"
+    },
+    {
+      "x": 29,
+      "y": 29,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "7"
+    },
+    {
+      "x": 32,
+      "y": 26,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "10"
+    },
+    {
+      "x": 32,
+      "y": 19,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "9"
+    },
+    {
+      "x": 32,
+      "y": 13,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "12"
+    },
+    {
+      "x": 32,
+      "y": 7,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "11"
+    },
+    {
+      "x": 35,
+      "y": 4,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "14"
+    },
+    {
+      "x": 46,
+      "y": 11,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "13"
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "16"
+    },
+    {
+      "x": 4,
+      "y": 13,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "15"
+    },
+    {
+      "x": 7,
+      "y": 16,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 1,
+      "y": 16,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "19"
+    },
+    {
+      "x": 1,
+      "y": 4,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "18"
+    },
+    {
+      "x": 4,
+      "y": 19,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "21"
+    },
+    {
+      "x": 4,
+      "y": 26,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "20"
+    },
+    {
+      "x": 7,
+      "y": 29,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 4,
+      "y": 32,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "21"
+    },
+    {
+      "x": 1,
+      "y": 29,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "22"
+    },
+    {
+      "x": 18,
+      "y": 1,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "15"
+    },
+    {
+      "x": 21,
+      "y": 4,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 21,
+      "y": 16,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "18"
+    },
+    {
+      "x": 15,
+      "y": 16,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "13"
+    },
+    {
+      "x": 29,
+      "y": 4,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 32,
+      "y": 1,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "12"
+    },
+    {
+      "x": 15,
+      "y": 29,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "18"
+    },
+    {
+      "x": 18,
+      "y": 32,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "32"
+    },
+    {
+      "x": 35,
+      "y": 16,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "28"
+    },
+    {
+      "x": 29,
+      "y": 16,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "13"
+    },
+    {
+      "x": 32,
+      "y": 32,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "30"
+    },
+    {
+      "x": 35,
+      "y": 29,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "37"
+    },
+    {
+      "x": 43,
+      "y": 29,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "36"
+    },
+    {
+      "x": 46,
+      "y": 26,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "16"
+    },
+    {
+      "x": 46,
+      "y": 32,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "38"
+    },
+    {
+      "x": 49,
+      "y": 29,
+      "dest_map": "MAP_NEW_MAUVILLE_INSIDE_RAIKOU",
+      "dest_warp_id": "28"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 4,
+      "y": 3,
+      "var": "VAR_RAIKOU_EVENT",
+      "var_value": "0",
+      "script": "NewMauville_Inside_Raikou_EntranceTrigger"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "var": "VAR_RAIKOU_EVENT",
+      "var_value": "0",
+      "script": "NewMauville_Inside_Raikou_EntranceTrigger"
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "var": "VAR_RAIKOU_EVENT",
+      "var_value": "0",
+      "script": "NewMauville_Inside_Raikou_EntranceTrigger"
+    }
+  ],
+  "signs": []
+}

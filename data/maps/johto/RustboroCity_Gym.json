@@ -1,0 +1,92 @@
+{
+  "id": "MAP_RUSTBORO_CITY_GYM",
+  "name": "RustboroCity_Gym",
+  "region": "johto",
+  "layout": "LAYOUT_RUSTBORO_CITY_GYM",
+  "music": "MUS_GYM",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FALKNER",
+      "x": 5,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_Gym_EventScript_Roxanne",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 5,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RustboroCity_Gym_EventScript_Josh",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 3,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RustboroCity_Gym_EventScript_Tommy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GYM_GUY",
+      "x": 3,
+      "y": 18,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_Gym_EventScript_GymGuide",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 1,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "RustboroCity_Gym_EventScript_Marc",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 19,
+      "dest_map": "MAP_RUSTBORO_CITY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 6,
+      "y": 19,
+      "dest_map": "MAP_RUSTBORO_CITY",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 2,
+      "y": 18,
+      "script": "RustboroCity_Gym_EventScript_LeftGymStatue"
+    },
+    {
+      "x": 8,
+      "y": 18,
+      "script": "RustboroCity_Gym_EventScript_RightGymStatue"
+    }
+  ]
+}

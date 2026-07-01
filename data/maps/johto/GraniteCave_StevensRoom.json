@@ -1,0 +1,35 @@
+{
+  "id": "MAP_GRANITE_CAVE_STEVENS_ROOM",
+  "name": "GraniteCave_StevensRoom",
+  "region": "johto",
+  "layout": "LAYOUT_GRANITE_CAVE_STEVENS_ROOM",
+  "music": "MUS_PETALBURG_WOODS",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_STEVEN",
+      "x": 7,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GraniteCave_StevensRoom_EventScript_Steven",
+      "flag": "FLAG_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 3,
+      "dest_map": "MAP_GRANITE_CAVE_1F",
+      "dest_warp_id": "3"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

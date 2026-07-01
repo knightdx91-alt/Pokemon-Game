@@ -1,0 +1,41 @@
+{
+  "id": "MAP_METEOR_FALLS_B1F_2R",
+  "name": "MeteorFalls_B1F_2R",
+  "region": "johto",
+  "layout": "LAYOUT_METEOR_FALLS_B1F_2R",
+  "music": "MUS_CAVE_OF_ORIGIN",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_UNDERGROUND",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 5,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MeteorFalls_B1F_2R_EventScript_ItemTMDragonClaw",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 15,
+      "dest_map": "MAP_METEOR_FALLS_B1F_1R",
+      "dest_warp_id": "3"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "dest_map": "MAP_METEOR_FALLS_ARTICUNO",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

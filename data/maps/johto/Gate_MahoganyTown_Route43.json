@@ -1,0 +1,41 @@
+{
+  "id": "MAP_GATE_MAHOGANY_TOWN_ROUTE43",
+  "name": "Gate_MahoganyTown_Route43",
+  "region": "johto",
+  "layout": "LAYOUT_GATE_MAHOGANY_TOWN_ROUTE43",
+  "music": "MUS_HG_ROUTE42",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 3,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Gate_MahoganyTown_Route43_EventScript_Cop",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 9,
+      "dest_map": "MAP_MAHOGANYTOWN",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "dest_map": "MAP_ROUTE43",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

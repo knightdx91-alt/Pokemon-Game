@@ -1,0 +1,55 @@
+{
+  "id": "MAP_VIOLET_CITY_HOUSE2",
+  "name": "VioletCity_House2",
+  "region": "johto",
+  "layout": "LAYOUT_VIOLET_CITY_HOUSE2",
+  "music": "MUS_HG_VIOLET",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_3",
+      "x": 5,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VioletCity_House2_EventScript_Teacher",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_1",
+      "x": 8,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VioletCity_House2_EventScript_Lass",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_PIDGEY",
+      "x": 7,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VioletCity_House2_EventScript_Pidgey",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_VIOLET_CITY",
+      "dest_warp_id": "5"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

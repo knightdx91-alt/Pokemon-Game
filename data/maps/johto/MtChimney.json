@@ -1,0 +1,354 @@
+{
+  "id": "MAP_MT_CHIMNEY",
+  "name": "MtChimney",
+  "region": "johto",
+  "layout": "LAYOUT_MT_CHIMNEY",
+  "music": "MUS_MT_CHIMNEY",
+  "weather": "WEATHER_VOLCANIC_ASH",
+  "map_type": "MAP_TYPE_ROUTE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PROTON",
+      "x": 24,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_Archie",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ARCHER",
+      "x": 13,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_Maxie",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 12,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtChimney_EventScript_Tabitha",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 32,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_BusyMagmaGrunt5",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 28,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_BusyMagmaGrunt4",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 19,
+      "y": 39,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_BusyAquaGrunt2",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 29,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_BusyAquaGrunt1",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 31,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_BusyAquaGrunt3",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ATTENDANT",
+      "x": 19,
+      "y": 39,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_LavaCookieLady",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 22,
+      "y": 39,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_BusyMagmaGrunt6",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POOCHYENA",
+      "x": 23,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_RUN_IN_PLACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_AquaPoochyena",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POOCHYENA",
+      "x": 23,
+      "y": 18,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_MagmaPoochyena",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 23,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_BusyMagmaGrunt2",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POOCHYENA",
+      "x": 23,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_MagmaPoochyena",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POOCHYENA",
+      "x": 22,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_MagmaPoochyena",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 23,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_BusyMagmaGrunt3",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 21,
+      "y": 19,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_BusyMagmaGrunt1",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POOCHYENA",
+      "x": 30,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_AquaPoochyena",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POOCHYENA",
+      "x": 29,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_MagmaPoochyena",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POOCHYENA",
+      "x": 30,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_AquaPoochyena",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POOCHYENA",
+      "x": 31,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_MagmaPoochyena",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_PETREL",
+      "x": 9,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtChimney_EventScript_Grunt2",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POOCHYENA",
+      "x": 20,
+      "y": 39,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_AquaPoochyena",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POOCHYENA",
+      "x": 21,
+      "y": 39,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtChimney_EventScript_MagmaPoochyena",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "x": 16,
+      "y": 18,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_UP",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtChimney_EventScript_Shelby",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 14,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_JOG_IN_PLACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtChimney_EventScript_Melissa",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 29,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtChimney_EventScript_Sheila",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 27,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtChimney_EventScript_Shirley",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ARIANA",
+      "x": 13,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtChimney_EventScript_Grunt1",
+      "flag": "FLAG_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 7,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtChimney_EventScript_Sawyer",
+      "flag": "FLAG_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 17,
+      "y": 36,
+      "dest_map": "MAP_MT_CHIMNEY_CABLE_CAR_STATION",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 18,
+      "y": 36,
+      "dest_map": "MAP_MT_CHIMNEY_CABLE_CAR_STATION",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 20,
+      "y": 41,
+      "dest_map": "MAP_JAGGED_PASS",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 21,
+      "y": 41,
+      "dest_map": "MAP_JAGGED_PASS",
+      "dest_warp_id": "3"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 14,
+      "y": 6,
+      "script": "MtChimney_EventScript_MeteoriteMachine"
+    },
+    {
+      "x": 24,
+      "y": 37,
+      "script": "MtChimney_EventScript_RouteSign"
+    }
+  ]
+}

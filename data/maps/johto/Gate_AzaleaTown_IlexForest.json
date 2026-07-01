@@ -1,0 +1,51 @@
+{
+  "id": "MAP_GATE_AZALEA_TOWN_ILEX_FOREST",
+  "name": "Gate_AzaleaTown_IlexForest",
+  "region": "johto",
+  "layout": "LAYOUT_GATE_AZALEA_TOWN_ILEX_FOREST",
+  "music": "MUS_HG_AZALEA",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 6,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Gate_AzaleaTown_IlexForest_EventScript_Officer",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "x": 4,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_WANDER_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Gate_AzaleaTown_IlexForest_EventScript_Granny",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 5,
+      "dest_map": "MAP_AZALEA_TOWN",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "dest_map": "MAP_ILEX_FOREST",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

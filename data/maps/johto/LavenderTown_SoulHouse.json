@@ -1,0 +1,65 @@
+{
+  "id": "MAP_LAVENDER_TOWN_SOUL_HOUSE",
+  "name": "LavenderTown_SoulHouse",
+  "region": "johto",
+  "layout": "LAYOUT_LAVENDER_TOWN_SOUL_HOUSE",
+  "music": "MUS_HG_LAVENDER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MR_FUJI",
+      "x": 11,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavenderTownSoulHouse_EventScript_MrFuji",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 13,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavenderTownSoulHouse_EventScript_Lass",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ENGINEER",
+      "x": 8,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavenderTownSoulHouse_EventScript_Teacher",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "x": 15,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavenderTownSoulHouse_EventScript_Granny",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 17,
+      "dest_map": "MAP_LAVENDER_TOWN",
+      "dest_warp_id": "4"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

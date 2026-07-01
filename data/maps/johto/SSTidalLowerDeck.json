@@ -1,0 +1,45 @@
+{
+  "id": "MAP_SS_TIDAL_LOWER_DECK",
+  "name": "SSTidalLowerDeck",
+  "region": "johto",
+  "layout": "LAYOUT_SS_TIDAL_LOWER_DECK",
+  "music": "MUS_SAILING",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 10,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_DOWN_RIGHT_UP_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SSTidalLowerDeck_EventScript_Phillip",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 7,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_DOWN_LEFT_UP_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SSTidalLowerDeck_EventScript_Leonard",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 15,
+      "y": 2,
+      "dest_map": "MAP_SS_TIDAL_CORRIDOR",
+      "dest_warp_id": "8"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

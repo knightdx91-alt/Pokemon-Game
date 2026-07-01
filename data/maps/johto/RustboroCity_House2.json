@@ -1,0 +1,51 @@
+{
+  "id": "MAP_RUSTBORO_CITY_HOUSE2",
+  "name": "RustboroCity_House2",
+  "region": "johto",
+  "layout": "LAYOUT_RUSTBORO_CITY_HOUSE",
+  "music": "MUS_RUSTBORO",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BILL",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_House2_EventScript_PokefanF",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_GIRL",
+      "x": 4,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "RustboroCity_House2_EventScript_LittleGirl",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_RUSTBORO_CITY",
+      "dest_warp_id": "9"
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "dest_map": "MAP_RUSTBORO_CITY",
+      "dest_warp_id": "9"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

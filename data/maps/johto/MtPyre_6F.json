@@ -1,0 +1,61 @@
+{
+  "id": "MAP_MT_PYRE_6F",
+  "name": "MtPyre_6F",
+  "region": "johto",
+  "layout": "LAYOUT_MT_PYRE_6F",
+  "music": "MUS_MT_PYRE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CHANNELER",
+      "x": 6,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_ROTATE_COUNTERCLOCKWISE",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtPyre_6F_EventScript_Valerie",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 6,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "MtPyre_6F_EventScript_ItemTMShadowBall",
+      "flag": "FLAG_ITEM_GARBAGEFLAG"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TRAINER_TOWER_DUDE",
+      "x": 10,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_ROTATE_CLOCKWISE",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "MtPyre_6F_EventScript_Cedric",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 2,
+      "y": 1,
+      "dest_map": "MAP_MT_PYRE_5F",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 1,
+      "y": 10,
+      "dest_map": "MAP_MT_PYRE_5F",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

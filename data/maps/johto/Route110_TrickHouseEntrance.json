@@ -1,0 +1,82 @@
+{
+  "id": "MAP_ROUTE110_TRICK_HOUSE_ENTRANCE",
+  "name": "Route110_TrickHouseEntrance",
+  "region": "johto",
+  "layout": "LAYOUT_ROUTE110_TRICK_HOUSE_ENTRANCE",
+  "music": "MUS_TRICK_HOUSE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BALDING_MAN",
+      "x": 6,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route110_TrickHouseEntrance_EventScript_TrickMaster",
+      "flag": "FLAG_GARBAGEFLAG"
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 7,
+      "dest_map": "MAP_ROUTE110",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "dest_map": "MAP_ROUTE110",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "dest_map": "MAP_ROUTE110_TRICK_HOUSE_PUZZLE1",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 4,
+      "y": 7,
+      "var": "VAR_TRICK_HOUSE_BEING_WATCHED_STATE",
+      "var_value": "0",
+      "script": "Route110_TrickHouseEntrance_EventScript_TrickMasterHiding"
+    },
+    {
+      "x": 5,
+      "y": 6,
+      "var": "VAR_TRICK_HOUSE_BEING_WATCHED_STATE",
+      "var_value": "0",
+      "script": "Route110_TrickHouseEntrance_EventScript_TrickMasterHiding"
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "var": "VAR_TRICK_HOUSE_BEING_WATCHED_STATE",
+      "var_value": "0",
+      "script": "Route110_TrickHouseEntrance_EventScript_TrickMasterHiding"
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "var": "VAR_TRICK_HOUSE_BEING_WATCHED_STATE",
+      "var_value": "0",
+      "script": "Route110_TrickHouseEntrance_EventScript_TrickMasterHiding"
+    }
+  ],
+  "signs": [
+    {
+      "x": 5,
+      "y": 1,
+      "script": "Route110_TrickHouseEntrance_EventScript_Door"
+    }
+  ]
+}

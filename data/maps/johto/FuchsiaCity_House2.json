@@ -1,0 +1,52 @@
+{
+  "id": "MAP_FUCHSIA_CITY_HOUSE2",
+  "name": "FuchsiaCity_House2",
+  "region": "johto",
+  "layout": "LAYOUT_FUCHSIA_CITY_HOUSE2",
+  "music": "MUS_RG_FUCHSIA",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_1",
+      "x": 4,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FuchsiaCity_House2_EventScript_Granddaughter",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_FUCHSIA_CITY",
+      "dest_warp_id": "6"
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "dest_map": "MAP_FUCHSIA_CITY",
+      "dest_warp_id": "7"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 3,
+      "y": 1,
+      "script": "FuchsiaCity_House2_EventScript_Photo"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "script": "FuchsiaCity_House2_EventScript_Photo"
+    }
+  ]
+}

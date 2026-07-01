@@ -1,0 +1,61 @@
+{
+  "id": "MAP_GATE_ROUTE43",
+  "name": "Gate_Route43",
+  "region": "johto",
+  "layout": "LAYOUT_GATE_ROUTE43",
+  "music": "MUS_HG_ROUTE42",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_F",
+      "x": 7,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Gate_Route43_Rocket_EventScript_Rockets",
+      "flag": "FLAG_HIDE_MAHOGANY_ROCKETS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ROCKET_M",
+      "x": 7,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Gate_Route43_Rocket_EventScript_Rockets",
+      "flag": "FLAG_HIDE_MAHOGANY_ROCKETS"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 3,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Gate_Route43_Rocket_EventScript_Policeman",
+      "flag": "FLAG_HIDE_MAHOGANY_COP"
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 9,
+      "dest_map": "MAP_ROUTE43",
+      "dest_warp_id": "2"
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "dest_map": "MAP_ROUTE43",
+      "dest_warp_id": "3"
+    }
+  ],
+  "triggers": [],
+  "signs": []
+}

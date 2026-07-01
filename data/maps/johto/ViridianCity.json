@@ -1,0 +1,196 @@
+{
+  "id": "MAP_VIRIDIAN_CITY",
+  "name": "ViridianCity",
+  "region": "johto",
+  "layout": "LAYOUT_VIRIDIAN_CITY",
+  "music": "MUS_HG_PEWTER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_CITY",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE22",
+      "offset": 6,
+      "direction": "left"
+    },
+    {
+      "map": "MAP_ROUTE1",
+      "offset": 12,
+      "direction": "down"
+    },
+    {
+      "map": "MAP_ROUTE2",
+      "offset": 12,
+      "direction": "up"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 8,
+      "y": 25,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FortreeCity_House2_EventScript_SleepTalkTutor",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 21,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_EventScript_Gramps",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_2",
+      "x": 29,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VirianCity_EventScript_GymGramps",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY",
+      "x": 29,
+      "y": 21,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "ViridianCity_EventScript_Youngster",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_PIDGEY",
+      "x": 23,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 19,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 23,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 19,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 19,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 29,
+      "y": 24,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 38,
+      "y": 17,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 25,
+      "y": 11,
+      "dest_map": "MAP_VIRIDIAN_CITY_HOUSE1",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 35,
+      "y": 10,
+      "dest_map": "MAP_VIRIDIAN_CITY_GYM",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 26,
+      "y": 19,
+      "dest_map": "MAP_LILYCOVE_CITY_CONTEST_LOBBY",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 36,
+      "y": 19,
+      "dest_map": "MAP_VIRIDIAN_CITY_MART",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 26,
+      "y": 26,
+      "dest_map": "MAP_VIRIDIAN_CITY_POKEMON_CENTER",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 37,
+      "y": 10,
+      "script": "ViridianCity_EventScript_GymSign"
+    },
+    {
+      "x": 20,
+      "y": 31,
+      "script": "ViridianCity_EventScript_CitySign"
+    },
+    {
+      "x": 20,
+      "y": 16,
+      "script": "ViridianCity_EventScript_CitySign2"
+    },
+    {
+      "x": 28,
+      "y": 19,
+      "script": "LilycoveCity_EventScript_ContestHallSign"
+    }
+  ]
+}

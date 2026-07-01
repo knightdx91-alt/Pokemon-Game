@@ -1,0 +1,155 @@
+{
+  "id": "MAP_SAFARI_ZONE_GATE_SAFARI_ZONE_ENTRANCE",
+  "name": "SafariZoneGate_SafariZoneEntrance",
+  "region": "johto",
+  "layout": "LAYOUT_SAFARI_ZONE_GATE_SAFARI_ZONE_ENTRANCE",
+  "music": "MUS_HG_SAFARI_ZONE_GATE",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 5,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZoneGate_SafariZoneEntrance_EventScript_Baoba",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MYSTERY_GIFT_MAN",
+      "x": 15,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route121_SafariZoneGate_SafariZoneEntrance_EventScript_WelcomeAttendant",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MYSTERY_GIFT_MAN",
+      "x": 12,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "Route121_SafariZoneGate_SafariZoneEntrance_EventScript_InfoAttendant",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LITTLE_BOY",
+      "x": 2,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SafariZoneGate_SafariZoneEntrance_EventScript_Boy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GIRL_1",
+      "x": 14,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_ContestLobby_EventScript_Blender3Girl",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY",
+      "x": 13,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_ContestLobby_EventScript_Blender3Boy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 12,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryBlender_EventScript_Blender3PokefanF",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_COOLTRAINER_M",
+      "x": 16,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryBlender_EventScript_Blender2Man",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_TWIN",
+      "x": 18,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "BerryBlender_EventScript_Blender2Twin",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_2",
+      "x": 16,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LilycoveCity_ContestLobby_EventScript_BlendMaster",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 9,
+      "y": 1,
+      "dest_map": "MAP_SAFARI_ZONE_ENTERANCE",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 9,
+      "y": 13,
+      "dest_map": "MAP_SAFARI_ZONE_GATE",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 9,
+      "y": 2,
+      "var": "VAR_TEMP_0",
+      "var_value": "0",
+      "script": "SafariZoneGate_SafariZoneEntrance_EventScript_EntranceCounterTrigger"
+    }
+  ],
+  "signs": [
+    {
+      "x": 13,
+      "y": 7,
+      "script": "BerryBlender_EventScript_BerryBlender3"
+    },
+    {
+      "x": 17,
+      "y": 11,
+      "script": "BerryBlender_EventScript_BerryBlender2"
+    },
+    {
+      "x": 17,
+      "y": 7,
+      "script": "BerryBlender_EventScript_BerryBlender1"
+    }
+  ]
+}

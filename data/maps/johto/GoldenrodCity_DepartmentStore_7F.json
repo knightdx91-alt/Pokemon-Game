@@ -1,0 +1,81 @@
+{
+  "id": "MAP_GOLDENROD_CITY_DEPARTMENT_STORE_7F",
+  "name": "GoldenrodCity_DepartmentStore_7F",
+  "region": "johto",
+  "layout": "LAYOUT_GOLDENROD_CITY_DEPARTMENT_STORE_7F",
+  "music": "MUS_HG_GOLDENROD",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SUPER_NERD",
+      "x": 22,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodDeptStore7_EventScript_Nerd",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
+      "x": 19,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodDeptStore7_EventScript_PokefanF",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_FAT_MAN",
+      "x": 11,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodDeptStore7_EventScript_PokefanM",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 12,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "GoldenrodDeptStore7_EventScript_Bugcatcher",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 22,
+      "y": 5,
+      "dest_map": "MAP_GOLDENROD_CITY_DEPARTMENT_STORE_6F",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 10,
+      "y": 5,
+      "script": "LilycoveCity_DepartmentStoreRooftop_EventScript_VendingMachine"
+    },
+    {
+      "x": 11,
+      "y": 5,
+      "script": "LilycoveCity_DepartmentStoreRooftop_EventScript_VendingMachine"
+    },
+    {
+      "x": 12,
+      "y": 5,
+      "script": "LilycoveCity_DepartmentStoreRooftop_EventScript_VendingMachine"
+    }
+  ]
+}

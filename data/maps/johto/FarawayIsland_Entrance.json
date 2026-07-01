@@ -1,0 +1,79 @@
+{
+  "id": "MAP_FARAWAY_ISLAND_ENTRANCE",
+  "name": "FarawayIsland_Entrance",
+  "region": "johto",
+  "layout": "LAYOUT_FARAWAY_ISLAND_ENTRANCE",
+  "music": "MUS_ABANDONED_SHIP",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 13,
+      "y": 39,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "FarawayIsland_Entrance_EventScript_Sailor",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SS_TIDAL",
+      "x": 13,
+      "y": 41,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "0x0",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 22,
+      "y": 8,
+      "dest_map": "MAP_FARAWAY_ISLAND_INTERIOR",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 23,
+      "y": 8,
+      "dest_map": "MAP_FARAWAY_ISLAND_INTERIOR",
+      "dest_warp_id": "1"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 9,
+      "y": 18,
+      "var": "TRIGGER_RUN_IMMEDIATELY",
+      "var_value": "0",
+      "script": "FarawayIsland_Entrance_EventScript_SetCloudsWeather"
+    },
+    {
+      "x": 10,
+      "y": 20,
+      "var": "TRIGGER_RUN_IMMEDIATELY",
+      "var_value": "0",
+      "script": "FarawayIsland_Entrance_EventScript_ClearWeather"
+    },
+    {
+      "x": 22,
+      "y": 9,
+      "var": "TRIGGER_RUN_IMMEDIATELY",
+      "var_value": "0",
+      "script": "FarawayIsland_Entrance_EventScript_SetCloudsWeather"
+    }
+  ],
+  "signs": [
+    {
+      "x": 3,
+      "y": 32,
+      "script": "FarawayIsland_Entrance_EventScript_Sign"
+    }
+  ]
+}

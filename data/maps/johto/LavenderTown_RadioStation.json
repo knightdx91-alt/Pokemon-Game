@@ -1,0 +1,96 @@
+{
+  "id": "MAP_LAVENDER_TOWN_RADIO_STATION",
+  "name": "LavenderTown_RadioStation",
+  "region": "johto",
+  "layout": "LAYOUT_LAVENDER_TOWN_RADIO_STATION",
+  "music": "MUS_HG_LAVENDER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": false,
+  "allow_cycling": false,
+  "show_map_name": false,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 17,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavenderTown_RadioStation_EventScript_Officer",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_M",
+      "x": 16,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavenderTown_RadioStation_EventScript_Host",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_WORKER_F",
+      "x": 7,
+      "y": 8,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavenderTown_RadioStation_EventScript_Receptionist",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 2,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavenderTown_RadioStation_EventScript_SuperNerd",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
+      "x": 12,
+      "y": 2,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "LavenderTown_RadioStation_EventScript_Director",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 9,
+      "dest_map": "MAP_LAVENDER_TOWN",
+      "dest_warp_id": "2"
+    }
+  ],
+  "triggers": [],
+  "signs": [
+    {
+      "x": 19,
+      "y": 3,
+      "script": "LavenderTown_RadioStation_EventScript_Library"
+    },
+    {
+      "x": 20,
+      "y": 3,
+      "script": "LavenderTown_RadioStation_EventScript_Library"
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "script": "LavenderTown_RadioStation_EventScript_Sign"
+    },
+    {
+      "x": 13,
+      "y": 1,
+      "script": "LavenderTown_RadioStation_EventScript_Directory"
+    }
+  ]
+}

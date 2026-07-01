@@ -1,0 +1,567 @@
+{
+  "id": "MAP_VERMILION_CITY",
+  "name": "VermilionCity",
+  "region": "johto",
+  "layout": "LAYOUT_VERMILION_CITY",
+  "music": "MUS_HG_VERMILION",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_CITY",
+  "allow_running": true,
+  "allow_cycling": true,
+  "show_map_name": true,
+  "connections": [
+    {
+      "map": "MAP_ROUTE11",
+      "offset": -3,
+      "direction": "right"
+    },
+    {
+      "map": "MAP_ROUTE6",
+      "offset": -8,
+      "direction": "up"
+    },
+    {
+      "map": "MAP_VERMILION_CITY_PORT_OUTSIDE",
+      "offset": 23,
+      "direction": "down"
+    },
+    {
+      "map": "MAP_TREES",
+      "offset": 46,
+      "direction": "up"
+    }
+  ],
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BIG_SNORLAX",
+      "x": 61,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_EventScript_Snorlax",
+      "flag": "FLAG_HIDE_VERMILION_SNORLAX"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 46,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_EventScript_BadgeGuy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN_1",
+      "x": 43,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_EventScript_Oldman",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_MACHOP",
+      "x": 45,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_WALK_SEQUENCE_UP_RIGHT_DOWN_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_EventScript_Machop",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BATTLE_GIRL",
+      "x": 31,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_EventScript_Teacher",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BOY",
+      "x": 29,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_EventScript_Nerd",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_SPEAROW",
+      "x": 27,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ARCHER",
+      "x": 62,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_EventScript_Snorlax",
+      "flag": "FLAG_HIDE_VERMILION_SNORLAX"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ARCHER",
+      "x": 60,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_EventScript_Snorlax",
+      "flag": "FLAG_HIDE_VERMILION_SNORLAX"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ARCHER",
+      "x": 60,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_EventScript_Snorlax",
+      "flag": "FLAG_HIDE_VERMILION_SNORLAX"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ARCHER",
+      "x": 62,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_INVISIBLE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_EventScript_Snorlax",
+      "flag": "FLAG_HIDE_VERMILION_SNORLAX"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BREAKABLE_ROCK",
+      "x": 50,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_7"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BREAKABLE_ROCK",
+      "x": 50,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_4"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BREAKABLE_ROCK",
+      "x": 49,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_3"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BREAKABLE_ROCK",
+      "x": 51,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_5"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BREAKABLE_ROCK",
+      "x": 51,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_6"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BREAKABLE_ROCK",
+      "x": 49,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_8"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BREAKABLE_ROCK",
+      "x": 43,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_1"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_BREAKABLE_ROCK",
+      "x": 46,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_RockSmash",
+      "flag": "FLAG_TEMP_2"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
+      "x": 26,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "EventScript_CutTree",
+      "flag": "FLAG_TEMP_9"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_RAICHU",
+      "x": 19,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 61,
+      "y": 46,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "VermilionCity_EventScript_OldSeaMap",
+      "flag": "FLAG_ITEM_VERMILION_OLD_SEA_MAP"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_SUICUNE",
+      "x": 55,
+      "y": 28,
+      "movement_type": "MOVEMENT_TYPE_WALK_IN_PLACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_HIDE_VERMILION_EUSINE_SUICUNE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_EUSINE",
+      "x": 50,
+      "y": 22,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_HIDE_VERMILION_EUSINE_SUICUNE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 13,
+      "y": 4,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 13,
+      "y": 7,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 30,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 36,
+      "y": 9,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 35,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 30,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 16,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 16,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 30,
+      "y": 20,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 37,
+      "y": 28,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 42,
+      "y": 32,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 46,
+      "y": 28,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 50,
+      "y": 32,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 48,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 52,
+      "y": 23,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 50,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_LIGHT_SPRITE",
+      "x": 44,
+      "y": 15,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 61,
+      "y": 10,
+      "dest_map": "MAP_DIGLETTS_CAVE_ENTRANCE_SOUTH",
+      "dest_warp_id": "1"
+    },
+    {
+      "x": 15,
+      "y": 4,
+      "dest_map": "MAP_VERMILION_CITY_HOUSE1",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 22,
+      "y": 4,
+      "dest_map": "MAP_VERMILION_CITY_POKEMON_CENTER",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 18,
+      "y": 16,
+      "dest_map": "MAP_VERMILION_CITY_FAN_CLUB",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 25,
+      "y": 16,
+      "dest_map": "MAP_VERMILION_CITY_HOUSE2",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 38,
+      "y": 16,
+      "dest_map": "MAP_VERMILION_CITY_MART",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 21,
+      "y": 23,
+      "dest_map": "MAP_VERMILION_CITY_GYM",
+      "dest_warp_id": "0"
+    },
+    {
+      "x": 38,
+      "y": 22,
+      "dest_map": "MAP_VERMILION_CITY_HOUSE3",
+      "dest_warp_id": "0"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 48,
+      "y": 30,
+      "var": "VAR_SUICUNE_ENCOUNTERS",
+      "var_value": "3",
+      "script": "VermilionCity_TriggerSuicuneTop"
+    },
+    {
+      "x": 48,
+      "y": 31,
+      "var": "VAR_SUICUNE_ENCOUNTERS",
+      "var_value": "3",
+      "script": "VermilionCity_TriggerSuicuneMid"
+    },
+    {
+      "x": 48,
+      "y": 32,
+      "var": "VAR_SUICUNE_ENCOUNTERS",
+      "var_value": "3",
+      "script": "VermilionCity_TriggerSuicuneBot"
+    },
+    {
+      "x": 49,
+      "y": 20,
+      "var": "VAR_SUICUNE_ENCOUNTERS",
+      "var_value": "3",
+      "script": "VermilionCity_TriggerSuicuneNorth_Left"
+    },
+    {
+      "x": 50,
+      "y": 20,
+      "var": "VAR_SUICUNE_ENCOUNTERS",
+      "var_value": "3",
+      "script": "VermilionCity_TriggerSuicuneNorth_Mid"
+    },
+    {
+      "x": 51,
+      "y": 20,
+      "var": "VAR_SUICUNE_ENCOUNTERS",
+      "var_value": "3",
+      "script": "VermilionCity_TriggerSuicuneNorth_Right"
+    }
+  ],
+  "signs": [
+    {
+      "x": 23,
+      "y": 23,
+      "script": "VermilionCity_EventScript_GymSign"
+    },
+    {
+      "x": 31,
+      "y": 8,
+      "script": "VermilionCity_EventScript_CitySign"
+    },
+    {
+      "x": 40,
+      "y": 14,
+      "script": "NULL"
+    },
+    {
+      "x": 22,
+      "y": 16,
+      "script": "VermilionCity_EventScript_FanClubSign"
+    },
+    {
+      "x": 62,
+      "y": 11,
+      "script": "VermilionCity_EventScript_DiglettsCaveSign"
+    }
+  ]
+}

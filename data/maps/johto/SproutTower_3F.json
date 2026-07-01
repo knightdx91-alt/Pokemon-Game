@@ -1,0 +1,176 @@
+{
+  "id": "MAP_SPROUT_TOWER_3F",
+  "name": "SproutTower_3F",
+  "region": "johto",
+  "layout": "LAYOUT_SPROUT_TOWER_3F",
+  "music": "MUS_HG_SPROUT_TOWER",
+  "weather": "WEATHER_NONE",
+  "map_type": "MAP_TYPE_INDOOR",
+  "allow_running": true,
+  "allow_cycling": false,
+  "show_map_name": true,
+  "connections": 0,
+  "npcs": [
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAGE",
+      "x": 14,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_FACE_LEFT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SproutTower_3F_EventScript_SageNeal",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAGE",
+      "x": 8,
+      "y": 14,
+      "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SproutTower_3F_EventScript_SageJin",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SAGE",
+      "x": 11,
+      "y": 11,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN_LEFT_AND_RIGHT",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "SproutTower_3F_EventScript_SageTroy",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MR_FUJI",
+      "x": 11,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SproutTower_3F_EventScript_SageLi",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_SILVER",
+      "x": 11,
+      "y": 6,
+      "movement_type": "MOVEMENT_TYPE_FACE_UP",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "FLAG_HIDE_SPROUT_TOWER_SILVER"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 16,
+      "y": 3,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SproutTower_3F_EventScript_EscapeRope",
+      "flag": "FLAG_ITEM_SPROUT_TOWER_ESCAPE_ROPE"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_POKE_BALL",
+      "x": 7,
+      "y": 16,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "SproutTower_3F_EventScript_Potion",
+      "flag": "FLAG_ITEM_SPROUT_TOWER_POTION"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_GASTLY",
+      "x": 17,
+      "y": 12,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_GASTLY",
+      "x": 2,
+      "y": 5,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_RATTATA",
+      "x": 2,
+      "y": 13,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    },
+    {
+      "local_id": null,
+      "graphics_id": "OBJ_EVENT_GFX_RAYQUAZA",
+      "x": 11,
+      "y": 10,
+      "movement_type": "MOVEMENT_TYPE_TOWER_BEAM",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": "NULL",
+      "flag": "0"
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 16,
+      "dest_map": "MAP_SPROUT_TOWER_2F",
+      "dest_warp_id": "3"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 14,
+      "y": 7,
+      "var": "VAR_SPROUT_TOWER",
+      "var_value": "0",
+      "script": "SproutTower_3F_EventScript_TriggerSceneRight"
+    },
+    {
+      "x": 13,
+      "y": 7,
+      "var": "VAR_SPROUT_TOWER",
+      "var_value": "0",
+      "script": "SproutTower_3F_EventScript_TriggerSceneLeft"
+    }
+  ],
+  "signs": [
+    {
+      "x": 11,
+      "y": 1,
+      "script": "SproutTower_3F_EventScript_Painting"
+    },
+    {
+      "x": 17,
+      "y": 17,
+      "script": "SproutTower_2F_EventScript_Statue"
+    },
+    {
+      "x": 5,
+      "y": 17,
+      "script": "SproutTower_2F_EventScript_Statue"
+    },
+    {
+      "x": 8,
+      "y": 2,
+      "script": "SproutTower_2F_EventScript_Statue"
+    },
+    {
+      "x": 14,
+      "y": 2,
+      "script": "SproutTower_2F_EventScript_Statue"
+    }
+  ]
+}
