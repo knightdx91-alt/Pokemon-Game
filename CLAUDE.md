@@ -429,21 +429,26 @@ trusted until its output renders correctly (the way HnS was verified).
   never commit; individual extracted data files can be converted/copied into
   `data/` when needed). Pure stdlib, no deps. Produces the data/asset side of
   a decomp only — no C source (that part of pret repos is human RE work).
-  **Getting the ROM in a cloud session** — the user's Pokémon Black (US, IRBO)
-  ROM is link-shared in their Google Drive and downloads straight into the
-  sandbox (verified working; ~256 MB, takes seconds):
+  **Getting the ROMs in a cloud session** — both of the user's ROMs are
+  link-shared in their Google Drive and download straight into the sandbox
+  (verified working; seconds each):
   ```
+  # Pokémon Black (US, IRBO) — 256 MB
   curl -sSL "https://drive.usercontent.google.com/download?id=1uog4J8pUbTiNYptaoWAbdrY0E5HMEqwD&export=download&confirm=t" -o /tmp/pokemon-black.nds
   python3 tools/nds_decomp.py /tmp/pokemon-black.nds -o source/nds/IRBO
+
+  # Pokémon Black 2 (US, IREO) — 275 MB (richer: 814 trainers, more maps/text)
+  curl -sSL "https://drive.usercontent.google.com/download?id=11f9lNHk-42sDTxJHzLd9SAwy4niz35xk&export=download&confirm=t" -o /tmp/pokemon-black2.nds
+  python3 tools/nds_decomp.py /tmp/pokemon-black2.nds -o source/nds/IREO
   ```
-  Verified extraction (Pokémon Black): 484 FAT files, 237 NARCs → 54,054
-  members, ~666 MB. All KNOWN_NARCS annotations confirmed present — personal
-  data sanity-checked (member 0001 = Bulbasaur 45/49/49/65/65/45). Extraction
-  is ephemeral (gitignored, sandbox dies with session) — re-run the two
-  commands above whenever ROM data is needed; convert what the game needs
-  into `data/` formats and commit only that.
-  The user also has Pokémon Black 2 in Drive (`Pokemon - Black Version 2.nds`,
-  not yet link-shared — ask for the share link if B2 data is needed).
+  Both verified on real extraction — B: 237 NARCs → 54,054 members; B2: 308
+  NARCs → 69,850 members. All KNOWN_NARCS annotations confirmed present in
+  both; personal data sanity-checked (member 0001 = Bulbasaur
+  45/49/49/65/65/45). Extraction is ephemeral (gitignored, sandbox dies with
+  session) — re-run the commands whenever ROM data is needed; convert what
+  the game needs into `data/` formats and commit only that. Prefer **B2**
+  as the data source (superset: all 649 species, BW2 encounters, more
+  trainers/maps).
 - `gen_party_assets.py` — regenerate the FireRed party-screen assets in
   `src/assets/party/` (slot boxes, fonts, pokéball, status icons, message frame)
   by decoding `source/pokefirered` graphics/tilemaps/palettes. Re-run if those
