@@ -846,6 +846,7 @@ window.GameBattle = (function () {
         const terrainBg = window._BattleAssets && window._BattleAssets['terrain_' + terrainKey];
 
         _el.innerHTML = `
+<div id="bt-frame">
 <div id="bt-field">
   <div id="bt-terrain-bg" style="${terrainBg ? `background-image:url('${terrainBg}')` : ''}"></div>
   <canvas id="bt-enemy-hb" class="bt-hb bt-hb-enemy" width="100" height="28"></canvas>
@@ -870,6 +871,7 @@ window.GameBattle = (function () {
   <div id="bt-move-box" style="display:none"></div>
   <div id="bt-bag-box" style="display:none"></div>
   <div id="bt-party-box" style="display:none"></div>
+</div>
 </div>`;
 
         _updateHP();

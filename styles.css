@@ -364,9 +364,18 @@ body.orient-reverse-landscape #screen-primary { height: 100vh; width: auto; max-
 
 /* === BATTLE OVERLAY === */
 #battle-overlay {
-    position: absolute; inset: 0; z-index: 80; background: #1a2030;
+    position: absolute; inset: 0; z-index: 80; background: #000;
+    display: flex; align-items: center; justify-content: center;
+}
+/* Fixed GBA 3:2 frame, letterboxed inside the screen. Everything inside scales
+   together (container queries drive font sizes), so text and healthboxes stay
+   in proportion regardless of the screen's own aspect ratio. */
+#bt-frame {
+    position: relative; height: 100%; width: auto; max-width: 100%;
+    aspect-ratio: 3 / 2; overflow: hidden; background: #1a2030;
     display: flex; flex-direction: column;
-    font-family: 'Press Start 2P', monospace; font-size: 10px; color: var(--fr-text);
+    container-type: inline-size;
+    font-family: 'PokeFireRed', 'Press Start 2P', monospace; color: var(--fr-text);
 }
 #bt-field {
     flex: 1; position: relative;
@@ -402,12 +411,14 @@ body.orient-reverse-landscape #screen-primary { height: 100vh; width: auto; max-
 
 /* Battle healthboxes — pixel-exact Emerald graphics on a native-res canvas.
    Sized as a % of the field so they scale with the battle screen. */
-.bt-hb {
+/* Override the generic #screen-primary canvas rule (which forces
+   width/height:100% + black bg) — these are floating GBA healthboxes. */
+#bt-frame .bt-hb {
     position: absolute; image-rendering: pixelated; image-rendering: crisp-edges;
-    height: auto; z-index: 2;
+    background: none; z-index: 2; height: auto;
 }
-.bt-hb-enemy  { top: 6%;  left: 3%;  width: 42%; }
-.bt-hb-player { bottom: 8%; right: 3%; width: 44%; }
+#bt-frame .bt-hb-enemy  { top: 6%;  left: 3%;  width: 43%; }
+#bt-frame .bt-hb-player { bottom: 9%; right: 3%; width: 44%; }
 
 #bt-enemy-sprite-wrap { position: absolute; top: 5%; right: 10%; width: 40%; height: 45%; display: flex; align-items: center; justify-content: center; }
 #bt-enemy-sprite { max-width: 100%; max-height: 100%; image-rendering: pixelated; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
@@ -444,8 +455,8 @@ body.orient-reverse-landscape #screen-primary { height: 100vh; width: auto; max-
 }
 #bt-text {
     font-family: 'PokeFireRed', 'Press Start 2P', monospace;
-    font-size: 16px; line-height: 1.15; color: #f8f8f8;
-    text-shadow: 1px 1px 0 #384858; white-space: pre-wrap;
+    font-size: 6.2cqw; line-height: 1.2; color: #f8f8f8;
+    text-shadow: 0.4cqw 0.4cqw 0 #384858; white-space: pre-wrap;
 }
 /* When acting as the action-select prompt, it sits over the teal-left box. */
 #bt-bottom.state-action #bt-text-box { right: 52%; }
@@ -458,12 +469,12 @@ body.orient-reverse-landscape #screen-primary { height: 100vh; width: auto; max-
 }
 .bt-act {
     background: none; border: none; color: #404050;
-    font-family: 'PokeFireRed', 'Press Start 2P', monospace; font-size: 16px;
-    text-align: left; padding: 0 0 0 12px; cursor: pointer; position: relative;
+    font-family: 'PokeFireRed', 'Press Start 2P', monospace; font-size: 6cqw;
+    text-align: left; padding: 0 0 0 5cqw; cursor: pointer; position: relative;
     white-space: nowrap;
 }
 .bt-act.selected::before, .bt-move-btn.selected::before {
-    content: '▶'; position: absolute; left: 0; color: #e83010; font-size: 12px;
+    content: '▶'; position: absolute; left: 0.5cqw; color: #e83010; font-size: 4.5cqw;
 }
 .bt-act.selected { color: #202030; }
 
@@ -478,18 +489,18 @@ body.orient-reverse-landscape #screen-primary { height: 100vh; width: auto; max-
     display: flex; flex-direction: column; justify-content: center; gap: 4px;
     font-family: 'PokeFireRed', 'Press Start 2P', monospace; color: #404050;
 }
-.bt-mi-pp   { font-size: 15px; }
-.bt-mi-type { font-size: 15px; font-weight: bold; }
+.bt-mi-pp   { font-size: 5.2cqw; }
+.bt-mi-type { font-size: 5.2cqw; font-weight: bold; }
 .bt-move-btn {
     background: none; border: none; color: #404050;
-    font-family: 'PokeFireRed', 'Press Start 2P', monospace; font-size: 16px;
-    text-align: left; padding: 0 0 0 12px; cursor: pointer; position: relative;
+    font-family: 'PokeFireRed', 'Press Start 2P', monospace; font-size: 5.6cqw;
+    text-align: left; padding: 0 0 0 5cqw; cursor: pointer; position: relative;
     display: flex; align-items: center; white-space: nowrap;
 }
 .bt-move-btn.selected { color: #202030; }
 .bt-move-btn.pp-zero { opacity: 0.45; cursor: not-allowed; }
 .bt-move-btn.bt-move-empty { opacity: 0; cursor: default; }
-.bt-move-name { font-family: inherit; color: inherit; font-size: 16px; }
+.bt-move-name { font-family: inherit; color: inherit; font-size: 5.6cqw; }
 .bt-move-pp   { display: none; }
 .bt-move-type { display: none; }
 
