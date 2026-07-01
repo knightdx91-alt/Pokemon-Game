@@ -310,6 +310,37 @@ window.GameMap = (function () {
         return current.warps.find(w => w.x === x && w.y === y) || null;
     }
 
+    /**
+     * A sensible default spawn: the walkable tile nearest the centroid of all
+     * walkable tiles (i.e. the middle of the map's open/path area), avoiding
+     * warp tiles so the player doesn't immediately re-warp. Used when a map is
+     * loaded without an explicit entry point.
+     */
+    function getDefaultSpawn() {
+        const w = mapWidth, h = mapHeight;
+        const col = layoutData && layoutData.collision;
+        const centre = { x: Math.floor(w / 2), y: Math.floor(h / 2) };
+        if (!col) return centre;
+        let sx = 0, sy = 0, n = 0;
+        for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+                if (isWalkable(x, y)) { sx += x; sy += y; n++; }
+            }
+        }
+        if (!n) return centre;
+        const cx = Math.round(sx / n), cy = Math.round(sy / n);
+        const maxR = Math.max(w, h);
+        for (let r = 0; r < maxR; r++) {
+            for (let dy = -r; dy <= r; dy++) {
+                for (let dx = -r; dx <= r; dx++) {
+                    const tx = cx + dx, ty = cy + dy;
+                    if (isWalkable(tx, ty) && !getWarp(tx, ty)) return { x: tx, y: ty };
+                }
+            }
+        }
+        return centre;
+    }
+
     function getSign(x, y) {
         if (!current || !current.signs) return null;
         return current.signs.find(s => s.x === x && s.y === y) || null;
@@ -406,6 +437,7 @@ window.GameMap = (function () {
         getTile,
         isWalkable,
         getWarp,
+        getDefaultSpawn,
         getSign,
         getNpcAt,
         getTilesetName,

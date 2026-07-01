@@ -19,6 +19,16 @@
         moveDuration: MOVE_COOLDOWN_MS
     };
 
+    // Each region's starting town + a hand-picked, sensible spawn tile. Used for
+    // the boot map and the SELECT fly menu. Any other map uses the map's
+    // walkable-centroid default (GameMap.getDefaultSpawn).
+    const STARTING_TOWNS = {
+        PalletTown:     { region: 'kanto',  x: 11, y: 10, dir: 'down', label: 'Kanto — Pallet Town' },
+        NewBarkTown:    { region: 'johto',  x: 13, y: 15, dir: 'down', label: 'Johto — New Bark Town' },
+        LittlerootTown: { region: 'hoenn',  x: 9,  y: 10, dir: 'down', label: 'Hoenn — Littleroot Town' },
+        twinleaf_town:  { region: 'sinnoh', x: 20, y: 22, dir: 'up',   label: 'Sinnoh — Twinleaf Town' },
+    };
+
     let currentRegion = 'kanto';
     let _transitioning   = false;
     let _warpCooldownUntil = 0;
@@ -237,6 +247,10 @@
             window._mapLoaded = true;
             player.x = Math.max(0, Math.min(dest.x, GameMap.width  - 1));
             player.y = Math.max(0, Math.min(dest.y, GameMap.height - 1));
+            if (!GameMap.isWalkable(player.x, player.y)) {
+                const s = GameMap.getDefaultSpawn();
+                player.x = s.x; player.y = s.y;
+            }
             player.direction = 'down';
             player.walkFrame = 0;
             _snapPlayer();
@@ -438,33 +452,26 @@
             window._mapName   = (GameMap.current && GameMap.current.name) || _startMap;
             window._mapLoaded = true;
 
-            // Default Twinleaf Town start: just in front of the player's house,
-            // facing the door. Other maps fall back to (7, 8).
-            const _atTwinleaf = _startMap === 'twinleaf_town';
-            player.x = _atTwinleaf ? 20 : 7;
-            player.y = _atTwinleaf ? 22 : 8;
-            player.direction = _atTwinleaf ? 'up' : 'down';
+            // Spawn at the town's defined start point if it's a known starting
+            // town, otherwise at the map's walkable-centroid default so the
+            // player always lands somewhere sensible (on the open path).
+            const _start = STARTING_TOWNS[_startMap];
+            if (_start) {
+                player.x = _start.x;
+                player.y = _start.y;
+                player.direction = _start.dir || 'down';
+            } else {
+                const s = GameMap.getDefaultSpawn();
+                player.x = s.x;
+                player.y = s.y;
+                player.direction = 'down';
+            }
             player.moveStartTime = 0;
-            player.x = Math.min(player.x, GameMap.width  - 1);
-            player.y = Math.min(player.y, GameMap.height - 1);
-
-            // If the default tile isn't walkable (common for converted DS maps),
-            // spiral out from the map centre to find an open, non-warp tile.
+            player.x = Math.max(0, Math.min(player.x, GameMap.width  - 1));
+            player.y = Math.max(0, Math.min(player.y, GameMap.height - 1));
             if (!GameMap.isWalkable(player.x, player.y)) {
-                const cx = Math.floor(GameMap.width / 2);
-                const cy = Math.floor(GameMap.height / 2);
-                const maxR = Math.max(GameMap.width, GameMap.height);
-                let found = false;
-                for (let r = 0; r < maxR && !found; r++) {
-                    for (let dy = -r; dy <= r && !found; dy++) {
-                        for (let dx = -r; dx <= r && !found; dx++) {
-                            const tx = cx + dx, ty = cy + dy;
-                            if (GameMap.isWalkable(tx, ty) && !GameMap.getWarp(tx, ty)) {
-                                player.x = tx; player.y = ty; found = true;
-                            }
-                        }
-                    }
-                }
+                const s = GameMap.getDefaultSpawn();
+                player.x = s.x; player.y = s.y;
             }
             player.prevX = player.x;
             player.prevY = player.y;
