@@ -67,6 +67,18 @@ tileset if it is missing) and uses the `collision` grid for movement. Load any
 converted map with `?region=sinnoh&map=<name>` (e.g.
 `?region=sinnoh&map=twinleaf_town`).
 
+### Seamless overworld
+
+Every map in a matrix shares one global tile grid, so the player can walk
+straight from one map into the next (Twinleaf → Route 201 → …) with no menus or
+loading screens, like the real games. The converter writes each map's `matrix`
+id and `matrix_origin` (its top-left cell in global tiles), plus a per-matrix
+grid `data/maps/sinnoh_matrix/<matrix_id>.json` mapping every cell to the map
+that owns it. On an off-edge move the engine converts the local tile to a global
+tile, looks up the neighbouring map in that grid, loads it, and drops the player
+at the matching global position. Interior maps use their own matrices and are
+entered/exited by warps instead.
+
 ## Examples
 
 Rendered straight from the game's 3D models (see `previews/`):

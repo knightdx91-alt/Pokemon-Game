@@ -36,6 +36,12 @@ window.GameMap = (function () {
     let _nameIndex       = null;   // MAP_CONST -> filename, loaded from kanto_index.json
     let _region          = 'kanto';
 
+    // Seamless-overworld matrix: maps in a matrix share one global tile grid, so
+    // the player can walk from one map straight into the adjacent one.
+    let _matrix        = null;     // current matrix grid JSON ({cells,tile_size,…})
+    let _matrixOrigin  = [0, 0];   // current map's top-left cell in global tiles
+    const _matrixCache = {};       // "region/matrixId" -> grid JSON (or null)
+
     // ---------------------------------------------------------------
     // Index loading
     // ---------------------------------------------------------------
@@ -138,6 +144,7 @@ window.GameMap = (function () {
             if (!resp.ok) throw new Error(`HTTP ${resp.status} loading ${url}`);
             current = await resp.json();
             await _loadLayout(current);
+            await _loadMatrix(current, region);
             console.log(`[Map] Loaded ${mapName} (${mapWidth}x${mapHeight}) tileset=${getTilesetName() || 'none'}`);
         } catch (err) {
             console.error('[Map] Failed to load map:', err);
@@ -220,6 +227,49 @@ window.GameMap = (function () {
         // We don't know destHeight/destWidth yet — caller must fill in after load
         // Return a descriptor; entryX/Y will be finalised by the caller
         return { connection: { ...conn, dest_map: destMapId }, dir, exitX, exitY, offset };
+    }
+
+    // ---------------------------------------------------------------
+    // Matrix (seamless overworld) resolution
+    // ---------------------------------------------------------------
+
+    /** Load the matrix grid for the current map (if any), for seamless walking. */
+    async function _loadMatrix(data, region) {
+        _matrix = null;
+        _matrixOrigin = (data && data.matrix_origin) || [0, 0];
+        const matrixId = data && data.matrix;
+        if (!matrixId) return;
+        const key = `${region}/${matrixId}`;
+        if (_matrixCache[key] === undefined) {
+            try {
+                const resp = await fetch(`data/maps/${region}_matrix/${matrixId}.json`);
+                _matrixCache[key] = resp.ok ? await resp.json() : null;
+            } catch (e) {
+                _matrixCache[key] = null;
+            }
+        }
+        _matrix = _matrixCache[key];
+    }
+
+    /**
+     * For an (out-of-bounds) local tile, resolve which adjacent map in the matrix
+     * owns it. Returns { mapName, globalX, globalY } or null (edge/void/same map).
+     */
+    function getMatrixWalk(localX, localY) {
+        if (!_matrix || !_matrix.cells) return null;
+        const ts = _matrix.tile_size || DEFAULT_SIZE;
+        const gx = _matrixOrigin[0] + localX;
+        const gy = _matrixOrigin[1] + localY;
+        if (gx < 0 || gy < 0) return null;
+        const col = Math.floor(gx / ts);
+        const row = Math.floor(gy / ts);
+        if (row < 0 || row >= _matrix.cells.length) return null;
+        const gridRow = _matrix.cells[row];
+        if (!gridRow || col < 0 || col >= gridRow.length) return null;
+        const name = gridRow[col];
+        const curName = current && current.id;
+        if (!name || name === curName) return null;
+        return { mapName: name, globalX: gx, globalY: gy };
     }
 
     // ---------------------------------------------------------------
@@ -351,6 +401,8 @@ window.GameMap = (function () {
         loadById,
         resolveWarp,
         getConnectionAt,
+        getMatrixWalk,
+        get matrixOrigin() { return _matrixOrigin; },
         getTile,
         isWalkable,
         getWarp,

@@ -159,6 +159,32 @@
         }
     }
 
+    // Seamless overworld: walk straight from one matrix map into the adjacent
+    // one, keeping the player's global tile position continuous.
+    async function transitionToMatrix(mw) {
+        if (_transitioning) return;
+        _transitioning = true;
+        try {
+            console.log(`[Matrix] -> ${mw.mapName} @global(${mw.globalX},${mw.globalY})`);
+            const result = await GameMap.load(mw.mapName, currentRegion);
+            if (!result) return;
+            window._mapName = mw.mapName; window._mapLoaded = true;
+            window._currentMapType = (GameMap.current && GameMap.current.map_type) || "";
+
+            const origin = GameMap.matrixOrigin || [0, 0];
+            player.x = Math.max(0, Math.min(mw.globalX - origin[0], GameMap.width  - 1));
+            player.y = Math.max(0, Math.min(mw.globalY - origin[1], GameMap.height - 1));
+            _snapPlayer();
+
+            GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
+            if (window.GameSave) GameSave.markDirty();
+            _warpCooldownUntil = performance.now() + WARP_COOLDOWN_MS;
+            GameMap.loadEncounterData(currentRegion);
+        } finally {
+            _transitioning = false;
+        }
+    }
+
     async function transitionToConnection(connInfo) {
         if (_transitioning) return;
         _transitioning = true;
@@ -334,8 +360,15 @@
                     const oob = nx < 0 || nx >= GameMap.width || ny < 0 || ny >= GameMap.height;
 
                     if (oob) {
-                        const connInfo = GameMap.getConnectionAt(nx, ny);
-                        if (connInfo) transitionToConnection(connInfo);
+                        // Prefer a seamless matrix walk (Platinum overworld);
+                        // fall back to explicit GBA-style edge connections.
+                        const mw = GameMap.getMatrixWalk ? GameMap.getMatrixWalk(nx, ny) : null;
+                        if (mw) {
+                            transitionToMatrix(mw);
+                        } else {
+                            const connInfo = GameMap.getConnectionAt(nx, ny);
+                            if (connInfo) transitionToConnection(connInfo);
+                        }
                     } else if (GameMap.isWalkable(nx, ny)) {
                         player.prevX = player.x;
                         player.prevY = player.y;

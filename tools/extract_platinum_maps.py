@@ -29,8 +29,50 @@ import platinum_common as pc
 OUT_LAYOUT_DIR = os.path.join(pc.REPO_ROOT, "data", "layouts", "sinnoh")
 OUT_MAP_DIR    = os.path.join(pc.REPO_ROOT, "data", "maps", "sinnoh")
 OUT_INDEX      = os.path.join(pc.REPO_ROOT, "data", "maps", "sinnoh_index.json")
+OUT_MATRIX_DIR = os.path.join(pc.REPO_ROOT, "data", "maps", "sinnoh_matrix")
 
 TILESET_NAME = "sinnoh_overworld"
+
+
+def build_matrix_grids(catalog, header_to_name):
+    """
+    For every matrix that places more than one playable map, emit a grid mapping
+    each cell to the map that owns it (or null). The engine uses this to walk
+    seamlessly from one map to an adjacent one across the shared global tile grid.
+    """
+    os.makedirs(OUT_MATRIX_DIR, exist_ok=True)
+    # Which matrices are actually used by playable maps.
+    matrix_ids = sorted({e["matrix_id"] for e in catalog.values() if e.get("matrix_id")})
+    count = 0
+    for matrix_id in matrix_ids:
+        try:
+            matrix = pc.load_matrix(matrix_id)
+        except FileNotFoundError:
+            continue
+        headers = matrix.get("headers")
+        if not headers:
+            continue  # dedicated single-map matrix (interiors) — warps handle it
+        grid = [[None] * len(row) for row in headers]
+        distinct = set()
+        for r, row in enumerate(headers):
+            for c, h in enumerate(row):
+                name = header_to_name.get(h)
+                if name in catalog:
+                    grid[r][c] = name
+                    distinct.add(name)
+        if len(distinct) < 2:
+            continue  # nothing to connect
+        out = {
+            "id": matrix_id,
+            "height": len(grid),
+            "width": len(grid[0]) if grid else 0,
+            "tile_size": pc.MAP_TILES_X,   # tiles per cell edge (32)
+            "cells": grid,
+        }
+        with open(os.path.join(OUT_MATRIX_DIR, f"{matrix_id}.json"), "w") as f:
+            json.dump(out, f, separators=(",", ":"))
+        count += 1
+    return count
 
 
 # ---------------------------------------------------------------------------
@@ -187,6 +229,12 @@ def build_event_map(name, entry, header_to_name):
         "source": "platinum",
         "header": entry["header"],
         "layout": name,
+        # Matrix placement: all maps in a matrix share one global tile grid, so
+        # the engine can walk seamlessly between adjacent maps. `matrix_origin`
+        # is this map's top-left cell in global tiles (32 px per cell).
+        "matrix": entry["matrix_id"],
+        "matrix_origin": [entry["min_col"] * pc.MAP_TILES_X,
+                          entry["min_row"] * pc.MAP_TILES_Z],
         "map_type": entry["map_type"],
         "weather": entry["weather"],
         "day_music": entry["day_music"],
@@ -244,9 +292,12 @@ def main():
     with open(OUT_INDEX, "w") as f:
         json.dump(index, f, indent=2, sort_keys=True)
 
+    n_matrix = build_matrix_grids(catalog, header_to_name)
+
     print(f"  → {n_layouts} layouts  → data/layouts/sinnoh/")
     print(f"  → {n_maps} event maps → data/maps/sinnoh/")
     print(f"  → {len(index)} header→name links → data/maps/sinnoh_index.json")
+    print(f"  → {n_matrix} matrix grids → data/maps/sinnoh_matrix/")
     print(f"  props placed: {stats['total_props']}, multi-cell maps: {stats['multi_cell']}, "
           f"maps with 3D model: {stats['with_model']}")
 
