@@ -31,6 +31,17 @@ METATILES_PER_ROW = 16  # metatiles arranged 16-wide in the spritesheet
 # pokeemerald reserves 512 tile slots for the primary tileset (vs 640 in pokefirered)
 PRIMARY_TILE_COUNT = 512
 
+# pokeemerald reserves 512 *metatile* slots for the primary tileset
+# (NUM_METATILES_IN_PRIMARY). HnS raises this to 640. Map blockdata stores raw
+# game metatile indices, where secondary metatiles start at this fixed offset
+# regardless of how many the primary actually defines — so when a primary
+# defines fewer than this, its secondary indices must be remapped onto the
+# contiguous primary+secondary spritesheet. See process_layout.
+PRIMARY_METATILE_COUNT = 512
+
+# Cache: primary tileset dir -> number of metatiles it defines
+_primary_metatile_counts = {}
+
 # Tileset output prefix for Hoenn
 REGION_PREFIX = "hoenn_"
 
@@ -42,15 +53,49 @@ REGION_PREFIX = "hoenn_"
 # Name → directory path helpers
 # ---------------------------------------------------------------------------
 
+# Explicit symbol→folder overrides for tilesets whose graphics directory was
+# renamed away from the mechanical snake_case of its symbol (populated per-hack,
+# e.g. HnS: "GoldenrodCity_TrainStation" → "goldenrod_station"). Keyed by the
+# name with the "gTileset_" prefix stripped.
+TILESET_DIR_ALIASES = {}
+
+
+def _normalize(s: str) -> str:
+    return s.lower().replace("_", "")
+
+
 def tileset_name_to_path(tileset_name: str, kind: str) -> Path:
     """
     "gTileset_General" → data/tilesets/primary/general/
     "gTileset_Cave"    → data/tilesets/secondary/cave/
     kind is "primary" or "secondary".
+
+    Resolution order: explicit alias → mechanical snake_case → normalized scan
+    (match ignoring underscores, e.g. "route_38_farmland" ⇄ "route38_farmland").
+    Falls back to the mechanical path so callers can skip gracefully if nothing
+    on disk matches.
     """
     raw = tileset_name.replace("gTileset_", "")
+    base = SOURCE_ROOT / "data" / "tilesets" / kind
+
+    alias = TILESET_DIR_ALIASES.get(raw)
+    if alias and (base / alias).exists():
+        return base / alias
+
     snake = _camel_to_snake(raw)
-    return SOURCE_ROOT / "data" / "tilesets" / kind / snake
+    mechanical = base / snake
+    if mechanical.exists():
+        return mechanical
+
+    # Normalized scan: the pret folder naming isn't always a clean camel→snake
+    # (digits, initialisms), so match ignoring underscores/case.
+    if base.exists():
+        want = _normalize(snake)
+        matches = [d for d in base.iterdir() if d.is_dir() and _normalize(d.name) == want]
+        if len(matches) == 1:
+            return matches[0]
+
+    return mechanical
 
 
 def _camel_to_snake(raw: str) -> str:
@@ -274,6 +319,14 @@ def process_tileset_pair(primary_name: str, secondary_name: str):
 # Layout processing
 # ---------------------------------------------------------------------------
 
+def _primary_metatile_count(primary_name: str) -> int:
+    """How many metatiles the given primary tileset actually defines."""
+    if primary_name not in _primary_metatile_counts:
+        p = tileset_name_to_path(primary_name, "primary") / "metatiles.bin"
+        _primary_metatile_counts[primary_name] = (p.stat().st_size // 16) if p.exists() else PRIMARY_METATILE_COUNT
+    return _primary_metatile_counts[primary_name]
+
+
 def process_layout(layout: dict):
     map_bin_path = SOURCE_ROOT / layout["blockdata_filepath"]
     if not map_bin_path.exists():
@@ -284,6 +337,21 @@ def process_layout(layout: dict):
     width  = layout["width"]
     height = layout["height"]
 
+    # The spritesheet packs primary metatiles then secondary metatiles
+    # contiguously (npri + nsec). Blockdata stores raw *game* indices, where
+    # secondary metatiles begin at the fixed PRIMARY_METATILE_COUNT offset. When
+    # the primary defines fewer than that, remap game index -> sheet index so
+    # secondary tiles land on the right cells (identity when npri == the offset).
+    npri = _primary_metatile_count(layout.get("primary_tileset", ""))
+    off  = PRIMARY_METATILE_COUNT
+
+    def remap(game_idx: int) -> int:
+        if game_idx < npri:
+            return game_idx                      # defined primary metatile
+        if game_idx < off:
+            return 0                             # unused reserved primary slot
+        return npri + (game_idx - off)           # secondary metatile
+
     metatiles  = []
     collisions = []
     for i in range(width * height):
@@ -291,7 +359,7 @@ def process_layout(layout: dict):
             val = struct.unpack_from("<H", data, i * 2)[0]
         else:
             val = 0
-        metatiles.append(val & 0x3FF)
+        metatiles.append(remap(val & 0x3FF))
         collisions.append(0 if (val >> 10) & 0x3 == 0 else 1)
 
     secondary_name = layout.get("secondary_tileset", "")

@@ -92,7 +92,7 @@ src/
     start_menu/              — EE icon PNGs converted to RGBA (_rgba.png variants)
     journal/                 — journal tab icons (RGBA)
 data/
-  maps/                      — map JSON files (kanto, johto, hoenn, sinnoh, heartgold, platinum)
+  maps/                      — map JSON files (kanto, johto [HnS], hoenn, sinnoh/platinum [DS])
   tilesets/                  — tileset JSON files (2802 total)
   layouts/, encounters/, pokemon/, sprites/
 source/
@@ -284,30 +284,89 @@ block. Warp tiles are always walkable.
   Pallet Town — e.g. `game.html?map=VerdantHollow&region=custom`.
 
 ### Region sources: GBA (2D) vs DS (3D)
-- **Kanto** (pokefirered) and **Hoenn** (pokeemerald) are GBA — native 2D
-  metatile tilemaps. Fully extracted into renderable layouts (the format above).
-- **Johto/Sinnoh/Platinum** as shipped were extracted from the **DS** decomps
-  (pokeheartgold, pokeplatinum) and are **metadata-only** — DS maps are 3D
-  geometry (BMD0 models + map matrix), with no 2D metatile grid to extract.
-  Their map JSONs have warps/signs with `z` coords and no `layout`/grid. A pure
-  "image → 2D map" conversion isn't possible from DS sources.
+- **Kanto** (pokefirered), **Hoenn** (pokeemerald), and **Johto** (pokemonHnS)
+  are GBA — native 2D metatile tilemaps. Fully extracted into renderable layouts.
+- **Sinnoh** comes from the **DS** decomp (pokeplatinum). DS maps are 3D geometry
+  (BMD0/NSBMD models + map matrix), with no 2D metatile grid to extract directly,
+  so a pure "image → 2D map" conversion isn't possible from DS sources — the DS
+  path needs its own converter (see the Sinnoh TODO below).
 
-### Johto via Pokémon Heart & Soul (HnS) — the 2D path
-- **`source/pokemonhns`** submodule = the **HnS** ROM hack, built on
-  **pokeemerald (GBA)** — so its Johto + Kanto maps ARE 2D metatile tilemaps,
-  same format as Hoenn. This is the practical way to get a real 2D Johto.
-- **`tools/extract_hns.py`** reuses `extract_tilesets_emerald.py`, retargeted at
-  `source/pokemonhns` with `hns_` tileset prefix → `data/layouts/hns/` +
-  `data/tilesets/hns_*`. Run `git submodule update --init source/pokemonhns`
-  first. `EXTRACT_LAYOUT_FILTER=NEW_BARK,...` (env) limits to a subset.
-- **Two HnS quirks the extractor handles:** (1) HnS expands the primary tileset
-  to **640** tiles (`NUM_TILES_IN_PRIMARY 640`; pokeemerald default 512) — set
-  via `em.PRIMARY_TILE_COUNT = 640` in the wrapper, else secondary/building tiles
-  render black. (2) HnS drops extra named `.pal` files (e.g. `bellchime_12.pal`)
-  in palette dirs — `load_all_palettes` skips non-numeric stems.
-- Status: prototype-verified (NewBarkTown/Cherrygrove/Violet render perfectly).
-  Not yet fully extracted or wired as a playable region (needs map metadata
-  extraction, a `hns` region index, `INDEX_FILES` registration, connections).
+### Environment egress note (for web sessions)
+Submodules **cannot be `git clone`d** here — the git proxy is scoped to this repo
+only and returns **403** for `pret/*`, `PokemonHnS-Development/*`, etc. But general
+HTTPS egress DOES reach GitHub: `api.github.com`, `raw.githubusercontent.com`, and
+`codeload.github.com` all return 200 through `$HTTPS_PROXY`. So to get a source
+repo, download its **tarball** and extract into the submodule path, e.g.:
+```
+curl -L "https://codeload.github.com/PokemonHnS-Development/pokemonHnS/tar.gz/refs/heads/main" -o hns.tar.gz
+mkdir -p source/pokemonhns && tar xzf hns.tar.gz -C source/pokemonhns --strip-components=1
+```
+(The HnS tarball is ~38 MB; the 829 MB repo "size" is mostly git history.) Content
+placed at a submodule path is NOT swept into the parent repo by `git add`, so it
+stays local. `pip install ndspy pillow` for the DS/graphics tooling.
+
+### Johto via Pokémon Heart & Soul (HnS) — DONE ✅ (the 2D path)
+Johto is now a **fully converted, wired, playable region** sourced from HnS.
+- **`source/pokemonhns`** = the **HnS** ROM hack on **pokeemerald (GBA)**, so its
+  Johto + Kanto maps ARE 2D metatile tilemaps (same format as Hoenn).
+- **`tools/extract_hns_johto.py`** is the driver (supersedes the old
+  `extract_hns.py`, which only did tilesets/layouts). It reuses
+  `extract_tilesets_emerald.py` and additionally emits map metadata + the region
+  index, all in the exact formats `GameMap`/`GameRenderer` consume:
+  - `data/tilesets/hns_<primary>__<secondary>.png` + `.json` (16×16 metatiles, 16/row)
+  - `data/layouts/johto/<LAYOUT_ID>.json` (metatile grid + collision)
+  - `data/maps/johto/<MapName>.json` (layout ref, warps, connections, npcs, signs)
+  - `data/maps/johto_index.json` (MAP_CONST → MapName)
+  - Registered as region **`johto`** in `INDEX_FILES` (`src/engine/map.js`).
+  - Run: `python3 tools/extract_hns_johto.py` (needs source at `source/pokemonhns/`).
+  - Load in-game: `game.html?map=NewBarkTown&region=johto`.
+- **Result:** 420 maps, 419 layouts, 107 tilesets. All 201 map connections
+  resolve; only 6 warps dangle (into intentionally-excluded content). Verified by
+  rendering NewBark/Goldenrod/Ecruteak/RuinsOfAlph/NationalPark — pixel-perfect.
+- **Scope:** leftover pokeemerald base maps (the `gMapGroup_Emerald*` groups that
+  ship unused in HnS, ~536 of 957 map folders) are **excluded** so the region is
+  Johto/Kanto only. HnS Kanto maps live under the `johto` region key too.
+- **Three HnS quirks the pipeline handles (all fixed in `extract_tilesets_emerald.py`):**
+  1. **Tiles per primary = 640** (`NUM_TILES_IN_PRIMARY`; pokeemerald=512) — set
+     `em.PRIMARY_TILE_COUNT = 640`, else secondary/building tiles render black.
+  2. **Metatiles per primary = 640** (`NUM_METATILES_IN_PRIMARY`; pokeemerald=512).
+     Blockdata stores raw *game* metatile indices where secondary metatiles begin
+     at this fixed offset regardless of how many the primary defines. When a
+     primary defines fewer (vanilla leftovers `general`=512, `building`=128),
+     `process_layout` **remaps** game index → contiguous sheet index using the
+     actual primary count + `em.PRIMARY_METATILE_COUNT = 640`. Without this,
+     Kanto/Safari/National-Park maps shift every secondary tile by 128. Johto's
+     own primaries are exactly 640 → identity remap (why New Bark was perfect
+     before the fix but National Park was broken).
+  3. **Tileset folders renamed vs symbol** — `tileset_name_to_path` resolves
+     alias → mechanical snake_case → normalized scan (ignoring `_`). Genuine
+     renames go in `em.TILESET_DIR_ALIASES` (e.g. `GoldenrodCity_TrainStation` →
+     `goldenrod_station`).
+- **Tileset naming is per (primary, secondary) pair** (`hns_<pri>__<sec>`), NOT
+  secondary-only: HnS reuses one secondary (e.g. `CherrygroveCity`) against
+  several primaries (`Johto_General` vs seasonal `Johto_NorthEast/NorthWest`),
+  which produce genuinely different sheets. Secondary-only naming corrupts ~half
+  those maps. The layout's `tileset` field points at the pair name.
+- **2 known-broken source maps:** `LAYOUT_SAFFRON_TEMP` (a temp map) and
+  `LAYOUT_ROUTE7` (unused Kanto route) reference metatiles beyond what their
+  tileset defines — unfinished HnS content, not a converter bug; render harmlessly.
+
+### Sinnoh via pokeplatinum — TODO ⏳ (the DS path, harder — NEXT TASK)
+- **`source/pokeplatinum`** (pret) is the agreed Sinnoh source. (User said
+  disregard pokeheartgold; the old metadata-only `data/maps/heartgold/*` was
+  **removed** and the `heartgold` region key retired from `INDEX_FILES`.)
+- Platinum is a **DS** game: field maps are 3D geometry (BMD0/NSBMD models + a
+  map matrix), NOT 2D metatile tilemaps — so HnS's straight approach won't work.
+  `tools/extract_tilesets_platinum.py` currently only dumps NSBTX texture atlases
+  (not real maps), and `data/maps/platinum/*` is area-metadata only.
+- **Plan for a real converter:** parse the map matrix → per-chunk
+  **movement-permission grid** (this IS a 2D collision grid, extractable) +
+  warps/events → engine `layout.json` + `map.json`; for the *visual* either
+  (a) render the field BMD0 orthographically top-down and slice into a
+  16px/16-per-row tileset, or (b) a behavior/permission-coloured fallback tileset
+  (always works, immediately walkable). Fetch source via the tarball method above
+  (`pret/pokeplatinum`, default branch `main`). Wire as region `sinnoh`
+  (already in `REGIONS`/`INDEX_FILES` expectations).
 
 ### Planned: fan-game map converters (NOT built yet)
 Two converters discussed as future capability for pulling maps out of other
@@ -341,6 +400,10 @@ trusted until its output renders correctly (the way HnS was verified).
   `src/assets/party/` (slot boxes, fonts, pokéball, status icons, message frame)
   by decoding `source/pokefirered` graphics/tilemaps/palettes. Re-run if those
   assets need rebuilding.
+- `extract_hns_johto.py` — **the Johto converter** (HnS → region `johto`). Emits
+  tilesets, layouts, map metadata, and `johto_index.json`. See the "Johto via
+  HnS — DONE" section above. Reuses (and depends on the fixes in)
+  `extract_tilesets_emerald.py`.
 - Full workflow doc: **`docs/MAP_EDITING.md`**.
 
 ---

@@ -43,7 +43,7 @@ window.GameMap = (function () {
     const INDEX_FILES = {
         kanto:     'data/maps/kanto_index.json',
         hoenn:     'data/maps/hoenn_index.json',
-        heartgold: 'data/maps/heartgold_index.json',
+        johto:     'data/maps/johto_index.json',   // from pokemonHnS (2D metatile maps)
         sinnoh:    'data/maps/sinnoh_index.json',
         custom:    'data/maps/custom_index.json',
     };

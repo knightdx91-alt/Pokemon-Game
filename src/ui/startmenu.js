@@ -2538,7 +2538,6 @@ window.GameStartMenu = (function () {
                 kanto:     { color:'#3a6a3a', label:'KANTO' },
                 hoenn:     { color:'#2a4a6a', label:'HOENN' },
                 johto:     { color:'#5a3a2a', label:'JOHTO' },
-                heartgold: { color:'#5a3a2a', label:'JOHTO' },
                 sinnoh:    { color:'#2a2a5a', label:'SINNOH' },
             };
             var ri = REGIONS_INFO[region] || REGIONS_INFO.kanto;
