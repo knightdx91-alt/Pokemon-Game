@@ -105,144 +105,253 @@ window.GameSummary = (function () {
         return key ? key.split('_').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ') : '';
     }
 
+    // ------------------------------------------------------------------
+    // Canvas summary screen — rendered with the shared GBA bitmap font so
+    // it matches the battle/party screens. Native logical space 240x208
+    // (the game screen aspect), supersampled x2.
+    // ------------------------------------------------------------------
+    const S = 2, VW = 240, VH = 208;
+    let _canvas = null, _ctx = null;
+    const _spriteCache = {};
+
+    // Palette (FireRed dark-window theme).
+    const C_BG = '#f0f0e0', C_HDR = '#3c6cb0', C_HDR2 = '#2a4c88',
+          C_BORDER = '#404850', C_TXT = '#303038', C_TXT_SH = '#c8c8b8',
+          C_WHITE = '#f8f8f8', C_WHITE_SH = '#405060', C_DIM = '#707078',
+          C_PANEL = '#f8f8f0';
+
+    function _R(x, y, w, h, fill) { _ctx.fillStyle = fill; _ctx.fillRect(x * S, y * S, w * S, h * S); }
+    function _T(str, x, y, opts) {
+        opts = opts || {};
+        GameFont.draw(_ctx, String(str), x, y, {
+            scale: S, kind: opts.kind || 'normal',
+            color: opts.color || C_TXT, shadow: opts.shadow,
+            align: opts.align,
+        });
+    }
+    // Panel with 1px border.
+    function _panel(x, y, w, h, fill) {
+        _R(x, y, w, h, C_BORDER);
+        _R(x + 1, y + 1, w - 2, h - 2, fill || C_PANEL);
+    }
+    function _typeBadge(type, x, y) {
+        const col = TYPE_COLORS[(type || 'normal').toLowerCase()] || '#A8A878';
+        const label = (type || 'NORMAL').toUpperCase();
+        const w = GameFont.measure(label, 'small') + 8;
+        _R(x, y, w, 11, '#00000030');
+        _R(x, y, w, 10, col);
+        _T(label, x + 4, y + 1, { kind: 'small', color: '#ffffff' });
+        return w;
+    }
+    function _bar(x, y, w, pct, col) {
+        _R(x, y, w, 4, '#00000040');
+        _R(x, y, w, 3, '#586878');
+        const fw = Math.max(0, Math.round((w - 2) * Math.max(0, Math.min(1, pct))));
+        _R(x + 1, y + 1, fw, 1, col);
+    }
+    function _hpCol(pct) { return pct > 0.5 ? '#58d048' : pct > 0.2 ? '#f8c000' : '#f83030'; }
+
+    function _getSprite(mon, cb) {
+        const url = `data/sprites/pokemon/front/${mon.speciesId}.png`;
+        if (_spriteCache[url] !== undefined) { cb(_spriteCache[url]); return; }
+        const img = new Image();
+        img.onload = () => { _spriteCache[url] = _stripSprite(img); cb(_spriteCache[url]); };
+        img.onerror = () => { _spriteCache[url] = null; cb(null); };
+        img.src = url;
+    }
+    // Strip the top-left palette colour to transparent.
+    function _stripSprite(img) {
+        const c = document.createElement('canvas');
+        c.width = img.width; c.height = img.height;
+        const x = c.getContext('2d'); x.imageSmoothingEnabled = false;
+        x.drawImage(img, 0, 0);
+        try {
+            const d = x.getImageData(0, 0, c.width, c.height);
+            const tr = d.data[0], tg = d.data[1], tb = d.data[2];
+            if (d.data[3] > 0) {
+                for (let i = 0; i < d.data.length; i += 4) {
+                    if (d.data[i] === tr && d.data[i+1] === tg && d.data[i+2] === tb) d.data[i+3] = 0;
+                }
+                x.putImageData(d, 0, 0);
+            }
+        } catch (e) {}
+        return c;
+    }
+
     function _build() {
         const screen = document.getElementById('screen-primary');
         if (!screen) return;
 
         _el = document.createElement('div');
         _el.id = 'summary-overlay';
+        _el.style.cssText = 'position:absolute;inset:0;z-index:90;background:#101018;';
         screen.appendChild(_el);
 
-        _render();
+        _canvas = document.createElement('canvas');
+        _canvas.width = VW * S; _canvas.height = VH * S;
+        _canvas.style.cssText = 'width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges;';
+        _el.appendChild(_canvas);
+        _ctx = _canvas.getContext('2d');
+        _ctx.imageSmoothingEnabled = false;
 
+        // Tap zones: left third = prev tab, right third = next tab, but the
+        // bottom-right corner closes. Keeps parity with the gamepad.
+        _canvas.addEventListener('click', function (e) {
+            const r = _canvas.getBoundingClientRect();
+            const fx = (e.clientX - r.left) / r.width;   // 0..1
+            const fy = (e.clientY - r.top) / r.height;
+            if (fy < 0.14 && fx > 0.85) { close(); return; }
+            if (fx < 0.5) _switchTab(-1); else _switchTab(1);
+        });
+
+        GameFont.load(function () { _render(); });
         document.addEventListener('keydown', _onKey);
     }
 
     function _render() {
-        if (!_el) return;
+        if (!_el || !_ctx) return;
         const mon = _getMon();
         if (!mon) { close(); return; }
         const dex = _getDex(mon);
         const stats = _calcStats(mon, dex);
         const name = mon.nickname || (dex && dex.name) || 'POKéMON';
-        const spriteUrl = `data/sprites/pokemon/front/${mon.speciesId}.png`;
 
-        let content = `
-<div id="sum-header">
-  <button id="sum-close" class="sum-back-btn">✕</button>
-  <div id="sum-name-row">
-    <span id="sum-name">${name}</span>
-    ${mon.isShiny ? '<span class="sum-shiny">★</span>' : ''}
-    <span class="sum-lv">Lv ${mon.level || 1}</span>
-  </div>
-  ${dex ? `<div id="sum-types">${(dex.types||[]).map(t=>`<span class="type-badge" data-type="${t.toLowerCase()}">${t}</span>`).join('')}</div>` : ''}
-</div>
-<div id="sum-tabs">
-  <button class="sum-tab ${_tab==='info'?'active':''}" data-tab="info">INFO</button>
-  <button class="sum-tab ${_tab==='skills'?'active':''}" data-tab="skills">SKILLS</button>
-  <button class="sum-tab ${_tab==='moves'?'active':''}" data-tab="moves">MOVES</button>
-</div>
-<div id="sum-body">`;
+        _ctx.clearRect(0, 0, _canvas.width, _canvas.height);
+        _R(0, 0, VW, VH, C_BG);
 
-        if (_tab === 'info') {
-            content += `
-<div id="sum-sprite-row">
-  <img class="sum-sprite" src="${spriteUrl}" onerror="this.src=''" alt="${name}">
-  <div id="sum-info-block">
-    <div class="sum-info-row"><span>Dex No.</span><span>${dex ? String(dex.num).padStart(3,'0') : '???'}</span></div>
-    <div class="sum-info-row"><span>Species</span><span>${dex ? dex.category || '???' : '???'}</span></div>
-    <div class="sum-info-row"><span>Type</span><span>${dex ? (dex.types||[]).join('/') : '???'}</span></div>
-    <div class="sum-info-row"><span>Nature</span><span>${NATURES_DISPLAY[mon.nature||'hardy']||'Hardy'}</span></div>
-    <div class="sum-info-row"><span>OT</span><span>${mon.originalTrainer||'Player'}</span></div>
-    <div class="sum-info-row"><span>ID No.</span><span>00000</span></div>
-  </div>
-</div>
-<div id="sum-hp-row">
-  <span class="sum-stat-lbl">HP</span>
-  <div class="sum-hp-wrap"><div class="sum-hp-bar" style="width:${Math.round((mon.currentHp||0)/(stats?stats.hp:1)*100)}%"></div></div>
-  <span class="sum-hp-txt">${mon.currentHp||0} / ${stats ? stats.hp : '??'}</span>
-</div>
-${dex && dex.entry ? `<div id="sum-entry">${dex.entry}</div>` : ''}`;
-        } else if (_tab === 'skills') {
-            const nm = NATURE_MODS[mon.nature||'hardy']||{};
-            const ivs = mon.ivs || {};
-            const evs = mon.evs || {};
-            const b = dex ? dex.stats : {};
-            const maxStatVal = 400;
-            content += `<div id="sum-stats-list">`;
-            for (const stat of STAT_ORDER) {
-                const val = stats ? stats[stat] : 0;
-                const base = b[stat] || 0;
-                const pct = Math.min(100, Math.round(val / maxStatVal * 100));
-                const natureUp = nm[stat] > 1;
-                const natureDn = nm[stat] < 1;
-                content += `
-<div class="sum-stat-row">
-  <span class="sum-stat-name ${natureUp?'stat-up':''} ${natureDn?'stat-dn':''}">${STAT_NAMES[stat]}</span>
-  <span class="sum-stat-val">${val}</span>
-  <div class="sum-stat-bar-wrap"><div class="sum-stat-bar" style="width:${pct}%"></div></div>
-  <span class="sum-stat-base">${base}</span>
-  <span class="sum-stat-iv">${ivs[stat]||0}</span>
-</div>`;
+        // Header strip.
+        _R(0, 0, VW, 22, C_HDR2);
+        _R(0, 0, VW, 21, C_HDR);
+        const pageTitle = _tab === 'info' ? 'POKéMON INFO'
+            : _tab === 'skills' ? 'POKéMON SKILLS' : 'POKéMON MOVES';
+        _T(pageTitle, 6, 3, { color: C_WHITE, shadow: '#1a3050' });
+        _T(name, VW - 6, 3, { color: C_WHITE, shadow: '#1a3050', align: 'right' });
+
+        // Tab indicator row.
+        const tabs = [['info', 'INFO'], ['skills', 'SKILLS'], ['moves', 'MOVES']];
+        let tx = 6;
+        _T('◀', 0, 25, { kind: 'small', color: C_DIM });
+        tabs.forEach(([id, lbl]) => {
+            const active = _tab === id;
+            if (active) { const w = GameFont.measure(lbl) + 6; _R(tx - 2, 24, w, 12, C_HDR); }
+            _T(lbl, tx, 25, { color: active ? C_WHITE : C_DIM });
+            tx += GameFont.measure(lbl) + 14;
+        });
+        _T('▶', VW - 8, 25, { kind: 'small', color: C_DIM });
+        _R(0, 38, VW, 1, C_BORDER);
+
+        if (_tab === 'info') _renderInfo(mon, dex, stats, name);
+        else if (_tab === 'skills') _renderSkills(mon, dex, stats);
+        else _renderMoves(mon);
+    }
+
+    function _renderInfo(mon, dex, stats, name) {
+        // Sprite panel (left).
+        _panel(8, 44, 84, 72, C_PANEL);
+        _getSprite(mon, function (spr) {
+            if (!_ctx) return;
+            if (spr) {
+                const dw = 64, dh = 64;
+                _ctx.drawImage(spr, 18 * S, 46 * S, dw * S, dh * S);
             }
-            content += `</div><div class="sum-stat-legend"><span>Total: ${stats ? Object.values(stats).reduce((a,b)=>a+b,0)-stats.hp+stats.hp : 0}</span></div>`;
-        } else if (_tab === 'moves') {
-            content += `<div id="sum-moves-list">`;
-            const moves = mon.moves || [];
-            if (!moves.filter(Boolean).length) {
-                content += `<div class="sum-no-moves">No moves learned</div>`;
-            } else {
-                for (const mv of moves) {
-                    if (!mv) continue;
-                    const md = _movesDb && _movesDb[mv] || null;
-                    const mvName = md ? md.name : _formatName(mv);
-                    const mvType = md ? md.type : 'Normal';
-                    const mvPP = md ? md.pp : 10;
-                    const mvPow = md ? (md.power || '—') : '—';
-                    const mvAcc = md ? (md.accuracy || '—') : '—';
-                    content += `
-<div class="sum-move-row">
-  <div class="sum-move-top">
-    <span class="sum-move-name">${mvName}</span>
-    <span class="type-badge" data-type="${mvType.toLowerCase()}">${mvType}</span>
-  </div>
-  <div class="sum-move-bottom">
-    <span>PP: ${mvPP}</span>
-    <span>Pow: ${mvPow}</span>
-    <span>Acc: ${mvAcc}</span>
-  </div>
-</div>`;
-                }
-            }
-            content += `</div>`;
+        });
+        // Name + Lv + types under sprite.
+        _T(name, 50, 120, { color: C_TXT, shadow: C_TXT_SH, align: 'center' });
+        _T('Lv' + (mon.level || 1), 50, 133, { color: C_TXT, align: 'center' });
+        if (dex && dex.types) {
+            const tw = (dex.types || []).reduce((a, t) => a + GameFont.measure(t.toUpperCase(), 'small') + 12, 0);
+            let bx = Math.max(10, 50 - tw / 2);
+            (dex.types || []).forEach(t => { bx += _typeBadge(t, bx, 148) + 4; });
         }
 
-        content += `</div>`; // sum-body
-
-        _el.innerHTML = content;
-
-        // Wire tabs
-        _el.querySelectorAll('.sum-tab').forEach(t => {
-            t.addEventListener('click', () => { _tab = t.dataset.tab; _render(); });
+        // Info rows (right) — one line each: label (left) + value (right).
+        const rows = [
+            ['Dex No.', dex ? String(dex.num).padStart(3, '0') : '???'],
+            ['Species', dex ? (dex.category || '—') : '—'],
+            ['Nature',  NATURES_DISPLAY[mon.nature || 'hardy'] || 'Hardy'],
+            ['OT',      mon.originalTrainer || 'Player'],
+            ['ID No.',  mon.otId || '00000'],
+        ];
+        const rx = 104;
+        _panel(rx, 44, VW - rx - 8, 72, C_PANEL);
+        rows.forEach((r, i) => {
+            const y = 50 + i * 13;
+            _T(r[0], rx + 6, y, { kind: 'small', color: C_DIM });
+            _T(r[1], VW - 14, y, { kind: 'small', color: C_TXT, align: 'right' });
         });
-        const closeBtn = document.getElementById('sum-close');
-        if (closeBtn) closeBtn.addEventListener('click', close);
 
-        // Apply type badge colors
-        _el.querySelectorAll('.type-badge').forEach(b => {
-            b.style.background = TYPE_COLORS[b.dataset.type] || '#A8A878';
-        });
-        // HP bar color
-        const hpBar = _el.querySelector('.sum-hp-bar');
-        if (hpBar && stats) {
-            const pct = (mon.currentHp||0) / stats.hp;
-            hpBar.className = 'sum-hp-bar ' + (pct > 0.5 ? 'hp-green' : pct > 0.2 ? 'hp-yellow' : 'hp-red');
+        // HP bar in the right column, below the info panel.
+        const maxHp = stats ? stats.hp : (mon.maxHp || 1);
+        const cur = mon.currentHp != null ? mon.currentHp : maxHp;
+        const pct = cur / maxHp;
+        _T('HP', rx, 124, { kind: 'small', color: '#d84040' });
+        _bar(rx + 16, 126, 60, pct, _hpCol(pct));
+        _T(cur + '/' + maxHp, VW - 8, 138, { kind: 'small', color: C_TXT, align: 'right' });
+
+        // Dex entry (wrapped).
+        if (dex && dex.entry) {
+            _panel(8, 158, VW - 16, VH - 158 - 6, C_PANEL);
+            _wrapDraw(dex.entry, 14, 164, VW - 28, 12, C_TXT, 3);
         }
-        // Stat bars
-        _el.querySelectorAll('.sum-stat-bar').forEach(b => {
-            const pct = parseFloat(b.style.width);
-            b.className = 'sum-stat-bar ' + (pct >= 70 ? 'hp-green' : pct >= 40 ? 'hp-yellow' : 'hp-red');
+    }
+
+    function _renderSkills(mon, dex, stats) {
+        const b = dex ? dex.stats : {};
+        const nm = NATURE_MODS[mon.nature || 'hardy'] || {};
+        // Sprite (small, top-left).
+        _getSprite(mon, function (spr) {
+            if (_ctx && spr) _ctx.drawImage(spr, 12 * S, 44 * S, 48 * S, 48 * S);
         });
+        _panel(72, 44, VW - 72 - 8, 118, C_PANEL);
+        _T('STATS', 78, 47, { kind: 'small', color: C_DIM });
+        STAT_ORDER.forEach((stat, i) => {
+            const y = 58 + i * 16;
+            const val = stats ? stats[stat] : 0;
+            const up = nm[stat] > 1, dn = nm[stat] < 1;
+            const col = up ? '#d05028' : dn ? '#3868c0' : C_TXT;
+            _T(STAT_NAMES[stat], 78, y, { kind: 'small', color: col });
+            _T(String(val), 150, y - 1, { color: C_TXT, align: 'right' });
+            _bar(156, y + 1, VW - 156 - 14, Math.min(1, val / 400), '#58c058');
+        });
+        const total = stats ? STAT_ORDER.reduce((a, s) => a + stats[s], 0) : 0;
+        _panel(8, 168, VW - 16, VH - 168 - 6, C_PANEL);
+        _T('Total  ' + total, 14, 174, { color: C_TXT, shadow: C_TXT_SH });
+        _T('Nature: ' + (NATURES_DISPLAY[mon.nature || 'hardy'] || 'Hardy'), 120, 174, { kind: 'small', color: C_DIM });
+    }
+
+    function _renderMoves(mon) {
+        const moves = (mon.moves || []).filter(Boolean);
+        _panel(8, 44, VW - 16, VH - 44 - 6, C_PANEL);
+        if (!moves.length) { _T('No moves learned', 16, 60, { color: C_DIM }); return; }
+        moves.forEach((mv, i) => {
+            const md = (_movesDb && _movesDb[mv]) || null;
+            const nm = md ? md.name : _formatName(mv);
+            const ty = md ? md.type : 'Normal';
+            const pp = md ? md.pp : 10;
+            const pow = md ? (md.power || '—') : '—';
+            const acc = md ? (md.accuracy || '—') : '—';
+            const y = 50 + i * 38;
+            _R(14, y - 2, VW - 28, 1, '#d8d8c8');
+            _typeBadge(ty, 16, y);
+            _T(nm.toUpperCase(), 66, y, { color: C_TXT, shadow: C_TXT_SH });
+            _T('PP ' + pp, 16, y + 16, { kind: 'small', color: C_DIM });
+            _T('POWER ' + pow, 80, y + 16, { kind: 'small', color: C_DIM });
+            _T('ACC ' + acc, 168, y + 16, { kind: 'small', color: C_DIM });
+        });
+    }
+
+    // Word-wrap + draw up to maxLines lines.
+    function _wrapDraw(text, x, y, maxW, lineH, color, maxLines) {
+        const words = String(text).split(/\s+/);
+        let line = '', ln = 0;
+        for (let i = 0; i < words.length && ln < maxLines; i++) {
+            const test = line ? line + ' ' + words[i] : words[i];
+            if (GameFont.measure(test, 'small') > maxW && line) {
+                _T(line, x, y + ln * lineH, { kind: 'small', color });
+                line = words[i]; ln++;
+            } else line = test;
+        }
+        if (line && ln < maxLines) _T(line, x, y + ln * lineH, { kind: 'small', color });
     }
 
     function _onKey(e) {
