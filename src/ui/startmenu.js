@@ -65,6 +65,12 @@ window.GameStartMenu = (function () {
 
     function _confirmSelected() {
         const label = ITEMS[selectedIdx];
+        if (label === 'OPTION' && window.GameOptions) {
+            isOpen = false;
+            GBAUI.clear();
+            GameOptions.open(function () { open(); });   // reopen menu on exit
+            return;
+        }
         if (label === 'SAVE') {
             localStorage.setItem('pokemon_save_placeholder', Date.now());
             _saveMsg = true;

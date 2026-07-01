@@ -123,6 +123,16 @@ window.GBAUI = (function () {
         }
     }
 
+    /** Small left-pointing arrow with top-left at (x,y) (5px tall). */
+    function leftArrow(x, y) {
+        if (!ctx) return;
+        ctx.fillStyle = '#404040';
+        const rows = [1, 3, 5, 3, 1];
+        for (let i = 0; i < rows.length; i++) {
+            ctx.fillRect(x + (5 - rows[i]), y + i, rows[i], 1);
+        }
+    }
+
     /** FireRed-style blinking "more text" down arrow, centred on (x,y). */
     function downArrow(x, y) {
         if (!ctx) return;
@@ -136,7 +146,7 @@ window.GBAUI = (function () {
     document.addEventListener('DOMContentLoaded', init);
 
     return {
-        onReady, show, hide, clear, window9, text, textWidth, cursor, downArrow,
+        onReady, show, hide, clear, window9, text, textWidth, cursor, leftArrow, downArrow,
         get W() { return W; }, get H() { return H; },
         get ready() { return ready; }
     };
