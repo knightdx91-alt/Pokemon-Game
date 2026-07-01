@@ -2,6 +2,27 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ▶ ACTIVE PRIORITY — FireRed-faithful UI overhaul for the Pokémon RPG (`game.html`)
+
+Bring the battle screen and dialogue box up to a pixel-faithful FireRed look,
+using this repo's already-bundled FireRed font (`src/assets/fonts/pokefirered.ttf`
++ `.woff2`, and bitmap atlases `src/assets/party/font_normal.png` / `font_small.png`).
+
+- **Battle UI target:** FireRed-style healthboxes (name, Lv, green/yellow/red HP
+  bar, numeric HP, blue EXP bar), the FIGHT/BAG/POKéMON/RUN command grid, and the
+  move menu with a type/PP box. `src/engine/battle.js` currently renders this via
+  DOM (`#battle-overlay`, `.bt-hp-bar`, `.bt-move-btn`). Restyle in place (CSS +
+  the bundled font) to preserve its richer features (bag pockets, summary, fly menu).
+- **Dialogue box target:** the classic FireRed blue window frame + font (`src/ui/dialogue.js`).
+- **Reference implementation** of the exact look (native-res canvas + a bitmap-font
+  renderer + FireRed-palette healthboxes) was prototyped on the throwaway branch
+  `claude/pokemon-crater-github-pages-t03jnb`: see its `src/battle/battle.js`,
+  `src/ui/font.js`, `src/ui/dialogue.js`, and `data/ui/font_normal.png` + `font.json`.
+  That branch is a stale-fork side project — mine it for the UI look only, do NOT
+  merge it; all the game logic already exists (and is more complete) here on `main`.
+- **Palette source:** `source/pokefirered/graphics/battle_interface/` (healthbox
+  elements + `healthbar.pal` / `healthbox.pal`) and the EE submodule for framing.
+
 ## Bug history — known fixes (read before debugging input/menu issues)
 
 ### 1. Game loop crashing silently every frame (`src/main.js`)
