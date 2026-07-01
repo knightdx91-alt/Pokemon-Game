@@ -1,1 +1,171 @@
-{"id":"route_204_north","name":"Route 204 North","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_BUG_CATCHER_BRANDON","graphics_id":"OBJ_EVENT_GFX_BUG_CATCHER","x":182,"y":5,"z":685,"movement_type":"MOVEMENT_TYPE_WALK_BACK_AND_FORTH","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_BUG_CATCHER_BRANDON","hidden_flag":"0"},{"local_id":"LOCALID_AROMA_LADY_TAYLOR","graphics_id":"OBJ_EVENT_GFX_POKEMON_BREEDER_F","x":177,"y":5,"z":692,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH_AND_EAST","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_AROMA_LADY_TAYLOR","hidden_flag":"0"},{"local_id":"LOCALID_TWIN_LIV","graphics_id":"OBJ_EVENT_GFX_TWIN","x":175,"y":5,"z":679,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_TWINS_LIV_AND_LIZ","hidden_flag":"0"},{"local_id":"LOCALID_TWIN_LIZ","graphics_id":"OBJ_EVENT_GFX_TWIN","x":176,"y":5,"z":679,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_TWINS_LIV_AND_LIZ","hidden_flag":"0"},{"local_id":"LOCALID_YOUNGSTER_NORTH","graphics_id":"OBJ_EVENT_GFX_YOUNGSTER","x":175,"y":5,"z":700,"movement_type":"MOVEMENT_TYPE_WANDER_WEST_AND_EAST","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_ARROW_SIGNPOST","graphics_id":"OBJ_EVENT_GFX_ARROW_SIGNPOST","x":177,"y":0,"z":681,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":3,"hidden_flag":"0"},{"local_id":"LOCALID_SIGNBOARD","graphics_id":"OBJ_EVENT_GFX_SIGNBOARD","x":170,"y":0,"z":706,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"0"},{"local_id":"LOCALID_YOUNGSTER_SOUTH","graphics_id":"OBJ_EVENT_GFX_YOUNGSTER","x":173,"y":0,"z":706,"movement_type":"MOVEMENT_TYPE_WANDER_WEST_AND_EAST","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"0"},{"local_id":"LOCALID_CUT_TREE","graphics_id":"OBJ_EVENT_GFX_CUT_TREE","x":181,"y":0,"z":678,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":10000,"hidden_flag":"FLAG_HIDE_OBSTACLE_1"},{"local_id":"LOCALID_ITEM_TM09","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":162,"y":0,"z":682,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7014,"hidden_flag":"FLAG_OBTAINED_ROUTE_204_NORTH_TM09"},{"local_id":"LOCALID_ACE_TRAINER_F","graphics_id":"OBJ_EVENT_GFX_ACE_TRAINER_F","x":191,"y":0,"z":676,"movement_type":"MOVEMENT_TYPE_LOOK_WEST","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_ITEM_AWAKENING","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":180,"y":0,"z":695,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7254,"hidden_flag":"FLAG_OBTAINED_ROUTE_204_NORTH_AWAKENING"}],"warps":[{"x":180,"y":null,"z":698,"dest_map":null,"dest_warp_id":1}],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "route_204_north",
+  "name": "Route 204 North",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_ROUTE_204_NORTH",
+  "layout": "route_204_north",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_ROAD_B_D",
+  "night_music": "SEQ_ROAD_B_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
+  "npcs": [
+    {
+      "local_id": "LOCALID_BUG_CATCHER_BRANDON",
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 22,
+      "y": 13,
+      "elevation": 5,
+      "movement_type": "MOVEMENT_TYPE_WALK_BACK_AND_FORTH",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_BUG_CATCHER_BRANDON",
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_AROMA_LADY_TAYLOR",
+      "graphics_id": "OBJ_EVENT_GFX_POKEMON_BREEDER_F",
+      "x": 17,
+      "y": 20,
+      "elevation": 5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_AROMA_LADY_TAYLOR",
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_TWIN_LIV",
+      "graphics_id": "OBJ_EVENT_GFX_TWIN",
+      "x": 15,
+      "y": 7,
+      "elevation": 5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_TWINS_LIV_AND_LIZ",
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_TWIN_LIZ",
+      "graphics_id": "OBJ_EVENT_GFX_TWIN",
+      "x": 16,
+      "y": 7,
+      "elevation": 5,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_TWINS_LIV_AND_LIZ",
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_YOUNGSTER_NORTH",
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 15,
+      "y": 28,
+      "elevation": 5,
+      "movement_type": "MOVEMENT_TYPE_WANDER_WEST_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_ARROW_SIGNPOST",
+      "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
+      "x": 17,
+      "y": 9,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_SIGNBOARD",
+      "graphics_id": "OBJ_EVENT_GFX_SIGNBOARD",
+      "x": 10,
+      "y": 34,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_YOUNGSTER_SOUTH",
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 13,
+      "y": 34,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_WEST_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_CUT_TREE",
+      "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
+      "x": 21,
+      "y": 6,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10000,
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_1",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ITEM_TM09",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 2,
+      "y": 10,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7014,
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_204_NORTH_TM09",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ACE_TRAINER_F",
+      "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_F",
+      "x": 31,
+      "y": 4,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_ITEM_AWAKENING",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 20,
+      "y": 23,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7254,
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_204_NORTH_AWAKENING",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 20,
+      "y": 26,
+      "dest_map": "MAP_HEADER_RAVAGED_PATH",
+      "dest_warp_id": 1
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

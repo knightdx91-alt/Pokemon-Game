@@ -1,1 +1,42 @@
-{"id":"communication_club_colosseum_2p","name":"Communication Club Colosseum 2P","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_WAITRESS","graphics_id":"OBJ_EVENT_GFX_WAITRESS","x":12,"y":0,"z":4,"movement_type":"MOVEMENT_TYPE_LOOK_WEST","trainer_type":"TRAINER_TYPE_NONE","script":9100,"hidden_flag":"0"}],"warps":[],"signs":[],"coord_events":[{"script":9101,"x":7,"z":11,"y":0,"width":2,"length":1,"var":"VAR_MAP_LOCAL_F","value":0}],"tileset":"sinnoh_005"}
+{
+  "id": "communication_club_colosseum_2p",
+  "name": "Communication Club Colosseum 2P",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_COMMUNICATION_CLUB_COLOSSEUM_2P",
+  "layout": "communication_club_colosseum_2p",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_PC_01",
+  "night_music": "SEQ_PC_02",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_WAITRESS",
+      "graphics_id": "OBJ_EVENT_GFX_WAITRESS",
+      "x": 12,
+      "y": 4,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 9100,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    }
+  ],
+  "warps": [],
+  "signs": [],
+  "triggers": [
+    {
+      "x": 7,
+      "y": 11,
+      "width": 2,
+      "height": 1,
+      "var": "VAR_MAP_LOCAL_0x0F",
+      "var_value": 0,
+      "script": 9101
+    }
+  ]
+}

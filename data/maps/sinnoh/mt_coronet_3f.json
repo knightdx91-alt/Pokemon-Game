@@ -1,1 +1,71 @@
-{"id":"mt_coronet_3f","name":"Mt Coronet 3F","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_GALACTIC_GRUNT_2","graphics_id":"OBJ_EVENT_GFX_GRUNT_F","x":15,"y":0,"z":15,"movement_type":"MOVEMENT_TYPE_LOOK_AROUND","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_GALACTIC_GRUNT_MT_CORONET_3F_2","hidden_flag":"FLAG_HIDE_MT_CORONET_GALACTIC_GRUNTS"},{"local_id":"LOCALID_GALACTIC_GRUNT_1","graphics_id":"OBJ_EVENT_GFX_GRUNT_M","x":2,"y":0,"z":20,"movement_type":"MOVEMENT_TYPE_WALK_BACK_AND_FORTH","trainer_type":"TRAINER_TYPE_FACE_SIDES","script":"TRAINER_GALACTIC_GRUNT_MT_CORONET_3F_1","hidden_flag":"FLAG_HIDE_MT_CORONET_GALACTIC_GRUNTS"}],"warps":[{"x":14,"y":null,"z":26,"dest_map":null,"dest_warp_id":4},{"x":18,"y":null,"z":26,"dest_map":null,"dest_warp_id":5},{"x":3,"y":null,"z":29,"dest_map":null,"dest_warp_id":0}],"signs":[{"x":3,"y":0,"z":15,"script":8083,"type":2,"player_facing_dir":"BG_EVENT_DIR_ALL"}],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "mt_coronet_3f",
+  "name": "Mt Coronet 3F",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_MT_CORONET_3F",
+  "layout": "mt_coronet_3f",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_05",
+  "night_music": "SEQ_D_05",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_GALACTIC_GRUNT_2",
+      "graphics_id": "OBJ_EVENT_GFX_GRUNT_F",
+      "x": 15,
+      "y": 15,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_GALACTIC_GRUNT_MT_CORONET_3F_2",
+      "hidden_flag": "FLAG_HIDE_MT_CORONET_GALACTIC_GRUNTS",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_GALACTIC_GRUNT_1",
+      "graphics_id": "OBJ_EVENT_GFX_GRUNT_M",
+      "x": 2,
+      "y": 20,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WALK_BACK_AND_FORTH",
+      "trainer_type": "TRAINER_TYPE_FACE_SIDES",
+      "script": "TRAINER_GALACTIC_GRUNT_MT_CORONET_3F_1",
+      "hidden_flag": "FLAG_HIDE_MT_CORONET_GALACTIC_GRUNTS",
+      "initial_dir": 3
+    }
+  ],
+  "warps": [
+    {
+      "x": 14,
+      "y": 26,
+      "dest_map": "MAP_HEADER_MT_CORONET_2F",
+      "dest_warp_id": 4
+    },
+    {
+      "x": 18,
+      "y": 26,
+      "dest_map": "MAP_HEADER_MT_CORONET_2F",
+      "dest_warp_id": 5
+    },
+    {
+      "x": 3,
+      "y": 29,
+      "dest_map": "MAP_HEADER_MT_CORONET_OUTSIDE_SOUTH",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 3,
+      "y": 15,
+      "script": 8083,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    }
+  ],
+  "triggers": []
+}

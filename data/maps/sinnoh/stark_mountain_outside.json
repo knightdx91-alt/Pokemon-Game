@@ -1,1 +1,133 @@
-{"id":"stark_mountain_outside","name":"Stark Mountain Outside","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_ITEM_LIFE_ORB","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":740,"y":0,"z":248,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7211,"hidden_flag":"FLAG_OBTAINED_STARK_MOUNTAIN_OUTSIDE_LIFE_ORB"},{"local_id":"LOCALID_ITEM_MAX_ELIXIR","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":762,"y":0,"z":232,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7210,"hidden_flag":"FLAG_OBTAINED_STARK_MOUNTAIN_OUTSIDE_MAX_ELIXIR"},{"local_id":"LOCALID_DRAGON_TAMER_DARIEN","graphics_id":"OBJ_EVENT_GFX_ACE_TRAINER_M","x":749,"y":0,"z":248,"movement_type":"MOVEMENT_TYPE_LOOK_WEST_AND_EAST","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_DRAGON_TAMER_DARIEN","hidden_flag":"0"},{"local_id":"LOCALID_SIGNBOARD","graphics_id":"OBJ_EVENT_GFX_SIGNBOARD","x":748,"y":0,"z":232,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_LOOKER","graphics_id":"OBJ_EVENT_GFX_LOOKER","x":751,"y":0,"z":232,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"FLAG_HIDE_STARK_MOUNTAIN_OUTSIDE_LOOKER"},{"local_id":"LOCALID_BUCK","graphics_id":"OBJ_EVENT_GFX_BUCK","x":750,"y":0,"z":233,"movement_type":"MOVEMENT_TYPE_LOOK_EAST","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"FLAG_HIDE_STARK_MOUNTAIN_OUTSIDE_BUCK"},{"local_id":"LOCALID_GRUNT_M_1","graphics_id":"OBJ_EVENT_GFX_GRUNT_M","x":742,"y":0,"z":232,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"FLAG_HIDE_STARK_MOUNTAIN_OUTSIDE_GRUNTS"},{"local_id":"LOCALID_GRUNT_M_2","graphics_id":"OBJ_EVENT_GFX_GRUNT_M","x":742,"y":0,"z":233,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"FLAG_HIDE_STARK_MOUNTAIN_OUTSIDE_GRUNTS"}],"warps":[{"x":750,"y":null,"z":231,"dest_map":null,"dest_warp_id":0}],"signs":[],"coord_events":[{"script":3,"x":752,"z":235,"y":0,"width":1,"length":1,"var":"VAR_STARK_MOUNTAIN_OUTSIDE_STATE","value":0}],"tileset":"sinnoh_005"}
+{
+  "id": "stark_mountain_outside",
+  "name": "Stark Mountain Outside",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_STARK_MOUNTAIN_OUTSIDE",
+  "layout": "stark_mountain_outside",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_SLOW_ASHFALL",
+  "day_music": "SEQ_TOWN06_D",
+  "night_music": "SEQ_TOWN06_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
+  "npcs": [
+    {
+      "local_id": "LOCALID_ITEM_LIFE_ORB",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 4,
+      "y": 24,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7211,
+      "hidden_flag": "FLAG_OBTAINED_STARK_MOUNTAIN_OUTSIDE_LIFE_ORB",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ITEM_MAX_ELIXIR",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 26,
+      "y": 8,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7210,
+      "hidden_flag": "FLAG_OBTAINED_STARK_MOUNTAIN_OUTSIDE_MAX_ELIXIR",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_DRAGON_TAMER_DARIEN",
+      "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_M",
+      "x": 13,
+      "y": 24,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_DRAGON_TAMER_DARIEN",
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_SIGNBOARD",
+      "graphics_id": "OBJ_EVENT_GFX_SIGNBOARD",
+      "x": 12,
+      "y": 8,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_LOOKER",
+      "graphics_id": "OBJ_EVENT_GFX_LOOKER",
+      "x": 15,
+      "y": 8,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "FLAG_HIDE_STARK_MOUNTAIN_OUTSIDE_LOOKER",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_BUCK",
+      "graphics_id": "OBJ_EVENT_GFX_BUCK",
+      "x": 14,
+      "y": 9,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "FLAG_HIDE_STARK_MOUNTAIN_OUTSIDE_BUCK",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_GRUNT_M_1",
+      "graphics_id": "OBJ_EVENT_GFX_GRUNT_M",
+      "x": 6,
+      "y": 8,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "FLAG_HIDE_STARK_MOUNTAIN_OUTSIDE_GRUNTS",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_GRUNT_M_2",
+      "graphics_id": "OBJ_EVENT_GFX_GRUNT_M",
+      "x": 6,
+      "y": 9,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "FLAG_HIDE_STARK_MOUNTAIN_OUTSIDE_GRUNTS",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 14,
+      "y": 7,
+      "dest_map": "MAP_HEADER_STARK_MOUNTAIN_ROOM_1",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "triggers": [
+    {
+      "x": 16,
+      "y": 11,
+      "width": 1,
+      "height": 1,
+      "var": "VAR_STARK_MOUNTAIN_OUTSIDE_STATE",
+      "var_value": 0,
+      "script": 3
+    }
+  ]
+}

@@ -1,1 +1,72 @@
-{"id":"turnback_cave_entrance","name":"Turnback Cave Entrance","region":"sinnoh","source":"platinum","npcs":[],"warps":[{"x":11,"y":null,"z":1,"dest_map":null,"dest_warp_id":2},{"x":20,"y":null,"z":11,"dest_map":null,"dest_warp_id":3},{"x":11,"y":null,"z":20,"dest_map":null,"dest_warp_id":0},{"x":2,"y":null,"z":11,"dest_map":null,"dest_warp_id":1},{"x":11,"y":null,"z":16,"dest_map":null,"dest_warp_id":2}],"signs":[{"x":10,"y":0,"z":14,"script":2,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":11,"y":0,"z":14,"script":2,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":12,"y":0,"z":14,"script":2,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"}],"coord_events":[],"tileset":"sinnoh_048"}
+{
+  "id": "turnback_cave_entrance",
+  "name": "Turnback Cave Entrance",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_TURNBACK_CAVE_ENTRANCE",
+  "layout": "turnback_cave_entrance",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_FOG",
+  "day_music": "SEQ_D_03",
+  "night_music": "SEQ_D_03",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 11,
+      "y": 1,
+      "dest_map": "MAP_HEADER_TURNBACK_CAVE_ENTRANCE",
+      "dest_warp_id": 2
+    },
+    {
+      "x": 20,
+      "y": 11,
+      "dest_map": "MAP_HEADER_TURNBACK_CAVE_ENTRANCE",
+      "dest_warp_id": 3
+    },
+    {
+      "x": 11,
+      "y": 20,
+      "dest_map": "MAP_HEADER_TURNBACK_CAVE_ENTRANCE",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 2,
+      "y": 11,
+      "dest_map": "MAP_HEADER_TURNBACK_CAVE_ENTRANCE",
+      "dest_warp_id": 1
+    },
+    {
+      "x": 11,
+      "y": 16,
+      "dest_map": "MAP_HEADER_SENDOFF_SPRING",
+      "dest_warp_id": 2
+    }
+  ],
+  "signs": [
+    {
+      "x": 10,
+      "y": 14,
+      "script": 2,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 11,
+      "y": 14,
+      "script": 2,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 12,
+      "y": 14,
+      "script": 2,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    }
+  ],
+  "triggers": []
+}

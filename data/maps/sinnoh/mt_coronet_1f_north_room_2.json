@@ -1,1 +1,52 @@
-{"id":"mt_coronet_1f_north_room_2","name":"Mt Coronet 1F North Room 2","region":"sinnoh","source":"platinum","npcs":[],"warps":[{"x":10,"y":null,"z":27,"dest_map":null,"dest_warp_id":1},{"x":2,"y":null,"z":18,"dest_map":null,"dest_warp_id":0},{"x":15,"y":null,"z":16,"dest_map":null,"dest_warp_id":0},{"x":15,"y":null,"z":16,"dest_map":null,"dest_warp_id":0}],"signs":[{"x":14,"y":0,"z":17,"script":8061,"type":2,"player_facing_dir":"BG_EVENT_DIR_ALL"}],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "mt_coronet_1f_north_room_2",
+  "name": "Mt Coronet 1F North Room 2",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_MT_CORONET_1F_NORTH_ROOM_2",
+  "layout": "mt_coronet_1f_north_room_2",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_05",
+  "night_music": "SEQ_D_05",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 10,
+      "y": 27,
+      "dest_map": "MAP_HEADER_MT_CORONET_B1F",
+      "dest_warp_id": 1
+    },
+    {
+      "x": 2,
+      "y": 18,
+      "dest_map": "MAP_HEADER_ROUTE_216",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 15,
+      "y": 16,
+      "dest_map": "MAP_HEADER_MT_CORONET_ICEBERG_RUINS",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 15,
+      "y": 16,
+      "dest_map": "MAP_HEADER_ICEBERG_RUINS",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 14,
+      "y": 17,
+      "script": 8061,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    }
+  ],
+  "triggers": []
+}

@@ -1,1 +1,103 @@
-{"id":"acuity_lakefront","name":"Acuity Lakefront","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_ITEM_ULTRA_BALL","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":340,"y":0,"z":230,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7163,"hidden_flag":"FLAG_OBTAINED_ACUITY_LAKEFRONT_ULTRA_BALL"},{"local_id":"LOCALID_ARROW_SIGNPOST","graphics_id":"OBJ_EVENT_GFX_ARROW_SIGNPOST","x":309,"y":0,"z":242,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":3,"hidden_flag":"0"},{"local_id":"LOCALID_RIVAL","graphics_id":"OBJ_EVENT_GFX_BARRY","x":310,"y":0,"z":237,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"FLAG_HIDE_ACUITY_LAKEFRONT_RIVAL"},{"local_id":"LOCALID_ITEM_REAPER_CLOTH","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":323,"y":0,"z":235,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7309,"hidden_flag":"FLAG_OBTAINED_ACUITY_LAKEFRONT_REAPER_CLOTH"}],"warps":[{"x":308,"y":null,"z":229,"dest_map":null,"dest_warp_id":0},{"x":309,"y":null,"z":229,"dest_map":null,"dest_warp_id":1},{"x":308,"y":null,"z":229,"dest_map":null,"dest_warp_id":3},{"x":309,"y":null,"z":229,"dest_map":null,"dest_warp_id":4}],"signs":[],"coord_events":[{"script":4,"x":310,"z":244,"y":0,"width":2,"length":1,"var":"VAR_ACUITY_LAKEFRONT_STATE","value":0}],"tileset":"sinnoh_005"}
+{
+  "id": "acuity_lakefront",
+  "name": "Acuity Lakefront",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_ACUITY_LAKEFRONT",
+  "layout": "acuity_lakefront",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_ACUITY_LAKEFRONT",
+  "day_music": "SEQ_ROAD_SNOW_D",
+  "night_music": "SEQ_ROAD_SNOW_N",
+  "allow_running": true,
+  "allow_cycling": false,
+  "allow_fly": true,
+  "npcs": [
+    {
+      "local_id": "LOCALID_ITEM_ULTRA_BALL",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 52,
+      "y": 38,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7163,
+      "hidden_flag": "FLAG_OBTAINED_ACUITY_LAKEFRONT_ULTRA_BALL",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ARROW_SIGNPOST",
+      "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
+      "x": 21,
+      "y": 50,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_RIVAL",
+      "graphics_id": "OBJ_EVENT_GFX_BARRY",
+      "x": 22,
+      "y": 45,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "FLAG_HIDE_ACUITY_LAKEFRONT_RIVAL",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_ITEM_REAPER_CLOTH",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 35,
+      "y": 43,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7309,
+      "hidden_flag": "FLAG_OBTAINED_ACUITY_LAKEFRONT_REAPER_CLOTH",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 20,
+      "y": 37,
+      "dest_map": "MAP_HEADER_LAKE_ACUITY_LOW_WATER",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 21,
+      "y": 37,
+      "dest_map": "MAP_HEADER_LAKE_ACUITY_LOW_WATER",
+      "dest_warp_id": 1
+    },
+    {
+      "x": 20,
+      "y": 37,
+      "dest_map": "MAP_HEADER_LAKE_ACUITY",
+      "dest_warp_id": 3
+    },
+    {
+      "x": 21,
+      "y": 37,
+      "dest_map": "MAP_HEADER_LAKE_ACUITY",
+      "dest_warp_id": 4
+    }
+  ],
+  "signs": [],
+  "triggers": [
+    {
+      "x": 22,
+      "y": 52,
+      "width": 2,
+      "height": 1,
+      "var": "VAR_ACUITY_LAKEFRONT_STATE",
+      "var_value": 0,
+      "script": 4
+    }
+  ]
+}

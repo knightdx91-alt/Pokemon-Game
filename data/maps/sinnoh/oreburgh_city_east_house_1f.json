@@ -1,1 +1,69 @@
-{"id":"oreburgh_city_east_house_1f","name":"Oreburgh City East House 1F","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_POKEFAN_M","graphics_id":"OBJ_EVENT_GFX_POKEFAN_M","x":16,"y":1,"z":10,"movement_type":"MOVEMENT_TYPE_WANDER_NORTH_AND_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_HIKER","graphics_id":"OBJ_EVENT_GFX_HIKER","x":14,"y":1,"z":7,"movement_type":"MOVEMENT_TYPE_WANDER_WEST_AND_EAST","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_ACE_TRAINER_M","graphics_id":"OBJ_EVENT_GFX_ACE_TRAINER_M","x":10,"y":1,"z":8,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":3,"hidden_flag":"0"}],"warps":[{"x":11,"y":null,"z":12,"dest_map":null,"dest_warp_id":7},{"x":15,"y":null,"z":3,"dest_map":null,"dest_warp_id":0}],"signs":[],"coord_events":[],"tileset":"sinnoh_060"}
+{
+  "id": "oreburgh_city_east_house_1f",
+  "name": "Oreburgh City East House 1F",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_OREBURGH_CITY_EAST_HOUSE_1F",
+  "layout": "oreburgh_city_east_house_1f",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY03_D",
+  "night_music": "SEQ_CITY03_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_POKEFAN_M",
+      "graphics_id": "OBJ_EVENT_GFX_POKEFAN_M",
+      "x": 16,
+      "y": 10,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_WANDER_NORTH_AND_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_HIKER",
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 14,
+      "y": 7,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_WANDER_WEST_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_ACE_TRAINER_M",
+      "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_M",
+      "x": 10,
+      "y": 8,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 12,
+      "dest_map": "MAP_HEADER_OREBURGH_CITY",
+      "dest_warp_id": 7
+    },
+    {
+      "x": 15,
+      "y": 3,
+      "dest_map": "MAP_HEADER_OREBURGH_CITY_EAST_HOUSE_2F",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

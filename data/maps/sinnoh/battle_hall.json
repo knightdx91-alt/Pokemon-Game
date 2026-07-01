@@ -1,1 +1,227 @@
-{"id":"battle_hall","name":"Battle Hall","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_SINGLE_ATTENDANT","graphics_id":"OBJ_EVENT_GFX_FRONTIER_SINGLE_ATTENDANT","x":6,"y":0,"z":9,"movement_type":"MOVEMENT_TYPE_LOOK_EAST","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_MULTI_ATTENDANT","graphics_id":"OBJ_EVENT_GFX_FRONTIER_MULTI_ATTENDANT","x":6,"y":0,"z":10,"movement_type":"MOVEMENT_TYPE_LOOK_EAST","trainer_type":"TRAINER_TYPE_NONE","script":6,"hidden_flag":"0"},{"local_id":"LOCALID_MAID","graphics_id":"OBJ_EVENT_GFX_MAID","x":2,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH_AND_EAST","trainer_type":"TRAINER_TYPE_NONE","script":14,"hidden_flag":"0"},{"local_id":"LOCALID_POKEFAN_F","graphics_id":"OBJ_EVENT_GFX_POKEFAN_F","x":3,"y":0,"z":7,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":13,"hidden_flag":"0"},{"local_id":"LOCALID_TWIN","graphics_id":"OBJ_EVENT_GFX_TWIN","x":15,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":9,"hidden_flag":"0"},{"local_id":"LOCALID_PACHIRISU","graphics_id":"OBJ_EVENT_GFX_PACHIRISU","x":15,"y":0,"z":6,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH_AND_EAST","trainer_type":"TRAINER_TYPE_NONE","script":10,"hidden_flag":"0"},{"local_id":"LOCALID_SNOWPOINT_NPC_F","graphics_id":"OBJ_EVENT_GFX_SNOWPOINT_NPC_F","x":20,"y":0,"z":4,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":8,"hidden_flag":"0"},{"local_id":"LOCALID_HIKER","graphics_id":"OBJ_EVENT_GFX_HIKER","x":23,"y":0,"z":11,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":7,"hidden_flag":"0"},{"local_id":"LOCALID_EXPERT_M","graphics_id":"OBJ_EVENT_GFX_EXPERT_M","x":10,"y":0,"z":3,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":11,"hidden_flag":"0"},{"local_id":"LOCALID_IDOL","graphics_id":"OBJ_EVENT_GFX_IDOL","x":6,"y":0,"z":6,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":12,"hidden_flag":"0"},{"local_id":"LOCALID_REPORTER","graphics_id":"OBJ_EVENT_GFX_REPORTER","x":25,"y":0,"z":7,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":10163,"hidden_flag":"FLAG_HIDE_BATTLE_HALL_REPORTER"},{"local_id":"LOCALID_BUG_CATCHER","graphics_id":"OBJ_EVENT_GFX_BUG_CATCHER","x":25,"y":0,"z":4,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":15,"hidden_flag":"0"},{"local_id":"LOCALID_SERENA_WINSTON","graphics_id":"OBJ_EVENT_GFX_VAR_3","x":18,"y":0,"z":11,"movement_type":"MOVEMENT_TYPE_LOOK_WEST","trainer_type":"TRAINER_TYPE_NONE","script":18,"hidden_flag":"0"},{"local_id":"LOCALID_MAJOR_NPC","graphics_id":"OBJ_EVENT_GFX_VAR_1","x":4,"y":0,"z":6,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":20,"hidden_flag":"FLAG_HIDE_BATTLE_HALL_MAJOR_NPC"},{"local_id":"LOCALID_RECORD_KEEPER","graphics_id":"OBJ_EVENT_GFX_FRONTIER_SINGLE_ATTENDANT","x":8,"y":0,"z":8,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":17,"hidden_flag":"0"}],"warps":[{"x":25,"y":null,"z":9,"dest_map":null,"dest_warp_id":13},{"x":25,"y":null,"z":8,"dest_map":null,"dest_warp_id":13},{"x":25,"y":null,"z":10,"dest_map":null,"dest_warp_id":13}],"signs":[{"x":7,"y":0,"z":8,"script":10453,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"}],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "battle_hall",
+  "name": "Battle Hall",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_BATTLE_HALL",
+  "layout": "battle_hall",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_PL_BF_STAGE",
+  "night_music": "SEQ_PL_BF_STAGE",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_SINGLE_ATTENDANT",
+      "graphics_id": "OBJ_EVENT_GFX_FRONTIER_SINGLE_ATTENDANT",
+      "x": 6,
+      "y": 9,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_MULTI_ATTENDANT",
+      "graphics_id": "OBJ_EVENT_GFX_FRONTIER_MULTI_ATTENDANT",
+      "x": 6,
+      "y": 10,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 6,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_MAID",
+      "graphics_id": "OBJ_EVENT_GFX_MAID",
+      "x": 2,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 14,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_POKEFAN_F",
+      "graphics_id": "OBJ_EVENT_GFX_POKEFAN_F",
+      "x": 3,
+      "y": 7,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 13,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_TWIN",
+      "graphics_id": "OBJ_EVENT_GFX_TWIN",
+      "x": 15,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 9,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_PACHIRISU",
+      "graphics_id": "OBJ_EVENT_GFX_PACHIRISU",
+      "x": 15,
+      "y": 6,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_SNOWPOINT_NPC_F",
+      "graphics_id": "OBJ_EVENT_GFX_SNOWPOINT_NPC_F",
+      "x": 20,
+      "y": 4,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 8,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_HIKER",
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 23,
+      "y": 11,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_EXPERT_M",
+      "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
+      "x": 10,
+      "y": 3,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 11,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_IDOL",
+      "graphics_id": "OBJ_EVENT_GFX_IDOL",
+      "x": 6,
+      "y": 6,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 12,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_REPORTER",
+      "graphics_id": "OBJ_EVENT_GFX_REPORTER",
+      "x": 25,
+      "y": 7,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10163,
+      "hidden_flag": "FLAG_HIDE_BATTLE_HALL_REPORTER",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_BUG_CATCHER",
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 25,
+      "y": 4,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 15,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_SERENA_WINSTON",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_3",
+      "x": 18,
+      "y": 11,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 18,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_MAJOR_NPC",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_1",
+      "x": 4,
+      "y": 6,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 20,
+      "hidden_flag": "FLAG_HIDE_BATTLE_HALL_MAJOR_NPC",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_RECORD_KEEPER",
+      "graphics_id": "OBJ_EVENT_GFX_FRONTIER_SINGLE_ATTENDANT",
+      "x": 8,
+      "y": 8,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 17,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 25,
+      "y": 9,
+      "dest_map": "MAP_HEADER_BATTLE_FRONTIER",
+      "dest_warp_id": 13
+    },
+    {
+      "x": 25,
+      "y": 8,
+      "dest_map": "MAP_HEADER_BATTLE_FRONTIER",
+      "dest_warp_id": 13
+    },
+    {
+      "x": 25,
+      "y": 10,
+      "dest_map": "MAP_HEADER_BATTLE_FRONTIER",
+      "dest_warp_id": 13
+    }
+  ],
+  "signs": [
+    {
+      "x": 7,
+      "y": 8,
+      "script": 10453,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    }
+  ],
+  "triggers": []
+}

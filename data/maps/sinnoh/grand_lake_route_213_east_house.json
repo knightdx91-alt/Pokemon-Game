@@ -1,1 +1,39 @@
-{"id":"grand_lake_route_213_east_house","name":"Grand Lake Route 213 East House","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_MIDDLE_AGED_MAN","graphics_id":"OBJ_EVENT_GFX_MIDDLE_AGED_MAN","x":8,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"}],"warps":[{"x":6,"y":null,"z":8,"dest_map":null,"dest_warp_id":5}],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "grand_lake_route_213_east_house",
+  "name": "Grand Lake Route 213 East House",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_GRAND_LAKE_ROUTE_213_EAST_HOUSE",
+  "layout": "grand_lake_route_213_east_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_TOWN07_D",
+  "night_music": "SEQ_TOWN07_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_MIDDLE_AGED_MAN",
+      "graphics_id": "OBJ_EVENT_GFX_MIDDLE_AGED_MAN",
+      "x": 8,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 8,
+      "dest_map": "MAP_HEADER_ROUTE_213",
+      "dest_warp_id": 5
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

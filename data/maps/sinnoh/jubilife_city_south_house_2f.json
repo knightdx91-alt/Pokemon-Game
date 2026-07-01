@@ -1,1 +1,69 @@
-{"id":"jubilife_city_south_house_2f","name":"Jubilife City South House 2F","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_YOUNGSTER","graphics_id":"OBJ_EVENT_GFX_YOUNGSTER","x":8,"y":1,"z":8,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_POKEFAN_F","graphics_id":"OBJ_EVENT_GFX_POKEFAN_F","x":13,"y":1,"z":9,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_POKEMON_BREEDER_F","graphics_id":"OBJ_EVENT_GFX_POKEMON_BREEDER_F","x":16,"y":0,"z":8,"movement_type":"MOVEMENT_TYPE_LOOK_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":3,"hidden_flag":"0"}],"warps":[{"x":8,"y":null,"z":3,"dest_map":null,"dest_warp_id":1},{"x":0,"y":null,"z":0,"dest_map":null,"dest_warp_id":0}],"signs":[],"coord_events":[],"tileset":"sinnoh_020"}
+{
+  "id": "jubilife_city_south_house_2f",
+  "name": "Jubilife City South House 2F",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_JUBILIFE_CITY_SOUTH_HOUSE_2F",
+  "layout": "jubilife_city_south_house_2f",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY01_D",
+  "night_music": "SEQ_CITY01_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_YOUNGSTER",
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 8,
+      "y": 8,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_POKEFAN_F",
+      "graphics_id": "OBJ_EVENT_GFX_POKEFAN_F",
+      "x": 13,
+      "y": 9,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_POKEMON_BREEDER_F",
+      "graphics_id": "OBJ_EVENT_GFX_POKEMON_BREEDER_F",
+      "x": 16,
+      "y": 8,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    }
+  ],
+  "warps": [
+    {
+      "x": 8,
+      "y": 3,
+      "dest_map": "MAP_HEADER_JUBILIFE_CITY_SOUTH_HOUSE_1F",
+      "dest_warp_id": 1
+    },
+    {
+      "x": 0,
+      "y": 0,
+      "dest_map": "MAP_HEADER_UNUSED_JUBILIFE_CITY_SOUTH_HOUSE_3F",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

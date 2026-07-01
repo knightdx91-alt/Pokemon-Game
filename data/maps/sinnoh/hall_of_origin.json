@@ -1,1 +1,49 @@
-{"id":"hall_of_origin","name":"Hall Of Origin","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_ARCEUS","graphics_id":"OBJ_EVENT_GFX_ARCEUS","x":31,"y":16,"z":27,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"FLAG_HIDE_HALL_OF_ORIGIN_ARCEUS"}],"warps":[{"x":31,"y":null,"z":53,"dest_map":null,"dest_warp_id":1}],"signs":[],"coord_events":[{"script":2,"x":30,"z":35,"y":0,"width":3,"length":1,"var":"VAR_HALL_OF_ORIGIN_STATE","value":1}],"tileset":"sinnoh_005"}
+{
+  "id": "hall_of_origin",
+  "name": "Hall Of Origin",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_HALL_OF_ORIGIN",
+  "layout": "hall_of_origin",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR_13",
+  "day_music": "SEQ_AUS",
+  "night_music": "SEQ_AUS",
+  "allow_running": true,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_ARCEUS",
+      "graphics_id": "OBJ_EVENT_GFX_ARCEUS",
+      "x": 31,
+      "y": 27,
+      "elevation": 16,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "FLAG_HIDE_HALL_OF_ORIGIN_ARCEUS",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 31,
+      "y": 53,
+      "dest_map": "MAP_HEADER_MT_CORONET_6F",
+      "dest_warp_id": 1
+    }
+  ],
+  "signs": [],
+  "triggers": [
+    {
+      "x": 30,
+      "y": 35,
+      "width": 3,
+      "height": 1,
+      "var": "VAR_HALL_OF_ORIGIN_STATE",
+      "var_value": 1,
+      "script": 2
+    }
+  ]
+}

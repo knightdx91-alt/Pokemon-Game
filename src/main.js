@@ -411,6 +411,25 @@
             player.moveStartTime = 0;
             player.x = Math.min(player.x, GameMap.width  - 1);
             player.y = Math.min(player.y, GameMap.height - 1);
+
+            // If the default tile isn't walkable (common for converted DS maps),
+            // spiral out from the map centre to find an open, non-warp tile.
+            if (!GameMap.isWalkable(player.x, player.y)) {
+                const cx = Math.floor(GameMap.width / 2);
+                const cy = Math.floor(GameMap.height / 2);
+                const maxR = Math.max(GameMap.width, GameMap.height);
+                let found = false;
+                for (let r = 0; r < maxR && !found; r++) {
+                    for (let dy = -r; dy <= r && !found; dy++) {
+                        for (let dx = -r; dx <= r && !found; dx++) {
+                            const tx = cx + dx, ty = cy + dy;
+                            if (GameMap.isWalkable(tx, ty) && !GameMap.getWarp(tx, ty)) {
+                                player.x = tx; player.y = ty; found = true;
+                            }
+                        }
+                    }
+                }
+            }
             player.prevX = player.x;
             player.prevY = player.y;
 

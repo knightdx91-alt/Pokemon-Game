@@ -1,1 +1,51 @@
-{"id":"solaceon_town_east_house","name":"Solaceon Town East House","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_NINJA_BOY","graphics_id":"OBJ_EVENT_GFX_NINJA_BOY","x":5,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH_AND_EAST","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_POKEFAN_F","graphics_id":"OBJ_EVENT_GFX_POKEFAN_F","x":2,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"}],"warps":[{"x":4,"y":null,"z":8,"dest_map":null,"dest_warp_id":4}],"signs":[],"coord_events":[],"tileset":"sinnoh_006"}
+{
+  "id": "solaceon_town_east_house",
+  "name": "Solaceon Town East House",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_SOLACEON_TOWN_EAST_HOUSE",
+  "layout": "solaceon_town_east_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY06_D",
+  "night_music": "SEQ_CITY06_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_NINJA_BOY",
+      "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
+      "x": 5,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_POKEFAN_F",
+      "graphics_id": "OBJ_EVENT_GFX_POKEFAN_F",
+      "x": 2,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_HEADER_SOLACEON_TOWN",
+      "dest_warp_id": 4
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

@@ -1,1 +1,105 @@
-{"id":"oreburgh_mine_b1f","name":"Oreburgh Mine B1F","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_WORKER","graphics_id":"OBJ_EVENT_GFX_WORKER","x":7,"y":0,"z":4,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_ITEM_POKE_BALL","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":19,"y":0,"z":4,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7235,"hidden_flag":"FLAG_OBTAINED_OREBURGH_MINE_B1F_POKE_BALL"},{"local_id":"LOCALID_TWIN","graphics_id":"OBJ_EVENT_GFX_TWIN","x":6,"y":0,"z":3,"movement_type":"MOVEMENT_TYPE_LOOK_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":3,"hidden_flag":"0"},{"local_id":"LOCALID_HIKER","graphics_id":"OBJ_EVENT_GFX_HIKER","x":13,"y":0,"z":4,"movement_type":"MOVEMENT_TYPE_LOOK_EAST","trainer_type":"TRAINER_TYPE_NONE","script":4,"hidden_flag":"FLAG_HIDE_OREBURGH_MINE_B1F_HIKER"}],"warps":[{"x":11,"y":null,"z":1,"dest_map":null,"dest_warp_id":12},{"x":12,"y":null,"z":1,"dest_map":null,"dest_warp_id":13},{"x":13,"y":null,"z":1,"dest_map":null,"dest_warp_id":14},{"x":12,"y":null,"z":21,"dest_map":null,"dest_warp_id":0},{"x":11,"y":null,"z":21,"dest_map":null,"dest_warp_id":0},{"x":13,"y":null,"z":21,"dest_map":null,"dest_warp_id":0}],"signs":[],"coord_events":[],"tileset":"sinnoh_048"}
+{
+  "id": "oreburgh_mine_b1f",
+  "name": "Oreburgh Mine B1F",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_OREBURGH_MINE_B1F",
+  "layout": "oreburgh_mine_b1f",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_04",
+  "night_music": "SEQ_D_04",
+  "allow_running": false,
+  "allow_cycling": true,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_WORKER",
+      "graphics_id": "OBJ_EVENT_GFX_WORKER",
+      "x": 7,
+      "y": 4,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_ITEM_POKE_BALL",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 19,
+      "y": 4,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7235,
+      "hidden_flag": "FLAG_OBTAINED_OREBURGH_MINE_B1F_POKE_BALL",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_TWIN",
+      "graphics_id": "OBJ_EVENT_GFX_TWIN",
+      "x": 6,
+      "y": 3,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_HIKER",
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 13,
+      "y": 4,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 4,
+      "hidden_flag": "FLAG_HIDE_OREBURGH_MINE_B1F_HIKER",
+      "initial_dir": 3
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 1,
+      "dest_map": "MAP_HEADER_OREBURGH_CITY",
+      "dest_warp_id": 12
+    },
+    {
+      "x": 12,
+      "y": 1,
+      "dest_map": "MAP_HEADER_OREBURGH_CITY",
+      "dest_warp_id": 13
+    },
+    {
+      "x": 13,
+      "y": 1,
+      "dest_map": "MAP_HEADER_OREBURGH_CITY",
+      "dest_warp_id": 14
+    },
+    {
+      "x": 12,
+      "y": 21,
+      "dest_map": "MAP_HEADER_OREBURGH_MINE_B2F",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 11,
+      "y": 21,
+      "dest_map": "MAP_HEADER_OREBURGH_MINE_B2F",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 13,
+      "y": 21,
+      "dest_map": "MAP_HEADER_OREBURGH_MINE_B2F",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

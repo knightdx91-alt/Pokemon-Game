@@ -1,1 +1,39 @@
-{"id":"hearthome_city_dp_gym_trainer_room_1","name":"Hearthome City Dp Gym Trainer Room 1","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_CAMPER_DREW","graphics_id":"OBJ_EVENT_GFX_CAMPER","x":7,"y":0,"z":6,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_CAMPER_DREW","hidden_flag":"0"}],"warps":[{"x":7,"y":null,"z":10,"dest_map":null,"dest_warp_id":1}],"signs":[],"coord_events":[],"tileset":"sinnoh_022"}
+{
+  "id": "hearthome_city_dp_gym_trainer_room_1",
+  "name": "Hearthome City Dp Gym Trainer Room 1",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_HEARTHOME_CITY_DP_GYM_TRAINER_ROOM_1",
+  "layout": "hearthome_city_dp_gym_trainer_room_1",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_GYM",
+  "night_music": "SEQ_GYM",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_CAMPER_DREW",
+      "graphics_id": "OBJ_EVENT_GFX_CAMPER",
+      "x": 7,
+      "y": 6,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_CAMPER_DREW",
+      "hidden_flag": "0",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 10,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_LEADER_ROOM",
+      "dest_warp_id": 1
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

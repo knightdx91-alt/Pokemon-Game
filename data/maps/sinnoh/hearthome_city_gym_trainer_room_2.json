@@ -1,1 +1,105 @@
-{"id":"hearthome_city_gym_trainer_room_2","name":"Hearthome City Gym Trainer Room 2","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_SCHOOL_KID_MACKENZIE","graphics_id":"OBJ_EVENT_GFX_SCHOOL_KID_F","x":4,"y":0,"z":15,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_SCHOOL_KID_MACKENZIE","hidden_flag":"0"},{"local_id":"LOCALID_ACE_TRAINER_ALLEN","graphics_id":"OBJ_EVENT_GFX_ACE_TRAINER_M","x":18,"y":0,"z":7,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_ACE_TRAINER_ALLEN","hidden_flag":"0"},{"local_id":"LOCALID_SCHOOL_KID_CHANCE","graphics_id":"OBJ_EVENT_GFX_SCHOOL_KID_M","x":21,"y":0,"z":17,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_SCHOOL_KID_CHANCE","hidden_flag":"0"},{"local_id":"LOCALID_ACE_TRAINER_CATHERINE","graphics_id":"OBJ_EVENT_GFX_ACE_TRAINER_F","x":11,"y":0,"z":9,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_ACE_TRAINER_CATHERINE","hidden_flag":"0"}],"warps":[{"x":14,"y":null,"z":22,"dest_map":null,"dest_warp_id":1},{"x":4,"y":null,"z":2,"dest_map":null,"dest_warp_id":3},{"x":9,"y":null,"z":2,"dest_map":null,"dest_warp_id":3},{"x":14,"y":null,"z":2,"dest_map":null,"dest_warp_id":3},{"x":19,"y":null,"z":2,"dest_map":null,"dest_warp_id":3},{"x":24,"y":null,"z":2,"dest_map":null,"dest_warp_id":3}],"signs":[],"coord_events":[],"tileset":"sinnoh_022"}
+{
+  "id": "hearthome_city_gym_trainer_room_2",
+  "name": "Hearthome City Gym Trainer Room 2",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_HEARTHOME_CITY_GYM_TRAINER_ROOM_2",
+  "layout": "hearthome_city_gym_trainer_room_2",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_GYM",
+  "night_music": "SEQ_GYM",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_SCHOOL_KID_MACKENZIE",
+      "graphics_id": "OBJ_EVENT_GFX_SCHOOL_KID_F",
+      "x": 4,
+      "y": 15,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_SCHOOL_KID_MACKENZIE",
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_ACE_TRAINER_ALLEN",
+      "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_M",
+      "x": 18,
+      "y": 7,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_ACE_TRAINER_ALLEN",
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_SCHOOL_KID_CHANCE",
+      "graphics_id": "OBJ_EVENT_GFX_SCHOOL_KID_M",
+      "x": 21,
+      "y": 17,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_SCHOOL_KID_CHANCE",
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_ACE_TRAINER_CATHERINE",
+      "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_F",
+      "x": 11,
+      "y": 9,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_ACE_TRAINER_CATHERINE",
+      "hidden_flag": "0",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 14,
+      "y": 22,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_ENTRANCE_ROOM",
+      "dest_warp_id": 1
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_LEADER_ROOM",
+      "dest_warp_id": 3
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_LEADER_ROOM",
+      "dest_warp_id": 3
+    },
+    {
+      "x": 14,
+      "y": 2,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_LEADER_ROOM",
+      "dest_warp_id": 3
+    },
+    {
+      "x": 19,
+      "y": 2,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_LEADER_ROOM",
+      "dest_warp_id": 3
+    },
+    {
+      "x": 24,
+      "y": 2,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_LEADER_ROOM",
+      "dest_warp_id": 3
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

@@ -1,1 +1,127 @@
-{"id":"spear_pillar","name":"Spear Pillar","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_GRUNT_F","graphics_id":"OBJ_EVENT_GFX_GRUNT_F","x":30,"y":0,"z":48,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":6,"hidden_flag":"FLAG_HIDE_SPEAR_PILLAR_GRUNTS"},{"local_id":"LOCALID_CYRUS","graphics_id":"OBJ_EVENT_GFX_CYRUS","x":31,"y":0,"z":28,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"FLAG_HIDE_SPEAR_PILLAR_CYRUS"},{"local_id":"LOCALID_MARS","graphics_id":"OBJ_EVENT_GFX_MARS","x":33,"y":0,"z":32,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":8,"hidden_flag":"FLAG_HIDE_SPEAR_PILLAR_MARS_JUPITER"},{"local_id":"LOCALID_GRUNT_M","graphics_id":"OBJ_EVENT_GFX_GRUNT_M","x":32,"y":0,"z":48,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":6,"hidden_flag":"FLAG_HIDE_SPEAR_PILLAR_GRUNTS"},{"local_id":"LOCALID_JUPITER","graphics_id":"OBJ_EVENT_GFX_JUPITER","x":29,"y":0,"z":32,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":7,"hidden_flag":"FLAG_HIDE_SPEAR_PILLAR_MARS_JUPITER"},{"local_id":"LOCALID_RIVAL","graphics_id":"OBJ_EVENT_GFX_BARRY","x":30,"y":0,"z":35,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"FLAG_HIDE_SPEAR_PILLAR_RIVAL"}],"warps":[{"x":31,"y":null,"z":53,"dest_map":null,"dest_warp_id":1}],"signs":[],"coord_events":[{"script":3,"x":31,"z":48,"y":0,"width":1,"length":1,"var":"VAR_SPEAR_PILLAR_STATE","value":0},{"script":5,"x":30,"z":32,"y":0,"width":3,"length":1,"var":"VAR_SPEAR_PILLAR_STATE","value":1},{"script":2039,"x":31,"z":52,"y":0,"width":1,"length":1,"var":"VAR_HALL_OF_ORIGIN_STATE","value":1}],"tileset":"sinnoh_005"}
+{
+  "id": "spear_pillar",
+  "name": "Spear Pillar",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_SPEAR_PILLAR",
+  "layout": "spear_pillar",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR_13",
+  "day_music": "SEQ_D_MOUNT2",
+  "night_music": "SEQ_D_MOUNT2",
+  "allow_running": true,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_GRUNT_F",
+      "graphics_id": "OBJ_EVENT_GFX_GRUNT_F",
+      "x": 30,
+      "y": 48,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 6,
+      "hidden_flag": "FLAG_HIDE_SPEAR_PILLAR_GRUNTS",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_CYRUS",
+      "graphics_id": "OBJ_EVENT_GFX_CYRUS",
+      "x": 31,
+      "y": 28,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "FLAG_HIDE_SPEAR_PILLAR_CYRUS",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_MARS",
+      "graphics_id": "OBJ_EVENT_GFX_MARS",
+      "x": 33,
+      "y": 32,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 8,
+      "hidden_flag": "FLAG_HIDE_SPEAR_PILLAR_MARS_JUPITER",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_GRUNT_M",
+      "graphics_id": "OBJ_EVENT_GFX_GRUNT_M",
+      "x": 32,
+      "y": 48,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 6,
+      "hidden_flag": "FLAG_HIDE_SPEAR_PILLAR_GRUNTS",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_JUPITER",
+      "graphics_id": "OBJ_EVENT_GFX_JUPITER",
+      "x": 29,
+      "y": 32,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7,
+      "hidden_flag": "FLAG_HIDE_SPEAR_PILLAR_MARS_JUPITER",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_RIVAL",
+      "graphics_id": "OBJ_EVENT_GFX_BARRY",
+      "x": 30,
+      "y": 35,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "FLAG_HIDE_SPEAR_PILLAR_RIVAL",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 31,
+      "y": 53,
+      "dest_map": "MAP_HEADER_MT_CORONET_6F",
+      "dest_warp_id": 1
+    }
+  ],
+  "signs": [],
+  "triggers": [
+    {
+      "x": 31,
+      "y": 48,
+      "width": 1,
+      "height": 1,
+      "var": "VAR_SPEAR_PILLAR_STATE",
+      "var_value": 0,
+      "script": 3
+    },
+    {
+      "x": 30,
+      "y": 32,
+      "width": 3,
+      "height": 1,
+      "var": "VAR_SPEAR_PILLAR_STATE",
+      "var_value": 1,
+      "script": 5
+    },
+    {
+      "x": 31,
+      "y": 52,
+      "width": 1,
+      "height": 1,
+      "var": "VAR_HALL_OF_ORIGIN_STATE",
+      "var_value": 1,
+      "script": 2039
+    }
+  ]
+}

@@ -1,1 +1,92 @@
-{"id":"cycle_shop","name":"Cycle Shop","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_POKEFAN_M","graphics_id":"OBJ_EVENT_GFX_POKEFAN_M","x":3,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"FLAG_HIDE_CYCLE_SHOP_POKEFAN_M"},{"local_id":"LOCALID_YOUNGSTER","graphics_id":"OBJ_EVENT_GFX_YOUNGSTER","x":5,"y":0,"z":10,"movement_type":"MOVEMENT_TYPE_LOOK_WEST","trainer_type":"TRAINER_TYPE_NONE","script":3,"hidden_flag":"0"},{"local_id":"LOCALID_CLEFAIRY","graphics_id":"OBJ_EVENT_GFX_CLEFAIRY","x":2,"y":0,"z":10,"movement_type":"MOVEMENT_TYPE_LOOK_EAST","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"FLAG_HIDE_CYCLE_SHOP_CLEFAIRY"}],"warps":[{"x":7,"y":null,"z":11,"dest_map":null,"dest_warp_id":2}],"signs":[{"x":10,"y":0,"z":3,"script":4,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":11,"y":0,"z":3,"script":4,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":12,"y":0,"z":3,"script":5,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":13,"y":0,"z":3,"script":5,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"}],"coord_events":[],"tileset":"sinnoh_070"}
+{
+  "id": "cycle_shop",
+  "name": "Cycle Shop",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_CYCLE_SHOP",
+  "layout": "cycle_shop",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY04_D",
+  "night_music": "SEQ_CITY04_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_POKEFAN_M",
+      "graphics_id": "OBJ_EVENT_GFX_POKEFAN_M",
+      "x": 3,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "FLAG_HIDE_CYCLE_SHOP_POKEFAN_M",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_YOUNGSTER",
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 5,
+      "y": 10,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_CLEFAIRY",
+      "graphics_id": "OBJ_EVENT_GFX_CLEFAIRY",
+      "x": 2,
+      "y": 10,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "FLAG_HIDE_CYCLE_SHOP_CLEFAIRY",
+      "initial_dir": 3
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 11,
+      "dest_map": "MAP_HEADER_ETERNA_CITY",
+      "dest_warp_id": 2
+    }
+  ],
+  "signs": [
+    {
+      "x": 10,
+      "y": 3,
+      "script": 4,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 11,
+      "y": 3,
+      "script": 4,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 12,
+      "y": 3,
+      "script": 5,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 13,
+      "y": 3,
+      "script": 5,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    }
+  ],
+  "triggers": []
+}

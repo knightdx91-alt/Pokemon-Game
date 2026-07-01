@@ -1,1 +1,140 @@
-{"id":"galactic_hq_laboratory","name":"Galactic Hq Laboratory","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_SCIENTIST_M","graphics_id":"OBJ_EVENT_GFX_SCIENTIST_M","x":8,"y":0,"z":13,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"FLAG_HIDE_GALACTIC_HQ_TEAM_GALACTIC"},{"local_id":"LOCALID_SCIENTIST_F","graphics_id":"OBJ_EVENT_GFX_SCIENTIST_F","x":36,"y":0,"z":10,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"FLAG_HIDE_GALACTIC_HQ_TEAM_GALACTIC"},{"local_id":"LOCALID_ITEM_FULL_RESTORE","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":6,"y":0,"z":8,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7296,"hidden_flag":"FLAG_OBTAINED_GALACTIC_HQ_LABORATORY_FULL_RESTORE"}],"warps":[{"x":1,"y":null,"z":11,"dest_map":null,"dest_warp_id":1},{"x":36,"y":null,"z":2,"dest_map":null,"dest_warp_id":0}],"signs":[{"x":10,"y":0,"z":9,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":11,"y":0,"z":9,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":17,"y":0,"z":9,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":18,"y":0,"z":9,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":21,"y":0,"z":9,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":22,"y":0,"z":9,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":25,"y":0,"z":9,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":26,"y":0,"z":9,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":29,"y":0,"z":9,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":30,"y":0,"z":9,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"}],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "galactic_hq_laboratory",
+  "name": "Galactic Hq Laboratory",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_GALACTIC_HQ_LABORATORY",
+  "layout": "galactic_hq_laboratory",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_26",
+  "day_music": "SEQ_THE_EVENT04",
+  "night_music": "SEQ_THE_EVENT04",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_SCIENTIST_M",
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_M",
+      "x": 8,
+      "y": 13,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "FLAG_HIDE_GALACTIC_HQ_TEAM_GALACTIC",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_SCIENTIST_F",
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_F",
+      "x": 36,
+      "y": 10,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "FLAG_HIDE_GALACTIC_HQ_TEAM_GALACTIC",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_ITEM_FULL_RESTORE",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 6,
+      "y": 8,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7296,
+      "hidden_flag": "FLAG_OBTAINED_GALACTIC_HQ_LABORATORY_FULL_RESTORE",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 1,
+      "y": 11,
+      "dest_map": "MAP_HEADER_GALACTIC_HQ_4F",
+      "dest_warp_id": 1
+    },
+    {
+      "x": 36,
+      "y": 2,
+      "dest_map": "MAP_HEADER_GALACTIC_HQ_CONTROL_ROOM",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 10,
+      "y": 9,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 11,
+      "y": 9,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 17,
+      "y": 9,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 18,
+      "y": 9,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 21,
+      "y": 9,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 22,
+      "y": 9,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 25,
+      "y": 9,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 26,
+      "y": 9,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 29,
+      "y": 9,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 30,
+      "y": 9,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    }
+  ],
+  "triggers": []
+}

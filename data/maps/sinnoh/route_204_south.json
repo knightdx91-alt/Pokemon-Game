@@ -1,1 +1,147 @@
-{"id":"route_204_south","name":"Route 204 South","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_LASS_SARAH","graphics_id":"OBJ_EVENT_GFX_LASS","x":172,"y":1,"z":725,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH_AND_EAST","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_LASS_SARAH","hidden_flag":"0"},{"local_id":"LOCALID_LASS_SAMANTHA","graphics_id":"OBJ_EVENT_GFX_LASS","x":171,"y":1,"z":712,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_LASS_SAMANTHA","hidden_flag":"0"},{"local_id":"LOCALID_YOUNGSTER_TYLER","graphics_id":"OBJ_EVENT_GFX_YOUNGSTER","x":167,"y":1,"z":722,"movement_type":"MOVEMENT_TYPE_LOOK_WEST_AND_EAST","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_YOUNGSTER_TYLER","hidden_flag":"0"},{"local_id":"LOCALID_YOUNGSTER_SOUTH","graphics_id":"OBJ_EVENT_GFX_YOUNGSTER","x":173,"y":0,"z":706,"movement_type":"MOVEMENT_TYPE_WANDER_WEST_AND_EAST","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_ARROW_SIGNPOST","graphics_id":"OBJ_EVENT_GFX_ARROW_SIGNPOST","x":174,"y":0,"z":721,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_SIGNBOARD","graphics_id":"OBJ_EVENT_GFX_SIGNBOARD","x":170,"y":0,"z":706,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":3,"hidden_flag":"0"},{"local_id":"LOCALID_YOUNGSTER_NORTH","graphics_id":"OBJ_EVENT_GFX_YOUNGSTER","x":175,"y":0,"z":700,"movement_type":"MOVEMENT_TYPE_WANDER_WEST_AND_EAST","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"0"},{"local_id":"LOCALID_ITEM_SEA_INCENSE","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":162,"y":0,"z":732,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7009,"hidden_flag":"FLAG_OBTAINED_ROUTE_204_SOUTH_SEA_INCENSE"},{"local_id":"LOCALID_ITEM_HP_UP","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":189,"y":0,"z":716,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7010,"hidden_flag":"FLAG_OBTAINED_ROUTE_204_SOUTH_HP_UP"},{"local_id":"LOCALID_ITEM_PARLYZ_HEAL","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":177,"y":0,"z":722,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7082,"hidden_flag":"FLAG_OBTAINED_ROUTE_204_SOUTH_PARLYZ_HEAL"}],"warps":[{"x":171,"y":null,"z":705,"dest_map":null,"dest_warp_id":0}],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "route_204_south",
+  "name": "Route 204 South",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_ROUTE_204_SOUTH",
+  "layout": "route_204_south",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_ROAD_B_D",
+  "night_music": "SEQ_ROAD_B_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
+  "npcs": [
+    {
+      "local_id": "LOCALID_LASS_SARAH",
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 12,
+      "y": 21,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_LASS_SARAH",
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_LASS_SAMANTHA",
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 11,
+      "y": 8,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_LASS_SAMANTHA",
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_YOUNGSTER_TYLER",
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 7,
+      "y": 18,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_YOUNGSTER_TYLER",
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_YOUNGSTER_SOUTH",
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 13,
+      "y": 2,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_WEST_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_ARROW_SIGNPOST",
+      "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
+      "x": 14,
+      "y": 17,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_SIGNBOARD",
+      "graphics_id": "OBJ_EVENT_GFX_SIGNBOARD",
+      "x": 10,
+      "y": 2,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_YOUNGSTER_NORTH",
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 15,
+      "y": -4,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_WEST_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_ITEM_SEA_INCENSE",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 2,
+      "y": 28,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7009,
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_204_SOUTH_SEA_INCENSE",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ITEM_HP_UP",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 29,
+      "y": 12,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7010,
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_204_SOUTH_HP_UP",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ITEM_PARLYZ_HEAL",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 17,
+      "y": 18,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7082,
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_204_SOUTH_PARLYZ_HEAL",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 1,
+      "dest_map": "MAP_HEADER_RAVAGED_PATH",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

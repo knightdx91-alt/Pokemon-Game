@@ -276,6 +276,11 @@ window.GameMap = (function () {
         return (current && current.tileset) || null;
     }
 
+    /** Path to the pre-rendered textured background image (DS maps), or null. */
+    function getBackground() {
+        return layoutData && layoutData.background ? layoutData.background : null;
+    }
+
     // Returns 'grass' | 'cave' | 'water' | null for the given tile
     function getTileTerrainType(x, y) {
         if (!tilesetBehaviors || !layoutData || !layoutData.metatiles) return null;
@@ -352,6 +357,7 @@ window.GameMap = (function () {
         getSign,
         getNpcAt,
         getTilesetName,
+        getBackground,
         getTileTerrainType,
         getTileDebug,
         loadEncounterData,

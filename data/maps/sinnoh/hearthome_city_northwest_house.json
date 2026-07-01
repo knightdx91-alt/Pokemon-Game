@@ -1,1 +1,39 @@
-{"id":"hearthome_city_northwest_house","name":"Hearthome City Northwest House","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_BEBE","graphics_id":"OBJ_EVENT_GFX_BATTLE_GIRL","x":5,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH_AND_WEST","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"}],"warps":[{"x":5,"y":null,"z":8,"dest_map":null,"dest_warp_id":6}],"signs":[],"coord_events":[],"tileset":"sinnoh_006"}
+{
+  "id": "hearthome_city_northwest_house",
+  "name": "Hearthome City Northwest House",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_HEARTHOME_CITY_NORTHWEST_HOUSE",
+  "layout": "hearthome_city_northwest_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY05_D",
+  "night_music": "SEQ_CITY05_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_BEBE",
+      "graphics_id": "OBJ_EVENT_GFX_BATTLE_GIRL",
+      "x": 5,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_WEST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 8,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY",
+      "dest_warp_id": 6
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

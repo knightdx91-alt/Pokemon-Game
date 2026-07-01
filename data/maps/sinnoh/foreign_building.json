@@ -1,1 +1,135 @@
-{"id":"foreign_building","name":"Foreign Building","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_RUIN_MANIAC","graphics_id":"OBJ_EVENT_GFX_RUIN_MANIAC","x":4,"y":0,"z":9,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_OLD_MAN","graphics_id":"OBJ_EVENT_GFX_OLD_MAN","x":13,"y":0,"z":9,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_NINJA_BOY","graphics_id":"OBJ_EVENT_GFX_NINJA_BOY","x":2,"y":0,"z":14,"movement_type":"MOVEMENT_TYPE_WANDER_NORTH_AND_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":3,"hidden_flag":"0"},{"local_id":"LOCALID_OLD_WOMAN","graphics_id":"OBJ_EVENT_GFX_OLD_WOMAN","x":5,"y":0,"z":12,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":4,"hidden_flag":"0"},{"local_id":"LOCALID_ACE_TRAINER_F","graphics_id":"OBJ_EVENT_GFX_ACE_TRAINER_F","x":6,"y":0,"z":15,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":5,"hidden_flag":"0"},{"local_id":"LOCALID_POKEFAN_F","graphics_id":"OBJ_EVENT_GFX_POKEFAN_F","x":11,"y":0,"z":18,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":6,"hidden_flag":"0"},{"local_id":"LOCALID_LADY","graphics_id":"OBJ_EVENT_GFX_LADY","x":8,"y":0,"z":8,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":9,"hidden_flag":"0"},{"local_id":"LOCALID_PSYCHIC","graphics_id":"OBJ_EVENT_GFX_PSYCHIC","x":2,"y":0,"z":19,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":8,"hidden_flag":"0"},{"local_id":"LOCALID_EXPERT_M","graphics_id":"OBJ_EVENT_GFX_EXPERT_M","x":15,"y":0,"z":10,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7,"hidden_flag":"0"}],"warps":[{"x":8,"y":null,"z":20,"dest_map":null,"dest_warp_id":9}],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "foreign_building",
+  "name": "Foreign Building",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_FOREIGN_BUILDING",
+  "layout": "foreign_building",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_SILENCE_FIELD",
+  "night_music": "SEQ_SILENCE_FIELD",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_RUIN_MANIAC",
+      "graphics_id": "OBJ_EVENT_GFX_RUIN_MANIAC",
+      "x": 4,
+      "y": 9,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_OLD_MAN",
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN",
+      "x": 13,
+      "y": 9,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_NINJA_BOY",
+      "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
+      "x": 2,
+      "y": 14,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_NORTH_AND_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_OLD_WOMAN",
+      "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "x": 5,
+      "y": 12,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 4,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ACE_TRAINER_F",
+      "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_F",
+      "x": 6,
+      "y": 15,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 5,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_POKEFAN_F",
+      "graphics_id": "OBJ_EVENT_GFX_POKEFAN_F",
+      "x": 11,
+      "y": 18,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 6,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_LADY",
+      "graphics_id": "OBJ_EVENT_GFX_LADY",
+      "x": 8,
+      "y": 8,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 9,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_PSYCHIC",
+      "graphics_id": "OBJ_EVENT_GFX_PSYCHIC",
+      "x": 2,
+      "y": 19,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 8,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_EXPERT_M",
+      "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
+      "x": 15,
+      "y": 10,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    }
+  ],
+  "warps": [
+    {
+      "x": 8,
+      "y": 20,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY",
+      "dest_warp_id": 9
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

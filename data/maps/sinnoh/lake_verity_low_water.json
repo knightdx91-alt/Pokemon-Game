@@ -1,1 +1,117 @@
-{"id":"lake_verity_low_water","name":"Lake Verity Low Water","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_PROF_ROWAN","graphics_id":"OBJ_EVENT_GFX_PROF_ROWAN","x":48,"y":0,"z":43,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH","trainer_type":"TRAINER_TYPE_NONE","script":4,"hidden_flag":"FLAG_HIDE_LAKE_VERITY_LOW_WATER_PROF_ROWAN"},{"local_id":"LOCALID_COUNTERPART","graphics_id":"OBJ_EVENT_GFX_VAR_0","x":49,"y":0,"z":43,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH","trainer_type":"TRAINER_TYPE_NONE","script":5,"hidden_flag":"FLAG_HIDE_LAKE_VERITY_LOW_WATER_COUNTERPART"},{"local_id":"LOCALID_STARLY_EAST","graphics_id":"OBJ_EVENT_GFX_STARLY","x":57,"y":0,"z":43,"movement_type":"MOVEMENT_TYPE_LOOK_WEST","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"FLAG_HIDE_LAKE_VERITY_LOW_WATER_STARLY"},{"local_id":"LOCALID_STARLY_SOUTH","graphics_id":"OBJ_EVENT_GFX_STARLY","x":48,"y":0,"z":51,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"FLAG_HIDE_LAKE_VERITY_LOW_WATER_STARLY"},{"local_id":"LOCALID_CYRUS","graphics_id":"OBJ_EVENT_GFX_CYRUS","x":48,"y":0,"z":43,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"FLAG_HIDE_LAKE_VERITY_LOW_WATER_CYRUS"},{"local_id":"LOCALID_RIVAL","graphics_id":"OBJ_EVENT_GFX_BARRY","x":47,"y":0,"z":54,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"FLAG_HIDE_LAKE_VERITY_LOW_WATER_RIVAL"},{"local_id":"LOCALID_ITEM_TM38","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":25,"y":0,"z":54,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7239,"hidden_flag":"FLAG_OBTAINED_LAKE_VERITY_TM38"}],"warps":[{"x":46,"y":null,"z":54,"dest_map":null,"dest_warp_id":1},{"x":47,"y":null,"z":54,"dest_map":null,"dest_warp_id":0}],"signs":[],"coord_events":[],"tileset":"sinnoh_010"}
+{
+  "id": "lake_verity_low_water",
+  "name": "Lake Verity Low Water",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_LAKE_VERITY_LOW_WATER",
+  "layout": "lake_verity_low_water",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_LAKE",
+  "night_music": "SEQ_D_LAKE",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
+  "npcs": [
+    {
+      "local_id": "LOCALID_PROF_ROWAN",
+      "graphics_id": "OBJ_EVENT_GFX_PROF_ROWAN",
+      "x": 48,
+      "y": 43,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 4,
+      "hidden_flag": "FLAG_HIDE_LAKE_VERITY_LOW_WATER_PROF_ROWAN",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_COUNTERPART",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_0",
+      "x": 49,
+      "y": 43,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 5,
+      "hidden_flag": "FLAG_HIDE_LAKE_VERITY_LOW_WATER_COUNTERPART",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_STARLY_EAST",
+      "graphics_id": "OBJ_EVENT_GFX_STARLY",
+      "x": 57,
+      "y": 43,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "FLAG_HIDE_LAKE_VERITY_LOW_WATER_STARLY",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_STARLY_SOUTH",
+      "graphics_id": "OBJ_EVENT_GFX_STARLY",
+      "x": 48,
+      "y": 51,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "FLAG_HIDE_LAKE_VERITY_LOW_WATER_STARLY",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_CYRUS",
+      "graphics_id": "OBJ_EVENT_GFX_CYRUS",
+      "x": 48,
+      "y": 43,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "FLAG_HIDE_LAKE_VERITY_LOW_WATER_CYRUS",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_RIVAL",
+      "graphics_id": "OBJ_EVENT_GFX_BARRY",
+      "x": 47,
+      "y": 54,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "FLAG_HIDE_LAKE_VERITY_LOW_WATER_RIVAL",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ITEM_TM38",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 25,
+      "y": 54,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7239,
+      "hidden_flag": "FLAG_OBTAINED_LAKE_VERITY_TM38",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 46,
+      "y": 54,
+      "dest_map": "MAP_HEADER_VERITY_LAKEFRONT",
+      "dest_warp_id": 1
+    },
+    {
+      "x": 47,
+      "y": 54,
+      "dest_map": "MAP_HEADER_VERITY_LAKEFRONT",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

@@ -1,1 +1,42 @@
-{"id":"pokemon_league_elevator_to_lucian_room","name":"Pokemon League Elevator To Lucian Room","region":"sinnoh","source":"platinum","npcs":[],"warps":[{"x":4,"y":null,"z":2,"dest_map":null,"dest_warp_id":1},{"x":4,"y":null,"z":15,"dest_map":null,"dest_warp_id":0}],"signs":[],"coord_events":[{"script":3,"x":4,"z":11,"y":0,"width":1,"length":1,"var":"VAR_MAP_LOCAL_0","value":0}],"tileset":"sinnoh_005"}
+{
+  "id": "pokemon_league_elevator_to_lucian_room",
+  "name": "Pokemon League Elevator To Lucian Room",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_POKEMON_LEAGUE_ELEVATOR_TO_LUCIAN_ROOM",
+  "layout": "pokemon_league_elevator_to_lucian_room",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_LEAGUE",
+  "night_music": "SEQ_D_LEAGUE",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 4,
+      "y": 2,
+      "dest_map": "MAP_HEADER_POKEMON_LEAGUE_LUCIAN_ROOM",
+      "dest_warp_id": 1
+    },
+    {
+      "x": 4,
+      "y": 15,
+      "dest_map": "MAP_HEADER_POKEMON_LEAGUE_FLINT_ROOM",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "triggers": [
+    {
+      "x": 4,
+      "y": 11,
+      "width": 1,
+      "height": 1,
+      "var": "VAR_MAP_LOCAL_0x00",
+      "var_value": 0,
+      "script": 3
+    }
+  ]
+}

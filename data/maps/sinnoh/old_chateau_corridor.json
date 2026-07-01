@@ -1,1 +1,56 @@
-{"id":"old_chateau_corridor","name":"Old Chateau Corridor","region":"sinnoh","source":"platinum","npcs":[],"warps":[{"x":19,"y":null,"z":5,"dest_map":null,"dest_warp_id":3},{"x":4,"y":null,"z":2,"dest_map":null,"dest_warp_id":0},{"x":11,"y":null,"z":2,"dest_map":null,"dest_warp_id":0},{"x":19,"y":null,"z":2,"dest_map":null,"dest_warp_id":0},{"x":27,"y":null,"z":2,"dest_map":null,"dest_warp_id":0},{"x":34,"y":null,"z":2,"dest_map":null,"dest_warp_id":0}],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "old_chateau_corridor",
+  "name": "Old Chateau Corridor",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_OLD_CHATEAU_CORRIDOR",
+  "layout": "old_chateau_corridor",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_27",
+  "day_music": "SEQ_D_03",
+  "night_music": "SEQ_D_03",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 19,
+      "y": 5,
+      "dest_map": "MAP_HEADER_OLD_CHATEAU",
+      "dest_warp_id": 3
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "dest_map": "MAP_HEADER_OLD_CHATEAU_BACK_WEST_ROOM",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 11,
+      "y": 2,
+      "dest_map": "MAP_HEADER_OLD_CHATEAU_BACK_MIDDLE_WEST_ROOM",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 19,
+      "y": 2,
+      "dest_map": "MAP_HEADER_OLD_CHATEAU_BACK_MIDDLE_ROOM",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 27,
+      "y": 2,
+      "dest_map": "MAP_HEADER_OLD_CHATEAU_BACK_MIDDLE_EAST_ROOM",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 34,
+      "y": 2,
+      "dest_map": "MAP_HEADER_OLD_CHATEAU_BACK_EAST_ROOM",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

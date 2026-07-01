@@ -1,1 +1,40 @@
-{"id":"snowpoint_temple_b3f","name":"Snowpoint Temple B3F","region":"sinnoh","source":"platinum","npcs":[],"warps":[{"x":6,"y":null,"z":3,"dest_map":null,"dest_warp_id":1},{"x":14,"y":null,"z":3,"dest_map":null,"dest_warp_id":0}],"signs":[{"x":10,"y":0,"z":8,"script":8179,"type":2,"player_facing_dir":"BG_EVENT_DIR_ALL"}],"coord_events":[],"tileset":"sinnoh_016"}
+{
+  "id": "snowpoint_temple_b3f",
+  "name": "Snowpoint Temple B3F",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_SNOWPOINT_TEMPLE_B3F",
+  "layout": "snowpoint_temple_b3f",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_29",
+  "day_music": "SEQ_D_02",
+  "night_music": "SEQ_D_02",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 6,
+      "y": 3,
+      "dest_map": "MAP_HEADER_SNOWPOINT_TEMPLE_B2F",
+      "dest_warp_id": 1
+    },
+    {
+      "x": 14,
+      "y": 3,
+      "dest_map": "MAP_HEADER_SNOWPOINT_TEMPLE_B4F",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 10,
+      "y": 8,
+      "script": 8179,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    }
+  ],
+  "triggers": []
+}

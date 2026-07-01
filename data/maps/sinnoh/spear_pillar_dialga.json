@@ -1,1 +1,51 @@
-{"id":"spear_pillar_dialga","name":"Spear Pillar Dialga","region":"sinnoh","source":"platinum","npcs":[],"warps":[{"x":31,"y":null,"z":53,"dest_map":null,"dest_warp_id":3}],"signs":[{"x":29,"y":0,"z":16,"script":1,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":29,"y":0,"z":17,"script":1,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"}],"coord_events":[{"script":2039,"x":31,"z":52,"y":0,"width":1,"length":1,"var":"VAR_HALL_OF_ORIGIN_STATE","value":1}],"tileset":"sinnoh_005"}
+{
+  "id": "spear_pillar_dialga",
+  "name": "Spear Pillar Dialga",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_SPEAR_PILLAR_DIALGA",
+  "layout": "spear_pillar_dialga",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR_13",
+  "day_music": "SEQ_D_MOUNT2",
+  "night_music": "SEQ_D_MOUNT2",
+  "allow_running": true,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 31,
+      "y": 53,
+      "dest_map": "MAP_HEADER_MT_CORONET_6F",
+      "dest_warp_id": 3
+    }
+  ],
+  "signs": [
+    {
+      "x": 29,
+      "y": 16,
+      "script": 1,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 29,
+      "y": 17,
+      "script": 1,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 31,
+      "y": 52,
+      "width": 1,
+      "height": 1,
+      "var": "VAR_HALL_OF_ORIGIN_STATE",
+      "var_value": 1,
+      "script": 2039
+    }
+  ]
+}

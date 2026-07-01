@@ -1,1 +1,32 @@
-{"id":"wifi_plaza_entrance","name":"Wifi Plaza Entrance","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_ATTENDANT_F","graphics_id":"OBJ_EVENT_GFX_WIFI_PLAZA_ATTENDANT_F","x":20,"y":0,"z":10,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"0"}],"warps":[],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "wifi_plaza_entrance",
+  "name": "Wifi Plaza Entrance",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_WIFI_PLAZA_ENTRANCE",
+  "layout": "wifi_plaza_entrance",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_PC_01",
+  "night_music": "SEQ_PC_02",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_ATTENDANT_F",
+      "graphics_id": "OBJ_EVENT_GFX_WIFI_PLAZA_ATTENDANT_F",
+      "x": 20,
+      "y": 10,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [],
+  "signs": [],
+  "triggers": []
+}

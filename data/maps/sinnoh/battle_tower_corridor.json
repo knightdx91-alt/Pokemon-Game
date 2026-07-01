@@ -1,1 +1,32 @@
-{"id":"battle_tower_corridor","name":"Battle Tower Corridor","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_ATTENDANT","graphics_id":"OBJ_EVENT_GFX_TEALA","x":2,"y":0,"z":1,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"0"}],"warps":[],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "battle_tower_corridor",
+  "name": "Battle Tower Corridor",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_BATTLE_TOWER_CORRIDOR",
+  "layout": "battle_tower_corridor",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_BF_TOWWER",
+  "night_music": "SEQ_BF_TOWWER",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_ATTENDANT",
+      "graphics_id": "OBJ_EVENT_GFX_TEALA",
+      "x": 2,
+      "y": 1,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [],
+  "signs": [],
+  "triggers": []
+}

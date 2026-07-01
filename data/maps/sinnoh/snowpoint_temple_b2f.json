@@ -1,1 +1,57 @@
-{"id":"snowpoint_temple_b2f","name":"Snowpoint Temple B2F","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_ROCK_SMASH_1","graphics_id":"OBJ_EVENT_GFX_ROCK_SMASH","x":4,"y":0,"z":9,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":10001,"hidden_flag":"FLAG_HIDE_OBSTACLE_1"},{"local_id":"LOCALID_ROCK_SMASH_2","graphics_id":"OBJ_EVENT_GFX_ROCK_SMASH","x":9,"y":0,"z":12,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":10001,"hidden_flag":"FLAG_HIDE_OBSTACLE_2"}],"warps":[{"x":6,"y":null,"z":3,"dest_map":null,"dest_warp_id":1},{"x":14,"y":null,"z":3,"dest_map":null,"dest_warp_id":0}],"signs":[],"coord_events":[],"tileset":"sinnoh_016"}
+{
+  "id": "snowpoint_temple_b2f",
+  "name": "Snowpoint Temple B2F",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_SNOWPOINT_TEMPLE_B2F",
+  "layout": "snowpoint_temple_b2f",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_29",
+  "day_music": "SEQ_D_02",
+  "night_music": "SEQ_D_02",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_ROCK_SMASH_1",
+      "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
+      "x": 4,
+      "y": 9,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10001,
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_1",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ROCK_SMASH_2",
+      "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
+      "x": 9,
+      "y": 12,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10001,
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_2",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 3,
+      "dest_map": "MAP_HEADER_SNOWPOINT_TEMPLE_B1F",
+      "dest_warp_id": 1
+    },
+    {
+      "x": 14,
+      "y": 3,
+      "dest_map": "MAP_HEADER_SNOWPOINT_TEMPLE_B3F",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

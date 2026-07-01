@@ -1,1 +1,39 @@
-{"id":"grand_lake_valor_lakefront_east_house","name":"Grand Lake Valor Lakefront East House","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_BEAUTY","graphics_id":"OBJ_EVENT_GFX_BEAUTY","x":5,"y":0,"z":3,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"FLAG_HIDE_GRAND_LAKE_VALOR_LAKEFRONT_EAST_HOUSE_BEAUTY"}],"warps":[{"x":6,"y":null,"z":8,"dest_map":null,"dest_warp_id":1}],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "grand_lake_valor_lakefront_east_house",
+  "name": "Grand Lake Valor Lakefront East House",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_GRAND_LAKE_VALOR_LAKEFRONT_EAST_HOUSE",
+  "layout": "grand_lake_valor_lakefront_east_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_TOWN07_D",
+  "night_music": "SEQ_TOWN07_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_BEAUTY",
+      "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
+      "x": 5,
+      "y": 3,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "FLAG_HIDE_GRAND_LAKE_VALOR_LAKEFRONT_EAST_HOUSE_BEAUTY",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 6,
+      "y": 8,
+      "dest_map": "MAP_HEADER_VALOR_LAKEFRONT",
+      "dest_warp_id": 1
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

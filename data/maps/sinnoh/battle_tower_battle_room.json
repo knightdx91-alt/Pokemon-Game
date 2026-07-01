@@ -1,1 +1,56 @@
-{"id":"battle_tower_battle_room","name":"Battle Tower Battle Room","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_ATTENDANT","graphics_id":"OBJ_EVENT_GFX_TEALA","x":2,"y":0,"z":6,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"0"},{"local_id":"LOCALID_OPPONENT","graphics_id":"OBJ_EVENT_GFX_VAR_1","x":7,"y":0,"z":2,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"FLAG_HIDE_BATTLE_TOWER_BATTLE_ROOM_OPPONENT"},{"local_id":"LOCALID_BT_PLAYER","graphics_id":"OBJ_EVENT_GFX_VAR_0","x":7,"y":0,"z":10,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"0"}],"warps":[],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "battle_tower_battle_room",
+  "name": "Battle Tower Battle Room",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_BATTLE_TOWER_BATTLE_ROOM",
+  "layout": "battle_tower_battle_room",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_BF_TOWWER",
+  "night_music": "SEQ_BF_TOWWER",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_ATTENDANT",
+      "graphics_id": "OBJ_EVENT_GFX_TEALA",
+      "x": 2,
+      "y": 6,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_OPPONENT",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_1",
+      "x": 7,
+      "y": 2,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "FLAG_HIDE_BATTLE_TOWER_BATTLE_ROOM_OPPONENT",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_BT_PLAYER",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_0",
+      "x": 7,
+      "y": 10,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [],
+  "signs": [],
+  "triggers": []
+}

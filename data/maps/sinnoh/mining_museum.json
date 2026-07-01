@@ -1,1 +1,348 @@
-{"id":"mining_museum","name":"Mining Museum","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_HIKER","graphics_id":"OBJ_EVENT_GFX_HIKER","x":8,"y":0,"z":7,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":3,"hidden_flag":"0"},{"local_id":"LOCALID_TWIN","graphics_id":"OBJ_EVENT_GFX_TWIN","x":9,"y":0,"z":7,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":4,"hidden_flag":"0"},{"local_id":"LOCALID_SCHOOL_KID_M","graphics_id":"OBJ_EVENT_GFX_SCHOOL_KID_M","x":8,"y":0,"z":3,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":5,"hidden_flag":"0"},{"local_id":"LOCALID_SCIENTIST_M","graphics_id":"OBJ_EVENT_GFX_SCIENTIST_M","x":6,"y":0,"z":3,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_ACE_TRAINER_F","graphics_id":"OBJ_EVENT_GFX_ACE_TRAINER_F","x":4,"y":0,"z":3,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_POKEMON_BREEDER_F","graphics_id":"OBJ_EVENT_GFX_POKEMON_BREEDER_F","x":3,"y":0,"z":7,"movement_type":"MOVEMENT_TYPE_WANDER_NORTH_AND_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":14,"hidden_flag":"0"},{"local_id":"LOCALID_COLLECTOR","graphics_id":"OBJ_EVENT_GFX_COLLECTOR","x":8,"y":0,"z":12,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH","trainer_type":"TRAINER_TYPE_NONE","script":15,"hidden_flag":"0"},{"local_id":"LOCALID_EXPERT_M","graphics_id":"OBJ_EVENT_GFX_EXPERT_M","x":16,"y":0,"z":15,"movement_type":"MOVEMENT_TYPE_WANDER_WEST_AND_EAST","trainer_type":"TRAINER_TYPE_NONE","script":16,"hidden_flag":"0"}],"warps":[{"x":5,"y":null,"z":13,"dest_map":null,"dest_warp_id":6}],"signs":[{"x":10,"y":0,"z":3,"script":6,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":11,"y":0,"z":3,"script":6,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":12,"y":0,"z":3,"script":7,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":13,"y":0,"z":3,"script":7,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":14,"y":0,"z":3,"script":8,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":15,"y":0,"z":3,"script":8,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":14,"y":0,"z":10,"script":9,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":15,"y":0,"z":10,"script":9,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":14,"y":0,"z":13,"script":10,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":15,"y":0,"z":13,"script":10,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":18,"y":0,"z":7,"script":11,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":19,"y":0,"z":7,"script":11,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":20,"y":0,"z":7,"script":11,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":18,"y":0,"z":10,"script":12,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":19,"y":0,"z":10,"script":12,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":20,"y":0,"z":10,"script":12,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":18,"y":0,"z":13,"script":13,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":19,"y":0,"z":13,"script":13,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":20,"y":0,"z":13,"script":13,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":14,"y":0,"z":9,"script":9,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":15,"y":0,"z":9,"script":9,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":18,"y":0,"z":6,"script":11,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":19,"y":0,"z":6,"script":11,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":20,"y":0,"z":6,"script":11,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":18,"y":0,"z":9,"script":12,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":19,"y":0,"z":9,"script":12,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":20,"y":0,"z":9,"script":12,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":18,"y":0,"z":12,"script":13,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":19,"y":0,"z":12,"script":13,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":20,"y":0,"z":12,"script":13,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":14,"y":0,"z":12,"script":10,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":15,"y":0,"z":12,"script":10,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"}],"coord_events":[],"tileset":"sinnoh_058"}
+{
+  "id": "mining_museum",
+  "name": "Mining Museum",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_MINING_MUSEUM",
+  "layout": "mining_museum",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY03_D",
+  "night_music": "SEQ_CITY03_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_HIKER",
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 8,
+      "y": 7,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_TWIN",
+      "graphics_id": "OBJ_EVENT_GFX_TWIN",
+      "x": 9,
+      "y": 7,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 4,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_SCHOOL_KID_M",
+      "graphics_id": "OBJ_EVENT_GFX_SCHOOL_KID_M",
+      "x": 8,
+      "y": 3,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 5,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_SCIENTIST_M",
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_M",
+      "x": 6,
+      "y": 3,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_ACE_TRAINER_F",
+      "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_F",
+      "x": 4,
+      "y": 3,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_POKEMON_BREEDER_F",
+      "graphics_id": "OBJ_EVENT_GFX_POKEMON_BREEDER_F",
+      "x": 3,
+      "y": 7,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_NORTH_AND_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 14,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_COLLECTOR",
+      "graphics_id": "OBJ_EVENT_GFX_COLLECTOR",
+      "x": 8,
+      "y": 12,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 15,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_EXPERT_M",
+      "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
+      "x": 16,
+      "y": 15,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_WEST_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 16,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 5,
+      "y": 13,
+      "dest_map": "MAP_HEADER_OREBURGH_CITY",
+      "dest_warp_id": 6
+    }
+  ],
+  "signs": [
+    {
+      "x": 10,
+      "y": 3,
+      "script": 6,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 11,
+      "y": 3,
+      "script": 6,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 12,
+      "y": 3,
+      "script": 7,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 13,
+      "y": 3,
+      "script": 7,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 14,
+      "y": 3,
+      "script": 8,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 15,
+      "y": 3,
+      "script": 8,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 14,
+      "y": 10,
+      "script": 9,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 15,
+      "y": 10,
+      "script": 9,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 14,
+      "y": 13,
+      "script": 10,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 15,
+      "y": 13,
+      "script": 10,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 18,
+      "y": 7,
+      "script": 11,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 19,
+      "y": 7,
+      "script": 11,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 20,
+      "y": 7,
+      "script": 11,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 18,
+      "y": 10,
+      "script": 12,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 19,
+      "y": 10,
+      "script": 12,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 20,
+      "y": 10,
+      "script": 12,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 18,
+      "y": 13,
+      "script": 13,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 19,
+      "y": 13,
+      "script": 13,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 20,
+      "y": 13,
+      "script": 13,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 14,
+      "y": 9,
+      "script": 9,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 15,
+      "y": 9,
+      "script": 9,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 18,
+      "y": 6,
+      "script": 11,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 19,
+      "y": 6,
+      "script": 11,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 20,
+      "y": 6,
+      "script": 11,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 18,
+      "y": 9,
+      "script": 12,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 19,
+      "y": 9,
+      "script": 12,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 20,
+      "y": 9,
+      "script": 12,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 18,
+      "y": 12,
+      "script": 13,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 19,
+      "y": 12,
+      "script": 13,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 20,
+      "y": 12,
+      "script": 13,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 14,
+      "y": 12,
+      "script": 10,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 15,
+      "y": 12,
+      "script": 10,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    }
+  ],
+  "triggers": []
+}

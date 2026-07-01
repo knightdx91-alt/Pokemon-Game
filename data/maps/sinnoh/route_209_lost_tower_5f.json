@@ -1,1 +1,51 @@
-{"id":"route_209_lost_tower_5f","name":"Route 209 Lost Tower 5F","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_OLD_WOMAN_1","graphics_id":"OBJ_EVENT_GFX_OLD_WOMAN","x":7,"y":0,"z":9,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_OLD_WOMAN_2","graphics_id":"OBJ_EVENT_GFX_OLD_WOMAN","x":8,"y":0,"z":9,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"}],"warps":[{"x":11,"y":null,"z":3,"dest_map":null,"dest_warp_id":1}],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "route_209_lost_tower_5f",
+  "name": "Route 209 Lost Tower 5F",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_ROUTE_209_LOST_TOWER_5F",
+  "layout": "route_209_lost_tower_5f",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_FOG",
+  "day_music": "SEQ_D_02",
+  "night_music": "SEQ_D_02",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_OLD_WOMAN_1",
+      "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "x": 7,
+      "y": 9,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_OLD_WOMAN_2",
+      "graphics_id": "OBJ_EVENT_GFX_OLD_WOMAN",
+      "x": 8,
+      "y": 9,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 11,
+      "y": 3,
+      "dest_map": "MAP_HEADER_ROUTE_209_LOST_TOWER_4F",
+      "dest_warp_id": 1
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

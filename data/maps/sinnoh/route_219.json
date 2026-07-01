@@ -1,1 +1,76 @@
-{"id":"route_219","name":"Route 219","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_TUBER_TRENTON","graphics_id":"OBJ_EVENT_GFX_TUBER_M","x":171,"y":0,"z":887,"movement_type":"MOVEMENT_TYPE_WALK_BACK_AND_FORTH","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_TUBER_TRENTON","hidden_flag":"0"},{"local_id":"LOCALID_TUBER_MARIEL","graphics_id":"OBJ_EVENT_GFX_TUBER_F","x":176,"y":0,"z":887,"movement_type":"MOVEMENT_TYPE_LOOK_WEST","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_TUBER_MARIEL","hidden_flag":"0"},{"local_id":"LOCALID_ARROW_SIGNPOST_SANDGEM_BEACH","graphics_id":"OBJ_EVENT_GFX_ARROW_SIGNPOST","x":179,"y":0,"z":866,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_ITEM_ANTIDOTE","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":169,"y":0,"z":877,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7124,"hidden_flag":"FLAG_OBTAINED_ROUTE_219_ANTIDOTE"}],"warps":[],"signs":[{"x":175,"y":0,"z":889,"script":8169,"type":2,"player_facing_dir":"BG_EVENT_DIR_ALL"}],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "route_219",
+  "name": "Route 219",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_ROUTE_219",
+  "layout": "route_219",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_ROAD_A_D",
+  "night_music": "SEQ_ROAD_A_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
+  "npcs": [
+    {
+      "local_id": "LOCALID_TUBER_TRENTON",
+      "graphics_id": "OBJ_EVENT_GFX_TUBER_M",
+      "x": 11,
+      "y": 23,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WALK_BACK_AND_FORTH",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_TUBER_TRENTON",
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_TUBER_MARIEL",
+      "graphics_id": "OBJ_EVENT_GFX_TUBER_F",
+      "x": 16,
+      "y": 23,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_TUBER_MARIEL",
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_ARROW_SIGNPOST_SANDGEM_BEACH",
+      "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
+      "x": 19,
+      "y": 2,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ITEM_ANTIDOTE",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 9,
+      "y": 13,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7124,
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_219_ANTIDOTE",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [],
+  "signs": [
+    {
+      "x": 15,
+      "y": 25,
+      "script": 8169,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    }
+  ],
+  "triggers": []
+}

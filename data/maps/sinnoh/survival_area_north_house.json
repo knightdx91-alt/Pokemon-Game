@@ -1,1 +1,66 @@
-{"id":"survival_area_north_house","name":"Survival Area North House","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_HIKER","graphics_id":"OBJ_EVENT_GFX_HIKER","x":3,"y":0,"z":4,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_PSYCHIC","graphics_id":"OBJ_EVENT_GFX_PSYCHIC","x":8,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"}],"warps":[{"x":4,"y":null,"z":8,"dest_map":null,"dest_warp_id":2}],"signs":[{"x":4,"y":0,"z":2,"script":2052,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":1,"y":0,"z":4,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_WEST"}],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "survival_area_north_house",
+  "name": "Survival Area North House",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_SURVIVAL_AREA_NORTH_HOUSE",
+  "layout": "survival_area_north_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY11_D",
+  "night_music": "SEQ_CITY11_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_HIKER",
+      "graphics_id": "OBJ_EVENT_GFX_HIKER",
+      "x": 3,
+      "y": 4,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_PSYCHIC",
+      "graphics_id": "OBJ_EVENT_GFX_PSYCHIC",
+      "x": 8,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_HEADER_SURVIVAL_AREA",
+      "dest_warp_id": 2
+    }
+  ],
+  "signs": [
+    {
+      "x": 4,
+      "y": 2,
+      "script": 2052,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 1,
+      "y": 4,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_WEST"
+    }
+  ],
+  "triggers": []
+}

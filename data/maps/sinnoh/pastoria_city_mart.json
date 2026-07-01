@@ -1,1 +1,95 @@
-{"id":"pastoria_city_mart","name":"Pastoria City Mart","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_CASHIER_F","graphics_id":"OBJ_EVENT_GFX_CASHIER_F","x":3,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_BUG_CATCHER","graphics_id":"OBJ_EVENT_GFX_BUG_CATCHER","x":5,"y":0,"z":9,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":3,"hidden_flag":"0"},{"local_id":"LOCALID_SCHOOL_KID_F","graphics_id":"OBJ_EVENT_GFX_SCHOOL_KID_F","x":8,"y":0,"z":7,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":4,"hidden_flag":"0"},{"local_id":"LOCALID_CASHIER_M","graphics_id":"OBJ_EVENT_GFX_CASHIER_M","x":2,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_MYSTERY_GIFT_DELIVERYMAN","graphics_id":"OBJ_EVENT_GFX_MYSTERY_GIFT_DELIVERYMAN","x":4,"y":0,"z":7,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":10201,"hidden_flag":"FLAG_HIDE_MART_MYSTERY_GIFT_DELIVERYMAN"}],"warps":[{"x":3,"y":null,"z":11,"dest_map":null,"dest_warp_id":2}],"signs":[{"x":1,"y":0,"z":6,"script":5,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"}],"coord_events":[],"tileset":"sinnoh_022"}
+{
+  "id": "pastoria_city_mart",
+  "name": "Pastoria City Mart",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_PASTORIA_CITY_MART",
+  "layout": "pastoria_city_mart",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_FS",
+  "night_music": "SEQ_FS",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_CASHIER_F",
+      "graphics_id": "OBJ_EVENT_GFX_CASHIER_F",
+      "x": 3,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_BUG_CATCHER",
+      "graphics_id": "OBJ_EVENT_GFX_BUG_CATCHER",
+      "x": 5,
+      "y": 9,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_SCHOOL_KID_F",
+      "graphics_id": "OBJ_EVENT_GFX_SCHOOL_KID_F",
+      "x": 8,
+      "y": 7,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 4,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_CASHIER_M",
+      "graphics_id": "OBJ_EVENT_GFX_CASHIER_M",
+      "x": 2,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_MYSTERY_GIFT_DELIVERYMAN",
+      "graphics_id": "OBJ_EVENT_GFX_MYSTERY_GIFT_DELIVERYMAN",
+      "x": 4,
+      "y": 7,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10201,
+      "hidden_flag": "FLAG_HIDE_MART_MYSTERY_GIFT_DELIVERYMAN",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 3,
+      "y": 11,
+      "dest_map": "MAP_HEADER_PASTORIA_CITY",
+      "dest_warp_id": 2
+    }
+  ],
+  "signs": [
+    {
+      "x": 1,
+      "y": 6,
+      "script": 5,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    }
+  ],
+  "triggers": []
+}

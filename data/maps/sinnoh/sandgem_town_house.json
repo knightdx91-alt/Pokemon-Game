@@ -1,1 +1,51 @@
-{"id":"sandgem_town_house","name":"Sandgem Town House","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_POKEMON_BREEDER_M","graphics_id":"OBJ_EVENT_GFX_POKEMON_BREEDER_M","x":5,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_POKEMON_BREEDER_F","graphics_id":"OBJ_EVENT_GFX_POKEMON_BREEDER_F","x":8,"y":0,"z":4,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"}],"warps":[{"x":4,"y":null,"z":8,"dest_map":null,"dest_warp_id":4}],"signs":[],"coord_events":[],"tileset":"sinnoh_006"}
+{
+  "id": "sandgem_town_house",
+  "name": "Sandgem Town House",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_SANDGEM_TOWN_HOUSE",
+  "layout": "sandgem_town_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_TOWN02_D",
+  "night_music": "SEQ_TOWN02_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_POKEMON_BREEDER_M",
+      "graphics_id": "OBJ_EVENT_GFX_POKEMON_BREEDER_M",
+      "x": 5,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_POKEMON_BREEDER_F",
+      "graphics_id": "OBJ_EVENT_GFX_POKEMON_BREEDER_F",
+      "x": 8,
+      "y": 4,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_HEADER_SANDGEM_TOWN",
+      "dest_warp_id": 4
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

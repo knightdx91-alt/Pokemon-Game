@@ -1,1 +1,146 @@
-{"id":"route_202","name":"Route 202","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_YOUNGSTER_TRISTAN","graphics_id":"OBJ_EVENT_GFX_YOUNGSTER","x":166,"y":1,"z":813,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_YOUNGSTER_TRISTAN","hidden_flag":"0"},{"local_id":"LOCALID_LASS_NATALIE","graphics_id":"OBJ_EVENT_GFX_LASS","x":181,"y":1,"z":818,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_LASS_NATALIE","hidden_flag":"0"},{"local_id":"LOCALID_YOUNGSTER_LOGAN","graphics_id":"OBJ_EVENT_GFX_YOUNGSTER","x":185,"y":1,"z":804,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NORMAL","script":"TRAINER_YOUNGSTER_LOGAN","hidden_flag":"0"},{"local_id":"LOCALID_COUNTERPART","graphics_id":"OBJ_EVENT_GFX_VAR_0","x":174,"y":1,"z":827,"movement_type":"MOVEMENT_TYPE_LOOK_EAST","trainer_type":"TRAINER_TYPE_NONE","script":7,"hidden_flag":"FLAG_HIDE_ROUTE_202_COUNTERPART"},{"local_id":"LOCALID_ARROW_SIGNPOST_SANDGEM_TOWN","graphics_id":"OBJ_EVENT_GFX_ARROW_SIGNPOST","x":183,"y":0,"z":825,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":3,"hidden_flag":"0"},{"local_id":"LOCALID_ARROW_SIGNPOST_JUBILIFE_CITY","graphics_id":"OBJ_EVENT_GFX_ARROW_SIGNPOST","x":176,"y":0,"z":804,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":4,"hidden_flag":"0"},{"local_id":"LOCALID_TRAINER_TIPS_SIGNPOST","graphics_id":"OBJ_EVENT_GFX_TRAINER_TIPS_SIGNPOST","x":174,"y":0,"z":816,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":5,"hidden_flag":"0"},{"local_id":"LOCALID_YOUNGSTER","graphics_id":"OBJ_EVENT_GFX_YOUNGSTER","x":169,"y":0,"z":808,"movement_type":"MOVEMENT_TYPE_WANDER_WEST_AND_EAST","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_ITEM_POTION","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":162,"y":0,"z":806,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7000,"hidden_flag":"FLAG_OBTAINED_ROUTE_202_POTION"}],"warps":[],"signs":[{"x":168,"y":0,"z":795,"script":8161,"type":2,"player_facing_dir":"BG_EVENT_DIR_ALL"}],"coord_events":[{"script":6,"x":180,"z":825,"y":0,"width":1,"length":5,"var":"VAR_ROUTE_202_STATE","value":0}],"tileset":"sinnoh_005"}
+{
+  "id": "route_202",
+  "name": "Route 202",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_ROUTE_202",
+  "layout": "route_202",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_ROAD_A_D",
+  "night_music": "SEQ_ROAD_A_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
+  "npcs": [
+    {
+      "local_id": "LOCALID_YOUNGSTER_TRISTAN",
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 6,
+      "y": 13,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_YOUNGSTER_TRISTAN",
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_LASS_NATALIE",
+      "graphics_id": "OBJ_EVENT_GFX_LASS",
+      "x": 21,
+      "y": 18,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_LASS_NATALIE",
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_YOUNGSTER_LOGAN",
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 25,
+      "y": 4,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NORMAL",
+      "script": "TRAINER_YOUNGSTER_LOGAN",
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_COUNTERPART",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_0",
+      "x": 14,
+      "y": 27,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7,
+      "hidden_flag": "FLAG_HIDE_ROUTE_202_COUNTERPART",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_ARROW_SIGNPOST_SANDGEM_TOWN",
+      "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
+      "x": 23,
+      "y": 25,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ARROW_SIGNPOST_JUBILIFE_CITY",
+      "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
+      "x": 16,
+      "y": 4,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 4,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_TRAINER_TIPS_SIGNPOST",
+      "graphics_id": "OBJ_EVENT_GFX_TRAINER_TIPS_SIGNPOST",
+      "x": 14,
+      "y": 16,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 5,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_YOUNGSTER",
+      "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
+      "x": 9,
+      "y": 8,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_WEST_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_ITEM_POTION",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 2,
+      "y": 6,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7000,
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_202_POTION",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [],
+  "signs": [
+    {
+      "x": 8,
+      "y": -5,
+      "script": 8161,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 20,
+      "y": 25,
+      "width": 1,
+      "height": 5,
+      "var": "VAR_ROUTE_202_STATE",
+      "var_value": 0,
+      "script": 6
+    }
+  ]
+}

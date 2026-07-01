@@ -1,1 +1,241 @@
-{"id":"battle_tower","name":"Battle Tower","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_SINGLE_ATTENDANT","graphics_id":"OBJ_EVENT_GFX_FRONTIER_SINGLE_ATTENDANT","x":15,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_MULTI_ATTENDANT","graphics_id":"OBJ_EVENT_GFX_FRONTIER_MULTI_ATTENDANT","x":11,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_WIFI_ATTENDANT","graphics_id":"OBJ_EVENT_GFX_WIFI_PLAZA_ATTENDANT_F","x":19,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":3,"hidden_flag":"0"},{"local_id":"LOCALID_TEALA","graphics_id":"OBJ_EVENT_GFX_TEALA","x":16,"y":0,"z":6,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7,"hidden_flag":"FLAG_HIDE_BATTLE_TOWER_TEALA"},{"local_id":"LOCALID_ARTIST","graphics_id":"OBJ_EVENT_GFX_ARTIST","x":2,"y":0,"z":14,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":19,"hidden_flag":"0"},{"local_id":"LOCALID_JOGGER","graphics_id":"OBJ_EVENT_GFX_JOGGER","x":13,"y":0,"z":14,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":15,"hidden_flag":"0"},{"local_id":"LOCALID_IDOL","graphics_id":"OBJ_EVENT_GFX_IDOL","x":6,"y":0,"z":10,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH_AND_EAST","trainer_type":"TRAINER_TYPE_NONE","script":16,"hidden_flag":"0"},{"local_id":"LOCALID_RICH_BOY","graphics_id":"OBJ_EVENT_GFX_RICH_BOY","x":25,"y":0,"z":13,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":17,"hidden_flag":"0"},{"local_id":"LOCALID_PIKACHU_1","graphics_id":"OBJ_EVENT_GFX_PIKACHU","x":25,"y":0,"z":14,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH_WEST_AND_EAST","trainer_type":"TRAINER_TYPE_NONE","script":18,"hidden_flag":"0"},{"local_id":"LOCALID_PIKACHU_2","graphics_id":"OBJ_EVENT_GFX_PIKACHU","x":19,"y":0,"z":16,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":21,"hidden_flag":"0"},{"local_id":"LOCALID_SCHOOL_KID_M_1","graphics_id":"OBJ_EVENT_GFX_SCHOOL_KID_M","x":20,"y":0,"z":16,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":20,"hidden_flag":"0"},{"local_id":"LOCALID_PARASOL_LADY","graphics_id":"OBJ_EVENT_GFX_PARASOL_LADY","x":9,"y":0,"z":13,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":14,"hidden_flag":"0"},{"local_id":"LOCALID_REPORTER","graphics_id":"OBJ_EVENT_GFX_REPORTER","x":13,"y":0,"z":18,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH_AND_WEST","trainer_type":"TRAINER_TYPE_NONE","script":10151,"hidden_flag":"FLAG_HIDE_BATTLE_TOWER_REPORTER"},{"local_id":"LOCALID_SCHOOL_KID_M_2","graphics_id":"OBJ_EVENT_GFX_SCHOOL_KID_M","x":20,"y":0,"z":11,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH_AND_WEST","trainer_type":"TRAINER_TYPE_NONE","script":2033,"hidden_flag":"0"},{"local_id":"LOCALID_STATS_JUDGE","graphics_id":"OBJ_EVENT_GFX_SCIENTIST_M","x":24,"y":0,"z":7,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":24,"hidden_flag":"0"}],"warps":[{"x":15,"y":null,"z":19,"dest_map":null,"dest_warp_id":0},{"x":14,"y":null,"z":19,"dest_map":null,"dest_warp_id":0},{"x":16,"y":null,"z":19,"dest_map":null,"dest_warp_id":0}],"signs":[{"x":13,"y":0,"z":5,"script":10450,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":17,"y":0,"z":5,"script":12,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":21,"y":0,"z":5,"script":13,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"}],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "battle_tower",
+  "name": "Battle Tower",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_BATTLE_TOWER",
+  "layout": "battle_tower",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_BF_TOWWER",
+  "night_music": "SEQ_BF_TOWWER",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_SINGLE_ATTENDANT",
+      "graphics_id": "OBJ_EVENT_GFX_FRONTIER_SINGLE_ATTENDANT",
+      "x": 15,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_MULTI_ATTENDANT",
+      "graphics_id": "OBJ_EVENT_GFX_FRONTIER_MULTI_ATTENDANT",
+      "x": 11,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_WIFI_ATTENDANT",
+      "graphics_id": "OBJ_EVENT_GFX_WIFI_PLAZA_ATTENDANT_F",
+      "x": 19,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_TEALA",
+      "graphics_id": "OBJ_EVENT_GFX_TEALA",
+      "x": 16,
+      "y": 6,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7,
+      "hidden_flag": "FLAG_HIDE_BATTLE_TOWER_TEALA",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_ARTIST",
+      "graphics_id": "OBJ_EVENT_GFX_ARTIST",
+      "x": 2,
+      "y": 14,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 19,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_JOGGER",
+      "graphics_id": "OBJ_EVENT_GFX_JOGGER",
+      "x": 13,
+      "y": 14,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 15,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_IDOL",
+      "graphics_id": "OBJ_EVENT_GFX_IDOL",
+      "x": 6,
+      "y": 10,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 16,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_RICH_BOY",
+      "graphics_id": "OBJ_EVENT_GFX_RICH_BOY",
+      "x": 25,
+      "y": 13,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 17,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_PIKACHU_1",
+      "graphics_id": "OBJ_EVENT_GFX_PIKACHU",
+      "x": 25,
+      "y": 14,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_WEST_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 18,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_PIKACHU_2",
+      "graphics_id": "OBJ_EVENT_GFX_PIKACHU",
+      "x": 19,
+      "y": 16,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 21,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    },
+    {
+      "local_id": "LOCALID_SCHOOL_KID_M_1",
+      "graphics_id": "OBJ_EVENT_GFX_SCHOOL_KID_M",
+      "x": 20,
+      "y": 16,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 20,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_PARASOL_LADY",
+      "graphics_id": "OBJ_EVENT_GFX_PARASOL_LADY",
+      "x": 9,
+      "y": 13,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 14,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_REPORTER",
+      "graphics_id": "OBJ_EVENT_GFX_REPORTER",
+      "x": 13,
+      "y": 18,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_WEST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10151,
+      "hidden_flag": "FLAG_HIDE_BATTLE_TOWER_REPORTER",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_SCHOOL_KID_M_2",
+      "graphics_id": "OBJ_EVENT_GFX_SCHOOL_KID_M",
+      "x": 20,
+      "y": 11,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_WEST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2033,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_STATS_JUDGE",
+      "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_M",
+      "x": 24,
+      "y": 7,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 24,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 15,
+      "y": 19,
+      "dest_map": "MAP_HEADER_BATTLE_FRONTIER",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 14,
+      "y": 19,
+      "dest_map": "MAP_HEADER_BATTLE_FRONTIER",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 16,
+      "y": 19,
+      "dest_map": "MAP_HEADER_BATTLE_FRONTIER",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 13,
+      "y": 5,
+      "script": 10450,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 17,
+      "y": 5,
+      "script": 12,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 21,
+      "y": 5,
+      "script": 13,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    }
+  ],
+  "triggers": []
+}

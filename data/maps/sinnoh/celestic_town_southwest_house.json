@@ -1,1 +1,51 @@
-{"id":"celestic_town_southwest_house","name":"Celestic Town Southwest House","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_HAPPINY","graphics_id":"OBJ_EVENT_GFX_HAPPINY","x":2,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_LOOK_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_BLACK_BELT","graphics_id":"OBJ_EVENT_GFX_BLACK_BELT","x":7,"y":0,"z":6,"movement_type":"MOVEMENT_TYPE_WANDER_NORTH_AND_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"}],"warps":[{"x":4,"y":null,"z":8,"dest_map":null,"dest_warp_id":3}],"signs":[],"coord_events":[],"tileset":"sinnoh_006"}
+{
+  "id": "celestic_town_southwest_house",
+  "name": "Celestic Town Southwest House",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_CELESTIC_TOWN_SOUTHWEST_HOUSE",
+  "layout": "celestic_town_southwest_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY04_D",
+  "night_music": "SEQ_CITY04_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_HAPPINY",
+      "graphics_id": "OBJ_EVENT_GFX_HAPPINY",
+      "x": 2,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_BLACK_BELT",
+      "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
+      "x": 7,
+      "y": 6,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_NORTH_AND_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_HEADER_CELESTIC_TOWN",
+      "dest_warp_id": 3
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

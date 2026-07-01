@@ -23,6 +23,22 @@ window.GameRenderer = (function () {
     // Player sprite state
     let _playerImg = null;
 
+    // Pre-rendered textured map background (DS maps rendered from their 3D
+    // models). When present it is drawn instead of the metatile grid.
+    let _bgPath    = null;
+    let _bgImg     = null;
+
+    function loadBackground(path) {
+        if (path === _bgPath) return;
+        _bgPath = path;
+        _bgImg  = null;
+        if (!path) return;
+        const img = new Image();
+        img.onload  = () => { if (_bgPath === path) _bgImg = img; };
+        img.onerror = () => { if (_bgPath === path) console.warn(`[Renderer] Failed to load background: ${path}`); };
+        img.src = path;
+    }
+
     // FPS tracking
     let _fpsFrameCount = 0;
     let _fpsLastTime   = 0;
@@ -140,8 +156,24 @@ window.GameRenderer = (function () {
             loadTileset(wantedTileset);
         }
 
+        // Kick off textured-background load if the map has one (DS maps)
+        const wantedBg = _map.getBackground ? _map.getBackground() : null;
+        if (wantedBg !== _bgPath) loadBackground(wantedBg);
+
         ctx.fillStyle = COLORS.bg;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Fast path: draw the pre-rendered textured map (16 px/tile, grid-aligned)
+        // as a single sub-tile-scrolled slice instead of the metatile grid.
+        const useBg = _bgImg && wantedBg;
+        if (useBg) {
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(
+                _bgImg,
+                vcamX * TILE_PX, vcamY * TILE_PX, canvas.width, canvas.height,
+                0, 0, canvas.width, canvas.height
+            );
+        }
 
         const warpSet = new Set();
         const signSet = new Set();
@@ -150,7 +182,7 @@ window.GameRenderer = (function () {
             if (_map.current.signs) _map.current.signs.forEach(s => signSet.add(`${s.x},${s.y}`));
         }
 
-        for (let ty = -1; ty <= vh; ty++) {
+        if (!useBg) for (let ty = -1; ty <= vh; ty++) {
             for (let tx = -1; tx <= vw; tx++) {
                 const worldX = tileStartX + tx;
                 const worldY = tileStartY + ty;

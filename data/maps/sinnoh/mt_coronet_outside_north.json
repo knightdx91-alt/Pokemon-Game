@@ -1,1 +1,173 @@
-{"id":"mt_coronet_outside_north","name":"Mt Coronet Outside North","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_ROCK_SMASH_1","graphics_id":"OBJ_EVENT_GFX_ROCK_SMASH","x":42,"y":0,"z":44,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":10001,"hidden_flag":"FLAG_HIDE_OBSTACLE_1"},{"local_id":"LOCALID_ROCK_SMASH_2","graphics_id":"OBJ_EVENT_GFX_ROCK_SMASH","x":43,"y":0,"z":42,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":10001,"hidden_flag":"FLAG_HIDE_OBSTACLE_2"},{"local_id":"LOCALID_ROCK_SMASH_3","graphics_id":"OBJ_EVENT_GFX_ROCK_SMASH","x":45,"y":0,"z":43,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":10001,"hidden_flag":"FLAG_HIDE_OBSTACLE_3"},{"local_id":"LOCALID_ROCK_SMASH_4","graphics_id":"OBJ_EVENT_GFX_ROCK_SMASH","x":45,"y":0,"z":39,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":10001,"hidden_flag":"FLAG_HIDE_OBSTACLE_4"},{"local_id":"LOCALID_ROCK_SMASH_5","graphics_id":"OBJ_EVENT_GFX_ROCK_SMASH","x":42,"y":0,"z":37,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":10001,"hidden_flag":"FLAG_HIDE_OBSTACLE_5"},{"local_id":"LOCALID_ROCK_SMASH_6","graphics_id":"OBJ_EVENT_GFX_ROCK_SMASH","x":39,"y":0,"z":20,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":10001,"hidden_flag":"FLAG_HIDE_OBSTACLE_6"},{"local_id":"LOCALID_STRENGTH_BOULDER","graphics_id":"OBJ_EVENT_GFX_STRENGTH_BOULDER","x":35,"y":0,"z":17,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":10002,"hidden_flag":"FLAG_HIDE_OBSTACLE_7"}],"warps":[{"x":42,"y":null,"z":40,"dest_map":null,"dest_warp_id":4},{"x":13,"y":null,"z":19,"dest_map":null,"dest_warp_id":0},{"x":45,"y":null,"z":28,"dest_map":null,"dest_warp_id":0}],"signs":[{"x":41,"y":0,"z":44,"script":8084,"type":2,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":44,"y":0,"z":47,"script":8092,"type":2,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":33,"y":0,"z":9,"script":8085,"type":2,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":19,"y":0,"z":12,"script":8086,"type":2,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":43,"y":0,"z":17,"script":8088,"type":2,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":32,"y":0,"z":14,"script":8262,"type":2,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":10,"y":0,"z":20,"script":8270,"type":2,"player_facing_dir":"BG_EVENT_DIR_ALL"}],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "mt_coronet_outside_north",
+  "name": "Mt Coronet Outside North",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_MT_CORONET_OUTSIDE_NORTH",
+  "layout": "mt_coronet_outside_north",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_HEAVY_SNOW",
+  "day_music": "SEQ_D_MOUNT1",
+  "night_music": "SEQ_D_MOUNT1",
+  "allow_running": true,
+  "allow_cycling": false,
+  "allow_fly": true,
+  "npcs": [
+    {
+      "local_id": "LOCALID_ROCK_SMASH_1",
+      "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
+      "x": 42,
+      "y": 44,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10001,
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_1",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ROCK_SMASH_2",
+      "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
+      "x": 43,
+      "y": 42,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10001,
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_2",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ROCK_SMASH_3",
+      "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
+      "x": 45,
+      "y": 43,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10001,
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_3",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ROCK_SMASH_4",
+      "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
+      "x": 45,
+      "y": 39,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10001,
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_4",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ROCK_SMASH_5",
+      "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
+      "x": 42,
+      "y": 37,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10001,
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_5",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ROCK_SMASH_6",
+      "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
+      "x": 39,
+      "y": 20,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10001,
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_6",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_STRENGTH_BOULDER",
+      "graphics_id": "OBJ_EVENT_GFX_STRENGTH_BOULDER",
+      "x": 35,
+      "y": 17,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 10002,
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_7",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 42,
+      "y": 40,
+      "dest_map": "MAP_HEADER_MT_CORONET_4F_ROOMS_1_AND_2",
+      "dest_warp_id": 4
+    },
+    {
+      "x": 13,
+      "y": 19,
+      "dest_map": "MAP_HEADER_MT_CORONET_4F_ROOM_3",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 45,
+      "y": 28,
+      "dest_map": "MAP_HEADER_MT_CORONET_1F_TUNNEL_ROOM",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [
+    {
+      "x": 41,
+      "y": 44,
+      "script": 8084,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 44,
+      "y": 47,
+      "script": 8092,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 33,
+      "y": 9,
+      "script": 8085,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 19,
+      "y": 12,
+      "script": 8086,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 43,
+      "y": 17,
+      "script": 8088,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 32,
+      "y": 14,
+      "script": 8262,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 10,
+      "y": 20,
+      "script": 8270,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    }
+  ],
+  "triggers": []
+}

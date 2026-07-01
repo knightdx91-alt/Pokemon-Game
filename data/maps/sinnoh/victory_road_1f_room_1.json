@@ -1,1 +1,32 @@
-{"id":"victory_road_1f_room_1","name":"Victory Road 1F Room 1","region":"sinnoh","source":"platinum","npcs":[],"warps":[{"x":5,"y":null,"z":20,"dest_map":null,"dest_warp_id":6},{"x":21,"y":null,"z":10,"dest_map":null,"dest_warp_id":0}],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "victory_road_1f_room_1",
+  "name": "Victory Road 1F Room 1",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_VICTORY_ROAD_1F_ROOM_1",
+  "layout": "victory_road_1f_room_1",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_01",
+  "night_music": "SEQ_D_01",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 5,
+      "y": 20,
+      "dest_map": "MAP_HEADER_VICTORY_ROAD_1F",
+      "dest_warp_id": 6
+    },
+    {
+      "x": 21,
+      "y": 10,
+      "dest_map": "MAP_HEADER_VICTORY_ROAD_1F_ROOM_2",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

@@ -1,1 +1,157 @@
-{"id":"pokemon_league","name":"Pokemon League","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_SIGNBOARD","graphics_id":"OBJ_EVENT_GFX_SIGNBOARD","x":848,"y":0,"z":598,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_ARROW_SIGNPOST","graphics_id":"OBJ_EVENT_GFX_ARROW_SIGNPOST","x":849,"y":0,"z":580,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"}],"warps":[{"x":842,"y":null,"z":598,"dest_map":null,"dest_warp_id":0},{"x":847,"y":null,"z":559,"dest_map":null,"dest_warp_id":1},{"x":851,"y":null,"z":597,"dest_map":null,"dest_warp_id":7},{"x":853,"y":null,"z":582,"dest_map":null,"dest_warp_id":8},{"x":850,"y":null,"z":597,"dest_map":null,"dest_warp_id":7},{"x":852,"y":null,"z":597,"dest_map":null,"dest_warp_id":7},{"x":853,"y":null,"z":581,"dest_map":null,"dest_warp_id":8},{"x":853,"y":null,"z":583,"dest_map":null,"dest_warp_id":8}],"signs":[{"x":842,"y":0,"z":580,"script":8120,"type":2,"player_facing_dir":"BG_EVENT_DIR_ALL"},{"x":842,"y":0,"z":577,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":843,"y":0,"z":577,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":851,"y":0,"z":577,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":852,"y":0,"z":577,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":837,"y":0,"z":561,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":838,"y":0,"z":561,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":856,"y":0,"z":561,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":857,"y":0,"z":561,"script":3,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"}],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "pokemon_league",
+  "name": "Pokemon League",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_POKEMON_LEAGUE",
+  "layout": "pokemon_league",
+  "map_type": "MAP_TYPE_TOWN_CITY",
+  "weather": "OVERWORLD_WEATHER_CLEAR_8",
+  "day_music": "SEQ_CITY10_D",
+  "night_music": "SEQ_CITY10_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
+  "npcs": [
+    {
+      "local_id": "LOCALID_SIGNBOARD",
+      "graphics_id": "OBJ_EVENT_GFX_SIGNBOARD",
+      "x": 16,
+      "y": 54,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ARROW_SIGNPOST",
+      "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
+      "x": 17,
+      "y": 36,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 10,
+      "y": 54,
+      "dest_map": "MAP_HEADER_POKEMON_LEAGUE_SOUTH_POKECENTER_1F",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 15,
+      "y": 15,
+      "dest_map": "MAP_HEADER_POKEMON_LEAGUE_NORTH_POKECENTER_1F",
+      "dest_warp_id": 1
+    },
+    {
+      "x": 19,
+      "y": 53,
+      "dest_map": "MAP_HEADER_VICTORY_ROAD_1F",
+      "dest_warp_id": 7
+    },
+    {
+      "x": 21,
+      "y": 38,
+      "dest_map": "MAP_HEADER_VICTORY_ROAD_1F",
+      "dest_warp_id": 8
+    },
+    {
+      "x": 18,
+      "y": 53,
+      "dest_map": "MAP_HEADER_VICTORY_ROAD_1F",
+      "dest_warp_id": 7
+    },
+    {
+      "x": 20,
+      "y": 53,
+      "dest_map": "MAP_HEADER_VICTORY_ROAD_1F",
+      "dest_warp_id": 7
+    },
+    {
+      "x": 21,
+      "y": 37,
+      "dest_map": "MAP_HEADER_VICTORY_ROAD_1F",
+      "dest_warp_id": 8
+    },
+    {
+      "x": 21,
+      "y": 39,
+      "dest_map": "MAP_HEADER_VICTORY_ROAD_1F",
+      "dest_warp_id": 8
+    }
+  ],
+  "signs": [
+    {
+      "x": 10,
+      "y": 36,
+      "script": 8120,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    },
+    {
+      "x": 10,
+      "y": 33,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 11,
+      "y": 33,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 19,
+      "y": 33,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 20,
+      "y": 33,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 5,
+      "y": 17,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 6,
+      "y": 17,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 24,
+      "y": 17,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 25,
+      "y": 17,
+      "script": 3,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    }
+  ],
+  "triggers": []
+}

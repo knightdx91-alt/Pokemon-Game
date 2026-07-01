@@ -1,1 +1,68 @@
-{"id":"battle_tower_corridor_multi","name":"Battle Tower Corridor Multi","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_ATTENDANT_LEFT","graphics_id":"OBJ_EVENT_GFX_TEALA","x":3,"y":0,"z":1,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"0"},{"local_id":"LOCALID_ATTENDANT_RIGHT","graphics_id":"OBJ_EVENT_GFX_TEALA","x":14,"y":0,"z":1,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"0"},{"local_id":"LOCALID_LEADER","graphics_id":"OBJ_EVENT_GFX_VAR_0","x":3,"y":0,"z":1,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"0"},{"local_id":"LOCALID_PARTNER","graphics_id":"OBJ_EVENT_GFX_VAR_1","x":14,"y":0,"z":1,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"0"}],"warps":[],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "battle_tower_corridor_multi",
+  "name": "Battle Tower Corridor Multi",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_BATTLE_TOWER_CORRIDOR_MULTI",
+  "layout": "battle_tower_corridor_multi",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_BF_TOWWER",
+  "night_music": "SEQ_BF_TOWWER",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_ATTENDANT_LEFT",
+      "graphics_id": "OBJ_EVENT_GFX_TEALA",
+      "x": 3,
+      "y": 1,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_ATTENDANT_RIGHT",
+      "graphics_id": "OBJ_EVENT_GFX_TEALA",
+      "x": 14,
+      "y": 1,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_LEADER",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_0",
+      "x": 3,
+      "y": 1,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_PARTNER",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_1",
+      "x": 14,
+      "y": 1,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [],
+  "signs": [],
+  "triggers": []
+}

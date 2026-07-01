@@ -1,1 +1,57 @@
-{"id":"fullmoon_island_forest","name":"Fullmoon Island Forest","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_CRESSELIA","graphics_id":"OBJ_EVENT_GFX_CRESSELIA","x":16,"y":1,"z":15,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"FLAG_HIDE_FULLMOON_ISLAND_FOREST_CRESSELIA"},{"local_id":"LOCALID_ITEM_LUNAR_WING","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":16,"y":1,"z":15,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7092,"hidden_flag":"FLAG_OBTAINED_FULLMOON_ISLAND_FOREST_LUNAR_WING"}],"warps":[{"x":16,"y":null,"z":21,"dest_map":null,"dest_warp_id":0},{"x":17,"y":null,"z":21,"dest_map":null,"dest_warp_id":1}],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "fullmoon_island_forest",
+  "name": "Fullmoon Island Forest",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_FULLMOON_ISLAND_FOREST",
+  "layout": "fullmoon_island_forest",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_23",
+  "day_music": "SEQ_D_02",
+  "night_music": "SEQ_D_02",
+  "allow_running": true,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_CRESSELIA",
+      "graphics_id": "OBJ_EVENT_GFX_CRESSELIA",
+      "x": 16,
+      "y": 15,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "FLAG_HIDE_FULLMOON_ISLAND_FOREST_CRESSELIA",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_ITEM_LUNAR_WING",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 16,
+      "y": 15,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7092,
+      "hidden_flag": "FLAG_OBTAINED_FULLMOON_ISLAND_FOREST_LUNAR_WING",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 16,
+      "y": 21,
+      "dest_map": "MAP_HEADER_FULLMOON_ISLAND",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 17,
+      "y": 21,
+      "dest_map": "MAP_HEADER_FULLMOON_ISLAND",
+      "dest_warp_id": 1
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

@@ -1,1 +1,57 @@
-{"id":"lake_acuity_low_water","name":"Lake Acuity Low Water","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_RIVAL","graphics_id":"OBJ_EVENT_GFX_BARRY","x":16,"y":0,"z":46,"movement_type":"MOVEMENT_TYPE_LOOK_NORTH_AND_EAST","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"FLAG_HIDE_LAKE_ACUITY_LOW_WATER_RIVAL"},{"local_id":"LOCALID_ITEM_TM14","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":38,"y":0,"z":8,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7241,"hidden_flag":"FLAG_OBTAINED_LAKE_ACUITY_TM14"}],"warps":[{"x":14,"y":null,"z":50,"dest_map":null,"dest_warp_id":0},{"x":15,"y":null,"z":50,"dest_map":null,"dest_warp_id":1}],"signs":[],"coord_events":[],"tileset":"sinnoh_010"}
+{
+  "id": "lake_acuity_low_water",
+  "name": "Lake Acuity Low Water",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_LAKE_ACUITY_LOW_WATER",
+  "layout": "lake_acuity_low_water",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_LAKE",
+  "night_music": "SEQ_D_LAKE",
+  "allow_running": true,
+  "allow_cycling": false,
+  "allow_fly": true,
+  "npcs": [
+    {
+      "local_id": "LOCALID_RIVAL",
+      "graphics_id": "OBJ_EVENT_GFX_BARRY",
+      "x": 16,
+      "y": 46,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "FLAG_HIDE_LAKE_ACUITY_LOW_WATER_RIVAL",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_ITEM_TM14",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 38,
+      "y": 8,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7241,
+      "hidden_flag": "FLAG_OBTAINED_LAKE_ACUITY_TM14",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 14,
+      "y": 50,
+      "dest_map": "MAP_HEADER_ACUITY_LAKEFRONT",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 15,
+      "y": 50,
+      "dest_map": "MAP_HEADER_ACUITY_LAKEFRONT",
+      "dest_warp_id": 1
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

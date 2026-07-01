@@ -1,1 +1,57 @@
-{"id":"route_213_gate_to_pastoria_city","name":"Route 213 Gate To Pastoria City","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_POKEFAN_M","graphics_id":"OBJ_EVENT_GFX_POKEFAN_M","x":8,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_SCHOOL_KID_F","graphics_id":"OBJ_EVENT_GFX_SCHOOL_KID_F","x":5,"y":0,"z":8,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"}],"warps":[{"x":10,"y":null,"z":7,"dest_map":null,"dest_warp_id":0},{"x":1,"y":null,"z":7,"dest_map":null,"dest_warp_id":10}],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "route_213_gate_to_pastoria_city",
+  "name": "Route 213 Gate To Pastoria City",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_ROUTE_213_GATE_TO_PASTORIA_CITY",
+  "layout": "route_213_gate_to_pastoria_city",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_TOWN07_D",
+  "night_music": "SEQ_TOWN07_N",
+  "allow_running": false,
+  "allow_cycling": true,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_POKEFAN_M",
+      "graphics_id": "OBJ_EVENT_GFX_POKEFAN_M",
+      "x": 8,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_SCHOOL_KID_F",
+      "graphics_id": "OBJ_EVENT_GFX_SCHOOL_KID_F",
+      "x": 5,
+      "y": 8,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 10,
+      "y": 7,
+      "dest_map": "MAP_HEADER_ROUTE_213",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "dest_map": "MAP_HEADER_PASTORIA_CITY",
+      "dest_warp_id": 10
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

@@ -1,1 +1,39 @@
-{"id":"oreburgh_city_south_house","name":"Oreburgh City South House","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_WORKER","graphics_id":"OBJ_EVENT_GFX_WORKER","x":5,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH_AND_EAST","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"}],"warps":[{"x":4,"y":null,"z":8,"dest_map":null,"dest_warp_id":9}],"signs":[],"coord_events":[],"tileset":"sinnoh_063"}
+{
+  "id": "oreburgh_city_south_house",
+  "name": "Oreburgh City South House",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_OREBURGH_CITY_SOUTH_HOUSE",
+  "layout": "oreburgh_city_south_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY03_D",
+  "night_music": "SEQ_CITY03_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_WORKER",
+      "graphics_id": "OBJ_EVENT_GFX_WORKER",
+      "x": 5,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_EAST",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 3
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_HEADER_OREBURGH_CITY",
+      "dest_warp_id": 9
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

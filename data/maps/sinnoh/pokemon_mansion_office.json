@@ -1,1 +1,100 @@
-{"id":"pokemon_mansion_office","name":"Pokemon Mansion Office","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_ITEM_TM87","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":21,"y":0,"z":3,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7057,"hidden_flag":"FLAG_OBTAINED_POKEMON_MANSION_OFFICE_TM87"},{"local_id":"LOCALID_MR_BACKLOT","graphics_id":"OBJ_EVENT_GFX_MIDDLE_AGED_MAN","x":16,"y":0,"z":8,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_OLD_MAN","graphics_id":"OBJ_EVENT_GFX_OLD_MAN","x":15,"y":0,"z":8,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":3,"hidden_flag":"0"},{"local_id":"LOCALID_POLICEMAN","graphics_id":"OBJ_EVENT_GFX_POLICEMAN","x":17,"y":0,"z":4,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":4,"hidden_flag":"FLAG_HIDE_POKEMON_MANSION_OFFICE_POLICEMAN"}],"warps":[{"x":16,"y":null,"z":10,"dest_map":null,"dest_warp_id":4}],"signs":[{"x":16,"y":0,"z":3,"script":6,"type":0,"player_facing_dir":"BG_EVENT_DIR_NORTH"},{"x":16,"y":0,"z":6,"script":7,"type":0,"player_facing_dir":"BG_EVENT_DIR_ALL"}],"coord_events":[{"script":5,"x":16,"z":4,"y":0,"width":1,"length":1,"var":"VAR_POKEMON_MANSION_OFFICE_BLOCK_STATUE_STATE","value":0}],"tileset":"sinnoh_005"}
+{
+  "id": "pokemon_mansion_office",
+  "name": "Pokemon Mansion Office",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_POKEMON_MANSION_OFFICE",
+  "layout": "pokemon_mansion_office",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_ROAD_E_D",
+  "night_music": "SEQ_ROAD_E_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_ITEM_TM87",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 21,
+      "y": 3,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7057,
+      "hidden_flag": "FLAG_OBTAINED_POKEMON_MANSION_OFFICE_TM87",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_MR_BACKLOT",
+      "graphics_id": "OBJ_EVENT_GFX_MIDDLE_AGED_MAN",
+      "x": 16,
+      "y": 8,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_OLD_MAN",
+      "graphics_id": "OBJ_EVENT_GFX_OLD_MAN",
+      "x": 15,
+      "y": 8,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_POLICEMAN",
+      "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
+      "x": 17,
+      "y": 4,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 4,
+      "hidden_flag": "FLAG_HIDE_POKEMON_MANSION_OFFICE_POLICEMAN",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 16,
+      "y": 10,
+      "dest_map": "MAP_HEADER_POKEMON_MANSION",
+      "dest_warp_id": 4
+    }
+  ],
+  "signs": [
+    {
+      "x": 16,
+      "y": 3,
+      "script": 6,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_NORTH"
+    },
+    {
+      "x": 16,
+      "y": 6,
+      "script": 7,
+      "type": 0,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    }
+  ],
+  "triggers": [
+    {
+      "x": 16,
+      "y": 4,
+      "width": 1,
+      "height": 1,
+      "var": "VAR_POKEMON_MANSION_OFFICE_BLOCK_STATUE_STATE",
+      "var_value": 0,
+      "script": 5
+    }
+  ]
+}

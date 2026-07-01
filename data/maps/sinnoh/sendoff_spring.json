@@ -1,1 +1,51 @@
-{"id":"sendoff_spring","name":"Sendoff Spring","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_CYNTHIA","graphics_id":"OBJ_EVENT_GFX_CYNTHIA","x":31,"y":0,"z":17,"movement_type":"MOVEMENT_TYPE_LOOK_SOUTH","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"FLAG_HIDE_SENDOFF_SPRING_CYNTHIA"}],"warps":[{"x":12,"y":null,"z":56,"dest_map":null,"dest_warp_id":0},{"x":13,"y":null,"z":56,"dest_map":null,"dest_warp_id":1},{"x":31,"y":null,"z":16,"dest_map":null,"dest_warp_id":4}],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "sendoff_spring",
+  "name": "Sendoff Spring",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_SENDOFF_SPRING",
+  "layout": "sendoff_spring",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR_8",
+  "day_music": "SEQ_ROAD_F_D",
+  "night_music": "SEQ_ROAD_F_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
+  "npcs": [
+    {
+      "local_id": "LOCALID_CYNTHIA",
+      "graphics_id": "OBJ_EVENT_GFX_CYNTHIA",
+      "x": 31,
+      "y": 17,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "FLAG_HIDE_SENDOFF_SPRING_CYNTHIA",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 12,
+      "y": 56,
+      "dest_map": "MAP_HEADER_SPRING_PATH",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 13,
+      "y": 56,
+      "dest_map": "MAP_HEADER_SPRING_PATH",
+      "dest_warp_id": 1
+    },
+    {
+      "x": 31,
+      "y": 16,
+      "dest_map": "MAP_HEADER_TURNBACK_CAVE_ENTRANCE",
+      "dest_warp_id": 4
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

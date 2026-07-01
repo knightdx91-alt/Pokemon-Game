@@ -1,1 +1,32 @@
-{"id":"trophy_garden","name":"Trophy Garden","region":"sinnoh","source":"platinum","npcs":[],"warps":[{"x":14,"y":null,"z":25,"dest_map":null,"dest_warp_id":5},{"x":15,"y":null,"z":25,"dest_map":null,"dest_warp_id":5}],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "trophy_garden",
+  "name": "Trophy Garden",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_TROPHY_GARDEN",
+  "layout": "trophy_garden",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_ROAD_E_D",
+  "night_music": "SEQ_ROAD_E_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
+  "npcs": [],
+  "warps": [
+    {
+      "x": 14,
+      "y": 25,
+      "dest_map": "MAP_HEADER_POKEMON_MANSION",
+      "dest_warp_id": 5
+    },
+    {
+      "x": 15,
+      "y": 25,
+      "dest_map": "MAP_HEADER_POKEMON_MANSION",
+      "dest_warp_id": 5
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

@@ -1,1 +1,81 @@
-{"id":"fullmoon_island","name":"Fullmoon Island","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_SAILOR","graphics_id":"OBJ_EVENT_GFX_SAILOR","x":40,"y":0,"z":277,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"},{"local_id":"LOCALID_BOLLARD_1","graphics_id":"OBJ_EVENT_GFX_BOLLARD","x":40,"y":0,"z":276,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"0"},{"local_id":"LOCALID_BOLLARD_2","graphics_id":"OBJ_EVENT_GFX_BOLLARD","x":40,"y":0,"z":275,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"0"},{"local_id":"LOCALID_BOLLARD_3","graphics_id":"OBJ_EVENT_GFX_BOLLARD","x":40,"y":0,"z":278,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":0,"hidden_flag":"0"}],"warps":[{"x":53,"y":null,"z":268,"dest_map":null,"dest_warp_id":0},{"x":54,"y":null,"z":268,"dest_map":null,"dest_warp_id":1}],"signs":[],"coord_events":[],"tileset":"sinnoh_005"}
+{
+  "id": "fullmoon_island",
+  "name": "Fullmoon Island",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_FULLMOON_ISLAND",
+  "layout": "fullmoon_island",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_02",
+  "night_music": "SEQ_D_02",
+  "allow_running": true,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_SAILOR",
+      "graphics_id": "OBJ_EVENT_GFX_SAILOR",
+      "x": 8,
+      "y": 21,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_BOLLARD_1",
+      "graphics_id": "OBJ_EVENT_GFX_BOLLARD",
+      "x": 8,
+      "y": 20,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_BOLLARD_2",
+      "graphics_id": "OBJ_EVENT_GFX_BOLLARD",
+      "x": 8,
+      "y": 19,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    },
+    {
+      "local_id": "LOCALID_BOLLARD_3",
+      "graphics_id": "OBJ_EVENT_GFX_BOLLARD",
+      "x": 8,
+      "y": 22,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 0,
+      "hidden_flag": "0",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 21,
+      "y": 12,
+      "dest_map": "MAP_HEADER_FULLMOON_ISLAND_FOREST",
+      "dest_warp_id": 0
+    },
+    {
+      "x": 22,
+      "y": 12,
+      "dest_map": "MAP_HEADER_FULLMOON_ISLAND_FOREST",
+      "dest_warp_id": 1
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

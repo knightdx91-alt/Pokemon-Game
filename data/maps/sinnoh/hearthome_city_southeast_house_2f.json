@@ -1,1 +1,51 @@
-{"id":"hearthome_city_southeast_house_2f","name":"Hearthome City Southeast House 2F","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_ACE_TRAINER_F","graphics_id":"OBJ_EVENT_GFX_ACE_TRAINER_F","x":11,"y":0,"z":8,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_CLEFAIRY","graphics_id":"OBJ_EVENT_GFX_CLEFAIRY","x":10,"y":0,"z":7,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"}],"warps":[{"x":18,"y":null,"z":2,"dest_map":null,"dest_warp_id":0}],"signs":[],"coord_events":[],"tileset":"sinnoh_006"}
+{
+  "id": "hearthome_city_southeast_house_2f",
+  "name": "Hearthome City Southeast House 2F",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_HEARTHOME_CITY_SOUTHEAST_HOUSE_2F",
+  "layout": "hearthome_city_southeast_house_2f",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY05_D",
+  "night_music": "SEQ_CITY05_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_ACE_TRAINER_F",
+      "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_F",
+      "x": 11,
+      "y": 8,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 2
+    },
+    {
+      "local_id": "LOCALID_CLEFAIRY",
+      "graphics_id": "OBJ_EVENT_GFX_CLEFAIRY",
+      "x": 10,
+      "y": 7,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 18,
+      "y": 2,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_SOUTHEAST_HOUSE_ELEVATOR",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

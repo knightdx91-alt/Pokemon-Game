@@ -1,1 +1,51 @@
-{"id":"twinleaf_town_southwest_house","name":"Twinleaf Town Southwest House","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_EXPERT_F","graphics_id":"OBJ_EVENT_GFX_EXPERT_F","x":5,"y":0,"z":5,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":1,"hidden_flag":"0"},{"local_id":"LOCALID_TWIN","graphics_id":"OBJ_EVENT_GFX_TWIN","x":8,"y":0,"z":6,"movement_type":"MOVEMENT_TYPE_WANDER_AROUND","trainer_type":"TRAINER_TYPE_NONE","script":2,"hidden_flag":"0"}],"warps":[{"x":4,"y":null,"z":8,"dest_map":null,"dest_warp_id":3}],"signs":[],"coord_events":[],"tileset":"sinnoh_006"}
+{
+  "id": "twinleaf_town_southwest_house",
+  "name": "Twinleaf Town Southwest House",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_TWINLEAF_TOWN_SOUTHWEST_HOUSE",
+  "layout": "twinleaf_town_southwest_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_TOWN01_D",
+  "night_music": "SEQ_TOWN01_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_EXPERT_F",
+      "graphics_id": "OBJ_EVENT_GFX_EXPERT_F",
+      "x": 5,
+      "y": 5,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_TWIN",
+      "graphics_id": "OBJ_EVENT_GFX_TWIN",
+      "x": 8,
+      "y": 6,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 4,
+      "y": 8,
+      "dest_map": "MAP_HEADER_TWINLEAF_TOWN",
+      "dest_warp_id": 3
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

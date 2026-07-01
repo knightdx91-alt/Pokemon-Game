@@ -1,1 +1,47 @@
-{"id":"iron_island_iron_ruins","name":"Iron Island Iron Ruins","region":"sinnoh","source":"platinum","npcs":[{"local_id":"LOCALID_ITEM_METAL_COAT","graphics_id":"OBJ_EVENT_GFX_POKEBALL","x":7,"y":0,"z":7,"movement_type":"MOVEMENT_TYPE_NONE","trainer_type":"TRAINER_TYPE_NONE","script":7322,"hidden_flag":"FLAG_OBTAINED_IRON_ISLAND_IRON_RUINS_METAL_COAT"}],"warps":[{"x":7,"y":null,"z":12,"dest_map":null,"dest_warp_id":2}],"signs":[{"x":3,"y":0,"z":6,"script":8274,"type":2,"player_facing_dir":"BG_EVENT_DIR_ALL"}],"coord_events":[],"tileset":"sinnoh_048"}
+{
+  "id": "iron_island_iron_ruins",
+  "name": "Iron Island Iron Ruins",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_IRON_ISLAND_IRON_RUINS",
+  "layout": "iron_island_iron_ruins",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_04",
+  "night_music": "SEQ_D_04",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_ITEM_METAL_COAT",
+      "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
+      "x": 7,
+      "y": 7,
+      "elevation": 0,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 7322,
+      "hidden_flag": "FLAG_OBTAINED_IRON_ISLAND_IRON_RUINS_METAL_COAT",
+      "initial_dir": 0
+    }
+  ],
+  "warps": [
+    {
+      "x": 7,
+      "y": 12,
+      "dest_map": "MAP_HEADER_IRON_ISLAND_B3F",
+      "dest_warp_id": 2
+    }
+  ],
+  "signs": [
+    {
+      "x": 3,
+      "y": 6,
+      "script": 8274,
+      "type": 2,
+      "player_facing_dir": "BG_EVENT_DIR_ALL"
+    }
+  ],
+  "triggers": []
+}
