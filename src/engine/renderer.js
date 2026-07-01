@@ -34,10 +34,29 @@ window.GameRenderer = (function () {
         _bgPath = path;
         _bgImg  = null;
         if (!path) return;
+        // Reuse a neighbour image if it's already loaded (avoids a reload flash
+        // when the player crosses into a map that was showing as a neighbour).
+        const cached = _neighborImgs.get(path);
+        if (cached instanceof HTMLImageElement) { _bgImg = cached; return; }
         const img = new Image();
-        img.onload  = () => { if (_bgPath === path) _bgImg = img; };
+        img.onload  = () => { if (_bgPath === path) _bgImg = img; _neighborImgs.set(path, img); };
         img.onerror = () => { if (_bgPath === path) console.warn(`[Renderer] Failed to load background: ${path}`); };
         img.src = path;
+    }
+
+    // Cache of neighbouring-map background images for seamless overworld rendering.
+    let _neighborImgs = new Map();   // path -> Image | 'loading' | 'error'
+    function _getNeighborImg(path) {
+        if (!path) return null;
+        const v = _neighborImgs.get(path);
+        if (v instanceof HTMLImageElement) return v;
+        if (v === 'loading' || v === 'error') return null;
+        _neighborImgs.set(path, 'loading');
+        const img = new Image();
+        img.onload  = () => _neighborImgs.set(path, img);
+        img.onerror = () => _neighborImgs.set(path, 'error');
+        img.src = path;
+        return null;
     }
 
     // FPS tracking
@@ -164,15 +183,30 @@ window.GameRenderer = (function () {
         ctx.fillStyle = COLORS.bg;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Fast path: draw the pre-rendered textured map (16 px/tile, grid-aligned)
-        // as a single sub-tile-scrolled slice instead of the metatile grid.
+        // Fast path: draw the pre-rendered textured map (16 px/tile, grid-aligned).
+        // For seamless overworlds, adjacent maps are drawn first at their global
+        // offsets so the world is continuous (no hard transition, Emerald-style);
+        // the current map is drawn on top, its transparent edges letting the
+        // neighbours show through.
         const useBg = _bgImg && wantedBg;
         if (useBg) {
             ctx.imageSmoothingEnabled = false;
+            const neighbors = _map.getMatrixNeighbors ? _map.getMatrixNeighbors() : null;
+            if (neighbors) {
+                for (const nb of neighbors) {
+                    const img = _getNeighborImg(nb.background);
+                    if (!img) continue;
+                    const dx = (nb.ox - vcamX) * TILE_PX;
+                    const dy = (nb.oy - vcamY) * TILE_PX;
+                    const dw = img.naturalWidth, dh = img.naturalHeight;
+                    if (dx > canvas.width || dy > canvas.height || dx + dw < 0 || dy + dh < 0) continue;
+                    ctx.drawImage(img, dx, dy, dw, dh);
+                }
+            }
             ctx.drawImage(
                 _bgImg,
-                vcamX * TILE_PX, vcamY * TILE_PX, canvas.width, canvas.height,
-                0, 0, canvas.width, canvas.height
+                -vcamX * TILE_PX, -vcamY * TILE_PX,
+                _bgImg.naturalWidth, _bgImg.naturalHeight
             );
         }
 

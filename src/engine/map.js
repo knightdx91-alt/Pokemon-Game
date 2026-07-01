@@ -40,6 +40,7 @@ window.GameMap = (function () {
     // the player can walk from one map straight into the adjacent one.
     let _matrix        = null;     // current matrix grid JSON ({cells,tile_size,…})
     let _matrixOrigin  = [0, 0];   // current map's top-left cell in global tiles
+    let _neighbors     = [];       // adjacent maps for seamless rendering
     const _matrixCache = {};       // "region/matrixId" -> grid JSON (or null)
 
     // ---------------------------------------------------------------
@@ -249,7 +250,69 @@ window.GameMap = (function () {
             }
         }
         _matrix = _matrixCache[key];
+        _computeMatrixNeighbors();
     }
+
+    /**
+     * Compute the maps adjacent to the current one within the same matrix, so
+     * the renderer can draw them continuously (seamless overworld, Emerald-style).
+     * Each entry: { name, background, ox, oy, w, h } where (ox, oy) is the
+     * neighbour's top-left in tiles relative to the current map's local origin,
+     * and (w, h) are its size in tiles.
+     */
+    function _computeMatrixNeighbors() {
+        _neighbors = [];
+        if (!_matrix || !_matrix.cells) return;
+        const ts = _matrix.tile_size || DEFAULT_SIZE;
+        const cells = _matrix.cells;
+        const H = cells.length, W = cells[0] ? cells[0].length : 0;
+        const curName = current && current.id;
+        const curBg = layoutData && layoutData.background;   // background lives on the layout
+        const bgDir = curBg ? curBg.slice(0, curBg.lastIndexOf('/')) : null;
+        if (!bgDir) return;
+
+        const minCol = Math.floor(_matrixOrigin[0] / ts);
+        const minRow = Math.floor(_matrixOrigin[1] / ts);
+        const cols = Math.max(1, Math.round(mapWidth  / ts));
+        const rows = Math.max(1, Math.round(mapHeight / ts));
+
+        // Distinct maps in the ring of cells surrounding the current footprint.
+        const names = new Set();
+        for (let r = minRow - 1; r <= minRow + rows; r++) {
+            for (let c = minCol - 1; c <= minCol + cols; c++) {
+                if (r < 0 || c < 0 || r >= H || c >= W) continue;
+                const n = cells[r][c];
+                if (n && n !== curName) names.add(n);
+            }
+        }
+        // For each neighbour, find its full footprint → origin + size.
+        names.forEach(function (name) {
+            let nMinR = Infinity, nMinC = Infinity, nMaxR = -1, nMaxC = -1;
+            for (let r = 0; r < H; r++) {
+                const row = cells[r];
+                for (let c = 0; c < W; c++) {
+                    if (row[c] === name) {
+                        if (r < nMinR) nMinR = r;
+                        if (c < nMinC) nMinC = c;
+                        if (r > nMaxR) nMaxR = r;
+                        if (c > nMaxC) nMaxC = c;
+                    }
+                }
+            }
+            if (nMaxR < 0) return;
+            _neighbors.push({
+                name: name,
+                background: `${bgDir}/${name}.png`,
+                ox: nMinC * ts - _matrixOrigin[0],
+                oy: nMinR * ts - _matrixOrigin[1],
+                w: (nMaxC - nMinC + 1) * ts,
+                h: (nMaxR - nMinR + 1) * ts,
+            });
+        });
+    }
+
+    /** Neighbouring maps (same matrix) for seamless continuous rendering. */
+    function getMatrixNeighbors() { return _neighbors; }
 
     /**
      * For an (out-of-bounds) local tile, resolve which adjacent map in the matrix
@@ -433,6 +496,7 @@ window.GameMap = (function () {
         resolveWarp,
         getConnectionAt,
         getMatrixWalk,
+        getMatrixNeighbors,
         get matrixOrigin() { return _matrixOrigin; },
         getTile,
         isWalkable,
