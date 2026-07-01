@@ -449,6 +449,30 @@ trusted until its output renders correctly (the way HnS was verified).
   the game needs into `data/` formats and commit only that. Prefer **B2**
   as the data source (superset: all 649 species, BW2 encounters, more
   trainers/maps).
+- `3ds_decomp.py` — **3DS ROM decomp tool** (counterpart to `nds_decomp.py`
+  for Gen 6/7). Takes a **decrypted** `.3ds/.cci/.cxi` and explodes it:
+  NCSD→NCCH→`exefs/` (code, banner) + `romfs/` (full file tree) + `unpacked/`
+  (every **GARC** archive expanded, members LZ11-decompressed, magic-named).
+  `DECOMP_MANIFEST.md` annotates known Pokémon GARCs (X/Y personal data
+  `a/2/1/8`, learnsets `a/2/1/4`, moves `a/2/1/2`, encounters `a/0/1/2`, etc.;
+  tables for X/Y + ORAS product codes). Same stdlib LZ codec as the NDS tool.
+  Usage: `python3 tools/3ds_decomp.py <rom.3ds> [-o source/3ds/<code>] [--list]`.
+  Requires a ROM the user legally owns/backed up (share via Drive link like the
+  NDS ROMs). Note Gen 6 maps are **3D** — data ports to 2D, maps do not.
+- `rom_to_2d.py` — **ROM data → 2D game converter.** Reads the `unpacked/`
+  tree from `nds_decomp.py` (Gen 5) and emits this game's exact `data/` shapes:
+  `data/pokemon/base_stats.json`, `moves.json`, `learnsets.json`, and
+  (experimental) `data/encounters/gen5_<bw|bw2>.json`. Decodes the Gen-5
+  encrypted text banks for English species/move/ability names (from a/0/0/2:
+  species=member 70, abilities=182, moves=203 — verified on the English Black
+  ROM IRBO). Defaults to **`--dry-run`-friendly** (real writes overwrite
+  `data/` — diff first). Usage:
+  `python3 tools/rom_to_2d.py source/nds/IRBO --only stats,moves,learnsets [--dry-run]`.
+  Verified: Charizard 78/84 Fire/Flying + Blaze/Solar Power; Flamethrower
+  95pw special; Charmander learnset exact. Use an English ROM for names
+  (`--names-from source/nds/IRBO`) if converting a localized data ROM.
+  Same rationale as the decomp tools: Gen-5 game *data* (stats/moves/movesets/
+  encounters) ports cleanly to 2D; Gen-5 *maps* are 3D and don't.
 - `gen_party_assets.py` — regenerate the FireRed party-screen assets in
   `src/assets/party/` (slot boxes, fonts, pokéball, status icons, message frame)
   by decoding `source/pokefirered` graphics/tilemaps/palettes. Re-run if those
