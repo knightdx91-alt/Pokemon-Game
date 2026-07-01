@@ -443,9 +443,18 @@ class Model:
         base = self.materials_off
         tex_pair_off = base + struct.unpack_from("<H", self.data, base)[0]
         pal_pair_off = base + struct.unpack_from("<H", self.data, base + 2)[0]
-        self.mat_names, _ = read_namelist(self.data, base + 4, 4)
+        self.mat_names, mat_elems = read_namelist(self.data, base + 4, 4)
         self.mat_texture = self._parse_pairings(tex_pair_off)
         self.mat_palette = self._parse_pairings(pal_pair_off)
+
+        # Per-material polygon alpha (bits 16-20 of polygon_attr, 0-31; 31 =
+        # opaque). Translucent materials — building drop-shadows (h_kage/tshadow),
+        # water, glass — must be alpha-blended, not painted opaque.
+        self.mat_alpha = {}
+        for i, eo in enumerate(mat_elems):
+            mat_off = base + struct.unpack_from("<I", self.data, eo)[0]
+            poly_attr = struct.unpack_from("<I", self.data, mat_off + 0x0C)[0]
+            self.mat_alpha[i] = (poly_attr >> 16) & 0x1F
 
     def _parse_render_cmds(self):
         """Walk the render command list to get ordered (material, mesh) draws."""

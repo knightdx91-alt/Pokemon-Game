@@ -150,11 +150,12 @@ def texture_rgba(tex, tex_name, pal_name):
     return arr
 
 
-def rasterize_triangle(fb, yb, tri, up_scale, ox, oy, tex, repeat):
+def rasterize_triangle(fb, yb, tri, up_scale, ox, oy, tex, repeat, alpha=1.0):
     """
-    Rasterize one triangle into framebuffer `fb` (H,W,4) using Y-buffer `yb`.
-    Screen pixel = world + 256 (+ cell offset); depth = world Y (higher wins).
-    Affine (orthographic) UV interpolation; texels sampled from `tex` (H,W,4).
+    Rasterize one triangle into framebuffer `fb` (H,W,4) using depth buffer `yb`.
+    Oblique projection; affine UV interpolation from `tex` (H,W,4). `alpha` is the
+    material's polygon opacity (0..1): <1 alpha-blends over the framebuffer (soft
+    building shadows, water, glass) instead of painting opaque.
     """
     # Project to screen space + depth (oblique: height lifts geometry up-screen).
     wx = np.array([v.x * up_scale for v in tri])
@@ -213,12 +214,18 @@ def rasterize_triangle(fb, yb, tri, up_scale, ox, oy, tex, repeat):
         else:
             vi = np.clip(np.round(v).astype(np.int64), 0, th - 1)
         texels = tex[vi, ui]
-        alpha = texels[:, :, 3]
-        win = win & (alpha > 0)
+        win = win & (texels[:, :, 3] > 0)
         if not win.any():
             return
         sub_fb = fb[miny:maxy + 1, minx:maxx + 1]
-        sub_fb[win] = texels[win]
+        if alpha >= 0.999:
+            sub_fb[win] = texels[win]
+        else:
+            # Alpha-blend translucent materials over the current framebuffer.
+            src = texels[win][:, :3].astype(np.float32)
+            dst = sub_fb[win][:, :3].astype(np.float32)
+            sub_fb[win, :3] = (src * alpha + dst * (1.0 - alpha)).astype(np.uint8)
+            sub_fb[win, 3] = 255
     else:
         sub_fb = fb[miny:maxy + 1, minx:maxx + 1]
         sub_fb[win] = (180, 180, 190, 255)
@@ -241,9 +248,10 @@ def _draw_model_triangles(fb, yb, model, texset, up, ox, oy, transform=None):
                 tex_arr = texture_rgba(texset, tname, pname)
             except Exception:
                 tex_arr = None
+        alpha = model.mat_alpha.get(mat_idx, 31) / 31.0
         for tri in tris:
             tri2 = transform(tri) if transform else tri
-            rasterize_triangle(fb, yb, tri2, up, ox, oy, tex_arr, (True, True))
+            rasterize_triangle(fb, yb, tri2, up, ox, oy, tex_arr, (True, True), alpha)
 
 
 def render_props(fb, yb, land, ox, oy, prop_texset):
