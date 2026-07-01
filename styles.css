@@ -448,6 +448,21 @@ body.orient-reverse-landscape #screen-primary { height: 100vh; width: auto; max-
 #bt-bottom.state-move   { background-image: url('src/assets/battle/ui/move_frame.png'); }
 #bt-bottom.state-plain  { background: var(--fr-body); border-top: 3px solid var(--fr-border); }
 
+/* Bitmap-font text layer (drawn by GameFont). Fills the bar; buttons sit on
+   top as transparent hit areas. Override the generic canvas rule's black bg. */
+#bt-frame #bt-menu-canvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    background: none; image-rendering: pixelated; image-rendering: crisp-edges;
+    pointer-events: none; z-index: 1;
+}
+/* DOM labels become invisible hit areas — text is rendered on the canvas. */
+#bt-frame #bt-text,
+#bt-frame .bt-act,
+#bt-frame .bt-move-name { color: transparent !important; text-shadow: none !important; }
+#bt-frame .bt-act.selected::before,
+#bt-frame .bt-move-btn.selected::before { content: none; }
+#bt-frame #bt-move-info { display: none; }
+
 /* Message text — white on the teal frame, like Emerald. */
 #bt-text-box {
     position: absolute; left: 3%; top: 12%; right: 4%; bottom: 12%;

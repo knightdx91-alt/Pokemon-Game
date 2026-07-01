@@ -861,6 +861,7 @@ window.GameBattle = (function () {
   <canvas id="bt-player-hb" class="bt-hb bt-hb-player" width="104" height="40"></canvas>
 </div>
 <div id="bt-bottom" class="state-msg">
+  <canvas id="bt-menu-canvas" width="240" height="48"></canvas>
   <div id="bt-text-box"><div id="bt-text"></div></div>
   <div id="bt-action-box" style="display:none">
     <button class="bt-act" data-act="0">FIGHT</button>
@@ -1022,14 +1023,122 @@ window.GameBattle = (function () {
     // -----------------------------------------------------------------------
     // Message system
     // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    // Bottom-bar text is drawn with the same crisp GBA bitmap font (GameFont)
+    // as the healthboxes, onto #bt-menu-canvas (native 240x48). The DOM buttons
+    // stay as transparent hit areas for clicks/taps.
+    // -----------------------------------------------------------------------
+    let _bottomState = 'msg';
+    let _msgText = '';
+    const _MSG_FG = '#f8f8f8', _MSG_SH = '#405060';
+    const _CMD_FG = '#404050', _CMD_SEL = '#182028', _CUR = '#e83010';
+    const _TYPE_COLORS = {
+        normal:'#787868', fire:'#e83010', water:'#3878e0', electric:'#c8a000',
+        grass:'#38a818', ice:'#48c8d0', fighting:'#a02820', poison:'#883890',
+        ground:'#b08828', flying:'#7088e0', psychic:'#e84070', bug:'#788818',
+        rock:'#b0a038', ghost:'#584888', dragon:'#5030d8', dark:'#403830',
+        steel:'#7890a0', fairy:'#e070a0'
+    };
+
+    function _cursorAt(ctx, x, y, on) {
+        if (on) GameFont.draw(ctx, '▶', x, y, { color: _CUR });
+    }
+
+    // Word-wrap a string to a pixel width using the bitmap font metrics.
+    function _wrap(text, maxW) {
+        const words = text.split(' ');
+        const lines = []; let line = '';
+        for (const w of words) {
+            const test = line ? line + ' ' + w : w;
+            if (GameFont.measure(test) > maxW && line) { lines.push(line); line = w; }
+            else line = test;
+        }
+        if (line) lines.push(line);
+        return lines;
+    }
+
+    function _drawBottomText() {
+        const cv = document.getElementById('bt-menu-canvas');
+        if (!cv) return;
+        GameFont.load(function () {
+            const ctx = cv.getContext('2d');
+            ctx.imageSmoothingEnabled = false;
+            ctx.clearRect(0, 0, cv.width, cv.height);
+            if (_bottomState === 'msg') _drawMsg(ctx);
+            else if (_bottomState === 'action') _drawActionText(ctx);
+            else if (_bottomState === 'move') _drawMoveText(ctx);
+        });
+    }
+
+    function _drawMsg(ctx) {
+        // Support explicit newlines then wrap each part.
+        let lines = [];
+        _msgText.split('\n').forEach(seg => { lines = lines.concat(_wrap(seg, 224)); });
+        lines.slice(0, 2).forEach((ln, i) => {
+            GameFont.draw(ctx, ln, 10, 10 + i * 17, { color: _MSG_FG, shadow: _MSG_SH });
+        });
+    }
+
+    function _drawActionText(ctx) {
+        // Prompt on the teal-left box.
+        _wrap('What will ' + _getPlayerName() + ' do?', 108).slice(0, 2).forEach((ln, i) => {
+            GameFont.draw(ctx, ln, 10, 10 + i * 17, { color: _MSG_FG, shadow: _MSG_SH });
+        });
+        // FIGHT / BAG / POKéMON / RUN on the white-right box.
+        const cmds = [
+            { t: 'FIGHT', x: 138, y: 9 }, { t: 'BAG', x: 194, y: 9 },
+            { t: 'POKéMON', x: 138, y: 27 }, { t: 'RUN', x: 194, y: 27 },
+        ];
+        cmds.forEach((c, i) => {
+            const sel = i === _selectedAction;
+            _cursorAt(ctx, c.x - 9, c.y, sel);
+            GameFont.draw(ctx, c.t, c.x, c.y, { color: sel ? _CMD_SEL : _CMD_FG });
+        });
+    }
+
+    function _drawMoveText(ctx) {
+        const moves = (_player && _player.moves) || [];
+        const real = moves.filter(Boolean);
+        const allZero = real.length > 0 && real.every(mv => (_playerPP[moves.indexOf(mv)] || 0) === 0);
+        if (allZero || real.length === 0) {
+            _cursorAt(ctx, 8, 10, true);
+            GameFont.draw(ctx, 'Struggle', 18, 10, { color: _CMD_SEL });
+            return;
+        }
+        const pos = [{ x: 16, y: 9 }, { x: 84, y: 9 }, { x: 16, y: 27 }, { x: 84, y: 27 }];
+        for (let i = 0; i < 4; i++) {
+            const mv = moves[i]; const p = pos[i];
+            if (!mv) continue;
+            const md = (_movesDb && _movesDb[mv]) || { name: _fmt(mv) };
+            const sel = i === _selectedMove;
+            _cursorAt(ctx, p.x - 8, p.y, sel);
+            // Small font keeps long move names inside the left box (2 columns).
+            GameFont.draw(ctx, (md.name || _fmt(mv)).toUpperCase(), p.x, p.y,
+                { kind: 'small', color: sel ? _CMD_SEL : _CMD_FG });
+        }
+        // Type / PP panel on the right white box for the selected move.
+        const mv = moves[_selectedMove];
+        if (mv) {
+            const md = (_movesDb && _movesDb[mv]) || { name: _fmt(mv), type: 'Normal', pp: 10 };
+            const pp = _playerPP[_selectedMove] !== undefined ? _playerPP[_selectedMove] : (md.pp || 10);
+            const maxPP = md.pp || 10;
+            GameFont.draw(ctx, 'PP  ' + pp + '/' + maxPP, 166, 10, { color: _CMD_FG });
+            const ty = (md.type || 'Normal');
+            GameFont.draw(ctx, ty.toUpperCase(), 166, 28,
+                { color: _TYPE_COLORS[ty.toLowerCase()] || _CMD_FG });
+        }
+    }
+
     // Swap the bottom-bar background to the matching Emerald textbox frame.
     function _setBottomFrame(state) {
         const b = document.getElementById('bt-bottom');
         if (b) b.className = 'state-' + state;
+        _bottomState = state;
         if (state !== 'move') {
             const info = document.getElementById('bt-move-info');
             if (info) info.remove();
         }
+        _drawBottomText();
     }
 
     function _showMessage(text, callback) {
@@ -1046,13 +1155,13 @@ window.GameBattle = (function () {
         if (moveBox)   moveBox.style.display   = 'none';
         if (bagBox)    bagBox.style.display    = 'none';
         if (partyBox)  partyBox.style.display  = 'none';
-        if (!textEl)   { if (callback) callback(); return; }
-
-        textEl.textContent = '';
+        _msgText = '';
+        _drawBottomText();
         let i = 0;
         const iv = setInterval(() => {
             if (i < text.length) {
-                textEl.textContent += text[i++];
+                _msgText += text[i++];
+                _drawBottomText();
             } else {
                 clearInterval(iv);
                 _pendingCallback = callback;
@@ -1099,6 +1208,7 @@ window.GameBattle = (function () {
         _selectedAction = idx;
         if (!_el) return;
         _el.querySelectorAll('.bt-act').forEach((b,i) => b.classList.toggle('selected', i === idx));
+        _drawBottomText();
     }
 
     function _onActionSelect(idx) {
@@ -1179,6 +1289,7 @@ window.GameBattle = (function () {
         _selectedMove = idx;
         if (!_el) return;
         _el.querySelectorAll('.bt-move-btn').forEach((b,i) => b.classList.toggle('selected', i === idx));
+        _drawBottomText();
         // Update the type/PP box for the selected move.
         const info = document.getElementById('bt-move-info');
         if (info) {
