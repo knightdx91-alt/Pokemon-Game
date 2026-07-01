@@ -60,8 +60,14 @@ window.GBAUI = (function () {
     function onReady(cb) { if (ready) cb(); else _readyCbs.push(cb); }
 
     // ---- low-level drawing (all coords in logical px) ----
-    function show() { if (canvas) canvas.style.display = 'block'; }
-    function hide() { if (canvas) canvas.style.display = 'none'; }
+    function show() {
+        if (canvas) canvas.style.display = 'block';
+        if (window.GameHUD && GameHUD.hideInfo) GameHUD.hideInfo();
+    }
+    function hide() {
+        if (canvas) canvas.style.display = 'none';
+        if (window.GameHUD && GameHUD.showInfo) GameHUD.showInfo();
+    }
     function clear() { if (ctx) ctx.clearRect(0, 0, W, H); }
 
     /** Draw a FireRed window frame. x,y,w,h in px; w/h should be multiples of 8. */

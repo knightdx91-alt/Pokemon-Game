@@ -158,5 +158,9 @@ window.GameHUD = (function () {
         if (_bannerEl) { _bannerEl.style.opacity = '0'; _bannerEl.style.display = 'none'; }
     }
 
-    return { init, update, hideBanner };
+    // Hide/restore the persistent map-name chip while a full-screen UI is open.
+    function hideInfo() { if (infoEl) infoEl.style.display = 'none'; }
+    function showInfo() { if (infoEl) infoEl.style.display = ''; }
+
+    return { init, update, hideBanner, hideInfo, showInfo };
 })();
