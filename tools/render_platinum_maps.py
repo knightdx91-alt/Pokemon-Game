@@ -21,6 +21,7 @@ Usage:
 """
 
 import json
+import math
 import os
 import sys
 
@@ -29,6 +30,10 @@ from PIL import Image
 
 import platinum_common as pc
 import nitro_g3d as g3d
+
+PROP_MODEL_DIR = os.path.join(pc.PLAT_ROOT, "res", "field", "props", "models")
+PROP_TEXSET_DIR = os.path.join(pc.PLAT_ROOT, "res", "field", "props", "texture_sets")
+PROP_ORDER_FILE = os.path.join(PROP_MODEL_DIR, "map_prop_models.order")
 
 TILE_PX = 16
 CELL_PX = pc.MAP_TILES_X * TILE_PX          # 512 px per 32-tile land-data cell
@@ -40,6 +45,66 @@ AREA_DIR = pc.AREADATA_DIR
 
 _texset_cache = {}
 _area_cache = {}
+_prop_texset_cache = {}
+_prop_model_cache = {}
+_prop_order = None
+
+
+def prop_order():
+    """Global build-model index → prop model filename (map_prop_models.order)."""
+    global _prop_order
+    if _prop_order is None:
+        _prop_order = [ln.strip() for ln in open(PROP_ORDER_FILE) if ln.strip()]
+    return _prop_order
+
+
+def area_prop_set_index(area_data_id):
+    """area_data_<NNN> → the prop set index (shared by model & texture sets)."""
+    path = os.path.join(AREA_DIR, area_data_id + ".json")
+    if not os.path.isfile(path):
+        return None
+    name = json.load(open(path)).get("mapPropSet", "")
+    m = name.rsplit("_", 1)
+    return int(m[1]) if len(m) == 2 and m[1].isdigit() else None
+
+
+def load_prop_texset(index):
+    if index in _prop_texset_cache:
+        return _prop_texset_cache[index]
+    path = os.path.join(PROP_TEXSET_DIR, f"prop_texture_set_{index:03d}.nsbtx")
+    tex = g3d.find_tex0(open(path, "rb").read()) if os.path.isfile(path) else None
+    _prop_texset_cache[index] = tex
+    return tex
+
+
+def load_prop_model(model_id):
+    """Load (model, own_texset) for a build-model index, cached."""
+    if model_id in _prop_model_cache:
+        return _prop_model_cache[model_id]
+    order = prop_order()
+    result = (None, None)
+    if 0 <= model_id < len(order):
+        path = os.path.join(PROP_MODEL_DIR, order[model_id])
+        if os.path.isfile(path):
+            data = open(path, "rb").read()
+            try:
+                result = (g3d.find_model(data, 0), g3d.find_tex0(data))
+            except Exception as e:
+                print(f"    prop model parse error ({order[model_id]}): {e}")
+    _prop_model_cache[model_id] = result
+    return result
+
+
+def _rotation_matrix(rot):
+    """3x3 rotation from DS Euler angles (0..65535 == 0..2π), applied Z·Y·X."""
+    ax, ay, az = (r / 65536.0 * 2.0 * math.pi for r in rot)
+    cx, sx = math.cos(ax), math.sin(ax)
+    cy, sy = math.cos(ay), math.sin(ay)
+    cz, sz = math.cos(az), math.sin(az)
+    rx = np.array([[1, 0, 0], [0, cx, -sx], [0, sx, cx]])
+    ry = np.array([[cy, 0, sy], [0, 1, 0], [-sy, 0, cy]])
+    rz = np.array([[cz, -sz, 0], [sz, cz, 0], [0, 0, 1]])
+    return rz @ ry @ rx
 
 
 def area_texture_set(area_data_id):
@@ -152,8 +217,58 @@ def rasterize_triangle(fb, yb, tri, up_scale, ox, oy, tex, repeat):
     yb[miny:maxy + 1, minx:maxx + 1] = sub_yb
 
 
-def render_cell(fb, yb, land_index, texset, ox, oy):
-    """Render one land-data cell's model into fb at pixel offset (ox, oy)."""
+def _draw_model_triangles(fb, yb, model, texset, up, ox, oy, transform=None):
+    """Rasterize every textured triangle of `model`, optionally pre-transformed."""
+    for mat_idx, tris in model.triangles():
+        tex_arr = None
+        tname = model.mat_texture.get(mat_idx)
+        if tname and texset and tname in texset.textures:
+            pname = model.mat_palette.get(mat_idx)
+            if pname not in texset.palettes:
+                pname = texset.default_palette_for(tname)
+            try:
+                tex_arr = texture_rgba(texset, tname, pname)
+            except Exception:
+                tex_arr = None
+        for tri in tris:
+            tri2 = transform(tri) if transform else tri
+            rasterize_triangle(fb, yb, tri2, up, ox, oy, tex_arr, (True, True))
+
+
+def render_props(fb, yb, land, ox, oy, prop_texset):
+    """
+    Composite each map prop (building, tree, door, …) onto the map. Prop model
+    vertices are scaled by the model's up_scale then the prop's scale, rotated,
+    and translated by the prop's world position (same ±256 unit space as the
+    base map). Depth (Y) feeds the shared Y-buffer so roofs sit above ground.
+    """
+    for prop in land["props"]:
+        model, own_tex = load_prop_model(prop["model_id"])
+        if model is None:
+            continue
+        texset = prop_texset or own_tex
+        up = model.up_scale or 1.0
+        R = _rotation_matrix(prop["rot"])
+        sc = prop["scale"]
+        px, py, pz = prop["x"], prop["y"], prop["z"]
+
+        def transform(tri, R=R, sc=sc, px=px, py=py, pz=pz, up=up):
+            out = []
+            for v in tri:
+                # up_scale is applied later by the rasterizer, so pre-divide the
+                # translation by it to keep everything in the model's raw space.
+                vec = np.array([v.x * sc[0], v.y * sc[1], v.z * sc[2]])
+                vec = R @ vec
+                nv = g3d.Vertex(vec[0] + px / up, vec[1] + py / up,
+                                vec[2] + pz / up, v.s, v.t)
+                out.append(nv)
+            return out
+
+        _draw_model_triangles(fb, yb, model, texset, up, ox, oy, transform)
+
+
+def render_cell(fb, yb, land_index, texset, prop_texset, ox, oy):
+    """Render one land-data cell's model + props into fb at pixel offset (ox, oy)."""
     land = pc.load_land_data(land_index)
     d = land["raw"]
     mo, me = land["model_range"]
@@ -165,27 +280,16 @@ def render_cell(fb, yb, land_index, texset, ox, oy):
         print(f"    model parse error (land {land_index}): {e}")
         return
     up = model.up_scale or 1.0
-
-    for mat_idx, tris in model.triangles():
-        tex_arr = None
-        repeat = (True, True)
-        tname = model.mat_texture.get(mat_idx)
-        if tname and texset and tname in texset.textures:
-            pname = model.mat_palette.get(mat_idx)
-            if pname not in texset.palettes:
-                pname = texset.default_palette_for(tname)
-            try:
-                tex_arr = texture_rgba(texset, tname, pname)
-            except Exception:
-                tex_arr = None
-        for tri in tris:
-            rasterize_triangle(fb, yb, tri, up, ox, oy, tex_arr, repeat)
+    _draw_model_triangles(fb, yb, model, texset, up, ox, oy)
+    render_props(fb, yb, land, ox, oy, prop_texset)
 
 
 def render_map(name, entry):
     """Render a full (possibly multi-cell) map to an RGBA image, or None."""
     texset_name = area_texture_set(entry["area_data_id"]) if entry["area_data_id"] else None
     texset = load_texset(texset_name) if texset_name else None
+    prop_idx = area_prop_set_index(entry["area_data_id"]) if entry["area_data_id"] else None
+    prop_texset = load_prop_texset(prop_idx) if prop_idx is not None else None
 
     W = entry["cols"] * CELL_PX
     H = entry["rows"] * CELL_PX
@@ -199,7 +303,7 @@ def render_map(name, entry):
             continue
         ox = (cell["col"] - entry["min_col"]) * CELL_PX
         oy = (cell["row"] - entry["min_row"]) * CELL_PX
-        render_cell(fb, yb, cell["land_index"], texset, ox, oy)
+        render_cell(fb, yb, cell["land_index"], texset, prop_texset, ox, oy)
 
     return Image.fromarray(fb, "RGBA")
 

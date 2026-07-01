@@ -46,7 +46,11 @@ python3 tools/generate_platinum_tileset.py   # fallback tileset + previews
    `render_platinum_maps.py` interprets the model's NDS GPU display lists into
    textured triangles, samples the map's NSBTX textures, and rasterizes them with
    an orthographic top-down camera and a Y-buffer, at 16 px per tile aligned to
-   the collision grid. The result is a real 2D rendering of the 3D map.
+   the collision grid. Map props (buildings, doors, trees, signs…) are separate
+   NSBMD models placed by the land data — each is loaded from `build_model`,
+   transformed by its position/rotation/scale, textured from the area's prop
+   texture set, and composited on top via the same Y-buffer so roofs sit above
+   the ground. The result is a real 2D rendering of the whole 3D map.
 4. **Coordinates.** Event coordinates are translated from global matrix tiles to
    map-local tiles so NPCs, warps and signs line up with the rendered terrain.
 
@@ -68,11 +72,9 @@ Rendered straight from the game's 3D models (see `previews/`):
 
 ## Known limitations
 
-- **Map props** (buildings, signs, honey trees…) are separate NSBMD models placed
-  on the map; they are recorded as footprints in each layout's `props` array but
-  are not yet composited into the rendered background, so building interiors show
-  their ground-level foundation.
 - The Underground (a 15×15-cell matrix) is skipped by the renderer because its
   flattened image would be enormous.
 - A handful of materials whose textures are absent from their area's texture set
   render untextured (gray).
+- Overworld NPC/object sprites (`OBJ_EVENT_GFX_*`) are not yet extracted, so
+  Platinum NPCs show as placeholder markers in-engine.
