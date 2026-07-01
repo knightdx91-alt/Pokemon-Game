@@ -1,44 +1,67 @@
-// GameStartMenu — Pokemon-style start menu overlay
+// GameStartMenu — FireRed-style start menu, drawn with GBAUI (real frame + font)
 window.GameStartMenu = (function () {
     'use strict';
 
-    const ITEMS = [
-        'POKEDEX',
-        'POKEMON',
-        'BAG',
-        'PLAYER',
-        'SAVE',
-        'OPTIONS',
-        'EXIT'
-    ];
+    // FireRed main menu entries (PLAYER row shows the player's name in-game).
+    const ITEMS = ['POKéDEX', 'POKéMON', 'BAG', 'PLAYER', 'SAVE', 'OPTION', 'EXIT'];
 
-    let menuEl = null;
+    const ROW_H = 16;      // FireRed menu line height
+    const PAD_X = 8;       // interior left padding before the cursor
+    const ARROW_W = 8;     // space reserved for the selection arrow
+
     let selectedIdx = 0;
     let isOpen = false;
-    let _saveMsg = null;
+    let _saveMsg = false;
     let _saveMsgTimer = null;
 
+    function _menuMetrics() {
+        let maxText = 0;
+        for (const label of ITEMS) maxText = Math.max(maxText, GBAUI.textWidth(label));
+        const winW = _round8(PAD_X + ARROW_W + maxText + PAD_X);
+        const winH = 16 + ITEMS.length * ROW_H;   // 8px frame top+bottom
+        const winX = GBAUI.W - winW - 2;           // flush to top-right
+        const winY = 0;
+        return { winX, winY, winW, winH };
+    }
+
+    function _round8(n) { return Math.ceil(n / 8) * 8; }
+
     function _render() {
-        if (!menuEl) return;
-        menuEl.innerHTML = '';
-        ITEMS.forEach(function (label, i) {
-            const btn = document.createElement('button');
-            btn.className = 'menu-item' + (i === selectedIdx ? ' selected' : '');
-            btn.textContent = (i === selectedIdx ? '► ' : '  ') + label;
-            btn.addEventListener('click', function () {
-                selectedIdx = i;
-                _render();
-                _confirmSelected();
-            });
-            menuEl.appendChild(btn);
+        if (!isOpen || !GBAUI.ready) return;
+        GBAUI.clear();
+        const { winX, winY, winW, winH } = _menuMetrics();
+        GBAUI.window9(winX, winY, winW, winH);
+
+        const textX = winX + PAD_X + ARROW_W;
+        ITEMS.forEach((label, i) => {
+            const rowY = winY + 8 + i * ROW_H;
+            if (i === selectedIdx) GBAUI.cursor(winX + PAD_X, rowY + 5);
+            GBAUI.text(label, textX, rowY);
         });
+
         if (_saveMsg) {
-            const msg = document.createElement('div');
-            msg.className = 'menu-save-msg';
-            msg.textContent = 'Game Saved!';
-            menuEl.appendChild(msg);
+            const mw = 120, mh = 24;
+            const mx = Math.floor((GBAUI.W - mw) / 2), my = GBAUI.H - mh - 4;
+            GBAUI.window9(mx, my, mw, mh);
+            GBAUI.text('Saved the game.', mx + 8, my + 8);
         }
     }
+
+    function open() {
+        if (!GBAUI.ready) return;
+        selectedIdx = 0;
+        isOpen = true;
+        GBAUI.show();
+        _render();
+    }
+
+    function close() {
+        isOpen = false;
+        GBAUI.clear();
+        GBAUI.hide();
+    }
+
+    function toggle() { isOpen ? close() : open(); }
 
     function _confirmSelected() {
         const label = ITEMS[selectedIdx];
@@ -47,69 +70,37 @@ window.GameStartMenu = (function () {
             _saveMsg = true;
             _render();
             if (_saveMsgTimer) clearTimeout(_saveMsgTimer);
-            _saveMsgTimer = setTimeout(function () {
-                _saveMsg = false;
-                _render();
-            }, 2000);
+            _saveMsgTimer = setTimeout(() => { _saveMsg = false; _render(); }, 2000);
             return;
         }
-        // All others close the menu
         close();
-    }
-
-    function open() {
-        if (!menuEl) return;
-        selectedIdx = 0;
-        isOpen = true;
-        menuEl.classList.add('open');
-        _render();
-    }
-
-    function close() {
-        if (!menuEl) return;
-        isOpen = false;
-        menuEl.classList.remove('open');
-    }
-
-    function toggle() {
-        if (isOpen) close();
-        else open();
     }
 
     function _onKey(e) {
         if (!isOpen) return;
-        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        const k = e.key;
+        if (k === 'ArrowUp' || k === 'w' || k === 'W') {
             e.preventDefault();
             selectedIdx = (selectedIdx - 1 + ITEMS.length) % ITEMS.length;
             _render();
-        } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+        } else if (k === 'ArrowDown' || k === 's' || k === 'S') {
             e.preventDefault();
             selectedIdx = (selectedIdx + 1) % ITEMS.length;
             _render();
-        } else if (e.key === 'Enter' || e.key === 'z' || e.key === 'Z') {
+        } else if (k === 'Enter' || k === 'z' || k === 'Z') {
             e.preventDefault();
             _confirmSelected();
-        } else if (e.key === 'Escape' || e.key === 'x' || e.key === 'X' || e.key === 'Backspace') {
+        } else if (k === 'Escape' || k === 'x' || k === 'X' || k === 'Backspace') {
             e.preventDefault();
             close();
         }
     }
 
     function init() {
-        const overlay = document.getElementById('ui-overlay');
-        if (!overlay) {
-            console.warn('[StartMenu] #ui-overlay not found');
-            return;
-        }
-        menuEl = document.createElement('div');
-        menuEl.id = 'start-menu';
-        menuEl.className = 'pokemon-menu';
-        overlay.appendChild(menuEl);
-
         window.addEventListener('keydown', _onKey);
     }
 
     document.addEventListener('DOMContentLoaded', init);
 
-    return { toggle, open, close };
+    return { toggle, open, close, get isOpen() { return isOpen; } };
 })();
