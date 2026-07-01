@@ -396,18 +396,21 @@
             // Optional startup override: ?map=VerdantHollow&region=custom lets you
             // drop straight into any map (e.g. one built in the map editor).
             const _params   = new URLSearchParams(window.location.search);
-            const _startMap = _params.get('map') || 'PalletTown';
-            const _startReg = _params.get('region') || currentRegion;
+            // Default start location: Twinleaf Town (Sinnoh). Overridable via
+            // ?map=…&region=… (e.g. a map built in the editor).
+            const _startMap = _params.get('map') || 'twinleaf_town';
+            const _startReg = _params.get('region') || 'sinnoh';
             currentRegion = _startReg;
             await GameMap.load(_startMap, _startReg);
             window._mapName   = (GameMap.current && GameMap.current.name) || _startMap;
             window._mapLoaded = true;
 
-            player.x    = 7;
-            player.y    = 8;
-            player.prevX = 7;
-            player.prevY = 8;
-            player.direction = 'down';
+            // Default Twinleaf Town start: just in front of the player's house,
+            // facing the door. Other maps fall back to (7, 8).
+            const _atTwinleaf = _startMap === 'twinleaf_town';
+            player.x = _atTwinleaf ? 20 : 7;
+            player.y = _atTwinleaf ? 22 : 8;
+            player.direction = _atTwinleaf ? 'up' : 'down';
             player.moveStartTime = 0;
             player.x = Math.min(player.x, GameMap.width  - 1);
             player.y = Math.min(player.y, GameMap.height - 1);
