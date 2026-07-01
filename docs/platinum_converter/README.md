@@ -81,5 +81,17 @@ Rendered straight from the game's 3D models (see `previews/`):
   flattened image would be enormous.
 - A handful of materials whose textures are absent from their area's texture set
   render untextured (gray).
-- Overworld NPC/object sprites (`OBJ_EVENT_GFX_*`) are not yet extracted, so
-  Platinum NPCs show as placeholder markers in-engine.
+- Field *objects* (signposts, mailboxes, berry soil…) and dynamic `VAR_*`
+  graphics are not character sprites and still show as placeholder markers;
+  character NPCs (~88% of object-event instances) are covered.
+
+## NPC sprites
+
+`extract_platinum_npcs.py` extracts overworld character sprites. Platinum stores
+each character as one NSBTX in the `mmodel` archive (16 frames; frame 5 is the
+down-facing idle), and the `OBJ_EVENT_GFX_* → mmodel member` map lives in
+`Unk_ov5_021FC9B4` (src/overlay005/ov5_021FAF40.c). The tool decodes each
+character's down-idle frame, crops it to a 16×32 sprite, and writes
+`data/sprites/npcs/platinum/<stem>.png` + an `index.json`. This index is kept
+separate from the Kanto/GBA one (many stems collide: youngster, mom, …); the
+renderer prefers it only on Sinnoh maps.

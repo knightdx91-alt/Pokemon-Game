@@ -17,7 +17,8 @@ window.GameRenderer = (function () {
     let _tilesetMeta        = null;
 
     // NPC sprite state
-    let _npcIndex    = null;
+    let _npcIndex          = null;
+    let _npcIndexPlatinum  = null;   // Sinnoh/Platinum sprites, preferred on sinnoh maps
     let _npcImgCache = new Map();
 
     // Player sprite state
@@ -226,7 +227,7 @@ window.GameRenderer = (function () {
                     } else {
                         ctx.drawImage(img, 0, 0, 16, 16, sx, sy, TILE_PX, TILE_PX);
                     }
-                } else if (_npcIndex && stem && _npcIndex[stem] !== undefined) {
+                } else if (stem && _npcPath(stem)) {
                     // Sprite in index but not yet loaded — skip silently this frame
                 } else if (_npcIndex && stem) {
                     // Unknown sprite — draw a generic person silhouette placeholder
@@ -284,19 +285,35 @@ window.GameRenderer = (function () {
             .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
             .then(data => { _npcIndex = data; })
             .catch(e => console.warn('[Renderer] Failed to load NPC sprite index:', e));
+        // Sinnoh (Platinum) sprites live in a separate index so they don't
+        // clobber the Kanto sprites for shared stems (youngster, mom, …).
+        fetch('data/sprites/npcs/platinum/index.json')
+            .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
+            .then(data => { _npcIndexPlatinum = data; })
+            .catch(() => { _npcIndexPlatinum = {}; });
+    }
+
+    /** Resolve a sprite path for a stem, preferring Platinum art on Sinnoh maps. */
+    function _npcPath(stem) {
+        const region = _map && _map.region;
+        if (region === 'sinnoh' && _npcIndexPlatinum && _npcIndexPlatinum[stem]) {
+            return _npcIndexPlatinum[stem];
+        }
+        return _npcIndex && _npcIndex[stem] ? _npcIndex[stem] : null;
     }
 
     function _getNpcImg(stem) {
-        if (!_npcIndex || !_npcIndex[stem]) return null;
-        if (_npcImgCache.has(stem)) {
-            const v = _npcImgCache.get(stem);
+        const path = _npcPath(stem);
+        if (!path) return null;
+        if (_npcImgCache.has(path)) {
+            const v = _npcImgCache.get(path);
             return (v instanceof HTMLImageElement) ? v : null;
         }
-        _npcImgCache.set(stem, 'loading');
+        _npcImgCache.set(path, 'loading');
         const img = new Image();
-        img.onload  = () => { _npcImgCache.set(stem, img); };
-        img.onerror = () => { _npcImgCache.set(stem, 'error'); };
-        img.src = _npcIndex[stem];
+        img.onload  = () => { _npcImgCache.set(path, img); };
+        img.onerror = () => { _npcImgCache.set(path, 'error'); };
+        img.src = path;
         return null;
     }
 
