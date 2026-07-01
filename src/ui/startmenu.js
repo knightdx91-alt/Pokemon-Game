@@ -1194,14 +1194,9 @@ window.GameStartMenu = (function () {
         pillArrow(16*S, -1);
         pillArrow(98*S, +1);
 
-        // ── Pocket name centered in the pill (pill interior x=22..98) ────────
-        // Text sits directly on the cream pill baked into the EE background.
-        // EE's font1 is a small proportional sans — use plain sans-serif.
-        ctx.textBaseline = 'top';
-        ctx.fillStyle = '#484848';
-        ctx.font = (8*S) + 'px Arial, "Helvetica Neue", sans-serif';
-        var labelW = ctx.measureText(pocket.label).width;
-        ctx.fillText(pocket.label, (60*S) - labelW/2, 12*S);
+        // ── Pocket name centered in the pill, in the GBA bitmap font ─────────
+        var labelW = window.GameFont ? GameFont.measure(pocket.label.toUpperCase(), 'small') : 0;
+        _pdT(ctx, pocket.label.toUpperCase(), 60 - labelW / 2, 13, '#484848');
 
         // ── Pocket icon row directly under the pill ──────────────────────────
         var iconRowY = 25*S;
@@ -1237,27 +1232,23 @@ window.GameStartMenu = (function () {
 
         // ── Description text in the white bottom-left box ────────────────────
         var desc = isClosePack ? 'Return to the field.' : (selItem.desc || selItem.description || '');
-        ctx.fillStyle = TEXT;
-        ctx.font = (7*S) + 'px "Press Start 2P", monospace';
-        ctx.textBaseline = 'top';
-        var words = desc.split(' '), line = '', lx = 7*S, ly = 107*S, maxW = 94*S, lineH = 10*S;
-        for (var w = 0; w < words.length; w++) {
-            var test = line ? line + ' ' + words[w] : words[w];
-            if (ctx.measureText(test).width > maxW && line) {
-                ctx.fillText(line, lx, ly); line = words[w]; ly += lineH;
-                if (ly > 150*S) break;
-            } else { line = test; }
-        }
-        if (line && ly <= 150*S) ctx.fillText(line, lx, ly);
+        (function () {
+            var words = desc.split(' '), line = '', lx = 7, ly = 107, maxW = 94, lineH = 10;
+            for (var w = 0; w < words.length; w++) {
+                var test = line ? line + ' ' + words[w] : words[w];
+                if (window.GameFont && GameFont.measure(test, 'small') > maxW && line) {
+                    _pdT(ctx, line, lx, ly, TEXT); line = words[w]; ly += lineH;
+                    if (ly > 150) break;
+                } else line = test;
+            }
+            if (line && ly <= 150) _pdT(ctx, line, lx, ly, TEXT);
+        })();
 
         // ── Item list inside the bg's right panel (x≈108..236, y≈4..156) ─────
         var MAX_VIS = 9;
         var totalRows = items.length + 1; // +1 for Cancel
         var scroll = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), totalRows - MAX_VIS));
         if (scroll < 0) scroll = 0;
-
-        ctx.font = (7*S) + 'px "Press Start 2P", monospace';
-        ctx.textBaseline = 'top';
 
         function drawCursor(cx, cy, h) {
             ctx.fillStyle = TEXT; // EE cursor is dark
@@ -1281,18 +1272,15 @@ window.GameStartMenu = (function () {
                 drawCursor(113*S, row_y, 13*S);
             }
 
+            var rowLy = 8 + j * 16 + 2;   // logical y for bitmap text
             if (idx < items.length) {
                 var item = items[idx];
-                ctx.fillStyle = TEXT;
-                ctx.fillText(item.name || item.itemId || '?', 122*S, row_y);
-                // EE qty format: lowercase x, number right-aligned
-                ctx.fillText('x', 204*S, row_y);
-                var qn = String(item.quantity || 1);
-                ctx.fillText(qn, 230*S - ctx.measureText(qn).width, row_y);
+                _pdT(ctx, (item.name || item.itemId || '?'), 122, rowLy, TEXT);
+                var qn = 'x' + String(item.quantity || 1);
+                var qw = window.GameFont ? GameFont.measure(qn, 'small') : 0;
+                _pdT(ctx, qn, 232 - qw, rowLy, TEXT);
             } else {
-                // EE's cancel entry
-                ctx.fillStyle = TEXT;
-                ctx.fillText('Close Pack', 122*S, row_y);
+                _pdT(ctx, 'CLOSE PACK', 122, rowLy, TEXT);
             }
         }
 
@@ -1308,6 +1296,7 @@ window.GameStartMenu = (function () {
     }
 
     function _buildBag(el) {
+        if (window.GameFont && !GameFont.isReady()) { GameFont.load(function () { _render(); }); }
         el.style.cssText = 'padding:0;overflow:hidden;background:none;position:absolute;inset:0;';
 
         var backBtn = document.createElement('button');
