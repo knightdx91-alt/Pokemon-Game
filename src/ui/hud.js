@@ -290,5 +290,9 @@ window.GameHUD = (function () {
         update();
     }
 
-    return { init, update, setFps };
+    // Hide/restore the persistent info chip while a full-screen menu is open.
+    function hideInfo() { if (infoEl) infoEl.style.display = 'none'; }
+    function showInfo() { if (infoEl) infoEl.style.display = ''; }
+
+    return { init, update, setFps, hideInfo, showInfo };
 })();

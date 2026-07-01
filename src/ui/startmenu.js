@@ -268,34 +268,43 @@ window.GameStartMenu = (function () {
         voidEl.className = 'sm-void';
         topRow.appendChild(voidEl);
 
-        // Right panel — fully canvas-rendered so Chrome dark mode cannot touch it
-        const PW = 108, ROW_H = 18, PAD_X = 6, FONT_PX = 8;
-        const PH = ITEMS.length * ROW_H;
+        // Right panel — drawn at 2x with the real FireRed window frame + small
+        // font (same assets the bag/party screens use), sized to fit its labels.
+        const PS = 1, ROW_H = 13, PAD_X = 7, ARROW_W = 8;
         const panelCanvas = document.createElement('canvas');
-        panelCanvas.width  = PW;
-        panelCanvas.height = PH;
-        panelCanvas.style.cssText = 'display:block;flex:none;width:48%;min-width:88px;max-width:116px;height:auto;pointer-events:all;border-left:2px solid #101010;border-top:2px solid #101010;border-bottom:2px solid #101010;cursor:pointer;image-rendering:pixelated;';
+        panelCanvas.style.cssText = 'display:block;flex:none;width:48%;min-width:88px;max-width:116px;height:auto;pointer-events:all;cursor:pointer;image-rendering:pixelated;';
         const pc = panelCanvas.getContext('2d');
+        pc.imageSmoothingEnabled = false;
+
+        function _labelFor(itm) {
+            return (itm.id === 'PLAYER') ? _playerName().toUpperCase() : itm.label.toUpperCase();
+        }
 
         function _drawPanel() {
-            pc.clearRect(0, 0, PW, PH);
-            // White background
-            pc.fillStyle = '#f8f8f0';
-            pc.fillRect(0, 0, PW, PH);
-            // Row highlight for selected
-            pc.fillStyle = 'rgba(0,0,0,0.08)';
-            pc.fillRect(0, selectedIdx * ROW_H, PW, ROW_H);
-            // Text
-            pc.font = 'bold ' + FONT_PX + 'px "Press Start 2P", monospace';
-            pc.textBaseline = 'middle';
-            ITEMS.forEach(function(itm, i) {
-                const y = i * ROW_H + ROW_H / 2;
-                pc.fillStyle = '#181818';
-                if (i === selectedIdx) {
-                    pc.fillText('▶', PAD_X, y);
+            _loadPartyAssets(function(assets) {
+                const img = assets.img || {}, meta = assets.meta || {};
+                const font = _tintFont(img.font_small, '#5a5a5a', '#c8c8c0');
+                // size panel to widest label
+                let maxW = 0;
+                ITEMS.forEach(function(itm) {
+                    maxW = Math.max(maxW, _measureText(meta, 'small', _labelFor(itm)));
+                });
+                const PW_GBA = PAD_X + ARROW_W + maxW + PAD_X;
+                const PH_GBA = 10 + ITEMS.length * ROW_H;
+                if (panelCanvas.width !== PW_GBA * PS) {
+                    panelCanvas.width = PW_GBA * PS;
+                    panelCanvas.height = PH_GBA * PS;
+                    pc.imageSmoothingEnabled = false;
                 }
-                const label = (itm.id === 'PLAYER') ? _playerName().toUpperCase() : itm.label.toUpperCase();
-                pc.fillText(label, PAD_X + 12, y);
+                pc.clearRect(0, 0, panelCanvas.width, panelCanvas.height);
+                _draw9Slice(pc, img.msg_frame, 0, 0, PW_GBA, PH_GBA, '#f8f8f0', PS);
+                ITEMS.forEach(function(itm, i) {
+                    const y = 8 + i * ROW_H;
+                    if (i === selectedIdx) {
+                        _drawFRText(pc, font, meta, 'small', '▶', PAD_X - 2, y, PS);
+                    }
+                    _drawFRText(pc, font, meta, 'small', _labelFor(itm), PAD_X + ARROW_W, y, PS);
+                });
             });
         }
         _drawPanel();
@@ -303,38 +312,51 @@ window.GameStartMenu = (function () {
         // Map canvas clicks to item selection
         panelCanvas.addEventListener('click', function(e) {
             const rect = panelCanvas.getBoundingClientRect();
-            const scaleY = PH / rect.height;
-            const iy = Math.floor((e.clientY - rect.top) * scaleY / ROW_H);
+            const scaleY = panelCanvas.height / rect.height;   // native px per CSS px
+            const localY = (e.clientY - rect.top) * scaleY;    // native y
+            const iy = Math.floor((localY - 8 * PS) / (ROW_H * PS));
             if (iy >= 0 && iy < ITEMS.length) { selectedIdx = iy; _confirmSelected(); }
         });
 
         topRow.appendChild(panelCanvas);
         menuEl.appendChild(topRow);
 
-        // Blue description bar at bottom — also canvas
-        const DW = menuEl.offsetWidth || 240, DH = 34;
+        // Blue description bar at bottom — real FireRed small font on FR blue.
+        const DS = 2, LINE_H = 12;
+        const DW = (menuEl.offsetWidth || 240);
         const descCanvas = document.createElement('canvas');
-        descCanvas.width  = DW || 240;
-        descCanvas.height = DH;
-        descCanvas.style.cssText = 'display:block;flex:none;width:100%;height:34px;pointer-events:none;';
+        descCanvas.width  = DW * DS;
+        descCanvas.height = 40 * DS;
+        descCanvas.style.cssText = 'display:block;flex:none;width:100%;height:40px;pointer-events:none;image-rendering:pixelated;';
         const dc = descCanvas.getContext('2d');
-        dc.fillStyle = '#2870c0';
-        dc.fillRect(0, 0, descCanvas.width, DH);
-        dc.fillStyle = '#ffffff';
-        dc.font = '7px "Press Start 2P", monospace';
-        dc.textBaseline = 'top';
-        const selItem = ITEMS[selectedIdx];
-        const descText = selItem ? (ITEM_DESCS[selItem.id] || '') : '';
-        // Word-wrap simple: split by space, draw lines
-        const words = descText.split(' ');
-        let line = '', lineY = 6, maxW = descCanvas.width - 12;
-        words.forEach(function(w) {
-            const test = line ? line + ' ' + w : w;
-            if (dc.measureText(test).width > maxW && line) {
-                dc.fillText(line, 6, lineY); lineY += 11; line = w;
-            } else { line = test; }
-        });
-        if (line) dc.fillText(line, 6, lineY);
+        dc.imageSmoothingEnabled = false;
+        function _drawDesc() {
+            dc.fillStyle = '#3878c8';
+            dc.fillRect(0, 0, descCanvas.width, descCanvas.height);
+            _loadPartyAssets(function(assets) {
+                const img = assets.img || {}, meta = assets.meta || {};
+                const font = _tintFont(img.font_small, '#f8f8f8', '#405890');
+                dc.fillStyle = '#3878c8';
+                dc.fillRect(0, 0, descCanvas.width, descCanvas.height);
+                const selItem = ITEMS[selectedIdx];
+                const descText = selItem ? (ITEM_DESCS[selItem.id] || '') : '';
+                // honour explicit newlines, then word-wrap each to width
+                const maxW = DW - 12;
+                let ly = 6;
+                descText.split('\n').forEach(function(para) {
+                    let line = '';
+                    para.split(' ').forEach(function(w) {
+                        const test = line ? line + ' ' + w : w;
+                        if (_measureText(meta, 'small', test) > maxW && line) {
+                            _drawFRText(dc, font, meta, 'small', line, 6, ly, DS);
+                            ly += LINE_H; line = w;
+                        } else { line = test; }
+                    });
+                    if (line) { _drawFRText(dc, font, meta, 'small', line, 6, ly, DS); ly += LINE_H; }
+                });
+            });
+        }
+        _drawDesc();
         menuEl.appendChild(descCanvas);
     }
 
@@ -3104,11 +3126,13 @@ window.GameStartMenu = (function () {
     function open() {
         if (!menuEl) return;
         selectedIdx=0; page='main'; _subIdx=0; _saveDone=false; isOpen=true;
+        if (window.GameHUD && GameHUD.hideInfo) GameHUD.hideInfo();
         menuEl.classList.add('open'); _render();
     }
     function close() {
         if (!menuEl) return;
         isOpen=false; menuEl.classList.remove('open');
+        if (window.GameHUD && GameHUD.showInfo) GameHUD.showInfo();
         menuEl.style.visibility = 'visible';
         // Restore z-index after battle bag use
         menuEl.style.zIndex = '';
