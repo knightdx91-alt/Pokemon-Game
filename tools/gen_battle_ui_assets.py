@@ -13,7 +13,7 @@ the meaningful regions, split the sprite atlases, and re-emit clean RGBA PNGs
 Run:  python3 tools/gen_battle_ui_assets.py
 Needs: pip install pillow ; network access to raw.githubusercontent.com
 """
-import io, json, os, sys, urllib.request
+import io, json, os, struct, sys, urllib.request
 
 from PIL import Image
 
@@ -27,6 +27,7 @@ NEEDED = [
     "hpbar.png",
     "expbar.png",
     "status.png",
+    "textbox.png",
 ]
 
 
@@ -116,6 +117,50 @@ def save_strip(pixels, path):
     im.save(path)
 
 
+def fetch_bin(name):
+    url = f"{RAW}/{name}"
+    req = urllib.request.Request(url, headers={"User-Agent": "pokemon-game-tools"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return r.read()
+
+
+def battle_windows(textbox, mapbin):
+    """Assemble the battle textbox tilemap and extract the three bottom-bar
+    window frames: message (full teal), action-select (teal prompt + white
+    command box), move-select (white move list + white type/PP box).
+    Returns dict name -> RGBA Image (240x48), plus a meta dict of splits."""
+    ents = struct.unpack(f"<{len(mapbin)//2}H", mapbin)
+    MW, MH = 32, len(ents) // 32
+    canvas = Image.new("RGBA", (MW * 8, MH * 8), (0, 0, 0, 0))
+    for i, e in enumerate(ents):
+        tile = e & 0x3FF
+        tx, ty = (tile % 16) * 8, (tile // 16) * 8
+        if ty + 8 > textbox.height:
+            continue
+        t = textbox.crop((tx, ty, tx + 8, ty + 8))
+        if (e >> 10) & 1: t = t.transpose(Image.FLIP_LEFT_RIGHT)
+        if (e >> 11) & 1: t = t.transpose(Image.FLIP_TOP_BOTTOM)
+        canvas.paste(t, ((i % MW) * 8, (i // MW) * 8))
+    canvas = transparent_black(canvas)
+    # Detect the filled 48px row bands (the three window layouts).
+    px = canvas.load()
+    def filled(y):
+        return any(px[x, y][3] for x in range(canvas.width))
+    bands, y = [], 0
+    while y < canvas.height:
+        if filled(y):
+            s = y
+            while y < canvas.height and filled(y): y += 1
+            bands.append((s, y))
+        else:
+            y += 1
+    names = ["msg_frame", "action_frame", "move_frame"]
+    out = {}
+    for name, (s, e) in zip(names, bands):
+        out[name] = canvas.crop((0, s, 240, e))
+    return out
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     src = {n: fetch(n) for n in NEEDED}
@@ -170,6 +215,17 @@ def main():
     st.save(os.path.join(OUT, "status.png"))
     meta["status"] = {"w": 24, "h": 8,
                       "order": ["psn", "par", "slp", "frz", "brn", "frb"]}
+
+    # --- Battle bottom-bar window frames (message / action / move) ---
+    wins = battle_windows(src["textbox.png"], fetch_bin("textbox_map.bin"))
+    for name, im in wins.items():
+        im.save(os.path.join(OUT, name + ".png"))
+    meta["windows"] = {
+        # internal splits (px) measured from the assembled frames
+        "action_prompt_w": 120,   # teal prompt box width; command box to its right
+        "move_list_w": 155,       # move-list box width; type/PP box to its right
+        "frame_h": 48,
+    }
 
     with open(os.path.join(OUT, "meta.json"), "w") as f:
         json.dump(meta, f, indent=1)

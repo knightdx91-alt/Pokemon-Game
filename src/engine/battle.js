@@ -859,7 +859,7 @@ window.GameBattle = (function () {
   </div>
   <canvas id="bt-player-hb" class="bt-hb bt-hb-player" width="104" height="40"></canvas>
 </div>
-<div id="bt-bottom">
+<div id="bt-bottom" class="state-msg">
   <div id="bt-text-box"><div id="bt-text"></div></div>
   <div id="bt-action-box" style="display:none">
     <button class="bt-act" data-act="0">FIGHT</button>
@@ -1020,8 +1020,19 @@ window.GameBattle = (function () {
     // -----------------------------------------------------------------------
     // Message system
     // -----------------------------------------------------------------------
+    // Swap the bottom-bar background to the matching Emerald textbox frame.
+    function _setBottomFrame(state) {
+        const b = document.getElementById('bt-bottom');
+        if (b) b.className = 'state-' + state;
+        if (state !== 'move') {
+            const info = document.getElementById('bt-move-info');
+            if (info) info.remove();
+        }
+    }
+
     function _showMessage(text, callback) {
         _phase = 'anim';
+        _setBottomFrame('msg');
         const textEl   = document.getElementById('bt-text');
         const textBox  = document.getElementById('bt-text-box');
         const actionBox = document.getElementById('bt-action-box');
@@ -1066,12 +1077,16 @@ window.GameBattle = (function () {
     // -----------------------------------------------------------------------
     function _showActionMenu() {
         _phase = 'action';
+        _setBottomFrame('action');
+        const textEl    = document.getElementById('bt-text');
         const textBox   = document.getElementById('bt-text-box');
         const actionBox = document.getElementById('bt-action-box');
         const moveBox   = document.getElementById('bt-move-box');
         const bagBox    = document.getElementById('bt-bag-box');
         const partyBox  = document.getElementById('bt-party-box');
-        if (textBox)   textBox.style.display   = 'none';
+        // Emerald shows the prompt on the teal-left box while commands sit right.
+        if (textEl)    textEl.textContent = 'What will\n' + _getPlayerName() + ' do?';
+        if (textBox)   textBox.style.display   = 'block';
         if (actionBox) { actionBox.style.display = 'grid'; _highlightAction(0); }
         if (moveBox)   moveBox.style.display   = 'none';
         if (bagBox)    bagBox.style.display    = 'none';
@@ -1099,6 +1114,7 @@ window.GameBattle = (function () {
     // -----------------------------------------------------------------------
     function _showMoveSelect() {
         _phase = 'move_select';
+        _setBottomFrame('move');
         const textBox   = document.getElementById('bt-text-box');
         const actionBox = document.getElementById('bt-action-box');
         const moveBox   = document.getElementById('bt-move-box');
@@ -1146,11 +1162,13 @@ window.GameBattle = (function () {
             }
         }
 
-        const back = document.createElement('button');
-        back.className = 'bt-back-btn';
-        back.textContent = '← Back';
-        back.addEventListener('click', () => _showActionMenu());
-        moveBox.appendChild(back);
+        // Type/PP info panel over the right white box (B backs out — no button).
+        const bottom = document.getElementById('bt-bottom');
+        let info = document.getElementById('bt-move-info');
+        if (info) info.remove();
+        info = document.createElement('div');
+        info.id = 'bt-move-info';
+        if (bottom) bottom.appendChild(info);
         _selectedMove = 0;
         _highlightMove(0);
     }
@@ -1159,6 +1177,21 @@ window.GameBattle = (function () {
         _selectedMove = idx;
         if (!_el) return;
         _el.querySelectorAll('.bt-move-btn').forEach((b,i) => b.classList.toggle('selected', i === idx));
+        // Update the type/PP box for the selected move.
+        const info = document.getElementById('bt-move-info');
+        if (info) {
+            const moves = _player.moves || [];
+            const mv = moves[idx];
+            const md = mv && ((_movesDb && _movesDb[mv]) || { name:_fmt(mv), type:'Normal', pp:10 });
+            if (md) {
+                const pp = _playerPP[idx] !== undefined ? _playerPP[idx] : (md.pp || 10);
+                const maxPP = md.pp || 10;
+                info.innerHTML = `<span class="bt-mi-pp">PP&nbsp;&nbsp;${pp}/${maxPP}</span>`
+                    + `<span class="bt-mi-type type-badge" data-type="${(md.type||'Normal').toLowerCase()}">${(md.type||'Normal').toUpperCase()}</span>`;
+            } else {
+                info.innerHTML = '';
+            }
+        }
     }
 
     // -----------------------------------------------------------------------
@@ -1179,6 +1212,7 @@ window.GameBattle = (function () {
             if (textBox)   textBox.style.display   = 'none';
             if (actionBox) actionBox.style.display = 'none';
             if (!bagBox) return;
+            _setBottomFrame('plain');
             bagBox.style.display = 'flex';
             _rebuildBagUI(bagBox);
         }
