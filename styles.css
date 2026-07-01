@@ -968,3 +968,34 @@ body.reverse-landscape #game-wrapper {
     .mon-sprite { width: 38vw; }
     .mon-info { min-width: 130px; }
 }
+
+/* ============================================================
+   OVERWORLD DIALOGUE BOX
+   ============================================================ */
+#dialogue-box {
+    position: fixed;
+    left: 50%;
+    bottom: 3vh;
+    transform: translateX(-50%);
+    z-index: 8500;
+    width: min(92vw, 640px);
+    background: #f8f8f0;
+    border: 4px solid #303030;
+    border-radius: 10px;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.35), inset 0 0 0 2px #a0a0b0;
+    padding: 16px 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    line-height: 1.45;
+    color: #202020;
+    -webkit-user-select: none;
+    user-select: none;
+}
+#dialogue-box.hidden { display: none; }
+.dialogue-text { min-height: 2.6em; white-space: pre-wrap; }
+.dialogue-cursor {
+    text-align: right;
+    color: #e53935;
+    animation: dlgBlink 0.9s steps(1) infinite;
+}
+@keyframes dlgBlink { 50% { opacity: 0; } }

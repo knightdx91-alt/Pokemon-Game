@@ -52,6 +52,17 @@
 
     // --- Previous input state (for rising-edge detection) ---
     let prevStartState = false;
+    let prevAState = false;
+
+    /** Start a trainer battle (called back from GameInteract). */
+    function startTrainerBattle(trainer, onTrainerEnd) {
+        _inBattle = true;
+        GameBattle.startTrainer(trainer, function (result) {
+            _inBattle = false;
+            _warpCooldownUntil = performance.now() + 400;
+            if (onTrainerEnd) onTrainerEnd(result);
+        });
+    }
 
     // ---------------------------------------------------------------
     // Transition helpers
@@ -184,7 +195,7 @@
     // ---------------------------------------------------------------
     function gameLoop(timestamp) {
         // Process input — move one tile per keypress with cooldown
-        if (!_transitioning && !_inBattle) {
+        if (!_transitioning && !_inBattle && !GameDialogueBox.visible && !GameInteract.isBusy()) {
             const elapsed = timestamp - lastMoveTime;
             if (elapsed >= MOVE_COOLDOWN_MS) {
                 const inp = GameInput.state;
@@ -239,6 +250,14 @@
             if (window.GameStartMenu) GameStartMenu.toggle();
         }
         prevStartState = curStart;
+
+        // A button — rising edge → interact with facing NPC/sign (overworld only)
+        const curA = GameInput.state.a;
+        if (curA && !prevAState && !_inBattle && !_transitioning
+            && !GameDialogueBox.visible && !GameInteract.isBusy()) {
+            GameInteract.tryInteract(player, startTrainerBattle);
+        }
+        prevAState = curA;
 
         // Update camera
         GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);

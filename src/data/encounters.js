@@ -34,6 +34,13 @@ window.GameEncounters = (function () {
         return !!(_byMap && _byMap[mapId]);
     }
 
+    /** Distinct species (SPECIES_* ids) that appear on the given map, or []. */
+    function speciesFor(mapId) {
+        const t = _byMap && _byMap[mapId];
+        if (!t) return [];
+        return Array.from(new Set(t.mons.map(m => m.species)));
+    }
+
     /** Per-grass-step probability (0..1) that an encounter triggers. */
     function stepChance(mapId) {
         if (!_byMap || !_byMap[mapId]) return 0;
@@ -60,5 +67,5 @@ window.GameEncounters = (function () {
         return GamePokedex.create(slot.species, level);
     }
 
-    return { init, hasEncounters, stepChance, roll };
+    return { init, hasEncounters, speciesFor, stepChance, roll };
 })();

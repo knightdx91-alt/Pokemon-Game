@@ -8,7 +8,12 @@ window.GameBattle = (function () {
     let onEndCb = null;
 
     let player = null;      // current player Pokémon
-    let enemy = null;       // wild Pokémon
+    let enemy = null;       // active opponent Pokémon
+
+    // Trainer-battle state (null / false for wild battles)
+    let isTrainer = false;
+    let trainer = null;         // { name, party, prize, outro }
+    let trainerIndex = 0;       // index of active enemy in trainer.party
     let phase = 'intro';    // intro|message|menu|fight|bag|switch|end
     let menuIndex = 0;
     let subIndex = 0;
@@ -27,6 +32,9 @@ window.GameBattle = (function () {
         if (active) return;
         active = true;
         onEndCb = onEnd;
+        isTrainer = false;
+        trainer = null;
+        trainerIndex = 0;
         enemy = wildMon;
         GameParty.markSeen(enemy.dex);
         const hi = GameParty.firstHealthyIndex();
@@ -35,6 +43,24 @@ window.GameBattle = (function () {
         buildUI();
         phase = 'intro';
         queue([`A wild ${enemy.name} appeared!`, `Go! ${player.name}!`], () => setPhase('menu'));
+        rafId = requestAnimationFrame(loop);
+    }
+
+    /** Begin a trainer battle. trainer = { name, party:[mons], prize, outro }. */
+    function startTrainer(t, onEnd) {
+        if (active) return;
+        active = true;
+        onEndCb = onEnd;
+        isTrainer = true;
+        trainer = t;
+        trainerIndex = 0;
+        enemy = t.party[0];
+        const hi = GameParty.firstHealthyIndex();
+        player = GameParty.party()[hi];
+        if (!player) { active = false; if (onEnd) onEnd({ result: 'nomon' }); return; }
+        buildUI();
+        phase = 'intro';
+        queue([`${t.name} sent out ${enemy.name}!`, `Go! ${player.name}!`], () => setPhase('menu'));
         rafId = requestAnimationFrame(loop);
     }
 
@@ -276,11 +302,35 @@ window.GameBattle = (function () {
     function onEnemyFaint() {
         const gain = Math.floor((enemy.baseExp * enemy.level) / 7) + 1;
         const events = GamePokedex.gainExp(player, gain);
-        const msgs = [`${player.name} gained ${gain} EXP!`];
+        const faintName = enemy.name;
+        const msgs = [
+            isTrainer ? `${trainer.name}'s ${faintName} fainted!` : `${player.name} gained ${gain} EXP!`
+        ];
+        if (isTrainer) msgs.push(`${player.name} gained ${gain} EXP!`);
         for (const ev of events) {
             msgs.push(`${player.name} grew to Lv${ev.level}!`);
             for (const mv of ev.learned) msgs.push(`${player.name} learned ${GameMoves.get(mv).name}!`);
         }
+
+        if (isTrainer) {
+            // More Pokémon on the trainer's team?
+            if (trainerIndex < trainer.party.length - 1) {
+                trainerIndex++;
+                enemy = trainer.party[trainerIndex];
+                msgs.push(`${trainer.name} sent out ${enemy.name}!`);
+                renderInfo();
+                queue(msgs, () => { refreshSprites(); renderInfo(); setPhase('menu'); });
+                return;
+            }
+            // Trainer defeated
+            GameParty.addMoney(trainer.prize);
+            msgs.push(trainer.outro || `${trainer.name} was defeated!`);
+            msgs.push(`You got $${trainer.prize} for winning!`);
+            renderInfo();
+            queue(msgs, () => finish({ result: 'win', trainer: true }));
+            return;
+        }
+
         GameParty.addMoney(enemy.level * 12);
         renderInfo();
         queue(msgs, () => finish({ result: 'win' }));
@@ -300,6 +350,10 @@ window.GameBattle = (function () {
     // Catching
     // ---------------------------------------------------------------
     function tryCatch(ballKey) {
+        if (isTrainer) {
+            queue(['You can\'t catch a Trainer\'s POKéMON!'], () => setPhase('menu'));
+            return;
+        }
         const bag = GameParty.bag();
         bag[ballKey]--;
         const ballBonus = ballKey === 'ultraball' ? 2 : ballKey === 'greatball' ? 1.5 : 1;
@@ -335,6 +389,10 @@ window.GameBattle = (function () {
     // Running
     // ---------------------------------------------------------------
     function tryRun() {
+        if (isTrainer) {
+            queue(['No! There\'s no running from a Trainer battle!'], () => setPhase('menu'));
+            return;
+        }
         const chance = player.stats.speed >= enemy.stats.speed ? 1 : 0.5 + Math.random() * 0.35;
         busy = true;
         if (Math.random() < chance) {
@@ -453,5 +511,5 @@ window.GameBattle = (function () {
         else if (phase === 'switch' && player.hp > 0) setPhase('menu');
     }
 
-    return { start, get active() { return active; } };
+    return { start, startTrainer, get active() { return active; } };
 })();
