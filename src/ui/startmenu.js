@@ -4,6 +4,7 @@ window.GameStartMenu = (function () {
 
     // Items match EE's BuildNormalStartMenu order
     const ITEMS = [
+        { id: 'POKEDEX',  label: 'POKéDEX'  },
         { id: 'POKEMON',  label: 'POKéMON'  },
         { id: 'BAG',      label: 'BAG'      },
         { id: 'PLAYER',   label: ''         },
@@ -2191,6 +2192,7 @@ window.GameStartMenu = (function () {
     }
 
     function _buildPokedex(el) {
+        if (window.GameFont && !GameFont.isReady()) { GameFont.load(function () { _render(); }); }
         if (!_dexList) {
             _makeCanvasShell(el, function(ctx) {
                 _canvasBg(ctx, null);
@@ -2231,102 +2233,85 @@ window.GameStartMenu = (function () {
         });
     }
 
-    function _drawPokedexCanvas(ctx, bg) {
-        _canvasBg(ctx, bg);
-        var S = 2;
-        var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
-
-        // Title bar
-        ctx.fillStyle = _tc.titleBg;
-        ctx.fillRect(0, 0, GBA_W, 20*S);
-        ctx.fillStyle = COL_CYAN;
-        ctx.fillRect(0, 20*S, GBA_W, 2);
-        ctx.textBaseline = 'top';
-        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
-        ctx.fillStyle = _tc.hi;
-        ctx.fillText('POKEDEX', 8*S, 5*S);
-
-        if (!_dexList || !_dexList.length) {
-            ctx.fillStyle = COL_DIM;
-            ctx.font = (7*S)+'px "Press Start 2P", monospace';
-            ctx.fillText('No data loaded.', 8*S, 40*S);
-            return;
+    // Small bitmap-font text helper for the Pokédex (logical GBA px, scale 2).
+    function _pdT(ctx, str, gx, gy, color, kind) {
+        if (window.GameFont) GameFont.draw(ctx, String(str), gx, gy, { scale: 2, kind: kind || 'small', color: color });
+    }
+    // Draw a tiny Poké Ball (caught marker) at logical (gx,gy), ~7px.
+    function _pdBall(ctx, gx, gy, seenOnly) {
+        var S = 2, x = gx * S, y = gy * S, r = 3 * S;
+        ctx.save();
+        ctx.translate(x + r, y + r);
+        ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.fillStyle = seenOnly ? '#c8c8c0' : '#e02020'; ctx.fill();
+        if (!seenOnly) {
+            ctx.beginPath(); ctx.moveTo(-r, 0); ctx.lineTo(r, 0); ctx.arc(0, 0, r, 0, Math.PI); ctx.closePath();
+            ctx.fillStyle = '#f8f8f8'; ctx.fill();
         }
+        ctx.strokeStyle = '#282828'; ctx.lineWidth = S;
+        ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-r, 0); ctx.lineTo(r, 0); ctx.stroke();
+        ctx.beginPath(); ctx.arc(0, 0, S, 0, Math.PI * 2); ctx.fillStyle = '#f8f8f8'; ctx.fill(); ctx.stroke();
+        ctx.restore();
+    }
+
+    // Emerald Pokédex palette.
+    var PD_TITLE = '#3868a8', PD_TITLE2 = '#28507c', PD_LIST = '#e8ece0',
+        PD_TXT = '#303038', PD_DIM = '#787868', PD_SEL = '#f04030';
+
+    function _drawPokedexCanvas(ctx, bg) {
+        var S = 2;
+        // Background: title strip + light list area.
+        ctx.fillStyle = PD_LIST; ctx.fillRect(0, 0, GBA_W, GBA_H);
+        ctx.fillStyle = PD_TITLE; ctx.fillRect(0, 0, GBA_W, 20 * S);
+        ctx.fillStyle = PD_TITLE2; ctx.fillRect(0, 20 * S, GBA_W, 2 * S);
 
         var saved = window.GameSave && GameSave.state && GameSave.state.pokedex;
         var seen   = new Set((saved && saved.seen)   || []);
         var caught = new Set((saved && saved.caught) || []);
 
+        _pdT(ctx, 'POKéDEX', 8, 6, '#ffffff', 'normal');
+        (function () {
+            var s = 'SEEN ' + seen.size + '   OWN ' + caught.size;
+            var w = window.GameFont ? GameFont.measure(s, 'small') : 0;
+            _pdT(ctx, s, GBA_W / S - 8 - w, 7, '#d8e4f0', 'small');
+        })();
+
+        if (!_dexList || !_dexList.length) {
+            _pdT(ctx, 'No data loaded.', 8, 40, PD_DIM);
+            return;
+        }
+
         var WIN = 9;
-        var start = Math.max(0, _subIdx - Math.floor(WIN/2));
+        var start = Math.max(0, _subIdx - Math.floor(WIN / 2));
         if (start + WIN > _dexList.length) start = Math.max(0, _dexList.length - WIN);
         var end = Math.min(_dexList.length, start + WIN);
 
-        ctx.font = (7*S)+'px "Press Start 2P", monospace';
-        ctx.textBaseline = 'middle';
         for (var relI = 0; relI < end - start; relI++) {
             var absI = start + relI;
             var entry = _dexList[absI];
-            var rowTop = (24 + relI * 14) * S;
-            var rowMid = rowTop + 7*S;
+            var rowTop = 24 + relI * 14;        // logical px
+            var textY = rowTop + 3;
             var isSel = absI === _subIdx;
             var hasSeen = seen.has(entry.num);
             var hasCaught = caught.has(entry.num);
 
             if (isSel) {
-                ctx.fillStyle = 'rgba(230,8,8,0.12)';
-                ctx.fillRect(0, rowTop, GBA_W, 14*S);
-                ctx.fillStyle = COL_CYAN;
-                ctx.fillRect(0, rowTop, 2*S, 14*S);
+                ctx.fillStyle = 'rgba(240,64,48,0.16)';
+                ctx.fillRect(0, rowTop * S, GBA_W, 14 * S);
+                _pdT(ctx, '▶', 3, textY, PD_SEL);
             }
-
-            // Arrow
-            ctx.fillStyle = isSel ? COL_CYAN : 'transparent';
-            ctx.fillText('▶', 2*S, rowMid);
-
-            // Dex num
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText(String(entry.num).padStart(3,'0'), 10*S, rowMid);
-
-            // Caught dot
-            if (hasCaught) {
-                ctx.fillStyle = COL_CYAN;
-                ctx.fillText('●', 218*S, rowMid);
-            } else if (hasSeen) {
-                ctx.fillStyle = '#888899';
-                ctx.fillText('○', 218*S, rowMid);
-            }
-
-            // Name — white if seen, ??? if not
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText(hasSeen ? entry.name : '???', 36*S, rowMid);
-
-            // Type tags (seen only)
-            if (hasSeen && entry.types) {
-                var tx = 110*S;
-                for (var ti = 0; ti < Math.min(2, entry.types.length); ti++) {
-                    var tname = entry.types[ti];
-                    var tcol = TYPE_COLORS[tname] || '#888888';
-                    var tw = ctx.measureText(tname).width + 4*S;
-                    ctx.fillStyle = tcol;
-                    ctx.fillRect(tx, rowTop + 2*S, tw, 10*S);
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillText(tname, tx + 2*S, rowMid);
-                    tx += tw + 2*S;
-                }
-            }
+            if (hasSeen || hasCaught) _pdBall(ctx, 14, rowTop + 3, !hasCaught);
+            _pdT(ctx, String(entry.num).padStart(3, '0'), 26, textY, PD_DIM);
+            _pdT(ctx, hasSeen ? entry.name.toUpperCase() : '----------', 52, textY,
+                hasSeen ? PD_TXT : PD_DIM, 'normal');
         }
 
-        // Scroll hint
-        ctx.fillStyle = _tc.titleBg;
-        ctx.fillRect(0, 153*S, GBA_W, 7*S);
-        ctx.fillStyle = COL_CYAN;
-        ctx.fillRect(0, 153*S, GBA_W, 1);
-        ctx.font = (7*S)+'px "Press Start 2P", monospace';
-        ctx.fillStyle = COL_DIM;
-        ctx.fillText((_subIdx+1) + ' / ' + _dexList.length, 4*S, 154*S);
-        if (start > 0) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px "Press Start 2P", monospace'; ctx.fillText('▲', GBA_W-12*S, 22*S); }
-        if (end < _dexList.length) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px "Press Start 2P", monospace'; ctx.fillText('▼', GBA_W-12*S, 150*S); }
+        // Footer.
+        ctx.fillStyle = PD_TITLE; ctx.fillRect(0, 153 * S, GBA_W, 7 * S);
+        _pdT(ctx, (_subIdx + 1) + ' / ' + _dexList.length, 4, 154, '#d8e4f0');
+        if (start > 0) _pdT(ctx, '▲', GBA_W / S - 12, 23, '#ffffff');
+        if (end < _dexList.length) _pdT(ctx, '▼', GBA_W / S - 12, 145, '#ffffff');
     }
 
     function _buildPokedexEntry(el) {
@@ -2344,14 +2329,14 @@ window.GameStartMenu = (function () {
             spriteImg.onerror = function() { /* no sprite */ };
             spriteImg.src = 'data/sprites/pokemon/front/' + keyName + '.png';
 
-            // Tab buttons
+            // Invisible tab hit zones over the canvas-drawn INFO/STATS/MOVES strip
+            // (the labels are painted on the canvas; these just catch taps).
             var tabsEl = document.createElement('div');
-            tabsEl.style.cssText = 'position:absolute;top:72px;left:96px;display:flex;gap:2px;z-index:10;pointer-events:all;';
+            tabsEl.style.cssText = 'position:absolute;top:47%;left:36%;right:2%;height:8%;display:flex;gap:2px;z-index:10;pointer-events:none;';
             ['Info','Stats','Moves'].forEach(function(t, i) {
                 var btn = document.createElement('button');
-                btn.className = 'sm-back-btn' + (_subIdx === i ? ' active' : '');
-                btn.textContent = t;
-                btn.style.cssText = 'pointer-events:all;padding:2px 6px;font-size:10px;' + (_subIdx === i ? 'color:#e60808;font-weight:bold;' : '');
+                btn.textContent = '';
+                btn.style.cssText = 'pointer-events:all;flex:1;background:transparent;border:none;cursor:pointer;';
                 btn.addEventListener('click', function(e) { e.stopPropagation(); _subIdx = i; _render(); });
                 tabsEl.appendChild(btn);
             });
@@ -2360,150 +2345,100 @@ window.GameStartMenu = (function () {
     }
 
     function _drawPokedexEntryCanvas(ctx, entry, keyName, spriteImg) {
-        _canvasBg(ctx, null);
         var S = 2;
-        var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
+        // Emerald palette background.
+        ctx.fillStyle = PD_LIST; ctx.fillRect(0, 0, GBA_W, GBA_H);
+        ctx.fillStyle = PD_TITLE; ctx.fillRect(0, 0, GBA_W, 20 * S);
+        ctx.fillStyle = PD_TITLE2; ctx.fillRect(0, 20 * S, GBA_W, 2 * S);
+        _pdT(ctx, 'POKéDEX', 8, 6, '#ffffff', 'normal');
 
-        ctx.textBaseline = 'top';
+        // Sprite panel (left).
+        ctx.fillStyle = '#f8f8f0'; ctx.fillRect(4 * S, 24 * S, 76 * S, 62 * S);
+        ctx.strokeStyle = PD_DIM; ctx.lineWidth = S;
+        ctx.strokeRect(4 * S, 24 * S, 76 * S, 62 * S);
+        if (spriteImg) ctx.drawImage(spriteImg, 8 * S, 24 * S, 64 * S, 64 * S);
+        else _pdT(ctx, 'No sprite', 8, 50, PD_DIM);
 
-        // Title bar
-        ctx.fillStyle = _tc.titleBg;
-        ctx.fillRect(0, 0, GBA_W, 20*S);
-        ctx.fillStyle = COL_CYAN;
-        ctx.fillRect(0, 20*S, GBA_W, 2);
-        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
-        ctx.fillStyle = _tc.hi;
-        ctx.fillText('POKEDEX', 8*S, 5*S);
-
-        // Sprite area (left): 0..79, y=22..87 (GBA px: 0..79px, 22..87px)
-        if (spriteImg) {
-            ctx.drawImage(spriteImg, 0, 22*S, 80*S, 66*S);
-        } else {
-            ctx.fillStyle = '#1a1a2e';
-            ctx.fillRect(0, 22*S, 80*S, 66*S);
-            ctx.fillStyle = COL_DIM;
-            ctx.font = (7*S)+'px "Press Start 2P", monospace';
-            ctx.fillText('No sprite', 4*S, 50*S);
-        }
-
-        // Info right side: x=82..239, y=22
-        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
-        ctx.fillStyle = COL_TEXT;
-        ctx.fillText(entry.name, 84*S, 24*S);
-        ctx.font = (7*S)+'px "Press Start 2P", monospace';
-        ctx.fillStyle = COL_DIM;
-        ctx.fillText('#' + String(entry.num).padStart(3,'0'), 84*S, 34*S);
-        ctx.fillText(entry.category || '', 84*S, 44*S);
-
-        // Types
+        // Name / number / category (right of sprite).
+        _pdT(ctx, entry.name.toUpperCase(), 84, 24, PD_TXT, 'normal');
+        _pdT(ctx, '#' + String(entry.num).padStart(3, '0'), 84, 36, PD_DIM);
+        _pdT(ctx, entry.category || '', 84, 46, PD_DIM);
         if (entry.types) {
-            var tx = 84*S;
-            entry.types.forEach(function(t) {
-                var tcol = TYPE_COLORS[t] || '#888888';
-                var tw = ctx.measureText(t).width + 4*S;
-                ctx.fillStyle = tcol;
-                ctx.fillRect(tx, 55*S, tw, 10*S);
-                ctx.fillStyle = '#ffffff';
-                ctx.font = (7*S)+'px "Press Start 2P", monospace';
-                ctx.fillText(t, tx + 2*S, 56*S);
-                tx += tw + 2*S;
+            var tx = 84;
+            entry.types.forEach(function (t) {
+                var tcol = TYPE_COLORS[(t || '').toLowerCase()] || '#888888';
+                var lbl = (t || '').toUpperCase();
+                var tw = (window.GameFont ? GameFont.measure(lbl, 'small') : 24) + 8;
+                ctx.fillStyle = tcol; ctx.fillRect(tx * S, 60 * S, tw * S, 10 * S);
+                _pdT(ctx, lbl, tx + 4, 61, '#ffffff');
+                tx += tw + 4;
             });
         }
 
-        // Tabs row area at y=74 (buttons overlaid via HTML, just draw separator)
-        ctx.fillStyle = _tc.titleBg;
-        ctx.fillRect(80*S, 68*S, GBA_W - 80*S, 22*S);
-        ctx.fillStyle = COL_CYAN;
-        ctx.fillRect(80*S, 90*S, GBA_W - 80*S, 2);
+        // Tab strip (INFO / STATS / MOVES) — matches the invisible DOM hit zones.
+        var TABS = ['INFO', 'STATS', 'MOVES'], ttx = 88;
+        TABS.forEach(function (tb, i) {
+            var act = _subIdx === i;
+            var tw2 = (window.GameFont ? GameFont.measure(tb, 'small') : 30) + 8;
+            if (act) { ctx.fillStyle = PD_TITLE; ctx.fillRect(ttx * S, 76 * S, tw2 * S, 11 * S); }
+            _pdT(ctx, tb, ttx + 4, 78, act ? '#ffffff' : PD_DIM);
+            ttx += tw2 + 4;
+        });
 
-        // Body below y=92
-        var bodyY = 92;
+        // Body separator.
+        ctx.fillStyle = PD_TITLE; ctx.fillRect(0, 90 * S, GBA_W, 3 * S);
+        var bodyY = 96;
 
         if (_subIdx === 0) {
-            // Info tab
             var h = entry.height_m || 0, w = entry.weight_kg || 0;
             var ft = Math.floor(h / 0.3048), inch = Math.round((h / 0.3048 - ft) * 12);
             var lbs = Math.round(w * 2.205 * 10) / 10;
             var rows = [
-                ['Height',     h + 'm (' + ft + '\'' + inch + '")'],
-                ['Weight',     w + 'kg (' + lbs + ' lbs)'],
-                ['Catch Rate', String(entry.catch_rate || 0)],
-                ['Exp Rate',   (entry.exp_rate||'').replace('EXP_RATE_','').toLowerCase().replace(/_/g,' ')],
-                ['Egg Groups', (entry.egg_groups||[]).join(', ')],
+                ['HEIGHT',     h + 'm (' + ft + '\'' + inch + '")'],
+                ['WEIGHT',     w + 'kg (' + lbs + ' lbs)'],
+                ['CATCH RATE', String(entry.catch_rate || 0)],
+                ['EGG GROUPS', (entry.egg_groups || []).join(', ')],
             ];
-            ctx.font = (7*S)+'px "Press Start 2P", monospace';
-            rows.forEach(function(r, i) {
-                var ry = (bodyY + i * 12) * S;
-                ctx.fillStyle = COL_DIM;  ctx.fillText(r[0], 4*S, ry);
-                ctx.fillStyle = COL_TEXT; ctx.fillText(r[1], 80*S, ry);
+            rows.forEach(function (r, i) {
+                var ry = bodyY + i * 11;
+                _pdT(ctx, r[0], 6, ry, PD_DIM);
+                _pdT(ctx, r[1], 78, ry, PD_TXT);
             });
-            // Dex entry text wrapped
-            var desc = entry.entry || '';
-            var words = desc.split(' '), line = '', ly = (bodyY + rows.length * 12 + 4) * S;
-            ctx.font = (7*S)+'px "Press Start 2P", monospace';
-            ctx.fillStyle = COL_DIM;
+            var desc = entry.entry || '', words = desc.split(' '), line = '', ly = bodyY + rows.length * 11 + 3;
             for (var wi = 0; wi < words.length; wi++) {
-                var test2 = line ? line + ' ' + words[wi] : words[wi];
-                if (ctx.measureText(test2).width > (GBA_W - 8*S) && line) {
-                    ctx.fillText(line, 4*S, ly); line = words[wi]; ly += 10*S;
-                    if (ly > 154*S) break;
-                } else { line = test2; }
+                var t2 = line ? line + ' ' + words[wi] : words[wi];
+                if (window.GameFont && GameFont.measure(t2, 'small') > (GBA_W / S - 8) && line) {
+                    _pdT(ctx, line, 4, ly, PD_TXT); line = words[wi]; ly += 10;
+                    if (ly > 150) break;
+                } else line = t2;
             }
-            if (line && ly <= 154*S) ctx.fillText(line, 4*S, ly);
-
-            // Evolutions
-            if (entry.evolutions && entry.evolutions.length) {
-                var evoY = Math.min(ly + 14*S, 138*S);
-                ctx.fillStyle = COL_CYAN;
-                ctx.font = (7*S)+'px "Press Start 2P", monospace';
-                ctx.fillText('Evolves into:', 4*S, evoY);
-                entry.evolutions.slice(0, 2).forEach(function(evo, ei) {
-                    var method = (evo.method||'').replace('EVO_','').replace(/_/g,' ').toLowerCase();
-                    ctx.fillStyle = COL_TEXT;
-                    ctx.fillText(evo.into.toUpperCase() + ' — ' + method + (evo.param ? ' '+evo.param : ''), 4*S, evoY + (ei+1)*10*S);
-                });
-            }
+            if (line && ly <= 150) _pdT(ctx, line, 4, ly, PD_TXT);
 
         } else if (_subIdx === 1) {
-            // Stats tab
             var stats = entry.stats || {};
-            var STAT_NAMES = [['hp','HP'],['atk','Attack'],['def','Defense'],['spa','Sp.Atk'],['spd','Sp.Def'],['spe','Speed']];
-            var STAT_COLORS2 = {hp:'#f04040',atk:'#f08030',def:'#f8d030',spa:'#6890f0',spd:'#78c850',spe:'#f85888'};
+            var SN = [['hp','HP'],['atk','ATTACK'],['def','DEFENSE'],['spa','SP.ATK'],['spd','SP.DEF'],['spe','SPEED']];
+            var SC = {hp:'#f04040',atk:'#f08030',def:'#f8d030',spa:'#6890f0',spd:'#78c850',spe:'#f85888'};
             var total = 0;
-            STAT_NAMES.forEach(function(kv, i) {
-                var k = kv[0], label = kv[1];
-                var val = stats[k] || 0;
-                total += val;
-                var ry = (bodyY + i * 10) * S;
-                var pct = Math.min(1, val / 255);
-                ctx.font = (7*S)+'px "Press Start 2P", monospace';
-                ctx.fillStyle = COL_DIM;  ctx.fillText(label, 4*S, ry);
-                ctx.fillStyle = COL_TEXT; ctx.fillText(String(val), 60*S, ry);
-                // bar
-                ctx.fillStyle = '#1a1a2e'; ctx.fillRect(80*S, ry, 150*S, 7*S);
-                ctx.fillStyle = STAT_COLORS2[k]; ctx.fillRect(80*S, ry, Math.round(pct * 150)*S, 7*S);
+            SN.forEach(function (kv, i) {
+                var val = stats[kv[0]] || 0; total += val;
+                var ry = bodyY + i * 10, pct = Math.min(1, val / 200);
+                _pdT(ctx, kv[1], 6, ry, PD_DIM);
+                _pdT(ctx, String(val), 74, ry - 1, PD_TXT, 'normal');
+                ctx.fillStyle = '#c8c8b8'; ctx.fillRect(104 * S, (ry + 1) * S, 126 * S, 5 * S);
+                ctx.fillStyle = SC[kv[0]]; ctx.fillRect(104 * S, (ry + 1) * S, Math.round(pct * 126) * S, 5 * S);
             });
-            ctx.fillStyle = COL_CYAN;
-            ctx.font = (7*S)+'px "Press Start 2P", monospace';
-            ctx.fillText('Total: ' + total, 4*S, (bodyY + STAT_NAMES.length * 10 + 4)*S);
+            _pdT(ctx, 'TOTAL  ' + total, 6, bodyY + SN.length * 10 + 3, PD_TXT, 'normal');
 
         } else {
-            // Moves tab
-            ctx.font = (7*S)+'px "Press Start 2P", monospace';
-            ctx.fillStyle = COL_DIM;
-            ctx.fillText('Loading moves...', 4*S, bodyY*S);
             var fullEntry2 = _dexDb ? _dexDb[keyName] : null;
             var learnset2 = fullEntry2 && fullEntry2.learnset;
-            if (learnset2) {
-                ctx.clearRect(0, bodyY*S, GBA_W, (160 - bodyY)*S);
-                ctx.fillStyle = _tc.bg; ctx.fillRect(0, bodyY*S, GBA_W, (160 - bodyY)*S);
-                var lvl2 = learnset2.level_up || [];
-                lvl2.slice(0, 10).forEach(function(m, i) {
-                    var ry = (bodyY + i * 10) * S;
-                    ctx.fillStyle = COL_DIM;  ctx.fillText('Lv.'+m[0], 4*S, ry);
-                    ctx.fillStyle = COL_TEXT;
-                    var mname = m[1].replace('MOVE_','').replace(/_/g,' ').toLowerCase().replace(/\b\w/g, function(c){return c.toUpperCase();});
-                    ctx.fillText(mname, 40*S, ry);
+            if (!learnset2) { _pdT(ctx, 'No move data.', 6, bodyY, PD_DIM); }
+            else {
+                (learnset2.level_up || []).slice(0, 10).forEach(function (m, i) {
+                    var ry = bodyY + i * 11;
+                    _pdT(ctx, 'Lv.' + m[0], 6, ry, PD_DIM);
+                    var mname = m[1].replace('MOVE_', '').replace(/_/g, ' ');
+                    _pdT(ctx, mname.toUpperCase(), 42, ry, PD_TXT);
                 });
             }
         }
@@ -3178,12 +3113,14 @@ window.GameStartMenu = (function () {
         if (page==='main') { return; } // no horizontal nav on vertical list
         if (page==='journal') { _journalTab=(_journalTab-1+4)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
         if (page==='bag') { _bagPocket=(_bagPocket-1+8)%8; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
+        if (page==='pokedex_entry') { _subIdx=(_subIdx-1+3)%3; _render(); return; }
     }
     function moveRight() {
         if (!isOpen) return;
         if (page==='main') { return; } // no horizontal nav on vertical list
         if (page==='journal') { _journalTab=(_journalTab+1)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
         if (page==='bag') { _bagPocket=(_bagPocket+1)%8; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
+        if (page==='pokedex_entry') { _subIdx=(_subIdx+1)%3; _render(); return; }
     }
     function moveUp() {
         if (!isOpen) return;
