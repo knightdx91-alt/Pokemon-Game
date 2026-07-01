@@ -1,9 +1,70 @@
 # CLAUDE.md — Project state & resume notes
 
-> Working notes for resuming work across sessions. This branch is a **parallel,
-> personal-use** build. It is NOT `main`.
+> Working notes for resuming work across sessions.
 
-## Branch & scope
+## ⚠️ NEXT SESSION — PRIORITY TASK: port the UI overhaul onto MAIN
+
+**Goal:** implement the FireRed UI overhaul (built on the parallel branch) on
+**`main`'s real Pokémon game, `game.html`** — that is the actual game the
+RetroPlay launcher card ("Pokémon RPG") links to and the one to keep improving.
+
+Why: `main`'s `game.html` is a *more complete* version of the same game than our
+parallel branch (see "Reality check" below). Our branch was a stale-fork
+reimplementation. Going forward, **work on `main`'s game, not the parallel branch.**
+
+**What "the UI overhaul" is** (reference implementation lives on our parallel
+branch `claude/pokemon-crater-github-pages-t03jnb`):
+- `src/ui/font.js` — `GameFont`, a bitmap font renderer using the extracted
+  FireRed Latin glyph atlas (`data/ui/font_normal.png` + `data/ui/font.json`,
+  measured proportional widths, glyph = 16×16 cell byte-indexed via charmap).
+- `src/battle/battle.js` — battle drawn on a **native-res (240×160) canvas**,
+  scaled up with `image-rendering: pixelated`: sky/platforms, front/back sprites,
+  FireRed-palette healthboxes (name, Lv, green/yellow/red HP bar, numeric HP,
+  blue EXP bar), the FIGHT/BAG/POKéMON/RUN command grid, and the move menu with
+  a type/PP box. All text via `GameFont`.
+- `src/ui/dialogue.js` — overworld message box drawn on canvas with the FireRed
+  blue window frame + real font + blinking cursor.
+- CSS: `#battle-overlay` centers `#battle-canvas`; both canvases use
+  `image-rendering: pixelated`.
+
+**How to do it on main next session:**
+1. `git fetch origin main` then branch fresh off it:
+   `git checkout -B <new-ui-branch> origin/main` (do NOT reuse the stale parallel
+   branch; do NOT build on `6440c62`).
+2. Main's game is **DOM/CSS-based**, not canvas: `src/engine/battle.js` (~2086
+   lines) builds `#battle-overlay` via `innerHTML` with classes like `.bt-hp-bar`,
+   `.bt-move-btn`, bag pockets; `src/ui/dialogue.js` uses `_boxEl/_textEl/_arrowEl`.
+   Decide: (a) restyle main's existing DOM battle UI to the FireRed look via CSS +
+   its already-bundled font, or (b) port our canvas approach. (a) is less invasive
+   and preserves main's richer features (summary, fly menu, script events, bag pockets).
+3. **Font on main already exists** — main ships `src/assets/fonts/pokefirered.ttf`
+   + `pokefirered.woff2` (usable via `@font-face`) and bitmap atlases
+   `src/assets/party/font_normal.png` / `font_small.png`. Prefer main's own font
+   assets over re-extracting; only bring over `GameFont`/`data/ui/*` if a bitmap
+   renderer is actually needed.
+4. Confirm with the user whether to push to `main` directly or via a branch/PR
+   (they previously said "main only, no PRs" for the parallel branch, but that was
+   about the parallel work — re-confirm for the main-side overhaul).
+
+## Reality check — main's game vs our parallel branch
+
+`main`'s `game.html` (title "Pokémon — Kanto") ALREADY has, and is further along
+than, our branch:
+- `src/engine/battle.js` = ~2086 lines; wild encounters + catching + party +
+  Poké Balls all wired in `main.js` (`rollEncounter`, per-step grass roll).
+- Real FireRed font already bundled (ttf/woff2 + party font atlases).
+- Ball sprites (`src/assets/battle/balls/*`), battle terrain backgrounds,
+  status-icon assets, summary screen (`ui/summary.js`), fly menu (`ui/flymenu.js`),
+  script/event engine (`engine/script.js`), multi-region encounters (Johto/Hoenn).
+- Modules on main game.html: engine/{input,camera,map,renderer,script,battle},
+  assets/battle_assets, ui/{summary,layout,controls,hud,system,startmenu,flymenu,
+  dialogue}, data/{save,achievements,factions}, main.js.
+
+So most of what our parallel branch built (battles, catching, party, FireRed font)
+is redundant with main. The parallel branch's remaining unique value is the
+**pixel-faithful canvas UI look**, which is the thing to bring to main.
+
+## Branch & scope (parallel branch — legacy context)
 
 - **Work branch:** `claude/pokemon-crater-github-pages-t03jnb` (develop + push here only).
 - **`main` is intentionally untouched.** `origin/main` is a *different, much larger*
