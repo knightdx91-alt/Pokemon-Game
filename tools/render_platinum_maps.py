@@ -39,6 +39,12 @@ TILE_PX = 16
 CELL_PX = pc.MAP_TILES_X * TILE_PX          # 512 px per 32-tile land-data cell
 HALF_UNITS = pc.MAP_UNITS / 2               # 256
 
+# Oblique (cavalier) projection tilt. A pure top-down view collapses vertical
+# walls to nothing, so buildings show only their roof. Lifting geometry up-screen
+# by its height reveals south-facing walls (doors, windows) — the GBA "2.5D"
+# look — while flat ground (y≈0) stays aligned to the collision grid.
+TILT = float(os.environ.get("PLAT_TILT", "0.6"))
+
 OUT_DIR = os.path.join(pc.REPO_ROOT, "data", "maps", "sinnoh_textured")
 TEXSET_DIR = os.path.join(pc.PLAT_ROOT, "res", "field", "maps", "texture_sets")
 AREA_DIR = pc.AREADATA_DIR
@@ -150,10 +156,15 @@ def rasterize_triangle(fb, yb, tri, up_scale, ox, oy, tex, repeat):
     Screen pixel = world + 256 (+ cell offset); depth = world Y (higher wins).
     Affine (orthographic) UV interpolation; texels sampled from `tex` (H,W,4).
     """
-    # Project to screen space + depth.
-    sx = np.array([v.x * up_scale + HALF_UNITS + ox for v in tri])
-    sy = np.array([v.z * up_scale + HALF_UNITS + oy for v in tri])
-    depth = np.array([v.y * up_scale for v in tri])
+    # Project to screen space + depth (oblique: height lifts geometry up-screen).
+    wx = np.array([v.x * up_scale for v in tri])
+    wy = np.array([v.y * up_scale for v in tri])
+    wz = np.array([v.z * up_scale for v in tri])
+    sx = wx + HALF_UNITS + ox
+    sy = wz + HALF_UNITS + oy - wy * TILT
+    # Nearness to the (south, elevated) camera: more-south (larger z) and higher
+    # (larger y) surfaces occlude what's behind/below them. Larger wins.
+    depth = wz + wy
     if tex is not None:
         th, tw = tex.shape[0], tex.shape[1]
         us = np.array([v.s for v in tri])

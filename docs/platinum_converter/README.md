@@ -44,13 +44,18 @@ python3 tools/generate_platinum_tileset.py   # fallback tileset + previews
    drive the fallback appearance tileset.
 3. **3D → 2D render.** The land-data blob also contains the map's NSBMD model.
    `render_platinum_maps.py` interprets the model's NDS GPU display lists into
-   textured triangles, samples the map's NSBTX textures, and rasterizes them with
-   an orthographic top-down camera and a Y-buffer, at 16 px per tile aligned to
-   the collision grid. Map props (buildings, doors, trees, signs…) are separate
-   NSBMD models placed by the land data — each is loaded from `build_model`,
-   transformed by its position/rotation/scale, textured from the area's prop
-   texture set, and composited on top via the same Y-buffer so roofs sit above
-   the ground. The result is a real 2D rendering of the whole 3D map.
+   textured triangles, samples the map's NSBTX textures, and rasterizes them at
+   16 px per tile aligned to the collision grid. The camera uses an **oblique
+   (cavalier) projection** rather than a straight top-down one: a tile's height
+   lifts it up-screen (`screen_y = z − y·TILT`), so south-facing vertical walls
+   — building fronts with doors and windows, cliff faces, ledges — stay visible
+   instead of collapsing to nothing, giving the classic GBA "2.5D" look. Flat
+   ground (y≈0) is unaffected, so it stays grid-aligned; a depth buffer keyed on
+   camera nearness (`z + y`) resolves occlusion. Map props (buildings, doors,
+   trees, signs…) are separate NSBMD models placed by the land data — each is
+   loaded from `build_model`, transformed by its position/rotation/scale,
+   textured from the area's prop texture set, and composited into the same scene.
+   `TILT` is tunable via the `PLAT_TILT` env var (default 0.6).
 4. **Coordinates.** Event coordinates are translated from global matrix tiles to
    map-local tiles so NPCs, warps and signs line up with the rendered terrain.
 
