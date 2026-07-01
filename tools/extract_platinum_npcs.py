@@ -97,6 +97,92 @@ def crop_to_sprite(frame):
     return canvas
 
 
+# ---------------------------------------------------------------------------
+# Field objects (signposts, mailbox, berry soil, …)
+# ---------------------------------------------------------------------------
+# These aren't in the character table. A few are real sprites in the mmodel
+# archive (given by member index; frame 1 is the front view); the signposts and
+# mailbox have no standalone sprite in-game (they're invisible interaction
+# triggers), so we draw small, clean stand-ins for them.
+FIELD_SPRITE_MEMBERS = {
+    "snowball":   426,   # r09_o01 — pushable snowball
+    "book":       427,   # book02
+    "berry_soil": 424,   # seed00_a
+    "rock":       422,   # rock (rock-smash boulder)
+}
+
+
+def field_object_frame(member):
+    path = os.path.join(MMODEL_DIR, f"mmodel_{member:08d}.bin")
+    if not os.path.isfile(path):
+        return None
+    tex = g3d.find_tex0(open(path, "rb").read())
+    if not tex or not tex.tex_names:
+        return None
+    name = tex.tex_names[0]           # first frame = front view
+    pixels, w, h = tex.decode(name, tex.default_palette_for(name))
+    img = Image.new("RGBA", (w, h))
+    img.putdata(pixels)
+    return img
+
+
+def _draw_signpost():
+    """A small wooden signpost (board on a post), 16×32, feet at bottom."""
+    img = Image.new("RGBA", (SPRITE_W, SPRITE_H), (0, 0, 0, 0))
+    d = __import__("PIL.ImageDraw", fromlist=["ImageDraw"]).Draw(img)
+    board, board_hi, board_sh = (150, 108, 66), (186, 140, 92), (110, 78, 48)
+    post = (120, 84, 52)
+    d.rectangle([7, 16, 8, 27], fill=post)                 # post
+    d.rectangle([3, 6, 12, 16], fill=board)                # sign board
+    d.rectangle([3, 6, 12, 7], fill=board_hi)              # top highlight
+    d.rectangle([3, 15, 12, 16], fill=board_sh)            # bottom shadow
+    for y in (9, 11, 13):                                  # faux text lines
+        d.line([(5, y), (10, y)], fill=(90, 64, 40))
+    return img
+
+
+def _draw_mailbox():
+    """A small mailbox on a post, 16×32."""
+    img = Image.new("RGBA", (SPRITE_W, SPRITE_H), (0, 0, 0, 0))
+    d = __import__("PIL.ImageDraw", fromlist=["ImageDraw"]).Draw(img)
+    d.rectangle([7, 20, 8, 28], fill=(110, 110, 120))      # post
+    d.rectangle([4, 12, 11, 21], fill=(70, 130, 180))      # box body
+    d.rectangle([4, 12, 11, 13], fill=(110, 170, 210))     # top highlight
+    d.rectangle([5, 15, 9, 18], fill=(30, 40, 60))         # slot
+    d.rectangle([10, 14, 11, 17], fill=(200, 60, 60))      # flag
+    return img
+
+
+PROCEDURAL_FIELD = {
+    "map_signpost":          _draw_signpost,
+    "signboard":             _draw_signpost,
+    "arrow_signpost":        _draw_signpost,
+    "gym_signpost":          _draw_signpost,
+    "trainer_tips_signpost": _draw_signpost,
+    "mailbox":               _draw_mailbox,
+}
+
+
+def extract_field_objects(index):
+    """Add field-object sprites (real + procedural) to the sprite index."""
+    added = 0
+    for stem, member in FIELD_SPRITE_MEMBERS.items():
+        frame = field_object_frame(member)
+        if frame is None:
+            continue
+        sprite = crop_to_sprite(frame)
+        if sprite is None:
+            continue
+        sprite.save(os.path.join(OUT_DIR, f"{stem}.png"))
+        index[stem] = f"data/sprites/npcs/platinum/{stem}.png"
+        added += 1
+    for stem, draw in PROCEDURAL_FIELD.items():
+        draw().save(os.path.join(OUT_DIR, f"{stem}.png"))
+        index[stem] = f"data/sprites/npcs/platinum/{stem}.png"
+        added += 1
+    return added
+
+
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
     mapping = parse_gfx_to_member()
@@ -118,9 +204,12 @@ def main():
         index[stem] = f"data/sprites/npcs/platinum/{stem}.png"
         ok += 1
 
+    n_field = extract_field_objects(index)
+
     with open(INDEX_FILE, "w") as f:
         json.dump(index, f, indent=2, sort_keys=True)
-    print(f"  → {ok} sprites → data/sprites/npcs/platinum/  ({skipped} skipped)")
+    print(f"  → {ok} character sprites + {n_field} field objects "
+          f"→ data/sprites/npcs/platinum/  ({skipped} skipped)")
     print(f"  → index now has {len(index)} entries")
 
 

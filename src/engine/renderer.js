@@ -227,14 +227,9 @@ window.GameRenderer = (function () {
                     } else {
                         ctx.drawImage(img, 0, 0, 16, 16, sx, sy, TILE_PX, TILE_PX);
                     }
-                } else if (stem && _npcPath(stem)) {
-                    // Sprite in index but not yet loaded — skip silently this frame
-                } else if (_npcIndex && stem) {
-                    // Unknown sprite — draw a generic person silhouette placeholder
-                    const pad = 3;
-                    ctx.fillStyle = '#888888';
-                    ctx.fillRect(sx + pad, sy + pad, TILE_PX - pad * 2, TILE_PX - pad * 2);
                 }
+                // Objects with no sprite (invisible interaction triggers, dynamic
+                // VAR_* graphics, etc.) draw nothing — no placeholder square.
             }
         }
 

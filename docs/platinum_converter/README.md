@@ -93,9 +93,8 @@ Rendered straight from the game's 3D models (see `previews/`):
   flattened image would be enormous.
 - A handful of materials whose textures are absent from their area's texture set
   render untextured (gray).
-- Field *objects* (signposts, mailboxes, berry soil…) and dynamic `VAR_*`
-  graphics are not character sprites and still show as placeholder markers;
-  character NPCs (~88% of object-event instances) are covered.
+- Dynamic `VAR_*` object graphics resolve from game state at runtime, so they
+  have no static sprite and are drawn invisibly (as they are interaction-only).
 
 ## NPC sprites
 
@@ -107,3 +106,9 @@ character's down-idle frame, crops it to a 16×32 sprite, and writes
 `data/sprites/npcs/platinum/<stem>.png` + an `index.json`. This index is kept
 separate from the Kanto/GBA one (many stems collide: youngster, mom, …); the
 renderer prefers it only on Sinnoh maps.
+
+It also handles field objects: the ones that are real sprites in `mmodel`
+(snowball, book, berry soil, rock) are decoded from their member; signposts and
+mailboxes — which are invisible interaction triggers in-game with no standalone
+sprite — get small drawn stand-ins. Objects with no sprite at all draw nothing
+rather than a placeholder.
