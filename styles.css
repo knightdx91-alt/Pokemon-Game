@@ -378,7 +378,6 @@ body.orient-reverse-landscape #screen-primary { height: 100vh; width: auto; max-
     background-repeat: repeat; background-size: 64px auto;
     opacity: 0.92; pointer-events: none; z-index: 0;
 }
-#bt-enemy-info, #bt-player-info,
 #bt-enemy-sprite-wrap, #bt-player-sprite-wrap { z-index: 1; }
 
 #bt-ball-anim {
@@ -401,31 +400,14 @@ body.orient-reverse-landscape #screen-primary { height: 100vh; width: auto; max-
 @keyframes bt-pokemon-appear { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 @keyframes bt-flash { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-/* Battle info boxes — FireRed healthbox style */
-#bt-enemy-info {
-    position: absolute; top: 3%; left: 2%;
-    background: var(--fr-body);
-    border: 2px solid var(--fr-border);
-    box-shadow: var(--fr-window), 2px 2px 0 rgba(0,0,0,0.35);
-    padding: 4px 8px; min-width: 96px; border-radius: 8px;
+/* Battle healthboxes — pixel-exact Emerald graphics on a native-res canvas.
+   Sized as a % of the field so they scale with the battle screen. */
+.bt-hb {
+    position: absolute; image-rendering: pixelated; image-rendering: crisp-edges;
+    height: auto; z-index: 2;
 }
-#bt-player-info {
-    position: absolute; bottom: 3%; right: 2%;
-    background: var(--fr-body);
-    border: 2px solid var(--fr-border);
-    box-shadow: var(--fr-window), 2px 2px 0 rgba(0,0,0,0.35);
-    padding: 4px 8px; min-width: 108px; border-radius: 8px;
-}
-#bt-enemy-name, #bt-player-name { font-weight: bold; color: var(--fr-text); font-size: 8px; }
-#bt-enemy-name-row, #bt-player-name-row { display: flex; justify-content: space-between; align-items: center; }
-.bt-level-row { font-size: 7px; color: var(--fr-text-dim); margin-top: 1px; }
-.bt-hp-wrap { background: var(--fr-tan); border: 1px solid var(--fr-border); border-radius: 3px; height: 6px; margin-top: 3px; overflow: hidden; }
-.bt-hp-bar { height: 100%; transition: width 0.3s ease; }
-.bt-hp-bar.hp-green  { background: #58d038; }
-.bt-hp-bar.hp-yellow { background: #f8c800; }
-.bt-hp-bar.hp-red    { background: #f83800; }
-.bt-hp-text { font-size: 7px; color: var(--fr-text-dim); text-align: right; margin-top: 1px; }
-#bt-enemy-status, #bt-player-status { font-size: 7px; font-weight: bold; min-height: 9px; margin-top: 1px; }
+.bt-hb-enemy  { top: 6%;  left: 3%;  width: 42%; }
+.bt-hb-player { bottom: 8%; right: 3%; width: 44%; }
 
 #bt-enemy-sprite-wrap { position: absolute; top: 5%; right: 10%; width: 40%; height: 45%; display: flex; align-items: center; justify-content: center; }
 #bt-enemy-sprite { max-width: 100%; max-height: 100%; image-rendering: pixelated; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }

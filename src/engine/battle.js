@@ -492,22 +492,8 @@ window.GameBattle = (function () {
     }
 
     function _updateStatusDisplay() {
-        const ps = document.getElementById('bt-player-status');
-        const es = document.getElementById('bt-enemy-status');
-        if (ps) {
-            const s = _playerStatus ? _playerStatus.cond : '';
-            const c = _playerConfuse > 0 ? 'CNF' : '';
-            const label = [_statusLabel(s), c].filter(Boolean).join(' ');
-            ps.textContent = label;
-            ps.style.color = s ? _statusColor(s) : '#e080f0';
-        }
-        if (es) {
-            const s = _enemyStatus ? _enemyStatus.cond : '';
-            const c = _enemyConfuse > 0 ? 'CNF' : '';
-            const label = [_statusLabel(s), c].filter(Boolean).join(' ');
-            es.textContent = label;
-            es.style.color = s ? _statusColor(s) : '#e080f0';
-        }
+        // Status is now rendered onto the healthbox canvases as pixel pills.
+        _updateHP();
     }
 
     // -----------------------------------------------------------------------
@@ -862,14 +848,7 @@ window.GameBattle = (function () {
         _el.innerHTML = `
 <div id="bt-field">
   <div id="bt-terrain-bg" style="${terrainBg ? `background-image:url('${terrainBg}')` : ''}"></div>
-  <div id="bt-enemy-info">
-    <div id="bt-enemy-name-row">
-      <span id="bt-enemy-name">${_enemy.name}</span>
-    </div>
-    <div class="bt-level-row">Lv <span id="bt-enemy-lv">${_enemy.level}</span></div>
-    <div class="bt-hp-wrap"><div class="bt-hp-bar" id="bt-enemy-hp-bar"></div></div>
-    <div id="bt-enemy-status"></div>
-  </div>
+  <canvas id="bt-enemy-hb" class="bt-hb bt-hb-enemy" width="100" height="28"></canvas>
   <div id="bt-enemy-sprite-wrap">
     <img id="bt-enemy-sprite" src="data/sprites/pokemon/front/${_enemy.species}.png"
          onerror="this.style.display='none'" alt="${_enemy.name}">
@@ -878,17 +857,7 @@ window.GameBattle = (function () {
     <img id="bt-player-sprite" src="data/sprites/pokemon/back/${_player.speciesId || 'charizard'}.png"
          onerror="this.style.display='none'" alt="player pokemon">
   </div>
-  <div id="bt-player-info">
-    <div id="bt-player-name-row">
-      <span id="bt-player-name">${_getPlayerName()}</span>
-    </div>
-    <div class="bt-level-row">Lv <span id="bt-player-lv">${_player.level || 1}</span></div>
-    <div class="bt-hp-wrap"><div class="bt-hp-bar" id="bt-player-hp-bar"></div></div>
-    <div class="bt-hp-text">
-      <span id="bt-player-hp-cur">${_player.currentHp || 0}</span> / <span id="bt-player-hp-max">${_playerStatCache.hp}</span>
-    </div>
-    <div id="bt-player-status"></div>
-  </div>
+  <canvas id="bt-player-hb" class="bt-hb bt-hb-player" width="104" height="40"></canvas>
 </div>
 <div id="bt-bottom">
   <div id="bt-text-box"><div id="bt-text"></div></div>
@@ -940,20 +909,106 @@ window.GameBattle = (function () {
         return mon.nickname || (dex && dex.name) || mon.speciesId;
     }
 
-    function _updateHP() {
+    // -----------------------------------------------------------------------
+    // Pixel-exact healthboxes — drawn from the real Emerald battle_interface
+    // graphics (src/assets/battle/ui/, built by tools/gen_battle_ui_assets.py)
+    // + the shared GBA bitmap font (GameFont).
+    // -----------------------------------------------------------------------
+    const BT_UI_DIR = 'src/assets/battle/ui/';
+    const BT_UI_NAMES = ['hb_player', 'hb_opponent', 'hp_label',
+        'hpfill_green', 'hpfill_yellow', 'hpfill_red', 'expfill', 'status'];
+    let _btUI = null, _btUILoading = false, _btUIQueue = [];
+    function _loadBattleUI(cb) {
+        if (_btUI) { cb(_btUI); return; }
+        _btUIQueue.push(cb);
+        if (_btUILoading) return;
+        _btUILoading = true;
+        const imgs = {}; let meta = null, pending = BT_UI_NAMES.length + 1;
+        function done() {
+            if (--pending > 0) return;
+            _btUI = { img: imgs, meta: meta || {} };
+            _btUILoading = false;
+            const q = _btUIQueue; _btUIQueue = [];
+            q.forEach(f => f(_btUI));
+        }
+        BT_UI_NAMES.forEach(n => {
+            const im = new Image();
+            im.onload = () => { imgs[n] = im; done(); };
+            im.onerror = () => { imgs[n] = null; done(); };
+            im.src = BT_UI_DIR + n + '.png';
+        });
+        fetch(BT_UI_DIR + 'meta.json').then(r => r.json())
+            .then(j => { meta = j; done(); }).catch(() => done());
+    }
+
+    // Empty-groove row colours (from the real hpbar.png unfilled segment).
+    const _HP_EMPTY_ROWS = ['#526a5a', '#ffffff', '#4a415a', '#4a415a', '#ffffff', '#526a5a'];
+    const _STATUS_ROW = { poison: 0, badpoison: 0, para: 1, sleep: 2, freeze: 3, burn: 4 };
+    const _TXT = '#404040', _TXT_SH = '#c8c8b0';
+
+    function _hpFillKey(pct) { return pct > 0.5 ? 'hpfill_green' : pct > 0.2 ? 'hpfill_yellow' : 'hpfill_red'; }
+
+    function _drawHpBar(ctx, ui, x, y, w, pct) {
+        for (let i = 0; i < _HP_EMPTY_ROWS.length; i++) {
+            ctx.fillStyle = _HP_EMPTY_ROWS[i];
+            ctx.fillRect(x, y + i, w, 1);
+        }
+        const strip = ui.img[_hpFillKey(pct)];
+        const fw = Math.max(0, Math.min(w, Math.round(w * pct)));
+        if (fw > 0 && strip) ctx.drawImage(strip, 0, 0, 1, strip.height, x, y, fw, strip.height);
+    }
+
+    function _drawStatusPill(ctx, ui, x, y, cond) {
+        if (!cond || !(cond in _STATUS_ROW) || !ui.img.status) return;
+        const row = _STATUS_ROW[cond];
+        ctx.drawImage(ui.img.status, 0, row * 8, 24, 8, x, y, 24, 8);
+    }
+
+    // Repaint one healthbox canvas. kind = 'player' | 'opponent'.
+    function _paintHealthbox(canvas, kind) {
+        if (!canvas) return;
+        _loadBattleUI(function (ui) {
+            GameFont.load(function () {
+                const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = false;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (kind === 'player') _paintPlayerHb(ctx, ui);
+                else _paintEnemyHb(ctx, ui);
+            });
+        });
+    }
+
+    function _paintPlayerHb(ctx, ui) {
         const maxHp = _playerStatCache ? _playerStatCache.hp : 1;
-        const ePct = Math.max(0, _enemy.hp / _enemy.maxHp);
-        const pPct = Math.max(0, (_player.currentHp || 0) / maxHp);
+        const cur = Math.max(0, _player.currentHp || 0);
+        const pct = Math.max(0, cur / maxHp);
+        if (ui.img.hb_player) ctx.drawImage(ui.img.hb_player, 0, 0);
+        const name = _getPlayerName();
+        const cond = _playerStatus ? _playerStatus.cond : null;
+        const hasPill = cond && (cond in _STATUS_ROW);
+        GameFont.draw(ctx, name, 14, 2, { color: _TXT, shadow: _TXT_SH });
+        GameFont.draw(ctx, 'Lv' + (_player.level || 1), 98, 2, { color: _TXT, shadow: _TXT_SH, align: 'right' });
+        if (hasPill) _drawStatusPill(ctx, ui, 14, 13, cond);
+        else if (ui.img.hp_label) ctx.drawImage(ui.img.hp_label, 22, 14);
+        _drawHpBar(ctx, ui, 40, 14, 52, pct);
+        GameFont.draw(ctx, cur + '/' + maxHp, 90, 21, { kind: 'small', color: _TXT, shadow: _TXT_SH, align: 'right' });
+    }
 
-        const ebar = document.getElementById('bt-enemy-hp-bar');
-        const pbar = document.getElementById('bt-player-hp-bar');
-        if (ebar) { ebar.style.width = (ePct*100)+'%'; ebar.className = 'bt-hp-bar '+_hpColor(ePct); }
-        if (pbar) { pbar.style.width = (pPct*100)+'%'; pbar.className = 'bt-hp-bar '+_hpColor(pPct); }
+    function _paintEnemyHb(ctx, ui) {
+        const pct = Math.max(0, _enemy.hp / _enemy.maxHp);
+        const cond = _enemyStatus ? _enemyStatus.cond : null;
+        const hasPill = cond && (cond in _STATUS_ROW);
+        if (ui.img.hb_opponent) ctx.drawImage(ui.img.hb_opponent, 0, 0);
+        GameFont.draw(ctx, _enemy.name, 8, 3, { color: _TXT, shadow: _TXT_SH });
+        GameFont.draw(ctx, 'Lv' + _enemy.level, 92, 3, { color: _TXT, shadow: _TXT_SH, align: 'right' });
+        if (hasPill) _drawStatusPill(ctx, ui, 8, 15, cond);
+        else if (ui.img.hp_label) ctx.drawImage(ui.img.hp_label, 18, 16);
+        _drawHpBar(ctx, ui, 36, 16, 52, pct);
+    }
 
-        const hpCur = document.getElementById('bt-player-hp-cur');
-        const hpMax = document.getElementById('bt-player-hp-max');
-        if (hpCur) hpCur.textContent = Math.max(0, _player.currentHp || 0);
-        if (hpMax) hpMax.textContent = maxHp;
+    function _updateHP() {
+        _paintHealthbox(document.getElementById('bt-enemy-hb'), 'opponent');
+        _paintHealthbox(document.getElementById('bt-player-hb'), 'player');
     }
 
     function _hpColor(pct) {
@@ -1296,11 +1351,7 @@ window.GameBattle = (function () {
             pSprite.addEventListener('load', function() { _stripBg(this); }, { once: true });
             if (pSprite.complete) _stripBg(pSprite);
         }
-        const pName = document.getElementById('bt-player-name');
-        if (pName) pName.textContent = _getPlayerName();
-        const pLv = document.getElementById('bt-player-lv');
-        if (pLv) pLv.textContent = _player.level || 1;
-
+        // Name/Lv are repainted onto the healthbox canvas by _updateHP below.
         _showMessage(`Go! ${_getPlayerName()}!`, () => {
             _updateHP();
             _updateStatusDisplay();
