@@ -132,9 +132,11 @@ window.GameHUD = (function () {
             _lastMapName = mapName;
             _showBanner(mapName);
             if (window.GameSave && GameSave.state) {
-                if (GameSave.state.visitedMaps) {
-                    GameSave.state.visitedMaps.add(mapName);
+                // Tolerate a legacy/array visitedMaps by coercing to a Set.
+                if (!(GameSave.state.visitedMaps instanceof Set)) {
+                    GameSave.state.visitedMaps = new Set(GameSave.state.visitedMaps || []);
                 }
+                GameSave.state.visitedMaps.add(mapName);
                 GameSave.markDirty();
             }
         }

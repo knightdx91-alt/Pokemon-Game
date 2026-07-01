@@ -106,11 +106,11 @@
                 sinnoh: [false, false, false, false, false, false, false, false]
             },
 
-            // World flags (stored as array; converted to Set on load)
-            worldFlags: [],
+            // World flags — a Set in memory; deflated to an array by save()
+            worldFlags: new Set(),
 
-            // Visited maps (stored as array; converted to Set on load)
-            visitedMaps: [],
+            // Visited maps — a Set in memory; deflated to an array by save()
+            visitedMaps: new Set(),
 
             // Current location
             currentLocation: {
