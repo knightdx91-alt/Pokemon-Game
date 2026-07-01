@@ -65,27 +65,23 @@ window.GameStartMenu = (function () {
 
     function _confirmSelected() {
         const label = ITEMS[selectedIdx];
-        if (label === 'OPTION' && window.GameOptions) {
+        // Map each entry to its screen; each reopens the start menu on exit.
+        const screens = {
+            'POKéDEX': window.GamePokedex,
+            'POKéMON': window.GameParty,
+            'BAG':     window.GameBag,
+            'PLAYER':  window.GameTrainerCard,
+            'OPTION':  window.GameOptions,
+            'SAVE':    window.GameSaveScreen,
+        };
+        const scr = screens[label];
+        if (scr && scr.open) {
             isOpen = false;
             GBAUI.clear();
-            GameOptions.open(function () { open(); });   // reopen menu on exit
+            scr.open(function () { open(); });   // reopen menu on exit
             return;
         }
-        if (label === 'BAG' && window.GameBag) {
-            isOpen = false;
-            GBAUI.clear();
-            GameBag.open(function () { open(); });
-            return;
-        }
-        if (label === 'SAVE') {
-            localStorage.setItem('pokemon_save_placeholder', Date.now());
-            _saveMsg = true;
-            _render();
-            if (_saveMsgTimer) clearTimeout(_saveMsgTimer);
-            _saveMsgTimer = setTimeout(() => { _saveMsg = false; _render(); }, 2000);
-            return;
-        }
-        close();
+        close();   // EXIT (and any unmapped entry)
     }
 
     function _onKey(e) {
