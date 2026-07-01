@@ -118,7 +118,19 @@
         </div>
     </div><!-- #settings-panel -->
 
-    <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');</script>
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+        // When a new service worker takes control (after an update), reload once
+        // so the freshly-deployed HTML/scripts are used immediately.
+        var _swReloaded = false;
+        navigator.serviceWorker.addEventListener('controllerchange', function () {
+            if (_swReloaded) return;
+            _swReloaded = true;
+            window.location.reload();
+        });
+    }
+    </script>
     <!-- Scripts — load order matters: engine deps first, then ui, then main -->
     <script src="src/engine/input.js?v=__CACHE_BUST__"></script>
     <script src="src/engine/camera.js?v=__CACHE_BUST__"></script>
