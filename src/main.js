@@ -295,6 +295,7 @@
         GameRenderer.init(canvas);
 
         // Init Pokémon RPG layer (pokedex + wild encounter tables + party)
+        await GameFont.load();
         await GamePokedex.init();
         await GameEncounters.init();
         GameParty.load();
