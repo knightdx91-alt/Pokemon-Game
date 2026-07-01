@@ -71,6 +71,12 @@ window.GameStartMenu = (function () {
             GameOptions.open(function () { open(); });   // reopen menu on exit
             return;
         }
+        if (label === 'BAG' && window.GameBag) {
+            isOpen = false;
+            GBAUI.clear();
+            GameBag.open(function () { open(); });
+            return;
+        }
         if (label === 'SAVE') {
             localStorage.setItem('pokemon_save_placeholder', Date.now());
             _saveMsg = true;
