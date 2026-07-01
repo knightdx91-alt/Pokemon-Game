@@ -9,6 +9,8 @@
         direction: 'down',
         walkFrame: 0   // 0=stand, 1=step1, 2=step2 — cycles on each move
     };
+    // Expose player for HUD/debugging.
+    window.GamePlayer = player;
 
     // --- Region tracking ---
     let currentRegion = 'kanto';
@@ -16,6 +18,28 @@
     // --- Transition guard ---
     let _transitioning = false;
     let _warpCooldownUntil = 0;  // timestamp after which warps can fire again
+
+    // --- Battle guard: true while a wild battle is active (overworld paused) ---
+    let _inBattle = false;
+
+    /** Roll for (and possibly start) a wild encounter after stepping on grass. */
+    function checkWildEncounter() {
+        if (_inBattle || _transitioning) return;
+        if (!window.GameEncounters || !window.GameBattle) return;
+        if (GameParty.allFainted()) return;
+        const mapId = GameMap.current && GameMap.current.id;
+        if (!mapId || !GameEncounters.hasEncounters(mapId)) return;
+        if (!GameMap.isGrass(player.x, player.y)) return;
+        if (Math.random() >= GameEncounters.stepChance(mapId)) return;
+        const wild = GameEncounters.roll(mapId);
+        if (!wild) return;
+        _inBattle = true;
+        GameBattle.start(wild, function () {
+            _inBattle = false;
+            // brief cooldown so we don't instantly re-trigger while standing in grass
+            _warpCooldownUntil = performance.now() + 400;
+        });
+    }
 
     // --- Autosave interval (15 s) ---
     setInterval(function () {
@@ -160,7 +184,7 @@
     // ---------------------------------------------------------------
     function gameLoop(timestamp) {
         // Process input — move one tile per keypress with cooldown
-        if (!_transitioning) {
+        if (!_transitioning && !_inBattle) {
             const elapsed = timestamp - lastMoveTime;
             if (elapsed >= MOVE_COOLDOWN_MS) {
                 const inp = GameInput.state;
@@ -196,6 +220,9 @@
                         const warp = GameMap.getWarp(nx, ny);
                         if (warp && performance.now() >= _warpCooldownUntil) {
                             transitionToWarp(warp);
+                        } else if (performance.now() >= _warpCooldownUntil) {
+                            // Wild encounter check when stepping onto tall grass
+                            checkWildEncounter();
                         }
                     }
                     lastMoveTime = timestamp;
@@ -248,6 +275,11 @@
         const canvas = document.getElementById('canvas-primary');
         GameRenderer.init(canvas);
 
+        // Init Pokémon RPG layer (pokedex + wild encounter tables + party)
+        await GamePokedex.init();
+        await GameEncounters.init();
+        GameParty.load();
+
         // Init map index BEFORE loading any map
         await GameMap.init();
 
@@ -271,6 +303,15 @@
 
         // Start game loop
         requestAnimationFrame(gameLoop);
+
+        // First-time players choose a starter Pokémon
+        if (!GameParty.state.starterChosen) {
+            _inBattle = true;   // pause overworld during selection
+            GameStarter.show(function () {
+                _inBattle = false;
+                _warpCooldownUntil = performance.now() + 400;
+            });
+        }
 
         console.log('[Main] Game started. Map:', GameMap.current && GameMap.current.name);
     }

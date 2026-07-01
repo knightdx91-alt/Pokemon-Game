@@ -14,6 +14,10 @@ window.GameMap = (function () {
     let _nameIndex = null;   // MAP_CONST -> filename, loaded from kanto_index.json
     let _region    = 'kanto';
 
+    // Tileset behavior cache: tilesetName -> behaviors[] (indexed by metatile id)
+    const _behaviorCache = {};
+    const MB_TALL_GRASS = 2;   // FireRed metatile_behaviors.h: MB_TALL_GRASS = 0x02
+
     // ---------------------------------------------------------------
     // Index loading
     // ---------------------------------------------------------------
@@ -55,11 +59,22 @@ window.GameMap = (function () {
             layoutData = await lresp.json();
             mapWidth   = layoutData.width;
             mapHeight  = layoutData.height;
+            _loadTilesetBehaviors(layoutData.tileset);
         } catch (e) {
             console.warn(`[Map] Layout not found: ${layoutId}`, e);
             layoutData = null;
             _fallbackSize(data);
         }
+    }
+
+    /** Fetch and cache the behaviors array for a tileset (fire-and-forget). */
+    function _loadTilesetBehaviors(name) {
+        if (!name || _behaviorCache[name]) return;
+        _behaviorCache[name] = [];  // mark as loading so we don't refetch
+        fetch(`data/tilesets/${name}.json`)
+            .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
+            .then(meta => { _behaviorCache[name] = meta.behaviors || []; })
+            .catch(e => console.warn(`[Map] Failed to load behaviors for ${name}:`, e));
     }
 
     // ---------------------------------------------------------------
@@ -179,6 +194,9 @@ window.GameMap = (function () {
         }
         // Warp tiles are always walkable
         if (getWarp(x, y)) return true;
+        // Tall grass is always walkable (the extracted collision data marks grass
+        // metatiles as blocked, but the player must be able to step into grass).
+        if (isGrass(x, y)) return true;
         if (layoutData && layoutData.collision) {
             return layoutData.collision[y * mapWidth + x] === 0;
         }
@@ -197,6 +215,21 @@ window.GameMap = (function () {
 
     function getTilesetName() {
         return layoutData ? layoutData.tileset : null;
+    }
+
+    /** Metatile behavior value at (x,y), or -1 if unknown. */
+    function getBehavior(x, y) {
+        if (!layoutData) return -1;
+        if (x < 0 || y < 0 || x >= mapWidth || y >= mapHeight) return -1;
+        const behaviors = _behaviorCache[layoutData.tileset];
+        if (!behaviors || !behaviors.length) return -1;
+        const mt = layoutData.metatiles[y * mapWidth + x];
+        return behaviors[mt] !== undefined ? behaviors[mt] : -1;
+    }
+
+    /** True if (x,y) is a tall-grass tile (wild encounters possible). */
+    function isGrass(x, y) {
+        return getBehavior(x, y) === MB_TALL_GRASS;
     }
 
     // ---------------------------------------------------------------
@@ -219,5 +252,7 @@ window.GameMap = (function () {
         getWarp,
         getSign,
         getTilesetName,
+        getBehavior,
+        isGrass,
     };
 })();
