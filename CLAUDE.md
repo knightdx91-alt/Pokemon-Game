@@ -429,8 +429,21 @@ trusted until its output renders correctly (the way HnS was verified).
   never commit; individual extracted data files can be converted/copied into
   `data/` when needed). Pure stdlib, no deps. Produces the data/asset side of
   a decomp only — no C source (that part of pret repos is human RE work).
-  The user's ROMs (Pokémon Black / Black 2) are in their Google Drive; download
-  the `.nds` locally, then run the tool on it.
+  **Getting the ROM in a cloud session** — the user's Pokémon Black (US, IRBO)
+  ROM is link-shared in their Google Drive and downloads straight into the
+  sandbox (verified working; ~256 MB, takes seconds):
+  ```
+  curl -sSL "https://drive.usercontent.google.com/download?id=1uog4J8pUbTiNYptaoWAbdrY0E5HMEqwD&export=download&confirm=t" -o /tmp/pokemon-black.nds
+  python3 tools/nds_decomp.py /tmp/pokemon-black.nds -o source/nds/IRBO
+  ```
+  Verified extraction (Pokémon Black): 484 FAT files, 237 NARCs → 54,054
+  members, ~666 MB. All KNOWN_NARCS annotations confirmed present — personal
+  data sanity-checked (member 0001 = Bulbasaur 45/49/49/65/65/45). Extraction
+  is ephemeral (gitignored, sandbox dies with session) — re-run the two
+  commands above whenever ROM data is needed; convert what the game needs
+  into `data/` formats and commit only that.
+  The user also has Pokémon Black 2 in Drive (`Pokemon - Black Version 2.nds`,
+  not yet link-shared — ask for the share link if B2 data is needed).
 - `gen_party_assets.py` — regenerate the FireRed party-screen assets in
   `src/assets/party/` (slot boxes, fonts, pokéball, status icons, message frame)
   by decoding `source/pokefirered` graphics/tilemaps/palettes. Re-run if those
