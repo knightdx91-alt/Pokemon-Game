@@ -417,6 +417,20 @@ trusted until its output renders correctly (the way HnS was verified).
   tileset list) after adding tilesets.
 - `make_example_map.py` — generate a layout from primitives (`rect`, border,
   scatter) over a verified palette; seed of the "describe → generate" workflow.
+- `nds_decomp.py` — **NDS ROM decomp tool.** Explodes any `.nds` ROM into a
+  pret-style tree: `arm9/arm7.bin`, `overlays/` (LZ-decompressed), `files/`
+  (full NitroFS with real FNT names), `unpacked/` (every NARC expanded, members
+  LZ77/LZ11-decompressed and extension-named by magic: `.nclr/.ncgr/.nscr/
+  .nsbmd/…`), plus `DECOMP_MANIFEST.md` annotating community-known data NARCs
+  (BW/BW2 `a/0/1/6` personal data, `a/0/9/1` trainers, `a/1/2/7` encounters,
+  etc.; tables for Gen4/5 gamecodes). Usage:
+  `python3 tools/nds_decomp.py <rom.nds> [-o source/nds/<name>] [--list]`.
+  Default output `source/nds/<gamecode>/` is **gitignored** (ROM contents —
+  never commit; individual extracted data files can be converted/copied into
+  `data/` when needed). Pure stdlib, no deps. Produces the data/asset side of
+  a decomp only — no C source (that part of pret repos is human RE work).
+  The user's ROMs (Pokémon Black / Black 2) are in their Google Drive; download
+  the `.nds` locally, then run the tool on it.
 - `gen_party_assets.py` — regenerate the FireRed party-screen assets in
   `src/assets/party/` (slot boxes, fonts, pokéball, status icons, message frame)
   by decoding `source/pokefirered` graphics/tilemaps/palettes. Re-run if those
