@@ -153,5 +153,10 @@ window.GameHUD = (function () {
         update();
     }
 
-    return { init, update };
+    function hideBanner() {
+        if (_bannerTimer) clearTimeout(_bannerTimer);
+        if (_bannerEl) { _bannerEl.style.opacity = '0'; _bannerEl.style.display = 'none'; }
+    }
+
+    return { init, update, hideBanner };
 })();

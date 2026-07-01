@@ -123,10 +123,20 @@ window.GBAUI = (function () {
         }
     }
 
+    /** FireRed-style blinking "more text" down arrow, centred on (x,y). */
+    function downArrow(x, y) {
+        if (!ctx) return;
+        ctx.fillStyle = '#404040';
+        const rows = [7, 5, 3, 1];   // downward triangle
+        for (let i = 0; i < rows.length; i++) {
+            ctx.fillRect(x - (rows[i] >> 1), y + i, rows[i], 1);
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', init);
 
     return {
-        onReady, show, hide, clear, window9, text, textWidth, cursor,
+        onReady, show, hide, clear, window9, text, textWidth, cursor, downArrow,
         get W() { return W; }, get H() { return H; },
         get ready() { return ready; }
     };
