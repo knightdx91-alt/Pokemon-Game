@@ -3,50 +3,61 @@
   "name": "Eterna City Herb Shop",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_ETERNA_CITY_HERB_SHOP",
+  "layout": "sinnoh/eterna_city_herb_shop",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY04_D",
+  "night_music": "SEQ_CITY04_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_EXPERT_F",
       "graphics_id": "OBJ_EVENT_GFX_EXPERT_F",
       "x": 6,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_CASHIER_F",
       "graphics_id": "OBJ_EVENT_GFX_CASHIER_F",
       "x": 3,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_EXPERT_M",
       "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
       "x": 8,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_EAST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 4,
-      "y": null,
-      "z": 8,
-      "dest_map": null,
+      "y": 8,
+      "dest_map": "MAP_HEADER_ETERNA_CITY",
       "dest_warp_id": 7
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

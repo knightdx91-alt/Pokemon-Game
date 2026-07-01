@@ -3,73 +3,76 @@
   "name": "Hearthome City Gym Entrance Room",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_HEARTHOME_CITY_GYM_ENTRANCE_ROOM",
+  "layout": "sinnoh/hearthome_city_gym_entrance_room",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_GYM",
+  "night_music": "SEQ_GYM",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_GYM_GUIDE",
       "graphics_id": "OBJ_EVENT_GFX_GYM_GUIDE",
       "x": 5,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 11,
-      "y": null,
-      "z": 7,
-      "dest_map": null,
+      "y": 7,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_TRAINER_ROOM_2",
       "dest_warp_id": 0
     },
     {
       "x": 4,
-      "y": null,
-      "z": 2,
-      "dest_map": null,
+      "y": 2,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_TRAINER_ROOM_1",
       "dest_warp_id": 0
     },
     {
       "x": 12,
-      "y": null,
-      "z": 7,
-      "dest_map": null,
+      "y": 7,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_LEADER_ROOM",
       "dest_warp_id": 3
     },
     {
       "x": 4,
-      "y": null,
-      "z": 8,
-      "dest_map": null,
+      "y": 8,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY",
       "dest_warp_id": 8
     },
     {
       "x": 11,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_LEADER_ROOM",
       "dest_warp_id": 4
     }
   ],
   "signs": [
     {
       "x": 2,
-      "y": 0,
-      "z": 6,
+      "y": 6,
       "script": 2,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
       "x": 6,
-      "y": 0,
-      "z": 6,
+      "y": 6,
       "script": 2,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     }
   ],
-  "coord_events": []
+  "triggers": []
 }

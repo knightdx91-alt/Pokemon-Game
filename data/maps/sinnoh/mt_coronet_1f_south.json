@@ -3,144 +3,153 @@
   "name": "Mt Coronet 1F South",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_MT_CORONET_1F_SOUTH",
+  "layout": "sinnoh/mt_coronet_1f_south",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_05",
+  "night_music": "SEQ_D_05",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_ROCK_SMASH_1",
       "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
       "x": 16,
-      "y": 0,
-      "z": 23,
+      "y": 23,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10001,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_1"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_1",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ROCK_SMASH_2",
       "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
       "x": 20,
-      "y": 0,
-      "z": 23,
+      "y": 23,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10001,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_2"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_2",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ROCK_SMASH_3",
       "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
       "x": 24,
-      "y": 0,
-      "z": 23,
+      "y": 23,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10001,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_3"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_3",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ROCK_SMASH_4",
       "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
       "x": 25,
-      "y": 0,
-      "z": 22,
+      "y": 22,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10001,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_4"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_4",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_PROTEIN",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 13,
-      "y": 0,
-      "z": 9,
+      "y": 9,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7046,
-      "hidden_flag": "FLAG_OBTAINED_MT_CORONET_1F_SOUTH_PROTEIN"
+      "hidden_flag": "FLAG_OBTAINED_MT_CORONET_1F_SOUTH_PROTEIN",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_DAWN_STONE",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 28,
-      "y": 0,
-      "z": 28,
+      "y": 28,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7047,
-      "hidden_flag": "FLAG_OBTAINED_MT_CORONET_1F_SOUTH_DAWN_STONE"
+      "hidden_flag": "FLAG_OBTAINED_MT_CORONET_1F_SOUTH_DAWN_STONE",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_CYRUS",
       "graphics_id": "OBJ_EVENT_GFX_CYRUS",
       "x": 15,
-      "y": 0,
-      "z": 17,
+      "y": 17,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_MT_CORONET_1F_SOUTH_CYRUS"
+      "hidden_flag": "FLAG_HIDE_MT_CORONET_1F_SOUTH_CYRUS",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 4,
-      "y": null,
-      "z": 8,
-      "dest_map": null,
+      "y": 8,
+      "dest_map": "MAP_HEADER_ROUTE_207",
       "dest_warp_id": 0
     },
     {
       "x": 27,
-      "y": null,
-      "z": 20,
-      "dest_map": null,
+      "y": 20,
+      "dest_map": "MAP_HEADER_ROUTE_208",
       "dest_warp_id": 3
     },
     {
       "x": 25,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_MT_CORONET_2F",
       "dest_warp_id": 0
     }
   ],
   "signs": [
     {
       "x": 13,
-      "y": 0,
-      "z": 18,
+      "y": 18,
       "script": 8013,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
       "x": 4,
-      "y": 0,
-      "z": 5,
+      "y": 5,
       "script": 8271,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
       "x": 7,
-      "y": 0,
-      "z": 26,
+      "y": 26,
       "script": 8272,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     }
   ],
-  "coord_events": [
+  "triggers": [
     {
-      "script": 1,
       "x": 14,
-      "z": 23,
-      "y": 0,
+      "y": 23,
       "width": 1,
-      "length": 1,
+      "height": 1,
       "var": "VAR_MT_CORONET_1F_SOUTH_STATE",
-      "value": 0
+      "var_value": 0,
+      "script": 1
     }
   ]
 }

@@ -3,37 +3,42 @@
   "name": "Solaceon Ruins Room 6",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_SOLACEON_RUINS_ROOM_6",
+  "layout": "sinnoh/solaceon_ruins_room_6",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_29",
+  "day_music": "SEQ_D_02",
+  "night_music": "SEQ_D_02",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
   "npcs": [],
   "warps": [
     {
       "x": 4,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_SOLACEON_RUINS_ROOM_6_NORTHWEST_DEAD_END",
       "dest_warp_id": 0
     },
     {
       "x": 6,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_SOLACEON_RUINS_ROOM_5",
       "dest_warp_id": 0
     },
     {
       "x": 4,
-      "y": null,
-      "z": 10,
-      "dest_map": null,
+      "y": 10,
+      "dest_map": "MAP_HEADER_SOLACEON_RUINS_ROOM_7",
       "dest_warp_id": 0
     },
     {
       "x": 6,
-      "y": null,
-      "z": 10,
-      "dest_map": null,
+      "y": 10,
+      "dest_map": "MAP_HEADER_SOLACEON_RUINS_ROOM_6_SOUTHEAST_DEAD_END",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

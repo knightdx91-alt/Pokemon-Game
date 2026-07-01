@@ -3,221 +3,239 @@
   "name": "Sandgem Town",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_SANDGEM_TOWN",
+  "layout": "sinnoh/sandgem_town",
+  "map_type": "MAP_TYPE_TOWN_CITY",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_TOWN02_D",
+  "night_music": "SEQ_TOWN02_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
   "npcs": [
     {
       "local_id": "LOCALID_YOUNGSTER",
       "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
-      "x": 187,
-      "y": 1,
-      "z": 855,
+      "x": 27,
+      "y": 23,
+      "elevation": 1,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_POKEMON_BREEDER_M",
       "graphics_id": "OBJ_EVENT_GFX_POKEMON_BREEDER_M",
-      "x": 171,
-      "y": 1,
-      "z": 854,
+      "x": 11,
+      "y": 22,
+      "elevation": 1,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 5,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_POKEMON_BREEDER_F",
       "graphics_id": "OBJ_EVENT_GFX_POKEMON_BREEDER_F",
-      "x": 183,
-      "y": 1,
-      "z": 852,
+      "x": 23,
+      "y": 20,
+      "elevation": 1,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 6,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_RIVAL",
       "graphics_id": "OBJ_EVENT_GFX_BARRY",
-      "x": 168,
-      "y": 1,
-      "z": 842,
+      "x": 8,
+      "y": 10,
+      "elevation": 1,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_SANDGEM_TOWN_RIVAL"
+      "hidden_flag": "FLAG_HIDE_SANDGEM_TOWN_RIVAL",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_SANDGEM_COUNTERPART",
       "graphics_id": "OBJ_EVENT_GFX_VAR_0",
-      "x": 168,
-      "y": 1,
-      "z": 845,
+      "x": 8,
+      "y": 13,
+      "elevation": 1,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10300,
-      "hidden_flag": "FLAG_HIDE_SANDGEM_TOWN_COUNTERPART"
+      "hidden_flag": "FLAG_HIDE_SANDGEM_TOWN_COUNTERPART",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_SIGNBOARD_POKEMON_RESEARCH_LAB",
       "graphics_id": "OBJ_EVENT_GFX_SIGNBOARD",
-      "x": 165,
-      "y": 0,
-      "z": 843,
+      "x": 5,
+      "y": 11,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 9,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
-      "local_id": "LOCALID_SIGNBOARD_COUNTERPART_MAILBOX",
+      "local_id": "LOCALID_SIGNBOARD_COUNTERPART_HOUSE",
       "graphics_id": "OBJ_EVENT_GFX_SIGNBOARD",
-      "x": 174,
-      "y": 0,
-      "z": 854,
+      "x": 14,
+      "y": 22,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_MAP_SIGNPOST",
       "graphics_id": "OBJ_EVENT_GFX_MAP_SIGNPOST",
-      "x": 182,
-      "y": 0,
-      "z": 854,
+      "x": 22,
+      "y": 22,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 8,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ARROW_SIGNPOST_ROUTE_219",
       "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
-      "x": 179,
-      "y": 0,
-      "z": 866,
+      "x": 19,
+      "y": 34,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 65535,
-      "hidden_flag": "MAP_HEADER_ROUTE_219"
+      "hidden_flag": "MAP_HEADER_ROUTE_219",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ARROW_SIGNPOST_ROUTE_202",
       "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
-      "x": 183,
-      "y": 0,
-      "z": 825,
+      "x": 23,
+      "y": -7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 65535,
-      "hidden_flag": "MAP_HEADER_ROUTE_202"
+      "hidden_flag": "MAP_HEADER_ROUTE_202",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ARROW_SIGNPOST_ROUTE_201",
       "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
-      "x": 151,
-      "y": 0,
-      "z": 843,
+      "x": -9,
+      "y": 11,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 65535,
-      "hidden_flag": "MAP_HEADER_ROUTE_201"
+      "hidden_flag": "MAP_HEADER_ROUTE_201",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_SCHOOL_KID_M",
       "graphics_id": "OBJ_EVENT_GFX_SCHOOL_KID_M",
-      "x": 153,
-      "y": 0,
-      "z": 847,
+      "x": -7,
+      "y": 15,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 65535,
-      "hidden_flag": "MAP_HEADER_ROUTE_201"
+      "hidden_flag": "MAP_HEADER_ROUTE_201",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_SIGNBOARD_POKEMON_CENTER",
       "graphics_id": "OBJ_EVENT_GFX_SIGNBOARD",
-      "x": 180,
-      "y": 0,
-      "z": 842,
+      "x": 20,
+      "y": 10,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 12,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_SIGNBOARD_POKE_MART",
       "graphics_id": "OBJ_EVENT_GFX_SIGNBOARD",
-      "x": 185,
-      "y": 0,
-      "z": 842,
+      "x": 25,
+      "y": 10,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 11,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_PROF_ROWAN",
       "graphics_id": "OBJ_EVENT_GFX_PROF_ROWAN",
-      "x": 168,
-      "y": 0,
-      "z": 842,
+      "x": 8,
+      "y": 10,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_SANDGEM_TOWN_PROF_ROWAN"
+      "hidden_flag": "FLAG_HIDE_SANDGEM_TOWN_PROF_ROWAN",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
-      "x": 187,
-      "y": null,
-      "z": 842,
-      "dest_map": null,
+      "x": 27,
+      "y": 10,
+      "dest_map": "MAP_HEADER_SANDGEM_TOWN_MART",
       "dest_warp_id": 0
     },
     {
-      "x": 177,
-      "y": null,
-      "z": 842,
-      "dest_map": null,
+      "x": 17,
+      "y": 10,
+      "dest_map": "MAP_HEADER_SANDGEM_TOWN_POKECENTER_1F",
       "dest_warp_id": 0
     },
     {
-      "x": 168,
-      "y": null,
-      "z": 842,
-      "dest_map": null,
+      "x": 8,
+      "y": 10,
+      "dest_map": "MAP_HEADER_SANDGEM_TOWN_POKEMON_RESEARCH_LAB",
       "dest_warp_id": 0
     },
     {
-      "x": 176,
-      "y": null,
-      "z": 854,
-      "dest_map": null,
+      "x": 16,
+      "y": 22,
+      "dest_map": "MAP_HEADER_SANDGEM_TOWN_COUNTERPART_HOUSE_1F",
       "dest_warp_id": 0
     },
     {
-      "x": 167,
-      "y": null,
-      "z": 854,
-      "dest_map": null,
+      "x": 7,
+      "y": 22,
+      "dest_map": "MAP_HEADER_SANDGEM_TOWN_HOUSE",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": [
+  "triggers": [
     {
-      "script": 2,
-      "x": 164,
-      "z": 842,
-      "y": 0,
+      "x": 4,
+      "y": 10,
       "width": 1,
-      "length": 6,
+      "height": 6,
       "var": "VAR_SANDGEM_TOWN_STATE",
-      "value": 0
+      "var_value": 0,
+      "script": 2
     }
   ]
 }

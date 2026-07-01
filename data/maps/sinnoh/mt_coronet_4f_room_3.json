@@ -3,32 +3,38 @@
   "name": "Mt Coronet 4F Room 3",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_MT_CORONET_4F_ROOM_3",
+  "layout": "sinnoh/mt_coronet_4f_room_3",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_29",
+  "day_music": "SEQ_D_MOUNT1",
+  "night_music": "SEQ_D_MOUNT1",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
   "npcs": [],
   "warps": [
     {
       "x": 2,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_MT_CORONET_OUTSIDE_NORTH",
       "dest_warp_id": 1
     },
     {
       "x": 18,
-      "y": null,
-      "z": 8,
-      "dest_map": null,
+      "y": 8,
+      "dest_map": "MAP_HEADER_MT_CORONET_5F",
       "dest_warp_id": 0
     }
   ],
   "signs": [
     {
       "x": 11,
-      "y": 0,
-      "z": 8,
+      "y": 8,
       "script": 8100,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     }
   ],
-  "coord_events": []
+  "triggers": []
 }

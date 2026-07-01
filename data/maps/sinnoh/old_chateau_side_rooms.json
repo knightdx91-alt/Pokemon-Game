@@ -3,44 +3,51 @@
   "name": "Old Chateau Side Rooms",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_OLD_CHATEAU_SIDE_ROOMS",
+  "layout": "sinnoh/old_chateau_side_rooms",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_27",
+  "day_music": "SEQ_D_03",
+  "night_music": "SEQ_D_03",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_ITEM_OLD_GATEAU",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 4,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7022,
-      "hidden_flag": "FLAG_OBTAINED_OLD_CHATEAU_SIDE_ROOMS_OLD_GATEAU"
+      "hidden_flag": "FLAG_OBTAINED_OLD_CHATEAU_SIDE_ROOMS_OLD_GATEAU",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 7,
-      "y": null,
-      "z": 5,
-      "dest_map": null,
+      "y": 5,
+      "dest_map": "MAP_HEADER_OLD_CHATEAU",
       "dest_warp_id": 0
     },
     {
       "x": 24,
-      "y": null,
-      "z": 5,
-      "dest_map": null,
+      "y": 5,
+      "dest_map": "MAP_HEADER_OLD_CHATEAU",
       "dest_warp_id": 1
     }
   ],
   "signs": [
     {
       "x": 30,
-      "y": 0,
-      "z": 8,
+      "y": 8,
       "script": 1,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_EAST"
     }
   ],
-  "coord_events": []
+  "triggers": []
 }

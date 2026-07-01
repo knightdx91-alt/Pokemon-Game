@@ -3,50 +3,61 @@
   "name": "Canalave City Sailor Eldritch House",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_CANALAVE_CITY_SAILOR_ELDRITCH_HOUSE",
+  "layout": "sinnoh/canalave_city_sailor_eldritch_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY02_D",
+  "night_music": "SEQ_CITY02_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_LITTLE_BOY",
       "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
       "x": 5,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_WEST_AND_EAST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_POKEFAN_F",
       "graphics_id": "OBJ_EVENT_GFX_POKEFAN_F",
       "x": 8,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_SAILOR_ELDRITCH",
       "graphics_id": "OBJ_EVENT_GFX_SAILOR",
       "x": 4,
-      "y": 0,
-      "z": 8,
+      "y": 8,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_CANALAVE_CITY_SAILOR_ELDRITCH_HOUSE_SAILOR_ELDRITCH"
+      "hidden_flag": "FLAG_HIDE_CANALAVE_CITY_SAILOR_ELDRITCH_HOUSE_SAILOR_ELDRITCH",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 4,
-      "y": null,
-      "z": 8,
-      "dest_map": null,
+      "y": 8,
+      "dest_map": "MAP_HEADER_CANALAVE_CITY",
       "dest_warp_id": 6
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

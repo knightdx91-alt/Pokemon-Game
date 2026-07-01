@@ -3,37 +3,45 @@
   "name": "Mt Coronet Iceberg Ruins",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_MT_CORONET_ICEBERG_RUINS",
+  "layout": "sinnoh/mt_coronet_iceberg_ruins",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_29",
+  "day_music": "SEQ_D_05",
+  "night_music": "SEQ_D_05",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_ITEM_NEVERMELTICE",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 7,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7323,
-      "hidden_flag": "FLAG_OBTAINED_MT_CORONET_ICEBERG_RUINS_NEVERMELTICE"
+      "hidden_flag": "FLAG_OBTAINED_MT_CORONET_ICEBERG_RUINS_NEVERMELTICE",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 7,
-      "y": null,
-      "z": 12,
-      "dest_map": null,
+      "y": 12,
+      "dest_map": "MAP_HEADER_MT_CORONET_1F_NORTH_ROOM_2",
       "dest_warp_id": 2
     }
   ],
   "signs": [
     {
       "x": 6,
-      "y": 0,
-      "z": 5,
+      "y": 5,
       "script": 8275,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     }
   ],
-  "coord_events": []
+  "triggers": []
 }

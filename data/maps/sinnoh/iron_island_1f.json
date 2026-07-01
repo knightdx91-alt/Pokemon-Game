@@ -3,30 +3,36 @@
   "name": "Iron Island 1F",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_IRON_ISLAND_1F",
+  "layout": "sinnoh/iron_island_1f",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_04",
+  "night_music": "SEQ_D_04",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
   "npcs": [],
   "warps": [
     {
       "x": 6,
-      "y": null,
-      "z": 8,
-      "dest_map": null,
+      "y": 8,
+      "dest_map": "MAP_HEADER_IRON_ISLAND",
       "dest_warp_id": 1
     },
     {
       "x": 4,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_IRON_ISLAND_B1F_LEFT_ROOM",
       "dest_warp_id": 0
     },
     {
       "x": 8,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_IRON_ISLAND_B1F_RIGHT_ROOM",
       "dest_warp_id": 2
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

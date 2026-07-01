@@ -3,94 +3,109 @@
   "name": "Route 222 West House",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_ROUTE_222_WEST_HOUSE",
+  "layout": "sinnoh/route_222_west_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_ROAD_E_D",
+  "night_music": "SEQ_ROAD_E_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_PIKACHU_1",
       "graphics_id": "OBJ_EVENT_GFX_PIKACHU",
       "x": 8,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_WEST_AND_EAST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_PIKACHU_2",
       "graphics_id": "OBJ_EVENT_GFX_PIKACHU",
       "x": 2,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_PIKACHU_3",
       "graphics_id": "OBJ_EVENT_GFX_PIKACHU",
       "x": 1,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_PIKACHU_4",
       "graphics_id": "OBJ_EVENT_GFX_PIKACHU",
       "x": 7,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_PIKACHU_5",
       "graphics_id": "OBJ_EVENT_GFX_PIKACHU",
       "x": 7,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_WEST_AND_EAST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_POKEFAN_M",
       "graphics_id": "OBJ_EVENT_GFX_POKEFAN_M",
       "x": 5,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_SOUTH_AND_EAST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_POKE_KID_JANET",
       "graphics_id": "OBJ_EVENT_GFX_PIKACHU",
       "x": 4,
-      "y": 0,
-      "z": 3,
+      "y": 3,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_POKE_KID_JANET",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     }
   ],
   "warps": [
     {
       "x": 4,
-      "y": null,
-      "z": 8,
-      "dest_map": null,
+      "y": 8,
+      "dest_map": "MAP_HEADER_ROUTE_222",
       "dest_warp_id": 3
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

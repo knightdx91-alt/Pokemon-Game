@@ -3,20 +3,30 @@
   "name": "Flower Paradise",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_FLOWER_PARADISE",
+  "layout": "sinnoh/flower_paradise",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_TOWN03_D",
+  "night_music": "SEQ_TOWN03_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
   "npcs": [
     {
       "local_id": "LOCALID_SHAYMIN",
       "graphics_id": "OBJ_EVENT_GFX_SHAYMIN",
-      "x": 911,
-      "y": 0,
-      "z": 203,
+      "x": 15,
+      "y": 11,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "FLAG_HIDE_FLOWER_PARADISE_SHAYMIN"
+      "hidden_flag": "FLAG_HIDE_FLOWER_PARADISE_SHAYMIN",
+      "initial_dir": 1
     }
   ],
   "warps": [],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

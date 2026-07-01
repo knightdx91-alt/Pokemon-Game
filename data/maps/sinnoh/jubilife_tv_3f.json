@@ -3,89 +3,97 @@
   "name": "Jubilife Tv 3F",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_JUBILIFE_TV_3F",
+  "layout": "sinnoh/jubilife_tv_3f",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_BLD_TV",
+  "night_music": "SEQ_BLD_TV",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_BEAUTY_1",
       "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
       "x": 4,
-      "y": 0,
-      "z": 3,
+      "y": 3,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_BEAUTY_2",
       "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
       "x": 11,
-      "y": 0,
-      "z": 15,
+      "y": 15,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_GYM_GUIDE_1",
       "graphics_id": "OBJ_EVENT_GFX_GYM_GUIDE",
       "x": 16,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_GYM_GUIDE_2",
       "graphics_id": "OBJ_EVENT_GFX_GYM_GUIDE",
       "x": 10,
-      "y": 0,
-      "z": 15,
+      "y": 15,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_EAST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 7,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_JUBILIFE_TV_2F",
       "dest_warp_id": 1
     },
     {
       "x": 14,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_JUBILIFE_TV_4F",
       "dest_warp_id": 0
     },
     {
       "x": 5,
-      "y": null,
-      "z": 2,
-      "dest_map": null,
+      "y": 2,
+      "dest_map": "MAP_HEADER_JUBILIFE_TV_3F_GROUP_RANKING_ROOM",
       "dest_warp_id": 0
     },
     {
       "x": 2,
-      "y": null,
-      "z": 2,
-      "dest_map": null,
+      "y": 2,
+      "dest_map": "MAP_HEADER_JUBILIFE_TV_3F_GLOBAL_RANKING_ROOM",
       "dest_warp_id": 0
     },
     {
       "x": 18,
-      "y": null,
-      "z": 2,
-      "dest_map": null,
+      "y": 2,
+      "dest_map": "MAP_HEADER_JUBILIFE_TV_ELEVATOR",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

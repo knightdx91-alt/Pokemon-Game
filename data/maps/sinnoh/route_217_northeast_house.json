@@ -3,28 +3,37 @@
   "name": "Route 217 Northeast House",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_ROUTE_217_NORTHEAST_HOUSE",
+  "layout": "sinnoh/route_217_northeast_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_30",
+  "day_music": "SEQ_ROAD_SNOW_D",
+  "night_music": "SEQ_ROAD_SNOW_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_POKEMON_BREEDER_F",
       "graphics_id": "OBJ_EVENT_GFX_POKEMON_BREEDER_F",
       "x": 4,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_SOUTH_AND_EAST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "FLAG_HIDE_ROUTE_217_NORTHEAST_HOUSE_POKEMON_BREEDER_F"
+      "hidden_flag": "FLAG_HIDE_ROUTE_217_NORTHEAST_HOUSE_POKEMON_BREEDER_F",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 4,
-      "y": null,
-      "z": 8,
-      "dest_map": null,
+      "y": 8,
+      "dest_map": "MAP_HEADER_ROUTE_217",
       "dest_warp_id": 1
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

@@ -3,57 +3,67 @@
   "name": "Route 209 Lost Tower 3F",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_ROUTE_209_LOST_TOWER_3F",
+  "layout": "sinnoh/route_209_lost_tower_3f",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_FOG",
+  "day_music": "SEQ_D_02",
+  "night_music": "SEQ_D_02",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_ITEM_REVIVE",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 1,
-      "y": 0,
-      "z": 13,
+      "y": 13,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7093,
-      "hidden_flag": "FLAG_OBTAINED_ROUTE_209_LOST_TOWER_3F_REVIVE"
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_209_LOST_TOWER_3F_REVIVE",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_POKEFAN_LEONARD",
       "graphics_id": "OBJ_EVENT_GFX_POKEFAN_M",
       "x": 7,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_POKEFAN_LEONARD",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_ROUGHNECK_KIRBY",
       "graphics_id": "OBJ_EVENT_GFX_ROUGHNECK",
       "x": 5,
-      "y": 0,
-      "z": 14,
+      "y": 14,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_EAST",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_ROUGHNECK_KIRBY",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     }
   ],
   "warps": [
     {
       "x": 11,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_ROUTE_209_LOST_TOWER_2F",
       "dest_warp_id": 1
     },
     {
       "x": 4,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_ROUTE_209_LOST_TOWER_4F",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

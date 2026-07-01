@@ -3,67 +3,76 @@
   "name": "Celestic Town Cave",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_CELESTIC_TOWN_CAVE",
+  "layout": "sinnoh/celestic_town_cave",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY04_D",
+  "night_music": "SEQ_CITY04_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_ELDER",
       "graphics_id": "OBJ_EVENT_GFX_EXPERT_F",
       "x": 10,
-      "y": 0,
-      "z": 3,
+      "y": 3,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "FLAG_HIDE_CELESTIC_TOWN_CAVE_ELDER"
+      "hidden_flag": "FLAG_HIDE_CELESTIC_TOWN_CAVE_ELDER",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_CYRUS",
       "graphics_id": "OBJ_EVENT_GFX_CYRUS",
       "x": 9,
-      "y": 0,
-      "z": 3,
+      "y": 3,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "FLAG_HIDE_CELESTIC_TOWN_CAVE_CYRUS"
+      "hidden_flag": "FLAG_HIDE_CELESTIC_TOWN_CAVE_CYRUS",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_CYNTHIA",
       "graphics_id": "OBJ_EVENT_GFX_CYNTHIA",
       "x": 9,
-      "y": 0,
-      "z": 10,
+      "y": 10,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_CELESTIC_TOWN_CAVE_CYNTHIA"
+      "hidden_flag": "FLAG_HIDE_CELESTIC_TOWN_CAVE_CYNTHIA",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 10,
-      "y": null,
-      "z": 20,
-      "dest_map": null,
+      "y": 20,
+      "dest_map": "MAP_HEADER_CELESTIC_TOWN",
       "dest_warp_id": 4
     }
   ],
   "signs": [
     {
       "x": 9,
-      "y": 0,
-      "z": 2,
+      "y": 2,
       "script": 1,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
       "x": 10,
-      "y": 0,
-      "z": 2,
+      "y": 2,
       "script": 1,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     }
   ],
-  "coord_events": []
+  "triggers": []
 }

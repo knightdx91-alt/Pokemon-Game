@@ -3,46 +3,55 @@
   "name": "Valor Cavern",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_VALOR_CAVERN",
+  "layout": "sinnoh/valor_cavern",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_GINLOBBY",
+  "night_music": "SEQ_D_GINLOBBY",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_AZELF",
       "graphics_id": "OBJ_EVENT_GFX_AZELF",
       "x": 16,
-      "y": 0,
-      "z": 14,
+      "y": 14,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "FLAG_HIDE_VALOR_CAVERN_AZELF"
+      "hidden_flag": "FLAG_HIDE_VALOR_CAVERN_AZELF",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_SATURN",
       "graphics_id": "OBJ_EVENT_GFX_SATURN",
       "x": 14,
-      "y": 0,
-      "z": 19,
+      "y": 19,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "FLAG_HIDE_LAKE_VALOR_GALACTIC"
+      "hidden_flag": "FLAG_HIDE_LAKE_VALOR_GALACTIC",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 14,
-      "y": null,
-      "z": 29,
-      "dest_map": null,
+      "y": 29,
+      "dest_map": "MAP_HEADER_LAKE_VALOR_DRAINED",
       "dest_warp_id": 1
     },
     {
       "x": 14,
-      "y": null,
-      "z": 29,
-      "dest_map": null,
+      "y": 29,
+      "dest_map": "MAP_HEADER_LAKE_VALOR",
       "dest_warp_id": 1
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

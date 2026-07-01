@@ -3,68 +3,79 @@
   "name": "Newmoon Island",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_NEWMOON_ISLAND",
+  "layout": "sinnoh/newmoon_island",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_03",
+  "night_music": "SEQ_D_03",
+  "allow_running": true,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_SAILOR",
       "graphics_id": "OBJ_EVENT_GFX_SAILOR",
-      "x": 151,
-      "y": 0,
-      "z": 277,
+      "x": 23,
+      "y": 21,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "FLAG_HIDE_NEWMOON_ISLAND_SAILOR"
+      "hidden_flag": "FLAG_HIDE_NEWMOON_ISLAND_SAILOR",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_BOLLARD_1",
       "graphics_id": "OBJ_EVENT_GFX_BOLLARD",
-      "x": 151,
-      "y": 0,
-      "z": 278,
+      "x": 23,
+      "y": 22,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BOLLARD_2",
       "graphics_id": "OBJ_EVENT_GFX_BOLLARD",
-      "x": 151,
-      "y": 0,
-      "z": 276,
+      "x": 23,
+      "y": 20,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BOLLARD_3",
       "graphics_id": "OBJ_EVENT_GFX_BOLLARD",
-      "x": 151,
-      "y": 0,
-      "z": 275,
+      "x": 23,
+      "y": 19,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
-      "x": 137,
-      "y": null,
-      "z": 268,
-      "dest_map": null,
+      "x": 9,
+      "y": 12,
+      "dest_map": "MAP_HEADER_NEWMOON_ISLAND_FOREST",
       "dest_warp_id": 0
     },
     {
-      "x": 138,
-      "y": null,
-      "z": 268,
-      "dest_map": null,
+      "x": 10,
+      "y": 12,
+      "dest_map": "MAP_HEADER_NEWMOON_ISLAND_FOREST",
       "dest_warp_id": 1
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

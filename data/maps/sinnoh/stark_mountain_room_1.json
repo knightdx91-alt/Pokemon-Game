@@ -3,220 +3,243 @@
   "name": "Stark Mountain Room 1",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_STARK_MOUNTAIN_ROOM_1",
+  "layout": "sinnoh/stark_mountain_room_1",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_28",
+  "day_music": "SEQ_D_06",
+  "night_music": "SEQ_D_06",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_MARS",
       "graphics_id": "OBJ_EVENT_GFX_MARS",
       "x": 20,
-      "y": 0,
-      "z": 26,
+      "y": 26,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_STARK_MOUNTAIN_ROOM_1_TEAM_GALACTIC"
+      "hidden_flag": "FLAG_HIDE_STARK_MOUNTAIN_ROOM_1_TEAM_GALACTIC",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_ROCK_SMASH_1",
       "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
       "x": 11,
-      "y": 0,
-      "z": 11,
+      "y": 11,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10001,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_2"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_2",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_STRENGTH_BOULDER_1",
       "graphics_id": "OBJ_EVENT_GFX_STRENGTH_BOULDER",
       "x": 15,
-      "y": 0,
-      "z": 17,
+      "y": 17,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10002,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_5"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_5",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_STRENGTH_BOULDER_2",
       "graphics_id": "OBJ_EVENT_GFX_STRENGTH_BOULDER",
       "x": 18,
-      "y": 0,
-      "z": 15,
+      "y": 15,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10002,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_3"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_3",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_JUPITER",
       "graphics_id": "OBJ_EVENT_GFX_JUPITER",
       "x": 21,
-      "y": 0,
-      "z": 26,
+      "y": 26,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_STARK_MOUNTAIN_ROOM_1_TEAM_GALACTIC"
+      "hidden_flag": "FLAG_HIDE_STARK_MOUNTAIN_ROOM_1_TEAM_GALACTIC",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_STRENGTH_BOULDER_3",
       "graphics_id": "OBJ_EVENT_GFX_STRENGTH_BOULDER",
       "x": 26,
-      "y": 0,
-      "z": 15,
+      "y": 15,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10002,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_6"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_6",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_STRENGTH_BOULDER_4",
       "graphics_id": "OBJ_EVENT_GFX_STRENGTH_BOULDER",
       "x": 26,
-      "y": 0,
-      "z": 16,
+      "y": 16,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10002,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_7"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_7",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_STRENGTH_BOULDER_5",
       "graphics_id": "OBJ_EVENT_GFX_STRENGTH_BOULDER",
       "x": 26,
-      "y": 0,
-      "z": 17,
+      "y": 17,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10002,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_8"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_8",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_STRENGTH_BOULDER_6",
       "graphics_id": "OBJ_EVENT_GFX_STRENGTH_BOULDER",
       "x": 27,
-      "y": 0,
-      "z": 13,
+      "y": 13,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10002,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_9"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_9",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_STRENGTH_BOULDER_7",
       "graphics_id": "OBJ_EVENT_GFX_STRENGTH_BOULDER",
       "x": 18,
-      "y": 0,
-      "z": 9,
+      "y": 9,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10002,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_10"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_10",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_FULL_HEAL",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 6,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7212,
-      "hidden_flag": "FLAG_OBTAINED_STARK_MOUNTAIN_ROOM_1_FULL_HEAL"
+      "hidden_flag": "FLAG_OBTAINED_STARK_MOUNTAIN_ROOM_1_FULL_HEAL",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_ESCAPE_ROPE",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 8,
-      "y": 0,
-      "z": 23,
+      "y": 23,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7213,
-      "hidden_flag": "FLAG_OBTAINED_STARK_MOUNTAIN_ROOM_1_ESCAPE_ROPE"
+      "hidden_flag": "FLAG_OBTAINED_STARK_MOUNTAIN_ROOM_1_ESCAPE_ROPE",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_PP_UP",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 33,
-      "y": 0,
-      "z": 25,
+      "y": 25,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7214,
-      "hidden_flag": "FLAG_OBTAINED_STARK_MOUNTAIN_ROOM_1_PP_UP"
+      "hidden_flag": "FLAG_OBTAINED_STARK_MOUNTAIN_ROOM_1_PP_UP",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_FULL_RESTORE",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 25,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7215,
-      "hidden_flag": "FLAG_OBTAINED_STARK_MOUNTAIN_ROOM_1_FULL_RESTORE"
+      "hidden_flag": "FLAG_OBTAINED_STARK_MOUNTAIN_ROOM_1_FULL_RESTORE",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_CHARON",
       "graphics_id": "OBJ_EVENT_GFX_CHARON",
       "x": 20,
-      "y": 0,
-      "z": 24,
+      "y": 24,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_STARK_MOUNTAIN_ROOM_1_TEAM_GALACTIC"
+      "hidden_flag": "FLAG_HIDE_STARK_MOUNTAIN_ROOM_1_TEAM_GALACTIC",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_GRUNT_M_1",
       "graphics_id": "OBJ_EVENT_GFX_GRUNT_M",
       "x": 19,
-      "y": 0,
-      "z": 24,
+      "y": 24,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_STARK_MOUNTAIN_ROOM_1_TEAM_GALACTIC"
+      "hidden_flag": "FLAG_HIDE_STARK_MOUNTAIN_ROOM_1_TEAM_GALACTIC",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_GRUNT_M_2",
       "graphics_id": "OBJ_EVENT_GFX_GRUNT_M",
       "x": 21,
-      "y": 0,
-      "z": 24,
+      "y": 24,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_STARK_MOUNTAIN_ROOM_1_TEAM_GALACTIC"
+      "hidden_flag": "FLAG_HIDE_STARK_MOUNTAIN_ROOM_1_TEAM_GALACTIC",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 20,
-      "y": null,
-      "z": 29,
-      "dest_map": null,
+      "y": 29,
+      "dest_map": "MAP_HEADER_STARK_MOUNTAIN_OUTSIDE",
       "dest_warp_id": 0
     },
     {
       "x": 17,
-      "y": null,
-      "z": 2,
-      "dest_map": null,
+      "y": 2,
+      "dest_map": "MAP_HEADER_STARK_MOUNTAIN_ROOM_2",
       "dest_warp_id": 1
     }
   ],
   "signs": [
     {
       "x": 25,
-      "y": 0,
-      "z": 4,
+      "y": 4,
       "script": 8138,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     }
   ],
-  "coord_events": []
+  "triggers": []
 }

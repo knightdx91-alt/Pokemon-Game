@@ -3,23 +3,30 @@
   "name": "Spring Path",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_SPRING_PATH",
+  "layout": "sinnoh/spring_path",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_ROAD_F_D",
+  "night_music": "SEQ_ROAD_F_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
   "npcs": [],
   "warps": [
     {
-      "x": 762,
-      "y": null,
-      "z": 713,
-      "dest_map": null,
+      "x": 26,
+      "y": 41,
+      "dest_map": "MAP_HEADER_SENDOFF_SPRING",
       "dest_warp_id": 0
     },
     {
-      "x": 763,
-      "y": null,
-      "z": 713,
-      "dest_map": null,
+      "x": 27,
+      "y": 41,
+      "dest_map": "MAP_HEADER_SENDOFF_SPRING",
       "dest_warp_id": 1
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

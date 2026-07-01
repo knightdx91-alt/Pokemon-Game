@@ -3,57 +3,67 @@
   "name": "Pokemon League Flint Room",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_POKEMON_LEAGUE_FLINT_ROOM",
+  "layout": "sinnoh/pokemon_league_flint_room",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_LEAGUE",
+  "night_music": "SEQ_D_LEAGUE",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_FLINT",
       "graphics_id": "OBJ_EVENT_GFX_FLINT",
       "x": 8,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_EXIT_DOOR",
       "graphics_id": "OBJ_EVENT_GFX_ELITE_FOUR_ROOM_DOOR",
       "x": 8,
-      "y": 0,
-      "z": 2,
+      "y": 2,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2037,
-      "hidden_flag": "FLAG_HIDE_POKEMON_LEAGUE_FLINT_ROOM_EXIT_DOOR"
+      "hidden_flag": "FLAG_HIDE_POKEMON_LEAGUE_FLINT_ROOM_EXIT_DOOR",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ENTRANCE_DOOR",
       "graphics_id": "OBJ_EVENT_GFX_ELITE_FOUR_ROOM_DOOR",
       "x": 8,
-      "y": 0,
-      "z": 12,
+      "y": 12,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2037,
-      "hidden_flag": "FLAG_HIDE_POKEMON_LEAGUE_FLINT_ROOM_ENTRANCE_DOOR"
+      "hidden_flag": "FLAG_HIDE_POKEMON_LEAGUE_FLINT_ROOM_ENTRANCE_DOOR",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 8,
-      "y": null,
-      "z": 2,
-      "dest_map": null,
+      "y": 2,
+      "dest_map": "MAP_HEADER_POKEMON_LEAGUE_ELEVATOR_TO_LUCIAN_ROOM",
       "dest_warp_id": 1
     },
     {
       "x": 8,
-      "y": null,
-      "z": 11,
-      "dest_map": null,
+      "y": 11,
+      "dest_map": "MAP_HEADER_POKEMON_LEAGUE_ELEVATOR_TO_FLINT_ROOM",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

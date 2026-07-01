@@ -3,124 +3,133 @@
   "name": "Veilstone City Gym",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_VEILSTONE_CITY_GYM",
+  "layout": "sinnoh/veilstone_city_gym",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_GYM",
+  "night_music": "SEQ_GYM",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_MAYLENE",
       "graphics_id": "OBJ_EVENT_GFX_MAYLENE",
       "x": 12,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "FLAG_HIDE_VEILSTONE_CITY_GYM_MAYLENE"
+      "hidden_flag": "FLAG_HIDE_VEILSTONE_CITY_GYM_MAYLENE",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_GYM_GUIDE",
       "graphics_id": "OBJ_EVENT_GFX_GYM_GUIDE",
       "x": 13,
-      "y": 0,
-      "z": 29,
+      "y": 29,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_BLACK_BELT_COLBY",
       "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
       "x": 15,
-      "y": 0,
-      "z": 23,
+      "y": 23,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_EAST",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_BLACK_BELT_COLBY",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_BLACK_BELT_DARREN",
       "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
       "x": 16,
-      "y": 0,
-      "z": 14,
+      "y": 14,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_BLACK_BELT_DARREN",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_BLACK_BELT_JEFFERY",
       "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
       "x": 2,
-      "y": 0,
-      "z": 9,
+      "y": 9,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_WEST",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_BLACK_BELT_JEFFERY",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_BLACK_BELT_RAFAEL",
       "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
       "x": 11,
-      "y": 0,
-      "z": 13,
+      "y": 13,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_BLACK_BELT_RAFAEL",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     }
   ],
   "warps": [
     {
       "x": 12,
-      "y": null,
-      "z": 30,
-      "dest_map": null,
+      "y": 30,
+      "dest_map": "MAP_HEADER_VEILSTONE_CITY",
       "dest_warp_id": 13
     }
   ],
   "signs": [
     {
       "x": 10,
-      "y": 0,
-      "z": 29,
+      "y": 29,
       "script": 4,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
       "x": 14,
-      "y": 0,
-      "z": 29,
+      "y": 29,
       "script": 4,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
       "x": 12,
-      "y": 0,
-      "z": 2,
+      "y": 2,
       "script": 7,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
       "x": 10,
-      "y": 0,
-      "z": 2,
+      "y": 2,
       "script": 5,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
       "x": 14,
-      "y": 0,
-      "z": 2,
+      "y": 2,
       "script": 6,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     }
   ],
-  "coord_events": []
+  "triggers": []
 }

@@ -3,86 +3,97 @@
   "name": "Jubilife Tv 1F",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_JUBILIFE_TV_1F",
+  "layout": "sinnoh/jubilife_tv_1f",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_BLD_TV",
+  "night_music": "SEQ_BLD_TV",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_BEAUTY",
       "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
       "x": 13,
-      "y": 0,
-      "z": 13,
+      "y": 13,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 5,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_GYM_GUIDE",
       "graphics_id": "OBJ_EVENT_GFX_GYM_GUIDE",
       "x": 13,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_POKETCH_CO_PRESIDENT",
       "graphics_id": "OBJ_EVENT_GFX_MIDDLE_AGED_MAN",
       "x": 3,
-      "y": 0,
-      "z": 11,
+      "y": 11,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 6,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_ACE_TRAINER_SNOW_F",
       "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_SNOW_F",
       "x": 9,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_ACE_TRAINER_M",
       "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_M",
       "x": 7,
-      "y": 0,
-      "z": 10,
+      "y": 10,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 9,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     }
   ],
   "warps": [
     {
       "x": 9,
-      "y": null,
-      "z": 18,
-      "dest_map": null,
+      "y": 18,
+      "dest_map": "MAP_HEADER_JUBILIFE_CITY",
       "dest_warp_id": 3
     },
     {
       "x": 14,
-      "y": null,
-      "z": 4,
-      "dest_map": null,
+      "y": 4,
+      "dest_map": "MAP_HEADER_JUBILIFE_TV_2F",
       "dest_warp_id": 0
     },
     {
       "x": 18,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_JUBILIFE_TV_ELEVATOR",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

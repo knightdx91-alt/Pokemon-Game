@@ -24,6 +24,24 @@ window.GameRenderer = (function () {
     // Player sprite state
     let _playerImg    = null;   // HTMLImageElement for data/sprites/player.png
 
+    // Pre-rendered textured map background (Sinnoh maps rendered from their 3D
+    // models). When present it is drawn instead of the metatile grid.
+    let _bgPath    = null;
+    let _bgImg     = null;
+    let _bgLoading = false;
+
+    function loadBackground(path) {
+        if (path === _bgPath) return;
+        _bgPath    = path;
+        _bgImg     = null;
+        _bgLoading = !!path;
+        if (!path) return;
+        const img = new Image();
+        img.onload  = () => { if (_bgPath === path) { _bgImg = img; _bgLoading = false; } };
+        img.onerror = () => { if (_bgPath === path) { console.warn(`[Renderer] Failed to load background: ${path}`); _bgLoading = false; } };
+        img.src = path;
+    }
+
     // Actual Emerald frame layout (from object_event_anims.h):
     //   0=stand-south, 1=stand-north, 2=stand-west/east
     //   walk-south: 3,0,4,0  walk-north: 5,1,6,1  walk-west/east: 7,2,8,2
@@ -106,9 +124,25 @@ window.GameRenderer = (function () {
             loadTileset(wantedTileset);
         }
 
+        // Check if a pre-rendered textured background applies to this map
+        const wantedBg = _map.getBackground ? _map.getBackground() : null;
+        if (wantedBg !== _bgPath) loadBackground(wantedBg);
+
         // Background
         ctx.fillStyle = COLORS.bg;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Fast path: draw the textured map render (a slice aligned to the tile
+        // grid at TILE_PX/tile) instead of the metatile fallback grid.
+        const useBg = _bgImg && wantedBg;
+        if (useBg) {
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(
+                _bgImg,
+                camX * TILE_PX, camY * TILE_PX, vw * TILE_PX, vh * TILE_PX,
+                0, 0, vw * TILE_PX, vh * TILE_PX
+            );
+        }
 
         // Build sets for quick warp/sign/npc lookup
         const warpSet = new Set();
@@ -128,27 +162,33 @@ window.GameRenderer = (function () {
                 const sx = tx * TILE_PX;
                 const sy = ty * TILE_PX;
 
-                // Try to draw from spritesheet
-                const metatileIdx = _map.getTile(worldX, worldY);
-                let drawnFromSheet = false;
-                if (metatileIdx !== null && metatileIdx !== undefined && _tilesetImg) {
-                    drawnFromSheet = drawMetatile(metatileIdx, sx, sy);
+                // Draw terrain from the metatile spritesheet, unless a textured
+                // background has already been drawn for the whole viewport.
+                if (!useBg) {
+                    const metatileIdx = _map.getTile(worldX, worldY);
+                    let drawnFromSheet = false;
+                    if (metatileIdx !== null && metatileIdx !== undefined && _tilesetImg) {
+                        drawnFromSheet = drawMetatile(metatileIdx, sx, sy);
+                    }
+                    // Fallback: solid color tile
+                    if (!drawnFromSheet) {
+                        const walkable = _map.isWalkable(worldX, worldY);
+                        ctx.fillStyle = walkable ? COLORS.walkable : COLORS.impassable;
+                        ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
+                    }
                 }
 
-                // Fallback: solid color tile
-                if (!drawnFromSheet) {
-                    const walkable = _map.isWalkable(worldX, worldY);
-                    ctx.fillStyle = walkable ? COLORS.walkable : COLORS.impassable;
-                    ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
-                }
-
-                // Warp/sign overlays (semi-transparent tint on top of tile graphics)
-                if (warpSet.has(`${worldX},${worldY}`)) {
-                    ctx.fillStyle = 'rgba(249,168,37,0.45)';
-                    ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
-                } else if (signSet.has(`${worldX},${worldY}`)) {
-                    ctx.fillStyle = 'rgba(141,110,99,0.45)';
-                    ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
+                // Warp/sign overlays (semi-transparent tint on top of tile
+                // graphics). Skipped over textured backgrounds, where doors and
+                // stairs are already visible, to keep the rendered look clean.
+                if (!useBg) {
+                    if (warpSet.has(`${worldX},${worldY}`)) {
+                        ctx.fillStyle = 'rgba(249,168,37,0.45)';
+                        ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
+                    } else if (signSet.has(`${worldX},${worldY}`)) {
+                        ctx.fillStyle = 'rgba(141,110,99,0.45)';
+                        ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
+                    }
                 }
             }
         }

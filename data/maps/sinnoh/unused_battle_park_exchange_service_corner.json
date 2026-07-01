@@ -3,123 +3,139 @@
   "name": "Unused Battle Park Exchange Service Corner",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_UNUSED_BATTLE_PARK_EXCHANGE_SERVICE_CORNER",
+  "layout": "sinnoh/unused_battle_park_exchange_service_corner",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY11_D",
+  "night_music": "SEQ_CITY11_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_MAID_NORTH",
       "graphics_id": "OBJ_EVENT_GFX_MAID",
       "x": 4,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_MAID_SOUTH",
       "graphics_id": "OBJ_EVENT_GFX_MAID",
       "x": 22,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_TWIN",
       "graphics_id": "OBJ_EVENT_GFX_TWIN",
       "x": 17,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 8,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_EXPERT_F",
       "graphics_id": "OBJ_EVENT_GFX_EXPERT_F",
       "x": 18,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 9,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_GENTLEMAN",
       "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
       "x": 3,
-      "y": 0,
-      "z": 14,
+      "y": 14,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_SOCIALITE",
       "graphics_id": "OBJ_EVENT_GFX_SOCIALITE",
       "x": 23,
-      "y": 0,
-      "z": 14,
+      "y": 14,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_CLOWN",
       "graphics_id": "OBJ_EVENT_GFX_CLOWN",
       "x": 13,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_COWGIRL",
       "graphics_id": "OBJ_EVENT_GFX_COWGIRL",
       "x": 19,
-      "y": 0,
-      "z": 12,
+      "y": 12,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 6,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ROUGHNECK",
       "graphics_id": "OBJ_EVENT_GFX_ROUGHNECK",
       "x": 11,
-      "y": 0,
-      "z": 3,
+      "y": 3,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_SOUTH_AND_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 5,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 5,
-      "y": null,
-      "z": 17,
-      "dest_map": null,
+      "y": 17,
+      "dest_map": "MAP_HEADER_UNUSED_BATTLE_PARK",
       "dest_warp_id": 0
     },
     {
       "x": 21,
-      "y": null,
-      "z": 17,
-      "dest_map": null,
+      "y": 17,
+      "dest_map": "MAP_HEADER_UNUSED_BATTLE_PARK",
       "dest_warp_id": 1
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

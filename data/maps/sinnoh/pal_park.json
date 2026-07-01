@@ -3,46 +3,53 @@
   "name": "Pal Park",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_PAL_PARK",
+  "layout": "sinnoh/pal_park",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_SILENCE_DUNGEON",
+  "night_music": "SEQ_SILENCE_DUNGEON",
+  "allow_running": false,
+  "allow_cycling": true,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_WORKER",
       "graphics_id": "OBJ_EVENT_GFX_WORKER",
       "x": 28,
-      "y": 0,
-      "z": 48,
+      "y": 48,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 6,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     }
   ],
   "warps": [
     {
       "x": 24,
-      "y": null,
-      "z": 52,
-      "dest_map": null,
+      "y": 52,
+      "dest_map": "MAP_HEADER_PAL_PARK_LOBBY",
       "dest_warp_id": 1
     },
     {
       "x": 25,
-      "y": null,
-      "z": 52,
-      "dest_map": null,
+      "y": 52,
+      "dest_map": "MAP_HEADER_PAL_PARK_LOBBY",
       "dest_warp_id": 1
     }
   ],
   "signs": [],
-  "coord_events": [
+  "triggers": [
     {
-      "script": 5,
       "x": 22,
-      "z": 48,
-      "y": 0,
+      "y": 48,
       "width": 6,
-      "length": 1,
+      "height": 1,
       "var": "VAR_PAL_PARK_STATE",
-      "value": 1
+      "var_value": 1,
+      "script": 5
     }
   ]
 }

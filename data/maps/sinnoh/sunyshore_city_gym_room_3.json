@@ -3,113 +3,122 @@
   "name": "Sunyshore City Gym Room 3",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_SUNYSHORE_CITY_GYM_ROOM_3",
+  "layout": "sinnoh/sunyshore_city_gym_room_3",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_GYM",
+  "night_music": "SEQ_GYM",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_VOLKNER",
       "graphics_id": "OBJ_EVENT_GFX_VOLKNER",
       "x": 11,
-      "y": 0,
-      "z": 3,
+      "y": 3,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_ACE_TRAINER_DESTINY",
       "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_F",
       "x": 4,
-      "y": 0,
-      "z": 23,
+      "y": 23,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_ACE_TRAINER_DESTINY",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_GUITARIST_PRESTON",
       "graphics_id": "OBJ_EVENT_GFX_GUITARIST",
       "x": 3,
-      "y": 0,
-      "z": 3,
+      "y": 3,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_GUITARIST_PRESTON",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_GUITARIST_LONNIE",
       "graphics_id": "OBJ_EVENT_GFX_GUITARIST",
       "x": 16,
-      "y": 0,
-      "z": 23,
+      "y": 23,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_SOUTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_GUITARIST_LONNIE",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_ACE_TRAINER_ZACHERY",
       "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_M",
       "x": 21,
-      "y": 0,
-      "z": 10,
+      "y": 10,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_ACE_TRAINER_ZACHERY",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     }
   ],
   "warps": [
     {
       "x": 11,
-      "y": null,
-      "z": 25,
-      "dest_map": null,
+      "y": 25,
+      "dest_map": "MAP_HEADER_SUNYSHORE_CITY_GYM_ROOM_2",
       "dest_warp_id": 1
     }
   ],
   "signs": [],
-  "coord_events": [
+  "triggers": [
     {
-      "script": 2,
       "x": 6,
-      "z": 8,
-      "y": 0,
+      "y": 8,
       "width": 1,
-      "length": 1,
-      "var": "VAR_MAP_LOCAL_0",
-      "value": 0
+      "height": 1,
+      "var": "VAR_MAP_LOCAL_0x00",
+      "var_value": 0,
+      "script": 2
     },
     {
-      "script": 2,
       "x": 16,
-      "z": 13,
-      "y": 0,
+      "y": 13,
       "width": 1,
-      "length": 1,
-      "var": "VAR_MAP_LOCAL_0",
-      "value": 0
+      "height": 1,
+      "var": "VAR_MAP_LOCAL_0x00",
+      "var_value": 0,
+      "script": 2
     },
     {
-      "script": 3,
       "x": 6,
-      "z": 18,
-      "y": 0,
+      "y": 18,
       "width": 1,
-      "length": 1,
-      "var": "VAR_MAP_LOCAL_0",
-      "value": 0
+      "height": 1,
+      "var": "VAR_MAP_LOCAL_0x00",
+      "var_value": 0,
+      "script": 3
     },
     {
-      "script": 3,
       "x": 16,
-      "z": 18,
-      "y": 0,
+      "y": 18,
       "width": 1,
-      "length": 1,
-      "var": "VAR_MAP_LOCAL_0",
-      "value": 0
+      "height": 1,
+      "var": "VAR_MAP_LOCAL_0x00",
+      "var_value": 0,
+      "script": 3
     }
   ]
 }

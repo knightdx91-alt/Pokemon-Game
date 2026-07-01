@@ -3,102 +3,111 @@
   "name": "Team Galactic Eterna Building 2F",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_TEAM_GALACTIC_ETERNA_BUILDING_2F",
+  "layout": "sinnoh/team_galactic_eterna_building_2f",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_GINLOBBY",
+  "night_music": "SEQ_D_GINLOBBY",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_GRUNT_M",
       "graphics_id": "OBJ_EVENT_GFX_GRUNT_M",
       "x": 7,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "FLAG_HIDE_ETERNA_CITY_GALACTIC_GRUNTS"
+      "hidden_flag": "FLAG_HIDE_ETERNA_CITY_GALACTIC_GRUNTS",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_GRUNT_F",
       "graphics_id": "OBJ_EVENT_GFX_GRUNT_F",
       "x": 19,
-      "y": 0,
-      "z": 8,
+      "y": 8,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "FLAG_HIDE_ETERNA_CITY_GALACTIC_GRUNTS"
+      "hidden_flag": "FLAG_HIDE_ETERNA_CITY_GALACTIC_GRUNTS",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_GALACTIC_GRUNT_2",
       "graphics_id": "OBJ_EVENT_GFX_GRUNT_F",
       "x": 13,
-      "y": 0,
-      "z": 8,
+      "y": 8,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_GALACTIC_GRUNT_TEAM_GALACTIC_ETERNA_BUILDING_2F_2",
-      "hidden_flag": "FLAG_HIDE_ETERNA_CITY_GALACTIC_GRUNTS"
+      "hidden_flag": "FLAG_HIDE_ETERNA_CITY_GALACTIC_GRUNTS",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_GALACTIC_GRUNT_1",
       "graphics_id": "OBJ_EVENT_GFX_GRUNT_M",
       "x": 3,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_GALACTIC_GRUNT_TEAM_GALACTIC_ETERNA_BUILDING_2F_1",
-      "hidden_flag": "FLAG_HIDE_ETERNA_CITY_GALACTIC_GRUNTS"
+      "hidden_flag": "FLAG_HIDE_ETERNA_CITY_GALACTIC_GRUNTS",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_X_SPEED",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 3,
-      "y": 0,
-      "z": 12,
+      "y": 12,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7262,
-      "hidden_flag": "FLAG_OBTAINED_TEAM_GALACTIC_ETERNA_BUILDING_2F_X_SPEED"
+      "hidden_flag": "FLAG_OBTAINED_TEAM_GALACTIC_ETERNA_BUILDING_2F_X_SPEED",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 3,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_TEAM_GALACTIC_ETERNA_BUILDING_1F",
       "dest_warp_id": 1
     },
     {
       "x": 20,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_TEAM_GALACTIC_ETERNA_BUILDING_3F",
       "dest_warp_id": 0
     },
     {
       "x": 8,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_TEAM_GALACTIC_ETERNA_BUILDING_1F",
       "dest_warp_id": 2
     },
     {
       "x": 14,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_TEAM_GALACTIC_ETERNA_BUILDING_3F",
       "dest_warp_id": 2
     }
   ],
   "signs": [
     {
       "x": 16,
-      "y": 0,
-      "z": 2,
+      "y": 2,
       "script": 3,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     }
   ],
-  "coord_events": []
+  "triggers": []
 }

@@ -3,39 +3,49 @@
   "name": "Veilstone City Southeast House",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_VEILSTONE_CITY_SOUTHEAST_HOUSE",
+  "layout": "sinnoh/veilstone_city_southeast_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY07_D",
+  "night_music": "SEQ_CITY07_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_CLOWN",
       "graphics_id": "OBJ_EVENT_GFX_CLOWN",
       "x": 6,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_BLACK_BELT",
       "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
       "x": 3,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     }
   ],
   "warps": [
     {
       "x": 4,
-      "y": null,
-      "z": 8,
-      "dest_map": null,
+      "y": 8,
+      "dest_map": "MAP_HEADER_VEILSTONE_CITY",
       "dest_warp_id": 7
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

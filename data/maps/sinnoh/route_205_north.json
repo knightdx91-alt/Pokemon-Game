@@ -3,165 +3,183 @@
   "name": "Route 205 North",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_ROUTE_205_NORTH",
+  "layout": "sinnoh/route_205_north",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_ROAD_C_D",
+  "night_music": "SEQ_ROAD_C_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
   "npcs": [
     {
       "local_id": "LOCALID_FISHERMAN_ANDREW",
       "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
-      "x": 274,
-      "y": 7,
-      "z": 531,
+      "x": 18,
+      "y": 19,
+      "elevation": 7,
       "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_FISHERMAN_ANDREW",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_FISHERMAN_JOSEPH",
       "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
-      "x": 270,
-      "y": 7,
-      "z": 532,
+      "x": 14,
+      "y": 20,
+      "elevation": 7,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_FISHERMAN_JOSEPH",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_FISHERMAN_ZACHARY",
       "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
-      "x": 277,
-      "y": 7,
-      "z": 535,
+      "x": 21,
+      "y": 23,
+      "elevation": 7,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_FISHERMAN_ZACHARY",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_ARROW_SIGNPOST_ETERNA_FOREST",
       "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
-      "x": 262,
-      "y": 0,
-      "z": 523,
+      "x": 6,
+      "y": 11,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ARROW_SIGNPOST_ETERNA_CITY",
       "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
-      "x": 281,
-      "y": 0,
-      "z": 532,
+      "x": 25,
+      "y": 20,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_FISHERMAN",
       "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
-      "x": 267,
-      "y": 7,
-      "z": 532,
+      "x": 11,
+      "y": 20,
+      "elevation": 7,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_ITEM_GUARD_SPEC",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
-      "x": 274,
-      "y": 0,
-      "z": 541,
+      "x": 18,
+      "y": 29,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7023,
-      "hidden_flag": "FLAG_OBTAINED_ROUTE_205_NORTH_GUARD_SPEC"
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_205_NORTH_GUARD_SPEC",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BERRY_SOIL_1",
       "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
-      "x": 277,
-      "y": 0,
-      "z": 519,
+      "x": 21,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2800,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BERRY_SOIL_2",
       "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
-      "x": 278,
-      "y": 0,
-      "z": 519,
+      "x": 22,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2800,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BERRY_SOIL_3",
       "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
-      "x": 279,
-      "y": 0,
-      "z": 519,
+      "x": 23,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2800,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BERRY_SOIL_4",
       "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
-      "x": 280,
-      "y": 0,
-      "z": 519,
+      "x": 24,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2800,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_MAP_SIGNPOST",
       "graphics_id": "OBJ_EVENT_GFX_MAP_SIGNPOST",
-      "x": 293,
-      "y": 0,
-      "z": 530,
+      "x": 37,
+      "y": 18,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 65535,
-      "hidden_flag": "MAP_HEADER_ETERNA_CITY"
+      "hidden_flag": "MAP_HEADER_ETERNA_CITY",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
-      "x": 259,
-      "y": null,
-      "z": 525,
-      "dest_map": null,
+      "x": 3,
+      "y": 13,
+      "dest_map": "MAP_HEADER_ETERNA_FOREST",
       "dest_warp_id": 3
     },
     {
-      "x": 259,
-      "y": null,
-      "z": 524,
-      "dest_map": null,
+      "x": 3,
+      "y": 12,
+      "dest_map": "MAP_HEADER_ETERNA_FOREST",
       "dest_warp_id": 2
     }
   ],
   "signs": [
     {
-      "x": 285,
-      "y": 0,
-      "z": 520,
+      "x": 29,
+      "y": 8,
       "script": 8150,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     }
   ],
-  "coord_events": []
+  "triggers": []
 }

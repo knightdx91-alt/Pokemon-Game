@@ -3,60 +3,67 @@
   "name": "Hearthome City Gym Trainer Room 1",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_HEARTHOME_CITY_GYM_TRAINER_ROOM_1",
+  "layout": "sinnoh/hearthome_city_gym_trainer_room_1",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_GYM",
+  "night_music": "SEQ_GYM",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_YOUNGSTER_DONNY",
       "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
       "x": 12,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_YOUNGSTER_DONNY",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_LASS_MOLLY",
       "graphics_id": "OBJ_EVENT_GFX_LASS",
       "x": 4,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_LASS_MOLLY",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     }
   ],
   "warps": [
     {
       "x": 8,
-      "y": null,
-      "z": 10,
-      "dest_map": null,
+      "y": 10,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_ENTRANCE_ROOM",
       "dest_warp_id": 1
     },
     {
       "x": 4,
-      "y": null,
-      "z": 2,
-      "dest_map": null,
+      "y": 2,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_TRAINER_ROOM_2",
       "dest_warp_id": 0
     },
     {
       "x": 8,
-      "y": null,
-      "z": 2,
-      "dest_map": null,
+      "y": 2,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_TRAINER_ROOM_2",
       "dest_warp_id": 0
     },
     {
       "x": 12,
-      "y": null,
-      "z": 2,
-      "dest_map": null,
+      "y": 2,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY_GYM_TRAINER_ROOM_2",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

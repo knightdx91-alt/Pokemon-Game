@@ -3,75 +3,90 @@
   "name": "Battle Tower Battle Salon",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_BATTLE_TOWER_BATTLE_SALON",
+  "layout": "sinnoh/battle_tower_battle_salon",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_BF_TOWWER",
+  "night_music": "SEQ_BF_TOWWER",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_TEALA",
       "graphics_id": "OBJ_EVENT_GFX_TEALA",
       "x": 8,
-      "y": 0,
-      "z": 1,
+      "y": 1,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_CHERYL",
       "graphics_id": "OBJ_EVENT_GFX_CHERYL",
       "x": 13,
-      "y": 0,
-      "z": 10,
+      "y": 10,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "FLAG_HIDE_BATTLE_SALON_CHERYL"
+      "hidden_flag": "FLAG_HIDE_BATTLE_SALON_CHERYL",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_MIRA",
       "graphics_id": "OBJ_EVENT_GFX_MIRA",
       "x": 4,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "FLAG_HIDE_BATTLE_SALON_MIRA"
+      "hidden_flag": "FLAG_HIDE_BATTLE_SALON_MIRA",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_RILEY",
       "graphics_id": "OBJ_EVENT_GFX_RILEY",
       "x": 11,
-      "y": 0,
-      "z": 8,
+      "y": 8,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "FLAG_HIDE_BATTLE_SALON_RILEY"
+      "hidden_flag": "FLAG_HIDE_BATTLE_SALON_RILEY",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_MARLEY",
       "graphics_id": "OBJ_EVENT_GFX_MARLEY",
       "x": 2,
-      "y": 0,
-      "z": 10,
+      "y": 10,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 5,
-      "hidden_flag": "FLAG_HIDE_BATTLE_SALON_MARLEY"
+      "hidden_flag": "FLAG_HIDE_BATTLE_SALON_MARLEY",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_BUCK",
       "graphics_id": "OBJ_EVENT_GFX_BUCK",
       "x": 7,
-      "y": 0,
-      "z": 9,
+      "y": 9,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 6,
-      "hidden_flag": "FLAG_HIDE_BATTLE_SALON_BUCK"
+      "hidden_flag": "FLAG_HIDE_BATTLE_SALON_BUCK",
+      "initial_dir": 0
     }
   ],
   "warps": [],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

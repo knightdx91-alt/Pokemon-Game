@@ -3,78 +3,85 @@
   "name": "Lake Acuity",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_LAKE_ACUITY",
+  "layout": "sinnoh/lake_acuity",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_GINLOBBY",
+  "night_music": "SEQ_D_GINLOBBY",
+  "allow_running": true,
+  "allow_cycling": false,
+  "allow_fly": true,
   "npcs": [
     {
       "local_id": "LOCALID_ITEM_TM14",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 38,
-      "y": 0,
-      "z": 8,
+      "y": 8,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7241,
-      "hidden_flag": "FLAG_OBTAINED_LAKE_ACUITY_TM14"
+      "hidden_flag": "FLAG_OBTAINED_LAKE_ACUITY_TM14",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_JUPITER",
       "graphics_id": "OBJ_EVENT_GFX_JUPITER",
       "x": 17,
-      "y": 0,
-      "z": 44,
+      "y": 44,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_LAKE_ACUITY_JUPITER"
+      "hidden_flag": "FLAG_HIDE_LAKE_ACUITY_JUPITER",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_RIVAL",
       "graphics_id": "OBJ_EVENT_GFX_BARRY",
       "x": 17,
-      "y": 0,
-      "z": 45,
+      "y": 45,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_LAKE_ACUITY_RIVAL"
+      "hidden_flag": "FLAG_HIDE_LAKE_ACUITY_RIVAL",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 11,
-      "y": null,
-      "z": 50,
-      "dest_map": null,
+      "y": 50,
+      "dest_map": "MAP_HEADER_ACUITY_LAKEFRONT",
       "dest_warp_id": 0
     },
     {
       "x": 32,
-      "y": null,
-      "z": 32,
-      "dest_map": null,
+      "y": 32,
+      "dest_map": "MAP_HEADER_ACUITY_CAVERN",
       "dest_warp_id": 0
     },
     {
       "x": 12,
-      "y": null,
-      "z": 50,
-      "dest_map": null,
+      "y": 50,
+      "dest_map": "MAP_HEADER_ACUITY_LAKEFRONT",
       "dest_warp_id": 1
     },
     {
       "x": 14,
-      "y": null,
-      "z": 50,
-      "dest_map": null,
+      "y": 50,
+      "dest_map": "MAP_HEADER_ACUITY_LAKEFRONT",
       "dest_warp_id": 2
     },
     {
       "x": 15,
-      "y": null,
-      "z": 50,
-      "dest_map": null,
+      "y": 50,
+      "dest_map": "MAP_HEADER_ACUITY_LAKEFRONT",
       "dest_warp_id": 3
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

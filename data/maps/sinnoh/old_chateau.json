@@ -3,53 +3,56 @@
   "name": "Old Chateau",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_OLD_CHATEAU",
+  "layout": "sinnoh/old_chateau",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_27",
+  "day_music": "SEQ_D_03",
+  "night_music": "SEQ_D_03",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [],
   "warps": [
     {
       "x": 1,
-      "y": null,
-      "z": 6,
-      "dest_map": null,
+      "y": 6,
+      "dest_map": "MAP_HEADER_OLD_CHATEAU_SIDE_ROOMS",
       "dest_warp_id": 0
     },
     {
       "x": 17,
-      "y": null,
-      "z": 6,
-      "dest_map": null,
+      "y": 6,
+      "dest_map": "MAP_HEADER_OLD_CHATEAU_SIDE_ROOMS",
       "dest_warp_id": 1
     },
     {
       "x": 9,
-      "y": null,
-      "z": 5,
-      "dest_map": null,
+      "y": 5,
+      "dest_map": "MAP_HEADER_OLD_CHATEAU_DINING_AREA",
       "dest_warp_id": 0
     },
     {
       "x": 9,
-      "y": null,
-      "z": 2,
-      "dest_map": null,
+      "y": 2,
+      "dest_map": "MAP_HEADER_OLD_CHATEAU_CORRIDOR",
       "dest_warp_id": 0
     },
     {
       "x": 9,
-      "y": null,
-      "z": 15,
-      "dest_map": null,
+      "y": 15,
+      "dest_map": "MAP_HEADER_ETERNA_FOREST",
       "dest_warp_id": 4
     }
   ],
   "signs": [
     {
       "x": 7,
-      "y": 0,
-      "z": 6,
+      "y": 6,
       "script": 2,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     }
   ],
-  "coord_events": []
+  "triggers": []
 }

@@ -3,35 +3,43 @@
   "name": "Twinleaf Town Rival House 1F",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_TWINLEAF_TOWN_RIVAL_HOUSE_1F",
+  "layout": "sinnoh/twinleaf_town_rival_house_1f",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_TOWN01_D",
+  "night_music": "SEQ_TOWN01_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_RIVAL_MOM",
       "graphics_id": "OBJ_EVENT_GFX_POKEFAN_F",
       "x": 4,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 6,
-      "y": null,
-      "z": 10,
-      "dest_map": null,
+      "y": 10,
+      "dest_map": "MAP_HEADER_TWINLEAF_TOWN",
       "dest_warp_id": 0
     },
     {
       "x": 2,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_TWINLEAF_TOWN_RIVAL_HOUSE_2F",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

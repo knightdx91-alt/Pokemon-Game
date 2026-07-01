@@ -3,90 +3,101 @@
   "name": "Veilstone City Galactic Warehouse",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_VEILSTONE_CITY_GALACTIC_WAREHOUSE",
+  "layout": "sinnoh/veilstone_city_galactic_warehouse",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY07_D",
+  "night_music": "SEQ_CITY07_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_ITEM_DUSK_STONE",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 7,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7111,
-      "hidden_flag": "FLAG_OBTAINED_VEILSTONE_CITY_GALACTIC_WAREHOUSE_DUSK_STONE"
+      "hidden_flag": "FLAG_OBTAINED_VEILSTONE_CITY_GALACTIC_WAREHOUSE_DUSK_STONE",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_HM02",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 13,
-      "y": 0,
-      "z": 8,
+      "y": 8,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7236,
-      "hidden_flag": "FLAG_OBTAINED_VEILSTONE_CITY_GALACTIC_WAREHOUSE_HM02"
+      "hidden_flag": "FLAG_OBTAINED_VEILSTONE_CITY_GALACTIC_WAREHOUSE_HM02",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_GALACTIC_HQ_DOOR_WEST",
       "graphics_id": "OBJ_EVENT_GFX_GALACTIC_HQ_DOOR",
       "x": 8,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "FLAG_HIDE_VEILSTONE_CITY_GALACTIC_WAREHOUSE_GALACTIC_HQ_DOOR"
+      "hidden_flag": "FLAG_HIDE_VEILSTONE_CITY_GALACTIC_WAREHOUSE_GALACTIC_HQ_DOOR",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_GALACTIC_HQ_DOOR_EAST",
       "graphics_id": "OBJ_EVENT_GFX_GALACTIC_HQ_DOOR",
       "x": 9,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "FLAG_HIDE_VEILSTONE_CITY_GALACTIC_WAREHOUSE_GALACTIC_HQ_DOOR"
+      "hidden_flag": "FLAG_HIDE_VEILSTONE_CITY_GALACTIC_WAREHOUSE_GALACTIC_HQ_DOOR",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_LOOKER",
       "graphics_id": "OBJ_EVENT_GFX_LOOKER",
       "x": 12,
-      "y": 0,
-      "z": 8,
+      "y": 8,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "FLAG_HIDE_VEILSTONE_CITY_GALACTIC_WAREHOUSE_LOOKER"
+      "hidden_flag": "FLAG_HIDE_VEILSTONE_CITY_GALACTIC_WAREHOUSE_LOOKER",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 8,
-      "y": null,
-      "z": 11,
-      "dest_map": null,
+      "y": 11,
+      "dest_map": "MAP_HEADER_VEILSTONE_CITY",
       "dest_warp_id": 4
     },
     {
       "x": 13,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_GALACTIC_HQ_B2F",
       "dest_warp_id": 2
     }
   ],
   "signs": [],
-  "coord_events": [
+  "triggers": [
     {
-      "script": 5,
       "x": 8,
-      "z": 8,
-      "y": 0,
+      "y": 8,
       "width": 2,
-      "length": 1,
+      "height": 1,
       "var": "VAR_VEILSTONE_CITY_GALACTIC_WAREHOUSE_STATE",
-      "value": 3
+      "var_value": 3,
+      "script": 5
     }
   ]
 }

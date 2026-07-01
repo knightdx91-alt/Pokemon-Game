@@ -3,28 +3,37 @@
   "name": "Unused Resort Area Mart",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_UNUSED_RESORT_AREA_MART",
+  "layout": "sinnoh/unused_resort_area_mart",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_FS",
+  "night_music": "SEQ_FS",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_CASHIER_F",
       "graphics_id": "OBJ_EVENT_GFX_CASHIER_F",
       "x": 3,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 3,
-      "y": null,
-      "z": 11,
-      "dest_map": null,
+      "y": 11,
+      "dest_map": "MAP_HEADER_SOLACEON_TOWN",
       "dest_warp_id": 6
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

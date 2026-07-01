@@ -3,57 +3,65 @@
   "name": "Route 218 Gate To Canalave City",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_ROUTE_218_GATE_TO_CANALAVE_CITY",
+  "layout": "sinnoh/route_218_gate_to_canalave_city",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_ROAD_B_D",
+  "night_music": "SEQ_ROAD_B_N",
+  "allow_running": false,
+  "allow_cycling": true,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_POLICEMAN",
       "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
       "x": 2,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_SCIENTIST_M",
       "graphics_id": "OBJ_EVENT_GFX_SCIENTIST_M",
       "x": 5,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_ROUTE_218_GATE_TO_CANALAVE_CITY_SCIENTIST_M"
+      "hidden_flag": "FLAG_HIDE_ROUTE_218_GATE_TO_CANALAVE_CITY_SCIENTIST_M",
+      "initial_dir": 3
     }
   ],
   "warps": [
     {
       "x": 1,
-      "y": null,
-      "z": 7,
-      "dest_map": null,
+      "y": 7,
+      "dest_map": "MAP_HEADER_CANALAVE_CITY",
       "dest_warp_id": 7
     },
     {
       "x": 10,
-      "y": null,
-      "z": 7,
-      "dest_map": null,
+      "y": 7,
+      "dest_map": "MAP_HEADER_ROUTE_218",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": [
+  "triggers": [
     {
-      "script": 2,
       "x": 7,
-      "z": 5,
-      "y": 0,
+      "y": 5,
       "width": 1,
-      "length": 5,
+      "height": 5,
       "var": "VAR_ROUTE_218_GATE_TO_CANALAVE_CITY_STATE",
-      "value": 0
+      "var_value": 0,
+      "script": 2
     }
   ]
 }

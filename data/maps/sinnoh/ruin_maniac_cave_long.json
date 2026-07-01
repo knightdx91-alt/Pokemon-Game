@@ -3,39 +3,49 @@
   "name": "Ruin Maniac Cave Long",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_RUIN_MANIAC_CAVE_LONG",
+  "layout": "sinnoh/ruin_maniac_cave_long",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_04",
+  "night_music": "SEQ_D_04",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_RUIN_MANIAC",
       "graphics_id": "OBJ_EVENT_GFX_COLLECTOR",
       "x": 3,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_ITEM_TM28",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 58,
-      "y": 0,
-      "z": 3,
+      "y": 3,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7116,
-      "hidden_flag": "FLAG_OBTAINED_RUIN_MANIAC_CAVE_OR_TUNNEL_TM28"
+      "hidden_flag": "FLAG_OBTAINED_RUIN_MANIAC_CAVE_OR_TUNNEL_TM28",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 60,
-      "y": null,
-      "z": 7,
-      "dest_map": null,
+      "y": 7,
+      "dest_map": "MAP_HEADER_ROUTE_214",
       "dest_warp_id": 3
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

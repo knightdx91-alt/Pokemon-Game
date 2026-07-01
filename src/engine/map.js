@@ -11,22 +11,39 @@ window.GameMap = (function () {
     let layoutData = null;   // layout JSON (width, height, metatiles, collision, tileset)
     let mapWidth   = DEFAULT_SIZE;
     let mapHeight  = DEFAULT_SIZE;
-    let _nameIndex = null;   // MAP_CONST -> filename, loaded from kanto_index.json
+    let _nameIndex = null;   // MAP_CONST -> filename for the CURRENT region
     let _region    = 'kanto';
+    const _indexCache = {};  // region -> { MAP_CONST: filename }
+
+    // Which regions ship a `<region>_index.json` (MAP id -> filename) lookup.
+    const REGION_INDEX = {
+        kanto:   'data/maps/kanto_index.json',
+        sinnoh:  'data/maps/sinnoh_index.json',
+    };
+
+    // Load (and cache) the MAP-id → filename index for a region. Regions without
+    // an index file resolve to an empty table (warps fall back gracefully).
+    async function _ensureIndex(region) {
+        if (_indexCache[region]) return _indexCache[region];
+        const url = REGION_INDEX[region];
+        if (!url) { _indexCache[region] = {}; return _indexCache[region]; }
+        try {
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            _indexCache[region] = await resp.json();
+            console.log(`[Map] Loaded ${region} index: ${Object.keys(_indexCache[region]).length} entries`);
+        } catch (e) {
+            console.error(`[Map] Failed to load index for ${region}:`, e);
+            _indexCache[region] = {};
+        }
+        return _indexCache[region];
+    }
 
     // ---------------------------------------------------------------
     // Index loading
     // ---------------------------------------------------------------
     async function init() {
-        try {
-            const resp = await fetch('data/maps/kanto_index.json');
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            _nameIndex = await resp.json();
-            console.log(`[Map] Loaded index: ${Object.keys(_nameIndex).length} entries`);
-        } catch (e) {
-            console.error('[Map] Failed to load kanto_index.json:', e);
-            _nameIndex = {};
-        }
+        _nameIndex = await _ensureIndex('kanto');
     }
 
     // ---------------------------------------------------------------
@@ -70,6 +87,9 @@ window.GameMap = (function () {
     async function load(mapName, region) {
         region = region || 'kanto';
         _region = region;
+        // Make the region's MAP-id → filename index the active one so warp and
+        // connection resolution target the correct region.
+        _nameIndex = await _ensureIndex(region);
         const url = `data/maps/${region}/${mapName}.json`;
         try {
             const resp = await fetch(url);
@@ -199,6 +219,11 @@ window.GameMap = (function () {
         return layoutData ? layoutData.tileset : null;
     }
 
+    /** Path to the pre-rendered textured background image, or null. */
+    function getBackground() {
+        return layoutData && layoutData.background ? layoutData.background : null;
+    }
+
     // ---------------------------------------------------------------
     // Public API
     // ---------------------------------------------------------------
@@ -219,5 +244,6 @@ window.GameMap = (function () {
         getWarp,
         getSign,
         getTilesetName,
+        getBackground,
     };
 })();

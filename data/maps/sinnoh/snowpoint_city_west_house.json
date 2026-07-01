@@ -3,39 +3,49 @@
   "name": "Snowpoint City West House",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_SNOWPOINT_CITY_WEST_HOUSE",
+  "layout": "sinnoh/snowpoint_city_west_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY09_D",
+  "night_music": "SEQ_CITY09_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_ACE_TRAINER_M",
       "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_M",
       "x": 7,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_MINDY",
       "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
       "x": 5,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 4,
-      "y": null,
-      "z": 8,
-      "dest_map": null,
+      "y": 8,
+      "dest_map": "MAP_HEADER_SNOWPOINT_CITY",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

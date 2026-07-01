@@ -3,166 +3,184 @@
   "name": "Fuego Ironworks Building",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_FUEGO_IRONWORKS_BUILDING",
+  "layout": "sinnoh/fuego_ironworks_building",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_04",
+  "night_music": "SEQ_D_04",
+  "allow_running": true,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_ITEM_TM35",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 21,
-      "y": 0,
-      "z": 21,
+      "y": 21,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7120,
-      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_TM35"
+      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_TM35",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_CALCIUM",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 11,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7122,
-      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_CALCIUM"
+      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_CALCIUM",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_ROCK_INCENSE",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 46,
-      "y": 0,
-      "z": 20,
+      "y": 20,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7121,
-      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_ROCK_INCENSE"
+      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_ROCK_INCENSE",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_FIRE_STONE",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 51,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7123,
-      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_FIRE_STONE"
+      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_FIRE_STONE",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_MR_FUEGO",
       "graphics_id": "OBJ_EVENT_GFX_MIDDLE_AGED_MAN",
       "x": 25,
-      "y": 0,
-      "z": 19,
+      "y": 19,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_WEST_AND_EAST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_WORKER_DILLAN",
       "graphics_id": "OBJ_EVENT_GFX_WORKER",
       "x": 3,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_EAST",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_WORKER_DILLAN",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_WORKER_HOLDEN",
       "graphics_id": "OBJ_EVENT_GFX_WORKER",
       "x": 26,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_SOUTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_WORKER_HOLDEN",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_WORKER_CONRAD",
       "graphics_id": "OBJ_EVENT_GFX_WORKER",
       "x": 35,
-      "y": 0,
-      "z": 25,
+      "y": 25,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_WORKER_CONRAD",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_ITEM_BLUE_SHARD",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 40,
-      "y": 0,
-      "z": 18,
+      "y": 18,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7280,
-      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_BLUE_SHARD"
+      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_BLUE_SHARD",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_RED_SHARD",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 27,
-      "y": 0,
-      "z": 16,
+      "y": 16,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7281,
-      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_RED_SHARD"
+      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_RED_SHARD",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_GREEN_SHARD",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 44,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7282,
-      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_GREEN_SHARD"
+      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_GREEN_SHARD",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_YELLOW_SHARD",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 11,
-      "y": 0,
-      "z": 18,
+      "y": 18,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7283,
-      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_YELLOW_SHARD"
+      "hidden_flag": "FLAG_OBTAINED_FUEGO_IRONWORKS_BUILDING_YELLOW_SHARD",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 26,
-      "y": null,
-      "z": 26,
-      "dest_map": null,
+      "y": 26,
+      "dest_map": "MAP_HEADER_FUEGO_IRONWORKS_OUTSIDE",
       "dest_warp_id": 0
     }
   ],
   "signs": [
     {
       "x": 44,
-      "y": 0,
-      "z": 15,
+      "y": 15,
       "script": 8047,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
       "x": 22,
-      "y": 0,
-      "z": 3,
+      "y": 3,
       "script": 8046,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     }
   ],
-  "coord_events": []
+  "triggers": []
 }

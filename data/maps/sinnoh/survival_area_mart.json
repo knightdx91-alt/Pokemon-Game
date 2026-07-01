@@ -3,61 +3,73 @@
   "name": "Survival Area Mart",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_SURVIVAL_AREA_MART",
+  "layout": "sinnoh/survival_area_mart",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_FS",
+  "night_music": "SEQ_FS",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_ACE_TRAINER_F",
       "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_F",
       "x": 7,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_HIKER",
       "graphics_id": "OBJ_EVENT_GFX_HIKER",
       "x": 8,
-      "y": 0,
-      "z": 3,
+      "y": 3,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_CASHIER_F",
       "graphics_id": "OBJ_EVENT_GFX_CASHIER_F",
       "x": 3,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_MYSTERY_GIFT_DELIVERYMAN",
       "graphics_id": "OBJ_EVENT_GFX_MYSTERY_GIFT_DELIVERYMAN",
       "x": 4,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10201,
-      "hidden_flag": "FLAG_HIDE_MART_MYSTERY_GIFT_DELIVERYMAN"
+      "hidden_flag": "FLAG_HIDE_MART_MYSTERY_GIFT_DELIVERYMAN",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 3,
-      "y": null,
-      "z": 11,
-      "dest_map": null,
+      "y": 11,
+      "dest_map": "MAP_HEADER_SURVIVAL_AREA",
       "dest_warp_id": 4
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

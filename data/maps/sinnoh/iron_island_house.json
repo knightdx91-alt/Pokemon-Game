@@ -3,28 +3,37 @@
   "name": "Iron Island House",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_IRON_ISLAND_HOUSE",
+  "layout": "sinnoh/iron_island_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_ROAD_B_D",
+  "night_music": "SEQ_ROAD_B_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_BYRON",
       "graphics_id": "OBJ_EVENT_GFX_BYRON",
       "x": 5,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "FLAG_HIDE_IRON_ISLAND_HOUSE_BYRON"
+      "hidden_flag": "FLAG_HIDE_IRON_ISLAND_HOUSE_BYRON",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 4,
-      "y": null,
-      "z": 8,
-      "dest_map": null,
+      "y": 8,
+      "dest_map": "MAP_HEADER_IRON_ISLAND",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

@@ -251,13 +251,37 @@
         // Init map index BEFORE loading any map
         await GameMap.init();
 
-        // Load starting map
-        await GameMap.load('PalletTown', currentRegion);
+        // Starting map: default to Kanto/Pallet Town, but allow ?region=&map=
+        // overrides so any converted region (e.g. Sinnoh) can be loaded directly.
+        const params = new URLSearchParams(window.location.search);
+        const startRegion = params.get('region') || 'kanto';
+        const startMap    = params.get('map') || 'PalletTown';
+        currentRegion = startRegion;
+
+        await GameMap.load(startMap, currentRegion);
 
         // Set player start position
         player.x = 7;
         player.y = 8;
         player.direction = 'down';
+
+        // If the requested tile isn't walkable (common for converted maps),
+        // spiral outward from the map centre to find an open floor tile.
+        if (!GameMap.isWalkable(player.x, player.y)) {
+            const cx = Math.floor(GameMap.width / 2);
+            const cy = Math.floor(GameMap.height / 2);
+            let found = false;
+            for (let r = 0; r < Math.max(GameMap.width, GameMap.height) && !found; r++) {
+                for (let dy = -r; dy <= r && !found; dy++) {
+                    for (let dx = -r; dx <= r && !found; dx++) {
+                        const tx = cx + dx, ty = cy + dy;
+                        if (GameMap.isWalkable(tx, ty) && !GameMap.getWarp(tx, ty)) {
+                            player.x = tx; player.y = ty; found = true;
+                        }
+                    }
+                }
+            }
+        }
 
         // Clamp to map bounds
         player.x = Math.min(player.x, GameMap.width  - 1);

@@ -3,35 +3,43 @@
   "name": "Newmoon Island Forest",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_NEWMOON_ISLAND_FOREST",
+  "layout": "sinnoh/newmoon_island_forest",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_23",
+  "day_music": "SEQ_D_03",
+  "night_music": "SEQ_D_03",
+  "allow_running": true,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_DARKRAI",
       "graphics_id": "OBJ_EVENT_GFX_DARKRAI",
       "x": 16,
-      "y": 0,
-      "z": 13,
+      "y": 13,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "FLAG_HIDE_NEWMOON_ISLAND_FOREST_DARKRAI"
+      "hidden_flag": "FLAG_HIDE_NEWMOON_ISLAND_FOREST_DARKRAI",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 16,
-      "y": null,
-      "z": 21,
-      "dest_map": null,
+      "y": 21,
+      "dest_map": "MAP_HEADER_NEWMOON_ISLAND",
       "dest_warp_id": 0
     },
     {
       "x": 17,
-      "y": null,
-      "z": 21,
-      "dest_map": null,
+      "y": 21,
+      "dest_map": "MAP_HEADER_NEWMOON_ISLAND",
       "dest_warp_id": 1
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

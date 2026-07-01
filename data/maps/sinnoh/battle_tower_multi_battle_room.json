@@ -3,75 +3,90 @@
   "name": "Battle Tower Multi Battle Room",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_BATTLE_TOWER_MULTI_BATTLE_ROOM",
+  "layout": "sinnoh/battle_tower_multi_battle_room",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_BF_TOWWER",
+  "night_music": "SEQ_BF_TOWWER",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_ATTENDANT_NORTH",
       "graphics_id": "OBJ_EVENT_GFX_TEALA",
       "x": 2,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_ATTENDANT_SOUTH",
       "graphics_id": "OBJ_EVENT_GFX_TEALA",
       "x": 2,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_LEADER",
       "graphics_id": "OBJ_EVENT_GFX_VAR_0",
       "x": 7,
-      "y": 0,
-      "z": 9,
+      "y": 9,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_PARTNER",
       "graphics_id": "OBJ_EVENT_GFX_VAR_1",
       "x": 8,
-      "y": 0,
-      "z": 9,
+      "y": 9,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_OPPONENT_2",
       "graphics_id": "OBJ_EVENT_GFX_VAR_3",
       "x": 7,
-      "y": 0,
-      "z": 2,
+      "y": 2,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_MULTI_BATTLE_ROOM_OPPONENT_2"
+      "hidden_flag": "FLAG_HIDE_MULTI_BATTLE_ROOM_OPPONENT_2",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_OPPONENT_1",
       "graphics_id": "OBJ_EVENT_GFX_VAR_2",
       "x": 8,
-      "y": 0,
-      "z": 2,
+      "y": 2,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_MULTI_BATTLE_ROOM_OPPONENT_1"
+      "hidden_flag": "FLAG_HIDE_MULTI_BATTLE_ROOM_OPPONENT_1",
+      "initial_dir": 1
     }
   ],
   "warps": [],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

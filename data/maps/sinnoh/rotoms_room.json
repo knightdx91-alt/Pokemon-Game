@@ -3,146 +3,157 @@
   "name": "Rotoms Room",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_ROTOMS_ROOM",
+  "layout": "sinnoh/rotoms_room",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY04_D",
+  "night_music": "SEQ_CITY04_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_MICROWAVE",
       "graphics_id": "OBJ_EVENT_GFX_ROTOM_HEAT",
       "x": 4,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "FLAG_HIDE_ROTOMS_ROOM_MICROWAVE"
+      "hidden_flag": "FLAG_HIDE_ROTOMS_ROOM_MICROWAVE",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_FAN",
       "graphics_id": "OBJ_EVENT_GFX_ROTOM_FAN",
       "x": 6,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "FLAG_HIDE_ROTOMS_ROOM_FAN"
+      "hidden_flag": "FLAG_HIDE_ROTOMS_ROOM_FAN",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_REFRIGERATOR",
       "graphics_id": "OBJ_EVENT_GFX_ROTOM_FROST",
       "x": 8,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "FLAG_HIDE_ROTOMS_ROOM_REFRIGERATOR"
+      "hidden_flag": "FLAG_HIDE_ROTOMS_ROOM_REFRIGERATOR",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_WASHING_MACHINE",
       "graphics_id": "OBJ_EVENT_GFX_ROTOM_WASH",
       "x": 10,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "FLAG_HIDE_ROTOMS_ROOM_WASHING_MACHINE"
+      "hidden_flag": "FLAG_HIDE_ROTOMS_ROOM_WASHING_MACHINE",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_LAWN_MOWER",
       "graphics_id": "OBJ_EVENT_GFX_ROTOM_MOW",
       "x": 12,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 5,
-      "hidden_flag": "FLAG_HIDE_ROTOMS_ROOM_LAWN_MOWER"
+      "hidden_flag": "FLAG_HIDE_ROTOMS_ROOM_LAWN_MOWER",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_BOOK_MYSTERIOUS",
       "graphics_id": "OBJ_EVENT_GFX_BOOK",
       "x": 11,
-      "y": 0,
-      "z": 9,
+      "y": 9,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 6,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_PROF_ROWAN",
       "graphics_id": "OBJ_EVENT_GFX_PROF_ROWAN",
       "x": 7,
-      "y": 0,
-      "z": 11,
+      "y": 11,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_ROTOMS_ROOM_PROF_ROWAN"
+      "hidden_flag": "FLAG_HIDE_ROTOMS_ROOM_PROF_ROWAN",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BOOK_OLD",
       "graphics_id": "OBJ_EVENT_GFX_BOOK",
       "x": 13,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 7,
-      "y": null,
-      "z": 11,
-      "dest_map": null,
+      "y": 11,
+      "dest_map": "MAP_HEADER_TEAM_GALACTIC_ETERNA_BUILDING_1F",
       "dest_warp_id": 3
     }
   ],
   "signs": [
     {
       "x": 6,
-      "y": 0,
-      "z": 6,
+      "y": 6,
       "script": 9,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
       "x": 4,
-      "y": 0,
-      "z": 6,
+      "y": 6,
       "script": 9,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
       "x": 8,
-      "y": 0,
-      "z": 6,
+      "y": 6,
       "script": 9,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
       "x": 10,
-      "y": 0,
-      "z": 6,
+      "y": 6,
       "script": 9,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
       "x": 12,
-      "y": 0,
-      "z": 6,
+      "y": 6,
       "script": 9,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     }
   ],
-  "coord_events": []
+  "triggers": []
 }

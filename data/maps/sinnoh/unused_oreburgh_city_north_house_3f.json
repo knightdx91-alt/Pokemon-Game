@@ -1,0 +1,69 @@
+{
+  "id": "unused_oreburgh_city_north_house_3f",
+  "name": "Unused Oreburgh City North House 3F",
+  "region": "sinnoh",
+  "source": "platinum",
+  "header": "MAP_HEADER_UNUSED_OREBURGH_CITY_NORTH_HOUSE_3F",
+  "layout": "sinnoh/unused_oreburgh_city_north_house_3f",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY03_D",
+  "night_music": "SEQ_CITY03_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
+  "npcs": [
+    {
+      "local_id": "LOCALID_WORKER",
+      "graphics_id": "OBJ_EVENT_GFX_WORKER",
+      "x": 2,
+      "y": 11,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 2,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_POKEFAN_F",
+      "graphics_id": "OBJ_EVENT_GFX_POKEFAN_F",
+      "x": 13,
+      "y": 11,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 1,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    },
+    {
+      "local_id": "LOCALID_TWIN",
+      "graphics_id": "OBJ_EVENT_GFX_TWIN",
+      "x": 3,
+      "y": 5,
+      "elevation": 1,
+      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "script": 3,
+      "hidden_flag": "0",
+      "initial_dir": 1
+    }
+  ],
+  "warps": [
+    {
+      "x": 8,
+      "y": 3,
+      "dest_map": "MAP_HEADER_OREBURGH_CITY_NORTH_HOUSE_2F",
+      "dest_warp_id": 1
+    },
+    {
+      "x": 15,
+      "y": 3,
+      "dest_map": "MAP_HEADER_UNUSED_OREBURGH_CITY_NORTH_HOUSE_4F",
+      "dest_warp_id": 0
+    }
+  ],
+  "signs": [],
+  "triggers": []
+}

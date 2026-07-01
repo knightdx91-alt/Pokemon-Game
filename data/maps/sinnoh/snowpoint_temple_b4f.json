@@ -3,46 +3,55 @@
   "name": "Snowpoint Temple B4F",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_SNOWPOINT_TEMPLE_B4F",
+  "layout": "sinnoh/snowpoint_temple_b4f",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_29",
+  "day_music": "SEQ_D_02",
+  "night_music": "SEQ_D_02",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_ITEM_FULL_HEAL",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 11,
-      "y": 0,
-      "z": 18,
+      "y": 18,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7243,
-      "hidden_flag": "FLAG_OBTAINED_SNOWPOINT_TEMPLE_B4F_FULL_HEAL"
+      "hidden_flag": "FLAG_OBTAINED_SNOWPOINT_TEMPLE_B4F_FULL_HEAL",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_STRENGTH_BOULDER_1",
       "graphics_id": "OBJ_EVENT_GFX_STRENGTH_BOULDER",
       "x": 5,
-      "y": 0,
-      "z": 17,
+      "y": 17,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10002,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_1"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_1",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 6,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_SNOWPOINT_TEMPLE_B3F",
       "dest_warp_id": 1
     },
     {
       "x": 14,
-      "y": null,
-      "z": 3,
-      "dest_map": null,
+      "y": 3,
+      "dest_map": "MAP_HEADER_SNOWPOINT_TEMPLE_B5F",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

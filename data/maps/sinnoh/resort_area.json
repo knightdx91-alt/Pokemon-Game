@@ -3,275 +3,296 @@
   "name": "Resort Area",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_RESORT_AREA",
+  "layout": "sinnoh/resort_area",
+  "map_type": "MAP_TYPE_TOWN_CITY",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_TOWN07_D",
+  "night_music": "SEQ_TOWN07_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
   "npcs": [
     {
       "local_id": "LOCALID_MAP_SIGNPOST",
       "graphics_id": "OBJ_EVENT_GFX_MAP_SIGNPOST",
-      "x": 805,
-      "y": 0,
-      "z": 451,
+      "x": 5,
+      "y": 3,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 5,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_SIGNBOARD_RIBBON_SYNDICATE",
       "graphics_id": "OBJ_EVENT_GFX_SIGNBOARD",
-      "x": 813,
-      "y": 0,
-      "z": 457,
+      "x": 13,
+      "y": 9,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 6,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_NUGGET",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
-      "x": 815,
-      "y": 0,
-      "z": 462,
+      "x": 15,
+      "y": 14,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7232,
-      "hidden_flag": "FLAG_OBTAINED_RESORT_AREA_NUGGET"
+      "hidden_flag": "FLAG_OBTAINED_RESORT_AREA_NUGGET",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BEAUTY_1",
       "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
-      "x": 806,
-      "y": 0,
-      "z": 458,
+      "x": 6,
+      "y": 10,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BEAUTY_2",
       "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
-      "x": 822,
-      "y": 0,
-      "z": 459,
+      "x": 22,
+      "y": 11,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_BLACK_BELT",
       "graphics_id": "OBJ_EVENT_GFX_BLACK_BELT",
-      "x": 809,
-      "y": 0,
-      "z": 477,
+      "x": 9,
+      "y": 29,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ACE_TRAINER_F",
       "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_F",
-      "x": 806,
-      "y": 0,
-      "z": 471,
+      "x": 6,
+      "y": 23,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BERRY_SOIL_1",
       "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
-      "x": 828,
-      "y": 0,
-      "z": 469,
+      "x": 28,
+      "y": 21,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2800,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BERRY_SOIL_2",
       "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
-      "x": 816,
-      "y": 0,
-      "z": 469,
+      "x": 16,
+      "y": 21,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2800,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BERRY_SOIL_3",
       "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
-      "x": 817,
-      "y": 0,
-      "z": 469,
+      "x": 17,
+      "y": 21,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2800,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BERRY_SOIL_4",
       "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
-      "x": 827,
-      "y": 0,
-      "z": 469,
+      "x": 27,
+      "y": 21,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2800,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_SWIMMER_M",
       "graphics_id": "OBJ_EVENT_GFX_SWIMMER_M",
-      "x": 816,
-      "y": 0,
-      "z": 455,
+      "x": 16,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_SIGNBOARD_VILLA",
       "graphics_id": "OBJ_EVENT_GFX_SIGNBOARD",
-      "x": 810,
-      "y": 0,
-      "z": 471,
+      "x": 10,
+      "y": 23,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 15,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_SCHOOL_KID_M",
       "graphics_id": "OBJ_EVENT_GFX_SCHOOL_KID_M",
-      "x": 816,
-      "y": 0,
-      "z": 473,
+      "x": 16,
+      "y": 25,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "FLAG_HIDE_RESORT_AREA_SCHOOL_KID_M"
+      "hidden_flag": "FLAG_HIDE_RESORT_AREA_SCHOOL_KID_M",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_PROF_ROWAN",
       "graphics_id": "OBJ_EVENT_GFX_PROF_ROWAN",
-      "x": 821,
-      "y": 0,
-      "z": 473,
+      "x": 21,
+      "y": 25,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 9,
-      "hidden_flag": "FLAG_HIDE_RESORT_AREA_PROF_ROWAN"
+      "hidden_flag": "FLAG_HIDE_RESORT_AREA_PROF_ROWAN",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_GARDENIA",
       "graphics_id": "OBJ_EVENT_GFX_GARDENIA",
-      "x": 822,
-      "y": 0,
-      "z": 473,
+      "x": 22,
+      "y": 25,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 11,
-      "hidden_flag": "FLAG_HIDE_RESORT_AREA_GARDENIA"
+      "hidden_flag": "FLAG_HIDE_RESORT_AREA_GARDENIA",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_BYRON",
       "graphics_id": "OBJ_EVENT_GFX_BYRON",
-      "x": 823,
-      "y": 0,
-      "z": 473,
+      "x": 23,
+      "y": 25,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 13,
-      "hidden_flag": "FLAG_HIDE_RESORT_AREA_BYRON"
+      "hidden_flag": "FLAG_HIDE_RESORT_AREA_BYRON",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_ROARK",
       "graphics_id": "OBJ_EVENT_GFX_ROARK",
-      "x": 822,
-      "y": 0,
-      "z": 472,
+      "x": 22,
+      "y": 24,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10,
-      "hidden_flag": "FLAG_HIDE_RESORT_AREA_ROARK"
+      "hidden_flag": "FLAG_HIDE_RESORT_AREA_ROARK",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_MAYLENE",
       "graphics_id": "OBJ_EVENT_GFX_MAYLENE",
-      "x": 822,
-      "y": 0,
-      "z": 474,
+      "x": 22,
+      "y": 26,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 12,
-      "hidden_flag": "FLAG_HIDE_RESORT_AREA_MAYLENE"
+      "hidden_flag": "FLAG_HIDE_RESORT_AREA_MAYLENE",
+      "initial_dir": 2
     }
   ],
   "warps": [
     {
-      "x": 822,
-      "y": null,
-      "z": 469,
-      "dest_map": null,
+      "x": 22,
+      "y": 21,
+      "dest_map": "MAP_HEADER_VILLA",
       "dest_warp_id": 0
     },
     {
-      "x": 810,
-      "y": null,
-      "z": 455,
-      "dest_map": null,
+      "x": 10,
+      "y": 7,
+      "dest_map": "MAP_HEADER_RESORT_AREA_HOUSE",
       "dest_warp_id": 0
     },
     {
-      "x": 824,
-      "y": null,
-      "z": 453,
-      "dest_map": null,
+      "x": 24,
+      "y": 5,
+      "dest_map": "MAP_HEADER_RESORT_AREA_RIBBON_SYNDICATE_1F",
       "dest_warp_id": 0
     },
     {
-      "x": 802,
-      "y": null,
-      "z": 472,
-      "dest_map": null,
+      "x": 2,
+      "y": 24,
+      "dest_map": "MAP_HEADER_RESORT_AREA_POKECENTER_1F",
       "dest_warp_id": 0
     }
   ],
   "signs": [
     {
-      "x": 822,
-      "y": 0,
-      "z": 473,
+      "x": 22,
+      "y": 25,
       "script": 8146,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
-      "x": 822,
-      "y": 0,
-      "z": 445,
+      "x": 22,
+      "y": -3,
       "script": 8145,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     }
   ],
-  "coord_events": [
+  "triggers": [
     {
-      "script": 8,
-      "x": 815,
-      "z": 472,
-      "y": 0,
+      "x": 15,
+      "y": 24,
       "width": 1,
-      "length": 3,
+      "height": 3,
       "var": "VAR_RESORT_AREA_STATE",
-      "value": 0
+      "var_value": 0,
+      "script": 8
     }
   ]
 }

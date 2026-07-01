@@ -3,83 +3,97 @@
   "name": "Battleground",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_BATTLEGROUND",
+  "layout": "sinnoh/battleground",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_26",
+  "day_music": "SEQ_CITY11_D",
+  "night_music": "SEQ_CITY11_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_EXPERT_M",
       "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
       "x": 13,
-      "y": 0,
-      "z": 9,
+      "y": 9,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_BUCK",
       "graphics_id": "OBJ_EVENT_GFX_BUCK",
       "x": 11,
-      "y": 0,
-      "z": 8,
+      "y": 8,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "FLAG_HIDE_BATTLEGROUND_BUCK"
+      "hidden_flag": "FLAG_HIDE_BATTLEGROUND_BUCK",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_TRAINER_1",
       "graphics_id": "OBJ_EVENT_GFX_VAR_1",
       "x": 2,
-      "y": 0,
-      "z": 9,
+      "y": 9,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 5,
-      "hidden_flag": "FLAG_HIDE_BATTLEGROUND_TRAINER_1"
+      "hidden_flag": "FLAG_HIDE_BATTLEGROUND_TRAINER_1",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_TRAINER_2",
       "graphics_id": "OBJ_EVENT_GFX_VAR_2",
       "x": 6,
-      "y": 0,
-      "z": 8,
+      "y": 8,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 6,
-      "hidden_flag": "FLAG_HIDE_BATTLEGROUND_TRAINER_2"
+      "hidden_flag": "FLAG_HIDE_BATTLEGROUND_TRAINER_2",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_TRAINER_3",
       "graphics_id": "OBJ_EVENT_GFX_VAR_3",
       "x": 9,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7,
-      "hidden_flag": "FLAG_HIDE_BATTLEGROUND_TRAINER_3"
+      "hidden_flag": "FLAG_HIDE_BATTLEGROUND_TRAINER_3",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_TRAINER_4",
       "graphics_id": "OBJ_EVENT_GFX_VAR_4",
       "x": 11,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 8,
-      "hidden_flag": "FLAG_HIDE_BATTLEGROUND_TRAINER_4"
+      "hidden_flag": "FLAG_HIDE_BATTLEGROUND_TRAINER_4",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 7,
-      "y": null,
-      "z": 11,
-      "dest_map": null,
+      "y": 11,
+      "dest_map": "MAP_HEADER_SURVIVAL_AREA",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

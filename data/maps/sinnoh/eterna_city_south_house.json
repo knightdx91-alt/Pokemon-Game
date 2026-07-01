@@ -3,28 +3,37 @@
   "name": "Eterna City South House",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_ETERNA_CITY_SOUTH_HOUSE",
+  "layout": "sinnoh/eterna_city_south_house",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY04_D",
+  "night_music": "SEQ_CITY04_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_PROF_OAK",
       "graphics_id": "OBJ_EVENT_GFX_PROF_OAK",
       "x": 4,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "FLAG_ETERNA_CITY_SOUTH_HOUSE_HIDE_PROF_OAK"
+      "hidden_flag": "FLAG_HIDE_ETERNA_CITY_SOUTH_HOUSE_PROF_OAK",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 4,
-      "y": null,
-      "z": 8,
-      "dest_map": null,
+      "y": 8,
+      "dest_map": "MAP_HEADER_ETERNA_CITY",
       "dest_warp_id": 5
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

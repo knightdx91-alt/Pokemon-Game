@@ -3,179 +3,188 @@
   "name": "Mt Coronet 2F",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_MT_CORONET_2F",
+  "layout": "sinnoh/mt_coronet_2f",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_D_05",
+  "night_music": "SEQ_D_05",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_ITEM_MAX_REVIVE",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 3,
-      "y": 0,
-      "z": 31,
+      "y": 31,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7170,
-      "hidden_flag": "FLAG_OBTAINED_MT_CORONET_2F_MAX_REVIVE"
+      "hidden_flag": "FLAG_OBTAINED_MT_CORONET_2F_MAX_REVIVE",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_MAX_REPEL",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 23,
-      "y": 0,
-      "z": 37,
+      "y": 37,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7172,
-      "hidden_flag": "FLAG_OBTAINED_MT_CORONET_2F_MAX_REPEL"
+      "hidden_flag": "FLAG_OBTAINED_MT_CORONET_2F_MAX_REPEL",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_TM80",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 3,
-      "y": 0,
-      "z": 55,
+      "y": 55,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7171,
-      "hidden_flag": "FLAG_OBTAINED_MT_CORONET_2F_TM80"
+      "hidden_flag": "FLAG_OBTAINED_MT_CORONET_2F_TM80",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_ESCAPE_ROPE",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
       "x": 13,
-      "y": 0,
-      "z": 60,
+      "y": 60,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7173,
-      "hidden_flag": "FLAG_OBTAINED_MT_CORONET_2F_ESCAPE_ROPE"
+      "hidden_flag": "FLAG_OBTAINED_MT_CORONET_2F_ESCAPE_ROPE",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_CAVE_PAINTING",
       "graphics_id": "OBJ_EVENT_GFX_CAVE_PAINTING",
       "x": 7,
-      "y": 0,
-      "z": 23,
+      "y": 23,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "FLAG_HIDE_MT_CORONET_2F_CAVE_PAINTING"
+      "hidden_flag": "FLAG_HIDE_MT_CORONET_2F_CAVE_PAINTING",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_LOOKER",
       "graphics_id": "OBJ_EVENT_GFX_LOOKER",
       "x": 10,
-      "y": 0,
-      "z": 26,
+      "y": 26,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "FLAG_HIDE_MT_CORONET_2F_LOOKER"
+      "hidden_flag": "FLAG_HIDE_MT_CORONET_2F_LOOKER",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_CAVE_PAINTING_SHARDS_LEFT",
       "graphics_id": "OBJ_EVENT_GFX_CAVE_PAINTING_SHARDS_LEFT",
       "x": 6,
-      "y": 0,
-      "z": 24,
+      "y": 24,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "FLAG_HIDE_MT_CORONET_2F_CAVE_PAINTING_SHARDS"
+      "hidden_flag": "FLAG_HIDE_MT_CORONET_2F_CAVE_PAINTING_SHARDS",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_CAVE_PAINTING_SHARDS_RIGHT",
       "graphics_id": "OBJ_EVENT_GFX_CAVE_PAINTING_SHARDS_RIGHT",
       "x": 8,
-      "y": 0,
-      "z": 24,
+      "y": 24,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "FLAG_HIDE_MT_CORONET_2F_CAVE_PAINTING_SHARDS"
+      "hidden_flag": "FLAG_HIDE_MT_CORONET_2F_CAVE_PAINTING_SHARDS",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_STRENGTH_BOULDER",
       "graphics_id": "OBJ_EVENT_GFX_STRENGTH_BOULDER",
       "x": 14,
-      "y": 0,
-      "z": 45,
+      "y": 45,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10002,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_2"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_2",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 27,
-      "y": null,
-      "z": 48,
-      "dest_map": null,
+      "y": 48,
+      "dest_map": "MAP_HEADER_MT_CORONET_1F_SOUTH",
       "dest_warp_id": 2
     },
     {
       "x": 2,
-      "y": null,
-      "z": 59,
-      "dest_map": null,
+      "y": 59,
+      "dest_map": "MAP_HEADER_ROUTE_207",
       "dest_warp_id": 1
     },
     {
       "x": 7,
-      "y": null,
-      "z": 23,
-      "dest_map": null,
+      "y": 23,
+      "dest_map": "MAP_HEADER_MT_CORONET_2F",
       "dest_warp_id": 3
     },
     {
       "x": 7,
-      "y": null,
-      "z": 12,
-      "dest_map": null,
+      "y": 12,
+      "dest_map": "MAP_HEADER_MT_CORONET_2F",
       "dest_warp_id": 2
     },
     {
       "x": 11,
-      "y": null,
-      "z": 4,
-      "dest_map": null,
+      "y": 4,
+      "dest_map": "MAP_HEADER_MT_CORONET_3F",
       "dest_warp_id": 0
     },
     {
       "x": 21,
-      "y": null,
-      "z": 4,
-      "dest_map": null,
+      "y": 4,
+      "dest_map": "MAP_HEADER_MT_CORONET_3F",
       "dest_warp_id": 1
     }
   ],
   "signs": [
     {
       "x": 25,
-      "y": 0,
-      "z": 11,
+      "y": 11,
       "script": 8082,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
       "x": 16,
-      "y": 0,
-      "z": 35,
+      "y": 35,
       "script": 8081,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     }
   ],
-  "coord_events": [
+  "triggers": [
     {
-      "script": 2,
       "x": 11,
-      "z": 24,
-      "y": 0,
+      "y": 24,
       "width": 1,
-      "length": 3,
+      "height": 3,
       "var": "VAR_MT_CORONET_2F_STATE",
-      "value": 1
+      "var_value": 1,
+      "script": 2
     }
   ]
 }

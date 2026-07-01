@@ -3,57 +3,67 @@
   "name": "Snowpoint City Pokecenter 2F",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_SNOWPOINT_CITY_POKECENTER_2F",
+  "layout": "sinnoh/snowpoint_city_pokecenter_2f",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_PC_01",
+  "night_music": "SEQ_PC_02",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_TEALA_MIDDLE",
       "graphics_id": "OBJ_EVENT_GFX_TEALA",
       "x": 7,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 9003,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_TEALA_EAST",
       "graphics_id": "OBJ_EVENT_GFX_TEALA",
       "x": 12,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 9001,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_TEALA_MIDDLE",
       "graphics_id": "OBJ_EVENT_GFX_TEALA",
       "x": 3,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 9011,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 2,
-      "y": null,
-      "z": 10,
-      "dest_map": null,
+      "y": 10,
+      "dest_map": "MAP_HEADER_SNOWPOINT_CITY_POKECENTER_1F",
       "dest_warp_id": 1
     },
     {
       "x": 8,
-      "y": null,
-      "z": 2,
-      "dest_map": null,
+      "y": 2,
+      "dest_map": "MAP_HEADER_UNION_ROOM",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

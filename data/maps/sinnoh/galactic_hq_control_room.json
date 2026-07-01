@@ -3,116 +3,124 @@
   "name": "Galactic Hq Control Room",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_GALACTIC_HQ_CONTROL_ROOM",
+  "layout": "sinnoh/galactic_hq_control_room",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_26",
+  "day_music": "SEQ_THE_EVENT04",
+  "night_music": "SEQ_THE_EVENT04",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_SATURN",
       "graphics_id": "OBJ_EVENT_GFX_SATURN",
       "x": 8,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "FLAG_HIDE_GALACTIC_HQ_TEAM_GALACTIC"
+      "hidden_flag": "FLAG_HIDE_GALACTIC_HQ_TEAM_GALACTIC",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_AZELF",
       "graphics_id": "OBJ_EVENT_GFX_AZELF",
       "x": 14,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 13,
-      "hidden_flag": "FLAG_HIDE_GALACTIC_HQ_CONTROL_ROOM_LAKE_GUARDIANS"
+      "hidden_flag": "FLAG_HIDE_GALACTIC_HQ_CONTROL_ROOM_LAKE_GUARDIANS",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_MESPRIT",
       "graphics_id": "OBJ_EVENT_GFX_MESPRIT",
       "x": 2,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 12,
-      "hidden_flag": "FLAG_HIDE_GALACTIC_HQ_CONTROL_ROOM_LAKE_GUARDIANS"
+      "hidden_flag": "FLAG_HIDE_GALACTIC_HQ_CONTROL_ROOM_LAKE_GUARDIANS",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_UXIE",
       "graphics_id": "OBJ_EVENT_GFX_UXIE",
       "x": 8,
-      "y": 0,
-      "z": 10,
+      "y": 10,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 11,
-      "hidden_flag": "FLAG_HIDE_GALACTIC_HQ_CONTROL_ROOM_LAKE_GUARDIANS"
+      "hidden_flag": "FLAG_HIDE_GALACTIC_HQ_CONTROL_ROOM_LAKE_GUARDIANS",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_CHARON",
       "graphics_id": "OBJ_EVENT_GFX_CHARON",
       "x": 7,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 15,
-      "hidden_flag": "FLAG_HIDE_GALACTIC_HQ_CONTROL_ROOM_CHARON"
+      "hidden_flag": "FLAG_HIDE_GALACTIC_HQ_CONTROL_ROOM_CHARON",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
       "x": 8,
-      "y": null,
-      "z": 13,
-      "dest_map": null,
+      "y": 13,
+      "dest_map": "MAP_HEADER_GALACTIC_HQ_LABORATORY",
       "dest_warp_id": 1
     }
   ],
   "signs": [
     {
       "x": 8,
-      "y": 0,
-      "z": 10,
+      "y": 10,
       "script": 4,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
       "x": 2,
-      "y": 0,
-      "z": 4,
+      "y": 4,
       "script": 5,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
       "x": 14,
-      "y": 0,
-      "z": 4,
+      "y": 4,
       "script": 6,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
       "x": 8,
-      "y": 0,
-      "z": 5,
+      "y": 5,
       "script": 10,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     }
   ],
-  "coord_events": [
+  "triggers": [
     {
-      "script": 14,
       "x": 8,
-      "z": 13,
-      "y": 0,
+      "y": 13,
       "width": 1,
-      "length": 1,
-      "var": "FLAG_GALACTIC_HQ_CONTROL_ROOM_STATE",
-      "value": 1
+      "height": 1,
+      "var": "VAR_GALACTIC_HQ_CONTROL_ROOM_STATE",
+      "var_value": 1,
+      "script": 14
     }
   ]
 }

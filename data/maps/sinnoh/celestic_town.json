@@ -3,252 +3,259 @@
   "name": "Celestic Town",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_CELESTIC_TOWN",
+  "layout": "sinnoh/celestic_town",
+  "map_type": "MAP_TYPE_TOWN_CITY",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY04_D",
+  "night_music": "SEQ_CITY04_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
   "npcs": [
     {
       "local_id": "LOCALID_EXPERT_M",
       "graphics_id": "OBJ_EVENT_GFX_EXPERT_M",
-      "x": 469,
-      "y": 7,
-      "z": 518,
+      "x": 21,
+      "y": 6,
+      "elevation": 7,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_NINJA_BOY",
       "graphics_id": "OBJ_EVENT_GFX_NINJA_BOY",
-      "x": 454,
-      "y": 0,
-      "z": 541,
+      "x": 6,
+      "y": 29,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 9,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_GRUNT_M",
       "graphics_id": "OBJ_EVENT_GFX_GRUNT_M",
-      "x": 463,
-      "y": 7,
-      "z": 522,
+      "x": 15,
+      "y": 10,
+      "elevation": 7,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "FLAG_HIDE_CELESTIC_TOWN_GRUNT_M"
+      "hidden_flag": "FLAG_HIDE_CELESTIC_TOWN_GRUNT_M",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_ELDER",
       "graphics_id": "OBJ_EVENT_GFX_EXPERT_F",
-      "x": 462,
-      "y": 7,
-      "z": 538,
+      "x": 14,
+      "y": 26,
+      "elevation": 7,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "FLAG_HIDE_CELESTIC_TOWN_ELDER"
+      "hidden_flag": "FLAG_HIDE_CELESTIC_TOWN_ELDER",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_CYNTHIA",
       "graphics_id": "OBJ_EVENT_GFX_CYNTHIA",
-      "x": 466,
-      "y": 7,
-      "z": 522,
+      "x": 18,
+      "y": 10,
+      "elevation": 7,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 6,
-      "hidden_flag": "FLAG_HIDE_CELESTIC_TOWN_CYNTHIA"
+      "hidden_flag": "FLAG_HIDE_CELESTIC_TOWN_CYNTHIA",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_MAP_SIGNPOST",
       "graphics_id": "OBJ_EVENT_GFX_MAP_SIGNPOST",
-      "x": 466,
-      "y": 0,
-      "z": 537,
+      "x": 18,
+      "y": 25,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ARROW_SIGNPOST_ROUTE_210_NORTH",
       "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
-      "x": 488,
-      "y": 0,
-      "z": 529,
+      "x": 40,
+      "y": 17,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 65535,
-      "hidden_flag": "MAP_HEADER_ROUTE_210_NORTH"
+      "hidden_flag": "MAP_HEADER_ROUTE_210_NORTH",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ARROW_SIGNPOST_ROUTE_211_EAST",
       "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
-      "x": 440,
-      "y": 0,
-      "z": 526,
+      "x": -8,
+      "y": 14,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 65535,
-      "hidden_flag": "MAP_HEADER_ROUTE_211_EAST"
+      "hidden_flag": "MAP_HEADER_ROUTE_211_EAST",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ACE_TRAINER_F",
       "graphics_id": "OBJ_EVENT_GFX_ACE_TRAINER_F",
-      "x": 454,
-      "y": 0,
-      "z": 516,
+      "x": 6,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH_AND_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 8,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_VENT_1",
       "graphics_id": "OBJ_EVENT_GFX_VENT",
-      "x": 476,
-      "y": 0,
-      "z": 542,
+      "x": 28,
+      "y": 30,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2027,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_VENT_2",
       "graphics_id": "OBJ_EVENT_GFX_VENT",
-      "x": 470,
-      "y": 0,
-      "z": 542,
+      "x": 22,
+      "y": 30,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2027,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_DRAGON_FANG",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
-      "x": 469,
-      "y": 0,
-      "z": 533,
+      "x": 21,
+      "y": 21,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7319,
-      "hidden_flag": "FLAG_OBTAINED_CELESTIC_TOWN_DRAGON_FANG"
+      "hidden_flag": "FLAG_OBTAINED_CELESTIC_TOWN_DRAGON_FANG",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
-      "x": 463,
-      "y": null,
-      "z": 515,
-      "dest_map": null,
+      "x": 15,
+      "y": 3,
+      "dest_map": "MAP_HEADER_CELESTIC_TOWN_NORTH_HOUSE",
       "dest_warp_id": 0
     },
     {
-      "x": 450,
-      "y": null,
-      "z": 515,
-      "dest_map": null,
+      "x": 2,
+      "y": 3,
+      "dest_map": "MAP_HEADER_CELESTIC_TOWN_NORTHWEST_HOUSE",
       "dest_warp_id": 0
     },
     {
-      "x": 473,
-      "y": null,
-      "z": 515,
-      "dest_map": null,
+      "x": 25,
+      "y": 3,
+      "dest_map": "MAP_HEADER_CELESTIC_TOWN_NORTHEAST_HOUSE",
       "dest_warp_id": 0
     },
     {
-      "x": 454,
-      "y": null,
-      "z": 538,
-      "dest_map": null,
+      "x": 6,
+      "y": 26,
+      "dest_map": "MAP_HEADER_CELESTIC_TOWN_SOUTHWEST_HOUSE",
       "dest_warp_id": 0
     },
     {
-      "x": 463,
-      "y": null,
-      "z": 521,
-      "dest_map": null,
+      "x": 15,
+      "y": 9,
+      "dest_map": "MAP_HEADER_CELESTIC_TOWN_CAVE",
       "dest_warp_id": 0
     },
     {
-      "x": 472,
-      "y": null,
-      "z": 538,
-      "dest_map": null,
+      "x": 24,
+      "y": 26,
+      "dest_map": "MAP_HEADER_CELESTIC_TOWN_POKECENTER_1F",
       "dest_warp_id": 0
     }
   ],
   "signs": [
     {
-      "x": 459,
-      "y": 0,
-      "z": 521,
+      "x": 11,
+      "y": 9,
       "script": 11,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
-      "x": 460,
-      "y": 0,
-      "z": 521,
+      "x": 12,
+      "y": 9,
       "script": 11,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
-      "x": 461,
-      "y": 0,
-      "z": 521,
+      "x": 13,
+      "y": 9,
       "script": 11,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
-      "x": 465,
-      "y": 0,
-      "z": 521,
+      "x": 17,
+      "y": 9,
       "script": 12,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
-      "x": 466,
-      "y": 0,
-      "z": 521,
+      "x": 18,
+      "y": 9,
       "script": 12,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
-      "x": 467,
-      "y": 0,
-      "z": 521,
+      "x": 19,
+      "y": 9,
       "script": 12,
       "type": 0,
       "player_facing_dir": "BG_EVENT_DIR_NORTH"
     },
     {
-      "x": 457,
-      "y": 0,
-      "z": 523,
+      "x": 9,
+      "y": 11,
       "script": 8273,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     }
   ],
-  "coord_events": [
+  "triggers": [
     {
-      "script": 3,
-      "x": 463,
-      "z": 538,
-      "y": 0,
+      "x": 15,
+      "y": 26,
       "width": 3,
-      "length": 1,
+      "height": 1,
       "var": "VAR_CELESTIC_TOWN_ELDER_STATE",
-      "value": 0
+      "var_value": 0,
+      "script": 3
     }
   ]
 }

@@ -3,83 +3,97 @@
   "name": "Hearthome City Pokemon Fan Club",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_HEARTHOME_CITY_POKEMON_FAN_CLUB",
+  "layout": "sinnoh/hearthome_city_pokemon_fan_club",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_CITY05_D",
+  "night_music": "SEQ_CITY05_N",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_GENTLEMAN",
       "graphics_id": "OBJ_EVENT_GFX_GENTLEMAN",
       "x": 6,
-      "y": 0,
-      "z": 7,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_BEAUTY",
       "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
       "x": 2,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_PSYDUCK",
       "graphics_id": "OBJ_EVENT_GFX_PSYDUCK",
       "x": 9,
-      "y": 0,
-      "z": 5,
+      "y": 5,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_BUNEARY",
       "graphics_id": "OBJ_EVENT_GFX_BUNEARY",
       "x": 7,
-      "y": 0,
-      "z": 13,
+      "y": 13,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_CLEFAIRY",
       "graphics_id": "OBJ_EVENT_GFX_CLEFAIRY",
       "x": 3,
-      "y": 0,
-      "z": 11,
+      "y": 11,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 5,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_REPORTER",
       "graphics_id": "OBJ_EVENT_GFX_REPORTER",
       "x": 4,
-      "y": 0,
-      "z": 17,
+      "y": 17,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10153,
-      "hidden_flag": "FLAG_HIDE_HEARTHOME_CITY_POKEMON_FAN_CLUB_REPORTER"
+      "hidden_flag": "FLAG_HIDE_HEARTHOME_CITY_POKEMON_FAN_CLUB_REPORTER",
+      "initial_dir": 3
     }
   ],
   "warps": [
     {
       "x": 6,
-      "y": null,
-      "z": 17,
-      "dest_map": null,
+      "y": 17,
+      "dest_map": "MAP_HEADER_HEARTHOME_CITY",
       "dest_warp_id": 12
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

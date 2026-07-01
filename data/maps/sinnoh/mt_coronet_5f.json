@@ -3,63 +3,70 @@
   "name": "Mt Coronet 5F",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_MT_CORONET_5F",
+  "layout": "sinnoh/mt_coronet_5f",
+  "map_type": "MAP_TYPE_CAVE",
+  "weather": "OVERWORLD_WEATHER_29",
+  "day_music": "SEQ_D_MOUNT1",
+  "night_music": "SEQ_D_MOUNT1",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_GALACTIC_GRUNT_2",
       "graphics_id": "OBJ_EVENT_GFX_GRUNT_F",
       "x": 26,
-      "y": 0,
-      "z": 16,
+      "y": 16,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_GALACTIC_GRUNT_MT_CORONET_5F_2",
-      "hidden_flag": "FLAG_HIDE_MT_CORONET_GALACTIC_GRUNTS"
+      "hidden_flag": "FLAG_HIDE_MT_CORONET_GALACTIC_GRUNTS",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_GALACTIC_GRUNT_1",
       "graphics_id": "OBJ_EVENT_GFX_GRUNT_M",
       "x": 20,
-      "y": 0,
-      "z": 22,
+      "y": 22,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_GALACTIC_GRUNT_MT_CORONET_5F_1",
-      "hidden_flag": "FLAG_HIDE_MT_CORONET_GALACTIC_GRUNTS"
+      "hidden_flag": "FLAG_HIDE_MT_CORONET_GALACTIC_GRUNTS",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 21,
-      "y": null,
-      "z": 7,
-      "dest_map": null,
+      "y": 7,
+      "dest_map": "MAP_HEADER_MT_CORONET_4F_ROOM_3",
       "dest_warp_id": 1
     },
     {
       "x": 13,
-      "y": null,
-      "z": 24,
-      "dest_map": null,
+      "y": 24,
+      "dest_map": "MAP_HEADER_MT_CORONET_6F",
       "dest_warp_id": 0
     }
   ],
   "signs": [
     {
       "x": 27,
-      "y": 0,
-      "z": 16,
+      "y": 16,
       "script": 8102,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
       "x": 27,
-      "y": 0,
-      "z": 23,
+      "y": 23,
       "script": 8101,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     }
   ],
-  "coord_events": []
+  "triggers": []
 }

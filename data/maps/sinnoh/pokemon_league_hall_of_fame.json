@@ -3,39 +3,49 @@
   "name": "Pokemon League Hall Of Fame",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_POKEMON_LEAGUE_HALL_OF_FAME",
+  "layout": "sinnoh/pokemon_league_hall_of_fame",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_BLD_DENDO",
+  "night_music": "SEQ_BLD_DENDO",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_CYNTHIA",
       "graphics_id": "OBJ_EVENT_GFX_CYNTHIA",
       "x": 9,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_PROF_ROWAN",
       "graphics_id": "OBJ_EVENT_GFX_PROF_ROWAN",
       "x": 7,
-      "y": 0,
-      "z": 6,
+      "y": 6,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 0,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     }
   ],
   "warps": [
     {
       "x": 8,
-      "y": null,
-      "z": 15,
-      "dest_map": null,
+      "y": 15,
+      "dest_map": "MAP_HEADER_POKEMON_LEAGUE_HALLWAY_TO_HALL_OF_FAME",
       "dest_warp_id": 0
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

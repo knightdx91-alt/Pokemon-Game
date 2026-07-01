@@ -3,50 +3,61 @@
   "name": "Jubilife City Pokecenter B1F",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_JUBILIFE_CITY_POKECENTER_B1F",
+  "layout": "sinnoh/jubilife_city_pokecenter_b1f",
+  "map_type": "MAP_TYPE_INDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_PC_01",
+  "night_music": "SEQ_PC_02",
+  "allow_running": false,
+  "allow_cycling": false,
+  "allow_fly": false,
   "npcs": [
     {
       "local_id": "LOCALID_WIFI_PLAZA_ATTENDANT_F",
       "graphics_id": "OBJ_EVENT_GFX_WIFI_PLAZA_ATTENDANT_F",
       "x": 4,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 9204,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_TEALA_MIDDLE",
       "graphics_id": "OBJ_EVENT_GFX_TEALA",
       "x": 8,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 9202,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_TEALA_EAST",
       "graphics_id": "OBJ_EVENT_GFX_TEALA",
       "x": 12,
-      "y": 0,
-      "z": 4,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 9201,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     }
   ],
   "warps": [
     {
       "x": 14,
-      "y": null,
-      "z": 10,
-      "dest_map": null,
+      "y": 10,
+      "dest_map": "MAP_HEADER_JUBILIFE_CITY_POKECENTER_1F",
       "dest_warp_id": 2
     }
   ],
   "signs": [],
-  "coord_events": []
+  "triggers": []
 }

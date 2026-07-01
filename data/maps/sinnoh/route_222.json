@@ -3,455 +3,484 @@
   "name": "Route 222",
   "region": "sinnoh",
   "source": "platinum",
+  "header": "MAP_HEADER_ROUTE_222",
+  "layout": "sinnoh/route_222",
+  "map_type": "MAP_TYPE_OUTDOORS",
+  "weather": "OVERWORLD_WEATHER_CLEAR",
+  "day_music": "SEQ_ROAD_E_D",
+  "night_music": "SEQ_ROAD_E_N",
+  "allow_running": true,
+  "allow_cycling": true,
+  "allow_fly": true,
   "npcs": [
     {
       "local_id": "LOCALID_FISHERMAN_BRETT",
       "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
-      "x": 777,
-      "y": 0,
-      "z": 790,
+      "x": 41,
+      "y": 22,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_FISHERMAN_BRETT",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_FISHERMAN_ALEC",
       "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
-      "x": 761,
-      "y": 0,
-      "z": 789,
+      "x": 25,
+      "y": 21,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_FISHERMAN_ALEC",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_FISHERMAN_GEORGE",
       "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
-      "x": 769,
-      "y": 0,
-      "z": 789,
+      "x": 33,
+      "y": 21,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_FISHERMAN_GEORGE",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_FISHERMAN_COLE",
       "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
-      "x": 782,
-      "y": 0,
-      "z": 790,
+      "x": 46,
+      "y": 22,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_FISHERMAN_COLE",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_BEAUTY_NICOLA",
       "graphics_id": "OBJ_EVENT_GFX_BEAUTY",
-      "x": 771,
-      "y": 0,
-      "z": 777,
+      "x": 35,
+      "y": 9,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_SOUTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_BEAUTY_NICOLA",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_TUBER_CONNER",
       "graphics_id": "OBJ_EVENT_GFX_TUBER_M",
-      "x": 812,
-      "y": 0,
-      "z": 781,
+      "x": 76,
+      "y": 13,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_TUBER_CONNER",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 2
     },
     {
       "local_id": "LOCALID_RICH_BOY_TREY",
       "graphics_id": "OBJ_EVENT_GFX_RICH_BOY",
-      "x": 751,
-      "y": 0,
-      "z": 782,
+      "x": 15,
+      "y": 14,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_EAST",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_RICH_BOY_TREY",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_SAILOR_LUTHER",
       "graphics_id": "OBJ_EVENT_GFX_SAILOR",
-      "x": 814,
-      "y": 0,
-      "z": 785,
+      "x": 78,
+      "y": 17,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_SAILOR_LUTHER",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_POLICEMAN_THOMAS",
       "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
-      "x": 794,
-      "y": 0,
-      "z": 778,
+      "x": 58,
+      "y": 10,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WALK_BACK_AND_FORTH",
       "trainer_type": "TRAINER_TYPE_FACE_SIDES",
       "script": "TRAINER_POLICEMAN_THOMAS",
-      "hidden_flag": "FLAG_HIDE_ROUTE_222_POLICEMAN_THOMAS"
+      "hidden_flag": "FLAG_HIDE_ROUTE_222_POLICEMAN_THOMAS",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_TUBER_HOLLY",
       "graphics_id": "OBJ_EVENT_GFX_TUBER_F",
-      "x": 787,
-      "y": 0,
-      "z": 788,
+      "x": 51,
+      "y": 20,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_NORTH_AND_SOUTH",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_TUBER_HOLLY",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_SAILOR_MARC",
       "graphics_id": "OBJ_EVENT_GFX_SAILOR",
-      "x": 808,
-      "y": 0,
-      "z": 781,
+      "x": 72,
+      "y": 13,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_WEST_AND_EAST",
       "trainer_type": "TRAINER_TYPE_NORMAL",
       "script": "TRAINER_SAILOR_MARC",
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_ARROW_SIGNPOST_SUNYSHORE_CITY",
       "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
-      "x": 821,
-      "y": 0,
-      "z": 784,
+      "x": 85,
+      "y": 16,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 4,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ARROW_SIGNPOST_HOTEL_GRAND_LAKE",
       "graphics_id": "OBJ_EVENT_GFX_ARROW_SIGNPOST",
-      "x": 749,
-      "y": 0,
-      "z": 787,
+      "x": 13,
+      "y": 19,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 3,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_SIGNBOARD_PIKACHU_FAN_CLUB",
       "graphics_id": "OBJ_EVENT_GFX_SIGNBOARD",
-      "x": 793,
-      "y": 0,
-      "z": 784,
+      "x": 57,
+      "y": 16,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 5,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_SIGNBOARD_POKEMON_SIZE_CONTEST",
       "graphics_id": "OBJ_EVENT_GFX_SIGNBOARD",
-      "x": 804,
-      "y": 0,
-      "z": 784,
+      "x": 68,
+      "y": 16,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 6,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_FISHERMAN",
       "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
-      "x": 801,
-      "y": 0,
-      "z": 791,
+      "x": 65,
+      "y": 23,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 1,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_ROCK_SMASH_1",
       "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
-      "x": 789,
-      "y": 0,
-      "z": 785,
+      "x": 53,
+      "y": 17,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10001,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_1"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_1",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ROCK_SMASH_2",
       "graphics_id": "OBJ_EVENT_GFX_ROCK_SMASH",
-      "x": 804,
-      "y": 0,
-      "z": 792,
+      "x": 68,
+      "y": 24,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10001,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_2"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_2",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_CUT_TREE_1",
       "graphics_id": "OBJ_EVENT_GFX_CUT_TREE",
-      "x": 814,
-      "y": 0,
-      "z": 775,
+      "x": 78,
+      "y": 7,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 10000,
-      "hidden_flag": "FLAG_HIDE_OBSTACLE_3"
+      "hidden_flag": "FLAG_MAP_LOCAL_HIDE_OBSTACLE_3",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_FULL_RESTORE",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
-      "x": 785,
-      "y": 0,
-      "z": 781,
+      "x": 49,
+      "y": 13,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7176,
-      "hidden_flag": "FLAG_OBTAINED_ROUTE_222_FULL_RESTORE"
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_222_FULL_RESTORE",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_CARBOS",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
-      "x": 816,
-      "y": 0,
-      "z": 783,
+      "x": 80,
+      "y": 15,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7175,
-      "hidden_flag": "FLAG_OBTAINED_ROUTE_222_CARBOS"
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_222_CARBOS",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BERRY_SOIL_1",
       "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
-      "x": 760,
-      "y": 0,
-      "z": 772,
+      "x": 24,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2800,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BERRY_SOIL_2",
       "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
-      "x": 761,
-      "y": 0,
-      "z": 772,
+      "x": 25,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2800,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BERRY_SOIL_3",
       "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
-      "x": 762,
-      "y": 0,
-      "z": 772,
+      "x": 26,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2800,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_BERRY_SOIL_4",
       "graphics_id": "OBJ_EVENT_GFX_BERRY_SOIL",
-      "x": 763,
-      "y": 0,
-      "z": 772,
+      "x": 27,
+      "y": 4,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_BERRY_SOIL",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2800,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_RICH_BOY",
       "graphics_id": "OBJ_EVENT_GFX_RICH_BOY",
-      "x": 788,
-      "y": 0,
-      "z": 781,
+      "x": 52,
+      "y": 13,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_LOOK_SOUTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 1
     },
     {
       "local_id": "LOCALID_VENT_1",
       "graphics_id": "OBJ_EVENT_GFX_VENT",
-      "x": 775,
-      "y": 0,
-      "z": 780,
+      "x": 39,
+      "y": 12,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2027,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_VENT_2",
       "graphics_id": "OBJ_EVENT_GFX_VENT",
-      "x": 773,
-      "y": 0,
-      "z": 780,
+      "x": 37,
+      "y": 12,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2027,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_VENT_3",
       "graphics_id": "OBJ_EVENT_GFX_VENT",
-      "x": 771,
-      "y": 0,
-      "z": 780,
+      "x": 35,
+      "y": 12,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 2027,
-      "hidden_flag": "0"
+      "hidden_flag": "0",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_POLICEMAN_THOMAS_NO_BATTLE",
       "graphics_id": "OBJ_EVENT_GFX_POLICEMAN",
-      "x": 794,
-      "y": 0,
-      "z": 778,
+      "x": 58,
+      "y": 10,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_WALK_BACK_AND_FORTH",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7,
-      "hidden_flag": "FLAG_HIDE_ROUTE_222_POLICEMAN_THOMAS_NO_BATTLE"
+      "hidden_flag": "FLAG_HIDE_ROUTE_222_POLICEMAN_THOMAS_NO_BATTLE",
+      "initial_dir": 3
     },
     {
       "local_id": "LOCALID_ITEM_QUICK_BALL",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
-      "x": 809,
-      "y": 0,
-      "z": 790,
+      "x": 73,
+      "y": 22,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7299,
-      "hidden_flag": "FLAG_OBTAINED_ROUTE_222_QUICK_BALL"
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_222_QUICK_BALL",
+      "initial_dir": 0
     },
     {
       "local_id": "LOCALID_ITEM_PP_UP",
       "graphics_id": "OBJ_EVENT_GFX_POKEBALL",
-      "x": 798,
-      "y": 0,
-      "z": 782,
+      "x": 62,
+      "y": 14,
+      "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_NONE",
       "trainer_type": "TRAINER_TYPE_NONE",
       "script": 7300,
-      "hidden_flag": "FLAG_OBTAINED_ROUTE_222_PP_UP"
+      "hidden_flag": "FLAG_OBTAINED_ROUTE_222_PP_UP",
+      "initial_dir": 0
     }
   ],
   "warps": [
     {
-      "x": 825,
-      "y": null,
-      "z": 790,
-      "dest_map": null,
+      "x": 89,
+      "y": 22,
+      "dest_map": "MAP_HEADER_ROUTE_222_GATE_TO_SUNYSHORE_CITY",
       "dest_warp_id": 0
     },
     {
-      "x": 825,
-      "y": null,
-      "z": 791,
-      "dest_map": null,
+      "x": 89,
+      "y": 23,
+      "dest_map": "MAP_HEADER_ROUTE_222_GATE_TO_SUNYSHORE_CITY",
       "dest_warp_id": 0
     },
     {
-      "x": 801,
-      "y": null,
-      "z": 784,
-      "dest_map": null,
+      "x": 65,
+      "y": 16,
+      "dest_map": "MAP_HEADER_ROUTE_222_EAST_HOUSE",
       "dest_warp_id": 0
     },
     {
-      "x": 795,
-      "y": null,
-      "z": 784,
-      "dest_map": null,
+      "x": 59,
+      "y": 16,
+      "dest_map": "MAP_HEADER_ROUTE_222_WEST_HOUSE",
       "dest_warp_id": 0
     }
   ],
   "signs": [
     {
-      "x": 806,
-      "y": 0,
-      "z": 792,
+      "x": 70,
+      "y": 24,
       "script": 8109,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
-      "x": 730,
-      "y": 0,
-      "z": 773,
+      "x": -6,
+      "y": 5,
       "script": 8007,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
-      "x": 813,
-      "y": 0,
-      "z": 792,
+      "x": 77,
+      "y": 24,
       "script": 8157,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
-      "x": 783,
-      "y": 0,
-      "z": 774,
+      "x": 47,
+      "y": 6,
       "script": 8158,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
-      "x": 819,
-      "y": 0,
-      "z": 789,
+      "x": 83,
+      "y": 21,
       "script": 8263,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
-      "x": 765,
-      "y": 0,
-      "z": 788,
+      "x": 29,
+      "y": 20,
       "script": 8264,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
-      "x": 779,
-      "y": 0,
-      "z": 790,
+      "x": 43,
+      "y": 22,
       "script": 8265,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     },
     {
-      "x": 796,
-      "y": 0,
-      "z": 789,
+      "x": 60,
+      "y": 21,
       "script": 8266,
       "type": 2,
       "player_facing_dir": "BG_EVENT_DIR_ALL"
     }
   ],
-  "coord_events": []
+  "triggers": []
 }
