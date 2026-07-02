@@ -365,7 +365,19 @@ in priority order:
    input this project doesn't have yet).
 4. **Battle-sequence handler BODIES** (deep btl grind, behavioral) — the ~150
    step-state handlers in `battle_effects/effect_handler_table.json`; decode
-   per-id. Lower value: the DATA they consume is already extracted.
+   per-id. Lower value: the DATA they consume is already extracted. NOTE: the
+   effect-enum(0..419)→sequence-handler(0..152) link and each handler's body are
+   driven at runtime via PIC segment-relative dispatch — static name/constant
+   scans and a rodata byte-scan for a 420-entry map came up empty, so this
+   needs live PIC data-flow tracing, not more static reading.
+   - **Move-data accessor API decompiled** (`src/pml/wazadata/WazaData.cpp`):
+     `GetParam(WazaNo<=0x2d8, ParamID<0x25)` funnels all scalar move props
+     through a record cache (sub_22645c) + parsed-record reader (sub_3af788).
+     Recovered+verified the `ParamID` enum from the accessor thunks (Type=0,
+     Category=1, DamageType=2, Power=3, AlwaysHit=31, ZWazaNo=32, ZWazaEffect=34)
+     → `battle_effects/wazadata_paramid.json`, `verify/verify_wazadata.py`.
+     sub_3af788's parsed-record field layout is the remaining piece (the raw
+     GARC extraction in `usum_moves.json` sidesteps it).
 5. **Wild encounters** — `a/0/8/*` zone data; needs a zone→route-name map
    (a zone-RE subproject). Defer unless wanted.
 
