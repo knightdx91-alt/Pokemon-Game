@@ -129,6 +129,13 @@ Battle.cro damage pipeline traced via the graph:
   (per-line XOR) — a separate step; records are keyed by national-dex number.
   This is the clean 2D-portable slice of the ROM (Gen-7 *data* ports; Gen-7
   3D *maps* do not).
+- `tools/usum_text.py` — **Gen-7 message-text decoder** (per-line XOR, PKHeX
+  algo: key `0x7C89+i*0x2983`, XOR + rotate-left-3). Decodes any text file in
+  `a/0/3/<lang>/<idx>.bin`; `--names` writes `data/pokemon/usum_names.json`
+  (species/moves/abilities/items). Langs: 2=English (3=Fr,4=It,5=De,6=Es,
+  7=Ko,8/9=Zh,0/1=Ja). Verified: #1 Bulbasaur, move1 Pound, ability1 Stench.
+  `usum_base_stats.json` is now enriched with `name` + `abilityNames`
+  (Charizard→Blaze/Solar Power, Lucario→Steadfast/Inner Focus/Justified — exact).
 
 ### Battle architecture findings (server hunt)
 - **Battle.cro is the battle *scene* module** (rendering/UI/animation:

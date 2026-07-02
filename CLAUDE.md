@@ -786,15 +786,14 @@ All numerically verified against known game values:
   verified). `--verify` self-checks.
 
 ### NEXT SESSION — priority work items
-1. **Gen-7 message-text decoder** (HIGHEST VALUE — unblocks everything textual).
-   Species/move/ability/item NAMES live in the `a/0/3/N` text GARCs (10 langs ×
-   127 message files). Gen-7 text format = per-line XOR (seed varies per line,
-   key increments ~0x2983) — documented by pk3DS/PKHeX. Build
-   `tools/usum_text.py`, decode English names, then key `usum_base_stats.json`
-   by name and add `usum_moves.json`/`usum_abilities.json` (GARC `a/0/1/1`
-   moves, `a/0/1/3` learnsets, `a/0/1/7` personal — see decomp/README.md /
-   `DECOMP_MANIFEST.md`). This makes the extracted data usable by the JS game
-   (Alolan forms, Gen-7 species) — the practical payoff.
+1. **Gen-7 message text — DONE ✅.** `tools/usum_text.py` decodes any text
+   file (per-line XOR, PKHeX algo). `--names` → `data/pokemon/usum_names.json`
+   (species/moves/abilities/items, English = lang dir 2). `usum_base_stats.json`
+   is enriched with `name`+`abilityNames`. NEXT textual work: build
+   `usum_moves.json` (GARC `a/0/1/1` move data: power/type/PP/accuracy/category,
+   join with move names 0118) and `usum_learnsets.json` (GARC `a/0/1/3`), then
+   wire the Gen-7 species/moves into the JS game (Alolan forms etc.) — same
+   `data/pokemon/` shapes the engine already consumes.
 2. **Battle damage server** (HARD — the one big open RE problem). Battle.cro is
    the battle *scene* (graphics/UI), NOT the calc server. The type-affinity
    cluster (static 0x21c0e0..0x21c3ac) is reached ONLY by function-pointer
