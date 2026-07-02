@@ -826,10 +826,15 @@ All numerically verified against known game values:
    neutral×neutral to ½ and every 2×/4× down a step — now correct,
    dual/triple-type effectiveness verified 0×/¼×/½×/1×/2×/4×
    (`decomp/verify/verify_typeaffinity.py`). Remaining battle sub-item:
-   **catch-rate formula** — NOT yet found; the `0xFF0000` shake-constant
-   fingerprint was a false lead (RGB masks in SIMD color code), so it's likely
-   a float/VFP calc (`^0.1875` shake) — hunt via `cro_dataflow.py` on the
-   target CoreParam HP fields + `item::ITEM_GetBallID`.
+   **catch-rate formula** — NOT yet found, but narrowed to a concrete lead.
+   `0xFF0000` shake-constant fingerprint was a false lead (RGB masks in SIMD
+   color code). The `item::ITEM_GetBallID` callers `sub_39bc8`/`sub_3c5f0` are
+   the **ball-throw SETUP** — they store the resolved ball id into the battle
+   struct at **field +0x220** and queue the throw (same setup/calc split as
+   damage: `sub_86e48`→`sub_18504`). NEXT: the catch calc is the downstream
+   handler that **reads field 0x220 (ball id) + the target's cur/max HP** and
+   divides — find it with `cro_dataflow.py --offset 0x220` (or trace the
+   queued throw action's consumer). Likely a float/VFP shake calc (`^0.1875`).
 3. **More verified functions** are getting scarce — the clean self-contained
    `pml` formulas are largely mined out (remaining ones delegate to field
    accessors or use load-time-relocated pointers, e.g. the berry-taste table
