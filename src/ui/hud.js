@@ -1,5 +1,5 @@
 // GameHUD — renders HUD info and settings button onto #ui-overlay
-const GAME_VERSION = 'v1.0.46';
+const GAME_VERSION = 'v1.2.15';
 
 window.GameHUD = (function () {
     let overlay = null;
@@ -132,9 +132,11 @@ window.GameHUD = (function () {
             _lastMapName = mapName;
             _showBanner(mapName);
             if (window.GameSave && GameSave.state) {
-                if (GameSave.state.visitedMaps) {
-                    GameSave.state.visitedMaps.add(mapName);
+                // Tolerate a legacy/array visitedMaps by coercing to a Set.
+                if (!(GameSave.state.visitedMaps instanceof Set)) {
+                    GameSave.state.visitedMaps = new Set(GameSave.state.visitedMaps || []);
                 }
+                GameSave.state.visitedMaps.add(mapName);
                 GameSave.markDirty();
             }
         }
@@ -290,5 +292,9 @@ window.GameHUD = (function () {
         update();
     }
 
-    return { init, update, setFps };
+    // Hide/restore the persistent info chip while a full-screen menu is open.
+    function hideInfo() { if (infoEl) infoEl.style.display = 'none'; }
+    function showInfo() { if (infoEl) infoEl.style.display = ''; }
+
+    return { init, update, setFps, hideInfo, showInfo };
 })();

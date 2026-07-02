@@ -19,6 +19,16 @@
         moveDuration: MOVE_COOLDOWN_MS
     };
 
+    // Each region's starting town + a hand-picked, sensible spawn tile. Used for
+    // the boot map and the SELECT fly menu. Any other map uses the map's
+    // walkable-centroid default (GameMap.getDefaultSpawn).
+    const STARTING_TOWNS = {
+        PalletTown:     { region: 'kanto',  x: 11, y: 10, dir: 'down', label: 'Kanto — Pallet Town' },
+        NewBarkTown:    { region: 'johto',  x: 13, y: 15, dir: 'down', label: 'Johto — New Bark Town' },
+        LittlerootTown: { region: 'hoenn',  x: 9,  y: 10, dir: 'down', label: 'Hoenn — Littleroot Town' },
+        twinleaf_town:  { region: 'sinnoh', x: 20, y: 22, dir: 'up',   label: 'Sinnoh — Twinleaf Town' },
+    };
+
     let currentRegion = 'kanto';
     let _transitioning   = false;
     let _warpCooldownUntil = 0;
@@ -159,6 +169,32 @@
         }
     }
 
+    // Seamless overworld: walk straight from one matrix map into the adjacent
+    // one, keeping the player's global tile position continuous.
+    async function transitionToMatrix(mw) {
+        if (_transitioning) return;
+        _transitioning = true;
+        try {
+            console.log(`[Matrix] -> ${mw.mapName} @global(${mw.globalX},${mw.globalY})`);
+            const result = await GameMap.load(mw.mapName, currentRegion);
+            if (!result) return;
+            window._mapName = mw.mapName; window._mapLoaded = true;
+            window._currentMapType = (GameMap.current && GameMap.current.map_type) || "";
+
+            const origin = GameMap.matrixOrigin || [0, 0];
+            player.x = Math.max(0, Math.min(mw.globalX - origin[0], GameMap.width  - 1));
+            player.y = Math.max(0, Math.min(mw.globalY - origin[1], GameMap.height - 1));
+            _snapPlayer();
+
+            GameCamera.update(player.x, player.y, GameMap.width, GameMap.height);
+            if (window.GameSave) GameSave.markDirty();
+            _warpCooldownUntil = performance.now() + WARP_COOLDOWN_MS;
+            GameMap.loadEncounterData(currentRegion);
+        } finally {
+            _transitioning = false;
+        }
+    }
+
     async function transitionToConnection(connInfo) {
         if (_transitioning) return;
         _transitioning = true;
@@ -211,6 +247,10 @@
             window._mapLoaded = true;
             player.x = Math.max(0, Math.min(dest.x, GameMap.width  - 1));
             player.y = Math.max(0, Math.min(dest.y, GameMap.height - 1));
+            if (!GameMap.isWalkable(player.x, player.y)) {
+                const s = GameMap.getDefaultSpawn();
+                player.x = s.x; player.y = s.y;
+            }
             player.direction = 'down';
             player.walkFrame = 0;
             _snapPlayer();
@@ -334,8 +374,15 @@
                     const oob = nx < 0 || nx >= GameMap.width || ny < 0 || ny >= GameMap.height;
 
                     if (oob) {
-                        const connInfo = GameMap.getConnectionAt(nx, ny);
-                        if (connInfo) transitionToConnection(connInfo);
+                        // Prefer a seamless matrix walk (Platinum overworld);
+                        // fall back to explicit GBA-style edge connections.
+                        const mw = GameMap.getMatrixWalk ? GameMap.getMatrixWalk(nx, ny) : null;
+                        if (mw) {
+                            transitionToMatrix(mw);
+                        } else {
+                            const connInfo = GameMap.getConnectionAt(nx, ny);
+                            if (connInfo) transitionToConnection(connInfo);
+                        }
                     } else if (GameMap.isWalkable(nx, ny)) {
                         player.prevX = player.x;
                         player.prevY = player.y;
@@ -396,21 +443,36 @@
             // Optional startup override: ?map=VerdantHollow&region=custom lets you
             // drop straight into any map (e.g. one built in the map editor).
             const _params   = new URLSearchParams(window.location.search);
-            const _startMap = _params.get('map') || 'PalletTown';
-            const _startReg = _params.get('region') || currentRegion;
+            // Default start location: Twinleaf Town (Sinnoh). Overridable via
+            // ?map=…&region=… (e.g. a map built in the editor).
+            const _startMap = _params.get('map') || 'twinleaf_town';
+            const _startReg = _params.get('region') || 'sinnoh';
             currentRegion = _startReg;
             await GameMap.load(_startMap, _startReg);
             window._mapName   = (GameMap.current && GameMap.current.name) || _startMap;
             window._mapLoaded = true;
 
-            player.x    = 7;
-            player.y    = 8;
-            player.prevX = 7;
-            player.prevY = 8;
-            player.direction = 'down';
+            // Spawn at the town's defined start point if it's a known starting
+            // town, otherwise at the map's walkable-centroid default so the
+            // player always lands somewhere sensible (on the open path).
+            const _start = STARTING_TOWNS[_startMap];
+            if (_start) {
+                player.x = _start.x;
+                player.y = _start.y;
+                player.direction = _start.dir || 'down';
+            } else {
+                const s = GameMap.getDefaultSpawn();
+                player.x = s.x;
+                player.y = s.y;
+                player.direction = 'down';
+            }
             player.moveStartTime = 0;
-            player.x = Math.min(player.x, GameMap.width  - 1);
-            player.y = Math.min(player.y, GameMap.height - 1);
+            player.x = Math.max(0, Math.min(player.x, GameMap.width  - 1));
+            player.y = Math.max(0, Math.min(player.y, GameMap.height - 1));
+            if (!GameMap.isWalkable(player.x, player.y)) {
+                const s = GameMap.getDefaultSpawn();
+                player.x = s.x; player.y = s.y;
+            }
             player.prevX = player.x;
             player.prevY = player.y;
 

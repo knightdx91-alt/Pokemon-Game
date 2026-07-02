@@ -4,7 +4,7 @@ window.GameMap = (function () {
 
     const DEFAULT_SIZE = 20;
 
-    const REGIONS = { kanto: 'kanto', johto: 'johto', hoenn: 'hoenn', sinnoh: 'sinnoh' };
+    const REGIONS = { kanto: 'kanto', johto: 'johto', hoenn: 'hoenn', sinnoh: 'sinnoh', unova: 'unova' };
 
     // Tall grass / long grass / short grass behavior bytes → trigger land encounters
     const GRASS_BEHAVIORS = new Set([0x02, 0x03, 0x07]);
@@ -36,6 +36,13 @@ window.GameMap = (function () {
     let _nameIndex       = null;   // MAP_CONST -> filename, loaded from kanto_index.json
     let _region          = 'kanto';
 
+    // Seamless-overworld matrix: maps in a matrix share one global tile grid, so
+    // the player can walk from one map straight into the adjacent one.
+    let _matrix        = null;     // current matrix grid JSON ({cells,tile_size,…})
+    let _matrixOrigin  = [0, 0];   // current map's top-left cell in global tiles
+    let _neighbors     = [];       // adjacent maps for seamless rendering
+    const _matrixCache = {};       // "region/matrixId" -> grid JSON (or null)
+
     // ---------------------------------------------------------------
     // Index loading
     // ---------------------------------------------------------------
@@ -43,8 +50,9 @@ window.GameMap = (function () {
     const INDEX_FILES = {
         kanto:     'data/maps/kanto_index.json',
         hoenn:     'data/maps/hoenn_index.json',
-        heartgold: 'data/maps/heartgold_index.json',
+        johto:     'data/maps/johto_index.json',   // from pokemonHnS (2D metatile maps)
         sinnoh:    'data/maps/sinnoh_index.json',
+        unova:     'data/maps/unova_index.json',   // reverse-engineered from Black ROM (source/nds/IRBO)
         custom:    'data/maps/custom_index.json',
     };
 
@@ -138,6 +146,7 @@ window.GameMap = (function () {
             if (!resp.ok) throw new Error(`HTTP ${resp.status} loading ${url}`);
             current = await resp.json();
             await _loadLayout(current);
+            await _loadMatrix(current, region);
             console.log(`[Map] Loaded ${mapName} (${mapWidth}x${mapHeight}) tileset=${getTilesetName() || 'none'}`);
         } catch (err) {
             console.error('[Map] Failed to load map:', err);
@@ -223,6 +232,111 @@ window.GameMap = (function () {
     }
 
     // ---------------------------------------------------------------
+    // Matrix (seamless overworld) resolution
+    // ---------------------------------------------------------------
+
+    /** Load the matrix grid for the current map (if any), for seamless walking. */
+    async function _loadMatrix(data, region) {
+        _matrix = null;
+        _matrixOrigin = (data && data.matrix_origin) || [0, 0];
+        const matrixId = data && data.matrix;
+        if (!matrixId) return;
+        const key = `${region}/${matrixId}`;
+        if (_matrixCache[key] === undefined) {
+            try {
+                const resp = await fetch(`data/maps/${region}_matrix/${matrixId}.json`);
+                _matrixCache[key] = resp.ok ? await resp.json() : null;
+            } catch (e) {
+                _matrixCache[key] = null;
+            }
+        }
+        _matrix = _matrixCache[key];
+        _computeMatrixNeighbors();
+    }
+
+    /**
+     * Compute the maps adjacent to the current one within the same matrix, so
+     * the renderer can draw them continuously (seamless overworld, Emerald-style).
+     * Each entry: { name, background, ox, oy, w, h } where (ox, oy) is the
+     * neighbour's top-left in tiles relative to the current map's local origin,
+     * and (w, h) are its size in tiles.
+     */
+    function _computeMatrixNeighbors() {
+        _neighbors = [];
+        if (!_matrix || !_matrix.cells) return;
+        const ts = _matrix.tile_size || DEFAULT_SIZE;
+        const cells = _matrix.cells;
+        const H = cells.length, W = cells[0] ? cells[0].length : 0;
+        const curName = current && current.id;
+        const curBg = layoutData && layoutData.background;   // background lives on the layout
+        const bgDir = curBg ? curBg.slice(0, curBg.lastIndexOf('/')) : null;
+        if (!bgDir) return;
+
+        const minCol = Math.floor(_matrixOrigin[0] / ts);
+        const minRow = Math.floor(_matrixOrigin[1] / ts);
+        const cols = Math.max(1, Math.round(mapWidth  / ts));
+        const rows = Math.max(1, Math.round(mapHeight / ts));
+
+        // Distinct maps in the ring of cells surrounding the current footprint.
+        const names = new Set();
+        for (let r = minRow - 1; r <= minRow + rows; r++) {
+            for (let c = minCol - 1; c <= minCol + cols; c++) {
+                if (r < 0 || c < 0 || r >= H || c >= W) continue;
+                const n = cells[r][c];
+                if (n && n !== curName) names.add(n);
+            }
+        }
+        // For each neighbour, find its full footprint → origin + size.
+        names.forEach(function (name) {
+            let nMinR = Infinity, nMinC = Infinity, nMaxR = -1, nMaxC = -1;
+            for (let r = 0; r < H; r++) {
+                const row = cells[r];
+                for (let c = 0; c < W; c++) {
+                    if (row[c] === name) {
+                        if (r < nMinR) nMinR = r;
+                        if (c < nMinC) nMinC = c;
+                        if (r > nMaxR) nMaxR = r;
+                        if (c > nMaxC) nMaxC = c;
+                    }
+                }
+            }
+            if (nMaxR < 0) return;
+            _neighbors.push({
+                name: name,
+                background: `${bgDir}/${name}.png`,
+                ox: nMinC * ts - _matrixOrigin[0],
+                oy: nMinR * ts - _matrixOrigin[1],
+                w: (nMaxC - nMinC + 1) * ts,
+                h: (nMaxR - nMinR + 1) * ts,
+            });
+        });
+    }
+
+    /** Neighbouring maps (same matrix) for seamless continuous rendering. */
+    function getMatrixNeighbors() { return _neighbors; }
+
+    /**
+     * For an (out-of-bounds) local tile, resolve which adjacent map in the matrix
+     * owns it. Returns { mapName, globalX, globalY } or null (edge/void/same map).
+     */
+    function getMatrixWalk(localX, localY) {
+        if (!_matrix || !_matrix.cells) return null;
+        const ts = _matrix.tile_size || DEFAULT_SIZE;
+        const gx = _matrixOrigin[0] + localX;
+        const gy = _matrixOrigin[1] + localY;
+        if (gx < 0 || gy < 0) return null;
+        const col = Math.floor(gx / ts);
+        const row = Math.floor(gy / ts);
+        if (row < 0 || row >= _matrix.cells.length) return null;
+        const gridRow = _matrix.cells[row];
+        if (!gridRow || col < 0 || col >= gridRow.length) return null;
+        const name = gridRow[col];
+        const curName = current && current.id;
+        if (!name || name === curName) return null;
+        return { mapName: name, globalX: gx, globalY: gy };
+    }
+
+    // ---------------------------------------------------------------
     // Tile queries
     // ---------------------------------------------------------------
 
@@ -260,6 +374,37 @@ window.GameMap = (function () {
         return current.warps.find(w => w.x === x && w.y === y) || null;
     }
 
+    /**
+     * A sensible default spawn: the walkable tile nearest the centroid of all
+     * walkable tiles (i.e. the middle of the map's open/path area), avoiding
+     * warp tiles so the player doesn't immediately re-warp. Used when a map is
+     * loaded without an explicit entry point.
+     */
+    function getDefaultSpawn() {
+        const w = mapWidth, h = mapHeight;
+        const col = layoutData && layoutData.collision;
+        const centre = { x: Math.floor(w / 2), y: Math.floor(h / 2) };
+        if (!col) return centre;
+        let sx = 0, sy = 0, n = 0;
+        for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+                if (isWalkable(x, y)) { sx += x; sy += y; n++; }
+            }
+        }
+        if (!n) return centre;
+        const cx = Math.round(sx / n), cy = Math.round(sy / n);
+        const maxR = Math.max(w, h);
+        for (let r = 0; r < maxR; r++) {
+            for (let dy = -r; dy <= r; dy++) {
+                for (let dx = -r; dx <= r; dx++) {
+                    const tx = cx + dx, ty = cy + dy;
+                    if (isWalkable(tx, ty) && !getWarp(tx, ty)) return { x: tx, y: ty };
+                }
+            }
+        }
+        return centre;
+    }
+
     function getSign(x, y) {
         if (!current || !current.signs) return null;
         return current.signs.find(s => s.x === x && s.y === y) || null;
@@ -274,6 +419,11 @@ window.GameMap = (function () {
         if (layoutData && layoutData.tileset) return layoutData.tileset;
         // Fallback for DS maps (no layout): use tileset field on the map JSON itself
         return (current && current.tileset) || null;
+    }
+
+    /** Path to the pre-rendered textured background image (DS maps), or null. */
+    function getBackground() {
+        return layoutData && layoutData.background ? layoutData.background : null;
     }
 
     // Returns 'grass' | 'cave' | 'water' | null for the given tile
@@ -346,12 +496,17 @@ window.GameMap = (function () {
         loadById,
         resolveWarp,
         getConnectionAt,
+        getMatrixWalk,
+        getMatrixNeighbors,
+        get matrixOrigin() { return _matrixOrigin; },
         getTile,
         isWalkable,
         getWarp,
+        getDefaultSpawn,
         getSign,
         getNpcAt,
         getTilesetName,
+        getBackground,
         getTileTerrainType,
         getTileDebug,
         loadEncounterData,

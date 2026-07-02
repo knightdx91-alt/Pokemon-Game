@@ -1,0 +1,925 @@
+{
+ "source": "Battle.cro rodata table @0x45a0 (relocation-filled at load)",
+ "note": "index = move-effect id; handler(effectObj*) is a step-state machine (step byte @effectObj+0xa94, internal jump table). Damage handler = sub_9698.",
+ "count": 153,
+ "handlers": [
+  {
+   "effect_id": 0,
+   "slot": "0x45a0",
+   "handler": "sub_efe8",
+   "note": "cleanup/free (effect-object destructor-like)"
+  },
+  {
+   "effect_id": 1,
+   "slot": "0x45a8",
+   "handler": "sub_458c",
+   "note": "multi-step effect executor (6-state machine)"
+  },
+  {
+   "effect_id": 2,
+   "slot": "0x45b0",
+   "handler": "sub_2cac",
+   "note": ""
+  },
+  {
+   "effect_id": 3,
+   "slot": "0x45b8",
+   "handler": "sub_2404",
+   "note": ""
+  },
+  {
+   "effect_id": 4,
+   "slot": "0x45c0",
+   "handler": "sub_33ac",
+   "note": ""
+  },
+  {
+   "effect_id": 5,
+   "slot": "0x45c8",
+   "handler": "sub_5998",
+   "note": ""
+  },
+  {
+   "effect_id": 6,
+   "slot": "0x45d0",
+   "handler": "sub_4a84",
+   "note": ""
+  },
+  {
+   "effect_id": 7,
+   "slot": "0x45d8",
+   "handler": "sub_abe0",
+   "note": ""
+  },
+  {
+   "effect_id": 8,
+   "slot": "0x45e8",
+   "handler": "sub_1f8c",
+   "note": ""
+  },
+  {
+   "effect_id": 9,
+   "slot": "0x45f0",
+   "handler": "sub_3264",
+   "note": ""
+  },
+  {
+   "effect_id": 10,
+   "slot": "0x4600",
+   "handler": "sub_652c",
+   "note": ""
+  },
+  {
+   "effect_id": 11,
+   "slot": "0x461c",
+   "handler": "sub_3dbc",
+   "note": ""
+  },
+  {
+   "effect_id": 12,
+   "slot": "0x4628",
+   "handler": "sub_47a0",
+   "note": ""
+  },
+  {
+   "effect_id": 13,
+   "slot": "0x4634",
+   "handler": "sub_396c",
+   "note": ""
+  },
+  {
+   "effect_id": 14,
+   "slot": "0x4640",
+   "handler": "sub_458c",
+   "note": "multi-step effect executor (6-state machine)"
+  },
+  {
+   "effect_id": 15,
+   "slot": "0x464c",
+   "handler": "sub_4214",
+   "note": ""
+  },
+  {
+   "effect_id": 16,
+   "slot": "0x4658",
+   "handler": "sub_8090",
+   "note": ""
+  },
+  {
+   "effect_id": 17,
+   "slot": "0x4664",
+   "handler": "sub_9028",
+   "note": ""
+  },
+  {
+   "effect_id": 18,
+   "slot": "0x4670",
+   "handler": "sub_561c",
+   "note": ""
+  },
+  {
+   "effect_id": 19,
+   "slot": "0x467c",
+   "handler": "sub_a780",
+   "note": ""
+  },
+  {
+   "effect_id": 20,
+   "slot": "0x4688",
+   "handler": "sub_90dc",
+   "note": ""
+  },
+  {
+   "effect_id": 21,
+   "slot": "0x4694",
+   "handler": "sub_622c",
+   "note": ""
+  },
+  {
+   "effect_id": 22,
+   "slot": "0x46a0",
+   "handler": "sub_7c70",
+   "note": ""
+  },
+  {
+   "effect_id": 23,
+   "slot": "0x46ac",
+   "handler": "sub_3e50",
+   "note": ""
+  },
+  {
+   "effect_id": 24,
+   "slot": "0x46b8",
+   "handler": "sub_5148",
+   "note": ""
+  },
+  {
+   "effect_id": 25,
+   "slot": "0x46c4",
+   "handler": "sub_8fbc",
+   "note": ""
+  },
+  {
+   "effect_id": 26,
+   "slot": "0x46d0",
+   "handler": "sub_6eec",
+   "note": ""
+  },
+  {
+   "effect_id": 27,
+   "slot": "0x46dc",
+   "handler": "sub_5564",
+   "note": ""
+  },
+  {
+   "effect_id": 28,
+   "slot": "0x46e8",
+   "handler": "sub_501c",
+   "note": ""
+  },
+  {
+   "effect_id": 29,
+   "slot": "0x46f4",
+   "handler": "sub_5e60",
+   "note": ""
+  },
+  {
+   "effect_id": 30,
+   "slot": "0x4700",
+   "handler": "sub_a844",
+   "note": ""
+  },
+  {
+   "effect_id": 31,
+   "slot": "0x470c",
+   "handler": "sub_914c",
+   "note": ""
+  },
+  {
+   "effect_id": 32,
+   "slot": "0x4718",
+   "handler": "sub_7204",
+   "note": ""
+  },
+  {
+   "effect_id": 33,
+   "slot": "0x4724",
+   "handler": "sub_62fc",
+   "note": ""
+  },
+  {
+   "effect_id": 34,
+   "slot": "0x4730",
+   "handler": "sub_4e1c",
+   "note": ""
+  },
+  {
+   "effect_id": 35,
+   "slot": "0x473c",
+   "handler": "sub_a3f4",
+   "note": ""
+  },
+  {
+   "effect_id": 36,
+   "slot": "0x4748",
+   "handler": "sub_4a50",
+   "note": ""
+  },
+  {
+   "effect_id": 37,
+   "slot": "0x4754",
+   "handler": "sub_5340",
+   "note": ""
+  },
+  {
+   "effect_id": 38,
+   "slot": "0x4760",
+   "handler": "sub_4e7c",
+   "note": ""
+  },
+  {
+   "effect_id": 39,
+   "slot": "0x476c",
+   "handler": "sub_528c",
+   "note": ""
+  },
+  {
+   "effect_id": 40,
+   "slot": "0x4778",
+   "handler": "sub_48b8",
+   "note": ""
+  },
+  {
+   "effect_id": 41,
+   "slot": "0x4784",
+   "handler": "sub_49d0",
+   "note": ""
+  },
+  {
+   "effect_id": 42,
+   "slot": "0x4790",
+   "handler": "sub_528c",
+   "note": ""
+  },
+  {
+   "effect_id": 43,
+   "slot": "0x479c",
+   "handler": "sub_81e0",
+   "note": ""
+  },
+  {
+   "effect_id": 44,
+   "slot": "0x47a8",
+   "handler": "sub_58d8",
+   "note": ""
+  },
+  {
+   "effect_id": 45,
+   "slot": "0x47b4",
+   "handler": "sub_49fc",
+   "note": ""
+  },
+  {
+   "effect_id": 46,
+   "slot": "0x47c0",
+   "handler": "sub_72c0",
+   "note": ""
+  },
+  {
+   "effect_id": 47,
+   "slot": "0x47cc",
+   "handler": "sub_4a1c",
+   "note": ""
+  },
+  {
+   "effect_id": 48,
+   "slot": "0x47d8",
+   "handler": "sub_584c",
+   "note": ""
+  },
+  {
+   "effect_id": 49,
+   "slot": "0x47e4",
+   "handler": "sub_58a4",
+   "note": ""
+  },
+  {
+   "effect_id": 50,
+   "slot": "0x47f0",
+   "handler": "sub_820c",
+   "note": ""
+  },
+  {
+   "effect_id": 51,
+   "slot": "0x47fc",
+   "handler": "sub_8240",
+   "note": ""
+  },
+  {
+   "effect_id": 52,
+   "slot": "0x4808",
+   "handler": "sub_6428",
+   "note": ""
+  },
+  {
+   "effect_id": 53,
+   "slot": "0x4814",
+   "handler": "sub_80a4",
+   "note": ""
+  },
+  {
+   "effect_id": 54,
+   "slot": "0x4820",
+   "handler": "sub_5314",
+   "note": ""
+  },
+  {
+   "effect_id": 55,
+   "slot": "0x482c",
+   "handler": "sub_86ac",
+   "note": ""
+  },
+  {
+   "effect_id": 56,
+   "slot": "0x4838",
+   "handler": "sub_86ec",
+   "note": ""
+  },
+  {
+   "effect_id": 57,
+   "slot": "0x4844",
+   "handler": "sub_5714",
+   "note": ""
+  },
+  {
+   "effect_id": 58,
+   "slot": "0x4850",
+   "handler": "sub_64a8",
+   "note": ""
+  },
+  {
+   "effect_id": 59,
+   "slot": "0x485c",
+   "handler": "sub_64c8",
+   "note": ""
+  },
+  {
+   "effect_id": 60,
+   "slot": "0x4868",
+   "handler": "sub_9d88",
+   "note": ""
+  },
+  {
+   "effect_id": 61,
+   "slot": "0x4874",
+   "handler": "sub_7280",
+   "note": ""
+  },
+  {
+   "effect_id": 62,
+   "slot": "0x4880",
+   "handler": "sub_8304",
+   "note": ""
+  },
+  {
+   "effect_id": 63,
+   "slot": "0x488c",
+   "handler": "sub_81b8",
+   "note": ""
+  },
+  {
+   "effect_id": 64,
+   "slot": "0x4898",
+   "handler": "sub_92a8",
+   "note": ""
+  },
+  {
+   "effect_id": 65,
+   "slot": "0x48a4",
+   "handler": "sub_8260",
+   "note": ""
+  },
+  {
+   "effect_id": 66,
+   "slot": "0x48b0",
+   "handler": "sub_9250",
+   "note": ""
+  },
+  {
+   "effect_id": 67,
+   "slot": "0x48bc",
+   "handler": "sub_82ac",
+   "note": ""
+  },
+  {
+   "effect_id": 68,
+   "slot": "0x48c8",
+   "handler": "sub_927c",
+   "note": ""
+  },
+  {
+   "effect_id": 69,
+   "slot": "0x48d4",
+   "handler": "sub_8280",
+   "note": ""
+  },
+  {
+   "effect_id": 70,
+   "slot": "0x48e0",
+   "handler": "sub_b770",
+   "note": ""
+  },
+  {
+   "effect_id": 71,
+   "slot": "0x48ec",
+   "handler": "sub_a9dc",
+   "note": ""
+  },
+  {
+   "effect_id": 72,
+   "slot": "0x48f8",
+   "handler": "sub_9200",
+   "note": ""
+  },
+  {
+   "effect_id": 73,
+   "slot": "0x4904",
+   "handler": "sub_52ec",
+   "note": ""
+  },
+  {
+   "effect_id": 74,
+   "slot": "0x4910",
+   "handler": "sub_abb8",
+   "note": ""
+  },
+  {
+   "effect_id": 75,
+   "slot": "0x491c",
+   "handler": "sub_579c",
+   "note": ""
+  },
+  {
+   "effect_id": 76,
+   "slot": "0x4928",
+   "handler": "sub_6374",
+   "note": ""
+  },
+  {
+   "effect_id": 77,
+   "slot": "0x4934",
+   "handler": "sub_a2f8",
+   "note": ""
+  },
+  {
+   "effect_id": 78,
+   "slot": "0x4940",
+   "handler": "sub_863c",
+   "note": ""
+  },
+  {
+   "effect_id": 79,
+   "slot": "0x494c",
+   "handler": "sub_a99c",
+   "note": ""
+  },
+  {
+   "effect_id": 80,
+   "slot": "0x4958",
+   "handler": "sub_8738",
+   "note": ""
+  },
+  {
+   "effect_id": 81,
+   "slot": "0x4964",
+   "handler": "sub_a11c",
+   "note": ""
+  },
+  {
+   "effect_id": 82,
+   "slot": "0x4970",
+   "handler": "sub_870c",
+   "note": ""
+  },
+  {
+   "effect_id": 83,
+   "slot": "0x497c",
+   "handler": "sub_6ac4",
+   "note": ""
+  },
+  {
+   "effect_id": 84,
+   "slot": "0x4988",
+   "handler": "sub_a0bc",
+   "note": ""
+  },
+  {
+   "effect_id": 85,
+   "slot": "0x4994",
+   "handler": "sub_a0f0",
+   "note": ""
+  },
+  {
+   "effect_id": 86,
+   "slot": "0x49a0",
+   "handler": "sub_7328",
+   "note": ""
+  },
+  {
+   "effect_id": 87,
+   "slot": "0x49ac",
+   "handler": "sub_b0bc",
+   "note": ""
+  },
+  {
+   "effect_id": 88,
+   "slot": "0x49b8",
+   "handler": "sub_b688",
+   "note": ""
+  },
+  {
+   "effect_id": 89,
+   "slot": "0x49c4",
+   "handler": "sub_8e88",
+   "note": ""
+  },
+  {
+   "effect_id": 90,
+   "slot": "0x49d0",
+   "handler": "sub_6500",
+   "note": ""
+  },
+  {
+   "effect_id": 91,
+   "slot": "0x49dc",
+   "handler": "sub_a170",
+   "note": ""
+  },
+  {
+   "effect_id": 92,
+   "slot": "0x49e8",
+   "handler": "sub_72f4",
+   "note": ""
+  },
+  {
+   "effect_id": 93,
+   "slot": "0x49f4",
+   "handler": "sub_82d8",
+   "note": ""
+  },
+  {
+   "effect_id": 94,
+   "slot": "0x4a00",
+   "handler": "sub_8758",
+   "note": ""
+  },
+  {
+   "effect_id": 95,
+   "slot": "0x4a0c",
+   "handler": "sub_be8c",
+   "note": ""
+  },
+  {
+   "effect_id": 96,
+   "slot": "0x4a18",
+   "handler": "sub_63e8",
+   "note": ""
+  },
+  {
+   "effect_id": 97,
+   "slot": "0x4a24",
+   "handler": "sub_a13c",
+   "note": ""
+  },
+  {
+   "effect_id": 98,
+   "slot": "0x4a30",
+   "handler": "sub_b208",
+   "note": ""
+  },
+  {
+   "effect_id": 99,
+   "slot": "0x4a54",
+   "handler": "sub_c46c",
+   "note": ""
+  },
+  {
+   "effect_id": 100,
+   "slot": "0x4a60",
+   "handler": "sub_bed4",
+   "note": ""
+  },
+  {
+   "effect_id": 101,
+   "slot": "0x4a6c",
+   "handler": "sub_b8b0",
+   "note": ""
+  },
+  {
+   "effect_id": 102,
+   "slot": "0x4a78",
+   "handler": "sub_52b8",
+   "note": ""
+  },
+  {
+   "effect_id": 103,
+   "slot": "0x4a84",
+   "handler": "sub_bca0",
+   "note": ""
+  },
+  {
+   "effect_id": 104,
+   "slot": "0x4a90",
+   "handler": "sub_ab98",
+   "note": ""
+  },
+  {
+   "effect_id": 105,
+   "slot": "0x4a9c",
+   "handler": "sub_4138",
+   "note": ""
+  },
+  {
+   "effect_id": 106,
+   "slot": "0x4aa8",
+   "handler": "sub_5218",
+   "note": ""
+  },
+  {
+   "effect_id": 107,
+   "slot": "0x4ab4",
+   "handler": "sub_3780",
+   "note": ""
+  },
+  {
+   "effect_id": 108,
+   "slot": "0x4ac0",
+   "handler": "sub_4f54",
+   "note": ""
+  },
+  {
+   "effect_id": 109,
+   "slot": "0x4acc",
+   "handler": "sub_5b84",
+   "note": ""
+  },
+  {
+   "effect_id": 110,
+   "slot": "0x4ae4",
+   "handler": "sub_b264",
+   "note": ""
+  },
+  {
+   "effect_id": 111,
+   "slot": "0x4af0",
+   "handler": "sub_ab00",
+   "note": ""
+  },
+  {
+   "effect_id": 112,
+   "slot": "0x4afc",
+   "handler": "sub_a048",
+   "note": ""
+  },
+  {
+   "effect_id": 113,
+   "slot": "0x4b08",
+   "handler": "sub_8540",
+   "note": ""
+  },
+  {
+   "effect_id": 114,
+   "slot": "0x4b14",
+   "handler": "sub_83f4",
+   "note": ""
+  },
+  {
+   "effect_id": 115,
+   "slot": "0x4b20",
+   "handler": "sub_7b60",
+   "note": ""
+  },
+  {
+   "effect_id": 116,
+   "slot": "0x4b2c",
+   "handler": "sub_a70c",
+   "note": ""
+  },
+  {
+   "effect_id": 117,
+   "slot": "0x4b38",
+   "handler": "sub_9b70",
+   "note": ""
+  },
+  {
+   "effect_id": 118,
+   "slot": "0x4b44",
+   "handler": "sub_8488",
+   "note": ""
+  },
+  {
+   "effect_id": 119,
+   "slot": "0x4b50",
+   "handler": "sub_67b0",
+   "note": ""
+  },
+  {
+   "effect_id": 120,
+   "slot": "0x4b5c",
+   "handler": "sub_a4c4",
+   "note": ""
+  },
+  {
+   "effect_id": 121,
+   "slot": "0x4b68",
+   "handler": "sub_a654",
+   "note": ""
+  },
+  {
+   "effect_id": 122,
+   "slot": "0x4b74",
+   "handler": "sub_4358",
+   "note": ""
+  },
+  {
+   "effect_id": 123,
+   "slot": "0x4b80",
+   "handler": "sub_a5e0",
+   "note": ""
+  },
+  {
+   "effect_id": 124,
+   "slot": "0x4b8c",
+   "handler": "sub_803c",
+   "note": ""
+  },
+  {
+   "effect_id": 125,
+   "slot": "0x4b98",
+   "handler": "sub_7e48",
+   "note": ""
+  },
+  {
+   "effect_id": 126,
+   "slot": "0x4bb0",
+   "handler": "sub_b920",
+   "note": ""
+  },
+  {
+   "effect_id": 127,
+   "slot": "0x4bbc",
+   "handler": "sub_7da8",
+   "note": ""
+  },
+  {
+   "effect_id": 128,
+   "slot": "0x4bc8",
+   "handler": "sub_b648",
+   "note": ""
+  },
+  {
+   "effect_id": 129,
+   "slot": "0x4be0",
+   "handler": "sub_bb2c",
+   "note": ""
+  },
+  {
+   "effect_id": 130,
+   "slot": "0x4bec",
+   "handler": "sub_858c",
+   "note": ""
+  },
+  {
+   "effect_id": 131,
+   "slot": "0x4bf8",
+   "handler": "sub_8c80",
+   "note": ""
+  },
+  {
+   "effect_id": 132,
+   "slot": "0x4c04",
+   "handler": "sub_b7b8",
+   "note": ""
+  },
+  {
+   "effect_id": 133,
+   "slot": "0x4c10",
+   "handler": "sub_7188",
+   "note": ""
+  },
+  {
+   "effect_id": 134,
+   "slot": "0x4c1c",
+   "handler": "sub_26ec",
+   "note": ""
+  },
+  {
+   "effect_id": 135,
+   "slot": "0x4c28",
+   "handler": "sub_4320",
+   "note": ""
+  },
+  {
+   "effect_id": 136,
+   "slot": "0x4c30",
+   "handler": "sub_4b40",
+   "note": ""
+  },
+  {
+   "effect_id": 137,
+   "slot": "0x4c38",
+   "handler": "sub_5390",
+   "note": ""
+  },
+  {
+   "effect_id": 138,
+   "slot": "0x4c44",
+   "handler": "sub_8b00",
+   "note": ""
+  },
+  {
+   "effect_id": 139,
+   "slot": "0x4c4c",
+   "handler": "sub_92d4",
+   "note": ""
+  },
+  {
+   "effect_id": 140,
+   "slot": "0x4c54",
+   "handler": "sub_9698",
+   "note": "damage / per-target damage+effect loop (see DamageCalc.cpp)"
+  },
+  {
+   "effect_id": 141,
+   "slot": "0x4c84",
+   "handler": "sub_a1bc",
+   "note": ""
+  },
+  {
+   "effect_id": 142,
+   "slot": "0x4c8c",
+   "handler": "sub_a9c0",
+   "note": ""
+  },
+  {
+   "effect_id": 143,
+   "slot": "0x4c98",
+   "handler": "sub_c278",
+   "note": ""
+  },
+  {
+   "effect_id": 144,
+   "slot": "0x4ca0",
+   "handler": "sub_9698",
+   "note": "damage / per-target damage+effect loop (see DamageCalc.cpp)"
+  },
+  {
+   "effect_id": 145,
+   "slot": "0x4cb4",
+   "handler": "sub_9974",
+   "note": ""
+  },
+  {
+   "effect_id": 146,
+   "slot": "0x4cd0",
+   "handler": "sub_7384",
+   "note": ""
+  },
+  {
+   "effect_id": 147,
+   "slot": "0x4ce0",
+   "handler": "sub_8334",
+   "note": ""
+  },
+  {
+   "effect_id": 148,
+   "slot": "0x4cec",
+   "handler": "sub_76a0",
+   "note": ""
+  },
+  {
+   "effect_id": 149,
+   "slot": "0x4d18",
+   "handler": "sub_8774",
+   "note": ""
+  },
+  {
+   "effect_id": 150,
+   "slot": "0x4d24",
+   "handler": "sub_b9d8",
+   "note": ""
+  },
+  {
+   "effect_id": 151,
+   "slot": "0x4d34",
+   "handler": "sub_c20c",
+   "note": ""
+  },
+  {
+   "effect_id": 152,
+   "slot": "0x4d40",
+   "handler": "sub_540c",
+   "note": ""
+  }
+ ]
+}

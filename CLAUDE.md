@@ -2,6 +2,27 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ▶ ACTIVE PRIORITY — FireRed-faithful UI overhaul for the Pokémon RPG (`game.html`)
+
+Bring the battle screen and dialogue box up to a pixel-faithful FireRed look,
+using this repo's already-bundled FireRed font (`src/assets/fonts/pokefirered.ttf`
++ `.woff2`, and bitmap atlases `src/assets/party/font_normal.png` / `font_small.png`).
+
+- **Battle UI target:** FireRed-style healthboxes (name, Lv, green/yellow/red HP
+  bar, numeric HP, blue EXP bar), the FIGHT/BAG/POKéMON/RUN command grid, and the
+  move menu with a type/PP box. `src/engine/battle.js` currently renders this via
+  DOM (`#battle-overlay`, `.bt-hp-bar`, `.bt-move-btn`). Restyle in place (CSS +
+  the bundled font) to preserve its richer features (bag pockets, summary, fly menu).
+- **Dialogue box target:** the classic FireRed blue window frame + font (`src/ui/dialogue.js`).
+- **Reference implementation** of the exact look (native-res canvas + a bitmap-font
+  renderer + FireRed-palette healthboxes) was prototyped on the throwaway branch
+  `claude/pokemon-crater-github-pages-t03jnb`: see its `src/battle/battle.js`,
+  `src/ui/font.js`, `src/ui/dialogue.js`, and `data/ui/font_normal.png` + `font.json`.
+  That branch is a stale-fork side project — mine it for the UI look only, do NOT
+  merge it; all the game logic already exists (and is more complete) here on `main`.
+- **Palette source:** `source/pokefirered/graphics/battle_interface/` (healthbox
+  elements + `healthbar.pal` / `healthbox.pal`) and the EE submodule for framing.
+
 ## Bug history — known fixes (read before debugging input/menu issues)
 
 ### 1. Game loop crashing silently every frame (`src/main.js`)
@@ -92,7 +113,7 @@ src/
     start_menu/              — EE icon PNGs converted to RGBA (_rgba.png variants)
     journal/                 — journal tab icons (RGBA)
 data/
-  maps/                      — map JSON files (kanto, johto, hoenn, sinnoh, heartgold, platinum)
+  maps/                      — map JSON files (kanto, johto [HnS], hoenn, sinnoh/platinum [DS])
   tilesets/                  — tileset JSON files (2802 total)
   layouts/, encounters/, pokemon/, sprites/
 source/
@@ -195,6 +216,24 @@ Real CSS `transform: rotate()` on `<body>` — same approach as EmulatorJS fulls
 - ✅ Kanto maps navigable from PalletTown; Hoenn/Johto/Sinnoh/HeartGold/Platinum map data present
 - ✅ Achievement definitions (bronze/silver/gold/platinum), faction standing system
 
+### ROM decomp & data pipeline (`tools/`) — see full docs in the Tooling section
+- ✅ `nds_decomp.py` — any `.nds` → pret-style tree (NitroFS + NARC unpack + LZ);
+  **verified on the user's real Pokémon Black (IRBO: 54,054 files) and
+  Black 2 (IREO: 69,850 files) ROMs**, downloaded straight from their
+  link-shared Google Drive (commands in the Tooling section — the user is on
+  an FRP-locked device; EVERYTHING must run cloud-side, never ask them to run
+  local commands)
+- ✅ `3ds_decomp.py` — decrypted `.3ds/.cci/.cxi/.cia` → NCSD/CIA→NCCH→RomFS +
+  GARC unpack; verified on synthetic fixtures (incl. CIA); awaiting the user's
+  Pokémon X / Ultra Moon `.cia` Drive links for a real-ROM run
+- ✅ `rom_to_2d.py` — Gen-5 decomp output → the game's `data/pokemon/*.json`
+  formats, with Gen-5 text-bank decryption for English names; values verified
+  against known stats (Charizard, Flamethrower, Charmander learnset).
+  Conversion NOT yet applied to `data/` (defaults to dry-run); encounters
+  converter experimental. Note: the user's B2 ROM is a Portuguese/Spanish
+  fan-translation — pull English names from the Black (IRBO) extraction via
+  `--names-from`
+
 ### Emulator hub (`emulator.html`)
 - ✅ **RetroPlay** brand — CSS variable theme (`--bg`, `--surface`, `--accent`, etc.), gradient logo, tagline
 - ✅ 37 systems with emoji icons, grouped by manufacturer (Nintendo, Sega, Sony, Atari, etc.)
@@ -284,30 +323,383 @@ block. Warp tiles are always walkable.
   Pallet Town — e.g. `game.html?map=VerdantHollow&region=custom`.
 
 ### Region sources: GBA (2D) vs DS (3D)
-- **Kanto** (pokefirered) and **Hoenn** (pokeemerald) are GBA — native 2D
-  metatile tilemaps. Fully extracted into renderable layouts (the format above).
-- **Johto/Sinnoh/Platinum** as shipped were extracted from the **DS** decomps
-  (pokeheartgold, pokeplatinum) and are **metadata-only** — DS maps are 3D
-  geometry (BMD0 models + map matrix), with no 2D metatile grid to extract.
-  Their map JSONs have warps/signs with `z` coords and no `layout`/grid. A pure
-  "image → 2D map" conversion isn't possible from DS sources.
+- **Kanto** (pokefirered), **Hoenn** (pokeemerald), and **Johto** (pokemonHnS)
+  are GBA — native 2D metatile tilemaps. Fully extracted into renderable layouts.
+- **Sinnoh** comes from the **DS** decomp (pokeplatinum). DS maps are 3D geometry
+  (BMD0/NSBMD models + map matrix), with no 2D metatile grid to extract directly,
+  so a pure "image → 2D map" conversion isn't possible from DS sources — the DS
+  path needs its own converter (see the Sinnoh section above).
+- **Unova** (Pokémon Black) is also DS/3D, same category as Sinnoh, but had
+  **no reachable decomp source** when it was built (see the Unova section
+  above) — it was reverse-engineered blind from the raw ROM instead of from
+  a documented spec, which is why it's a smaller, rougher conversion
+  (collision-only, no warps/npcs/real textures yet) than Sinnoh.
 
-### Johto via Pokémon Heart & Soul (HnS) — the 2D path
-- **`source/pokemonhns`** submodule = the **HnS** ROM hack, built on
-  **pokeemerald (GBA)** — so its Johto + Kanto maps ARE 2D metatile tilemaps,
-  same format as Hoenn. This is the practical way to get a real 2D Johto.
-- **`tools/extract_hns.py`** reuses `extract_tilesets_emerald.py`, retargeted at
-  `source/pokemonhns` with `hns_` tileset prefix → `data/layouts/hns/` +
-  `data/tilesets/hns_*`. Run `git submodule update --init source/pokemonhns`
-  first. `EXTRACT_LAYOUT_FILTER=NEW_BARK,...` (env) limits to a subset.
-- **Two HnS quirks the extractor handles:** (1) HnS expands the primary tileset
-  to **640** tiles (`NUM_TILES_IN_PRIMARY 640`; pokeemerald default 512) — set
-  via `em.PRIMARY_TILE_COUNT = 640` in the wrapper, else secondary/building tiles
-  render black. (2) HnS drops extra named `.pal` files (e.g. `bellchime_12.pal`)
-  in palette dirs — `load_all_palettes` skips non-numeric stems.
-- Status: prototype-verified (NewBarkTown/Cherrygrove/Violet render perfectly).
-  Not yet fully extracted or wired as a playable region (needs map metadata
-  extraction, a `hns` region index, `INDEX_FILES` registration, connections).
+### Environment egress note (session-dependent — verify, don't assume)
+GitHub egress scope **varies by session type** and has changed at least once —
+don't trust an old note (including this one) without testing first.
+A past web session had broad HTTPS egress: submodules couldn't be `git clone`d
+(proxy 403 on `pret/*`, `PokemonHnS-Development/*`, etc.) but
+`codeload.github.com` tarball downloads of arbitrary GitHub repos worked (200),
+which is how `source/pokeplatinum` was fetched for the Sinnoh conversion. A
+later GitHub-task-triggered session (the one that did the Unova work above)
+had egress **scoped to only this one repo** — the exact same
+`codeload.github.com/pret/pokeplatinum` tarball URL that worked before
+returned 403. **Test with a `curl -o /dev/null -w '%{http_code}'` tarball
+request before planning any work that depends on fetching an external decomp
+repo** — if it 403s, that session cannot use the "fetch a source tree"
+strategy at all, only raw-ROM reverse engineering (see `nds_decomp.py` /
+`bw_common.py`). If it works, the tarball approach below applies:
+```
+curl -L "https://codeload.github.com/PokemonHnS-Development/pokemonHnS/tar.gz/refs/heads/main" -o hns.tar.gz
+mkdir -p source/pokemonhns && tar xzf hns.tar.gz -C source/pokemonhns --strip-components=1
+```
+(The HnS tarball is ~38 MB; the 829 MB repo "size" is mostly git history.) Content
+placed at a submodule path is NOT swept into the parent repo by `git add`, so it
+stays local. `pip install ndspy pillow` for the DS/graphics tooling.
+
+### Johto via Pokémon Heart & Soul (HnS) — DONE ✅ (the 2D path)
+Johto is now a **fully converted, wired, playable region** sourced from HnS.
+- **`source/pokemonhns`** = the **HnS** ROM hack on **pokeemerald (GBA)**, so its
+  Johto + Kanto maps ARE 2D metatile tilemaps (same format as Hoenn).
+- **`tools/extract_hns_johto.py`** is the driver (supersedes the old
+  `extract_hns.py`, which only did tilesets/layouts). It reuses
+  `extract_tilesets_emerald.py` and additionally emits map metadata + the region
+  index, all in the exact formats `GameMap`/`GameRenderer` consume:
+  - `data/tilesets/hns_<primary>__<secondary>.png` + `.json` (16×16 metatiles, 16/row)
+  - `data/layouts/johto/<LAYOUT_ID>.json` (metatile grid + collision)
+  - `data/maps/johto/<MapName>.json` (layout ref, warps, connections, npcs, signs)
+  - `data/maps/johto_index.json` (MAP_CONST → MapName)
+  - Registered as region **`johto`** in `INDEX_FILES` (`src/engine/map.js`).
+  - Run: `python3 tools/extract_hns_johto.py` (needs source at `source/pokemonhns/`).
+  - Load in-game: `game.html?map=NewBarkTown&region=johto`.
+- **Result:** 420 maps, 419 layouts, 107 tilesets. All 201 map connections
+  resolve; only 6 warps dangle (into intentionally-excluded content). Verified by
+  rendering NewBark/Goldenrod/Ecruteak/RuinsOfAlph/NationalPark — pixel-perfect.
+- **Scope:** leftover pokeemerald base maps (the `gMapGroup_Emerald*` groups that
+  ship unused in HnS, ~536 of 957 map folders) are **excluded** so the region is
+  Johto/Kanto only. HnS Kanto maps live under the `johto` region key too.
+- **Three HnS quirks the pipeline handles (all fixed in `extract_tilesets_emerald.py`):**
+  1. **Tiles per primary = 640** (`NUM_TILES_IN_PRIMARY`; pokeemerald=512) — set
+     `em.PRIMARY_TILE_COUNT = 640`, else secondary/building tiles render black.
+  2. **Metatiles per primary = 640** (`NUM_METATILES_IN_PRIMARY`; pokeemerald=512).
+     Blockdata stores raw *game* metatile indices where secondary metatiles begin
+     at this fixed offset regardless of how many the primary defines. When a
+     primary defines fewer (vanilla leftovers `general`=512, `building`=128),
+     `process_layout` **remaps** game index → contiguous sheet index using the
+     actual primary count + `em.PRIMARY_METATILE_COUNT = 640`. Without this,
+     Kanto/Safari/National-Park maps shift every secondary tile by 128. Johto's
+     own primaries are exactly 640 → identity remap (why New Bark was perfect
+     before the fix but National Park was broken).
+  3. **Tileset folders renamed vs symbol** — `tileset_name_to_path` resolves
+     alias → mechanical snake_case → normalized scan (ignoring `_`). Genuine
+     renames go in `em.TILESET_DIR_ALIASES` (e.g. `GoldenrodCity_TrainStation` →
+     `goldenrod_station`).
+- **Tileset naming is per (primary, secondary) pair** (`hns_<pri>__<sec>`), NOT
+  secondary-only: HnS reuses one secondary (e.g. `CherrygroveCity`) against
+  several primaries (`Johto_General` vs seasonal `Johto_NorthEast/NorthWest`),
+  which produce genuinely different sheets. Secondary-only naming corrupts ~half
+  those maps. The layout's `tileset` field points at the pair name.
+- **2 known-broken source maps:** `LAYOUT_SAFFRON_TEMP` (a temp map) and
+  `LAYOUT_ROUTE7` (unused Kanto route) reference metatiles beyond what their
+  tileset defines — unfinished HnS content, not a converter bug; render harmlessly.
+
+### Sinnoh via pokeplatinum — DONE ✅ (the DS path)
+- **`source/pokeplatinum`** (pret) was the Sinnoh source (fetched via the
+  tarball method — codeload.github.com — in a past session; NOT present in
+  every session, see the Unova section below for what happens without it).
+  (User said disregard pokeheartgold; the old metadata-only
+  `data/maps/heartgold/*` was **removed** and the `heartgold` region key
+  retired from `INDEX_FILES`.)
+- Platinum is a **DS** game: field maps are 3D geometry (BMD0/NSBMD models + a
+  map matrix + a 32×32 terrain-attributes grid per land-data cell), not 2D
+  metatile tilemaps. The full documented format lives in
+  `source/pokeplatinum/docs/maps/file_format_specifications.md` — that
+  human-written spec (the payoff of years of community decomp work) is what
+  made a real converter tractable; see `tools/platinum_common.py`'s docstring
+  for the resolved MAP_HEADER → matrix → land-data chain.
+- **Pipeline (in `tools/`, run in this order):**
+  1. `extract_platinum_maps.py` — walks every map header, resolves its matrix
+     footprint + land-data cell(s), emits `data/layouts/sinnoh/<name>.json`
+     (metatiles/collision/behavior/props) + `data/maps/sinnoh/<name>.json`
+     (warps/npcs/signs) + `data/maps/sinnoh_index.json` +
+     `data/maps/sinnoh_matrix/*.json`.
+  2. `generate_platinum_tileset.py` — synthesizes the `sinnoh_overworld`
+     placeholder tileset (one flat-colored 16×16 tile per behavior category)
+     as a fallback appearance layer.
+  3. `render_platinum_maps.py` — the real visual: parses each map's NSBMD
+     model + NSBTX textures (`tools/nitro_g3d.py`, a from-spec Nitro G3D
+     decoder — generic, not Platinum-specific), orthographically projects and
+     rasterizes every triangle top-down, and bakes one real textured PNG per
+     map to `data/maps/sinnoh_textured/<name>.png`.
+  4. `extract_platinum_npcs.py` — decodes overworld NPC sprites from the
+     `mmodel` NSBTX archive.
+  5. `add_map_tilesets.py` — links each map to its `sinnoh_NNN` texture-set
+     tileset (name-similarity heuristic against `area_data`).
+- **Engine side:** `src/engine/map.js`'s `getBackground()` returns
+  `layoutData.background`; `src/engine/renderer.js`'s `loadBackground()` /
+  the "textured background" fast path draws that pre-rendered PNG instead of
+  the metatile grid whenever a layout has one — the metatile/tileset fields
+  stay as a fallback. Collision/warps/npcs still come from the layout/map
+  JSON exactly like GBA regions.
+- Result: 533 Sinnoh maps, real per-map textured top-down renders, walkable
+  and warp-connected. Region `sinnoh` already wired in `REGIONS`/`INDEX_FILES`.
+
+### Unova via Pokémon Black ROM — IN PROGRESS ⏳ (blind reverse engineering, no decomp source)
+Started as "make the Black maps work like the Platinum maps." The critical
+difference from Sinnoh: **GitHub access in a web/task session is scoped to
+only this repo** (confirmed by testing — `codeload.github.com` 403s on
+`pret/pokeplatinum` itself, the same tarball that worked in the session that
+built Sinnoh). There is no `source/pokeblack`, and no known mature public
+decomp for Gen-5 BW exists to fetch even if egress were open. Everything
+below was reverse-engineered **blind**, straight from the raw ROM NARCs
+produced by `tools/nds_decomp.py` against `source/nds/IRBO` (Pokémon Black,
+US) — validated empirically by rendering hypothesized fields and checking
+whether the output looks like a real map, not from any spec. Re-run the ROM
+download + decomp commands (see the `nds_decomp.py` section above) to
+reproduce `source/nds/IRBO/` in a fresh session; it's gitignored.
+
+- **`tools/bw_common.py`** — the format writeup (read its module docstring
+  for the full byte-level breakdown) and parser, playing the same role as
+  `platinum_common.py` but for reverse-engineered-not-documented BW data:
+  - `a/0/0/8` (649 members) = **land-data cells**. Each is a small `"WB"`
+    container: header gives 3 sub-offsets → an embedded `BMD0` 3D model
+    (decodable by the *existing, generic* `tools/nitro_g3d.py` — it's a
+    from-spec Nitro G3D decoder, not Platinum-specific, so it works on any
+    DS game's models unchanged), a 32×32 grid of 8-byte per-tile records, and
+    a trailing block = **building/prop placements** (SOLVED — see the props
+    work item below and `bw_common.parse_props()`).
+  - Per-tile record (4× u16 LE): **field3 low byte bit0 = collision**
+    (1=blocked) — validated by rendering it standalone for several land-cells
+    and getting recognizable shapes (building footprints with walkable
+    plazas, route paths, cave layouts — see investigation notes/screenshots
+    in that session). **field3 bit15 = a "special" marker** (a handful of
+    tiles per map) — consistent with warp/door placement but the
+    destination data was never located, so these render as an inert
+    placeholder tile, not a working warp.
+  - `a/0/0/9` (255 members) = **map matrices** (grid header + per-cell
+    records referencing land-data indices, `0xFFFF`-sentinel empty cells) —
+    structurally similar to Platinum's `map_matrix_*.json`. **However**,
+    stitching matrix cells into one contiguous world image did NOT produce
+    coherent overworld geography (interior-looking room shapes scattered
+    through the grid) — it appears to be a bookkeeping/placement table, not
+    literal world layout, unlike Platinum's matrix. Conclusion: **don't
+    assume matrix adjacency implies walkable adjacency**; each land-cell is
+    currently converted as an independent standalone map.
+  - Text bank **89** (of 288 in `a/0/0/2`) is the location-name list (117
+    names — Nuvema Town, Route 1, Striaton City, …) but it's the coarse Town
+    Map region granularity, not a 1:1 table for the 649 land-cells, so it
+    could **not** be used to name individual converted maps.
+  - Roughly **383 of 649** land-cells use this `"WB"` format; the rest start
+    with different magics (`GC`, `NG`, `RD` — seen ~266 times combined,
+    unidentified) and are skipped by the converter.
+- **`tools/extract_bw_maps.py`** — converts every eligible (`"WB"`-magic,
+  15–90% collision-ratio) land-cell into a standalone map: `python3
+  tools/extract_bw_maps.py [--limit N]`. Outputs `data/layouts/unova/area_
+  <NNNN>.json`, `data/maps/unova/area_<NNNN>.json`,
+  `data/maps/unova_index.json`. Maps are honestly labeled `"Unova Area
+  <N>"` (no confirmed land-cell → real-name mapping exists) with **no
+  npcs/warps/connections** (not yet located) — walkable-only.
+- **`tools/generate_bw_tileset.py`** — the `unova_placeholder` tileset: 3
+  flat-colored 16×16 tiles (floor / wall / special-marker). No appearance/
+  texture data has been decoded yet, unlike Sinnoh's real `render_platinum_
+  maps.py` output — this is the Platinum pipeline's step-2 fallback tier
+  only, step-3 (real textured rendering) has no BW equivalent yet.
+- **Verified working end-to-end in-browser**: region `unova` wired into
+  `REGIONS`/`INDEX_FILES` in `src/engine/map.js`; `game.html?map=area_0000&
+  region=unova` loads, renders, and is walkable — collision correctly blocks
+  movement into wall tiles and allows it elsewhere, camera scrolls, HUD
+  updates. Spot-checked several more (`area_0002`, `area_0014`, `area_0100`,
+  `area_0300`) with no console errors.
+- **BREAKTHROUGH (follow-up session): the zone-header table + texture sets
+  are decoded and validated.** A magic-scan for `BTX0` found the field
+  texture sets at **`a/0/1/4`** (282 NSBTX sets), and **`a/0/1/2`** (single
+  member, 427 records × 48 bytes) turned out to be the **zone-header
+  table** — BW's equivalent of Platinum's `sMapHeaders[]`. Decoded fields
+  (full offset map in `tools/bw_common.py`'s docstring; parser:
+  `bw_common.load_zone_headers()`): texture-set id (off 2), matrix id
+  (off 4), two consecutive per-zone script/text indices (off 6/8), another
+  per-zone archive index (off 10, prime **candidate for the events/warps
+  archive** — untested), 4 seasonal music ids (off 12–18), parent zone
+  (off 24), and **location-name id (off 26, u8)** into text bank 89.
+  **Validated end-to-end:** zone 389 = matrix 0 + texset 2 + "Nuvema Town",
+  interiors as dedicated matrices with interior texsets; and rendering
+  land-cell 0's BMD0 with texset 2 through the **unchanged Platinum
+  rasterizer** (`render_platinum_maps.rasterize_triangle`/`_draw_model_
+  triangles`/`texture_rgba` — they're model-agnostic) produced a
+  **pixel-real Nuvema Town terrain render** (path loop, tree borders,
+  beach, pier). `nitro_g3d.py` parses BW BMD0s as-is (geometry-only MDL0,
+  no TEX0 — same split as Platinum). This also solved the earlier "matrix
+  stitching looks incoherent" mystery: **matrix 0 is the one real
+  contiguous Unova overworld**; most of the other 254 matrices are small
+  per-interior matrices, so stitching those never looks like an overworld.
+#### ▶ NEXT SESSION — pick up here (Unova textured maps, step by step)
+
+**Session bootstrap (10 min, do this first — extraction is gitignored/ephemeral):**
+```
+# 1. Download the ROM (user's Drive link, verified working) + decomp it:
+curl -sSL "https://drive.usercontent.google.com/download?id=1uog4J8pUbTiNYptaoWAbdrY0E5HMEqwD&export=download&confirm=t" -o /tmp/pokemon-black.nds
+python3 tools/nds_decomp.py /tmp/pokemon-black.nds -o source/nds/IRBO
+# 2. Deps for the render pipeline:
+pip install pillow numpy
+# 3. Sanity-check the whole decoded chain still works (prints zone 389 =
+#    matrix 0, texset 2, 'Nuvema Town'):
+python3 tools/bw_common.py
+```
+**Quick re-validation of the textured render** (the exact PoC that produced
+the Nuvema Town image): parse land-cell 0 via `bw_common.load_land_cell(0)`,
+`g3d.find_model()` its `model_bytes`, `g3d.find_tex0()` on
+`source/nds/IRBO/unpacked/a/0/1/4/0002.nsbtx`, rasterize via
+`render_platinum_maps._draw_model_triangles(fb, yb, model, tex,
+model.up_scale, 0, 24)` into a 512-wide numpy RGBA framebuffer.
+
+**Work items, in priority order** (1–3 = the "look like Platinum" goal;
+4–6 = full parity):
+
+1. **Build `tools/render_bw_maps.py`** (the batch textured renderer —
+   mostly plumbing now, all base-terrain unknowns are solved). Mirror
+   `render_platinum_maps.py`; reuse its `rasterize_triangle` /
+   `_draw_model_triangles` / `texture_rgba` (model-agnostic — imports fine).
+   Per zone (from `bw_common.load_zone_headers()`): resolve matrix →
+   land-cells (`load_matrix`), texset (`a/0/1/4/<texset:04d>.nsbtx`), render
+   each land-cell (and multi-cell zones stitched by matrix position) →
+   `data/maps/unova_textured/<name>.png` at 16px/tile (512px per 32-tile
+   cell). Land-cell world scale: `model.up_scale` (observed 64.0), map
+   spans ±(16*up_scale?) — the PoC just used the Platinum HALF_UNITS=256
+   offset and it aligned; verify alignment against the collision grid
+   before batch-baking.
+   ⚠ Multiple zones share matrix 0 (the overworld) — for those, either
+   render per-zone crops (needs the zone→matrix-rect mapping, not yet
+   found) or render each matrix-0 land-cell once with the texset of any
+   matrix-0 zone (texsets 0–30ish are the seasonal overworld sets; verify
+   which by texture-name overlap, like the PoC did).
+2. **Rewire `extract_bw_maps.py` to be zone-driven instead of
+   land-cell-driven**: emit one map per *zone* (427) named from the zone
+   table (`name_id` → text bank 89, e.g. "Nuvema Town", disambiguate
+   duplicates with a suffix), layout = the zone's matrix's land-cell grid
+   (real collision, already working), `background` = the baked PNG from
+   step 1 (engine already draws `layout.background` — zero engine work,
+   same path Sinnoh uses), `tileset` = `unova_placeholder` kept as
+   fallback. Regenerate `unova_index.json`; keep `game.html?map=…&region=
+   unova` loading. Delete/regenerate the old `area_NNNN` files.
+3. **Props (buildings/trees)** — ✅ **SOLVED end-to-end & visually verified**
+   (Nuvema renders with its 3 houses + Juniper's lab, correctly textured &
+   positioned). NOT yet committed as code — the AB-container decode below
+   lives only in this doc + session scratch scripts; `bw_common.parse_props()`
+   (placement) IS committed. Remaining defect: rotation convention (see ⚠).
+   a. Placement: ✅ decoded in `bw_common.parse_props()` /
+      `load_land_cell()["props"]`. `WB` tail-block = `u32 count` +
+      `count×16-byte` records: three `(u16 frac, s16 int)` tile coords
+      (x, height-y, z relative to cell centre), `u16` rotation
+      (0x10000 = 360°), `u8` flag, `u8 model_id`. World units = tile × 16.
+   b. Models: ✅ **`a/2/2/9` — the building-model archive** (52 "AB"
+      containers; sibling `a/2/3/0` = 64 more AB containers). Each AB
+      container is one map/town's building SET:
+        - header: `"AB"` magic, `u16 count` (sub-resource count), then
+          `count` u32 offsets. First half of sub-resources = tiny id-headers
+          (u16 model_id each, sorted ascending); second half = the BMD0
+          models. **Pair k-th id-header with k-th BMD0** (46+46 in
+          container 0).
+        - `model_id` in the prop record matches the id-header value —
+          container 0 covers Nuvema's full id set {0,5,6,69,152,153,193,…}
+          uniquely (containers are found per-zone by id-set coverage; the
+          zone-header field that selects the container directly is still
+          unidentified — off-40 u16 has range 0..8 only, so it's not that).
+        - Textures: `a/1/7/6` (52 BTX0) pairs 1:1 with `a/2/2/9`;
+          `a/1/7/7` (64 BTX0) pairs with `a/2/3/0`. Building models are
+          geometry-only; texture names like `pc_kabe02`/`pc_win1`
+          (Pokémon Center), `gate_1`, `h_mado`, `yane` resolve there.
+        - **Verified id semantics (container 0)**: id 0 = Pokémon Center,
+          id 2 = shop, id 4/5 = houses (5 = Nuvema's blue-roof house ×3),
+          id 6 = red-roof lab, id 26/69 = trees, id 152/153 = signs. (An
+          earlier session claim "69 = house" was wrong — 69 is the tree
+          NEXT to each house. Ground truth: render the whole container as a
+          labeled grid before trusting any id.)
+      ⚠ **Rotation not calibrated.** Applying `rot` as yaw about the model
+      origin gets houses right (0°/180° at Nuvema) but the lab's door faces
+      the water; adding 180° fixes the lab and breaks the houses — so it is
+      NOT a global offset. Each model type appears to have its own default
+      facing / pivot convention. Fix before committing the renderer: derive
+      per-model facing from the door geometry or find the facing flag
+      (candidate: the `flag` byte or the id-header's remaining bytes).
+      ⚠ Ruled OUT (do not re-derive): `a/1/6/0` = special/event models
+      (Castelia gym floors `c04gym`, bay scenery, ships, legendary `shin_*`,
+      battle fx) — its companions a/1/6/1..6 are palettes/interiors/427-zone
+      configs, not id tables. `a/0/4/9` = overworld SPRITE archive
+      (`t4x4hero` player, `t4x4flip` NPCs) — prop ids landing on it was
+      coincidence. GC/NG/RD land-cells = terrain *variants* (cliffs/bridges/
+      forests; GC has a 5-offset header, embeds BMD0 at its first offset) —
+      not buildings. No LZ-compressed BMD0 anywhere. Some land-cells DO bake
+      buildings into terrain (e.g. cell 120 = a whole town with `pk_l_yane`/
+      `pk_l_kabe` roofs/walls, texsets 126–129 cover it 40/40) — that's why
+      *some* maps show buildings with the plain terrain render and towns
+      like Nuvema don't.
+4. **Warps + NPCs/events** — zone-header off 10 (u16, unique per zone,
+   max ~468) is the prime candidate archive index; `a/1/2/5` (428 members,
+   variable size, structured) is the size-profile favorite target. Test:
+   for a zone with known door positions (Nuvema: 6 houses/lab), open
+   `a/1/2/5/<off10>.bin` and look for those tile coordinates as u8/u16
+   pairs. The in-map warp *tiles* are already known (per-tile field3
+   bit15) — only destinations are missing. Wire into the existing
+   `warps`/`npcs` map-JSON fields (engine handles the rest).
+5. **`GC`/`NG`/`RD` land-cell containers** (77 of 649: GC=47, NG=22, RD=8 —
+   the rest are WB) — partially decoded: they are terrain VARIANTS (cliff/
+   bridge/forest/bay cells), not buildings. GC = `"GC"` + u16 ver + FIVE u32
+   offsets (vs WB's four); first offset → embedded BMD0 (renders fine with
+   the standard pipeline + a matching texset). NG/RD similar with 2/3
+   offsets before the model. Grid/collision offsets not yet mapped —
+   decode those to convert the remaining 77 cells.
+6. **Seasons**: 4 music ids per zone + several texsets sharing the same
+   texture names = per-season texture sets. Pick spring consistently for
+   baking; a future enhancement could bake all 4 and swap by real date.
+
+#### Zone-header field profile (all 427 zones, from empirical scan)
+Useful when hunting the remaining tables. Per-u16-field (offset = idx×2):
+off6/off8 = script_a/script_b (427 distinct each); **off10 = unique per
+zone, max 468 — the per-zone events/warps archive index candidate** (note:
+`a/0/0/3` has 472 members but member 428 (Nuvema) parses like a text/message
+container, not events — a/1/2/5 with 428 members is still the better warp
+candidate); off12–18 = 4 seasonal music ids; off20 = 0..111; off22 = zone id;
+off24 = parent zone; off26 = name_id; off28/off30 = camera-ish 32-bit pair;
+off32 = 0..281 (texset); off36 = 0..801 (57 distinct); off40 = 0..8 (5
+distinct — NOT the 0..51 building-container selector); off44 = 0..758
+(55 distinct — range matches `a/0/4/9`'s 764 sprites?).
+
+#### 3D-camera path (prototyped, works — decide 2D vs 3D per region later)
+A perspective-projection render of Nuvema (terrain + placed buildings, tilted
+camera like the real DS view) was built as a throwaway PoC and **works** —
+building FRONTS (doors/windows) become visible, which the flat top-down
+projection can never show. Key facts learned:
+- Building models are full 3D — all four sides have geometry & textures —
+  but these are **fixed-camera assets**: back faces are plain/low-detail
+  (artists never intended them to be seen). A free-orbit camera therefore
+  always looks wrong somewhere; a **bounded camera** (a few snap angles,
+  e.g. L+d-pad) is the viable design — this is what the real games do.
+- Trees/small props are flat billboard planes — must be rotated to face the
+  camera in any 3D view or they show edge-on as slivers.
+- The top-down flatten inherently can't show door faces on north-facing
+  buildings — the "lab door faces the water" effect. Not a bug in placement;
+  it's the projection. 2D stays the robust default; 3D is a possible
+  enhancement for DS/3DS-sourced regions only (GBA Kanto/Hoenn have no 3D
+  models at all).
+
+#### Region coverage — the user's ROM library ⇒ 3D models of ~every region
+DS ROMs work with THIS session's proven pipeline (nds_decomp → NARC →
+NSBMD/nitro_g3d): **Black = Unova (proven)**, **Platinum = Sinnoh (decomp in
+repo)**, **HGSS = Johto + Kanto (user backing up ROM)**. 3DS ROMs contain
+full 3D worlds but need a NEW extractor (GARC/BCH formats, community-
+documented): **Omega Ruby = Hoenn (user backing up)**, **Pokémon X = Kalos
+(already in user's Drive as zip)**, **Ultra Moon = Alola (already in
+Drive)**. Black 2 `.nds` is also in Drive (Unova 2 maps).
+
+**Key facts to not re-derive** (all in `tools/bw_common.py` docstring too):
+`a/0/0/8`=649 land-cells (WB container, 32×32×8-byte tile grid, embedded
+geometry-only BMD0); `a/0/0/9`=255 matrices (matrix 0 = the real contiguous
+overworld, rest are interiors); `a/0/1/2`=427×48-byte zone headers (texset
+@2, matrix @4, scripts @6/8, events? @10, seasonal music @12–18, parent
+@24, name_id u8 @26); `a/0/1/4`=282 field texsets (NSBTX); text bank 89 =
+117 location names; collision = tile field3 bit0, warp-marker = bit15;
+`nitro_g3d.py` + the Platinum rasterizer work on BW data UNCHANGED.
 
 ### Planned: fan-game map converters (NOT built yet)
 Two converters discussed as future capability for pulling maps out of other
@@ -332,16 +724,303 @@ trusted until its output renders correctly (the way HnS was verified).
   LZ77 decompression, varies for repointed/expanded hacks; user supplies the ROM
   (legal caveat). This is the better path when GBA fidelity matters.
 
+## ▶ Pokémon Ultra Moon TRUE DECOMP — IN PROGRESS ⏳ (start here to continue)
+
+A research decompilation of **Pokémon Ultra Moon** (3DS, NCCH `CTR-P-A2BA`)
+lives in **`decomp/`**. Goal: pret-style readable, verified C++ for the game's
+code + verified data extraction — NOT a byte-matching recompile (that's a
+years-long armcc-matching grind; we produce the material a matching decomp is
+made from). All output is committed to `main`; the ROM extraction itself is
+gitignored/ephemeral and must be regenerated each session.
+
+### Session bootstrap (do this FIRST — extraction is gitignored, ~15 min)
+```
+# 1. Pull the ROM zip from the user's Google Drive (verified working) — it's a
+#    DECRYPTED .3ds inside a .zip. Use the Google Drive MCP tools to find it
+#    ("Pokemon Ultra Moon (USA) ... .zip", id 1T9i0ItuNp8Ba0--MZhr5nna2rDswdren),
+#    then download to /tmp:
+curl -sSL "https://drive.usercontent.google.com/download?id=1T9i0ItuNp8Ba0--MZhr5nna2rDswdren&export=download&confirm=t" -o /tmp/pokemon-ultra-moon.zip
+cd /tmp && unzip -o pokemon-ultra-moon.zip "*.3ds"
+# 2. Decomp it (first real-ROM run verified: 747 romfs files, 268 GARCs,
+#    78,675 members). Output is gitignored.
+python3 tools/3ds_decomp.py "/tmp/Pokemon Ultra Moon (USA) (En,Ja,Fr,De,Es,It,Zh,Ko) Decrypted.3ds" -o source/3ds/ultramoon
+# 3. Deps + regenerate the analysis layers (all committed, but rerun if stale):
+pip install capstone unicorn   # unicorn is required by tools/cro_emu.py
+python3 tools/cro_emu.py --selftest  # sanity-check the CPU emulator loads Battle.cro
+python3 tools/cro_symbols.py      # decomp/symbols/  (23,638 C++ names)
+python3 tools/cro_map.py          # decomp/map/      (addresses + import veneers)
+python3 tools/cro_disasm.py --scan # decomp/functions/ (39,182 funcs)
+python3 tools/cro_callgraph.py --build Battle  # decomp/callgraph/Battle.json
+```
+
+### The RE pipeline (all in `tools/`, all committed & proven)
+1. `cro_symbols.py` — pulls Game Freak's surviving mangled C++ names from the
+   132 CRO modules + `static.crs` (they shipped the symbol tables intact).
+2. `cro_map.py` — per-module segment tables, **export addresses**, and
+   **import veneers**. KEY FORMAT FACTS: header +0xC8 segment table, +0xD0
+   named-export table (tag = seg<<0 | off<<4), **+0x100 named-import table**
+   (NOT +0xF8, which is the raw patch table). Import call indirection: a named
+   import's patch site is a literal word in text; an `ldr pc,[pc,#-4]` thunk 4
+   bytes earlier is what callers `bl` to → `veneers` map resolves it.
+3. `cro_disasm.py <Module> <name|addr>` — symbol-annotated ARM disasm of any
+   function; `--scan` builds function tables. static.crs code = **exefs
+   `.code`** (text VA base 0x100000; export offset == file offset). CRO code =
+   segment-relative in the `.cro`. Runtime VA of a static function = 0x100000 +
+   offset (matters when searching for stored function pointers).
+4. `cro_callgraph.py --build/--callers/--callees/--find` — call graph with
+   veneer-resolved cross-module edges. ARM-only sweep (Thumb regions noisy).
+5. `cro_vtables.py <Module>` — replays internal relocations to recover the
+   relocation-only function-pointer/dispatch tables (zero on disk).
+6. `cro_emu.py` — **Unicorn ARM CPU emulator**: loads a `.cro`, replays internal
+   relocations (entry = `(target_tag, (src_seg<<8)|type, value)` at 12-byte
+   alignment; write `base[src]+value` → `base[tseg]+off`), stubs imports, and
+   runs functions: `CroEmu("Battle").call(off,[args])` → r0, plus alloc/read/
+   write for struct fixtures. Use it to execute PIC dispatch static reading
+   can't follow. `--selftest` runs the in-battle field getter and checks offsets.
+
+### DONE — verified decompiled functions (`decomp/src/`) & data (`decomp/data/`)
+All numerically verified against known game values:
+- `pml/battle/TypeAffinity.cpp` — CalcAffinity + MulAffinity +
+  CalcAffinityForDefender (dual-type). Type chart baked to
+  `data/type_chart.json` (18×18, exact Gen-7).
+- `pml/pokepara/StatCalc.cpp` — GetPower/GetMaxHp stat formula
+  `(2·base+IV+EV/4)·L/100 (+5 | +L+10)`×nature, Shedinja=1HP. Nature table in
+  `data/nature_table.json` (25×5, verified).
+- `pml/pokepara/ExpLevel.cpp` — CalcLevelFromExp + Get{Next,Current}LevelExp.
+- `pml/pokepara/Shiny.cpp` — IsRare, `(TID^SID^PIDhi^PIDlo)<16`.
+- `pml/pokepara/HiddenPower.cpp` — GetMezapaType, `sum·15/63`, native IVs.
+- `gfl2/math/Random.cpp` — SFMTRandom::Next (MT-19937, 624-word) + WELL512 Next.
+- **Gen-7 game data**: `tools/usum_personal.py` → `data/pokemon/usum_base_stats.json`
+  (807 species: stats/types/catch/baseExp/EV/gender/eggs/growth/ability-ids,
+  verified). `--verify` self-checks.
+
+### FULL-DECOMP ROADMAP & NEXT SESSION (start here)
+"Full USUM decomp" = the game-logic core + all game data, VERIFIED (not a
+byte-matching recompile). The UI/network/rendering long tail (Box, Shop,
+JoinFesta, gfl2 graphics — most of the 133 CRO modules / 39k functions) is
+OUT of scope unless a specific screen is wanted.
+
+**✅ DONE & VERIFIED this session and before:**
+- **Data layer — COMPLETE.** `data/pokemon/usum_*.json` (+ converters
+  `tools/usum_*.py`): base stats/types/abilities (807), names, learnsets (807),
+  evolutions (807), egg moves (322), TMs (100×807), items (959), and **moves
+  fully — power/type/acc/pp/category/priority + effectId + status +
+  statChanges + flags + weather** (`usum_moves.py`; verified by
+  `decomp/verify/verify_moveeffects.py`).
+- **Battle server — COMPLETE.** damage (`DamageCalc.cpp`), type effectiveness
+  (`TypeAffinity.cpp`, incl. the MulAffinity bit_index+1 fix), AI move ranker
+  (`BattleAI.cpp`), catch rate (`CatchRate.cpp`) — all in
+  `decomp/src/pml/battle/`, each with a `decomp/verify/verify_*.py` (all PASS).
+- **Core pml math** — stat calc, exp/level, shiny, hidden power, RNG.
+- **Move-effect dispatch spine** — `MoveEffects.cpp` + manifest
+  `decomp/battle_effects/effect_handler_table.json` (153 sequence handlers at
+  rodata+0x45a0; step-state machines @work+0xa94).
+
+**NEXT SESSION — priority order (the remaining core):**
+1. **Phase 2 — `pml::pokepara::CoreParam`** (HARD, highest value). The
+   encrypted ~232-byte Pokémon blob every system reads/writes. Do the
+   block-shuffle + LCRNG decrypt/encrypt (PKHeX-documented → verifiable) and
+   the accessor set (we have GetHp/GetMaxHp/GetPower @0x3af3fc/0x3af5bc/…).
+   Unlocks save, box, trade, and clean battle-struct reads.
+2. **Phase 3 — struct/class reconstruction** (steady, the readability
+   multiplier). Name the fields of the battle-pokemon struct (HP @0xe/0xd,
+   step @0xa94, ball id @0x220, move-calc block power@0x10/type@6/dmgType@7 …)
+   and CoreParam, so the committed `decomp/src` reads like real source. Use
+   `tools/cro_dataflow.py` per offset.
+3. **Phase 4 — Save data** (`Savedata::`, tractable/verifiable). Save-block
+   layout + checksum/encryption; verify against a real save file.
+4. **Phase 1 remainder — battle-sequence handler BODIES** (deep btl grind,
+   behavioral not data). The ~150 step-state handlers in the manifest; decode
+   per-id with `cro_disasm`/`cro_dataflow`. The move-effect *data* they'd
+   consume is already extracted, so this is lower-value than 1–3.
+5. **Wild encounters** (data, but a zone-RE subproject) — embedded in `a/0/8/*`
+   zone data; needs a zone→route-name map. Defer unless wanted.
+
+Tooling gotchas to remember: static `.code` is **VA == file offset** (NOT
+0x100000+off). In a `.cro`, text(seg0) and rodata(seg1) SHARE offset numbers —
+rodata pointer tables are zero on disk, filled at load (recovered by
+`cro_vtables.py`). Deep dispatch that name/constant searches miss → use
+`cro_dataflow.py` (the tool that cracked damage & catch).
+
+### Rules for the decomp work
+- **▶ RESUME POINT: see the "⏩ CHECKPOINT — resume here" block at the top of
+  `decomp/README.md`'s next-targets section.** Current state: CoreParam fully
+  decompiled + validated on a real save; **save system DONE** = CRC-16/USB +
+  full 39-block offset layout + **all 39/39 blocks named** to their `Savedata::`
+  class (RTTI type-name + `GetSize` vtable-slot-3 matched to footer lengths,
+  `tools/usum_save_blocks.py`; VERIFY PASS). **Phase-3 struct reconstruction
+  started: CoreParam field layout auto-derived + verified** (22 stored fields →
+  `decomp/src/pml/pokepara/CoreParam.h`, `tools/usum_coreparam_fields.py`,
+  `verify/verify_coreparam_fields.py` — anchor + real-save PASS). **Battle-pokemon
+  in-RAM struct: stat-stage array recovered** (getter sub_924a8's reloc'd switch →
+  7 signed bytes 0x1ea–0x1f0; `tools/usum_battlemon_fields.py`,
+  `decomp/src/pml/battle/BattlePokemon.h`, `verify/verify_battlemon_fields.py` PASS;
+  scalar offsets recovered, semantics flagged as hypotheses since the struct is
+  runtime-only). **CPU-EMULATION HARNESS: `tools/cro_emu.py`** (Unicorn ARM) —
+  loads a `.cro`, replays internal relocations so PIC switch/handler tables
+  resolve, stubs imports, runs functions (`emu.call(off,[args])`); `--selftest`
+  PASS; it caught the switch-table off-by-one. Immediate next task: the **move
+  effect-id → sequence-handler dispatch** using `cro_emu.py` (candidate tables
+  rodata+0x7e24/0x98ac; full recipe + the two dispatch approaches are in the
+  `⏩ CHECKPOINT` block of `decomp/README.md`).
+- **Never commit ROM bytes.** `source/3ds/ultramoon/` is gitignored. Only
+  commit derived analysis (symbol maps, disasm-derived C++, verified data).
+- **Verify before committing.** Every decompiled formula/table must be checked
+  numerically against a known game value (as all current ones are). Do NOT
+  commit an unverified formula or a table whose pointer can't be resolved.
+- The other 3DS ROMs (Pokémon X = Kalos, in the user's Drive as zip) use the
+  same `tools/3ds_decomp.py` + this pipeline — Gen-6/7 data ports to 2D, 3D
+  maps do not.
+- Full details + open format notes: **`decomp/README.md`** and the extraction's
+  `DECOMP_MANIFEST.md`.
+
 ### Tooling (`tools/`)
 - `build_tileset_index.py` — regenerate `data/tilesets/_index.json` (editor's
   tileset list) after adding tilesets.
 - `make_example_map.py` — generate a layout from primitives (`rect`, border,
   scatter) over a verified palette; seed of the "describe → generate" workflow.
+- `nds_decomp.py` — **NDS ROM decomp tool.** Explodes any `.nds` ROM into a
+  pret-style tree: `arm9/arm7.bin`, `overlays/` (LZ-decompressed), `files/`
+  (full NitroFS with real FNT names), `unpacked/` (every NARC expanded, members
+  LZ77/LZ11-decompressed and extension-named by magic: `.nclr/.ncgr/.nscr/
+  .nsbmd/…`), plus `DECOMP_MANIFEST.md` annotating community-known data NARCs
+  (BW/BW2 `a/0/1/6` personal data, `a/0/9/1` trainers, `a/1/2/7` encounters,
+  etc.; tables for Gen4/5 gamecodes). Usage:
+  `python3 tools/nds_decomp.py <rom.nds> [-o source/nds/<name>] [--list]`.
+  Default output `source/nds/<gamecode>/` is **gitignored** (ROM contents —
+  never commit; individual extracted data files can be converted/copied into
+  `data/` when needed). Pure stdlib, no deps. Produces the data/asset side of
+  a decomp only — no C source (that part of pret repos is human RE work).
+  **Getting the ROMs in a cloud session** — both of the user's ROMs are
+  link-shared in their Google Drive and download straight into the sandbox
+  (verified working; seconds each):
+  ```
+  # Pokémon Black (US, IRBO) — 256 MB
+  curl -sSL "https://drive.usercontent.google.com/download?id=1uog4J8pUbTiNYptaoWAbdrY0E5HMEqwD&export=download&confirm=t" -o /tmp/pokemon-black.nds
+  python3 tools/nds_decomp.py /tmp/pokemon-black.nds -o source/nds/IRBO
+
+  # Pokémon Black 2 (US, IREO) — 275 MB (richer: 814 trainers, more maps/text)
+  curl -sSL "https://drive.usercontent.google.com/download?id=11f9lNHk-42sDTxJHzLd9SAwy4niz35xk&export=download&confirm=t" -o /tmp/pokemon-black2.nds
+  python3 tools/nds_decomp.py /tmp/pokemon-black2.nds -o source/nds/IREO
+  ```
+  Both verified on real extraction — B: 237 NARCs → 54,054 members; B2: 308
+  NARCs → 69,850 members. All KNOWN_NARCS annotations confirmed present in
+  both; personal data sanity-checked (member 0001 = Bulbasaur
+  45/49/49/65/65/45). Extraction is ephemeral (gitignored, sandbox dies with
+  session) — re-run the commands whenever ROM data is needed; convert what
+  the game needs into `data/` formats and commit only that. Prefer **B2**
+  as the data source (superset: all 649 species, BW2 encounters, more
+  trainers/maps).
+- `3ds_decomp.py` — **3DS ROM decomp tool** (counterpart to `nds_decomp.py`
+  for Gen 6/7). Takes a **decrypted** `.3ds/.cci/.cxi` **or `.cia`** (installer
+  archive — the game NCCH inside is auto-located; verified on a CIA fixture)
+  and explodes it: NCSD/CIA→NCCH→`exefs/` (code, banner) + `romfs/` (full file
+  tree) + `unpacked/` (every **GARC** archive expanded, members
+  LZ11-decompressed, magic-named). `DECOMP_MANIFEST.md` annotates known Pokémon
+  GARCs (X/Y personal data `a/2/1/8`, learnsets `a/2/1/4`, moves `a/2/1/2`,
+  encounters `a/0/1/2`, etc.; tables for X/Y, ORAS, Sun/Moon, and
+  UltraSun/UltraMoon product codes — Gen 7 paths are best-effort, verify on
+  first real extraction). Same stdlib LZ codec as the NDS tool.
+  Usage: `python3 tools/3ds_decomp.py <rom.3ds|.cia> [-o source/3ds/<code>] [--list]`.
+  Requires a ROM the user legally owns/backed up (share via Drive link like the
+  NDS ROMs). **The user has Pokémon X and Ultra Moon backed up as `.cia` in
+  Drive** — decrypted CIAs work directly; if extraction warns about the
+  NoCrypto flag, the dump is encrypted and needs re-dumping decrypted
+  (GodMode9). Note Gen 6/7 maps are **3D** — data ports to 2D, maps do not.
+- `rom_to_2d.py` — **ROM data → 2D game converter.** Reads the `unpacked/`
+  tree from `nds_decomp.py` (Gen 5) and emits this game's exact `data/` shapes:
+  `data/pokemon/base_stats.json`, `moves.json`, `learnsets.json`, and
+  (experimental) `data/encounters/gen5_<bw|bw2>.json`. Decodes the Gen-5
+  encrypted text banks for English species/move/ability names (from a/0/0/2:
+  species=member 70, abilities=182, moves=203 — verified on the English Black
+  ROM IRBO). Defaults to **`--dry-run`-friendly** (real writes overwrite
+  `data/` — diff first). Add **`--merge`** to union with the existing `data/`
+  file instead of overwriting (ROM data wins on key collisions, but any
+  pre-existing key the ROM text doesn't reproduce byte-identically survives)
+  — use this whenever engine code hardcodes move/species slugs elsewhere
+  (see gotcha below), so a re-run can't silently orphan them. Usage:
+  `python3 tools/rom_to_2d.py source/nds/IRBO --only stats,moves,learnsets --merge [--dry-run]`.
+  Verified (full run against Pokémon Black IRBO): 650 species, 560 moves, 675
+  learnsets written to `data/pokemon/`; Charizard 78/84 Fire/Flying +
+  Blaze/Solar Power; Flamethrower 95pw special; Charmander learnset exact;
+  party viewer in-browser renders the merged data correctly. Use an English
+  ROM for names (`--names-from source/nds/IRBO`) if converting a localized
+  data ROM. Same rationale as the decomp tools: Gen-5 game *data*
+  (stats/moves/movesets/encounters) ports cleanly to 2D; Gen-5 *maps* are 3D
+  and don't.
+  **Gotchas fixed while porting Black's data in (all in `tools/rom_to_2d.py`):**
+  1. `convert_moves()` used to emit `[["slug", {...}], ...]` (a list of
+     pairs) — but `battle.js`/`summary.js` do direct `_movesDb[moveId]`
+     object lookups. Now emits a plain `{slug: {...}}` dict.
+  2. Gen-5's font table encodes ♂/♀ as the non-standard code points
+     0x246D/0x246E (verified via national dex #29 Nidoran♀ / #32 Nidoran♂),
+     not the real Unicode symbols — `decode_text_member` now maps them
+     explicitly, else `chr()` renders circled-digit glyphs instead.
+  3. `slug()` (moves) now splits camelCase boundaries before lowering —
+     Gen-5 move text has no spaces (`"DoubleSlap"`, `"ThunderPunch"`) so it
+     used to produce `doubleslap` instead of the existing convention
+     `double_slap`.
+  4. Added `species_key()` (stats/learnsets keys) to strip apostrophes and
+     collapse other punctuation/spaces/gender-symbols to `_`, matching the
+     existing `FARFETCHD` / `MR_MIME` / `HO_OH` / `NIDORAN_F` key convention
+     — plain `name.upper()`/`.lower()` left the raw punctuation in.
+  5. A handful of moves (`torment`, `embargo`, `dark_void`) have anomalously
+     1-byte-short entries in Black's move-data NARC and get skipped; `nuzzle`
+     / `freeze_dry` don't exist yet in Gen 5 (introduced Gen 6). `--merge`
+     is what keeps these from disappearing on a fresh (non-merge) run.
+- **Ultra Moon decomp tools** (see the "TRUE DECOMP" section above for the full
+  workflow): `cro_symbols.py` (C++ names), `cro_map.py` (addresses + import
+  veneers), `cro_disasm.py` (symbol-annotated ARM disasm / `--scan`),
+  `cro_callgraph.py` (veneer-resolved call graph), `cro_vtables.py` (dispatch
+  tables from relocations), `cro_dataflow.py` (**intra-proc data-flow search —
+  "which function loads struct offset X and multiplies/divides it"; this is
+  what cracked the damage server**, finding `sub_18504`→`sub_81f2c`/`sub_84d40`
+  when name + constant searches all failed), `usum_personal.py` (Gen-7
+  personal data → `data/pokemon/usum_base_stats.json`).
 - `gen_party_assets.py` — regenerate the FireRed party-screen assets in
   `src/assets/party/` (slot boxes, fonts, pokéball, status icons, message frame)
   by decoding `source/pokefirered` graphics/tilemaps/palettes. Re-run if those
   assets need rebuilding.
+- `extract_hns_johto.py` — **the Johto converter** (HnS → region `johto`). Emits
+  tilesets, layouts, map metadata, and `johto_index.json`. See the "Johto via
+  HnS — DONE" section above. Reuses (and depends on the fixes in)
+  `extract_tilesets_emerald.py`.
 - Full workflow doc: **`docs/MAP_EDITING.md`**.
+
+---
+
+## Active decomp projects (games we are working on)
+
+Non-Pokémon reverse-engineering / decompilation efforts tracked alongside this
+repo. These are separate from the Pokémon RPG but share the RE tooling mindset.
+
+### Orcs & Elves (Nintendo DS, `YOEE`) — decomp in progress
+- **What:** full matching decomp of *Orcs & Elves* DS (id Software / EA /
+  Fountainhead) — hand-written C/ASM that links back to a **byte-identical**
+  `.nds` (pokered/pokeemerald standard).
+- **ROM:** user-supplied dump (USA, En/Fr/De/Es/It). **No ROM bytes or extracted
+  assets are committed** — source + tools only; users supply their own dump.
+- **Workspace:** currently in the session scratchpad `oe_decomp/` (NOT yet in
+  this repo — it's a distinct project; decide before committing). Layout:
+  `tools/` (extract, disasm, blz, dump_strings), `asm/`, `docs/`, `assets_spec/`,
+  `src/`+`include/`.
+- **Foundation done:**
+  - Extraction — 170 NitroFS files + arm9/arm7, all 133 LZ10 assets decoded.
+  - **ARM9 disasm — 115,540 insns / 7,183 funcs / 99.6% coverage.**
+  - ARM7 disasm — 39,280 insns / 3,254 funcs.
+  - Strings dumped (6 languages); formats drafted (BGR555 palettes, GX models,
+    `.bsp` maps, entities, sounds, UI).
+- **Key fact learned:** the ARM9 is **NOT compressed** (`compressed_static_end`
+  in ModuleParams is `0`). The initial "only 9 instructions" was a disassembler
+  artifact — capstone halts on the first undecodable word, and the ARM9 opens
+  with a `0x800` encrypted secure area (`e7ffdeff` UDF padding). Fix: skip the
+  secure area and continue past non-code gaps.
+- **Roadmap:** `docs/ROADMAP.md` — Phase 0 matching build harness + `sha1sum`
+  gate → segmentation/compiler fingerprint → SDK/libc first → format loaders
+  (cross-validated by exporters) → game logic → cleanup. Est. a few engineer-
+  months for a first full match; Phases 2–4 parallelize by subsystem.
+- **Next action:** stand up the Phase 0 `Makefile` + hash gate from 100% ASM
+  (prove the loop), then generate `funcs.csv` and decompile `_start`.
 
 ---
 

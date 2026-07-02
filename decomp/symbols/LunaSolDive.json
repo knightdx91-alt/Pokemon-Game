@@ -1,0 +1,1738 @@
+{
+ "module": "LunaSolDive.cro",
+ "size": 155648,
+ "exports": [
+  {
+   "mangled": "nnroControlObject_",
+   "demangled": "nnroControlObject_"
+  }
+ ],
+ "imports": [
+  {
+   "mangled": "__aeabi_f2lz",
+   "demangled": "__aeabi_f2lz"
+  },
+  {
+   "mangled": "__aeabi_llsl",
+   "demangled": "__aeabi_llsl"
+  },
+  {
+   "mangled": "__aeabi_memcpy",
+   "demangled": "__aeabi_memcpy"
+  },
+  {
+   "mangled": "__aeabi_memcpy4",
+   "demangled": "__aeabi_memcpy4"
+  },
+  {
+   "mangled": "__aeabi_uidivmod",
+   "demangled": "__aeabi_uidivmod"
+  },
+  {
+   "mangled": "__aeabi_vec_ctor_nocookie_nodtor",
+   "demangled": "__aeabi_vec_ctor_nocookie_nodtor"
+  },
+  {
+   "mangled": "__aeabi_vec_delete",
+   "demangled": "__aeabi_vec_delete"
+  },
+  {
+   "mangled": "__cxa_guard_acquire",
+   "demangled": "__cxa_guard_acquire"
+  },
+  {
+   "mangled": "__cxa_guard_release",
+   "demangled": "__cxa_guard_release"
+  },
+  {
+   "mangled": "__cxa_pure_virtual",
+   "demangled": "__cxa_pure_virtual"
+  },
+  {
+   "mangled": "__hardfp_acosf",
+   "demangled": "__hardfp_acosf"
+  },
+  {
+   "mangled": "__hardfp_asinf",
+   "demangled": "__hardfp_asinf"
+  },
+  {
+   "mangled": "__hardfp_atan2f",
+   "demangled": "__hardfp_atan2f"
+  },
+  {
+   "mangled": "__hardfp_ceilf",
+   "demangled": "__hardfp_ceilf"
+  },
+  {
+   "mangled": "__hardfp_cosf",
+   "demangled": "__hardfp_cosf"
+  },
+  {
+   "mangled": "__hardfp_expf",
+   "demangled": "__hardfp_expf"
+  },
+  {
+   "mangled": "__hardfp_hypotf",
+   "demangled": "__hardfp_hypotf"
+  },
+  {
+   "mangled": "__hardfp_powf",
+   "demangled": "__hardfp_powf"
+  },
+  {
+   "mangled": "__hardfp_sinf",
+   "demangled": "__hardfp_sinf"
+  },
+  {
+   "mangled": "_ZdaPv",
+   "demangled": "operator delete[](void*)"
+  },
+  {
+   "mangled": "_ZdlPv",
+   "demangled": "operator delete(void*)"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZN2nn4math10SinCosFIdxEPfS1_f",
+   "demangled": "nn::math::SinCosFIdx(float*, float*, float)"
+  },
+  {
+   "mangled": "_ZN2nn4math5ARMv612MTX34MultAsmEPNS0_5MTX34EPKS2_S5_",
+   "demangled": "nn::math::ARMv6::MTX34MultAsm(nn::math::MTX34*, nn::math::MTX34 const*, nn::math::MTX34 const*)"
+  },
+  {
+   "mangled": "_ZN2nn4math7CosFIdxEf",
+   "demangled": "nn::math::CosFIdx(float)"
+  },
+  {
+   "mangled": "_ZN2nn4math7SinFIdxEf",
+   "demangled": "nn::math::SinFIdx(float)"
+  },
+  {
+   "mangled": "_ZN2nn4math9Atan2FIdxEff",
+   "demangled": "nn::math::Atan2FIdx(float, float)"
+  },
+  {
+   "mangled": "_ZN2nw3eft10EmitterSet4KillEv",
+   "demangled": "nw::eft::EmitterSet::Kill()"
+  },
+  {
+   "mangled": "_ZN2nw3eft10EmitterSet6SetMtxERKN2nn4math5MTX34E",
+   "demangled": "nw::eft::EmitterSet::SetMtx(nn::math::MTX34 const&)"
+  },
+  {
+   "mangled": "_ZN2nw3eft8internal10gSinCosTblE",
+   "demangled": "nw::eft::internal::gSinCosTbl"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder17OnSetInputEnabledEb",
+   "demangled": "app::ui::UIResponder::OnSetInputEnabled(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder28CallbackFuncOnButtonSelectedEj",
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonSelected(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder31CallbackFuncOnButtonLongPressedEj",
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonLongPressed(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder32CallBackFuncOnButtonTouchTriggerEj",
+   "demangled": "app::ui::UIResponder::CallBackFuncOnButtonTouchTrigger(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder39CallbackFuncOnButtonSelectedBeforeAnimeEj",
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonSelectedBeforeAnime(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10SetVisibleEb",
+   "demangled": "app::ui::UIView::SetVisible(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10UpdateTreeEv",
+   "demangled": "app::ui::UIView::UpdateTree()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView11Initalize2DEPNS_4util4HeapEPN4gfl23lyt6LytSysEjPKNS2_7G2DUtil10LytResDataEjPKNS9_9LytwkDataEjii",
+   "demangled": "app::ui::UIView::Initalize2D(app::util::Heap*, gfl2::lyt::LytSys*, unsigned int, app::util::G2DUtil::LytResData const*, unsigned int, app::util::G2DUtil::LytwkData const*, unsigned int, int, int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView13DoInputActionEv",
+   "demangled": "app::ui::UIView::DoInputAction()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView20CreateGraphicsSystemEPNS_4util4HeapEb",
+   "demangled": "app::ui::UIView::CreateGraphicsSystem(app::util::Heap*, bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView20DeleteGraphicsSystemEv",
+   "demangled": "app::ui::UIView::DeleteGraphicsSystem()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView21SetLayoutTransferAreaEN4gfl23lyt10MemoryAreaE",
+   "demangled": "app::ui::UIView::SetLayoutTransferArea(gfl2::lyt::MemoryArea)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView6UpdateEv",
+   "demangled": "app::ui::UIView::Update()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8Create2DEPNS_4util4HeapEPN4gfl23lyt6LytSysEjPKNS2_7G2DUtil10LytResDataEjPKNS9_9LytwkDataEjjiii",
+   "demangled": "app::ui::UIView::Create2D(app::util::Heap*, gfl2::lyt::LytSys*, unsigned int, app::util::G2DUtil::LytResData const*, unsigned int, app::util::G2DUtil::LytwkData const*, unsigned int, unsigned int, int, int, int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8Delete2DEv",
+   "demangled": "app::ui::UIView::Delete2D()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8DrawTreeEN4gfl23gfx12CtrDisplayNoE",
+   "demangled": "app::ui::UIView::DrawTree(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIViewC2EPNS_4util4HeapEPN4gfl24heap11NwAllocatorES8_",
+   "demangled": "app::ui::UIView::UIView(app::util::Heap*, gfl2::heap::NwAllocator*, gfl2::heap::NwAllocator*)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIViewD2Ev",
+   "demangled": "app::ui::UIView::~UIView()"
+  },
+  {
+   "mangled": "_ZN3app4tool16ResourceProvider11LoadRequestEPKNS1_8ArcTableEj",
+   "demangled": "app::tool::ResourceProvider::LoadRequest(app::tool::ResourceProvider::ArcTable const*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4tool16ResourceProvider11ObserveLoadEv",
+   "demangled": "app::tool::ResourceProvider::ObserveLoad()"
+  },
+  {
+   "mangled": "_ZN3app4tool16ResourceProvider11ReleaseDataEv",
+   "demangled": "app::tool::ResourceProvider::ReleaseData()"
+  },
+  {
+   "mangled": "_ZN3app4tool16ResourceProviderC1EPNS_4util4HeapE",
+   "demangled": "app::tool::ResourceProvider::ResourceProvider(app::util::Heap*)"
+  },
+  {
+   "mangled": "_ZN3app4tool16ResourceProviderD1Ev",
+   "demangled": "app::tool::ResourceProvider::~ResourceProvider()"
+  },
+  {
+   "mangled": "_ZN3app4util19AppRenderingManager16StartAsyncCreateERKNS1_11DescriptionEPNS0_4HeapEPN6System13nijiAllocatorEPN4gfl22fs16AsyncFileManagerE",
+   "demangled": "app::util::AppRenderingManager::StartAsyncCreate(app::util::AppRenderingManager::Description const&, app::util::Heap*, System::nijiAllocator*, gfl2::fs::AsyncFileManager*)"
+  },
+  {
+   "mangled": "_ZN3app4util19AppRenderingManager4DrawEN4gfl23gfx12CtrDisplayNoE",
+   "demangled": "app::util::AppRenderingManager::Draw(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN3app4util19AppRenderingManagerC1Ev",
+   "demangled": "app::util::AppRenderingManager::AppRenderingManager()"
+  },
+  {
+   "mangled": "_ZN3app4util4Heap15LocalHeapCreateEPN4gfl24heap11CtrHeapBaseES5_jj",
+   "demangled": "app::util::Heap::LocalHeapCreate(gfl2::heap::CtrHeapBase*, gfl2::heap::CtrHeapBase*, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util4Heap6DeleteEv",
+   "demangled": "app::util::Heap::Delete()"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapC1Ev",
+   "demangled": "app::util::Heap::Heap()"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapD1Ev",
+   "demangled": "app::util::Heap::~Heap()"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil10StartAnimeEjjbb",
+   "demangled": "app::util::G2DUtil::StartAnime(unsigned int, unsigned int, bool, bool)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil27AddDrawableLytWkForOneFrameEPNS0_19AppRenderingManagerEN4gfl23gfx12CtrDisplayNoEjhj",
+   "demangled": "app::util::G2DUtil::AddDrawableLytWkForOneFrame(app::util::AppRenderingManager*, gfl2::gfx::CtrDisplayNo, unsigned int, unsigned char, unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph11Inheritance8GenerateEPKS2_NS_4util7FnvHashE",
+   "demangled": "gfl2::renderingengine::scenegraph::Inheritance::Generate(gfl2::renderingengine::scenegraph::Inheritance const*, gfl2::util::FnvHash)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph17SceneGraphManager13TraverseModelEv",
+   "demangled": "gfl2::renderingengine::scenegraph::SceneGraphManager::TraverseModel()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph17SceneGraphManager8AddChildEPNS1_4NodeE",
+   "demangled": "gfl2::renderingengine::scenegraph::SceneGraphManager::AddChild(gfl2::renderingengine::scenegraph::Node*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8instance12LightSetNode8AddLightEPNS2_9LightNodeE",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::LightSetNode::AddLight(gfl2::renderingengine::scenegraph::instance::LightNode*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8instance15InstanceCreator15CreateLightNodeEPNS_3gfx12IGLAllocatorE",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::InstanceCreator::CreateLightNode(gfl2::gfx::IGLAllocator*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8instance15InstanceCreator17CreateDrawEnvNodeEPNS_3gfx12IGLAllocatorEPNS1_8resource12ResourceNodeE",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::InstanceCreator::CreateDrawEnvNode(gfl2::gfx::IGLAllocator*, gfl2::renderingengine::scenegraph::resource::ResourceNode*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8instance15InstanceCreator18CreateLightSetNodeEPNS_3gfx12IGLAllocatorEPNS1_8resource12ResourceNodeE",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::InstanceCreator::CreateLightSetNode(gfl2::gfx::IGLAllocator*, gfl2::renderingengine::scenegraph::resource::ResourceNode*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8instance17CullingObjectNode8SetMovedEi",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::CullingObjectNode::SetMoved(int)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8NodeName11SetNodeNameEPKc",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeName::SetNodeName(char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15ResourceManager19createResourceNode_EPNS2_13IResourceDataE",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceManager::createResourceNode_(gfl2::renderingengine::scenegraph::resource::IResourceData*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15ResourceManager4s_GpE",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceManager::s_Gp"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPack12SetModelDataEPc",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::SetModelData(char*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPackC1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::GfBinaryMdlDataPack()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPackD1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::~GfBinaryMdlDataPack()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource28AnimationResourceNodeFactory18CreateResourceNodeEPNS_3gfx12IGLAllocatorEPKvi",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNodeFactory::CreateResourceNode(gfl2::gfx::IGLAllocator*, void const*, int)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine8renderer11DrawManager10AddDrawEnvEPNS0_10scenegraph8instance11DrawEnvNodeE",
+   "demangled": "gfl2::renderingengine::renderer::DrawManager::AddDrawEnv(gfl2::renderingengine::scenegraph::instance::DrawEnvNode*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine8renderer17RenderingPipeLine15SceneRenderPath10InitializeEPNS_3gfx12IGLAllocatorERKNS3_15InitDescriptionE",
+   "demangled": "gfl2::renderingengine::renderer::RenderingPipeLine::SceneRenderPath::Initialize(gfl2::gfx::IGLAllocator*, gfl2::renderingengine::renderer::RenderingPipeLine::SceneRenderPath::InitDescription const&)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine8renderer17RenderingPipeLine6UpdateEv",
+   "demangled": "gfl2::renderingengine::renderer::RenderingPipeLine::Update()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine8renderer17RenderingPipeLine7ExecuteEv",
+   "demangled": "gfl2::renderingengine::renderer::RenderingPipeLine::Execute()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine8renderer17RenderingPipeLineC2Ev",
+   "demangled": "gfl2::renderingengine::renderer::RenderingPipeLine::RenderingPipeLine()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine8renderer17RenderingPipeLineD2Ev",
+   "demangled": "gfl2::renderingengine::renderer::RenderingPipeLine::~RenderingPipeLine()"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager15SyncArcFileOpenERKNS1_14ArcFileOpenReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::SyncArcFileOpen(gfl2::fs::AsyncFileManager::ArcFileOpenReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager16SyncArcFileCloseERKNS1_15ArcFileCloseReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::SyncArcFileClose(gfl2::fs::AsyncFileManager::ArcFileCloseReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager17AddArcFileOpenReqERKNS1_14ArcFileOpenReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::AddArcFileOpenReq(gfl2::fs::AsyncFileManager::ArcFileOpenReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager18AddArcFileCloseReqERKNS1_15ArcFileCloseReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::AddArcFileCloseReq(gfl2::fs::AsyncFileManager::ArcFileCloseReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager19SyncArcFileLoadDataERKNS1_18ArcFileLoadDataReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::SyncArcFileLoadData(gfl2::fs::AsyncFileManager::ArcFileLoadDataReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager21AddArcFileLoadDataReqERKNS1_18ArcFileLoadDataReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::AddArcFileLoadDataReq(gfl2::fs::AsyncFileManager::ArcFileLoadDataReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22ui9Gyroscope15EnableZeroDriftEv",
+   "demangled": "gfl2::ui::Gyroscope::EnableZeroDrift()"
+  },
+  {
+   "mangled": "_ZN4gfl22ui9Gyroscope20DisableZeroPlayParamEv",
+   "demangled": "gfl2::ui::Gyroscope::DisableZeroPlayParam()"
+  },
+  {
+   "mangled": "_ZN4gfl22ui9Gyroscope28EnableRevisionByAccelerationEv",
+   "demangled": "gfl2::ui::Gyroscope::EnableRevisionByAcceleration()"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx3ctr5CTRGL14GetBackBuffer_EPv",
+   "demangled": "gfl2::gfx::ctr::CTRGL::GetBackBuffer_(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx3ctr5CTRGL16GetDisplayWidth_EPv",
+   "demangled": "gfl2::gfx::ctr::CTRGL::GetDisplayWidth_(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx3ctr5CTRGL17GetDisplayHeight_EPv",
+   "demangled": "gfl2::gfx::ctr::CTRGL::GetDisplayHeight_(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx3ctr5CTRGL22GetDepthStencilBuffer_EPv",
+   "demangled": "gfl2::gfx::ctr::CTRGL::GetDepthStencilBuffer_(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx3ctr5CTRGL25CreateTextureFromSurface_EPKNS0_7SurfaceE",
+   "demangled": "gfl2::gfx::ctr::CTRGL::CreateTextureFromSurface_(gfl2::gfx::Surface const*)"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GFGLBaseINS0_3ctr5CTRGLEE4s_GpE",
+   "demangled": "gfl2::gfx::GFGLBase<gfl2::gfx::ctr::CTRGL>::s_Gp"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory16s_pUserAllocatorE",
+   "demangled": "gfl2::gfx::GLMemory::s_pUserAllocator"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory20s_pInstanceAllocatorE",
+   "demangled": "gfl2::gfx::GLMemory::s_pInstanceAllocator"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory24s_InstanceAllocatorCountE",
+   "demangled": "gfl2::gfx::GLMemory::s_InstanceAllocatorCount"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory24s_pNewParameterAllocatorE",
+   "demangled": "gfl2::gfx::GLMemory::s_pNewParameterAllocator"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorINS_4Fade11FadeManagerEE11GetInstanceEv",
+   "demangled": "gfl2::base::SingletonAccessor<gfl2::Fade::FadeManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24Fade11FadeManager10RequestOutENS0_4DISPENS0_9FADE_TYPEEPKNS_4math7Vector4ES7_jb",
+   "demangled": "gfl2::Fade::FadeManager::RequestOut(gfl2::Fade::DISP, gfl2::Fade::FADE_TYPE, gfl2::math::Vector4 const*, gfl2::math::Vector4 const*, unsigned int, bool)"
+  },
+  {
+   "mangled": "_ZN4gfl24Fade11FadeManager5IsEndENS0_4DISPE",
+   "demangled": "gfl2::Fade::FadeManager::IsEnd(gfl2::Fade::DISP)"
+  },
+  {
+   "mangled": "_ZN4gfl24Fade11FadeManager9RequestInENS0_4DISPENS0_9FADE_TYPEEj",
+   "demangled": "gfl2::Fade::FadeManager::RequestIn(gfl2::Fade::DISP, gfl2::Fade::FADE_TYPE, unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap22GflHeapFreeMemoryBlockEPv",
+   "demangled": "gfl2::heap::GflHeapFreeMemoryBlock(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap28GflHeapAllocMemoryBlockAlignEPNS0_11CtrHeapBaseEii",
+   "demangled": "gfl2::heap::GflHeapAllocMemoryBlockAlign(gfl2::heap::CtrHeapBase*, int, int)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager10CreateHeapEPNS0_11CtrHeapBaseEiiNS0_8HeapTypeEbPKc",
+   "demangled": "gfl2::heap::Manager::CreateHeap(gfl2::heap::CtrHeapBase*, int, int, gfl2::heap::HeapType, bool, char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager10DeleteHeapEPNS0_11CtrHeapBaseE",
+   "demangled": "gfl2::heap::Manager::DeleteHeap(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager15GetHeapByHeapIdEi",
+   "demangled": "gfl2::heap::Manager::GetHeapByHeapId(int)"
+  },
+  {
+   "mangled": "_ZN4gfl25debug9GFLassertEPKcjiS2_",
+   "demangled": "gfl2::debug::GFLassert(char const*, unsigned int, int, char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect16EffectRenderPath9SetConfigERKNS1_6ConfigE",
+   "demangled": "gfl2::Effect::EffectRenderPath::SetConfig(gfl2::Effect::EffectRenderPath::Config const&)"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect16EffectRenderPathC1Ev",
+   "demangled": "gfl2::Effect::EffectRenderPath::EffectRenderPath()"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect6Handle13GetEmitterSetEv",
+   "demangled": "gfl2::Effect::Handle::GetEmitterSet()"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect6System10BeginFrameEv",
+   "demangled": "gfl2::Effect::System::BeginFrame()"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect6System13ClearResourceEPN2nw3eft4HeapEi",
+   "demangled": "gfl2::Effect::System::ClearResource(nw::eft::Heap*, int)"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect6System13EntryResourceEPN2nw3eft4HeapEPviPNS3_7EnvInfoE",
+   "demangled": "gfl2::Effect::System::EntryResource(nw::eft::Heap*, void*, int, nw::eft::EnvInfo*)"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect6System18CreateEmitterSetIDEPNS0_6HandleERKNS_4math7Vector3Eiihj",
+   "demangled": "gfl2::Effect::System::CreateEmitterSetID(gfl2::Effect::Handle*, gfl2::math::Vector3 const&, int, int, unsigned char, unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect6System4CalcEhfbb",
+   "demangled": "gfl2::Effect::System::Calc(unsigned char, float, bool, bool)"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect6SystemC1ERKNS0_6ConfigE",
+   "demangled": "gfl2::Effect::System::System(gfl2::Effect::Config const&)"
+  },
+  {
+   "mangled": "_ZN5Sound11StartBGMReqEjNS_9FadeFrameE",
+   "demangled": "Sound::StartBGMReq(unsigned int, Sound::FadeFrame)"
+  },
+  {
+   "mangled": "_ZN5Sound13FadeOutBGMReqENS_9FadeFrameE",
+   "demangled": "Sound::FadeOutBGMReq(Sound::FadeFrame)"
+  },
+  {
+   "mangled": "_ZN5Sound15ChangeBGMVolumeEfj",
+   "demangled": "Sound::ChangeBGMVolume(float, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5Sound17ChangeVoiceVolumeEhfj",
+   "demangled": "Sound::ChangeVoiceVolume(unsigned char, float, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5Sound6PlaySEEjjij",
+   "demangled": "Sound::PlaySE(unsigned int, unsigned int, int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5Sound9PlayVoiceEh6MonsNohNS_9VoiceTypeEij",
+   "demangled": "Sound::PlayVoice(unsigned char, MonsNo, unsigned char, Sound::VoiceType, int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN6System13nijiAllocatorC1EPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "System::nijiAllocator::nijiAllocator(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN6System15ModelRenderPath10RemoveNodeEPN4gfl215renderingengine10scenegraph8instance12DrawableNodeE",
+   "demangled": "System::ModelRenderPath::RemoveNode(gfl2::renderingengine::scenegraph::instance::DrawableNode*)"
+  },
+  {
+   "mangled": "_ZN6System15ModelRenderPath7AddNodeEPN4gfl215renderingengine10scenegraph8instance12DrawableNodeE",
+   "demangled": "System::ModelRenderPath::AddNode(gfl2::renderingengine::scenegraph::instance::DrawableNode*)"
+  },
+  {
+   "mangled": "_ZN6System15ModelRenderPathC1EPN4gfl23gfx12IGLAllocatorEi",
+   "demangled": "System::ModelRenderPath::ModelRenderPath(gfl2::gfx::IGLAllocator*, int)"
+  },
+  {
+   "mangled": "_ZN6System26NijiEdgeMapSceneRenderPath11SetResourceEPv",
+   "demangled": "System::NijiEdgeMapSceneRenderPath::SetResource(void*)"
+  },
+  {
+   "mangled": "_ZN6System26NijiEdgeMapSceneRenderPathC1EPN4gfl23gfx12IGLAllocatorEi",
+   "demangled": "System::NijiEdgeMapSceneRenderPath::NijiEdgeMapSceneRenderPath(gfl2::gfx::IGLAllocator*, int)"
+  },
+  {
+   "mangled": "_ZN6System30NijiOutLinePostSceneRenderPath11SetResourceEPv",
+   "demangled": "System::NijiOutLinePostSceneRenderPath::SetResource(void*)"
+  },
+  {
+   "mangled": "_ZN6System30NijiOutLinePostSceneRenderPathC1EPN4gfl23gfx12IGLAllocatorE",
+   "demangled": "System::NijiOutLinePostSceneRenderPath::NijiOutLinePostSceneRenderPath(gfl2::gfx::IGLAllocator*)"
+  },
+  {
+   "mangled": "_ZN6System6GflUse12m_HandleListE",
+   "demangled": "System::GflUse::m_HandleList"
+  },
+  {
+   "mangled": "_ZN6System6GflUse13GetPublicRandEj",
+   "demangled": "System::GflUse::GetPublicRand(unsigned int)"
+  },
+  {
+   "mangled": "_ZN6System6GflUse13GetPublicRandEv",
+   "demangled": "System::GflUse::GetPublicRand()"
+  },
+  {
+   "mangled": "_ZN6System7DressUp24GetDressUpArcIdListFieldEv",
+   "demangled": "System::DressUp::GetDressUpArcIdListField()"
+  },
+  {
+   "mangled": "_ZN6System7DressUp26OverwrideDressUpParamSpaceEjPN7poke_3d5model12DressUpParamE",
+   "demangled": "System::DressUp::OverwrideDressUpParamSpace(unsigned int, poke_3d::model::DressUpParam*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc11PreDrawFuncEPN4gfl24proc7ManagerE",
+   "demangled": "GameSys::GameProc::PreDrawFunc(gfl2::proc::Manager*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc14EventCheckFuncEPNS_11GameManagerE",
+   "demangled": "GameSys::GameProc::EventCheckFunc(GameSys::GameManager*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc14GetGameManagerEv",
+   "demangled": "GameSys::GameProc::GetGameManager()"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc17NextFrameMainFuncEPN4gfl24proc7ManagerE",
+   "demangled": "GameSys::GameProc::NextFrameMainFunc(gfl2::proc::Manager*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProcC1Ev",
+   "demangled": "GameSys::GameProc::GameProc()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model10CharaModelC1Ev",
+   "demangled": "poke_3d::model::CharaModel::CharaModel()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model12DressUpModelC1Ev",
+   "demangled": "poke_3d::model::DressUpModel::DressUpModel()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory10InitializeEPN4gfl22fs16AsyncFileManagerEPNS2_4heap11CtrHeapBaseEj",
+   "demangled": "poke_3d::model::CharaModelFactory::Initialize(gfl2::fs::AsyncFileManager*, gfl2::heap::CtrHeapBase*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory10SetupModelEPN4gfl23gfx12IGLAllocatorEj",
+   "demangled": "poke_3d::model::CharaModelFactory::SetupModel(gfl2::gfx::IGLAllocator*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory11CreateModelEPN4gfl23gfx12IGLAllocatorEPNS2_4heap11CtrHeapBaseEPNS0_10CharaModelEj",
+   "demangled": "poke_3d::model::CharaModelFactory::CreateModel(gfl2::gfx::IGLAllocator*, gfl2::heap::CtrHeapBase*, poke_3d::model::CharaModel*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory13LoadModelSyncEj",
+   "demangled": "poke_3d::model::CharaModelFactory::LoadModelSync(unsigned int)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory18CreateDressUpModelEPN4gfl23gfx12IGLAllocatorEPNS2_4heap11CtrHeapBaseEPNS0_12DressUpModelEPNS0_27DressUpModelResourceManagerEj",
+   "demangled": "poke_3d::model::CharaModelFactory::CreateDressUpModel(gfl2::gfx::IGLAllocator*, gfl2::heap::CtrHeapBase*, poke_3d::model::DressUpModel*, poke_3d::model::DressUpModelResourceManager*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory8FinalizeEv",
+   "demangled": "poke_3d::model::CharaModelFactory::Finalize()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactoryC1Ev",
+   "demangled": "poke_3d::model::CharaModelFactory::CharaModelFactory()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactoryD1Ev",
+   "demangled": "poke_3d::model::CharaModelFactory::~CharaModelFactory()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager10InitializeEPN4gfl22fs16AsyncFileManagerEPNS2_4heap11CtrHeapBaseEPi",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::Initialize(gfl2::fs::AsyncFileManager*, gfl2::heap::CtrHeapBase*, int*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager17SetupDressUpPartsEPN4gfl23gfx12IGLAllocatorERKNS0_12DressUpParamE",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::SetupDressUpParts(gfl2::gfx::IGLAllocator*, poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager20LoadDressUpPartsSyncERKNS0_12DressUpParamE",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::LoadDressUpPartsSync(poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager8FinalizeEv",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::Finalize()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManagerC1Ev",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::DressUpModelResourceManager()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManagerD1Ev",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::~DressUpModelResourceManager()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel11SetPositionERKN4gfl24math7Vector3E",
+   "demangled": "poke_3d::model::BaseModel::SetPosition(gfl2::math::Vector3 const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel11SetRotationERKN4gfl24math7Vector3ENS3_13EulerRotation13RotationOrderE",
+   "demangled": "poke_3d::model::BaseModel::SetRotation(gfl2::math::Vector3 const&, gfl2::math::EulerRotation::RotationOrder)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel15SetRotationQuatERKN4gfl24math10QuaternionE",
+   "demangled": "poke_3d::model::BaseModel::SetRotationQuat(gfl2::math::Quaternion const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel6CreateEPN4gfl23gfx12IGLAllocatorEPNS2_4heap11CtrHeapBaseEPNS2_15renderingengine10scenegraph8resource12ResourceNodeESD_",
+   "demangled": "poke_3d::model::BaseModel::Create(gfl2::gfx::IGLAllocator*, gfl2::heap::CtrHeapBase*, gfl2::renderingengine::scenegraph::resource::ResourceNode*, gfl2::renderingengine::scenegraph::resource::ResourceNode*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel8SetScaleEfff",
+   "demangled": "poke_3d::model::BaseModel::SetScale(float, float, float)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModelC1Ev",
+   "demangled": "poke_3d::model::BaseModel::BaseModel()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModelD1Ev",
+   "demangled": "poke_3d::model::BaseModel::~BaseModel()"
+  },
+  {
+   "mangled": "_ZN7poke_3d8renderer21OutLinePostRenderPath17SetEdgeMapTextureEjPKN4gfl23gfx7TextureE",
+   "demangled": "poke_3d::renderer::OutLinePostRenderPath::SetEdgeMapTexture(unsigned int, gfl2::gfx::Texture const*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d8renderer22EdgeMapSceneRenderPath20CreateEdgeMapTextureEPN4gfl23gfx12IGLAllocatorEff",
+   "demangled": "poke_3d::renderer::EdgeMapSceneRenderPath::CreateEdgeMapTexture(gfl2::gfx::IGLAllocator*, float, float)"
+  },
+  {
+   "mangled": "_ZN7poke_3d8renderer22EdgeMapSceneRenderPath22AddEdgeRenderingTargetEPN4gfl215renderingengine10scenegraph8instance12DrawableNodeE",
+   "demangled": "poke_3d::renderer::EdgeMapSceneRenderPath::AddEdgeRenderingTarget(gfl2::renderingengine::scenegraph::instance::DrawableNode*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d8renderer22EdgeMapSceneRenderPath25RemoveEdgeRenderingTargetEPN4gfl215renderingengine10scenegraph8instance12DrawableNodeE",
+   "demangled": "poke_3d::renderer::EdgeMapSceneRenderPath::RemoveEdgeRenderingTarget(gfl2::renderingengine::scenegraph::instance::DrawableNode*)"
+  },
+  {
+   "mangled": "_ZN8Savedata9GetRecordENS_6Record9RECORD_IDE",
+   "demangled": "Savedata::GetRecord(Savedata::Record::RECORD_ID)"
+  },
+  {
+   "mangled": "_ZnajPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "operator new[](unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZNK3app2ui11UIResponder17IsButtonAnimationEv",
+   "demangled": "app::ui::UIResponder::IsButtonAnimation() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView10GetG2DUtilEv",
+   "demangled": "app::ui::UIView::GetG2DUtil() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView9IsDrawingEv",
+   "demangled": "app::ui::UIView::IsDrawing() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView9IsVisibleEv",
+   "demangled": "app::ui::UIView::IsVisible() const"
+  },
+  {
+   "mangled": "_ZNK3app4util19AppRenderingManager9IsCreatedEv",
+   "demangled": "app::util::AppRenderingManager::IsCreated() const"
+  },
+  {
+   "mangled": "_ZNK4gfl215renderingengine10scenegraph8NodeName11GetNodeNameEv",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeName::GetNodeName() const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs16AsyncFileManager21IsArcFileOpenFinishedEj",
+   "demangled": "gfl2::fs::AsyncFileManager::IsArcFileOpenFinished(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs16AsyncFileManager22IsArcFileCloseFinishedEj",
+   "demangled": "gfl2::fs::AsyncFileManager::IsArcFileCloseFinished(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs16AsyncFileManager25IsArcFileLoadDataFinishedEPPv",
+   "demangled": "gfl2::fs::AsyncFileManager::IsArcFileLoadDataFinished(void**) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui12VectorDevice4GetXEv",
+   "demangled": "gfl2::ui::VectorDevice::GetX() const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui12VectorDevice4GetYEv",
+   "demangled": "gfl2::ui::VectorDevice::GetY() const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui13Accelerometer15GetAccelerationEPNS_4math22ExtendedVectorTemplateINS2_33SpecializedExtendedVectorTemplateIN2nn4math4VEC3EEEEE",
+   "demangled": "gfl2::ui::Accelerometer::GetAcceleration(gfl2::math::ExtendedVectorTemplate<gfl2::math::SpecializedExtendedVectorTemplate<nn::math::VEC3> >*) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui13DeviceManager12GetGyroscopeEh",
+   "demangled": "gfl2::ui::DeviceManager::GetGyroscope(unsigned char) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui13DeviceManager16GetAccelerometerEh",
+   "demangled": "gfl2::ui::DeviceManager::GetAccelerometer(unsigned char) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui13DeviceManager8GetStickEh",
+   "demangled": "gfl2::ui::DeviceManager::GetStick(unsigned char) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui13DeviceManager9GetButtonEh",
+   "demangled": "gfl2::ui::DeviceManager::GetButton(unsigned char) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui6Button9IsTriggerEjNS1_12InputStateIDE",
+   "demangled": "gfl2::ui::Button::IsTrigger(unsigned int, gfl2::ui::Button::InputStateID) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui9Gyroscope15GetDirectionOfXEv",
+   "demangled": "gfl2::ui::Gyroscope::GetDirectionOfX() const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui9Gyroscope15GetDirectionOfYEv",
+   "demangled": "gfl2::ui::Gyroscope::GetDirectionOfY() const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui9Gyroscope15GetDirectionOfZEv",
+   "demangled": "gfl2::ui::Gyroscope::GetDirectionOfZ() const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui9Gyroscope7IsValidEv",
+   "demangled": "gfl2::ui::Gyroscope::IsValid() const"
+  },
+  {
+   "mangled": "_ZNK5Field9EventWork14CheckEventFlagEt",
+   "demangled": "Field::EventWork::CheckEventFlag(unsigned short) const"
+  },
+  {
+   "mangled": "_ZNK7GameSys11GameManager18GetUiDeviceManagerEv",
+   "demangled": "GameSys::GameManager::GetUiDeviceManager() const"
+  },
+  {
+   "mangled": "_ZNK7GameSys11GameManager19GetAsyncFileManagerEv",
+   "demangled": "GameSys::GameManager::GetAsyncFileManager() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel11GetPositionEv",
+   "demangled": "poke_3d::model::BaseModel::GetPosition() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel13GetJointIndexEPKc",
+   "demangled": "poke_3d::model::BaseModel::GetJointIndex(char const*) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel15GetRotationQuatEv",
+   "demangled": "poke_3d::model::BaseModel::GetRotationQuat() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel20IsAnimationLastFrameEjNS1_12AnimationBitE",
+   "demangled": "poke_3d::model::BaseModel::IsAnimationLastFrame(unsigned int, poke_3d::model::BaseModel::AnimationBit) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel21GetJointWorldPositionEi",
+   "demangled": "poke_3d::model::BaseModel::GetJointWorldPosition(int) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel8GetScaleEv",
+   "demangled": "poke_3d::model::BaseModel::GetScale() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel9IsCreatedEv",
+   "demangled": "poke_3d::model::BaseModel::IsCreated() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus10GetDressupEv",
+   "demangled": "Savedata::MyStatus::GetDressup() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus6GetSexEv",
+   "demangled": "Savedata::MyStatus::GetSex() const"
+  },
+  {
+   "mangled": "_ZnwjPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "operator new(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZTIN3app2ui6UIViewE",
+   "demangled": "typeinfo for app::ui::UIView"
+  },
+  {
+   "mangled": "_ZTIN4gfl215renderingengine8renderer17RenderingPipeLineE",
+   "demangled": "typeinfo for gfl2::renderingengine::renderer::RenderingPipeLine"
+  },
+  {
+   "mangled": "_ZTIN7GameSys8GameProcE",
+   "demangled": "typeinfo for GameSys::GameProc"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv117__class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv120__si_class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__si_class_type_info"
+  },
+  {
+   "mangled": "_ZTVN4gfl215renderingengine10scenegraph8resource28AnimationResourceNodeFactoryE",
+   "demangled": "vtable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNodeFactory"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  }
+ ],
+ "scanned": [
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZN2nn4math10SinCosFIdxEPfS1_f",
+   "demangled": "nn::math::SinCosFIdx(float*, float*, float)"
+  },
+  {
+   "mangled": "_ZN2nn4math5ARMv612MTX34MultAsmEPNS0_5MTX34EPKS2_S5_",
+   "demangled": "nn::math::ARMv6::MTX34MultAsm(nn::math::MTX34*, nn::math::MTX34 const*, nn::math::MTX34 const*)"
+  },
+  {
+   "mangled": "_ZN2nn4math7CosFIdxEf",
+   "demangled": "nn::math::CosFIdx(float)"
+  },
+  {
+   "mangled": "_ZN2nn4math7SinFIdxEf",
+   "demangled": "nn::math::SinFIdx(float)"
+  },
+  {
+   "mangled": "_ZN2nn4math9Atan2FIdxEff",
+   "demangled": "nn::math::Atan2FIdx(float, float)"
+  },
+  {
+   "mangled": "_ZN2nw3eft10EmitterSet4KillEv",
+   "demangled": "nw::eft::EmitterSet::Kill()"
+  },
+  {
+   "mangled": "_ZN2nw3eft10EmitterSet6SetMtxERKN2nn4math5MTX34E",
+   "demangled": "nw::eft::EmitterSet::SetMtx(nn::math::MTX34 const&)"
+  },
+  {
+   "mangled": "_ZN2nw3eft8internal10gSinCosTblE",
+   "demangled": "nw::eft::internal::gSinCosTbl"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder17OnSetInputEnabledEb",
+   "demangled": "app::ui::UIResponder::OnSetInputEnabled(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder28CallbackFuncOnButtonSelectedEj",
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonSelected(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder31CallbackFuncOnButtonLongPressedEj",
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonLongPressed(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder32CallBackFuncOnButtonTouchTriggerEj",
+   "demangled": "app::ui::UIResponder::CallBackFuncOnButtonTouchTrigger(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder39CallbackFuncOnButtonSelectedBeforeAnimeEj",
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonSelectedBeforeAnime(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10SetVisibleEb",
+   "demangled": "app::ui::UIView::SetVisible(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10UpdateTreeEv",
+   "demangled": "app::ui::UIView::UpdateTree()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView11Initalize2DEPNS_4util4HeapEPN4gfl23lyt6LytSysEjPKNS2_7G2DUtil10LytResDataEjPKNS9_9LytwkDataEjii",
+   "demangled": "app::ui::UIView::Initalize2D(app::util::Heap*, gfl2::lyt::LytSys*, unsigned int, app::util::G2DUtil::LytResData const*, unsigned int, app::util::G2DUtil::LytwkData const*, unsigned int, int, int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView13DoInputActionEv",
+   "demangled": "app::ui::UIView::DoInputAction()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView20CreateGraphicsSystemEPNS_4util4HeapEb",
+   "demangled": "app::ui::UIView::CreateGraphicsSystem(app::util::Heap*, bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView20DeleteGraphicsSystemEv",
+   "demangled": "app::ui::UIView::DeleteGraphicsSystem()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView21SetLayoutTransferAreaEN4gfl23lyt10MemoryAreaE",
+   "demangled": "app::ui::UIView::SetLayoutTransferArea(gfl2::lyt::MemoryArea)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView6UpdateEv",
+   "demangled": "app::ui::UIView::Update()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8Create2DEPNS_4util4HeapEPN4gfl23lyt6LytSysEjPKNS2_7G2DUtil10LytResDataEjPKNS9_9LytwkDataEjjiii",
+   "demangled": "app::ui::UIView::Create2D(app::util::Heap*, gfl2::lyt::LytSys*, unsigned int, app::util::G2DUtil::LytResData const*, unsigned int, app::util::G2DUtil::LytwkData const*, unsigned int, unsigned int, int, int, int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8Delete2DEv",
+   "demangled": "app::ui::UIView::Delete2D()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8DrawTreeEN4gfl23gfx12CtrDisplayNoE",
+   "demangled": "app::ui::UIView::DrawTree(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIViewC2EPNS_4util4HeapEPN4gfl24heap11NwAllocatorES8_",
+   "demangled": "app::ui::UIView::UIView(app::util::Heap*, gfl2::heap::NwAllocator*, gfl2::heap::NwAllocator*)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIViewD2Ev",
+   "demangled": "app::ui::UIView::~UIView()"
+  },
+  {
+   "mangled": "_ZN3app4tool16ResourceProvider11LoadRequestEPKNS1_8ArcTableEj",
+   "demangled": "app::tool::ResourceProvider::LoadRequest(app::tool::ResourceProvider::ArcTable const*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4tool16ResourceProvider11ObserveLoadEv",
+   "demangled": "app::tool::ResourceProvider::ObserveLoad()"
+  },
+  {
+   "mangled": "_ZN3app4tool16ResourceProvider11ReleaseDataEv",
+   "demangled": "app::tool::ResourceProvider::ReleaseData()"
+  },
+  {
+   "mangled": "_ZN3app4tool16ResourceProviderC1EPNS_4util4HeapE",
+   "demangled": "app::tool::ResourceProvider::ResourceProvider(app::util::Heap*)"
+  },
+  {
+   "mangled": "_ZN3app4tool16ResourceProviderD1Ev",
+   "demangled": "app::tool::ResourceProvider::~ResourceProvider()"
+  },
+  {
+   "mangled": "_ZN3app4util19AppRenderingManager16StartAsyncCreateERKNS1_11DescriptionEPNS0_4HeapEPN6System13nijiAllocatorEPN4gfl22fs16AsyncFileManagerE",
+   "demangled": "app::util::AppRenderingManager::StartAsyncCreate(app::util::AppRenderingManager::Description const&, app::util::Heap*, System::nijiAllocator*, gfl2::fs::AsyncFileManager*)"
+  },
+  {
+   "mangled": "_ZN3app4util19AppRenderingManager4DrawEN4gfl23gfx12CtrDisplayNoE",
+   "demangled": "app::util::AppRenderingManager::Draw(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN3app4util19AppRenderingManagerC1Ev",
+   "demangled": "app::util::AppRenderingManager::AppRenderingManager()"
+  },
+  {
+   "mangled": "_ZN3app4util4Heap15LocalHeapCreateEPN4gfl24heap11CtrHeapBaseES5_jj",
+   "demangled": "app::util::Heap::LocalHeapCreate(gfl2::heap::CtrHeapBase*, gfl2::heap::CtrHeapBase*, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util4Heap6DeleteEv",
+   "demangled": "app::util::Heap::Delete()"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapC1Ev",
+   "demangled": "app::util::Heap::Heap()"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapD1Ev",
+   "demangled": "app::util::Heap::~Heap()"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil10StartAnimeEjjbb",
+   "demangled": "app::util::G2DUtil::StartAnime(unsigned int, unsigned int, bool, bool)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil27AddDrawableLytWkForOneFrameEPNS0_19AppRenderingManagerEN4gfl23gfx12CtrDisplayNoEjhj",
+   "demangled": "app::util::G2DUtil::AddDrawableLytWkForOneFrame(app::util::AppRenderingManager*, gfl2::gfx::CtrDisplayNo, unsigned int, unsigned char, unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph11Inheritance8GenerateEPKS2_NS_4util7FnvHashE",
+   "demangled": "gfl2::renderingengine::scenegraph::Inheritance::Generate(gfl2::renderingengine::scenegraph::Inheritance const*, gfl2::util::FnvHash)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph17SceneGraphManager13TraverseModelEv",
+   "demangled": "gfl2::renderingengine::scenegraph::SceneGraphManager::TraverseModel()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph17SceneGraphManager8AddChildEPNS1_4NodeE",
+   "demangled": "gfl2::renderingengine::scenegraph::SceneGraphManager::AddChild(gfl2::renderingengine::scenegraph::Node*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8NodeName11SetNodeNameEPKc",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeName::SetNodeName(char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8instance12LightSetNode8AddLightEPNS2_9LightNodeE",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::LightSetNode::AddLight(gfl2::renderingengine::scenegraph::instance::LightNode*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8instance15InstanceCreator15CreateLightNodeEPNS_3gfx12IGLAllocatorE",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::InstanceCreator::CreateLightNode(gfl2::gfx::IGLAllocator*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8instance15InstanceCreator17CreateDrawEnvNodeEPNS_3gfx12IGLAllocatorEPNS1_8resource12ResourceNodeE",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::InstanceCreator::CreateDrawEnvNode(gfl2::gfx::IGLAllocator*, gfl2::renderingengine::scenegraph::resource::ResourceNode*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8instance15InstanceCreator18CreateLightSetNodeEPNS_3gfx12IGLAllocatorEPNS1_8resource12ResourceNodeE",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::InstanceCreator::CreateLightSetNode(gfl2::gfx::IGLAllocator*, gfl2::renderingengine::scenegraph::resource::ResourceNode*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8instance17CullingObjectNode8SetMovedEi",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::CullingObjectNode::SetMoved(int)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15ResourceManager19createResourceNode_EPNS2_13IResourceDataE",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceManager::createResourceNode_(gfl2::renderingengine::scenegraph::resource::IResourceData*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15ResourceManager4s_GpE",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceManager::s_Gp"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPack12SetModelDataEPc",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::SetModelData(char*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPackC1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::GfBinaryMdlDataPack()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPackD1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::~GfBinaryMdlDataPack()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource28AnimationResourceNodeFactory18CreateResourceNodeEPNS_3gfx12IGLAllocatorEPKvi",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNodeFactory::CreateResourceNode(gfl2::gfx::IGLAllocator*, void const*, int)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine8renderer11DrawManager10AddDrawEnvEPNS0_10scenegraph8instance11DrawEnvNodeE",
+   "demangled": "gfl2::renderingengine::renderer::DrawManager::AddDrawEnv(gfl2::renderingengine::scenegraph::instance::DrawEnvNode*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine8renderer17RenderingPipeLine15SceneRenderPath10InitializeEPNS_3gfx12IGLAllocatorERKNS3_15InitDescriptionE",
+   "demangled": "gfl2::renderingengine::renderer::RenderingPipeLine::SceneRenderPath::Initialize(gfl2::gfx::IGLAllocator*, gfl2::renderingengine::renderer::RenderingPipeLine::SceneRenderPath::InitDescription const&)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine8renderer17RenderingPipeLine6UpdateEv",
+   "demangled": "gfl2::renderingengine::renderer::RenderingPipeLine::Update()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine8renderer17RenderingPipeLine7ExecuteEv",
+   "demangled": "gfl2::renderingengine::renderer::RenderingPipeLine::Execute()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine8renderer17RenderingPipeLineC2Ev",
+   "demangled": "gfl2::renderingengine::renderer::RenderingPipeLine::RenderingPipeLine()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine8renderer17RenderingPipeLineD2Ev",
+   "demangled": "gfl2::renderingengine::renderer::RenderingPipeLine::~RenderingPipeLine()"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager15SyncArcFileOpenERKNS1_14ArcFileOpenReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::SyncArcFileOpen(gfl2::fs::AsyncFileManager::ArcFileOpenReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager16SyncArcFileCloseERKNS1_15ArcFileCloseReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::SyncArcFileClose(gfl2::fs::AsyncFileManager::ArcFileCloseReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager17AddArcFileOpenReqERKNS1_14ArcFileOpenReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::AddArcFileOpenReq(gfl2::fs::AsyncFileManager::ArcFileOpenReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager18AddArcFileCloseReqERKNS1_15ArcFileCloseReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::AddArcFileCloseReq(gfl2::fs::AsyncFileManager::ArcFileCloseReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager19SyncArcFileLoadDataERKNS1_18ArcFileLoadDataReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::SyncArcFileLoadData(gfl2::fs::AsyncFileManager::ArcFileLoadDataReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager21AddArcFileLoadDataReqERKNS1_18ArcFileLoadDataReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::AddArcFileLoadDataReq(gfl2::fs::AsyncFileManager::ArcFileLoadDataReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22ui9Gyroscope15EnableZeroDriftEv",
+   "demangled": "gfl2::ui::Gyroscope::EnableZeroDrift()"
+  },
+  {
+   "mangled": "_ZN4gfl22ui9Gyroscope20DisableZeroPlayParamEv",
+   "demangled": "gfl2::ui::Gyroscope::DisableZeroPlayParam()"
+  },
+  {
+   "mangled": "_ZN4gfl22ui9Gyroscope28EnableRevisionByAccelerationEv",
+   "demangled": "gfl2::ui::Gyroscope::EnableRevisionByAcceleration()"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx3ctr5CTRGL14GetBackBuffer_EPv",
+   "demangled": "gfl2::gfx::ctr::CTRGL::GetBackBuffer_(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx3ctr5CTRGL16GetDisplayWidth_EPv",
+   "demangled": "gfl2::gfx::ctr::CTRGL::GetDisplayWidth_(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx3ctr5CTRGL17GetDisplayHeight_EPv",
+   "demangled": "gfl2::gfx::ctr::CTRGL::GetDisplayHeight_(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx3ctr5CTRGL22GetDepthStencilBuffer_EPv",
+   "demangled": "gfl2::gfx::ctr::CTRGL::GetDepthStencilBuffer_(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx3ctr5CTRGL25CreateTextureFromSurface_EPKNS0_7SurfaceE",
+   "demangled": "gfl2::gfx::ctr::CTRGL::CreateTextureFromSurface_(gfl2::gfx::Surface const*)"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GFGLBaseINS0_3ctr5CTRGLEE4s_GpE",
+   "demangled": "gfl2::gfx::GFGLBase<gfl2::gfx::ctr::CTRGL>::s_Gp"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory16s_pUserAllocatorE",
+   "demangled": "gfl2::gfx::GLMemory::s_pUserAllocator"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory20s_pInstanceAllocatorE",
+   "demangled": "gfl2::gfx::GLMemory::s_pInstanceAllocator"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory24s_InstanceAllocatorCountE",
+   "demangled": "gfl2::gfx::GLMemory::s_InstanceAllocatorCount"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory24s_pNewParameterAllocatorE",
+   "demangled": "gfl2::gfx::GLMemory::s_pNewParameterAllocator"
+  },
+  {
+   "mangled": "_ZN4gfl24Fade11FadeManager10RequestOutENS0_4DISPENS0_9FADE_TYPEEPKNS_4math7Vector4ES7_jb",
+   "demangled": "gfl2::Fade::FadeManager::RequestOut(gfl2::Fade::DISP, gfl2::Fade::FADE_TYPE, gfl2::math::Vector4 const*, gfl2::math::Vector4 const*, unsigned int, bool)"
+  },
+  {
+   "mangled": "_ZN4gfl24Fade11FadeManager5IsEndENS0_4DISPE",
+   "demangled": "gfl2::Fade::FadeManager::IsEnd(gfl2::Fade::DISP)"
+  },
+  {
+   "mangled": "_ZN4gfl24Fade11FadeManager9RequestInENS0_4DISPENS0_9FADE_TYPEEj",
+   "demangled": "gfl2::Fade::FadeManager::RequestIn(gfl2::Fade::DISP, gfl2::Fade::FADE_TYPE, unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorINS_4Fade11FadeManagerEE11GetInstanceEv",
+   "demangled": "gfl2::base::SingletonAccessor<gfl2::Fade::FadeManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24heap22GflHeapFreeMemoryBlockEPv",
+   "demangled": "gfl2::heap::GflHeapFreeMemoryBlock(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap28GflHeapAllocMemoryBlockAlignEPNS0_11CtrHeapBaseEii",
+   "demangled": "gfl2::heap::GflHeapAllocMemoryBlockAlign(gfl2::heap::CtrHeapBase*, int, int)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager10CreateHeapEPNS0_11CtrHeapBaseEiiNS0_8HeapTypeEbPKc",
+   "demangled": "gfl2::heap::Manager::CreateHeap(gfl2::heap::CtrHeapBase*, int, int, gfl2::heap::HeapType, bool, char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager10DeleteHeapEPNS0_11CtrHeapBaseE",
+   "demangled": "gfl2::heap::Manager::DeleteHeap(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager15GetHeapByHeapIdEi",
+   "demangled": "gfl2::heap::Manager::GetHeapByHeapId(int)"
+  },
+  {
+   "mangled": "_ZN4gfl25debug9GFLassertEPKcjiS2_",
+   "demangled": "gfl2::debug::GFLassert(char const*, unsigned int, int, char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect16EffectRenderPath9SetConfigERKNS1_6ConfigE",
+   "demangled": "gfl2::Effect::EffectRenderPath::SetConfig(gfl2::Effect::EffectRenderPath::Config const&)"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect16EffectRenderPathC1Ev",
+   "demangled": "gfl2::Effect::EffectRenderPath::EffectRenderPath()"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect6Handle13GetEmitterSetEv",
+   "demangled": "gfl2::Effect::Handle::GetEmitterSet()"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect6System10BeginFrameEv",
+   "demangled": "gfl2::Effect::System::BeginFrame()"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect6System13ClearResourceEPN2nw3eft4HeapEi",
+   "demangled": "gfl2::Effect::System::ClearResource(nw::eft::Heap*, int)"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect6System13EntryResourceEPN2nw3eft4HeapEPviPNS3_7EnvInfoE",
+   "demangled": "gfl2::Effect::System::EntryResource(nw::eft::Heap*, void*, int, nw::eft::EnvInfo*)"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect6System18CreateEmitterSetIDEPNS0_6HandleERKNS_4math7Vector3Eiihj",
+   "demangled": "gfl2::Effect::System::CreateEmitterSetID(gfl2::Effect::Handle*, gfl2::math::Vector3 const&, int, int, unsigned char, unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect6System4CalcEhfbb",
+   "demangled": "gfl2::Effect::System::Calc(unsigned char, float, bool, bool)"
+  },
+  {
+   "mangled": "_ZN4gfl26Effect6SystemC1ERKNS0_6ConfigE",
+   "demangled": "gfl2::Effect::System::System(gfl2::Effect::Config const&)"
+  },
+  {
+   "mangled": "_ZN5Sound11StartBGMReqEjNS_9FadeFrameE",
+   "demangled": "Sound::StartBGMReq(unsigned int, Sound::FadeFrame)"
+  },
+  {
+   "mangled": "_ZN5Sound13FadeOutBGMReqENS_9FadeFrameE",
+   "demangled": "Sound::FadeOutBGMReq(Sound::FadeFrame)"
+  },
+  {
+   "mangled": "_ZN5Sound15ChangeBGMVolumeEfj",
+   "demangled": "Sound::ChangeBGMVolume(float, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5Sound17ChangeVoiceVolumeEhfj",
+   "demangled": "Sound::ChangeVoiceVolume(unsigned char, float, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5Sound6PlaySEEjjij",
+   "demangled": "Sound::PlaySE(unsigned int, unsigned int, int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5Sound9PlayVoiceEh6MonsNohNS_9VoiceTypeEij",
+   "demangled": "Sound::PlayVoice(unsigned char, MonsNo, unsigned char, Sound::VoiceType, int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN6System13nijiAllocatorC1EPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "System::nijiAllocator::nijiAllocator(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN6System15ModelRenderPath10RemoveNodeEPN4gfl215renderingengine10scenegraph8instance12DrawableNodeE",
+   "demangled": "System::ModelRenderPath::RemoveNode(gfl2::renderingengine::scenegraph::instance::DrawableNode*)"
+  },
+  {
+   "mangled": "_ZN6System15ModelRenderPath7AddNodeEPN4gfl215renderingengine10scenegraph8instance12DrawableNodeE",
+   "demangled": "System::ModelRenderPath::AddNode(gfl2::renderingengine::scenegraph::instance::DrawableNode*)"
+  },
+  {
+   "mangled": "_ZN6System15ModelRenderPathC1EPN4gfl23gfx12IGLAllocatorEi",
+   "demangled": "System::ModelRenderPath::ModelRenderPath(gfl2::gfx::IGLAllocator*, int)"
+  },
+  {
+   "mangled": "_ZN6System26NijiEdgeMapSceneRenderPath11SetResourceEPv",
+   "demangled": "System::NijiEdgeMapSceneRenderPath::SetResource(void*)"
+  },
+  {
+   "mangled": "_ZN6System26NijiEdgeMapSceneRenderPathC1EPN4gfl23gfx12IGLAllocatorEi",
+   "demangled": "System::NijiEdgeMapSceneRenderPath::NijiEdgeMapSceneRenderPath(gfl2::gfx::IGLAllocator*, int)"
+  },
+  {
+   "mangled": "_ZN6System30NijiOutLinePostSceneRenderPath11SetResourceEPv",
+   "demangled": "System::NijiOutLinePostSceneRenderPath::SetResource(void*)"
+  },
+  {
+   "mangled": "_ZN6System30NijiOutLinePostSceneRenderPathC1EPN4gfl23gfx12IGLAllocatorE",
+   "demangled": "System::NijiOutLinePostSceneRenderPath::NijiOutLinePostSceneRenderPath(gfl2::gfx::IGLAllocator*)"
+  },
+  {
+   "mangled": "_ZN6System6GflUse12m_HandleListE",
+   "demangled": "System::GflUse::m_HandleList"
+  },
+  {
+   "mangled": "_ZN6System6GflUse13GetPublicRandEj",
+   "demangled": "System::GflUse::GetPublicRand(unsigned int)"
+  },
+  {
+   "mangled": "_ZN6System6GflUse13GetPublicRandEv",
+   "demangled": "System::GflUse::GetPublicRand()"
+  },
+  {
+   "mangled": "_ZN6System7DressUp24GetDressUpArcIdListFieldEv",
+   "demangled": "System::DressUp::GetDressUpArcIdListField()"
+  },
+  {
+   "mangled": "_ZN6System7DressUp26OverwrideDressUpParamSpaceEjPN7poke_3d5model12DressUpParamE",
+   "demangled": "System::DressUp::OverwrideDressUpParamSpace(unsigned int, poke_3d::model::DressUpParam*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc11PreDrawFuncEPN4gfl24proc7ManagerE",
+   "demangled": "GameSys::GameProc::PreDrawFunc(gfl2::proc::Manager*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc14EventCheckFuncEPNS_11GameManagerE",
+   "demangled": "GameSys::GameProc::EventCheckFunc(GameSys::GameManager*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc14GetGameManagerEv",
+   "demangled": "GameSys::GameProc::GetGameManager()"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc17NextFrameMainFuncEPN4gfl24proc7ManagerE",
+   "demangled": "GameSys::GameProc::NextFrameMainFunc(gfl2::proc::Manager*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProcC1Ev",
+   "demangled": "GameSys::GameProc::GameProc()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model10CharaModelC1Ev",
+   "demangled": "poke_3d::model::CharaModel::CharaModel()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model12DressUpModelC1Ev",
+   "demangled": "poke_3d::model::DressUpModel::DressUpModel()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory10InitializeEPN4gfl22fs16AsyncFileManagerEPNS2_4heap11CtrHeapBaseEj",
+   "demangled": "poke_3d::model::CharaModelFactory::Initialize(gfl2::fs::AsyncFileManager*, gfl2::heap::CtrHeapBase*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory10SetupModelEPN4gfl23gfx12IGLAllocatorEj",
+   "demangled": "poke_3d::model::CharaModelFactory::SetupModel(gfl2::gfx::IGLAllocator*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory11CreateModelEPN4gfl23gfx12IGLAllocatorEPNS2_4heap11CtrHeapBaseEPNS0_10CharaModelEj",
+   "demangled": "poke_3d::model::CharaModelFactory::CreateModel(gfl2::gfx::IGLAllocator*, gfl2::heap::CtrHeapBase*, poke_3d::model::CharaModel*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory13LoadModelSyncEj",
+   "demangled": "poke_3d::model::CharaModelFactory::LoadModelSync(unsigned int)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory18CreateDressUpModelEPN4gfl23gfx12IGLAllocatorEPNS2_4heap11CtrHeapBaseEPNS0_12DressUpModelEPNS0_27DressUpModelResourceManagerEj",
+   "demangled": "poke_3d::model::CharaModelFactory::CreateDressUpModel(gfl2::gfx::IGLAllocator*, gfl2::heap::CtrHeapBase*, poke_3d::model::DressUpModel*, poke_3d::model::DressUpModelResourceManager*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory8FinalizeEv",
+   "demangled": "poke_3d::model::CharaModelFactory::Finalize()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactoryC1Ev",
+   "demangled": "poke_3d::model::CharaModelFactory::CharaModelFactory()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactoryD1Ev",
+   "demangled": "poke_3d::model::CharaModelFactory::~CharaModelFactory()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager10InitializeEPN4gfl22fs16AsyncFileManagerEPNS2_4heap11CtrHeapBaseEPi",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::Initialize(gfl2::fs::AsyncFileManager*, gfl2::heap::CtrHeapBase*, int*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager17SetupDressUpPartsEPN4gfl23gfx12IGLAllocatorERKNS0_12DressUpParamE",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::SetupDressUpParts(gfl2::gfx::IGLAllocator*, poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager20LoadDressUpPartsSyncERKNS0_12DressUpParamE",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::LoadDressUpPartsSync(poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager8FinalizeEv",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::Finalize()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManagerC1Ev",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::DressUpModelResourceManager()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManagerD1Ev",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::~DressUpModelResourceManager()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel11SetPositionERKN4gfl24math7Vector3E",
+   "demangled": "poke_3d::model::BaseModel::SetPosition(gfl2::math::Vector3 const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel11SetRotationERKN4gfl24math7Vector3ENS3_13EulerRotation13RotationOrderE",
+   "demangled": "poke_3d::model::BaseModel::SetRotation(gfl2::math::Vector3 const&, gfl2::math::EulerRotation::RotationOrder)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel15SetRotationQuatERKN4gfl24math10QuaternionE",
+   "demangled": "poke_3d::model::BaseModel::SetRotationQuat(gfl2::math::Quaternion const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel6CreateEPN4gfl23gfx12IGLAllocatorEPNS2_4heap11CtrHeapBaseEPNS2_15renderingengine10scenegraph8resource12ResourceNodeESD_",
+   "demangled": "poke_3d::model::BaseModel::Create(gfl2::gfx::IGLAllocator*, gfl2::heap::CtrHeapBase*, gfl2::renderingengine::scenegraph::resource::ResourceNode*, gfl2::renderingengine::scenegraph::resource::ResourceNode*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel8SetScaleEfff",
+   "demangled": "poke_3d::model::BaseModel::SetScale(float, float, float)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModelC1Ev",
+   "demangled": "poke_3d::model::BaseModel::BaseModel()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModelD1Ev",
+   "demangled": "poke_3d::model::BaseModel::~BaseModel()"
+  },
+  {
+   "mangled": "_ZN7poke_3d8renderer21OutLinePostRenderPath17SetEdgeMapTextureEjPKN4gfl23gfx7TextureE",
+   "demangled": "poke_3d::renderer::OutLinePostRenderPath::SetEdgeMapTexture(unsigned int, gfl2::gfx::Texture const*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d8renderer22EdgeMapSceneRenderPath20CreateEdgeMapTextureEPN4gfl23gfx12IGLAllocatorEff",
+   "demangled": "poke_3d::renderer::EdgeMapSceneRenderPath::CreateEdgeMapTexture(gfl2::gfx::IGLAllocator*, float, float)"
+  },
+  {
+   "mangled": "_ZN7poke_3d8renderer22EdgeMapSceneRenderPath22AddEdgeRenderingTargetEPN4gfl215renderingengine10scenegraph8instance12DrawableNodeE",
+   "demangled": "poke_3d::renderer::EdgeMapSceneRenderPath::AddEdgeRenderingTarget(gfl2::renderingengine::scenegraph::instance::DrawableNode*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d8renderer22EdgeMapSceneRenderPath25RemoveEdgeRenderingTargetEPN4gfl215renderingengine10scenegraph8instance12DrawableNodeE",
+   "demangled": "poke_3d::renderer::EdgeMapSceneRenderPath::RemoveEdgeRenderingTarget(gfl2::renderingengine::scenegraph::instance::DrawableNode*)"
+  },
+  {
+   "mangled": "_ZN8Savedata9GetRecordENS_6Record9RECORD_IDE",
+   "demangled": "Savedata::GetRecord(Savedata::Record::RECORD_ID)"
+  },
+  {
+   "mangled": "_ZNK3app2ui11UIResponder17IsButtonAnimationEv",
+   "demangled": "app::ui::UIResponder::IsButtonAnimation() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView10GetG2DUtilEv",
+   "demangled": "app::ui::UIView::GetG2DUtil() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView9IsDrawingEv",
+   "demangled": "app::ui::UIView::IsDrawing() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView9IsVisibleEv",
+   "demangled": "app::ui::UIView::IsVisible() const"
+  },
+  {
+   "mangled": "_ZNK3app4util19AppRenderingManager9IsCreatedEv",
+   "demangled": "app::util::AppRenderingManager::IsCreated() const"
+  },
+  {
+   "mangled": "_ZNK4gfl215renderingengine10scenegraph8NodeName11GetNodeNameEv",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeName::GetNodeName() const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs16AsyncFileManager21IsArcFileOpenFinishedEj",
+   "demangled": "gfl2::fs::AsyncFileManager::IsArcFileOpenFinished(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs16AsyncFileManager22IsArcFileCloseFinishedEj",
+   "demangled": "gfl2::fs::AsyncFileManager::IsArcFileCloseFinished(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs16AsyncFileManager25IsArcFileLoadDataFinishedEPPv",
+   "demangled": "gfl2::fs::AsyncFileManager::IsArcFileLoadDataFinished(void**) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui12VectorDevice4GetXEv",
+   "demangled": "gfl2::ui::VectorDevice::GetX() const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui12VectorDevice4GetYEv",
+   "demangled": "gfl2::ui::VectorDevice::GetY() const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui13Accelerometer15GetAccelerationEPNS_4math22ExtendedVectorTemplateINS2_33SpecializedExtendedVectorTemplateIN2nn4math4VEC3EEEEE",
+   "demangled": "gfl2::ui::Accelerometer::GetAcceleration(gfl2::math::ExtendedVectorTemplate<gfl2::math::SpecializedExtendedVectorTemplate<nn::math::VEC3> >*) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui13DeviceManager12GetGyroscopeEh",
+   "demangled": "gfl2::ui::DeviceManager::GetGyroscope(unsigned char) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui13DeviceManager16GetAccelerometerEh",
+   "demangled": "gfl2::ui::DeviceManager::GetAccelerometer(unsigned char) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui13DeviceManager8GetStickEh",
+   "demangled": "gfl2::ui::DeviceManager::GetStick(unsigned char) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui13DeviceManager9GetButtonEh",
+   "demangled": "gfl2::ui::DeviceManager::GetButton(unsigned char) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui6Button9IsTriggerEjNS1_12InputStateIDE",
+   "demangled": "gfl2::ui::Button::IsTrigger(unsigned int, gfl2::ui::Button::InputStateID) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui9Gyroscope15GetDirectionOfXEv",
+   "demangled": "gfl2::ui::Gyroscope::GetDirectionOfX() const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui9Gyroscope15GetDirectionOfYEv",
+   "demangled": "gfl2::ui::Gyroscope::GetDirectionOfY() const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui9Gyroscope15GetDirectionOfZEv",
+   "demangled": "gfl2::ui::Gyroscope::GetDirectionOfZ() const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui9Gyroscope7IsValidEv",
+   "demangled": "gfl2::ui::Gyroscope::IsValid() const"
+  },
+  {
+   "mangled": "_ZNK5Field9EventWork14CheckEventFlagEt",
+   "demangled": "Field::EventWork::CheckEventFlag(unsigned short) const"
+  },
+  {
+   "mangled": "_ZNK7GameSys11GameManager18GetUiDeviceManagerEv",
+   "demangled": "GameSys::GameManager::GetUiDeviceManager() const"
+  },
+  {
+   "mangled": "_ZNK7GameSys11GameManager19GetAsyncFileManagerEv",
+   "demangled": "GameSys::GameManager::GetAsyncFileManager() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel11GetPositionEv",
+   "demangled": "poke_3d::model::BaseModel::GetPosition() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel13GetJointIndexEPKc",
+   "demangled": "poke_3d::model::BaseModel::GetJointIndex(char const*) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel15GetRotationQuatEv",
+   "demangled": "poke_3d::model::BaseModel::GetRotationQuat() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel20IsAnimationLastFrameEjNS1_12AnimationBitE",
+   "demangled": "poke_3d::model::BaseModel::IsAnimationLastFrame(unsigned int, poke_3d::model::BaseModel::AnimationBit) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel21GetJointWorldPositionEi",
+   "demangled": "poke_3d::model::BaseModel::GetJointWorldPosition(int) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel8GetScaleEv",
+   "demangled": "poke_3d::model::BaseModel::GetScale() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel9IsCreatedEv",
+   "demangled": "poke_3d::model::BaseModel::IsCreated() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus10GetDressupEv",
+   "demangled": "Savedata::MyStatus::GetDressup() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus6GetSexEv",
+   "demangled": "Savedata::MyStatus::GetSex() const"
+  },
+  {
+   "mangled": "_ZTIN3app2ui6UIViewE",
+   "demangled": "typeinfo for app::ui::UIView"
+  },
+  {
+   "mangled": "_ZTIN4gfl215renderingengine8renderer17RenderingPipeLineE",
+   "demangled": "typeinfo for gfl2::renderingengine::renderer::RenderingPipeLine"
+  },
+  {
+   "mangled": "_ZTIN7GameSys8GameProcE",
+   "demangled": "typeinfo for GameSys::GameProc"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv117__class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv120__si_class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__si_class_type_info"
+  },
+  {
+   "mangled": "_ZTVN4gfl215renderingengine10scenegraph8resource28AnimationResourceNodeFactoryE",
+   "demangled": "vtable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNodeFactory"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZdaPv",
+   "demangled": "operator delete[](void*)"
+  },
+  {
+   "mangled": "_ZdlPv",
+   "demangled": "operator delete(void*)"
+  },
+  {
+   "mangled": "_ZnajPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "operator new[](unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZnwjPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "operator new(unsigned int, gfl2::heap::CtrHeapBase*)"
+  }
+ ]
+}

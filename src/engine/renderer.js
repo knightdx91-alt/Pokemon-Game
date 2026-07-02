@@ -17,11 +17,47 @@ window.GameRenderer = (function () {
     let _tilesetMeta        = null;
 
     // NPC sprite state
-    let _npcIndex    = null;
+    let _npcIndex          = null;
+    let _npcIndexPlatinum  = null;   // Sinnoh/Platinum sprites, preferred on sinnoh maps
     let _npcImgCache = new Map();
 
     // Player sprite state
     let _playerImg = null;
+
+    // Pre-rendered textured map background (DS maps rendered from their 3D
+    // models). When present it is drawn instead of the metatile grid.
+    let _bgPath    = null;
+    let _bgImg     = null;
+
+    function loadBackground(path) {
+        if (path === _bgPath) return;
+        _bgPath = path;
+        _bgImg  = null;
+        if (!path) return;
+        // Reuse a neighbour image if it's already loaded (avoids a reload flash
+        // when the player crosses into a map that was showing as a neighbour).
+        const cached = _neighborImgs.get(path);
+        if (cached instanceof HTMLImageElement) { _bgImg = cached; return; }
+        const img = new Image();
+        img.onload  = () => { if (_bgPath === path) _bgImg = img; _neighborImgs.set(path, img); };
+        img.onerror = () => { if (_bgPath === path) console.warn(`[Renderer] Failed to load background: ${path}`); };
+        img.src = path;
+    }
+
+    // Cache of neighbouring-map background images for seamless overworld rendering.
+    let _neighborImgs = new Map();   // path -> Image | 'loading' | 'error'
+    function _getNeighborImg(path) {
+        if (!path) return null;
+        const v = _neighborImgs.get(path);
+        if (v instanceof HTMLImageElement) return v;
+        if (v === 'loading' || v === 'error') return null;
+        _neighborImgs.set(path, 'loading');
+        const img = new Image();
+        img.onload  = () => _neighborImgs.set(path, img);
+        img.onerror = () => _neighborImgs.set(path, 'error');
+        img.src = path;
+        return null;
+    }
 
     // FPS tracking
     let _fpsFrameCount = 0;
@@ -140,8 +176,39 @@ window.GameRenderer = (function () {
             loadTileset(wantedTileset);
         }
 
+        // Kick off textured-background load if the map has one (DS maps)
+        const wantedBg = _map.getBackground ? _map.getBackground() : null;
+        if (wantedBg !== _bgPath) loadBackground(wantedBg);
+
         ctx.fillStyle = COLORS.bg;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Fast path: draw the pre-rendered textured map (16 px/tile, grid-aligned).
+        // For seamless overworlds, adjacent maps are drawn first at their global
+        // offsets so the world is continuous (no hard transition, Emerald-style);
+        // the current map is drawn on top, its transparent edges letting the
+        // neighbours show through.
+        const useBg = _bgImg && wantedBg;
+        if (useBg) {
+            ctx.imageSmoothingEnabled = false;
+            const neighbors = _map.getMatrixNeighbors ? _map.getMatrixNeighbors() : null;
+            if (neighbors) {
+                for (const nb of neighbors) {
+                    const img = _getNeighborImg(nb.background);
+                    if (!img) continue;
+                    const dx = (nb.ox - vcamX) * TILE_PX;
+                    const dy = (nb.oy - vcamY) * TILE_PX;
+                    const dw = img.naturalWidth, dh = img.naturalHeight;
+                    if (dx > canvas.width || dy > canvas.height || dx + dw < 0 || dy + dh < 0) continue;
+                    ctx.drawImage(img, dx, dy, dw, dh);
+                }
+            }
+            ctx.drawImage(
+                _bgImg,
+                -vcamX * TILE_PX, -vcamY * TILE_PX,
+                _bgImg.naturalWidth, _bgImg.naturalHeight
+            );
+        }
 
         const warpSet = new Set();
         const signSet = new Set();
@@ -150,7 +217,7 @@ window.GameRenderer = (function () {
             if (_map.current.signs) _map.current.signs.forEach(s => signSet.add(`${s.x},${s.y}`));
         }
 
-        for (let ty = -1; ty <= vh; ty++) {
+        if (!useBg) for (let ty = -1; ty <= vh; ty++) {
             for (let tx = -1; tx <= vw; tx++) {
                 const worldX = tileStartX + tx;
                 const worldY = tileStartY + ty;
@@ -194,14 +261,9 @@ window.GameRenderer = (function () {
                     } else {
                         ctx.drawImage(img, 0, 0, 16, 16, sx, sy, TILE_PX, TILE_PX);
                     }
-                } else if (_npcIndex && stem && _npcIndex[stem] !== undefined) {
-                    // Sprite in index but not yet loaded — skip silently this frame
-                } else if (_npcIndex && stem) {
-                    // Unknown sprite — draw a generic person silhouette placeholder
-                    const pad = 3;
-                    ctx.fillStyle = '#888888';
-                    ctx.fillRect(sx + pad, sy + pad, TILE_PX - pad * 2, TILE_PX - pad * 2);
                 }
+                // Objects with no sprite (invisible interaction triggers, dynamic
+                // VAR_* graphics, etc.) draw nothing — no placeholder square.
             }
         }
 
@@ -252,19 +314,35 @@ window.GameRenderer = (function () {
             .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
             .then(data => { _npcIndex = data; })
             .catch(e => console.warn('[Renderer] Failed to load NPC sprite index:', e));
+        // Sinnoh (Platinum) sprites live in a separate index so they don't
+        // clobber the Kanto sprites for shared stems (youngster, mom, …).
+        fetch('data/sprites/npcs/platinum/index.json')
+            .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
+            .then(data => { _npcIndexPlatinum = data; })
+            .catch(() => { _npcIndexPlatinum = {}; });
+    }
+
+    /** Resolve a sprite path for a stem, preferring Platinum art on Sinnoh maps. */
+    function _npcPath(stem) {
+        const region = _map && _map.region;
+        if (region === 'sinnoh' && _npcIndexPlatinum && _npcIndexPlatinum[stem]) {
+            return _npcIndexPlatinum[stem];
+        }
+        return _npcIndex && _npcIndex[stem] ? _npcIndex[stem] : null;
     }
 
     function _getNpcImg(stem) {
-        if (!_npcIndex || !_npcIndex[stem]) return null;
-        if (_npcImgCache.has(stem)) {
-            const v = _npcImgCache.get(stem);
+        const path = _npcPath(stem);
+        if (!path) return null;
+        if (_npcImgCache.has(path)) {
+            const v = _npcImgCache.get(path);
             return (v instanceof HTMLImageElement) ? v : null;
         }
-        _npcImgCache.set(stem, 'loading');
+        _npcImgCache.set(path, 'loading');
         const img = new Image();
-        img.onload  = () => { _npcImgCache.set(stem, img); };
-        img.onerror = () => { _npcImgCache.set(stem, 'error'); };
-        img.src = _npcIndex[stem];
+        img.onload  = () => { _npcImgCache.set(path, img); };
+        img.onerror = () => { _npcImgCache.set(path, 'error'); };
+        img.src = path;
         return null;
     }
 

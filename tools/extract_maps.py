@@ -155,79 +155,19 @@ def extract_hgss_maps():
 
 def extract_platinum_maps():
     """
-    Extract Platinum event data (NPCs, warps, signs) into unified format.
-    Each events_<mapname>.json in res/field/events/ becomes one output file.
-    Encounters are handled separately by extract_encounters.py.
+    Platinum maps are 3D and need the full land-data → matrix chain to become
+    usable 2D maps (collision + terrain appearance), so their extraction lives
+    in the dedicated converter tools/extract_platinum_maps.py. This delegates to
+    it so that `extract_maps.py` remains the single entry point.
     """
-    events_dir = os.path.join(SOURCE_DIR, "pokeplatinum", "res", "field", "events")
-    out_dir = os.path.join(DATA_DIR, "sinnoh")
-    os.makedirs(out_dir, exist_ok=True)
-
-    if not os.path.isdir(events_dir):
-        print(f"[pokeplatinum] events dir not found: {events_dir}", file=sys.stderr)
+    try:
+        import extract_platinum_maps as plat
+    except ImportError as e:
+        print(f"[pokeplatinum] converter unavailable: {e}", file=sys.stderr)
         return 0
-
-    count = 0
-    for filename in sorted(os.listdir(events_dir)):
-        if not filename.endswith(".json"):
-            continue
-
-        # Strip leading "events_" prefix for the map name
-        map_name = filename.replace("events_", "").replace(".json", "")
-
-        with open(os.path.join(events_dir, filename)) as f:
-            raw = json.load(f)
-
-        unified = {
-            "id": map_name,
-            "name": map_name.replace("_", " ").title(),
-            "region": "sinnoh",
-            "source": "platinum",
-            "npcs": [
-                {
-                    "local_id": e.get("id"),
-                    "graphics_id": e.get("graphics_id"),
-                    "x": e.get("x"),
-                    "y": e.get("y"),
-                    "z": e.get("z"),
-                    "movement_type": e.get("movement_type"),
-                    "trainer_type": e.get("trainer_type"),
-                    "script": e.get("script"),
-                    "hidden_flag": e.get("hidden_flag"),
-                }
-                for e in raw.get("object_events", [])
-            ],
-            "warps": [
-                {
-                    "x": w.get("x"),
-                    "y": w.get("y"),
-                    "z": w.get("z"),
-                    "dest_map": w.get("dest_map"),
-                    "dest_warp_id": w.get("dest_warp_id"),
-                }
-                for w in raw.get("warp_events", [])
-            ],
-            "signs": [
-                {
-                    "x": b.get("x"),
-                    "y": b.get("y"),
-                    "z": b.get("z"),
-                    "script": b.get("script"),
-                    "type": b.get("type"),
-                    "player_facing_dir": b.get("player_facing_dir"),
-                }
-                for b in raw.get("bg_events", [])
-            ],
-            "coord_events": raw.get("coord_events", []),
-        }
-
-        out_path = os.path.join(out_dir, f"{map_name}.json")
-        with open(out_path, "w") as f:
-            json.dump(unified, f, indent=2)
-        count += 1
-
-    print(f"[pokeplatinum] Extracted {count} maps → data/maps/sinnoh/")
-    return count
+    plat.main()
+    out_dir = os.path.join(DATA_DIR, "sinnoh")
+    return len([f for f in os.listdir(out_dir) if f.endswith(".json")]) if os.path.isdir(out_dir) else 0
 
 
 if __name__ == "__main__":

@@ -364,9 +364,18 @@ body.orient-reverse-landscape #screen-primary { height: 100vh; width: auto; max-
 
 /* === BATTLE OVERLAY === */
 #battle-overlay {
-    position: absolute; inset: 0; z-index: 80; background: #1a2030;
+    position: absolute; inset: 0; z-index: 80; background: #000;
+    display: flex; align-items: center; justify-content: center;
+}
+/* Fixed GBA 3:2 frame, letterboxed inside the screen. Everything inside scales
+   together (container queries drive font sizes), so text and healthboxes stay
+   in proportion regardless of the screen's own aspect ratio. */
+#bt-frame {
+    position: relative; height: 100%; width: auto; max-width: 100%;
+    aspect-ratio: 3 / 2; overflow: hidden; background: #1a2030;
     display: flex; flex-direction: column;
-    font-family: 'Press Start 2P', monospace; font-size: 10px; color: var(--fr-text);
+    container-type: inline-size;
+    font-family: 'PokeFireRed', 'Press Start 2P', monospace; color: var(--fr-text);
 }
 #bt-field {
     flex: 1; position: relative;
@@ -378,7 +387,6 @@ body.orient-reverse-landscape #screen-primary { height: 100vh; width: auto; max-
     background-repeat: repeat; background-size: 64px auto;
     opacity: 0.92; pointer-events: none; z-index: 0;
 }
-#bt-enemy-info, #bt-player-info,
 #bt-enemy-sprite-wrap, #bt-player-sprite-wrap { z-index: 1; }
 
 #bt-ball-anim {
@@ -401,78 +409,115 @@ body.orient-reverse-landscape #screen-primary { height: 100vh; width: auto; max-
 @keyframes bt-pokemon-appear { 0% { transform: scale(0); opacity: 0; } 60% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 @keyframes bt-flash { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-/* Battle info boxes — FireRed healthbox style */
-#bt-enemy-info {
-    position: absolute; top: 3%; left: 2%;
-    background: var(--fr-body);
-    border: 2px solid var(--fr-border);
-    box-shadow: var(--fr-window), 2px 2px 0 rgba(0,0,0,0.35);
-    padding: 4px 8px; min-width: 96px; border-radius: 8px;
+/* Battle healthboxes — pixel-exact Emerald graphics on a native-res canvas.
+   Sized as a % of the field so they scale with the battle screen. */
+/* Override the generic #screen-primary canvas rule (which forces
+   width/height:100% + black bg) — these are floating GBA healthboxes. */
+#bt-frame .bt-hb {
+    position: absolute; image-rendering: pixelated; image-rendering: crisp-edges;
+    background: none; z-index: 2; height: auto;
 }
-#bt-player-info {
-    position: absolute; bottom: 3%; right: 2%;
-    background: var(--fr-body);
-    border: 2px solid var(--fr-border);
-    box-shadow: var(--fr-window), 2px 2px 0 rgba(0,0,0,0.35);
-    padding: 4px 8px; min-width: 108px; border-radius: 8px;
-}
-#bt-enemy-name, #bt-player-name { font-weight: bold; color: var(--fr-text); font-size: 8px; }
-#bt-enemy-name-row, #bt-player-name-row { display: flex; justify-content: space-between; align-items: center; }
-.bt-level-row { font-size: 7px; color: var(--fr-text-dim); margin-top: 1px; }
-.bt-hp-wrap { background: var(--fr-tan); border: 1px solid var(--fr-border); border-radius: 3px; height: 6px; margin-top: 3px; overflow: hidden; }
-.bt-hp-bar { height: 100%; transition: width 0.3s ease; }
-.bt-hp-bar.hp-green  { background: #58d038; }
-.bt-hp-bar.hp-yellow { background: #f8c800; }
-.bt-hp-bar.hp-red    { background: #f83800; }
-.bt-hp-text { font-size: 7px; color: var(--fr-text-dim); text-align: right; margin-top: 1px; }
-#bt-enemy-status, #bt-player-status { font-size: 7px; font-weight: bold; min-height: 9px; margin-top: 1px; }
+#bt-frame .bt-hb-enemy  { top: 6%;  left: 3%;  width: 43%; }
+#bt-frame .bt-hb-player { bottom: 9%; right: 3%; width: 44%; }
 
 #bt-enemy-sprite-wrap { position: absolute; top: 5%; right: 10%; width: 40%; height: 45%; display: flex; align-items: center; justify-content: center; }
 #bt-enemy-sprite { max-width: 100%; max-height: 100%; image-rendering: pixelated; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
 #bt-player-sprite-wrap { position: absolute; bottom: 5%; left: 10%; width: 36%; height: 42%; display: flex; align-items: center; justify-content: center; }
 #bt-player-sprite { max-width: 100%; max-height: 100%; image-rendering: pixelated; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
 
-/* Battle bottom panel — FireRed message box style */
+/* Bundled FireRed pixel font — used for pixel-exact battle-menu text. */
+@font-face {
+    font-family: 'PokeFireRed';
+    src: url('src/assets/fonts/pokefirered.woff2') format('woff2'),
+         url('src/assets/fonts/pokefirered.ttf') format('truetype');
+    font-display: swap;
+}
+
+/* Battle bottom panel — real Emerald textbox frames (src/assets/battle/ui/).
+   The frame PNG is the background; boxes are positioned over its regions. */
 #bt-bottom {
-    height: 38%; min-height: 52px;
-    background: var(--fr-body);
-    border-top: 3px solid var(--fr-border);
-    display: flex; flex-direction: column;
+    position: relative;
+    height: 30%; min-height: 48px;
+    background-repeat: no-repeat; background-position: center bottom;
+    background-size: 100% 100%;
+    image-rendering: pixelated; image-rendering: crisp-edges;
+    font-family: 'PokeFireRed', 'Press Start 2P', monospace;
 }
+#bt-bottom.state-msg    { background-image: url('src/assets/battle/ui/msg_frame.png'); }
+#bt-bottom.state-action { background-image: url('src/assets/battle/ui/action_frame.png'); }
+#bt-bottom.state-move   { background-image: url('src/assets/battle/ui/move_frame.png'); }
+#bt-bottom.state-plain  { background: var(--fr-body); border-top: 3px solid var(--fr-border); }
+
+/* Bitmap-font text layer (drawn by GameFont). Fills the bar; buttons sit on
+   top as transparent hit areas. Override the generic canvas rule's black bg. */
+#bt-frame #bt-menu-canvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    background: none; image-rendering: pixelated; image-rendering: crisp-edges;
+    pointer-events: none; z-index: 1;
+}
+/* DOM labels become invisible hit areas — text is rendered on the canvas. */
+#bt-frame #bt-text,
+#bt-frame .bt-act,
+#bt-frame .bt-move-name { color: transparent !important; text-shadow: none !important; }
+#bt-frame .bt-act.selected::before,
+#bt-frame .bt-move-btn.selected::before { content: none; }
+#bt-frame #bt-move-info { display: none; }
+
+/* Message text — white on the teal frame, like Emerald. */
 #bt-text-box {
-    flex: 1; padding: 5px 10px; display: flex; align-items: center;
-    border-bottom: 1px solid var(--fr-tan);
+    position: absolute; left: 3%; top: 12%; right: 4%; bottom: 12%;
+    display: flex; align-items: center;
 }
-#bt-text { font-size: 8px; color: var(--fr-text); white-space: pre-wrap; line-height: 1.8; }
+#bt-text {
+    font-family: 'PokeFireRed', 'Press Start 2P', monospace;
+    font-size: 6.2cqw; line-height: 1.2; color: #f8f8f8;
+    text-shadow: 0.4cqw 0.4cqw 0 #384858; white-space: pre-wrap;
+}
+/* When acting as the action-select prompt, it sits over the teal-left box. */
+#bt-bottom.state-action #bt-text-box { right: 52%; }
 
-/* Battle action grid — FireRed 2x2 FIGHT/BAG/POKÉMON/RUN */
-#bt-action-box { display: none; grid-template-columns: 1fr 1fr; gap: 3px; padding: 4px; flex: 1; }
+/* FIGHT/BAG/POKéMON/RUN — 2x2 over the right white command box. */
+#bt-action-box {
+    display: none; position: absolute; left: 51%; right: 3%; top: 12%; bottom: 12%;
+    grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr;
+    align-items: center; column-gap: 4px;
+}
 .bt-act {
-    background: var(--fr-body-lt); color: var(--fr-text);
-    border: 2px solid var(--fr-border); border-radius: 8px;
-    font-family: 'Press Start 2P', monospace; font-size: 8px;
-    cursor: pointer; padding: 4px;
-    box-shadow: 1px 1px 0 rgba(0,0,0,0.25);
+    background: none; border: none; color: #404050;
+    font-family: 'PokeFireRed', 'Press Start 2P', monospace; font-size: 6cqw;
+    text-align: left; padding: 0 0 0 5cqw; cursor: pointer; position: relative;
+    white-space: nowrap;
 }
-.bt-act.selected, .bt-act:hover { background: var(--fr-red); color: #fff; border-color: var(--fr-red-dark); }
+.bt-act.selected::before, .bt-move-btn.selected::before {
+    content: '▶'; position: absolute; left: 0.5cqw; color: #e83010; font-size: 4.5cqw;
+}
+.bt-act.selected { color: #202030; }
 
-/* Move list */
-#bt-move-box { display: none; grid-template-columns: 1fr 1fr; gap: 3px; padding: 4px; flex: 1; overflow-y: auto; }
-.bt-move-btn {
-    background: var(--fr-body-lt); color: var(--fr-text);
-    border: 2px solid var(--fr-border); border-radius: 8px;
-    font-family: 'Press Start 2P', monospace; font-size: 8px;
-    cursor: pointer; padding: 3px 5px; display: flex; flex-direction: column; gap: 1px;
-    text-align: left; box-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+/* Move list over the left white box + type/PP over the right white box. */
+#bt-move-box {
+    display: none; position: absolute; left: 4%; width: 58%; top: 12%; bottom: 12%;
+    grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; align-items: center;
+    column-gap: 6px; overflow: visible;
 }
-.bt-move-btn.selected, .bt-move-btn:hover { background: rgba(230,8,8,0.12); border-color: var(--fr-red); }
-.bt-move-btn.pp-zero { opacity: 0.4; cursor: not-allowed; }
-.bt-move-btn.bt-move-empty { opacity: 0.25; cursor: default; }
-.bt-move-btn.bt-move-empty.selected { background: transparent; border-color: var(--fr-red); }
-.bt-move-name { font-weight: bold; color: var(--fr-text); font-size: 8px; }
-.bt-move-pp   { font-size: 7px; color: var(--fr-text-dim); }
-.bt-move-pp.pp-empty { color: var(--fr-red); }
-.bt-move-type { font-size: 7px; }
+#bt-move-info {
+    position: absolute; left: 66%; right: 4%; top: 12%; bottom: 12%;
+    display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    font-family: 'PokeFireRed', 'Press Start 2P', monospace; color: #404050;
+}
+.bt-mi-pp   { font-size: 5.2cqw; }
+.bt-mi-type { font-size: 5.2cqw; font-weight: bold; }
+.bt-move-btn {
+    background: none; border: none; color: #404050;
+    font-family: 'PokeFireRed', 'Press Start 2P', monospace; font-size: 5.6cqw;
+    text-align: left; padding: 0 0 0 5cqw; cursor: pointer; position: relative;
+    display: flex; align-items: center; white-space: nowrap;
+}
+.bt-move-btn.selected { color: #202030; }
+.bt-move-btn.pp-zero { opacity: 0.45; cursor: not-allowed; }
+.bt-move-btn.bt-move-empty { opacity: 0; cursor: default; }
+.bt-move-name { font-family: inherit; color: inherit; font-size: 5.6cqw; }
+.bt-move-pp   { display: none; }
+.bt-move-type { display: none; }
 
 /* Type colors — muted for light bg readability */
 [data-type="normal"]   { color: #606858; } [data-type="fire"]     { color: #b04010; }

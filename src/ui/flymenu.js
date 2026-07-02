@@ -2,18 +2,13 @@
 window.FlyMenu = (function () {
     'use strict';
 
+    // One starting town per region. Coordinates match STARTING_TOWNS in main.js.
     const FLY_DESTINATIONS = [
-        { label: 'Viridian City',   map: 'ViridianCity',   x: 26, y: 27, region: 'kanto' },
-        { label: 'Pewter City',     map: 'PewterCity',     x: 17, y: 26, region: 'kanto' },
-        { label: 'Cerulean City',   map: 'CeruleanCity',   x: 22, y: 20, region: 'kanto' },
-        { label: 'Vermilion City',  map: 'VermilionCity',  x: 15, y: 7,  region: 'kanto' },
-        { label: 'Lavender Town',   map: 'LavenderTown',   x: 6,  y: 6,  region: 'kanto' },
-        { label: 'Celadon City',    map: 'CeladonCity',    x: 48, y: 12, region: 'kanto' },
-        { label: 'Fuchsia City',    map: 'FuchsiaCity',    x: 25, y: 32, region: 'kanto' },
-        { label: 'Saffron City',    map: 'SaffronCity',    x: 24, y: 39, region: 'kanto' },
-        { label: 'Cinnabar Island', map: 'CinnabarIsland', x: 14, y: 12, region: 'kanto' },
-        { label: 'Pallet Town',     map: 'PalletTown',     x: 10, y: 10, region: 'kanto' },
-        { label: 'CANCEL',          map: null },
+        { label: 'Kanto — Pallet Town',      map: 'PalletTown',     x: 11, y: 10, region: 'kanto'  },
+        { label: 'Johto — New Bark Town',    map: 'NewBarkTown',    x: 13, y: 15, region: 'johto'  },
+        { label: 'Hoenn — Littleroot Town',  map: 'LittlerootTown', x: 9,  y: 10, region: 'hoenn'  },
+        { label: 'Sinnoh — Twinleaf Town',   map: 'twinleaf_town',  x: 20, y: 22, region: 'sinnoh' },
+        { label: 'CANCEL',                   map: null },
     ];
 
     let _el    = null;

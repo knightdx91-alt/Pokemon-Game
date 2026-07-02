@@ -19,7 +19,7 @@
 /* STABLE — holds cores/assets. Keep in sync with OFFLINE_CACHE_NAME in emulator.html. */
 var RUNTIME = 'retroplay-offline-v2';
 /* Versioned — holds precached HTML. Bump this (only) to force fresh pages. */
-var SHELL   = 'retroplay-shell-v15';
+var SHELL   = 'retroplay-shell-v16';
 
 /* Hosts we must never cache or intercept (auth, Drive picker, uploads). */
 var BYPASS_HOSTS = [
@@ -80,9 +80,11 @@ self.addEventListener('fetch', function (e) {
         (req.destination === 'document');
 
     if (isNavigation) {
-        /* Network-first for pages → SHELL cache. */
+        /* Network-first for pages → SHELL cache. Use cache:'reload' so the HTML
+           always comes fresh from the server (bypassing the browser HTTP cache),
+           which guarantees the page references the newest ?v=<sha> script URLs. */
         e.respondWith(
-            fetch(req).then(function (resp) {
+            fetch(req, { cache: 'reload' }).then(function (resp) {
                 if (resp && resp.status === 200) {
                     var clone = resp.clone();
                     caches.open(SHELL).then(function (c) { c.put(req, clone); });

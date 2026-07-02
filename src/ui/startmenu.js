@@ -4,6 +4,7 @@ window.GameStartMenu = (function () {
 
     // Items match EE's BuildNormalStartMenu order
     const ITEMS = [
+        { id: 'POKEDEX',  label: 'POKéDEX'  },
         { id: 'POKEMON',  label: 'POKéMON'  },
         { id: 'BAG',      label: 'BAG'      },
         { id: 'PLAYER',   label: ''         },
@@ -268,34 +269,43 @@ window.GameStartMenu = (function () {
         voidEl.className = 'sm-void';
         topRow.appendChild(voidEl);
 
-        // Right panel — fully canvas-rendered so Chrome dark mode cannot touch it
-        const PW = 108, ROW_H = 18, PAD_X = 6, FONT_PX = 8;
-        const PH = ITEMS.length * ROW_H;
+        // Right panel — drawn at 2x with the real FireRed window frame + small
+        // font (same assets the bag/party screens use), sized to fit its labels.
+        const PS = 1, ROW_H = 13, PAD_X = 7, ARROW_W = 8;
         const panelCanvas = document.createElement('canvas');
-        panelCanvas.width  = PW;
-        panelCanvas.height = PH;
-        panelCanvas.style.cssText = 'display:block;flex:none;width:48%;min-width:88px;max-width:116px;height:auto;pointer-events:all;border-left:2px solid #101010;border-top:2px solid #101010;border-bottom:2px solid #101010;cursor:pointer;image-rendering:pixelated;';
+        panelCanvas.style.cssText = 'display:block;flex:none;width:48%;min-width:88px;max-width:116px;height:auto;pointer-events:all;cursor:pointer;image-rendering:pixelated;';
         const pc = panelCanvas.getContext('2d');
+        pc.imageSmoothingEnabled = false;
+
+        function _labelFor(itm) {
+            return (itm.id === 'PLAYER') ? _playerName().toUpperCase() : itm.label.toUpperCase();
+        }
 
         function _drawPanel() {
-            pc.clearRect(0, 0, PW, PH);
-            // White background
-            pc.fillStyle = '#f8f8f0';
-            pc.fillRect(0, 0, PW, PH);
-            // Row highlight for selected
-            pc.fillStyle = 'rgba(0,0,0,0.08)';
-            pc.fillRect(0, selectedIdx * ROW_H, PW, ROW_H);
-            // Text
-            pc.font = 'bold ' + FONT_PX + 'px "Press Start 2P", monospace';
-            pc.textBaseline = 'middle';
-            ITEMS.forEach(function(itm, i) {
-                const y = i * ROW_H + ROW_H / 2;
-                pc.fillStyle = '#181818';
-                if (i === selectedIdx) {
-                    pc.fillText('▶', PAD_X, y);
+            _loadPartyAssets(function(assets) {
+                const img = assets.img || {}, meta = assets.meta || {};
+                const font = _tintFont(img.font_small, '#5a5a5a', '#c8c8c0');
+                // size panel to widest label
+                let maxW = 0;
+                ITEMS.forEach(function(itm) {
+                    maxW = Math.max(maxW, _measureText(meta, 'small', _labelFor(itm)));
+                });
+                const PW_GBA = PAD_X + ARROW_W + maxW + PAD_X;
+                const PH_GBA = 10 + ITEMS.length * ROW_H;
+                if (panelCanvas.width !== PW_GBA * PS) {
+                    panelCanvas.width = PW_GBA * PS;
+                    panelCanvas.height = PH_GBA * PS;
+                    pc.imageSmoothingEnabled = false;
                 }
-                const label = (itm.id === 'PLAYER') ? _playerName().toUpperCase() : itm.label.toUpperCase();
-                pc.fillText(label, PAD_X + 12, y);
+                pc.clearRect(0, 0, panelCanvas.width, panelCanvas.height);
+                _draw9Slice(pc, img.msg_frame, 0, 0, PW_GBA, PH_GBA, '#f8f8f0', PS);
+                ITEMS.forEach(function(itm, i) {
+                    const y = 8 + i * ROW_H;
+                    if (i === selectedIdx) {
+                        _drawFRText(pc, font, meta, 'small', '▶', PAD_X - 2, y, PS);
+                    }
+                    _drawFRText(pc, font, meta, 'small', _labelFor(itm), PAD_X + ARROW_W, y, PS);
+                });
             });
         }
         _drawPanel();
@@ -303,38 +313,51 @@ window.GameStartMenu = (function () {
         // Map canvas clicks to item selection
         panelCanvas.addEventListener('click', function(e) {
             const rect = panelCanvas.getBoundingClientRect();
-            const scaleY = PH / rect.height;
-            const iy = Math.floor((e.clientY - rect.top) * scaleY / ROW_H);
+            const scaleY = panelCanvas.height / rect.height;   // native px per CSS px
+            const localY = (e.clientY - rect.top) * scaleY;    // native y
+            const iy = Math.floor((localY - 8 * PS) / (ROW_H * PS));
             if (iy >= 0 && iy < ITEMS.length) { selectedIdx = iy; _confirmSelected(); }
         });
 
         topRow.appendChild(panelCanvas);
         menuEl.appendChild(topRow);
 
-        // Blue description bar at bottom — also canvas
-        const DW = menuEl.offsetWidth || 240, DH = 34;
+        // Blue description bar at bottom — real FireRed small font on FR blue.
+        const DS = 2, LINE_H = 12;
+        const DW = (menuEl.offsetWidth || 240);
         const descCanvas = document.createElement('canvas');
-        descCanvas.width  = DW || 240;
-        descCanvas.height = DH;
-        descCanvas.style.cssText = 'display:block;flex:none;width:100%;height:34px;pointer-events:none;';
+        descCanvas.width  = DW * DS;
+        descCanvas.height = 40 * DS;
+        descCanvas.style.cssText = 'display:block;flex:none;width:100%;height:40px;pointer-events:none;image-rendering:pixelated;';
         const dc = descCanvas.getContext('2d');
-        dc.fillStyle = '#2870c0';
-        dc.fillRect(0, 0, descCanvas.width, DH);
-        dc.fillStyle = '#ffffff';
-        dc.font = '7px "Press Start 2P", monospace';
-        dc.textBaseline = 'top';
-        const selItem = ITEMS[selectedIdx];
-        const descText = selItem ? (ITEM_DESCS[selItem.id] || '') : '';
-        // Word-wrap simple: split by space, draw lines
-        const words = descText.split(' ');
-        let line = '', lineY = 6, maxW = descCanvas.width - 12;
-        words.forEach(function(w) {
-            const test = line ? line + ' ' + w : w;
-            if (dc.measureText(test).width > maxW && line) {
-                dc.fillText(line, 6, lineY); lineY += 11; line = w;
-            } else { line = test; }
-        });
-        if (line) dc.fillText(line, 6, lineY);
+        dc.imageSmoothingEnabled = false;
+        function _drawDesc() {
+            dc.fillStyle = '#3878c8';
+            dc.fillRect(0, 0, descCanvas.width, descCanvas.height);
+            _loadPartyAssets(function(assets) {
+                const img = assets.img || {}, meta = assets.meta || {};
+                const font = _tintFont(img.font_small, '#f8f8f8', '#405890');
+                dc.fillStyle = '#3878c8';
+                dc.fillRect(0, 0, descCanvas.width, descCanvas.height);
+                const selItem = ITEMS[selectedIdx];
+                const descText = selItem ? (ITEM_DESCS[selItem.id] || '') : '';
+                // honour explicit newlines, then word-wrap each to width
+                const maxW = DW - 12;
+                let ly = 6;
+                descText.split('\n').forEach(function(para) {
+                    let line = '';
+                    para.split(' ').forEach(function(w) {
+                        const test = line ? line + ' ' + w : w;
+                        if (_measureText(meta, 'small', test) > maxW && line) {
+                            _drawFRText(dc, font, meta, 'small', line, 6, ly, DS);
+                            ly += LINE_H; line = w;
+                        } else { line = test; }
+                    });
+                    if (line) { _drawFRText(dc, font, meta, 'small', line, 6, ly, DS); ly += LINE_H; }
+                });
+            });
+        }
+        _drawDesc();
         menuEl.appendChild(descCanvas);
     }
 
@@ -1171,14 +1194,9 @@ window.GameStartMenu = (function () {
         pillArrow(16*S, -1);
         pillArrow(98*S, +1);
 
-        // ── Pocket name centered in the pill (pill interior x=22..98) ────────
-        // Text sits directly on the cream pill baked into the EE background.
-        // EE's font1 is a small proportional sans — use plain sans-serif.
-        ctx.textBaseline = 'top';
-        ctx.fillStyle = '#484848';
-        ctx.font = (8*S) + 'px Arial, "Helvetica Neue", sans-serif';
-        var labelW = ctx.measureText(pocket.label).width;
-        ctx.fillText(pocket.label, (60*S) - labelW/2, 12*S);
+        // ── Pocket name centered in the pill, in the GBA bitmap font ─────────
+        var labelW = window.GameFont ? GameFont.measure(pocket.label.toUpperCase(), 'small') : 0;
+        _pdT(ctx, pocket.label.toUpperCase(), 60 - labelW / 2, 13, '#484848');
 
         // ── Pocket icon row directly under the pill ──────────────────────────
         var iconRowY = 25*S;
@@ -1214,27 +1232,23 @@ window.GameStartMenu = (function () {
 
         // ── Description text in the white bottom-left box ────────────────────
         var desc = isClosePack ? 'Return to the field.' : (selItem.desc || selItem.description || '');
-        ctx.fillStyle = TEXT;
-        ctx.font = (7*S) + 'px "Press Start 2P", monospace';
-        ctx.textBaseline = 'top';
-        var words = desc.split(' '), line = '', lx = 7*S, ly = 107*S, maxW = 94*S, lineH = 10*S;
-        for (var w = 0; w < words.length; w++) {
-            var test = line ? line + ' ' + words[w] : words[w];
-            if (ctx.measureText(test).width > maxW && line) {
-                ctx.fillText(line, lx, ly); line = words[w]; ly += lineH;
-                if (ly > 150*S) break;
-            } else { line = test; }
-        }
-        if (line && ly <= 150*S) ctx.fillText(line, lx, ly);
+        (function () {
+            var words = desc.split(' '), line = '', lx = 7, ly = 107, maxW = 94, lineH = 10;
+            for (var w = 0; w < words.length; w++) {
+                var test = line ? line + ' ' + words[w] : words[w];
+                if (window.GameFont && GameFont.measure(test, 'small') > maxW && line) {
+                    _pdT(ctx, line, lx, ly, TEXT); line = words[w]; ly += lineH;
+                    if (ly > 150) break;
+                } else line = test;
+            }
+            if (line && ly <= 150) _pdT(ctx, line, lx, ly, TEXT);
+        })();
 
         // ── Item list inside the bg's right panel (x≈108..236, y≈4..156) ─────
         var MAX_VIS = 9;
         var totalRows = items.length + 1; // +1 for Cancel
         var scroll = Math.max(0, Math.min(_subIdx - Math.floor(MAX_VIS/2), totalRows - MAX_VIS));
         if (scroll < 0) scroll = 0;
-
-        ctx.font = (7*S) + 'px "Press Start 2P", monospace';
-        ctx.textBaseline = 'top';
 
         function drawCursor(cx, cy, h) {
             ctx.fillStyle = TEXT; // EE cursor is dark
@@ -1258,18 +1272,15 @@ window.GameStartMenu = (function () {
                 drawCursor(113*S, row_y, 13*S);
             }
 
+            var rowLy = 8 + j * 16 + 2;   // logical y for bitmap text
             if (idx < items.length) {
                 var item = items[idx];
-                ctx.fillStyle = TEXT;
-                ctx.fillText(item.name || item.itemId || '?', 122*S, row_y);
-                // EE qty format: lowercase x, number right-aligned
-                ctx.fillText('x', 204*S, row_y);
-                var qn = String(item.quantity || 1);
-                ctx.fillText(qn, 230*S - ctx.measureText(qn).width, row_y);
+                _pdT(ctx, (item.name || item.itemId || '?'), 122, rowLy, TEXT);
+                var qn = 'x' + String(item.quantity || 1);
+                var qw = window.GameFont ? GameFont.measure(qn, 'small') : 0;
+                _pdT(ctx, qn, 232 - qw, rowLy, TEXT);
             } else {
-                // EE's cancel entry
-                ctx.fillStyle = TEXT;
-                ctx.fillText('Close Pack', 122*S, row_y);
+                _pdT(ctx, 'CLOSE PACK', 122, rowLy, TEXT);
             }
         }
 
@@ -1285,6 +1296,7 @@ window.GameStartMenu = (function () {
     }
 
     function _buildBag(el) {
+        if (window.GameFont && !GameFont.isReady()) { GameFont.load(function () { _render(); }); }
         el.style.cssText = 'padding:0;overflow:hidden;background:none;position:absolute;inset:0;';
 
         var backBtn = document.createElement('button');
@@ -1668,6 +1680,43 @@ window.GameStartMenu = (function () {
         });
     }
 
+    // ── Platinum summary-screen assets (real pret/pokeplatinum extraction —
+    //    NSCR tilemaps + NCGR tiles + palettes composited to PNG by a one-off
+    //    tool; see baked output under src/assets/platinum/summary/). ──
+    var PLAT_SUM_DIR = 'src/assets/platinum/summary/';
+    var PLAT_SUM_BG = { info:'page_info.png', skills:'page_skills.png',
+                         battle_moves:'page_battle_moves.png', contest_moves:'page_contest_moves.png' };
+    var _platSum = null, _platSumLoading = false, _platSumQ = [];
+    function _loadPlatSummary(cb) {
+        if (_platSum) { cb(_platSum); return; }
+        _platSumQ.push(cb);
+        if (_platSumLoading) return;
+        _platSumLoading = true;
+        var a = { bg: {}, status: [] };
+        var bgKeys = Object.keys(PLAT_SUM_BG);
+        var pending = bgKeys.length + 7;
+        function done() {
+            if (--pending > 0) return;
+            _platSum = a; _platSumLoading = false;
+            var q = _platSumQ; _platSumQ = [];
+            q.forEach(function(f) { f(a); });
+        }
+        bgKeys.forEach(function(k) {
+            var im = new Image();
+            im.onload = function() { a.bg[k] = im; done(); };
+            im.onerror = function() { done(); };
+            im.src = PLAT_SUM_DIR + PLAT_SUM_BG[k];
+        });
+        for (var s = 0; s < 7; s++) (function(s) {
+            var im = new Image();
+            im.onload = function() { a.status[s] = im; done(); };
+            im.onerror = function() { done(); };
+            im.src = PLAT_SUM_DIR + 'status_' + s + '.png';
+        })(s);
+    }
+    // status_N.png order verified visually: 0=PKR 1=PAR 2=FRZ 3=SLP 4=PSN 5=BRN 6=FNT
+    var PLAT_STATUS_IDX = { para:1, freeze:2, sleep:3, poison:4, badpoison:4, burn:5 };
+
     function _openPartySummary(mon, idx, filled, returnCb) {
         var subEl = document.getElementById('start-menu-sub');
         if (!subEl) return;
@@ -1676,20 +1725,24 @@ window.GameStartMenu = (function () {
         if (existing) existing.remove();
         var win = document.createElement('div');
         win.className = 'sm-win party-summary-overlay';
-        win.style.cssText = 'position:absolute;left:3.3%;top:5%;width:90%;height:90%;pointer-events:all;overflow:hidden;z-index:20;';
+        win.style.cssText = 'position:absolute;left:3.3%;top:5%;width:90%;height:90%;pointer-events:all;overflow:hidden;z-index:20;background:#000;';
         subEl.appendChild(win);
 
-        var S = 2;
+        // Native Platinum single-screen resolution (256×192) — kept exact so
+        // the composited background PNGs need no resampling.
+        var SW = 256, SH = 192, S = 2;
         var canvas = document.createElement('canvas');
-        canvas.width = GBA_W * S; canvas.height = GBA_H * S;
+        canvas.width = SW * S; canvas.height = SH * S;
         canvas.style.cssText = 'width:100%;height:100%;image-rendering:pixelated;display:block;';
         win.appendChild(canvas);
         var ctx = canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false;
 
+        var TAB_KEYS = ['info', 'skills', 'battle_moves', 'contest_moves'];
         var TABS = ['Pokémon Info', 'Pokémon Skills', 'Battle Moves', 'Contest Moves'];
         var _tab = 0;
         var _frontImg = null;
+        var _pa = null; // FireRed font assets (reused for text rendering)
 
         var TYPE_COLORS_SUM = {
             Normal:'#a8a878',Fire:'#f08030',Water:'#6890f0',Electric:'#f8d030',
@@ -1713,245 +1766,119 @@ window.GameStartMenu = (function () {
             img.onerror = function() { drawSummary(); };
             img.src = 'data/sprites/pokemon/front/' + name + '.png';
         });
+        _loadPartyAssets(function(pa) { _pa = pa; drawSummary(); });
+        _loadPlatSummary(function() { drawSummary(); });
+
+        // Draw text with the bundled FireRed bitmap font (matches the rest
+        // of the sub-menus); returns the drawn width.
+        function T(text, gx, gy, opts) {
+            opts = opts || {};
+            if (!_pa) return 0;
+            var kind = opts.kind === 'normal' ? 'normal' : 'small';
+            var fontImg = kind === 'normal' ? _pa.img.font_normal : _pa.img.font_small;
+            var color = opts.color || '#181818';
+            var tinted = _tintFont(fontImg, color, opts.shadow || color);
+            var w = _measureText(_pa.meta, kind, text);
+            var x = gx;
+            if (opts.align === 'right') x = gx - w;
+            else if (opts.align === 'center') x = gx - w / 2;
+            _drawFRText(ctx, tinted, _pa.meta, kind, text, x, gy, S);
+            return w;
+        }
 
         function drawSummary() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.imageSmoothingEnabled = false;
 
-            // Right panel purple bg (EE ref)
-            ctx.fillStyle = '#7858b0';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Header bar (purple gradient)
-            var hdrGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
-            hdrGrad.addColorStop(0, '#8848b8'); hdrGrad.addColorStop(0.6, '#c878e8'); hdrGrad.addColorStop(1, '#e8a8f8');
-            ctx.fillStyle = hdrGrad;
-            ctx.fillRect(0, 0, canvas.width, 14*S);
-
-            // Tab title (small sans-serif, EE style)
-            ctx.font = 'bold '+(7*S)+'px Arial, sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(TABS[_tab], 6*S, 7*S);
-
-            // 4 tab dots
-            for (var ti = 0; ti < 4; ti++) {
-                ctx.fillStyle = ti === _tab ? '#ffffff' : 'rgba(255,255,255,0.4)';
-                ctx.beginPath(); ctx.arc((GBA_W/2 - 14 + ti*10)*S, 7*S, 2*S, 0, Math.PI*2); ctx.fill();
-            }
-
-            // "A Cancel" right
-            ctx.font = (7*S)+'px Arial, sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.textAlign = 'right';
-            ctx.fillText('A Cancel', (GBA_W-4)*S, 7*S);
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'top';
-
-            // Left panel (teal, EE ref)
-            ctx.fillStyle = '#88b098';
-            ctx.fillRect(0, 14*S, 88*S, 134*S);
-            ctx.fillStyle = '#a0c8b0';
-            ctx.fillRect(87*S, 14*S, S, 134*S);
-
-            // Dex number + gender
-            ctx.font = (7*S)+'px Arial, sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.textBaseline = 'top';
-            var _dexNum = (typeof mon.speciesId === 'number') ? mon.speciesId :
-                ((_pokedexNumMap && Object.keys(_pokedexNumMap).find(function(k){ return _pokedexNumMap[k] === (mon.speciesId||'').toLowerCase(); })) || '???');
-            ctx.fillText('No.' + String(_dexNum).padStart(3,'0'), 4*S, 16*S);
-            if (mon.gender) {
-                ctx.fillStyle = mon.gender === 'M' ? '#80b8ff' : '#f87898';
-                ctx.fillText(mon.gender === 'M' ? '♂' : '♀', 50*S, 16*S);
-            }
-
-            // Front sprite
-            if (_frontImg) {
-                ctx.drawImage(_frontImg, Math.round((44-32)*S), 24*S, 64*S, 64*S);
+            var bg = _platSum && _platSum.bg[TAB_KEYS[_tab]];
+            if (bg) {
+                ctx.drawImage(bg, 0, 0, SW, SH, 0, 0, canvas.width, canvas.height);
             } else {
-                ctx.fillStyle = 'rgba(255,255,255,0.12)';
-                ctx.beginPath(); ctx.arc(44*S, 56*S, 28*S, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#3868c0';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            if (!_pa) return;
+
+            // ── Left column (persistent chrome, same on every tab) ──
+            T(_monDisplayName(mon).toUpperCase(), 10, 26, { color:'#181818' });
+            T('Lv' + (mon.level || 1), 10, 51, { color:'#484848' });
+            if (mon.gender === 'M') T('♂', 60, 51, { color:'#3868c0' });
+            else if (mon.gender === 'F') T('♀', 60, 51, { color:'#d84070' });
+
+            if (_frontImg) {
+                var dw = 64, dh = 64;
+                ctx.drawImage(_frontImg, Math.round((56 - dw/2) * S), Math.round((100 - dh/2) * S), dw * S, dh * S);
+            }
+            var stIdx = null;
+            if (mon.maxHp > 0 && (mon.currentHp || 0) <= 0) stIdx = 6;
+            else if (mon.statusCondition) stIdx = PLAT_STATUS_IDX[mon.statusCondition];
+            if (stIdx != null && _platSum && _platSum.status[stIdx]) {
+                ctx.drawImage(_platSum.status[stIdx], 66 * S, 70 * S, 32 * S, 16 * S);
             }
 
-            // Species name + nickname
-            ctx.font = (8*S)+'px Arial, sans-serif';
-            ctx.fillStyle = '#ffffff';
-            var speciesStr = (typeof mon.speciesId === 'string') ? mon.speciesId : ('No.'+_dexNum);
-            ctx.fillText(speciesStr, 4*S, 92*S);
-            ctx.fillStyle = '#c0e8d0';
-            ctx.fillText('/' + _monDisplayName(mon), 4*S, 103*S);
+            var dexNum = (typeof mon.speciesId === 'number') ? mon.speciesId :
+                ((_pokedexNumMap && Object.keys(_pokedexNumMap).find(function(k){ return _pokedexNumMap[k] === (mon.speciesId||'').toLowerCase(); })) || 0);
+            T('No.' + String(dexNum).padStart(3, '0'), 10, 159, { color:'#181818' });
+            T((typeof mon.speciesId === 'string' ? mon.speciesId : '???').toUpperCase(), 10, 173, { color:'#484848', kind:'normal' });
 
-            // Pokeball + lv + gender (bottom of left panel)
-            var pbx = 10*S, pby = 120*S;
-            ctx.fillStyle = '#e82020'; ctx.beginPath(); ctx.arc(pbx, pby, 5*S, Math.PI, 0); ctx.fill();
-            ctx.fillStyle = '#f8f8f8'; ctx.beginPath(); ctx.arc(pbx, pby, 5*S, 0, Math.PI); ctx.fill();
-            ctx.strokeStyle = '#181818'; ctx.lineWidth = S;
-            ctx.beginPath(); ctx.arc(pbx, pby, 5*S, 0, Math.PI*2); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(pbx-5*S, pby); ctx.lineTo(pbx+5*S, pby); ctx.stroke();
-            ctx.fillStyle = '#f8f8f8'; ctx.beginPath(); ctx.arc(pbx, pby, 1.5*S, 0, Math.PI*2); ctx.fill();
-            ctx.font = (8*S)+'px Arial, sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText('lv' + (mon.level||1), 18*S, 116*S);
-            if (mon.gender) {
-                ctx.fillStyle = mon.gender === 'M' ? '#80b8ff' : '#f87898';
-                ctx.fillText(mon.gender === 'M' ? '♂' : '♀', 56*S, 116*S);
-            }
-
-            // Right panel section helper (olive header bar, EE style)
-            function secHdr(label, gy) {
-                ctx.fillStyle = '#909830';
-                ctx.fillRect(88*S, gy*S, (GBA_W-88)*S, 10*S);
-                ctx.font = 'bold '+(7*S)+'px Arial, sans-serif';
-                ctx.fillStyle = '#f8f8e0';
-                ctx.fillText(label, 94*S, (gy+1)*S);
-            }
-
-            var rx = 94, rowH = 12;
-            ctx.textBaseline = 'top';
-
+            // ── Right column (per-tab content) ──
             if (_tab === 0) {
-                secHdr('PROFILE', 14);
-                ctx.font = (8*S)+'px Arial, sans-serif';
-                // OT and ID on same row (EE ref3)
-                ctx.fillStyle = '#d0d8c0'; ctx.fillText('OT/', rx*S, 27*S);
-                ctx.fillStyle = '#f8f8f8'; ctx.fillText(mon.otName||'Player', (rx+16)*S, 27*S);
-                ctx.fillStyle = '#d0d8c0'; ctx.fillText('ID No.', (rx+70)*S, 27*S);
-                ctx.fillStyle = '#f8f8f8'; ctx.fillText(String(mon.otId||'00000').padStart(5,'0'), (rx+100)*S, 27*S);
-
-                // Type
-                var types = Array.isArray(mon.type) ? mon.type : [mon.type||'Normal'];
-                ctx.fillStyle = '#d0d8c0'; ctx.fillText('Type/', rx*S, 41*S);
+                var types = Array.isArray(mon.type) ? mon.type : [mon.type || 'Normal'];
                 types.forEach(function(t, ti) {
-                    var tx2 = (rx+26+ti*34)*S;
+                    var ty = 40 + ti * 26;
                     ctx.fillStyle = TYPE_COLORS_SUM[t] || '#a8a878';
-                    ctx.fillRect(tx2, 41*S, 30*S, 9*S);
-                    ctx.font = (7*S)+'px Arial, sans-serif';
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillText(t.toUpperCase(), tx2+2, 42*S);
-                    ctx.font = (8*S)+'px Arial, sans-serif';
+                    ctx.fillRect(184 * S, ty * S, 56 * S, 16 * S);
+                    T(t.toUpperCase(), 190, ty + 4, { color:'#ffffff' });
                 });
-
-                secHdr('ABILITY', 53);
-                ctx.font = (8*S)+'px Arial, sans-serif';
-                ctx.fillStyle = '#f8f8f8'; ctx.fillText(mon.ability||'Run Away', rx*S, 65*S);
-                ctx.fillStyle = '#d8e8d0'; ctx.fillText('Makes escaping easier.', rx*S, 77*S);
-
-                secHdr('TRAINER MEMO', 89);
-                ctx.font = (8*S)+'px Arial, sans-serif';
-                ctx.fillStyle = '#e8b030'; ctx.fillText((mon.nature||'Hardy') + ' nature,', rx*S, 101*S);
-                ctx.fillStyle = '#f8f8f8'; ctx.fillText('met at lv ' + (mon.metLevel||mon.level||1) + ',', rx*S, 113*S);
-                ctx.fillStyle = '#e8b030'; ctx.fillText(mon.metLocation||'Littleroot Town.', rx*S, 125*S);
-
+                T('OT', 112, 143, { color:'#484848' });
+                T(mon.originalTrainer || 'Player', 190, 143, { color:'#181818' });
+                T('ID No.', 112, 166, { color:'#484848' });
+                T(String(mon.otId || '00000').padStart(5, '0'), 190, 166, { color:'#181818' });
+                T('EXP', 180, 184, { color:'#f8f8f8' });
+                var expPct = Math.min(1, (mon.exp || 0) / Math.max(1, (mon.expToNext || 1000)));
+                ctx.fillStyle = '#303030'; ctx.fillRect(198 * S, 184 * S, 54 * S, 5 * S);
+                ctx.fillStyle = '#f8d030'; ctx.fillRect(199 * S, 185 * S, Math.round(expPct * 52) * S, 3 * S);
             } else if (_tab === 1) {
-                // ITEM + RIBBON headers
-                var hw = Math.floor((GBA_W-88)/2);
-                ctx.fillStyle = '#909830'; ctx.fillRect(88*S, 14*S, hw*S, 10*S);
-                ctx.fillStyle = '#706820'; ctx.fillRect((88+hw)*S, 14*S, (GBA_W-88-hw)*S, 10*S);
-                ctx.font = 'bold '+(7*S)+'px Arial, sans-serif';
-                ctx.fillStyle = '#f8f8e0';
-                ctx.fillText('ITEM', rx*S, 15*S);
-                ctx.fillText('RIBBON', (rx+76)*S, 15*S);
-                // Item/ribbon value boxes
-                ctx.fillStyle = '#e8f0e8';
-                ctx.fillRect(88*S, 24*S, (hw-2)*S, 11*S);
-                ctx.fillRect((88+hw+2)*S, 24*S, (GBA_W-88-hw-4)*S, 11*S);
-                ctx.font = (8*S)+'px Arial, sans-serif';
-                ctx.fillStyle = '#181818';
-                ctx.fillText(mon.heldItem||'None', rx*S, 25*S);
-                ctx.fillText('None', (rx+76)*S, 25*S);
-
-                secHdr('STATS', 37);
-                ctx.font = (8*S)+'px Arial, sans-serif';
-                // HP row with current/max
-                ctx.fillStyle = '#d0d8c0'; ctx.fillText('HP', rx*S, 49*S);
-                ctx.textAlign = 'right';
-                ctx.fillStyle = '#f8f8f8'; ctx.fillText(String(mon.currentHp||0)+'/', (rx+46)*S, 49*S);
-                ctx.fillText(String(mon.maxHp||0), (rx+60)*S, 49*S);
-                ctx.textAlign = 'left';
-                // Stat pairs
-                var statPairs = [
-                    ['Attack', mon.atk||0, 'Sp. Atk', mon.spAtk||0],
-                    ['Defense', mon.def||0, 'Sp. Def', mon.spDef||0],
-                    ['Speed', mon.speed||0, null, null],
+                T('HP', 145, 53, { color:'#181818' });
+                T((mon.currentHp || 0) + '/' + (mon.maxHp || 0), 250, 53, { color:'#181818', align:'right' });
+                var statRows = [
+                    ['Attack', mon.atk], ['Defense', mon.def], ['Sp. Atk', mon.spAtk],
+                    ['Sp. Def', mon.spDef], ['Speed', mon.speed]
                 ];
-                var sry = 61;
-                statPairs.forEach(function(sp) {
-                    ctx.fillStyle = '#d0d8c0'; ctx.fillText(sp[0], rx*S, sry*S);
-                    ctx.textAlign = 'right';
-                    ctx.fillStyle = sp[1] >= 100 ? '#40d870' : sp[1] < 50 ? '#f04040' : '#f8f8f8';
-                    ctx.fillText(String(sp[1]), (rx+58)*S, sry*S);
-                    if (sp[2]) {
-                        ctx.textAlign = 'left';
-                        ctx.fillStyle = '#d0d8c0'; ctx.fillText(sp[2], (rx+64)*S, sry*S);
-                        ctx.textAlign = 'right';
-                        ctx.fillStyle = sp[3] >= 100 ? '#40d870' : sp[3] < 50 ? '#f04040' : '#f8f8f8';
-                        ctx.fillText(String(sp[3]), (rx+128)*S, sry*S);
-                    }
-                    ctx.textAlign = 'left';
-                    sry += rowH;
+                var sy = 68;
+                statRows.forEach(function(r) {
+                    T(r[0], 112, sy, { color:'#181818' });
+                    T(String(r[1] || 0), 250, sy, { color:'#181818', align:'right' });
+                    sy += 15;
                 });
-
-                secHdr('EXP. POINTS', sry + 2);
-                sry += 14;
-                ctx.font = (8*S)+'px Arial, sans-serif';
-                ctx.fillStyle = '#d0d8c0'; ctx.fillText('Exp. Points', rx*S, sry*S);
-                ctx.textAlign = 'right'; ctx.fillStyle = '#f8f8f8';
-                ctx.fillText(String(mon.exp||0), (GBA_W-4)*S, sry*S); ctx.textAlign = 'left';
-                sry += rowH;
-                ctx.fillStyle = '#d0d8c0'; ctx.fillText('Next Lv.', rx*S, sry*S);
-                ctx.textAlign = 'right'; ctx.fillStyle = '#f8f8f8';
-                ctx.fillText(String(Math.max(0,(mon.expToNext||1000)-(mon.exp||0))), (GBA_W-4)*S, sry*S);
-                ctx.textAlign = 'left';
-                sry += rowH + 2;
-                // EXP bar
-                ctx.fillStyle = '#484830'; ctx.fillRect(88*S, sry*S, (GBA_W-88)*S, 4*S);
-                var expPct = Math.min(1, (mon.exp||0)/Math.max(1,(mon.expToNext||1000)));
-                ctx.fillStyle = '#3888f0'; ctx.fillRect(88*S, sry*S, Math.round(expPct*(GBA_W-88))*S, 4*S);
-                ctx.font = (6*S)+'px Arial, sans-serif'; ctx.fillStyle = '#f8f8e0';
-                ctx.fillText('EXP', (88+2)*S, sry*S);
-
-            } else if (_tab === 2 || _tab === 3) {
-                var moves = (mon.moves||[]).slice(0,4);
-                var mry = 16;
-                for (var mi = 0; mi < 4; mi++) {
-                    var mv = moves[mi] || null;
-                    ctx.fillStyle = '#604880'; ctx.fillRect(89*S, mry*S, (GBA_W-90)*S, 30*S);
-                    ctx.fillStyle = mv ? '#9878c8' : '#7858a8'; ctx.fillRect(90*S, (mry+1)*S, (GBA_W-92)*S, 28*S);
-                    if (!mv) {
-                        ctx.font = (8*S)+'px Arial, sans-serif'; ctx.fillStyle = '#b8a8d8';
-                        ctx.fillText('—', rx*S, (mry+10)*S);
-                    } else {
-                        var mtype = (typeof mv === 'object') ? (mv.type||'Normal') : 'Normal';
-                        var mname = (typeof mv === 'string') ? mv : (mv.name||'???');
-                        ctx.fillStyle = TYPE_COLORS_SUM[mtype] || '#a8a878';
-                        ctx.fillRect(rx*S, (mry+2)*S, 30*S, 9*S);
-                        ctx.font = (7*S)+'px Arial, sans-serif'; ctx.fillStyle = '#ffffff';
-                        ctx.fillText(mtype.slice(0,5).toUpperCase(), (rx+1)*S, (mry+3)*S);
-                        ctx.font = (8*S)+'px Arial, sans-serif'; ctx.fillStyle = '#f8f8f8';
-                        ctx.fillText(mname, (rx+34)*S, (mry+3)*S);
-                        var ppStr = (typeof mv === 'object') ? ('PP '+(mv.pp||'?')+'/'+(mv.maxPp||'?')) : '';
-                        if (ppStr) { ctx.font = (7*S)+'px Arial, sans-serif'; ctx.fillStyle = '#d0c8e8'; ctx.fillText(ppStr, (rx+34)*S, (mry+15)*S); }
+                T((mon.nature || 'Hardy') + ' nature.', 116, 160, { color:'#181818' });
+            } else {
+                var moves = (mon.moves || []).slice(0, 4);
+                var rowYs = [50, 83, 116, 149];
+                moves.forEach(function(mv, mi) {
+                    if (!mv) return;
+                    var y = rowYs[mi];
+                    var mtype = (typeof mv === 'object') ? (mv.type || 'Normal') : 'Normal';
+                    var mname = (typeof mv === 'string') ? mv : (mv.name || '???');
+                    ctx.fillStyle = TYPE_COLORS_SUM[mtype] || '#a8a878';
+                    ctx.fillRect(122 * S, (y - 8) * S, 32 * S, 13 * S);
+                    T(mtype.slice(0, 3).toUpperCase(), 126, y - 6, { color:'#ffffff' });
+                    T(mname.toUpperCase(), 168, y - 6, { color:'#181818' });
+                    if (typeof mv === 'object' && mv.pp != null) {
+                        T('PP ' + mv.pp + '/' + (mv.maxPp || mv.pp), 168, y + 4, { color:'#484848' });
                     }
-                    mry += 33;
-                }
+                });
             }
-
-            // Bottom hint bar
-            ctx.fillStyle = '#4a3870';
-            ctx.fillRect(0, 148*S, canvas.width, 12*S);
-            ctx.font = (7*S)+'px Arial, sans-serif';
-            ctx.fillStyle = '#ffffff'; ctx.textBaseline = 'middle';
-            ctx.fillText('B: Back   L/R: Change page', 8*S, 154*S);
-            ctx.textBaseline = 'top';
         }
 
-        // Tab navigation via click
+        // Tab navigation via click (left/right thirds of the header)
         canvas.addEventListener('click', function(e) {
             var rect = canvas.getBoundingClientRect();
-            var gx = (e.clientX - rect.left) * (GBA_W / rect.width);
+            var gx = (e.clientX - rect.left) * (SW / rect.width);
+            var gy = (e.clientY - rect.top) * (SH / rect.height);
+            if (gy > 16) return;
             if (gx < 30) { _tab = (_tab - 1 + 4) % 4; drawSummary(); }
-            else if (gx > GBA_W - 30) { _tab = (_tab + 1) % 4; drawSummary(); }
+            else if (gx > SW - 30) { _tab = (_tab + 1) % 4; drawSummary(); }
         });
 
         // Expose tab navigation so L/R can be wired if needed
@@ -2169,6 +2096,7 @@ window.GameStartMenu = (function () {
     }
 
     function _buildPokedex(el) {
+        if (window.GameFont && !GameFont.isReady()) { GameFont.load(function () { _render(); }); }
         if (!_dexList) {
             _makeCanvasShell(el, function(ctx) {
                 _canvasBg(ctx, null);
@@ -2209,102 +2137,85 @@ window.GameStartMenu = (function () {
         });
     }
 
-    function _drawPokedexCanvas(ctx, bg) {
-        _canvasBg(ctx, bg);
-        var S = 2;
-        var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
-
-        // Title bar
-        ctx.fillStyle = _tc.titleBg;
-        ctx.fillRect(0, 0, GBA_W, 20*S);
-        ctx.fillStyle = COL_CYAN;
-        ctx.fillRect(0, 20*S, GBA_W, 2);
-        ctx.textBaseline = 'top';
-        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
-        ctx.fillStyle = _tc.hi;
-        ctx.fillText('POKEDEX', 8*S, 5*S);
-
-        if (!_dexList || !_dexList.length) {
-            ctx.fillStyle = COL_DIM;
-            ctx.font = (7*S)+'px "Press Start 2P", monospace';
-            ctx.fillText('No data loaded.', 8*S, 40*S);
-            return;
+    // Small bitmap-font text helper for the Pokédex (logical GBA px, scale 2).
+    function _pdT(ctx, str, gx, gy, color, kind) {
+        if (window.GameFont) GameFont.draw(ctx, String(str), gx, gy, { scale: 2, kind: kind || 'small', color: color });
+    }
+    // Draw a tiny Poké Ball (caught marker) at logical (gx,gy), ~7px.
+    function _pdBall(ctx, gx, gy, seenOnly) {
+        var S = 2, x = gx * S, y = gy * S, r = 3 * S;
+        ctx.save();
+        ctx.translate(x + r, y + r);
+        ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.fillStyle = seenOnly ? '#c8c8c0' : '#e02020'; ctx.fill();
+        if (!seenOnly) {
+            ctx.beginPath(); ctx.moveTo(-r, 0); ctx.lineTo(r, 0); ctx.arc(0, 0, r, 0, Math.PI); ctx.closePath();
+            ctx.fillStyle = '#f8f8f8'; ctx.fill();
         }
+        ctx.strokeStyle = '#282828'; ctx.lineWidth = S;
+        ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-r, 0); ctx.lineTo(r, 0); ctx.stroke();
+        ctx.beginPath(); ctx.arc(0, 0, S, 0, Math.PI * 2); ctx.fillStyle = '#f8f8f8'; ctx.fill(); ctx.stroke();
+        ctx.restore();
+    }
+
+    // Emerald Pokédex palette.
+    var PD_TITLE = '#3868a8', PD_TITLE2 = '#28507c', PD_LIST = '#e8ece0',
+        PD_TXT = '#303038', PD_DIM = '#787868', PD_SEL = '#f04030';
+
+    function _drawPokedexCanvas(ctx, bg) {
+        var S = 2;
+        // Background: title strip + light list area.
+        ctx.fillStyle = PD_LIST; ctx.fillRect(0, 0, GBA_W, GBA_H);
+        ctx.fillStyle = PD_TITLE; ctx.fillRect(0, 0, GBA_W, 20 * S);
+        ctx.fillStyle = PD_TITLE2; ctx.fillRect(0, 20 * S, GBA_W, 2 * S);
 
         var saved = window.GameSave && GameSave.state && GameSave.state.pokedex;
         var seen   = new Set((saved && saved.seen)   || []);
         var caught = new Set((saved && saved.caught) || []);
 
+        _pdT(ctx, 'POKéDEX', 8, 6, '#ffffff', 'normal');
+        (function () {
+            var s = 'SEEN ' + seen.size + '   OWN ' + caught.size;
+            var w = window.GameFont ? GameFont.measure(s, 'small') : 0;
+            _pdT(ctx, s, GBA_W / S - 8 - w, 7, '#d8e4f0', 'small');
+        })();
+
+        if (!_dexList || !_dexList.length) {
+            _pdT(ctx, 'No data loaded.', 8, 40, PD_DIM);
+            return;
+        }
+
         var WIN = 9;
-        var start = Math.max(0, _subIdx - Math.floor(WIN/2));
+        var start = Math.max(0, _subIdx - Math.floor(WIN / 2));
         if (start + WIN > _dexList.length) start = Math.max(0, _dexList.length - WIN);
         var end = Math.min(_dexList.length, start + WIN);
 
-        ctx.font = (7*S)+'px "Press Start 2P", monospace';
-        ctx.textBaseline = 'middle';
         for (var relI = 0; relI < end - start; relI++) {
             var absI = start + relI;
             var entry = _dexList[absI];
-            var rowTop = (24 + relI * 14) * S;
-            var rowMid = rowTop + 7*S;
+            var rowTop = 24 + relI * 14;        // logical px
+            var textY = rowTop + 3;
             var isSel = absI === _subIdx;
             var hasSeen = seen.has(entry.num);
             var hasCaught = caught.has(entry.num);
 
             if (isSel) {
-                ctx.fillStyle = 'rgba(230,8,8,0.12)';
-                ctx.fillRect(0, rowTop, GBA_W, 14*S);
-                ctx.fillStyle = COL_CYAN;
-                ctx.fillRect(0, rowTop, 2*S, 14*S);
+                ctx.fillStyle = 'rgba(240,64,48,0.16)';
+                ctx.fillRect(0, rowTop * S, GBA_W, 14 * S);
+                _pdT(ctx, '▶', 3, textY, PD_SEL);
             }
-
-            // Arrow
-            ctx.fillStyle = isSel ? COL_CYAN : 'transparent';
-            ctx.fillText('▶', 2*S, rowMid);
-
-            // Dex num
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText(String(entry.num).padStart(3,'0'), 10*S, rowMid);
-
-            // Caught dot
-            if (hasCaught) {
-                ctx.fillStyle = COL_CYAN;
-                ctx.fillText('●', 218*S, rowMid);
-            } else if (hasSeen) {
-                ctx.fillStyle = '#888899';
-                ctx.fillText('○', 218*S, rowMid);
-            }
-
-            // Name — white if seen, ??? if not
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText(hasSeen ? entry.name : '???', 36*S, rowMid);
-
-            // Type tags (seen only)
-            if (hasSeen && entry.types) {
-                var tx = 110*S;
-                for (var ti = 0; ti < Math.min(2, entry.types.length); ti++) {
-                    var tname = entry.types[ti];
-                    var tcol = TYPE_COLORS[tname] || '#888888';
-                    var tw = ctx.measureText(tname).width + 4*S;
-                    ctx.fillStyle = tcol;
-                    ctx.fillRect(tx, rowTop + 2*S, tw, 10*S);
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillText(tname, tx + 2*S, rowMid);
-                    tx += tw + 2*S;
-                }
-            }
+            if (hasSeen || hasCaught) _pdBall(ctx, 14, rowTop + 3, !hasCaught);
+            _pdT(ctx, String(entry.num).padStart(3, '0'), 26, textY, PD_DIM);
+            _pdT(ctx, hasSeen ? entry.name.toUpperCase() : '----------', 52, textY,
+                hasSeen ? PD_TXT : PD_DIM, 'normal');
         }
 
-        // Scroll hint
-        ctx.fillStyle = _tc.titleBg;
-        ctx.fillRect(0, 153*S, GBA_W, 7*S);
-        ctx.fillStyle = COL_CYAN;
-        ctx.fillRect(0, 153*S, GBA_W, 1);
-        ctx.font = (7*S)+'px "Press Start 2P", monospace';
-        ctx.fillStyle = COL_DIM;
-        ctx.fillText((_subIdx+1) + ' / ' + _dexList.length, 4*S, 154*S);
-        if (start > 0) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px "Press Start 2P", monospace'; ctx.fillText('▲', GBA_W-12*S, 22*S); }
-        if (end < _dexList.length) { ctx.fillStyle = COL_CYAN; ctx.font=(7*S)+'px "Press Start 2P", monospace'; ctx.fillText('▼', GBA_W-12*S, 150*S); }
+        // Footer.
+        ctx.fillStyle = PD_TITLE; ctx.fillRect(0, 153 * S, GBA_W, 7 * S);
+        _pdT(ctx, (_subIdx + 1) + ' / ' + _dexList.length, 4, 154, '#d8e4f0');
+        if (start > 0) _pdT(ctx, '▲', GBA_W / S - 12, 23, '#ffffff');
+        if (end < _dexList.length) _pdT(ctx, '▼', GBA_W / S - 12, 145, '#ffffff');
     }
 
     function _buildPokedexEntry(el) {
@@ -2322,14 +2233,14 @@ window.GameStartMenu = (function () {
             spriteImg.onerror = function() { /* no sprite */ };
             spriteImg.src = 'data/sprites/pokemon/front/' + keyName + '.png';
 
-            // Tab buttons
+            // Invisible tab hit zones over the canvas-drawn INFO/STATS/MOVES strip
+            // (the labels are painted on the canvas; these just catch taps).
             var tabsEl = document.createElement('div');
-            tabsEl.style.cssText = 'position:absolute;top:72px;left:96px;display:flex;gap:2px;z-index:10;pointer-events:all;';
+            tabsEl.style.cssText = 'position:absolute;top:47%;left:36%;right:2%;height:8%;display:flex;gap:2px;z-index:10;pointer-events:none;';
             ['Info','Stats','Moves'].forEach(function(t, i) {
                 var btn = document.createElement('button');
-                btn.className = 'sm-back-btn' + (_subIdx === i ? ' active' : '');
-                btn.textContent = t;
-                btn.style.cssText = 'pointer-events:all;padding:2px 6px;font-size:10px;' + (_subIdx === i ? 'color:#e60808;font-weight:bold;' : '');
+                btn.textContent = '';
+                btn.style.cssText = 'pointer-events:all;flex:1;background:transparent;border:none;cursor:pointer;';
                 btn.addEventListener('click', function(e) { e.stopPropagation(); _subIdx = i; _render(); });
                 tabsEl.appendChild(btn);
             });
@@ -2338,150 +2249,100 @@ window.GameStartMenu = (function () {
     }
 
     function _drawPokedexEntryCanvas(ctx, entry, keyName, spriteImg) {
-        _canvasBg(ctx, null);
         var S = 2;
-        var _tc = _getThemeColors(); var COL_TEXT = _tc.text; var COL_DIM = _tc.dim; var COL_CYAN = _tc.hi;
+        // Emerald palette background.
+        ctx.fillStyle = PD_LIST; ctx.fillRect(0, 0, GBA_W, GBA_H);
+        ctx.fillStyle = PD_TITLE; ctx.fillRect(0, 0, GBA_W, 20 * S);
+        ctx.fillStyle = PD_TITLE2; ctx.fillRect(0, 20 * S, GBA_W, 2 * S);
+        _pdT(ctx, 'POKéDEX', 8, 6, '#ffffff', 'normal');
 
-        ctx.textBaseline = 'top';
+        // Sprite panel (left).
+        ctx.fillStyle = '#f8f8f0'; ctx.fillRect(4 * S, 24 * S, 76 * S, 62 * S);
+        ctx.strokeStyle = PD_DIM; ctx.lineWidth = S;
+        ctx.strokeRect(4 * S, 24 * S, 76 * S, 62 * S);
+        if (spriteImg) ctx.drawImage(spriteImg, 8 * S, 24 * S, 64 * S, 64 * S);
+        else _pdT(ctx, 'No sprite', 8, 50, PD_DIM);
 
-        // Title bar
-        ctx.fillStyle = _tc.titleBg;
-        ctx.fillRect(0, 0, GBA_W, 20*S);
-        ctx.fillStyle = COL_CYAN;
-        ctx.fillRect(0, 20*S, GBA_W, 2);
-        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
-        ctx.fillStyle = _tc.hi;
-        ctx.fillText('POKEDEX', 8*S, 5*S);
-
-        // Sprite area (left): 0..79, y=22..87 (GBA px: 0..79px, 22..87px)
-        if (spriteImg) {
-            ctx.drawImage(spriteImg, 0, 22*S, 80*S, 66*S);
-        } else {
-            ctx.fillStyle = '#1a1a2e';
-            ctx.fillRect(0, 22*S, 80*S, 66*S);
-            ctx.fillStyle = COL_DIM;
-            ctx.font = (7*S)+'px "Press Start 2P", monospace';
-            ctx.fillText('No sprite', 4*S, 50*S);
-        }
-
-        // Info right side: x=82..239, y=22
-        ctx.font = 'bold '+(11*S)+'px "Press Start 2P", monospace';
-        ctx.fillStyle = COL_TEXT;
-        ctx.fillText(entry.name, 84*S, 24*S);
-        ctx.font = (7*S)+'px "Press Start 2P", monospace';
-        ctx.fillStyle = COL_DIM;
-        ctx.fillText('#' + String(entry.num).padStart(3,'0'), 84*S, 34*S);
-        ctx.fillText(entry.category || '', 84*S, 44*S);
-
-        // Types
+        // Name / number / category (right of sprite).
+        _pdT(ctx, entry.name.toUpperCase(), 84, 24, PD_TXT, 'normal');
+        _pdT(ctx, '#' + String(entry.num).padStart(3, '0'), 84, 36, PD_DIM);
+        _pdT(ctx, entry.category || '', 84, 46, PD_DIM);
         if (entry.types) {
-            var tx = 84*S;
-            entry.types.forEach(function(t) {
-                var tcol = TYPE_COLORS[t] || '#888888';
-                var tw = ctx.measureText(t).width + 4*S;
-                ctx.fillStyle = tcol;
-                ctx.fillRect(tx, 55*S, tw, 10*S);
-                ctx.fillStyle = '#ffffff';
-                ctx.font = (7*S)+'px "Press Start 2P", monospace';
-                ctx.fillText(t, tx + 2*S, 56*S);
-                tx += tw + 2*S;
+            var tx = 84;
+            entry.types.forEach(function (t) {
+                var tcol = TYPE_COLORS[(t || '').toLowerCase()] || '#888888';
+                var lbl = (t || '').toUpperCase();
+                var tw = (window.GameFont ? GameFont.measure(lbl, 'small') : 24) + 8;
+                ctx.fillStyle = tcol; ctx.fillRect(tx * S, 60 * S, tw * S, 10 * S);
+                _pdT(ctx, lbl, tx + 4, 61, '#ffffff');
+                tx += tw + 4;
             });
         }
 
-        // Tabs row area at y=74 (buttons overlaid via HTML, just draw separator)
-        ctx.fillStyle = _tc.titleBg;
-        ctx.fillRect(80*S, 68*S, GBA_W - 80*S, 22*S);
-        ctx.fillStyle = COL_CYAN;
-        ctx.fillRect(80*S, 90*S, GBA_W - 80*S, 2);
+        // Tab strip (INFO / STATS / MOVES) — matches the invisible DOM hit zones.
+        var TABS = ['INFO', 'STATS', 'MOVES'], ttx = 88;
+        TABS.forEach(function (tb, i) {
+            var act = _subIdx === i;
+            var tw2 = (window.GameFont ? GameFont.measure(tb, 'small') : 30) + 8;
+            if (act) { ctx.fillStyle = PD_TITLE; ctx.fillRect(ttx * S, 76 * S, tw2 * S, 11 * S); }
+            _pdT(ctx, tb, ttx + 4, 78, act ? '#ffffff' : PD_DIM);
+            ttx += tw2 + 4;
+        });
 
-        // Body below y=92
-        var bodyY = 92;
+        // Body separator.
+        ctx.fillStyle = PD_TITLE; ctx.fillRect(0, 90 * S, GBA_W, 3 * S);
+        var bodyY = 96;
 
         if (_subIdx === 0) {
-            // Info tab
             var h = entry.height_m || 0, w = entry.weight_kg || 0;
             var ft = Math.floor(h / 0.3048), inch = Math.round((h / 0.3048 - ft) * 12);
             var lbs = Math.round(w * 2.205 * 10) / 10;
             var rows = [
-                ['Height',     h + 'm (' + ft + '\'' + inch + '")'],
-                ['Weight',     w + 'kg (' + lbs + ' lbs)'],
-                ['Catch Rate', String(entry.catch_rate || 0)],
-                ['Exp Rate',   (entry.exp_rate||'').replace('EXP_RATE_','').toLowerCase().replace(/_/g,' ')],
-                ['Egg Groups', (entry.egg_groups||[]).join(', ')],
+                ['HEIGHT',     h + 'm (' + ft + '\'' + inch + '")'],
+                ['WEIGHT',     w + 'kg (' + lbs + ' lbs)'],
+                ['CATCH RATE', String(entry.catch_rate || 0)],
+                ['EGG GROUPS', (entry.egg_groups || []).join(', ')],
             ];
-            ctx.font = (7*S)+'px "Press Start 2P", monospace';
-            rows.forEach(function(r, i) {
-                var ry = (bodyY + i * 12) * S;
-                ctx.fillStyle = COL_DIM;  ctx.fillText(r[0], 4*S, ry);
-                ctx.fillStyle = COL_TEXT; ctx.fillText(r[1], 80*S, ry);
+            rows.forEach(function (r, i) {
+                var ry = bodyY + i * 11;
+                _pdT(ctx, r[0], 6, ry, PD_DIM);
+                _pdT(ctx, r[1], 78, ry, PD_TXT);
             });
-            // Dex entry text wrapped
-            var desc = entry.entry || '';
-            var words = desc.split(' '), line = '', ly = (bodyY + rows.length * 12 + 4) * S;
-            ctx.font = (7*S)+'px "Press Start 2P", monospace';
-            ctx.fillStyle = COL_DIM;
+            var desc = entry.entry || '', words = desc.split(' '), line = '', ly = bodyY + rows.length * 11 + 3;
             for (var wi = 0; wi < words.length; wi++) {
-                var test2 = line ? line + ' ' + words[wi] : words[wi];
-                if (ctx.measureText(test2).width > (GBA_W - 8*S) && line) {
-                    ctx.fillText(line, 4*S, ly); line = words[wi]; ly += 10*S;
-                    if (ly > 154*S) break;
-                } else { line = test2; }
+                var t2 = line ? line + ' ' + words[wi] : words[wi];
+                if (window.GameFont && GameFont.measure(t2, 'small') > (GBA_W / S - 8) && line) {
+                    _pdT(ctx, line, 4, ly, PD_TXT); line = words[wi]; ly += 10;
+                    if (ly > 150) break;
+                } else line = t2;
             }
-            if (line && ly <= 154*S) ctx.fillText(line, 4*S, ly);
-
-            // Evolutions
-            if (entry.evolutions && entry.evolutions.length) {
-                var evoY = Math.min(ly + 14*S, 138*S);
-                ctx.fillStyle = COL_CYAN;
-                ctx.font = (7*S)+'px "Press Start 2P", monospace';
-                ctx.fillText('Evolves into:', 4*S, evoY);
-                entry.evolutions.slice(0, 2).forEach(function(evo, ei) {
-                    var method = (evo.method||'').replace('EVO_','').replace(/_/g,' ').toLowerCase();
-                    ctx.fillStyle = COL_TEXT;
-                    ctx.fillText(evo.into.toUpperCase() + ' — ' + method + (evo.param ? ' '+evo.param : ''), 4*S, evoY + (ei+1)*10*S);
-                });
-            }
+            if (line && ly <= 150) _pdT(ctx, line, 4, ly, PD_TXT);
 
         } else if (_subIdx === 1) {
-            // Stats tab
             var stats = entry.stats || {};
-            var STAT_NAMES = [['hp','HP'],['atk','Attack'],['def','Defense'],['spa','Sp.Atk'],['spd','Sp.Def'],['spe','Speed']];
-            var STAT_COLORS2 = {hp:'#f04040',atk:'#f08030',def:'#f8d030',spa:'#6890f0',spd:'#78c850',spe:'#f85888'};
+            var SN = [['hp','HP'],['atk','ATTACK'],['def','DEFENSE'],['spa','SP.ATK'],['spd','SP.DEF'],['spe','SPEED']];
+            var SC = {hp:'#f04040',atk:'#f08030',def:'#f8d030',spa:'#6890f0',spd:'#78c850',spe:'#f85888'};
             var total = 0;
-            STAT_NAMES.forEach(function(kv, i) {
-                var k = kv[0], label = kv[1];
-                var val = stats[k] || 0;
-                total += val;
-                var ry = (bodyY + i * 10) * S;
-                var pct = Math.min(1, val / 255);
-                ctx.font = (7*S)+'px "Press Start 2P", monospace';
-                ctx.fillStyle = COL_DIM;  ctx.fillText(label, 4*S, ry);
-                ctx.fillStyle = COL_TEXT; ctx.fillText(String(val), 60*S, ry);
-                // bar
-                ctx.fillStyle = '#1a1a2e'; ctx.fillRect(80*S, ry, 150*S, 7*S);
-                ctx.fillStyle = STAT_COLORS2[k]; ctx.fillRect(80*S, ry, Math.round(pct * 150)*S, 7*S);
+            SN.forEach(function (kv, i) {
+                var val = stats[kv[0]] || 0; total += val;
+                var ry = bodyY + i * 10, pct = Math.min(1, val / 200);
+                _pdT(ctx, kv[1], 6, ry, PD_DIM);
+                _pdT(ctx, String(val), 74, ry - 1, PD_TXT, 'normal');
+                ctx.fillStyle = '#c8c8b8'; ctx.fillRect(104 * S, (ry + 1) * S, 126 * S, 5 * S);
+                ctx.fillStyle = SC[kv[0]]; ctx.fillRect(104 * S, (ry + 1) * S, Math.round(pct * 126) * S, 5 * S);
             });
-            ctx.fillStyle = COL_CYAN;
-            ctx.font = (7*S)+'px "Press Start 2P", monospace';
-            ctx.fillText('Total: ' + total, 4*S, (bodyY + STAT_NAMES.length * 10 + 4)*S);
+            _pdT(ctx, 'TOTAL  ' + total, 6, bodyY + SN.length * 10 + 3, PD_TXT, 'normal');
 
         } else {
-            // Moves tab
-            ctx.font = (7*S)+'px "Press Start 2P", monospace';
-            ctx.fillStyle = COL_DIM;
-            ctx.fillText('Loading moves...', 4*S, bodyY*S);
             var fullEntry2 = _dexDb ? _dexDb[keyName] : null;
             var learnset2 = fullEntry2 && fullEntry2.learnset;
-            if (learnset2) {
-                ctx.clearRect(0, bodyY*S, GBA_W, (160 - bodyY)*S);
-                ctx.fillStyle = _tc.bg; ctx.fillRect(0, bodyY*S, GBA_W, (160 - bodyY)*S);
-                var lvl2 = learnset2.level_up || [];
-                lvl2.slice(0, 10).forEach(function(m, i) {
-                    var ry = (bodyY + i * 10) * S;
-                    ctx.fillStyle = COL_DIM;  ctx.fillText('Lv.'+m[0], 4*S, ry);
-                    ctx.fillStyle = COL_TEXT;
-                    var mname = m[1].replace('MOVE_','').replace(/_/g,' ').toLowerCase().replace(/\b\w/g, function(c){return c.toUpperCase();});
-                    ctx.fillText(mname, 40*S, ry);
+            if (!learnset2) { _pdT(ctx, 'No move data.', 6, bodyY, PD_DIM); }
+            else {
+                (learnset2.level_up || []).slice(0, 10).forEach(function (m, i) {
+                    var ry = bodyY + i * 11;
+                    _pdT(ctx, 'Lv.' + m[0], 6, ry, PD_DIM);
+                    var mname = m[1].replace('MOVE_', '').replace(/_/g, ' ');
+                    _pdT(ctx, mname.toUpperCase(), 42, ry, PD_TXT);
                 });
             }
         }
@@ -2538,7 +2399,6 @@ window.GameStartMenu = (function () {
                 kanto:     { color:'#3a6a3a', label:'KANTO' },
                 hoenn:     { color:'#2a4a6a', label:'HOENN' },
                 johto:     { color:'#5a3a2a', label:'JOHTO' },
-                heartgold: { color:'#5a3a2a', label:'JOHTO' },
                 sinnoh:    { color:'#2a2a5a', label:'SINNOH' },
             };
             var ri = REGIONS_INFO[region] || REGIONS_INFO.kanto;
@@ -3105,11 +2965,13 @@ window.GameStartMenu = (function () {
     function open() {
         if (!menuEl) return;
         selectedIdx=0; page='main'; _subIdx=0; _saveDone=false; isOpen=true;
+        if (window.GameHUD && GameHUD.hideInfo) GameHUD.hideInfo();
         menuEl.classList.add('open'); _render();
     }
     function close() {
         if (!menuEl) return;
         isOpen=false; menuEl.classList.remove('open');
+        if (window.GameHUD && GameHUD.showInfo) GameHUD.showInfo();
         menuEl.style.visibility = 'visible';
         // Restore z-index after battle bag use
         menuEl.style.zIndex = '';
@@ -3155,12 +3017,14 @@ window.GameStartMenu = (function () {
         if (page==='main') { return; } // no horizontal nav on vertical list
         if (page==='journal') { _journalTab=(_journalTab-1+4)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
         if (page==='bag') { _bagPocket=(_bagPocket-1+8)%8; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
+        if (page==='pokedex_entry') { _subIdx=(_subIdx-1+3)%3; _render(); return; }
     }
     function moveRight() {
         if (!isOpen) return;
         if (page==='main') { return; } // no horizontal nav on vertical list
         if (page==='journal') { _journalTab=(_journalTab+1)%4; _journalPage=0; _achTier=0; _powersPage=0; if(!_redrawPageEl()) _render(); return; }
         if (page==='bag') { _bagPocket=(_bagPocket+1)%8; _subIdx=0; if(!_redrawPageEl()) _render(); return; }
+        if (page==='pokedex_entry') { _subIdx=(_subIdx+1)%3; _render(); return; }
     }
     function moveUp() {
         if (!isOpen) return;
