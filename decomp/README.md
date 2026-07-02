@@ -62,9 +62,19 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
 4. ⏳ **Decompiler pass** — per-function reconstructed C++ under `src/`,
    starting with `pml` (stats/damage), `btl` (battle flow), `Field`.
    Done so far:
-   - `pml::battle::TypeAffinity::CalcAffinity` + `MulAffinity`
-     (`src/pml/battle/TypeAffinity.cpp`) — type-effectiveness engine; verified
-     18×18 chart baked to `data/type_chart.json` (exact Gen-7 match).
+   - `pml::battle::TypeAffinity::CalcAffinity` + `MulAffinity` +
+     `ConvAboutAffinity` (`src/pml/battle/TypeAffinity.cpp`) —
+     type-effectiveness engine; verified 18×18 chart baked to
+     `data/type_chart.json` (exact Gen-7 match). MulAffinity map-back bug
+     fixed; dual/triple-type composition verified
+     (`verify/verify_typeaffinity.py`).
+   - **battle damage server** (`src/pml/battle/DamageCalc.cpp`) —
+     `sub_81f2c` base damage `((2·L/5+2)·P·A/D)/50+2` + `sub_84d40` Q12
+     `ApplyModifier` + the `sub_18504` orchestrator (STAB/type/random/
+     modifiers). Leaf math verified (`verify/verify_damagecalc.py`). This was
+     the decomp's headline open problem.
+   - **battle AI move ranker** (`src/pml/battle/BattleAI.cpp`) — `sub_9348`
+     damage estimator + move-preference sort and its helpers (structural).
    - `pml::pokepara::CoreParam::GetPower` / `GetMaxHp` + the CalcStat/CalcHp/
      ApplyNature cores (`src/pml/pokepara/StatCalc.cpp`) — the full stat
      formula `(2·base+IV+EV/4)·L/100 (+5 | +L+10)` × nature, incl. the
@@ -200,12 +210,13 @@ Battle.cro damage pipeline traced via the graph:
   and makes every BL/pointer target miss. The rodata value/chart tables
   (e.g. VA 0x5bb69c) live past the `.code` text end and need the segment
   map, not the flat text offset.
-- **OPEN VERIFY:** re-derive the `AffinityID` ↔ Q6 value-table map-back in
-  `MulAffinity` from first principles. The value table is `{0, 2⁰…2¹²}`
-  (index ≠ bit position), so a naive "return the set bit's position" map-back
-  is off by one; confirm the committed `src/pml/battle/TypeAffinity.cpp`
-  map-back matches the ROM exactly for dual-super (4×) cases before trusting
-  multi-type composition. (Not yet resolved — flagged, not fixed.)
+- **✅ RESOLVED (bug found & fixed):** the `MulAffinity` map-back WAS off by
+  one. The ROM does `add r0, r1, #1` (@0x21c1a4) — it returns **bit_index + 1**
+  (because `sAffinityValue[id] == 2^(id-1)`), but the committed C returned the
+  bit index, collapsing neutral×neutral to ½ and knocking every 2×/4× down a
+  step. Confirmed from the disassembly and **fixed** in `TypeAffinity.cpp`;
+  composed dual/triple-type effectiveness now yields exact 0×/¼×/½×/1×/2×/4×
+  (`decomp/verify/verify_typeaffinity.py`, PASS).
 - **Full cluster mapped from exports** (`decomp/map/static.json`):
   `MulAffinity` 0x21c0e0 · `CalcAffinity` 0x21c1e8 · internal combiner
   0x21c284 · `CalcAffinityAbout(atk,def1,def2,bool)` 0x21c3b0 (the exported

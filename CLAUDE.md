@@ -818,11 +818,18 @@ All numerically verified against known game values:
    verify_damagecalc.py`, PASS). Along the way corrected the old "type-
    affinity has ZERO callers / server in static" claim (a scan artifact —
    static `.code` is **VA == file offset**, NOT 0x100000+off; the type funcs
-   are called by ordinary `bl` from Battle.cro via veneers). Remaining battle
-   sub-items: catch-rate formula, and the AI scorer `sub_9348` (found, not yet
-   fully decompiled). Still OPEN: re-verify the committed `MulAffinity`
-   AffinityID↔value map-back for 4× (dual-super) cases (value table
-   `{0,2⁰…2¹²}`, index≠bit-position).
+   are called by ordinary `bl` from Battle.cro via veneers). AI scorer
+   `sub_9348` now decompiled (`decomp/src/pml/battle/BattleAI.cpp`, structural
+   — damage estimator + move-preference sort). **Fixed a real bug in the
+   committed `MulAffinity`**: map-back returned `bit_index`, but the ROM
+   returns `bit_index+1` (`add r0,r1,#1` @0x21c1a4), which had collapsed
+   neutral×neutral to ½ and every 2×/4× down a step — now correct,
+   dual/triple-type effectiveness verified 0×/¼×/½×/1×/2×/4×
+   (`decomp/verify/verify_typeaffinity.py`). Remaining battle sub-item:
+   **catch-rate formula** — NOT yet found; the `0xFF0000` shake-constant
+   fingerprint was a false lead (RGB masks in SIMD color code), so it's likely
+   a float/VFP calc (`^0.1875` shake) — hunt via `cro_dataflow.py` on the
+   target CoreParam HP fields + `item::ITEM_GetBallID`.
 3. **More verified functions** are getting scarce — the clean self-contained
    `pml` formulas are largely mined out (remaining ones delegate to field
    accessors or use load-time-relocated pointers, e.g. the berry-taste table

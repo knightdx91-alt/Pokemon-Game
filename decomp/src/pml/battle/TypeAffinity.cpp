@@ -82,11 +82,20 @@ AffinityID MulAffinity(AffinityID a, AffinityID b)
     else if (prod == 0 && a != AFF_IMMUNE && b != AFF_IMMUNE)
         prod = 1;                 // never collapse a non-immune pair to 0
 
-    // Map the Q6 product back to an AffinityID: the smallest index whose bit
-    // is set (the ROM scans bits 0..31 of `prod`, capping the id at 13).
+    // Map the Q6 product back to an AffinityID. sAffinityValue[id] == 2^(id-1)
+    // (value[7]=64=×1.0 in Q6), so an id's value has bit (id-1) set — the
+    // AffinityID is therefore (bit_index + 1). The ROM scans bits low→high and
+    // returns `bit_index + 1`, capped at 13:
+    //     add r0, r1, #1 ; cmp r0,#0xe ; movhs r0,#0xd    (@0x21c1a4)
+    // (Earlier revisions of this file returned `bit_index`, off by one — that
+    // collapsed neutral×neutral to ½ and every 2×/4× down a step. Verified
+    // fixed: composing CalcAffinity+MulAffinity now yields exact 0×/¼×/½×/1×/
+    // 2×/4× for all dual-type cases — see decomp/verify/verify_typeaffinity.py.)
     for (int i = 0; i < 32; ++i) {
-        if (prod & (1u << i))
-            return (AffinityID)(i < 14 ? i : 13);
+        if (prod & (1u << i)) {
+            int id = i + 1;
+            return (AffinityID)(id < 14 ? id : 13);
+        }
     }
     return AFF_IMMUNE;            // prod == 0 -> immune
 }
