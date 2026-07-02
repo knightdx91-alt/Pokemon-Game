@@ -74,6 +74,9 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
      `GetExpForNextLevel`, `GetExpForCurrentLevel`
      (`src/pml/pokepara/ExpLevel.cpp`) — the growth-table scan (curves
      themselves are data-driven, loaded by pml::personal).
+   - `pml::pokepara::CoreParam::IsRare` (`src/pml/pokepara/Shiny.cpp`) — the
+     shininess check `(TID^SID^PID_hi^PID_lo) < 16`; threshold-16 boundary
+     verified exact.
 
 ### Cross-module call resolution (import veneers) — WORKING
 `cro_map.py` now emits a `veneers` map per module. Mechanism: a named
@@ -94,6 +97,13 @@ in a throwaway debug script.)
   exact damage function needs indirect-call/data-flow analysis — tracing where
   the thunk address (0x16d8/0x16d0) is loaded into a register. That's the next
   RE step; export→address mapping for everything decompiled so far is solid.
+  Update: `CalcAffinity`/`MulAffinity` are *exported by static.crs* (defined
+  at 0x21c1e8/0x21c0e0), and neither an ARM nor Thumb direct-`bl` scan (in
+  Battle.cro or static's pml-battle window) finds a caller — confirming the
+  battle server reaches them only through function-pointer dispatch. Finding
+  the damage server therefore needs either (a) identifying the dedicated `btl`
+  server module and its handler tables, or (b) indirect-call/vtable data-flow
+  analysis. Tracked as the main open RE problem.
 5. **Struct recovery** — rebuild headers (`pml::pokepara::CoreParam`,
    save blocks, …) from access patterns + community docs (pk3DS, PKHeX
    research already names many USUM structures — cross-reference).
