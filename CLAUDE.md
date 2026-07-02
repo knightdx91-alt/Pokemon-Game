@@ -833,15 +833,26 @@ All numerically verified against known game values:
    struct at **field +0x220** and queue the throw. The `--offset 0x220`
    data-flow lead turned out **ambiguous** (0x220 is overloaded across many
    structs; its 6 readers are all graphics/matrix code — `GetStereoMatrix`,
-   throw-animation color/position vectors — not the catch math). Better lead
-   (this session): `sub_3c5f0` does `ldr r0,[r4]; ldr r2,[r0,#0xd4]; blx r2`
-   **before** storing the ball id — the catch result is computed through the
-   throw-action's **vtable slot +0xd4** (indirect dispatch), which is why
-   offset/constant heuristics miss it. NEXT: resolve that vtable (use
-   `cro_vtables.py` on the action object's class; find the concrete function
-   at slot 0xd4) — that handler is the catch/shake calc (likely float/VFP,
-   `^0.1875`). The catch formula is the last unfinished battle-server piece;
-   damage + type + AI are done & verified.
+   throw-animation color/position vectors — not the catch math). **Investigated hard, still open — key finding: the numeric
+   calc is NOT in Battle.cro's obvious paths, which are all presentation.**
+   Chased four anchors, ALL landing on catch/throw *presentation* code, not the
+   shake-count math:
+   - vtable slot `+0xd4` (`sub_3c5f0`: `ldr r0,[r4]; ldr r2,[r0,#0xd4]; blx`) —
+     turned out a **getter** (result → field 0x21c), not catch.
+   - `--offset 0x220` readers — **ambiguous** (offset overloaded; all 6 are
+     graphics/matrix: `GetStereoMatrix`, throw-anim vectors).
+   - `pml::personal::GetPersonalParam` → only Battle caller is wrapper
+     `sub_7cd58` → its callers are `sub_2a850` and **`sub_551b8`** (42 VFP) —
+     but `sub_551b8` is the **catch/throw ANIMATION state machine** (switches
+     on anim state, `PokeModel::ChangeAnimation`, drives shake via `sub_7bae0`
+     the throw-effect renderer). Presentation, not the calc.
+   ⇒ Conclusion: the numeric shake-count/catch decision is computed **outside
+   Battle.cro's presentation layer** — either in **static `pml`** (search
+   static `.code` for the catch formula: `3*maxHP` = `add rX,rX,rX,lsl#1` near
+   an HP read + a divide, or the float shake `^0.1875` via `vsqrt`×N) or in a
+   btl server function reached by indirect dispatch. This is a dedicated
+   sub-project (like the damage server was), NOT a quick probe. Damage + type
+   + AI are DONE & verified; catch is the one remaining battle-server piece.
 3. **More verified functions** are getting scarce — the clean self-contained
    `pml` formulas are largely mined out (remaining ones delegate to field
    accessors or use load-time-relocated pointers, e.g. the berry-taste table
