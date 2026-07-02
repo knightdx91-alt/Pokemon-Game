@@ -107,6 +107,23 @@ Battle.cro damage pipeline traced via the graph:
   callers — reached by function pointer, as expected). The exact damage
   arithmetic lives in its callees (`sub_8f04c`, `sub_e3a50`, …) — next to trace.
 
+### Battle architecture findings (server hunt)
+- **Battle.cro is the battle *scene* module** (rendering/UI/animation:
+  `btl::BgSystem`, move-anim sequencing), NOT the damage server. Evidence: its
+  only variable-divide function (`sub_5ce4`) is an HP-%/status threshold check
+  (75/50/25 → 29/30/31), and no function reads attacker/defender stats or the
+  type chart. The numeric battle server lives in the main executable (`.code`).
+- **TypeAffinity cluster fully localized** at 0x21c0e0..0x21c3ac in static:
+  `MulAffinity` (0x21c0e0), `CalcAffinity` (0x21c1e8, the *sole* reader of the
+  18×18 type chart at VA 0x5bb558), and `CalcAffinityForDefender` (0x21c284,
+  dual-type combine) — all three now in `src/pml/battle/TypeAffinity.cpp`.
+- **Affinity is called only by function pointer**: exhaustive ARM+Thumb `bl`
+  scans of both Battle.cro and all of static, plus a search for the functions'
+  stored absolute VAs, find *zero* resolvable callers. The battle server
+  dispatches type-effectiveness (and damage) through handler/vtable pointers.
+  Cracking that dispatch (vtable/handler-table data-flow) is the remaining
+  gate on the numeric damage formula.
+
 ### Known next targets / open issues
 - **Damage formula** (`btl`, internal/unnamed in Battle.cro): `sub_9348`
   (the move base-power/type/IsDamage setup) is decoded; the type-effectiveness

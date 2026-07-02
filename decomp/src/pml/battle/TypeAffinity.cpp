@@ -91,5 +91,25 @@ AffinityID MulAffinity(AffinityID a, AffinityID b)
     return AFF_IMMUNE;            // prod == 0 -> immune
 }
 
+// sub_21c284 — effectiveness of an attacking type against a (dual-type)
+// defender. Calls CalcAffinity for the attack type vs each of the defender's
+// two types, combines the two results the same way MulAffinity does (product
+// of their Q6 values, renormalised, mapped back to an AffinityID). This is
+// the type-multiplier entry point the battle damage server consumes — the
+// TypeAffinity cluster (0x21c0e0..0x21c3ac) is self-contained and reached
+// only through function-pointer dispatch (no direct/stored-pointer caller is
+// resolvable statically — see decomp/README.md).
+//   attackType vs (defType1, defType2); pass defType2 == TYPE_NONE for a
+//   single-typed defender (CalcAffinity returns neutral for TYPE_NONE).
+AffinityID CalcAffinityForDefender(unsigned char attackType,
+                                   unsigned char defType1,
+                                   unsigned char defType2,
+                                   bool inverse)
+{
+    AffinityID a1 = CalcAffinity(attackType, defType1, inverse);
+    AffinityID a2 = CalcAffinity(attackType, defType2, inverse);
+    return MulAffinity(a1, a2);
+}
+
 }  // namespace battle
 }  // namespace pml
