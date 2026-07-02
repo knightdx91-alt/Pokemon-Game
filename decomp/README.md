@@ -98,6 +98,12 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
      Growl −1 atk, Growth +1 atk/spa, Calm Mind, Charm −2, Toxic/Ember/Ice
      Beam statuses). Read straight from the raw move record (the accessor's
      source blob), sidestepping sub_3af788's parsed-structure navigation.
+     **+ flags & weather:** WazaFlag bitfield (u32 @byte36: contact/charge/
+     recharge/protect/reflectable/snatch/mirror/punch/sound/gravity/heal/
+     ignoreSub…, verified vs Fire Punch/Fly/Recover/Hyper Voice) and weather
+     (via effectId 136=rain/137=sun/115=sand/164=hail) now in `usum_moves.json`
+     (`flags` on 645 moves, `weather` on 4). **The move-effect DATA layer is
+     complete & verified** — status, stat changes, flags, weather, effect id.
    - **catch-rate server** (`src/pml/battle/CatchRate.cpp`) — `sub_2d568`:
      `a = (3M−2H)·rateMod·ball·status/(3M)`, auto-catch at a≥255 (0xff000 Q12),
      else the 4-shake check (`^0.1875` shake, the `0.1875f` @0x2da0c that

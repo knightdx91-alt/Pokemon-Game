@@ -6,7 +6,12 @@
   "accuracy": 100,
   "pp": 35,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "karate_chop": {
   "name": "Karate Chop",
@@ -15,7 +20,12 @@
   "accuracy": 100,
   "pp": 25,
   "category": "physical",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "double_slap": {
   "name": "Double Slap",
@@ -24,7 +34,12 @@
   "accuracy": 85,
   "pp": 10,
   "category": "physical",
-  "effectId": 29
+  "effectId": 29,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "comet_punch": {
   "name": "Comet Punch",
@@ -33,7 +48,13 @@
   "accuracy": 85,
   "pp": 15,
   "category": "physical",
-  "effectId": 29
+  "effectId": 29,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
+  ]
  },
  "mega_punch": {
   "name": "Mega Punch",
@@ -42,7 +63,13 @@
   "accuracy": 85,
   "pp": 20,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
+  ]
  },
  "pay_day": {
   "name": "Pay Day",
@@ -51,7 +78,11 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 34
+  "effectId": 34,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "fire_punch": {
   "name": "Fire Punch",
@@ -62,7 +93,13 @@
   "category": "physical",
   "effectChance": 10,
   "effectId": 4,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
+  ]
  },
  "ice_punch": {
   "name": "Ice Punch",
@@ -73,7 +110,13 @@
   "category": "physical",
   "effectChance": 10,
   "effectId": 5,
-  "status": "freeze"
+  "status": "freeze",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
+  ]
  },
  "thunder_punch": {
   "name": "Thunder Punch",
@@ -84,7 +127,13 @@
   "category": "physical",
   "effectChance": 10,
   "effectId": 6,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
+  ]
  },
  "scratch": {
   "name": "Scratch",
@@ -93,7 +142,12 @@
   "accuracy": 100,
   "pp": 35,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "vice_grip": {
   "name": "Vice Grip",
@@ -102,7 +156,12 @@
   "accuracy": 100,
   "pp": 30,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "guillotine": {
   "name": "Guillotine",
@@ -111,7 +170,12 @@
   "accuracy": 30,
   "pp": 5,
   "category": "physical",
-  "effectId": 38
+  "effectId": 38,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "razor_wind": {
   "name": "Razor Wind",
@@ -120,7 +184,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 39
+  "effectId": 39,
+  "flags": [
+   "charge",
+   "protect",
+   "mirror"
+  ]
  },
  "swords_dance": {
   "name": "Swords Dance",
@@ -136,6 +205,9 @@
     "stages": 2,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "cut": {
@@ -145,7 +217,12 @@
   "accuracy": 95,
   "pp": 30,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "gust": {
   "name": "Gust",
@@ -154,7 +231,12 @@
   "accuracy": 100,
   "pp": 35,
   "category": "special",
-  "effectId": 149
+  "effectId": 149,
+  "flags": [
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "wing_attack": {
   "name": "Wing Attack",
@@ -163,7 +245,13 @@
   "accuracy": 100,
   "pp": 35,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "whirlwind": {
   "name": "Whirlwind",
@@ -173,7 +261,12 @@
   "pp": 20,
   "category": "status",
   "priority": -6,
-  "effectId": 28
+  "effectId": 28,
+  "flags": [
+   "reflectable",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "fly": {
   "name": "Fly",
@@ -182,7 +275,15 @@
   "accuracy": 95,
   "pp": 15,
   "category": "physical",
-  "effectId": 155
+  "effectId": 155,
+  "flags": [
+   "contact",
+   "charge",
+   "protect",
+   "mirror",
+   "gravity",
+   "distance"
+  ]
  },
  "bind": {
   "name": "Bind",
@@ -192,7 +293,12 @@
   "pp": 20,
   "category": "physical",
   "effectChance": 100,
-  "effectId": 42
+  "effectId": 42,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "slam": {
   "name": "Slam",
@@ -201,7 +307,12 @@
   "accuracy": 75,
   "pp": 20,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "vine_whip": {
   "name": "Vine Whip",
@@ -210,7 +321,12 @@
   "accuracy": 100,
   "pp": 25,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "stomp": {
   "name": "Stomp",
@@ -219,7 +335,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 150
+  "effectId": 150,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "double_kick": {
   "name": "Double Kick",
@@ -228,7 +349,12 @@
   "accuracy": 100,
   "pp": 30,
   "category": "physical",
-  "effectId": 44
+  "effectId": 44,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "mega_kick": {
   "name": "Mega Kick",
@@ -237,7 +363,12 @@
   "accuracy": 75,
   "pp": 5,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "jump_kick": {
   "name": "Jump Kick",
@@ -246,7 +377,13 @@
   "accuracy": 95,
   "pp": 10,
   "category": "physical",
-  "effectId": 45
+  "effectId": 45,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "gravity"
+  ]
  },
  "rolling_kick": {
   "name": "Rolling Kick",
@@ -255,7 +392,12 @@
   "accuracy": 85,
   "pp": 15,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "sand_attack": {
   "name": "Sand Attack",
@@ -271,6 +413,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "headbutt": {
@@ -280,7 +427,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "horn_attack": {
   "name": "Horn Attack",
@@ -289,7 +441,12 @@
   "accuracy": 100,
   "pp": 25,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "fury_attack": {
   "name": "Fury Attack",
@@ -298,7 +455,12 @@
   "accuracy": 85,
   "pp": 20,
   "category": "physical",
-  "effectId": 29
+  "effectId": 29,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "horn_drill": {
   "name": "Horn Drill",
@@ -307,7 +469,12 @@
   "accuracy": 30,
   "pp": 5,
   "category": "physical",
-  "effectId": 38
+  "effectId": 38,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "tackle": {
   "name": "Tackle",
@@ -316,7 +483,12 @@
   "accuracy": 100,
   "pp": 35,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "body_slam": {
   "name": "Body Slam",
@@ -327,7 +499,12 @@
   "category": "physical",
   "effectChance": 30,
   "effectId": 6,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "wrap": {
   "name": "Wrap",
@@ -337,7 +514,12 @@
   "pp": 20,
   "category": "physical",
   "effectChance": 100,
-  "effectId": 42
+  "effectId": 42,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "take_down": {
   "name": "Take Down",
@@ -346,7 +528,12 @@
   "accuracy": 85,
   "pp": 20,
   "category": "physical",
-  "effectId": 48
+  "effectId": 48,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "thrash": {
   "name": "Thrash",
@@ -355,7 +542,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 27
+  "effectId": 27,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "double_edge": {
   "name": "Double-Edge",
@@ -364,7 +556,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 198
+  "effectId": 198,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "tail_whip": {
   "name": "Tail Whip",
@@ -380,6 +577,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "poison_sting": {
@@ -391,7 +593,11 @@
   "category": "physical",
   "effectChance": 30,
   "effectId": 2,
-  "status": "poison"
+  "status": "poison",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "twineedle": {
   "name": "Twineedle",
@@ -402,7 +608,11 @@
   "category": "physical",
   "effectChance": 20,
   "effectId": 77,
-  "status": "poison"
+  "status": "poison",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "pin_missile": {
   "name": "Pin Missile",
@@ -411,7 +621,11 @@
   "accuracy": 95,
   "pp": 20,
   "category": "physical",
-  "effectId": 29
+  "effectId": 29,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "leer": {
   "name": "Leer",
@@ -427,6 +641,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "bite": {
@@ -436,7 +655,12 @@
   "accuracy": 100,
   "pp": 25,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "growl": {
   "name": "Growl",
@@ -452,6 +676,13 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "sound",
+   "ignoreSub"
   ]
  },
  "roar": {
@@ -462,7 +693,13 @@
   "pp": 20,
   "category": "status",
   "priority": -6,
-  "effectId": 28
+  "effectId": 28,
+  "flags": [
+   "reflectable",
+   "mirror",
+   "sound",
+   "ignoreSub"
+  ]
  },
  "sing": {
   "name": "Sing",
@@ -472,7 +709,14 @@
   "pp": 15,
   "category": "status",
   "effectId": 1,
-  "status": "sleep"
+  "status": "sleep",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "sound",
+   "ignoreSub"
+  ]
  },
  "supersonic": {
   "name": "Supersonic",
@@ -482,7 +726,14 @@
   "pp": 20,
   "category": "status",
   "effectId": 49,
-  "status": "confusion"
+  "status": "confusion",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "sound",
+   "ignoreSub"
+  ]
  },
  "sonic_boom": {
   "name": "Sonic Boom",
@@ -491,7 +742,11 @@
   "accuracy": 90,
   "pp": 20,
   "category": "special",
-  "effectId": 130
+  "effectId": 130,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "disable": {
   "name": "Disable",
@@ -500,7 +755,13 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 86
+  "effectId": 86,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "acid": {
   "name": "Acid",
@@ -516,6 +777,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "ember": {
@@ -527,7 +792,11 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 4,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "flamethrower": {
   "name": "Flamethrower",
@@ -538,7 +807,11 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 4,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "mist": {
   "name": "Mist",
@@ -547,7 +820,10 @@
   "accuracy": 101,
   "pp": 30,
   "category": "status",
-  "effectId": 46
+  "effectId": 46,
+  "flags": [
+   "snatch"
+  ]
  },
  "water_gun": {
   "name": "Water Gun",
@@ -556,7 +832,11 @@
   "accuracy": 100,
   "pp": 25,
   "category": "special",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "hydro_pump": {
   "name": "Hydro Pump",
@@ -565,7 +845,11 @@
   "accuracy": 80,
   "pp": 5,
   "category": "special",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "surf": {
   "name": "Surf",
@@ -574,7 +858,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 257
+  "effectId": 257,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "ice_beam": {
   "name": "Ice Beam",
@@ -585,7 +873,11 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 5,
-  "status": "freeze"
+  "status": "freeze",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "blizzard": {
   "name": "Blizzard",
@@ -596,7 +888,11 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 260,
-  "status": "freeze"
+  "status": "freeze",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "psybeam": {
   "name": "Psybeam",
@@ -607,7 +903,11 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 76,
-  "status": "confusion"
+  "status": "confusion",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "bubble_beam": {
   "name": "Bubble Beam",
@@ -623,6 +923,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "aurora_beam": {
@@ -639,6 +943,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "hyper_beam": {
@@ -648,7 +956,12 @@
   "accuracy": 90,
   "pp": 5,
   "category": "special",
-  "effectId": 80
+  "effectId": 80,
+  "flags": [
+   "recharge",
+   "protect",
+   "mirror"
+  ]
  },
  "peck": {
   "name": "Peck",
@@ -657,7 +970,13 @@
   "accuracy": 100,
   "pp": 35,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "drill_peck": {
   "name": "Drill Peck",
@@ -666,7 +985,13 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "submission": {
   "name": "Submission",
@@ -675,7 +1000,12 @@
   "accuracy": 80,
   "pp": 20,
   "category": "physical",
-  "effectId": 48
+  "effectId": 48,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "low_kick": {
   "name": "Low Kick",
@@ -684,7 +1014,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 196
+  "effectId": 196,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "counter": {
   "name": "Counter",
@@ -694,7 +1029,11 @@
   "pp": 20,
   "category": "physical",
   "priority": -5,
-  "effectId": 89
+  "effectId": 89,
+  "flags": [
+   "contact",
+   "protect"
+  ]
  },
  "seismic_toss": {
   "name": "Seismic Toss",
@@ -703,7 +1042,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 87
+  "effectId": 87,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "strength": {
   "name": "Strength",
@@ -712,7 +1056,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "absorb": {
   "name": "Absorb",
@@ -721,7 +1070,12 @@
   "accuracy": 100,
   "pp": 25,
   "category": "special",
-  "effectId": 3
+  "effectId": 3,
+  "flags": [
+   "protect",
+   "mirror",
+   "heal"
+  ]
  },
  "mega_drain": {
   "name": "Mega Drain",
@@ -730,7 +1084,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 3
+  "effectId": 3,
+  "flags": [
+   "protect",
+   "mirror",
+   "heal"
+  ]
  },
  "leech_seed": {
   "name": "Leech Seed",
@@ -739,7 +1098,12 @@
   "accuracy": 90,
   "pp": 10,
   "category": "status",
-  "effectId": 84
+  "effectId": 84,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "growth": {
   "name": "Growth",
@@ -760,6 +1124,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "razor_leaf": {
@@ -769,7 +1136,11 @@
   "accuracy": 95,
   "pp": 25,
   "category": "physical",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "solar_beam": {
   "name": "Solar Beam",
@@ -778,7 +1149,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 151
+  "effectId": 151,
+  "flags": [
+   "charge",
+   "protect",
+   "mirror"
+  ]
  },
  "poison_powder": {
   "name": "Poison Powder",
@@ -788,7 +1164,12 @@
   "pp": 35,
   "category": "status",
   "effectId": 66,
-  "status": "poison"
+  "status": "poison",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "stun_spore": {
   "name": "Stun Spore",
@@ -798,7 +1179,12 @@
   "pp": 30,
   "category": "status",
   "effectId": 67,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "sleep_powder": {
   "name": "Sleep Powder",
@@ -808,7 +1194,12 @@
   "pp": 15,
   "category": "status",
   "effectId": 1,
-  "status": "sleep"
+  "status": "sleep",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "petal_dance": {
   "name": "Petal Dance",
@@ -817,7 +1208,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 27
+  "effectId": 27,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "string_shot": {
   "name": "String Shot",
@@ -833,6 +1229,11 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "dragon_rage": {
@@ -842,7 +1243,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 41
+  "effectId": 41,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "fire_spin": {
   "name": "Fire Spin",
@@ -852,7 +1257,11 @@
   "pp": 15,
   "category": "special",
   "effectChance": 100,
-  "effectId": 42
+  "effectId": 42,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "thunder_shock": {
   "name": "Thunder Shock",
@@ -863,7 +1272,11 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 6,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "thunderbolt": {
   "name": "Thunderbolt",
@@ -874,7 +1287,11 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 6,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "thunder_wave": {
   "name": "Thunder Wave",
@@ -884,7 +1301,12 @@
   "pp": 20,
   "category": "status",
   "effectId": 67,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "thunder": {
   "name": "Thunder",
@@ -895,7 +1317,11 @@
   "category": "special",
   "effectChance": 30,
   "effectId": 152,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "rock_throw": {
   "name": "Rock Throw",
@@ -904,7 +1330,11 @@
   "accuracy": 90,
   "pp": 15,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "earthquake": {
   "name": "Earthquake",
@@ -913,7 +1343,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 147
+  "effectId": 147,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "fissure": {
   "name": "Fissure",
@@ -922,7 +1356,11 @@
   "accuracy": 30,
   "pp": 5,
   "category": "physical",
-  "effectId": 38
+  "effectId": 38,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "dig": {
   "name": "Dig",
@@ -931,7 +1369,13 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 256
+  "effectId": 256,
+  "flags": [
+   "contact",
+   "charge",
+   "protect",
+   "mirror"
+  ]
  },
  "toxic": {
   "name": "Toxic",
@@ -941,7 +1385,12 @@
   "pp": 10,
   "category": "status",
   "effectId": 33,
-  "status": "poison"
+  "status": "poison",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "confusion": {
   "name": "Confusion",
@@ -952,7 +1401,11 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 76,
-  "status": "confusion"
+  "status": "confusion",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "psychic": {
   "name": "Psychic",
@@ -968,6 +1421,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "hypnosis": {
@@ -978,7 +1435,12 @@
   "pp": 20,
   "category": "status",
   "effectId": 1,
-  "status": "sleep"
+  "status": "sleep",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "meditate": {
   "name": "Meditate",
@@ -994,6 +1456,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "agility": {
@@ -1010,6 +1475,9 @@
     "stages": 2,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "quick_attack": {
@@ -1020,7 +1488,12 @@
   "pp": 30,
   "category": "physical",
   "priority": 1,
-  "effectId": 103
+  "effectId": 103,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "rage": {
   "name": "Rage",
@@ -1029,7 +1502,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 81
+  "effectId": 81,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "teleport": {
   "name": "Teleport",
@@ -1047,7 +1525,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 87
+  "effectId": 87,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "mimic": {
   "name": "Mimic",
@@ -1056,7 +1538,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 82
+  "effectId": 82,
+  "flags": [
+   "protect",
+   "ignoreSub"
+  ]
  },
  "screech": {
   "name": "Screech",
@@ -1072,6 +1558,13 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "sound",
+   "ignoreSub"
   ]
  },
  "double_team": {
@@ -1088,6 +1581,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "recover": {
@@ -1097,7 +1593,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 32
+  "effectId": 32,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "harden": {
   "name": "Harden",
@@ -1113,6 +1613,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "minimize": {
@@ -1129,6 +1632,9 @@
     "stages": 2,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "smokescreen": {
@@ -1145,6 +1651,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "confuse_ray": {
@@ -1155,7 +1666,12 @@
   "pp": 10,
   "category": "status",
   "effectId": 49,
-  "status": "confusion"
+  "status": "confusion",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "withdraw": {
   "name": "Withdraw",
@@ -1171,6 +1687,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "defense_curl": {
@@ -1187,6 +1706,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "barrier": {
@@ -1203,6 +1725,9 @@
     "stages": 2,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "light_screen": {
@@ -1212,7 +1737,10 @@
   "accuracy": 101,
   "pp": 30,
   "category": "status",
-  "effectId": 35
+  "effectId": 35,
+  "flags": [
+   "snatch"
+  ]
  },
  "haze": {
   "name": "Haze",
@@ -1221,7 +1749,10 @@
   "accuracy": 101,
   "pp": 30,
   "category": "status",
-  "effectId": 25
+  "effectId": 25,
+  "flags": [
+   "ignoreSub"
+  ]
  },
  "reflect": {
   "name": "Reflect",
@@ -1230,7 +1761,10 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 65
+  "effectId": 65,
+  "flags": [
+   "snatch"
+  ]
  },
  "focus_energy": {
   "name": "Focus Energy",
@@ -1239,7 +1773,10 @@
   "accuracy": 101,
   "pp": 30,
   "category": "status",
-  "effectId": 47
+  "effectId": 47,
+  "flags": [
+   "snatch"
+  ]
  },
  "bide": {
   "name": "Bide",
@@ -1249,7 +1786,11 @@
   "pp": 10,
   "category": "physical",
   "priority": 1,
-  "effectId": 26
+  "effectId": 26,
+  "flags": [
+   "contact",
+   "protect"
+  ]
  },
  "metronome": {
   "name": "Metronome",
@@ -1276,7 +1817,11 @@
   "accuracy": 100,
   "pp": 5,
   "category": "physical",
-  "effectId": 7
+  "effectId": 7,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "egg_bomb": {
   "name": "Egg Bomb",
@@ -1285,7 +1830,11 @@
   "accuracy": 75,
   "pp": 10,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "lick": {
   "name": "Lick",
@@ -1296,7 +1845,12 @@
   "category": "physical",
   "effectChance": 30,
   "effectId": 6,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "smog": {
   "name": "Smog",
@@ -1307,7 +1861,11 @@
   "category": "special",
   "effectChance": 40,
   "effectId": 2,
-  "status": "poison"
+  "status": "poison",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "sludge": {
   "name": "Sludge",
@@ -1318,7 +1876,11 @@
   "category": "special",
   "effectChance": 30,
   "effectId": 2,
-  "status": "poison"
+  "status": "poison",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "bone_club": {
   "name": "Bone Club",
@@ -1327,7 +1889,11 @@
   "accuracy": 85,
   "pp": 20,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "fire_blast": {
   "name": "Fire Blast",
@@ -1338,7 +1904,11 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 4,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "waterfall": {
   "name": "Waterfall",
@@ -1347,7 +1917,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "clamp": {
   "name": "Clamp",
@@ -1357,7 +1932,12 @@
   "pp": 15,
   "category": "physical",
   "effectChance": 100,
-  "effectId": 42
+  "effectId": 42,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "swift": {
   "name": "Swift",
@@ -1366,7 +1946,11 @@
   "accuracy": 101,
   "pp": 20,
   "category": "special",
-  "effectId": 17
+  "effectId": 17,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "skull_bash": {
   "name": "Skull Bash",
@@ -1376,7 +1960,13 @@
   "pp": 10,
   "category": "physical",
   "effectChance": 100,
-  "effectId": 145
+  "effectId": 145,
+  "flags": [
+   "contact",
+   "charge",
+   "protect",
+   "mirror"
+  ]
  },
  "spike_cannon": {
   "name": "Spike Cannon",
@@ -1385,7 +1975,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 29
+  "effectId": 29,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "constrict": {
   "name": "Constrict",
@@ -1401,6 +1995,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "amnesia": {
@@ -1417,6 +2016,9 @@
     "stages": 2,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "kinesis": {
@@ -1433,6 +2035,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "soft_boiled": {
@@ -1442,7 +2049,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 32
+  "effectId": 32,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "high_jump_kick": {
   "name": "High Jump Kick",
@@ -1451,7 +2062,13 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 45
+  "effectId": 45,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "gravity"
+  ]
  },
  "glare": {
   "name": "Glare",
@@ -1461,7 +2078,12 @@
   "pp": 30,
   "category": "status",
   "effectId": 67,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "dream_eater": {
   "name": "Dream Eater",
@@ -1470,7 +2092,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 8
+  "effectId": 8,
+  "flags": [
+   "protect",
+   "mirror",
+   "heal"
+  ]
  },
  "poison_gas": {
   "name": "Poison Gas",
@@ -1480,7 +2107,12 @@
   "pp": 40,
   "category": "status",
   "effectId": 66,
-  "status": "poison"
+  "status": "poison",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "barrage": {
   "name": "Barrage",
@@ -1489,7 +2121,11 @@
   "accuracy": 85,
   "pp": 20,
   "category": "physical",
-  "effectId": 29
+  "effectId": 29,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "leech_life": {
   "name": "Leech Life",
@@ -1498,7 +2134,13 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 3
+  "effectId": 3,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "heal"
+  ]
  },
  "lovely_kiss": {
   "name": "Lovely Kiss",
@@ -1508,7 +2150,12 @@
   "pp": 10,
   "category": "status",
   "effectId": 1,
-  "status": "sleep"
+  "status": "sleep",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "sky_attack": {
   "name": "Sky Attack",
@@ -1517,7 +2164,13 @@
   "accuracy": 90,
   "pp": 5,
   "category": "physical",
-  "effectId": 75
+  "effectId": 75,
+  "flags": [
+   "charge",
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "transform": {
   "name": "Transform",
@@ -1542,6 +2195,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "dizzy_punch": {
@@ -1553,7 +2210,13 @@
   "category": "physical",
   "effectChance": 20,
   "effectId": 76,
-  "status": "confusion"
+  "status": "confusion",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
+  ]
  },
  "spore": {
   "name": "Spore",
@@ -1563,7 +2226,12 @@
   "pp": 15,
   "category": "status",
   "effectId": 1,
-  "status": "sleep"
+  "status": "sleep",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "flash": {
   "name": "Flash",
@@ -1579,6 +2247,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "psywave": {
@@ -1588,7 +2261,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 88
+  "effectId": 88,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "splash": {
   "name": "Splash",
@@ -1597,7 +2274,10 @@
   "accuracy": 101,
   "pp": 40,
   "category": "status",
-  "effectId": 85
+  "effectId": 85,
+  "flags": [
+   "gravity"
+  ]
  },
  "acid_armor": {
   "name": "Acid Armor",
@@ -1613,6 +2293,9 @@
     "stages": 2,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "crabhammer": {
@@ -1622,7 +2305,12 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "explosion": {
   "name": "Explosion",
@@ -1631,7 +2319,11 @@
   "accuracy": 100,
   "pp": 5,
   "category": "physical",
-  "effectId": 7
+  "effectId": 7,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "fury_swipes": {
   "name": "Fury Swipes",
@@ -1640,7 +2332,12 @@
   "accuracy": 80,
   "pp": 15,
   "category": "physical",
-  "effectId": 29
+  "effectId": 29,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "bonemerang": {
   "name": "Bonemerang",
@@ -1649,7 +2346,11 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 44
+  "effectId": 44,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "rest": {
   "name": "Rest",
@@ -1658,7 +2359,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 37
+  "effectId": 37,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "rock_slide": {
   "name": "Rock Slide",
@@ -1667,7 +2372,11 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "hyper_fang": {
   "name": "Hyper Fang",
@@ -1676,7 +2385,12 @@
   "accuracy": 90,
   "pp": 15,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "sharpen": {
   "name": "Sharpen",
@@ -1692,6 +2406,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "conversion": {
@@ -1701,7 +2418,10 @@
   "accuracy": 101,
   "pp": 30,
   "category": "status",
-  "effectId": 30
+  "effectId": 30,
+  "flags": [
+   "snatch"
+  ]
  },
  "tri_attack": {
   "name": "Tri Attack",
@@ -1711,7 +2431,11 @@
   "pp": 10,
   "category": "special",
   "effectChance": 20,
-  "effectId": 36
+  "effectId": 36,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "super_fang": {
   "name": "Super Fang",
@@ -1720,7 +2444,12 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 40
+  "effectId": 40,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "slash": {
   "name": "Slash",
@@ -1729,7 +2458,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "substitute": {
   "name": "Substitute",
@@ -1738,7 +2472,10 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 79
+  "effectId": 79,
+  "flags": [
+   "snatch"
+  ]
  },
  "struggle": {
   "name": "Struggle",
@@ -1747,7 +2484,11 @@
   "accuracy": 101,
   "pp": 1,
   "category": "physical",
-  "effectId": 254
+  "effectId": 254,
+  "flags": [
+   "contact",
+   "protect"
+  ]
  },
  "sketch": {
   "name": "Sketch",
@@ -1756,7 +2497,10 @@
   "accuracy": 101,
   "pp": 1,
   "category": "status",
-  "effectId": 95
+  "effectId": 95,
+  "flags": [
+   "ignoreSub"
+  ]
  },
  "triple_kick": {
   "name": "Triple Kick",
@@ -1765,7 +2509,12 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 104
+  "effectId": 104,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "thief": {
   "name": "Thief",
@@ -1774,7 +2523,12 @@
   "accuracy": 100,
   "pp": 25,
   "category": "physical",
-  "effectId": 105
+  "effectId": 105,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "spider_web": {
   "name": "Spider Web",
@@ -1783,7 +2537,12 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 106
+  "effectId": 106,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "mind_reader": {
   "name": "Mind Reader",
@@ -1792,7 +2551,11 @@
   "accuracy": 101,
   "pp": 5,
   "category": "status",
-  "effectId": 94
+  "effectId": 94,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "nightmare": {
   "name": "Nightmare",
@@ -1801,7 +2564,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "status",
-  "effectId": 107
+  "effectId": 107,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "flame_wheel": {
   "name": "Flame Wheel",
@@ -1812,7 +2579,13 @@
   "category": "physical",
   "effectChance": 10,
   "effectId": 125,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "defrost"
+  ]
  },
  "snore": {
   "name": "Snore",
@@ -1821,7 +2594,13 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 92
+  "effectId": 92,
+  "flags": [
+   "protect",
+   "mirror",
+   "sound",
+   "ignoreSub"
+  ]
  },
  "curse": {
   "name": "Curse",
@@ -1830,7 +2609,10 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 109
+  "effectId": 109,
+  "flags": [
+   "ignoreSub"
+  ]
  },
  "flail": {
   "name": "Flail",
@@ -1839,7 +2621,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 99
+  "effectId": 99,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "conversion_2": {
   "name": "Conversion 2",
@@ -1848,7 +2635,10 @@
   "accuracy": 101,
   "pp": 30,
   "category": "status",
-  "effectId": 93
+  "effectId": 93,
+  "flags": [
+   "ignoreSub"
+  ]
  },
  "aeroblast": {
   "name": "Aeroblast",
@@ -1857,7 +2647,12 @@
   "accuracy": 95,
   "pp": 5,
   "category": "special",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "cotton_spore": {
   "name": "Cotton Spore",
@@ -1873,6 +2668,11 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "reversal": {
@@ -1882,7 +2682,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 99
+  "effectId": 99,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "spite": {
   "name": "Spite",
@@ -1891,7 +2696,13 @@
   "accuracy": 100,
   "pp": 10,
   "category": "status",
-  "effectId": 100
+  "effectId": 100,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "powder_snow": {
   "name": "Powder Snow",
@@ -1902,7 +2713,11 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 5,
-  "status": "freeze"
+  "status": "freeze",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "protect": {
   "name": "Protect",
@@ -1922,7 +2737,13 @@
   "pp": 30,
   "category": "physical",
   "priority": 1,
-  "effectId": 103
+  "effectId": 103,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
+  ]
  },
  "scary_face": {
   "name": "Scary Face",
@@ -1938,6 +2759,11 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "feint_attack": {
@@ -1947,7 +2773,12 @@
   "accuracy": 101,
   "pp": 20,
   "category": "physical",
-  "effectId": 17
+  "effectId": 17,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "sweet_kiss": {
   "name": "Sweet Kiss",
@@ -1957,7 +2788,12 @@
   "pp": 10,
   "category": "status",
   "effectId": 49,
-  "status": "confusion"
+  "status": "confusion",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "belly_drum": {
   "name": "Belly Drum",
@@ -1966,7 +2802,10 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 142
+  "effectId": 142,
+  "flags": [
+   "snatch"
+  ]
  },
  "sludge_bomb": {
   "name": "Sludge Bomb",
@@ -1977,7 +2816,11 @@
   "category": "special",
   "effectChance": 30,
   "effectId": 2,
-  "status": "poison"
+  "status": "poison",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "mud_slap": {
   "name": "Mud-Slap",
@@ -1993,6 +2836,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "octazooka": {
@@ -2009,6 +2856,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "spikes": {
@@ -2018,7 +2869,10 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 112
+  "effectId": 112,
+  "flags": [
+   "reflectable"
+  ]
  },
  "zap_cannon": {
   "name": "Zap Cannon",
@@ -2029,7 +2883,11 @@
   "category": "special",
   "effectChance": 100,
   "effectId": 6,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "foresight": {
   "name": "Foresight",
@@ -2038,7 +2896,13 @@
   "accuracy": 101,
   "pp": 40,
   "category": "status",
-  "effectId": 113
+  "effectId": 113,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "destiny_bond": {
   "name": "Destiny Bond",
@@ -2047,7 +2911,10 @@
   "accuracy": 101,
   "pp": 5,
   "category": "status",
-  "effectId": 98
+  "effectId": 98,
+  "flags": [
+   "ignoreSub"
+  ]
  },
  "perish_song": {
   "name": "Perish Song",
@@ -2056,7 +2923,12 @@
   "accuracy": 101,
   "pp": 5,
   "category": "status",
-  "effectId": 114
+  "effectId": 114,
+  "flags": [
+   "sound",
+   "distance",
+   "ignoreSub"
+  ]
  },
  "icy_wind": {
   "name": "Icy Wind",
@@ -2072,6 +2944,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "detect": {
@@ -2091,7 +2967,11 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 29
+  "effectId": 29,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "lock_on": {
   "name": "Lock-On",
@@ -2100,7 +2980,11 @@
   "accuracy": 101,
   "pp": 5,
   "category": "status",
-  "effectId": 94
+  "effectId": 94,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "outrage": {
   "name": "Outrage",
@@ -2109,7 +2993,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 27
+  "effectId": 27,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "sandstorm": {
   "name": "Sandstorm",
@@ -2118,7 +3007,8 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 115
+  "effectId": 115,
+  "weather": "sandstorm"
  },
  "giga_drain": {
   "name": "Giga Drain",
@@ -2127,7 +3017,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 3
+  "effectId": 3,
+  "flags": [
+   "protect",
+   "mirror",
+   "heal"
+  ]
  },
  "endure": {
   "name": "Endure",
@@ -2153,6 +3048,11 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "rollout": {
@@ -2162,7 +3062,12 @@
   "accuracy": 90,
   "pp": 20,
   "category": "physical",
-  "effectId": 117
+  "effectId": 117,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "false_swipe": {
   "name": "False Swipe",
@@ -2171,7 +3076,12 @@
   "accuracy": 100,
   "pp": 40,
   "category": "physical",
-  "effectId": 101
+  "effectId": 101,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "swagger": {
   "name": "Swagger",
@@ -2188,6 +3098,11 @@
     "stages": 2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "milk_drink": {
@@ -2197,7 +3112,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 32
+  "effectId": 32,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "spark": {
   "name": "Spark",
@@ -2208,7 +3127,12 @@
   "category": "physical",
   "effectChance": 30,
   "effectId": 6,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "fury_cutter": {
   "name": "Fury Cutter",
@@ -2217,7 +3141,12 @@
   "accuracy": 95,
   "pp": 20,
   "category": "physical",
-  "effectId": 119
+  "effectId": 119,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "steel_wing": {
   "name": "Steel Wing",
@@ -2233,6 +3162,11 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "mean_look": {
@@ -2242,7 +3176,11 @@
   "accuracy": 101,
   "pp": 5,
   "category": "status",
-  "effectId": 106
+  "effectId": 106,
+  "flags": [
+   "reflectable",
+   "mirror"
+  ]
  },
  "attract": {
   "name": "Attract",
@@ -2251,7 +3189,13 @@
   "accuracy": 100,
   "pp": 15,
   "category": "status",
-  "effectId": 120
+  "effectId": 120,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "sleep_talk": {
   "name": "Sleep Talk",
@@ -2269,7 +3213,13 @@
   "accuracy": 101,
   "pp": 5,
   "category": "status",
-  "effectId": 102
+  "effectId": 102,
+  "flags": [
+   "snatch",
+   "sound",
+   "distance",
+   "ignoreSub"
+  ]
  },
  "return": {
   "name": "Return",
@@ -2278,7 +3228,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 121
+  "effectId": 121,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "present": {
   "name": "Present",
@@ -2287,7 +3242,11 @@
   "accuracy": 90,
   "pp": 15,
   "category": "physical",
-  "effectId": 122
+  "effectId": 122,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "frustration": {
   "name": "Frustration",
@@ -2296,7 +3255,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 123
+  "effectId": 123,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "safeguard": {
   "name": "Safeguard",
@@ -2305,7 +3269,10 @@
   "accuracy": 101,
   "pp": 25,
   "category": "status",
-  "effectId": 124
+  "effectId": 124,
+  "flags": [
+   "snatch"
+  ]
  },
  "pain_split": {
   "name": "Pain Split",
@@ -2314,7 +3281,11 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 91
+  "effectId": 91,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "sacred_fire": {
   "name": "Sacred Fire",
@@ -2325,7 +3296,12 @@
   "category": "physical",
   "effectChance": 50,
   "effectId": 125,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "protect",
+   "mirror",
+   "defrost"
+  ]
  },
  "magnitude": {
   "name": "Magnitude",
@@ -2334,7 +3310,11 @@
   "accuracy": 100,
   "pp": 30,
   "category": "physical",
-  "effectId": 126
+  "effectId": 126,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "dynamic_punch": {
   "name": "Dynamic Punch",
@@ -2345,7 +3325,13 @@
   "category": "physical",
   "effectChance": 100,
   "effectId": 76,
-  "status": "confusion"
+  "status": "confusion",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
+  ]
  },
  "megahorn": {
   "name": "Megahorn",
@@ -2354,7 +3340,12 @@
   "accuracy": 85,
   "pp": 10,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "dragon_breath": {
   "name": "Dragon Breath",
@@ -2365,7 +3356,11 @@
   "category": "special",
   "effectChance": 30,
   "effectId": 6,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "baton_pass": {
   "name": "Baton Pass",
@@ -2383,7 +3378,13 @@
   "accuracy": 100,
   "pp": 5,
   "category": "status",
-  "effectId": 90
+  "effectId": 90,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "pursuit": {
   "name": "Pursuit",
@@ -2392,7 +3393,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 128
+  "effectId": 128,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "rapid_spin": {
   "name": "Rapid Spin",
@@ -2401,7 +3407,12 @@
   "accuracy": 100,
   "pp": 40,
   "category": "physical",
-  "effectId": 129
+  "effectId": 129,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "sweet_scent": {
   "name": "Sweet Scent",
@@ -2417,6 +3428,11 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "iron_tail": {
@@ -2433,6 +3449,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "metal_claw": {
@@ -2449,6 +3470,11 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "vital_throw": {
@@ -2459,7 +3485,12 @@
   "pp": 10,
   "category": "physical",
   "priority": -1,
-  "effectId": 78
+  "effectId": 78,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "morning_sun": {
   "name": "Morning Sun",
@@ -2468,7 +3499,11 @@
   "accuracy": 101,
   "pp": 5,
   "category": "status",
-  "effectId": 132
+  "effectId": 132,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "synthesis": {
   "name": "Synthesis",
@@ -2477,7 +3512,11 @@
   "accuracy": 101,
   "pp": 5,
   "category": "status",
-  "effectId": 132
+  "effectId": 132,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "moonlight": {
   "name": "Moonlight",
@@ -2486,7 +3525,11 @@
   "accuracy": 101,
   "pp": 5,
   "category": "status",
-  "effectId": 132
+  "effectId": 132,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "hidden_power": {
   "name": "Hidden Power",
@@ -2495,7 +3538,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 135
+  "effectId": 135,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "cross_chop": {
   "name": "Cross Chop",
@@ -2504,7 +3551,12 @@
   "accuracy": 80,
   "pp": 5,
   "category": "physical",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "twister": {
   "name": "Twister",
@@ -2513,7 +3565,11 @@
   "accuracy": 100,
   "pp": 20,
   "category": "special",
-  "effectId": 146
+  "effectId": 146,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "rain_dance": {
   "name": "Rain Dance",
@@ -2522,7 +3578,8 @@
   "accuracy": 101,
   "pp": 5,
   "category": "status",
-  "effectId": 136
+  "effectId": 136,
+  "weather": "rain"
  },
  "sunny_day": {
   "name": "Sunny Day",
@@ -2531,7 +3588,8 @@
   "accuracy": 101,
   "pp": 5,
   "category": "status",
-  "effectId": 137
+  "effectId": 137,
+  "weather": "sun"
  },
  "crunch": {
   "name": "Crunch",
@@ -2547,6 +3605,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "mirror_coat": {
@@ -2557,7 +3620,10 @@
   "pp": 20,
   "category": "special",
   "priority": -5,
-  "effectId": 144
+  "effectId": 144,
+  "flags": [
+   "protect"
+  ]
  },
  "psych_up": {
   "name": "Psych Up",
@@ -2566,7 +3632,10 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 143
+  "effectId": 143,
+  "flags": [
+   "ignoreSub"
+  ]
  },
  "extreme_speed": {
   "name": "Extreme Speed",
@@ -2576,7 +3645,12 @@
   "pp": 5,
   "category": "physical",
   "priority": 2,
-  "effectId": 103
+  "effectId": 103,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "ancient_power": {
   "name": "Ancient Power",
@@ -2592,6 +3666,10 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "shadow_ball": {
@@ -2608,6 +3686,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "future_sight": {
@@ -2633,6 +3715,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "whirlpool": {
@@ -2643,7 +3730,11 @@
   "pp": 15,
   "category": "special",
   "effectChance": 100,
-  "effectId": 261
+  "effectId": 261,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "beat_up": {
   "name": "Beat Up",
@@ -2652,7 +3743,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 154
+  "effectId": 154,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "fake_out": {
   "name": "Fake Out",
@@ -2662,7 +3757,12 @@
   "pp": 10,
   "category": "physical",
   "priority": 3,
-  "effectId": 158
+  "effectId": 158,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "uproar": {
   "name": "Uproar",
@@ -2671,7 +3771,13 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 159
+  "effectId": 159,
+  "flags": [
+   "protect",
+   "mirror",
+   "sound",
+   "ignoreSub"
+  ]
  },
  "stockpile": {
   "name": "Stockpile",
@@ -2680,7 +3786,10 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 160
+  "effectId": 160,
+  "flags": [
+   "snatch"
+  ]
  },
  "spit_up": {
   "name": "Spit Up",
@@ -2689,7 +3798,10 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 161
+  "effectId": 161,
+  "flags": [
+   "protect"
+  ]
  },
  "swallow": {
   "name": "Swallow",
@@ -2698,7 +3810,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 162
+  "effectId": 162,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "heat_wave": {
   "name": "Heat Wave",
@@ -2709,7 +3825,11 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 4,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "hail": {
   "name": "Hail",
@@ -2718,7 +3838,8 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 164
+  "effectId": 164,
+  "weather": "hail"
  },
  "torment": {
   "name": "Torment",
@@ -2727,7 +3848,13 @@
   "accuracy": 100,
   "pp": 15,
   "category": "status",
-  "effectId": 165
+  "effectId": 165,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "flatter": {
   "name": "Flatter",
@@ -2744,6 +3871,11 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "will_o_wisp": {
@@ -2754,7 +3886,12 @@
   "pp": 15,
   "category": "status",
   "effectId": 167,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "memento": {
   "name": "Memento",
@@ -2763,7 +3900,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "status",
-  "effectId": 168
+  "effectId": 168,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "facade": {
   "name": "Facade",
@@ -2772,7 +3913,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 169
+  "effectId": 169,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "focus_punch": {
   "name": "Focus Punch",
@@ -2782,7 +3928,12 @@
   "pp": 20,
   "category": "physical",
   "priority": -3,
-  "effectId": 170
+  "effectId": 170,
+  "flags": [
+   "contact",
+   "protect",
+   "punch"
+  ]
  },
  "smelling_salts": {
   "name": "Smelling Salts",
@@ -2791,7 +3942,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 171
+  "effectId": 171,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "follow_me": {
   "name": "Follow Me",
@@ -2826,6 +3982,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "taunt": {
@@ -2835,7 +3994,13 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 175
+  "effectId": 175,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "helping_hand": {
   "name": "Helping Hand",
@@ -2845,7 +4010,10 @@
   "pp": 20,
   "category": "status",
   "priority": 5,
-  "effectId": 176
+  "effectId": 176,
+  "flags": [
+   "ignoreSub"
+  ]
  },
  "trick": {
   "name": "Trick",
@@ -2854,7 +4022,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "status",
-  "effectId": 177
+  "effectId": 177,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "role_play": {
   "name": "Role Play",
@@ -2863,7 +4035,10 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 178
+  "effectId": 178,
+  "flags": [
+   "ignoreSub"
+  ]
  },
  "wish": {
   "name": "Wish",
@@ -2872,7 +4047,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 179
+  "effectId": 179,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "assist": {
   "name": "Assist",
@@ -2890,7 +4069,10 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 181
+  "effectId": 181,
+  "flags": [
+   "snatch"
+  ]
  },
  "superpower": {
   "name": "Superpower",
@@ -2911,6 +4093,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "magic_coat": {
@@ -2930,7 +4117,10 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 184
+  "effectId": 184,
+  "flags": [
+   "snatch"
+  ]
  },
  "revenge": {
   "name": "Revenge",
@@ -2940,7 +4130,12 @@
   "pp": 10,
   "category": "physical",
   "priority": -4,
-  "effectId": 185
+  "effectId": 185,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "brick_break": {
   "name": "Brick Break",
@@ -2949,7 +4144,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 186
+  "effectId": 186,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "yawn": {
   "name": "Yawn",
@@ -2958,7 +4158,12 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 187
+  "effectId": 187,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "knock_off": {
   "name": "Knock Off",
@@ -2967,7 +4172,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 188
+  "effectId": 188,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "endeavor": {
   "name": "Endeavor",
@@ -2976,7 +4186,12 @@
   "accuracy": 100,
   "pp": 5,
   "category": "physical",
-  "effectId": 189
+  "effectId": 189,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "eruption": {
   "name": "Eruption",
@@ -2985,7 +4200,11 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 190
+  "effectId": 190,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "skill_swap": {
   "name": "Skill Swap",
@@ -2994,7 +4213,12 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 191
+  "effectId": 191,
+  "flags": [
+   "protect",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "imprison": {
   "name": "Imprison",
@@ -3003,7 +4227,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 192
+  "effectId": 192,
+  "flags": [
+   "snatch",
+   "ignoreSub"
+  ]
  },
  "refresh": {
   "name": "Refresh",
@@ -3012,7 +4240,10 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 193
+  "effectId": 193,
+  "flags": [
+   "snatch"
+  ]
  },
  "grudge": {
   "name": "Grudge",
@@ -3021,7 +4252,10 @@
   "accuracy": 101,
   "pp": 5,
   "category": "status",
-  "effectId": 194
+  "effectId": 194,
+  "flags": [
+   "ignoreSub"
+  ]
  },
  "snatch": {
   "name": "Snatch",
@@ -3031,7 +4265,10 @@
   "pp": 10,
   "category": "status",
   "priority": 4,
-  "effectId": 195
+  "effectId": 195,
+  "flags": [
+   "ignoreSub"
+  ]
  },
  "secret_power": {
   "name": "Secret Power",
@@ -3041,7 +4278,11 @@
   "pp": 20,
   "category": "physical",
   "effectChance": 30,
-  "effectId": 197
+  "effectId": 197,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "dive": {
   "name": "Dive",
@@ -3050,7 +4291,13 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 255
+  "effectId": 255,
+  "flags": [
+   "contact",
+   "charge",
+   "protect",
+   "mirror"
+  ]
  },
  "arm_thrust": {
   "name": "Arm Thrust",
@@ -3059,7 +4306,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 29
+  "effectId": 29,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "camouflage": {
   "name": "Camouflage",
@@ -3068,7 +4320,10 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 213
+  "effectId": 213,
+  "flags": [
+   "snatch"
+  ]
  },
  "tail_glow": {
   "name": "Tail Glow",
@@ -3084,6 +4339,9 @@
     "stages": 3,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "luster_purge": {
@@ -3100,6 +4358,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "mist_ball": {
@@ -3116,6 +4378,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "feather_dance": {
@@ -3132,6 +4398,11 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "teeter_dance": {
@@ -3142,7 +4413,11 @@
   "pp": 20,
   "category": "status",
   "effectId": 199,
-  "status": "confusion"
+  "status": "confusion",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "blaze_kick": {
   "name": "Blaze Kick",
@@ -3153,7 +4428,12 @@
   "category": "physical",
   "effectChance": 10,
   "effectId": 200,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "mud_sport": {
   "name": "Mud Sport",
@@ -3171,7 +4451,12 @@
   "accuracy": 90,
   "pp": 20,
   "category": "physical",
-  "effectId": 117
+  "effectId": 117,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "needle_arm": {
   "name": "Needle Arm",
@@ -3180,7 +4465,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "slack_off": {
   "name": "Slack Off",
@@ -3189,7 +4479,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 32
+  "effectId": 32,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "hyper_voice": {
   "name": "Hyper Voice",
@@ -3198,7 +4492,13 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror",
+   "sound",
+   "ignoreSub"
+  ]
  },
  "poison_fang": {
   "name": "Poison Fang",
@@ -3209,7 +4509,12 @@
   "category": "physical",
   "effectChance": 50,
   "effectId": 202,
-  "status": "poison"
+  "status": "poison",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "crush_claw": {
   "name": "Crush Claw",
@@ -3225,6 +4530,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "blast_burn": {
@@ -3234,7 +4544,12 @@
   "accuracy": 90,
   "pp": 5,
   "category": "special",
-  "effectId": 80
+  "effectId": 80,
+  "flags": [
+   "recharge",
+   "protect",
+   "mirror"
+  ]
  },
  "hydro_cannon": {
   "name": "Hydro Cannon",
@@ -3243,7 +4558,12 @@
   "accuracy": 90,
   "pp": 5,
   "category": "special",
-  "effectId": 80
+  "effectId": 80,
+  "flags": [
+   "recharge",
+   "protect",
+   "mirror"
+  ]
  },
  "meteor_mash": {
   "name": "Meteor Mash",
@@ -3259,6 +4579,12 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
   ]
  },
  "astonish": {
@@ -3268,7 +4594,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "weather_ball": {
   "name": "Weather Ball",
@@ -3277,7 +4608,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 203
+  "effectId": 203,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "aromatherapy": {
   "name": "Aromatherapy",
@@ -3286,7 +4621,11 @@
   "accuracy": 101,
   "pp": 5,
   "category": "status",
-  "effectId": 102
+  "effectId": 102,
+  "flags": [
+   "snatch",
+   "distance"
+  ]
  },
  "fake_tears": {
   "name": "Fake Tears",
@@ -3302,6 +4641,11 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "air_cutter": {
@@ -3311,7 +4655,11 @@
   "accuracy": 95,
   "pp": 25,
   "category": "special",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "overheat": {
   "name": "Overheat",
@@ -3327,6 +4675,10 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "odor_sleuth": {
@@ -3336,7 +4688,13 @@
   "accuracy": 101,
   "pp": 40,
   "category": "status",
-  "effectId": 113
+  "effectId": 113,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "rock_tomb": {
   "name": "Rock Tomb",
@@ -3352,6 +4710,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "silver_wind": {
@@ -3368,6 +4730,10 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "metal_sound": {
@@ -3384,6 +4750,13 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "sound",
+   "ignoreSub"
   ]
  },
  "grass_whistle": {
@@ -3394,7 +4767,14 @@
   "pp": 15,
   "category": "status",
   "effectId": 1,
-  "status": "sleep"
+  "status": "sleep",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "sound",
+   "ignoreSub"
+  ]
  },
  "tickle": {
   "name": "Tickle",
@@ -3415,6 +4795,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "cosmic_power": {
@@ -3436,6 +4821,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "water_spout": {
@@ -3445,7 +4833,11 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 190
+  "effectId": 190,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "signal_beam": {
   "name": "Signal Beam",
@@ -3456,7 +4848,11 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 76,
-  "status": "confusion"
+  "status": "confusion",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "shadow_punch": {
   "name": "Shadow Punch",
@@ -3465,7 +4861,13 @@
   "accuracy": 101,
   "pp": 20,
   "category": "physical",
-  "effectId": 17
+  "effectId": 17,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
+  ]
  },
  "extrasensory": {
   "name": "Extrasensory",
@@ -3474,7 +4876,11 @@
   "accuracy": 100,
   "pp": 20,
   "category": "special",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "sky_uppercut": {
   "name": "Sky Uppercut",
@@ -3483,7 +4889,13 @@
   "accuracy": 90,
   "pp": 15,
   "category": "physical",
-  "effectId": 207
+  "effectId": 207,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
+  ]
  },
  "sand_tomb": {
   "name": "Sand Tomb",
@@ -3493,7 +4905,11 @@
   "pp": 15,
   "category": "physical",
   "effectChance": 100,
-  "effectId": 42
+  "effectId": 42,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "sheer_cold": {
   "name": "Sheer Cold",
@@ -3502,7 +4918,11 @@
   "accuracy": 30,
   "pp": 5,
   "category": "special",
-  "effectId": 38
+  "effectId": 38,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "muddy_water": {
   "name": "Muddy Water",
@@ -3518,6 +4938,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "bullet_seed": {
@@ -3527,7 +4951,11 @@
   "accuracy": 100,
   "pp": 30,
   "category": "physical",
-  "effectId": 29
+  "effectId": 29,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "aerial_ace": {
   "name": "Aerial Ace",
@@ -3536,7 +4964,13 @@
   "accuracy": 101,
   "pp": 20,
   "category": "physical",
-  "effectId": 17
+  "effectId": 17,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "icicle_spear": {
   "name": "Icicle Spear",
@@ -3545,7 +4979,11 @@
   "accuracy": 100,
   "pp": 30,
   "category": "physical",
-  "effectId": 29
+  "effectId": 29,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "iron_defense": {
   "name": "Iron Defense",
@@ -3561,6 +4999,9 @@
     "stages": 2,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "block": {
@@ -3570,7 +5011,11 @@
   "accuracy": 101,
   "pp": 5,
   "category": "status",
-  "effectId": 106
+  "effectId": 106,
+  "flags": [
+   "reflectable",
+   "mirror"
+  ]
  },
  "howl": {
   "name": "Howl",
@@ -3586,6 +5031,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "dragon_claw": {
@@ -3595,7 +5043,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "frenzy_plant": {
   "name": "Frenzy Plant",
@@ -3604,7 +5057,12 @@
   "accuracy": 90,
   "pp": 5,
   "category": "special",
-  "effectId": 80
+  "effectId": 80,
+  "flags": [
+   "recharge",
+   "protect",
+   "mirror"
+  ]
  },
  "bulk_up": {
   "name": "Bulk Up",
@@ -3625,6 +5083,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "bounce": {
@@ -3636,7 +5097,15 @@
   "category": "physical",
   "effectChance": 30,
   "effectId": 263,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "contact",
+   "charge",
+   "protect",
+   "mirror",
+   "gravity",
+   "distance"
+  ]
  },
  "mud_shot": {
   "name": "Mud Shot",
@@ -3652,6 +5121,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "poison_tail": {
@@ -3663,7 +5136,12 @@
   "category": "physical",
   "effectChance": 10,
   "effectId": 209,
-  "status": "poison"
+  "status": "poison",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "covet": {
   "name": "Covet",
@@ -3672,7 +5150,12 @@
   "accuracy": 100,
   "pp": 25,
   "category": "physical",
-  "effectId": 105
+  "effectId": 105,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "volt_tackle": {
   "name": "Volt Tackle",
@@ -3683,7 +5166,12 @@
   "category": "physical",
   "effectChance": 10,
   "effectId": 262,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "magical_leaf": {
   "name": "Magical Leaf",
@@ -3692,7 +5180,11 @@
   "accuracy": 101,
   "pp": 20,
   "category": "special",
-  "effectId": 17
+  "effectId": 17,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "water_sport": {
   "name": "Water Sport",
@@ -3722,6 +5214,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "leaf_blade": {
@@ -3731,7 +5226,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "dragon_dance": {
   "name": "Dragon Dance",
@@ -3752,6 +5252,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "rock_blast": {
@@ -3761,7 +5264,11 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 29
+  "effectId": 29,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "shock_wave": {
   "name": "Shock Wave",
@@ -3770,7 +5277,11 @@
   "accuracy": 101,
   "pp": 20,
   "category": "special",
-  "effectId": 17
+  "effectId": 17,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "water_pulse": {
   "name": "Water Pulse",
@@ -3781,7 +5292,12 @@
   "category": "special",
   "effectChance": 20,
   "effectId": 76,
-  "status": "confusion"
+  "status": "confusion",
+  "flags": [
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "doom_desire": {
   "name": "Doom Desire",
@@ -3806,6 +5322,10 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "roost": {
@@ -3815,7 +5335,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 214
+  "effectId": 214,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "gravity": {
   "name": "Gravity",
@@ -3833,7 +5357,13 @@
   "accuracy": 101,
   "pp": 40,
   "category": "status",
-  "effectId": 216
+  "effectId": 216,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "wake_up_slap": {
   "name": "Wake-Up Slap",
@@ -3842,7 +5372,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 217
+  "effectId": 217,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "hammer_arm": {
   "name": "Hammer Arm",
@@ -3858,6 +5393,12 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
   ]
  },
  "gyro_ball": {
@@ -3867,7 +5408,12 @@
   "accuracy": 100,
   "pp": 5,
   "category": "physical",
-  "effectId": 219
+  "effectId": 219,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "healing_wish": {
   "name": "Healing Wish",
@@ -3876,7 +5422,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 220
+  "effectId": 220,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "brine": {
   "name": "Brine",
@@ -3885,7 +5435,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 221
+  "effectId": 221,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "natural_gift": {
   "name": "Natural Gift",
@@ -3894,7 +5448,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 222
+  "effectId": 222,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "feint": {
   "name": "Feint",
@@ -3904,7 +5462,10 @@
   "pp": 10,
   "category": "physical",
   "priority": 2,
-  "effectId": 223
+  "effectId": 223,
+  "flags": [
+   "mirror"
+  ]
  },
  "pluck": {
   "name": "Pluck",
@@ -3913,7 +5474,13 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 224
+  "effectId": 224,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "tailwind": {
   "name": "Tailwind",
@@ -3922,7 +5489,10 @@
   "accuracy": 101,
   "pp": 15,
   "category": "status",
-  "effectId": 225
+  "effectId": 225,
+  "flags": [
+   "snatch"
+  ]
  },
  "acupressure": {
   "name": "Acupressure",
@@ -3940,7 +5510,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 227
+  "effectId": 227,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "u_turn": {
   "name": "U-turn",
@@ -3949,7 +5523,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 228
+  "effectId": 228,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "close_combat": {
   "name": "Close Combat",
@@ -3970,6 +5549,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "payback": {
@@ -3979,7 +5563,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 230
+  "effectId": 230,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "assurance": {
   "name": "Assurance",
@@ -3988,7 +5577,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 231
+  "effectId": 231,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "embargo": {
   "name": "Embargo",
@@ -3997,7 +5591,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "status",
-  "effectId": 232
+  "effectId": 232,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "fling": {
   "name": "Fling",
@@ -4006,7 +5605,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 233
+  "effectId": 233,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "psycho_shift": {
   "name": "Psycho Shift",
@@ -4015,7 +5618,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "status",
-  "effectId": 234
+  "effectId": 234,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "trump_card": {
   "name": "Trump Card",
@@ -4024,7 +5631,12 @@
   "accuracy": 101,
   "pp": 5,
   "category": "special",
-  "effectId": 235
+  "effectId": 235,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "heal_block": {
   "name": "Heal Block",
@@ -4033,7 +5645,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "status",
-  "effectId": 236
+  "effectId": 236,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "wring_out": {
   "name": "Wring Out",
@@ -4042,7 +5659,12 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 237
+  "effectId": 237,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "power_trick": {
   "name": "Power Trick",
@@ -4051,7 +5673,10 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 238
+  "effectId": 238,
+  "flags": [
+   "snatch"
+  ]
  },
  "gastro_acid": {
   "name": "Gastro Acid",
@@ -4060,7 +5685,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "status",
-  "effectId": 239
+  "effectId": 239,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "lucky_chant": {
   "name": "Lucky Chant",
@@ -4069,7 +5699,10 @@
   "accuracy": 101,
   "pp": 30,
   "category": "status",
-  "effectId": 240
+  "effectId": 240,
+  "flags": [
+   "snatch"
+  ]
  },
  "me_first": {
   "name": "Me First",
@@ -4078,7 +5711,11 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 241
+  "effectId": 241,
+  "flags": [
+   "protect",
+   "ignoreSub"
+  ]
  },
  "copycat": {
   "name": "Copycat",
@@ -4096,7 +5733,12 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 243
+  "effectId": 243,
+  "flags": [
+   "protect",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "guard_swap": {
   "name": "Guard Swap",
@@ -4105,7 +5747,12 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 244
+  "effectId": 244,
+  "flags": [
+   "protect",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "punishment": {
   "name": "Punishment",
@@ -4114,7 +5761,12 @@
   "accuracy": 100,
   "pp": 5,
   "category": "physical",
-  "effectId": 245
+  "effectId": 245,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "last_resort": {
   "name": "Last Resort",
@@ -4123,7 +5775,12 @@
   "accuracy": 100,
   "pp": 5,
   "category": "physical",
-  "effectId": 246
+  "effectId": 246,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "worry_seed": {
   "name": "Worry Seed",
@@ -4132,7 +5789,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "status",
-  "effectId": 247
+  "effectId": 247,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "sucker_punch": {
   "name": "Sucker Punch",
@@ -4142,7 +5804,12 @@
   "pp": 5,
   "category": "physical",
   "priority": 1,
-  "effectId": 248
+  "effectId": 248,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "toxic_spikes": {
   "name": "Toxic Spikes",
@@ -4151,7 +5818,10 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 249
+  "effectId": 249,
+  "flags": [
+   "reflectable"
+  ]
  },
  "heart_swap": {
   "name": "Heart Swap",
@@ -4160,7 +5830,12 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 250
+  "effectId": 250,
+  "flags": [
+   "protect",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "aqua_ring": {
   "name": "Aqua Ring",
@@ -4169,7 +5844,10 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 251
+  "effectId": 251,
+  "flags": [
+   "snatch"
+  ]
  },
  "magnet_rise": {
   "name": "Magnet Rise",
@@ -4178,7 +5856,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 252
+  "effectId": 252,
+  "flags": [
+   "snatch",
+   "gravity"
+  ]
  },
  "flare_blitz": {
   "name": "Flare Blitz",
@@ -4189,7 +5871,13 @@
   "category": "physical",
   "effectChance": 10,
   "effectId": 253,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "defrost"
+  ]
  },
  "force_palm": {
   "name": "Force Palm",
@@ -4200,7 +5888,12 @@
   "category": "physical",
   "effectChance": 30,
   "effectId": 6,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "aura_sphere": {
   "name": "Aura Sphere",
@@ -4209,7 +5902,12 @@
   "accuracy": 101,
   "pp": 20,
   "category": "special",
-  "effectId": 17
+  "effectId": 17,
+  "flags": [
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "rock_polish": {
   "name": "Rock Polish",
@@ -4225,6 +5923,9 @@
     "stages": 2,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "poison_jab": {
@@ -4236,7 +5937,12 @@
   "category": "physical",
   "effectChance": 30,
   "effectId": 2,
-  "status": "poison"
+  "status": "poison",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "dark_pulse": {
   "name": "Dark Pulse",
@@ -4245,7 +5951,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "night_slash": {
   "name": "Night Slash",
@@ -4254,7 +5965,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "aqua_tail": {
   "name": "Aqua Tail",
@@ -4263,7 +5979,12 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "seed_bomb": {
   "name": "Seed Bomb",
@@ -4272,7 +5993,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "air_slash": {
   "name": "Air Slash",
@@ -4281,7 +6006,12 @@
   "accuracy": 95,
   "pp": 15,
   "category": "special",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "x_scissor": {
   "name": "X-Scissor",
@@ -4290,7 +6020,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "bug_buzz": {
   "name": "Bug Buzz",
@@ -4306,6 +6041,12 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror",
+   "sound",
+   "ignoreSub"
   ]
  },
  "dragon_pulse": {
@@ -4315,7 +6056,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "dragon_rush": {
   "name": "Dragon Rush",
@@ -4324,7 +6070,12 @@
   "accuracy": 75,
   "pp": 10,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "power_gem": {
   "name": "Power Gem",
@@ -4333,7 +6084,11 @@
   "accuracy": 100,
   "pp": 20,
   "category": "special",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "drain_punch": {
   "name": "Drain Punch",
@@ -4342,7 +6097,14 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 3
+  "effectId": 3,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch",
+   "heal"
+  ]
  },
  "vacuum_wave": {
   "name": "Vacuum Wave",
@@ -4352,7 +6114,11 @@
   "pp": 30,
   "category": "special",
   "priority": 1,
-  "effectId": 103
+  "effectId": 103,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "focus_blast": {
   "name": "Focus Blast",
@@ -4368,6 +6134,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "energy_ball": {
@@ -4384,6 +6154,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "brave_bird": {
@@ -4393,7 +6167,13 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 198
+  "effectId": 198,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "earth_power": {
   "name": "Earth Power",
@@ -4409,6 +6189,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "switcheroo": {
@@ -4418,7 +6202,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "status",
-  "effectId": 177
+  "effectId": 177,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "giga_impact": {
   "name": "Giga Impact",
@@ -4427,7 +6215,13 @@
   "accuracy": 90,
   "pp": 5,
   "category": "physical",
-  "effectId": 80
+  "effectId": 80,
+  "flags": [
+   "contact",
+   "recharge",
+   "protect",
+   "mirror"
+  ]
  },
  "nasty_plot": {
   "name": "Nasty Plot",
@@ -4443,6 +6237,9 @@
     "stages": 2,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "bullet_punch": {
@@ -4453,7 +6250,13 @@
   "pp": 30,
   "category": "physical",
   "priority": 1,
-  "effectId": 103
+  "effectId": 103,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
+  ]
  },
  "avalanche": {
   "name": "Avalanche",
@@ -4463,7 +6266,12 @@
   "pp": 10,
   "category": "physical",
   "priority": -4,
-  "effectId": 185
+  "effectId": 185,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "ice_shard": {
   "name": "Ice Shard",
@@ -4473,7 +6281,11 @@
   "pp": 30,
   "category": "physical",
   "priority": 1,
-  "effectId": 103
+  "effectId": 103,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "shadow_claw": {
   "name": "Shadow Claw",
@@ -4482,7 +6294,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "thunder_fang": {
   "name": "Thunder Fang",
@@ -4493,7 +6310,12 @@
   "category": "physical",
   "effectChance": 10,
   "effectId": 275,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "ice_fang": {
   "name": "Ice Fang",
@@ -4504,7 +6326,12 @@
   "category": "physical",
   "effectChance": 10,
   "effectId": 274,
-  "status": "freeze"
+  "status": "freeze",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "fire_fang": {
   "name": "Fire Fang",
@@ -4515,7 +6342,12 @@
   "category": "physical",
   "effectChance": 10,
   "effectId": 273,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "shadow_sneak": {
   "name": "Shadow Sneak",
@@ -4525,7 +6357,12 @@
   "pp": 30,
   "category": "physical",
   "priority": 1,
-  "effectId": 103
+  "effectId": 103,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "mud_bomb": {
   "name": "Mud Bomb",
@@ -4541,6 +6378,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "psycho_cut": {
@@ -4550,7 +6391,11 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "zen_headbutt": {
   "name": "Zen Headbutt",
@@ -4559,7 +6404,12 @@
   "accuracy": 90,
   "pp": 15,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "mirror_shot": {
   "name": "Mirror Shot",
@@ -4575,6 +6425,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "flash_cannon": {
@@ -4591,6 +6445,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "rock_climb": {
@@ -4602,7 +6460,12 @@
   "category": "physical",
   "effectChance": 20,
   "effectId": 76,
-  "status": "confusion"
+  "status": "confusion",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "defog": {
   "name": "Defog",
@@ -4611,7 +6474,13 @@
   "accuracy": 101,
   "pp": 15,
   "category": "status",
-  "effectId": 258
+  "effectId": 258,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "trick_room": {
   "name": "Trick Room",
@@ -4621,7 +6490,10 @@
   "pp": 5,
   "category": "status",
   "priority": -7,
-  "effectId": 259
+  "effectId": 259,
+  "flags": [
+   "mirror"
+  ]
  },
  "draco_meteor": {
   "name": "Draco Meteor",
@@ -4637,6 +6509,10 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "discharge": {
@@ -4648,7 +6524,11 @@
   "category": "special",
   "effectChance": 30,
   "effectId": 6,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "lava_plume": {
   "name": "Lava Plume",
@@ -4659,7 +6539,11 @@
   "category": "special",
   "effectChance": 30,
   "effectId": 4,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "leaf_storm": {
   "name": "Leaf Storm",
@@ -4675,6 +6559,10 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "power_whip": {
@@ -4684,7 +6572,12 @@
   "accuracy": 85,
   "pp": 10,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "rock_wrecker": {
   "name": "Rock Wrecker",
@@ -4693,7 +6586,12 @@
   "accuracy": 90,
   "pp": 5,
   "category": "physical",
-  "effectId": 80
+  "effectId": 80,
+  "flags": [
+   "recharge",
+   "protect",
+   "mirror"
+  ]
  },
  "cross_poison": {
   "name": "Cross Poison",
@@ -4704,7 +6602,12 @@
   "category": "physical",
   "effectChance": 10,
   "effectId": 209,
-  "status": "poison"
+  "status": "poison",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "gunk_shot": {
   "name": "Gunk Shot",
@@ -4715,7 +6618,11 @@
   "category": "physical",
   "effectChance": 30,
   "effectId": 2,
-  "status": "poison"
+  "status": "poison",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "iron_head": {
   "name": "Iron Head",
@@ -4724,7 +6631,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "magnet_bomb": {
   "name": "Magnet Bomb",
@@ -4733,7 +6645,11 @@
   "accuracy": 101,
   "pp": 20,
   "category": "physical",
-  "effectId": 17
+  "effectId": 17,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "stone_edge": {
   "name": "Stone Edge",
@@ -4742,7 +6658,11 @@
   "accuracy": 80,
   "pp": 5,
   "category": "physical",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "captivate": {
   "name": "Captivate",
@@ -4758,6 +6678,11 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "stealth_rock": {
@@ -4767,7 +6692,10 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 266
+  "effectId": 266,
+  "flags": [
+   "reflectable"
+  ]
  },
  "grass_knot": {
   "name": "Grass Knot",
@@ -4776,7 +6704,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "special",
-  "effectId": 196
+  "effectId": 196,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "chatter": {
   "name": "Chatter",
@@ -4787,7 +6720,14 @@
   "category": "special",
   "effectChance": 100,
   "effectId": 267,
-  "status": "confusion"
+  "status": "confusion",
+  "flags": [
+   "protect",
+   "mirror",
+   "sound",
+   "distance",
+   "ignoreSub"
+  ]
  },
  "judgment": {
   "name": "Judgment",
@@ -4796,7 +6736,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 268
+  "effectId": 268,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "bug_bite": {
   "name": "Bug Bite",
@@ -4805,7 +6749,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 224
+  "effectId": 224,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "charge_beam": {
   "name": "Charge Beam",
@@ -4821,6 +6770,10 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "wood_hammer": {
@@ -4830,7 +6783,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 198
+  "effectId": 198,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "aqua_jet": {
   "name": "Aqua Jet",
@@ -4840,7 +6798,12 @@
   "pp": 20,
   "category": "physical",
   "priority": 1,
-  "effectId": 103
+  "effectId": 103,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "attack_order": {
   "name": "Attack Order",
@@ -4849,7 +6812,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "defend_order": {
   "name": "Defend Order",
@@ -4870,6 +6837,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "heal_order": {
@@ -4879,7 +6849,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 32
+  "effectId": 32,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "head_smash": {
   "name": "Head Smash",
@@ -4888,7 +6862,12 @@
   "accuracy": 80,
   "pp": 5,
   "category": "physical",
-  "effectId": 269
+  "effectId": 269,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "double_hit": {
   "name": "Double Hit",
@@ -4897,7 +6876,12 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 44
+  "effectId": 44,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "roar_of_time": {
   "name": "Roar of Time",
@@ -4906,7 +6890,12 @@
   "accuracy": 90,
   "pp": 5,
   "category": "special",
-  "effectId": 80
+  "effectId": 80,
+  "flags": [
+   "recharge",
+   "protect",
+   "mirror"
+  ]
  },
  "spacial_rend": {
   "name": "Spacial Rend",
@@ -4915,7 +6904,11 @@
   "accuracy": 95,
   "pp": 5,
   "category": "special",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "lunar_dance": {
   "name": "Lunar Dance",
@@ -4924,7 +6917,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 270
+  "effectId": 270,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "crush_grip": {
   "name": "Crush Grip",
@@ -4933,7 +6930,12 @@
   "accuracy": 100,
   "pp": 5,
   "category": "physical",
-  "effectId": 237
+  "effectId": 237,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "magma_storm": {
   "name": "Magma Storm",
@@ -4943,7 +6945,11 @@
   "pp": 5,
   "category": "special",
   "effectChance": 100,
-  "effectId": 42
+  "effectId": 42,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "dark_void": {
   "name": "Dark Void",
@@ -4953,7 +6959,12 @@
   "pp": 10,
   "category": "status",
   "effectId": 1,
-  "status": "sleep"
+  "status": "sleep",
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "seed_flare": {
   "name": "Seed Flare",
@@ -4969,6 +6980,10 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "ominous_wind": {
@@ -4986,6 +7001,10 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "shadow_force": {
@@ -4995,7 +7014,12 @@
   "accuracy": 100,
   "pp": 5,
   "category": "physical",
-  "effectId": 272
+  "effectId": 272,
+  "flags": [
+   "contact",
+   "charge",
+   "mirror"
+  ]
  },
  "hone_claws": {
   "name": "Hone Claws",
@@ -5016,6 +7040,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "wide_guard": {
@@ -5026,7 +7053,10 @@
   "pp": 10,
   "category": "status",
   "priority": 3,
-  "effectId": 278
+  "effectId": 278,
+  "flags": [
+   "snatch"
+  ]
  },
  "guard_split": {
   "name": "Guard Split",
@@ -5035,7 +7065,10 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 279
+  "effectId": 279,
+  "flags": [
+   "protect"
+  ]
  },
  "power_split": {
   "name": "Power Split",
@@ -5044,7 +7077,10 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 280
+  "effectId": 280,
+  "flags": [
+   "protect"
+  ]
  },
  "wonder_room": {
   "name": "Wonder Room",
@@ -5053,7 +7089,10 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 281
+  "effectId": 281,
+  "flags": [
+   "mirror"
+  ]
  },
  "psyshock": {
   "name": "Psyshock",
@@ -5062,7 +7101,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 282
+  "effectId": 282,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "venoshock": {
   "name": "Venoshock",
@@ -5071,7 +7114,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 283
+  "effectId": 283,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "autotomize": {
   "name": "Autotomize",
@@ -5087,6 +7134,9 @@
     "stages": 2,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "rage_powder": {
@@ -5106,7 +7156,13 @@
   "accuracy": 101,
   "pp": 15,
   "category": "status",
-  "effectId": 285
+  "effectId": 285,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "gravity"
+  ]
  },
  "magic_room": {
   "name": "Magic Room",
@@ -5115,7 +7171,10 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 286
+  "effectId": 286,
+  "flags": [
+   "mirror"
+  ]
  },
  "smack_down": {
   "name": "Smack Down",
@@ -5125,7 +7184,11 @@
   "pp": 15,
   "category": "physical",
   "effectChance": 100,
-  "effectId": 287
+  "effectId": 287,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "storm_throw": {
   "name": "Storm Throw",
@@ -5134,7 +7197,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 288
+  "effectId": 288,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "flame_burst": {
   "name": "Flame Burst",
@@ -5143,7 +7211,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 289
+  "effectId": 289,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "sludge_wave": {
   "name": "Sludge Wave",
@@ -5154,7 +7226,11 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 2,
-  "status": "poison"
+  "status": "poison",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "quiver_dance": {
   "name": "Quiver Dance",
@@ -5180,6 +7256,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "heavy_slam": {
@@ -5189,7 +7268,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 291
+  "effectId": 291,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "synchronoise": {
   "name": "Synchronoise",
@@ -5198,7 +7282,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 292
+  "effectId": 292,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "electro_ball": {
   "name": "Electro Ball",
@@ -5207,7 +7295,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 293
+  "effectId": 293,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "soak": {
   "name": "Soak",
@@ -5216,7 +7308,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 294
+  "effectId": 294,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "flame_charge": {
   "name": "Flame Charge",
@@ -5232,6 +7329,11 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "coil": {
@@ -5258,6 +7360,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "low_sweep": {
@@ -5274,6 +7379,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "acid_spray": {
@@ -5290,6 +7400,10 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "foul_play": {
@@ -5299,7 +7413,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 297
+  "effectId": 297,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "simple_beam": {
   "name": "Simple Beam",
@@ -5308,7 +7427,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "status",
-  "effectId": 298
+  "effectId": 298,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "entrainment": {
   "name": "Entrainment",
@@ -5317,7 +7441,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "status",
-  "effectId": 299
+  "effectId": 299,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "after_you": {
   "name": "After You",
@@ -5326,7 +7455,10 @@
   "accuracy": 101,
   "pp": 15,
   "category": "status",
-  "effectId": 300
+  "effectId": 300,
+  "flags": [
+   "ignoreSub"
+  ]
  },
  "round": {
   "name": "Round",
@@ -5335,7 +7467,13 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 301
+  "effectId": 301,
+  "flags": [
+   "protect",
+   "mirror",
+   "sound",
+   "ignoreSub"
+  ]
  },
  "echoed_voice": {
   "name": "Echoed Voice",
@@ -5344,7 +7482,13 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 302
+  "effectId": 302,
+  "flags": [
+   "protect",
+   "mirror",
+   "sound",
+   "ignoreSub"
+  ]
  },
  "chip_away": {
   "name": "Chip Away",
@@ -5353,7 +7497,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 303
+  "effectId": 303,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "clear_smog": {
   "name": "Clear Smog",
@@ -5362,7 +7511,11 @@
   "accuracy": 101,
   "pp": 15,
   "category": "special",
-  "effectId": 304
+  "effectId": 304,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "stored_power": {
   "name": "Stored Power",
@@ -5371,7 +7524,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 305
+  "effectId": 305,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "quick_guard": {
   "name": "Quick Guard",
@@ -5381,7 +7538,10 @@
   "pp": 15,
   "category": "status",
   "priority": 3,
-  "effectId": 306
+  "effectId": 306,
+  "flags": [
+   "snatch"
+  ]
  },
  "ally_switch": {
   "name": "Ally Switch",
@@ -5402,7 +7562,12 @@
   "category": "special",
   "effectChance": 30,
   "effectId": 4,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "protect",
+   "mirror",
+   "defrost"
+  ]
  },
  "shell_smash": {
   "name": "Shell Smash",
@@ -5411,7 +7576,10 @@
   "accuracy": 101,
   "pp": 15,
   "category": "status",
-  "effectId": 308
+  "effectId": 308,
+  "flags": [
+   "snatch"
+  ]
  },
  "heal_pulse": {
   "name": "Heal Pulse",
@@ -5420,7 +7588,13 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 309
+  "effectId": 309,
+  "flags": [
+   "protect",
+   "reflectable",
+   "distance",
+   "heal"
+  ]
  },
  "hex": {
   "name": "Hex",
@@ -5429,7 +7603,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 310
+  "effectId": 310,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "sky_drop": {
   "name": "Sky Drop",
@@ -5438,7 +7616,15 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 311
+  "effectId": 311,
+  "flags": [
+   "contact",
+   "charge",
+   "protect",
+   "mirror",
+   "gravity",
+   "distance"
+  ]
  },
  "shift_gear": {
   "name": "Shift Gear",
@@ -5459,6 +7645,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "circle_throw": {
@@ -5469,7 +7658,12 @@
   "pp": 10,
   "category": "physical",
   "priority": -6,
-  "effectId": 313
+  "effectId": 313,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "incinerate": {
   "name": "Incinerate",
@@ -5478,7 +7672,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 314
+  "effectId": 314,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "quash": {
   "name": "Quash",
@@ -5487,7 +7685,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "status",
-  "effectId": 315
+  "effectId": 315,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "acrobatics": {
   "name": "Acrobatics",
@@ -5496,7 +7698,13 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 317
+  "effectId": 317,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "reflect_type": {
   "name": "Reflect Type",
@@ -5505,7 +7713,11 @@
   "accuracy": 101,
   "pp": 15,
   "category": "status",
-  "effectId": 318
+  "effectId": 318,
+  "flags": [
+   "protect",
+   "ignoreSub"
+  ]
  },
  "retaliate": {
   "name": "Retaliate",
@@ -5514,7 +7726,12 @@
   "accuracy": 100,
   "pp": 5,
   "category": "physical",
-  "effectId": 319
+  "effectId": 319,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "final_gambit": {
   "name": "Final Gambit",
@@ -5523,7 +7740,10 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 320
+  "effectId": 320,
+  "flags": [
+   "protect"
+  ]
  },
  "bestow": {
   "name": "Bestow",
@@ -5532,7 +7752,11 @@
   "accuracy": 101,
   "pp": 15,
   "category": "status",
-  "effectId": 323
+  "effectId": 323,
+  "flags": [
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "inferno": {
   "name": "Inferno",
@@ -5543,7 +7767,11 @@
   "category": "special",
   "effectChance": 100,
   "effectId": 4,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "water_pledge": {
   "name": "Water Pledge",
@@ -5552,7 +7780,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 324
+  "effectId": 324,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "fire_pledge": {
   "name": "Fire Pledge",
@@ -5561,7 +7793,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 325
+  "effectId": 325,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "grass_pledge": {
   "name": "Grass Pledge",
@@ -5570,7 +7806,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 326
+  "effectId": 326,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "volt_switch": {
   "name": "Volt Switch",
@@ -5579,7 +7819,11 @@
   "accuracy": 100,
   "pp": 20,
   "category": "special",
-  "effectId": 228
+  "effectId": 228,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "struggle_bug": {
   "name": "Struggle Bug",
@@ -5595,6 +7839,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "bulldoze": {
@@ -5611,6 +7859,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "frost_breath": {
@@ -5621,7 +7873,11 @@
   "pp": 10,
   "category": "special",
   "effectChance": 100,
-  "effectId": 288
+  "effectId": 288,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "dragon_tail": {
   "name": "Dragon Tail",
@@ -5631,7 +7887,12 @@
   "pp": 10,
   "category": "physical",
   "priority": -6,
-  "effectId": 313
+  "effectId": 313,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "work_up": {
   "name": "Work Up",
@@ -5652,6 +7913,9 @@
     "stages": 1,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "electroweb": {
@@ -5668,6 +7932,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "wild_charge": {
@@ -5677,7 +7945,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 48
+  "effectId": 48,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "drill_run": {
   "name": "Drill Run",
@@ -5686,7 +7959,12 @@
   "accuracy": 95,
   "pp": 10,
   "category": "physical",
-  "effectId": 43
+  "effectId": 43,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "dual_chop": {
   "name": "Dual Chop",
@@ -5695,7 +7973,12 @@
   "accuracy": 90,
   "pp": 15,
   "category": "physical",
-  "effectId": 44
+  "effectId": 44,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "heart_stamp": {
   "name": "Heart Stamp",
@@ -5704,7 +7987,12 @@
   "accuracy": 100,
   "pp": 25,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "horn_leech": {
   "name": "Horn Leech",
@@ -5713,7 +8001,13 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 3
+  "effectId": 3,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "heal"
+  ]
  },
  "sacred_sword": {
   "name": "Sacred Sword",
@@ -5722,7 +8016,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 303
+  "effectId": 303,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "razor_shell": {
   "name": "Razor Shell",
@@ -5738,6 +8037,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "heat_crash": {
@@ -5747,7 +8051,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 291
+  "effectId": 291,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "leaf_tornado": {
   "name": "Leaf Tornado",
@@ -5763,6 +8072,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "steamroller": {
@@ -5772,7 +8085,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 150
+  "effectId": 150,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "cotton_guard": {
   "name": "Cotton Guard",
@@ -5788,6 +8106,9 @@
     "stages": 3,
     "target": "self"
    }
+  ],
+  "flags": [
+   "snatch"
   ]
  },
  "night_daze": {
@@ -5804,6 +8125,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "psystrike": {
@@ -5813,7 +8138,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 282
+  "effectId": 282,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "tail_slap": {
   "name": "Tail Slap",
@@ -5822,7 +8151,12 @@
   "accuracy": 85,
   "pp": 10,
   "category": "physical",
-  "effectId": 29
+  "effectId": 29,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "hurricane": {
   "name": "Hurricane",
@@ -5833,7 +8167,12 @@
   "category": "special",
   "effectChance": 30,
   "effectId": 333,
-  "status": "confusion"
+  "status": "confusion",
+  "flags": [
+   "protect",
+   "mirror",
+   "distance"
+  ]
  },
  "head_charge": {
   "name": "Head Charge",
@@ -5842,7 +8181,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 48
+  "effectId": 48,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "gear_grind": {
   "name": "Gear Grind",
@@ -5851,7 +8195,12 @@
   "accuracy": 85,
   "pp": 15,
   "category": "physical",
-  "effectId": 44
+  "effectId": 44,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "searing_shot": {
   "name": "Searing Shot",
@@ -5862,7 +8211,11 @@
   "category": "special",
   "effectChance": 30,
   "effectId": 4,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "techno_blast": {
   "name": "Techno Blast",
@@ -5871,7 +8224,11 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 268
+  "effectId": 268,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "relic_song": {
   "name": "Relic Song",
@@ -5882,7 +8239,13 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 329,
-  "status": "sleep"
+  "status": "sleep",
+  "flags": [
+   "protect",
+   "mirror",
+   "sound",
+   "ignoreSub"
+  ]
  },
  "secret_sword": {
   "name": "Secret Sword",
@@ -5891,7 +8254,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 282
+  "effectId": 282,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "glaciate": {
   "name": "Glaciate",
@@ -5907,6 +8274,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "bolt_strike": {
@@ -5918,7 +8289,12 @@
   "category": "physical",
   "effectChance": 20,
   "effectId": 6,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "blue_flare": {
   "name": "Blue Flare",
@@ -5929,7 +8305,11 @@
   "category": "special",
   "effectChance": 20,
   "effectId": 4,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "fiery_dance": {
   "name": "Fiery Dance",
@@ -5945,6 +8325,10 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "freeze_shock": {
@@ -5956,7 +8340,12 @@
   "category": "physical",
   "effectChance": 30,
   "effectId": 331,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "charge",
+   "protect",
+   "mirror"
+  ]
  },
  "ice_burn": {
   "name": "Ice Burn",
@@ -5967,7 +8356,12 @@
   "category": "special",
   "effectChance": 30,
   "effectId": 332,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "charge",
+   "protect",
+   "mirror"
+  ]
  },
  "snarl": {
   "name": "Snarl",
@@ -5983,6 +8377,12 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror",
+   "sound",
+   "ignoreSub"
   ]
  },
  "icicle_crash": {
@@ -5992,7 +8392,11 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "v_create": {
   "name": "V-create",
@@ -6018,6 +8422,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "fusion_flare": {
@@ -6027,7 +8436,12 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 335
+  "effectId": 335,
+  "flags": [
+   "protect",
+   "mirror",
+   "defrost"
+  ]
  },
  "fusion_bolt": {
   "name": "Fusion Bolt",
@@ -6036,7 +8450,11 @@
   "accuracy": 100,
   "pp": 5,
   "category": "physical",
-  "effectId": 336
+  "effectId": 336,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "flying_press": {
   "name": "Flying Press",
@@ -6045,7 +8463,14 @@
   "accuracy": 95,
   "pp": 10,
   "category": "physical",
-  "effectId": 337
+  "effectId": 337,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "gravity",
+   "distance"
+  ]
  },
  "mat_block": {
   "name": "Mat Block",
@@ -6054,7 +8479,10 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 376
+  "effectId": 376,
+  "flags": [
+   "snatch"
+  ]
  },
  "belch": {
   "name": "Belch",
@@ -6063,7 +8491,10 @@
   "accuracy": 90,
   "pp": 10,
   "category": "special",
-  "effectId": 338
+  "effectId": 338,
+  "flags": [
+   "protect"
+  ]
  },
  "rototiller": {
   "name": "Rototiller",
@@ -6084,6 +8515,9 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "distance"
   ]
  },
  "sticky_web": {
@@ -6093,7 +8527,10 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 340
+  "effectId": 340,
+  "flags": [
+   "reflectable"
+  ]
  },
  "fell_stinger": {
   "name": "Fell Stinger",
@@ -6102,7 +8539,12 @@
   "accuracy": 100,
   "pp": 25,
   "category": "physical",
-  "effectId": 341
+  "effectId": 341,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "phantom_force": {
   "name": "Phantom Force",
@@ -6111,7 +8553,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 272
+  "effectId": 272,
+  "flags": [
+   "contact",
+   "charge",
+   "mirror"
+  ]
  },
  "trick_or_treat": {
   "name": "Trick-or-Treat",
@@ -6120,7 +8567,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 342
+  "effectId": 342,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "noble_roar": {
   "name": "Noble Roar",
@@ -6141,6 +8593,13 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "sound",
+   "ignoreSub"
   ]
  },
  "ion_deluge": {
@@ -6160,7 +8619,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "special",
-  "effectId": 345
+  "effectId": 345,
+  "flags": [
+   "protect",
+   "mirror",
+   "heal"
+  ]
  },
  "forest’s_curse": {
   "name": "Forest’s Curse",
@@ -6169,7 +8633,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 375
+  "effectId": 375,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "petal_blizzard": {
   "name": "Petal Blizzard",
@@ -6178,7 +8647,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 378
+  "effectId": 378,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "freeze_dry": {
   "name": "Freeze-Dry",
@@ -6189,7 +8662,11 @@
   "category": "special",
   "effectChance": 10,
   "effectId": 379,
-  "status": "freeze"
+  "status": "freeze",
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "disarming_voice": {
   "name": "Disarming Voice",
@@ -6198,7 +8675,13 @@
   "accuracy": 101,
   "pp": 15,
   "category": "special",
-  "effectId": 380
+  "effectId": 380,
+  "flags": [
+   "protect",
+   "mirror",
+   "sound",
+   "ignoreSub"
+  ]
  },
  "parting_shot": {
   "name": "Parting Shot",
@@ -6219,6 +8702,13 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "sound",
+   "ignoreSub"
   ]
  },
  "topsy_turvy": {
@@ -6228,7 +8718,12 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 347
+  "effectId": 347,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
+  ]
  },
  "draining_kiss": {
   "name": "Draining Kiss",
@@ -6237,7 +8732,13 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 348
+  "effectId": 348,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "heal"
+  ]
  },
  "crafty_shield": {
   "name": "Crafty Shield",
@@ -6263,6 +8764,9 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "distance"
   ]
  },
  "grassy_terrain": {
@@ -6290,7 +8794,11 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 353
+  "effectId": 353,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "play_rough": {
   "name": "Play Rough",
@@ -6306,6 +8814,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "fairy_wind": {
@@ -6315,7 +8828,11 @@
   "accuracy": 100,
   "pp": 30,
   "category": "special",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "moonblast": {
   "name": "Moonblast",
@@ -6331,6 +8848,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "boomburst": {
@@ -6340,7 +8861,13 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 378
+  "effectId": 378,
+  "flags": [
+   "protect",
+   "mirror",
+   "sound",
+   "ignoreSub"
+  ]
  },
  "fairy_lock": {
   "name": "Fairy Lock",
@@ -6349,7 +8876,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 354
+  "effectId": 354,
+  "flags": [
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "king’s_shield": {
   "name": "King’s Shield",
@@ -6375,6 +8906,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "reflectable",
+   "mirror",
+   "ignoreSub"
   ]
  },
  "confide": {
@@ -6391,6 +8927,12 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "reflectable",
+   "mirror",
+   "sound",
+   "ignoreSub"
   ]
  },
  "diamond_storm": {
@@ -6407,6 +8949,10 @@
     "stages": 2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "steam_eruption": {
@@ -6418,7 +8964,12 @@
   "category": "special",
   "effectChance": 30,
   "effectId": 4,
-  "status": "burn"
+  "status": "burn",
+  "flags": [
+   "protect",
+   "mirror",
+   "defrost"
+  ]
  },
  "hyperspace_hole": {
   "name": "Hyperspace Hole",
@@ -6427,7 +8978,11 @@
   "accuracy": 101,
   "pp": 5,
   "category": "special",
-  "effectId": 359
+  "effectId": 359,
+  "flags": [
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "water_shuriken": {
   "name": "Water Shuriken",
@@ -6437,7 +8992,11 @@
   "pp": 20,
   "category": "special",
   "priority": 1,
-  "effectId": 360
+  "effectId": 360,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "mystical_fire": {
   "name": "Mystical Fire",
@@ -6453,6 +9012,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "spiky_shield": {
@@ -6479,6 +9042,9 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "ignoreSub"
   ]
  },
  "eerie_impulse": {
@@ -6495,6 +9061,11 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "venom_drench": {
@@ -6521,6 +9092,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "powder": {
@@ -6531,7 +9107,13 @@
   "pp": 20,
   "category": "status",
   "priority": 1,
-  "effectId": 377
+  "effectId": 377,
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "geomancy": {
   "name": "Geomancy",
@@ -6557,6 +9139,9 @@
     "stages": 2,
     "target": "self"
    }
+  ],
+  "flags": [
+   "charge"
   ]
  },
  "magnetic_flux": {
@@ -6578,6 +9163,11 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "snatch",
+   "distance",
+   "ignoreSub"
   ]
  },
  "happy_hour": {
@@ -6605,7 +9195,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "celebrate": {
   "name": "Celebrate",
@@ -6623,7 +9217,10 @@
   "accuracy": 101,
   "pp": 40,
   "category": "status",
-  "effectId": 370
+  "effectId": 370,
+  "flags": [
+   "ignoreSub"
+  ]
  },
  "baby_doll_eyes": {
   "name": "Baby-Doll Eyes",
@@ -6640,6 +9237,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "nuzzle": {
@@ -6651,7 +9253,12 @@
   "category": "physical",
   "effectChance": 100,
   "effectId": 371,
-  "status": "paralysis"
+  "status": "paralysis",
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "hold_back": {
   "name": "Hold Back",
@@ -6660,7 +9267,12 @@
   "accuracy": 100,
   "pp": 40,
   "category": "physical",
-  "effectId": 101
+  "effectId": 101,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "infestation": {
   "name": "Infestation",
@@ -6670,7 +9282,12 @@
   "pp": 20,
   "category": "special",
   "effectChance": 100,
-  "effectId": 42
+  "effectId": 42,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "power_up_punch": {
   "name": "Power-Up Punch",
@@ -6686,6 +9303,12 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
   ]
  },
  "oblivion_wing": {
@@ -6695,7 +9318,13 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 348
+  "effectId": 348,
+  "flags": [
+   "protect",
+   "mirror",
+   "distance",
+   "heal"
+  ]
  },
  "thousand_arrows": {
   "name": "Thousand Arrows",
@@ -6705,7 +9334,11 @@
   "pp": 10,
   "category": "physical",
   "effectChance": 100,
-  "effectId": 372
+  "effectId": 372,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "thousand_waves": {
   "name": "Thousand Waves",
@@ -6714,7 +9347,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 373
+  "effectId": 373,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "land’s_wrath": {
   "name": "Land’s Wrath",
@@ -6723,7 +9360,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "light_of_ruin": {
   "name": "Light of Ruin",
@@ -6732,7 +9373,11 @@
   "accuracy": 90,
   "pp": 5,
   "category": "special",
-  "effectId": 269
+  "effectId": 269,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "origin_pulse": {
   "name": "Origin Pulse",
@@ -6741,7 +9386,11 @@
   "accuracy": 85,
   "pp": 10,
   "category": "special",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "precipice_blades": {
   "name": "Precipice Blades",
@@ -6750,7 +9399,11 @@
   "accuracy": 85,
   "pp": 10,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "dragon_ascent": {
   "name": "Dragon Ascent",
@@ -6771,6 +9424,12 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "distance"
   ]
  },
  "hyperspace_fury": {
@@ -6787,6 +9446,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "mirror",
+   "ignoreSub"
   ]
  },
  "breakneck_blitz": {
@@ -6958,7 +9621,10 @@
   "accuracy": 101,
   "pp": 1,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact"
+  ]
  },
  "shore_up": {
   "name": "Shore Up",
@@ -6967,7 +9633,11 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 381
+  "effectId": 381,
+  "flags": [
+   "snatch",
+   "heal"
+  ]
  },
  "first_impression": {
   "name": "First Impression",
@@ -6977,7 +9647,12 @@
   "pp": 10,
   "category": "physical",
   "priority": 2,
-  "effectId": 382
+  "effectId": 382,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "baneful_bunker": {
   "name": "Baneful Bunker",
@@ -6996,7 +9671,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 384
+  "effectId": 384,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "darkest_lariat": {
   "name": "Darkest Lariat",
@@ -7005,7 +9684,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 303
+  "effectId": 303,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "sparkling_aria": {
   "name": "Sparkling Aria",
@@ -7014,7 +9698,13 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 385
+  "effectId": 385,
+  "flags": [
+   "protect",
+   "mirror",
+   "sound",
+   "ignoreSub"
+  ]
  },
  "ice_hammer": {
   "name": "Ice Hammer",
@@ -7030,6 +9720,12 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
   ]
  },
  "floral_healing": {
@@ -7039,7 +9735,12 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 386
+  "effectId": 386,
+  "flags": [
+   "protect",
+   "reflectable",
+   "heal"
+  ]
  },
  "high_horsepower": {
   "name": "High Horsepower",
@@ -7048,7 +9749,12 @@
   "accuracy": 95,
   "pp": 10,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "strength_sap": {
   "name": "Strength Sap",
@@ -7064,6 +9770,12 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror",
+   "heal"
   ]
  },
  "solar_blade": {
@@ -7073,7 +9785,13 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 151
+  "effectId": 151,
+  "flags": [
+   "contact",
+   "charge",
+   "protect",
+   "mirror"
+  ]
  },
  "leafage": {
   "name": "Leafage",
@@ -7082,7 +9800,11 @@
   "accuracy": 100,
   "pp": 40,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "spotlight": {
   "name": "Spotlight",
@@ -7092,7 +9814,11 @@
   "pp": 15,
   "category": "status",
   "priority": 3,
-  "effectId": 388
+  "effectId": 388,
+  "flags": [
+   "protect",
+   "reflectable"
+  ]
  },
  "toxic_thread": {
   "name": "Toxic Thread",
@@ -7110,6 +9836,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "reflectable",
+   "mirror"
   ]
  },
  "laser_focus": {
@@ -7119,7 +9850,10 @@
   "accuracy": 101,
   "pp": 30,
   "category": "status",
-  "effectId": 390
+  "effectId": 390,
+  "flags": [
+   "snatch"
+  ]
  },
  "gear_up": {
   "name": "Gear Up",
@@ -7140,6 +9874,10 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "snatch",
+   "ignoreSub"
   ]
  },
  "throat_chop": {
@@ -7150,7 +9888,12 @@
   "pp": 15,
   "category": "physical",
   "effectChance": 100,
-  "effectId": 392
+  "effectId": 392,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "pollen_puff": {
   "name": "Pollen Puff",
@@ -7159,7 +9902,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 393
+  "effectId": 393,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "anchor_shot": {
   "name": "Anchor Shot",
@@ -7168,7 +9915,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 384
+  "effectId": 384,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "psychic_terrain": {
   "name": "Psychic Terrain",
@@ -7193,6 +9945,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "fire_lash": {
@@ -7209,6 +9966,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "power_trip": {
@@ -7218,7 +9980,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 305
+  "effectId": 305,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "burn_up": {
   "name": "Burn Up",
@@ -7227,7 +9994,12 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 397
+  "effectId": 397,
+  "flags": [
+   "protect",
+   "mirror",
+   "defrost"
+  ]
  },
  "speed_swap": {
   "name": "Speed Swap",
@@ -7236,7 +10008,12 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 398
+  "effectId": 398,
+  "flags": [
+   "protect",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "smart_strike": {
   "name": "Smart Strike",
@@ -7245,7 +10022,12 @@
   "accuracy": 101,
   "pp": 10,
   "category": "physical",
-  "effectId": 17
+  "effectId": 17,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "purify": {
   "name": "Purify",
@@ -7254,7 +10036,12 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 399
+  "effectId": 399,
+  "flags": [
+   "protect",
+   "reflectable",
+   "heal"
+  ]
  },
  "revelation_dance": {
   "name": "Revelation Dance",
@@ -7263,7 +10050,11 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 400
+  "effectId": 400,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "core_enforcer": {
   "name": "Core Enforcer",
@@ -7272,7 +10063,11 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 401
+  "effectId": 401,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "trop_kick": {
   "name": "Trop Kick",
@@ -7288,6 +10083,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "instruct": {
@@ -7297,7 +10097,11 @@
   "accuracy": 101,
   "pp": 15,
   "category": "status",
-  "effectId": 402
+  "effectId": 402,
+  "flags": [
+   "protect",
+   "ignoreSub"
+  ]
  },
  "beak_blast": {
   "name": "Beak Blast",
@@ -7307,7 +10111,10 @@
   "pp": 15,
   "category": "physical",
   "priority": -3,
-  "effectId": 403
+  "effectId": 403,
+  "flags": [
+   "protect"
+  ]
  },
  "clanging_scales": {
   "name": "Clanging Scales",
@@ -7323,6 +10130,12 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror",
+   "sound",
+   "ignoreSub"
   ]
  },
  "dragon_hammer": {
@@ -7332,7 +10145,12 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "brutal_swing": {
   "name": "Brutal Swing",
@@ -7341,7 +10159,12 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 405
+  "effectId": 405,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "aurora_veil": {
   "name": "Aurora Veil",
@@ -7350,7 +10173,10 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 406
+  "effectId": 406,
+  "flags": [
+   "snatch"
+  ]
  },
  "sinister_arrow_raid": {
   "name": "Sinister Arrow Raid",
@@ -7368,7 +10194,10 @@
   "accuracy": 101,
   "pp": 1,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact"
+  ]
  },
  "oceanic_operetta": {
   "name": "Oceanic Operetta",
@@ -7395,7 +10224,10 @@
   "accuracy": 101,
   "pp": 1,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact"
+  ]
  },
  "stoked_sparksurfer": {
   "name": "Stoked Sparksurfer",
@@ -7415,7 +10247,10 @@
   "accuracy": 101,
   "pp": 1,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact"
+  ]
  },
  "extreme_evoboost": {
   "name": "Extreme Evoboost",
@@ -7450,7 +10285,10 @@
   "pp": 5,
   "category": "special",
   "priority": -3,
-  "effectId": 407
+  "effectId": 407,
+  "flags": [
+   "protect"
+  ]
  },
  "fleur_cannon": {
   "name": "Fleur Cannon",
@@ -7466,6 +10304,10 @@
     "stages": -2,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "psychic_fangs": {
@@ -7475,7 +10317,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 186
+  "effectId": 186,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "stomping_tantrum": {
   "name": "Stomping Tantrum",
@@ -7484,7 +10331,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 408
+  "effectId": 408,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "shadow_bone": {
   "name": "Shadow Bone",
@@ -7500,6 +10352,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "protect",
+   "mirror"
   ]
  },
  "accelerock": {
@@ -7510,7 +10366,12 @@
   "pp": 20,
   "category": "physical",
   "priority": 1,
-  "effectId": 103
+  "effectId": 103,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "liquidation": {
   "name": "Liquidation",
@@ -7526,6 +10387,11 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
   ]
  },
  "prismatic_laser": {
@@ -7535,7 +10401,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 80
+  "effectId": 80,
+  "flags": [
+   "recharge",
+   "protect",
+   "mirror"
+  ]
  },
  "spectral_thief": {
   "name": "Spectral Thief",
@@ -7544,7 +10415,13 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 409
+  "effectId": 409,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "ignoreSub"
+  ]
  },
  "sunsteel_strike": {
   "name": "Sunsteel Strike",
@@ -7553,7 +10430,12 @@
   "accuracy": 100,
   "pp": 5,
   "category": "physical",
-  "effectId": 410
+  "effectId": 410,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "moongeist_beam": {
   "name": "Moongeist Beam",
@@ -7562,7 +10444,11 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 410
+  "effectId": 410,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "tearful_look": {
   "name": "Tearful Look",
@@ -7583,6 +10469,10 @@
     "stages": -1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "reflectable",
+   "mirror"
   ]
  },
  "zing_zap": {
@@ -7592,7 +10482,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 31
+  "effectId": 31,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "nature’s_madness": {
   "name": "Nature’s Madness",
@@ -7601,7 +10496,11 @@
   "accuracy": 90,
   "pp": 10,
   "category": "special",
-  "effectId": 40
+  "effectId": 40,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "multi_attack": {
   "name": "Multi-Attack",
@@ -7610,7 +10509,12 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 268
+  "effectId": 268,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror"
+  ]
  },
  "10000000_volt_thunderbolt": {
   "name": "10,000,000 Volt Thunderbolt",
@@ -7628,7 +10532,11 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 419
+  "effectId": 419,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "plasma_fists": {
   "name": "Plasma Fists",
@@ -7637,7 +10545,13 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "contact",
+   "protect",
+   "mirror",
+   "punch"
+  ]
  },
  "photon_geyser": {
   "name": "Photon Geyser",
@@ -7646,7 +10560,11 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 0
+  "effectId": 0,
+  "flags": [
+   "protect",
+   "mirror"
+  ]
  },
  "light_that_burns_the_sky": {
   "name": "Light That Burns the Sky",
@@ -7664,7 +10582,10 @@
   "accuracy": 101,
   "pp": 1,
   "category": "physical",
-  "effectId": 410
+  "effectId": 410,
+  "flags": [
+   "contact"
+  ]
  },
  "menacing_moonraze_maelstrom": {
   "name": "Menacing Moonraze Maelstrom",
@@ -7682,7 +10603,10 @@
   "accuracy": 101,
   "pp": 1,
   "category": "physical",
-  "effectId": 416
+  "effectId": 416,
+  "flags": [
+   "contact"
+  ]
  },
  "splintered_stormshards": {
   "name": "Splintered Stormshards",
@@ -7707,6 +10631,10 @@
     "stages": 1,
     "target": "target"
    }
+  ],
+  "flags": [
+   "sound",
+   "ignoreSub"
   ]
  }
 }

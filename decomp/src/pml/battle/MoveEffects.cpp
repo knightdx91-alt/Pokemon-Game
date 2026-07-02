@@ -77,9 +77,16 @@ namespace battle {
 //   bytes 21+i = stat id (1=atk 2=def 3=spa 4=spd 5=spe 6=acc 7=eva), up to 3
 //   bytes 24+i = signed stage delta   (Swords Dance +2 atk; Growl −1 atk;
 //             Growth +1 atk/+1 spa; Calm Mind +1 spa/+1 spd; Charm −2 atk)
-// Now in data/pokemon/usum_moves.json (`status`, `statChanges`); verified by
-// decomp/verify/verify_moveeffects.py (83 moves w/ status, 138 w/ stat changes).
-// STILL TODO: weather/flag fields + the battle-sequence handler bodies.
+//   u32 @ byte 36 = WazaFlag bitfield: 0=contact 1=charge 2=recharge 3=protect
+//             4=reflectable 5=snatch 6=mirror 7=punch 8=sound 9=gravity
+//             10=defrost 11=distance 12=heal 13=ignoreSub (verified: Fire Punch
+//             =contact+punch, Fly=charge+gravity, Recover=snatch+heal, Hyper
+//             Voice=sound+ignoreSub, Hyper Beam=recharge).
+//   weather set by a move is its effectId (136=rain 137=sun 115=sand 164=hail).
+// All now in data/pokemon/usum_moves.json (`status`, `statChanges`, `flags`,
+// `weather`); verified by decomp/verify/verify_moveeffects.py (83 status, 138
+// stat-change, 645 flag, 4 weather moves). The move-effect DATA layer is
+// COMPLETE. STILL TODO: the battle-sequence handler bodies (the deep btl grind).
 //
 // ── Status of the ~150 handlers ──────────────────────────────────────────────
 // Manifest (id → handler fn) is committed at

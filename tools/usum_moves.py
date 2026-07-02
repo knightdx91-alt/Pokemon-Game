@@ -33,6 +33,15 @@ STATUS = {1: 'paralysis', 2: 'sleep', 3: 'freeze', 4: 'burn',
           5: 'poison', 6: 'confusion'}
 # Stat-stage target enum (move struct byte 21+i), verified.
 STAT = {1: 'atk', 2: 'def', 3: 'spa', 4: 'spd', 5: 'spe', 6: 'acc', 7: 'eva'}
+# WazaFlag bits (u32 @ byte 36), verified vs known moves (Fire Punch=contact+
+# protect+mirror+punch, Fly=contact+charge+gravity+distance, Recover=snatch+
+# heal, Hyper Voice=sound+ignoreSub, Hyper Beam=recharge, Growl=reflectable…).
+FLAG_BITS = {0: 'contact', 1: 'charge', 2: 'recharge', 3: 'protect',
+             4: 'reflectable', 5: 'snatch', 6: 'mirror', 7: 'punch',
+             8: 'sound', 9: 'gravity', 10: 'defrost', 11: 'distance',
+             12: 'heal', 13: 'ignoreSub'}
+# Weather set by a move, keyed by its effectId (verified).
+WEATHER = {136: 'rain', 137: 'sun', 115: 'sandstorm', 164: 'hail'}
 
 
 def slug(name):
@@ -95,6 +104,14 @@ def parse():
                                     'stages': delta, 'target': target})
             if changes:
                 rec['statChanges'] = changes
+        if len(e) >= 40:
+            fl = struct.unpack_from('<I', e, 36)[0]
+            flags = [FLAG_BITS[b] for b in range(32)
+                     if (fl & (1 << b)) and b in FLAG_BITS]
+            if flags:
+                rec['flags'] = flags
+        if rec.get('effectId') in WEATHER:
+            rec['weather'] = WEATHER[rec['effectId']]
         moves[slug(name)] = rec
     return moves
 
