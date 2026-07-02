@@ -794,10 +794,18 @@ All numerically verified against known game values:
    `tools/usum_learnsets.py`→`data/pokemon/usum_learnsets.json` (807 species),
    both verified. NEXT: wire the Gen-7 species/moves/learnsets INTO the JS game
    (`src/engine/battle.js` + party/summary read `data/pokemon/*.json`) so Gen-7
-   Pokémon/Alolan forms are usable — the practical payoff. Evolutions DONE ✅
-   (`tools/usum_evolutions.py`→`data/pokemon/usum_evolutions.json`, 807 species,
-   Alolan-form-aware). Remaining data: encounters (wild/location GARC), items,
-   TM/tutor compatibility, egg moves.
+   Pokémon/Alolan forms are usable — the practical payoff. **The Gen-7 DATA
+   LAYER is essentially COMPLETE & verified** (all in `data/pokemon/usum_*.json`,
+   converters `tools/usum_*.py`): base stats/types/abilities (807), names
+   (species/move/ability/item), moves (710), learnsets (807), evolutions (807,
+   Alolan-aware), egg moves (322), TM list+compat (100 TMs × 807), items (959).
+   ONE data piece left = **wild encounters**: embedded in the `a/0/8/*` zone
+   data (magic-headed, complex), and NOT verifiable without a zone→route-name
+   map — it's a zone-data RE sub-project (like the Unova maps), not a clean
+   GARC struct parse. Defer unless specifically wanted.
+   The two remaining FRONTIERS are both CODE-side: (a) the battle server vtable
+   dispatch (unlocks damage/AI/catch — see item 2 below), and (b) struct/class
+   reconstruction (memory layouts behind the recovered method names).
 2. **Battle damage server** (HARD — the one big open RE problem). Battle.cro is
    the battle *scene* (graphics/UI), NOT the calc server. The type-affinity
    cluster (static 0x21c0e0..0x21c3ac) is reached ONLY by function-pointer
