@@ -9,8 +9,8 @@ already loads from data/:
   data/pokemon/base_stats.json   {SPECIES: {base_hp, base_attack, ..., types,
                                             abilities, catch_rate, ...}}
   data/pokemon/learnsets.json    {species: [[level, "move_slug"], ...]}
-  data/pokemon/moves.json        [["move_slug", {name, power, type, accuracy,
-                                                 pp, category}], ...]
+  data/pokemon/moves.json        {"move_slug": {name, power, type, accuracy,
+                                                pp, category}, ...}
   data/encounters/<region>.json  {location_id: {grass:[...], surf:[...], ...}}
 
 Why this exists: DS Gen-5 games are 3D for *maps* (geometry, not tile grids —
@@ -61,13 +61,34 @@ P_ENCOUNTER_BW2 = 'a/1/2/7'
 
 
 def slug(name):
-    """'Leech Seed' -> 'leech_seed', matching existing data slugs."""
-    s = name.lower().replace('é', 'e').replace('♀', '_f').replace('♂', '_m')
+    """'Leech Seed' -> 'leech_seed', 'DoubleSlap' -> 'double_slap',
+    matching existing data slugs (camelCase Gen-5 move/species text has no
+    spaces between words, so split camelCase boundaries before lowering)."""
+    s = name.replace('é', 'e').replace('♀', 'F').replace('♂', 'M')
+    s = re.sub(r'(?<=[a-z0-9])(?=[A-Z])', '_', s)
+    s = s.lower()
     s = re.sub(r"[^a-z0-9]+", '_', s).strip('_')
     return s
 
 
+def species_key(name):
+    """'Farfetch'd' -> 'FARFETCHD', 'Mr. Mime' -> 'MR_MIME',
+    'Ho-Oh' -> 'HO_OH', 'Nidoran♀' -> 'NIDORAN_F' — matches the existing
+    data/pokemon/base_stats.json + learnsets.json key convention (apostrophes
+    drop silently, other punctuation/spaces collapse to a single '_')."""
+    s = name.replace('é', 'e').replace('♀', '_F').replace('♂', '_M')
+    s = s.replace("'", '')
+    s = re.sub(r'[^A-Za-z0-9]+', '_', s).strip('_')
+    return s
+
+
 # ------------------------------------------------------ Gen5 text decoder ---
+
+# Gen-5's font table assigns these two code points to the male/female
+# symbols instead of the standard Unicode ones (verified via national dex
+# #29 Nidoran(f)/#32 Nidoran(m) text) — chr() alone renders the wrong glyphs.
+_GEN5_SPECIAL_CHARS = {0x246D: '♂', 0x246E: '♀'}  # -> MARS/VENUS
+
 
 def decode_text_member(data):
     """Decrypt one Gen-5 text file (member of a/0/0/2). Returns list[str]."""
@@ -84,7 +105,9 @@ def decode_text_member(data):
             chars.append(c)
         if chars and chars[-1] == 0xFFFF:
             chars.pop()
-        lines.append(''.join(chr(c) if 32 <= c < 0xD800 else '' for c in chars))
+        lines.append(''.join(
+            _GEN5_SPECIAL_CHARS.get(c, chr(c) if 32 <= c < 0xD800 else '')
+            for c in chars))
     return lines
 
 
@@ -123,7 +146,7 @@ def convert_stats(unpacked, species_names, ability_names):
                 a = ability_names[ai]
                 if a not in abils:
                     abils.append(a)
-        out[name.upper()] = {
+        out[species_key(name).upper()] = {
             'name': name,
             'base_hp': hp, 'base_attack': atk, 'base_defense': dfn,
             'base_speed': spe, 'base_sp_attack': spa, 'base_sp_defense': spd,
@@ -140,19 +163,19 @@ def convert_stats(unpacked, species_names, ability_names):
 
 
 def convert_moves(unpacked, move_names):
-    out = []
+    out = {}
     for idx, d in members(unpacked, P_MOVEDATA):
         if idx == 0 or idx >= len(move_names) or not move_names[idx] or len(d) < 6:
             continue
         name = move_names[idx]
-        out.append([slug(name), {
+        out[slug(name)] = {
             'name': name,
             'power': d[3],
             'type': TYPES[d[0]] if d[0] < len(TYPES) else 'Normal',
             'accuracy': d[4],
             'pp': d[5],
             'category': MOVE_CATEGORY.get(d[2], 'status'),
-        }])
+        }
     return out
 
 
@@ -172,7 +195,7 @@ def convert_learnsets(unpacked, species_names, move_names):
             mname = move_names[mv] if mv < len(move_names) else ''
             if mname:
                 entries.append([lv, slug(mname)])
-        out[name.lower()] = entries
+        out[species_key(name).lower()] = entries
     return out
 
 
@@ -225,7 +248,24 @@ def main():
                     'data ROM is localized.')
     ap.add_argument('--dry-run', action='store_true',
                     help='write to /tmp instead of data/, for diffing')
+    ap.add_argument('--merge', action='store_true',
+                    help="union with the existing data/ file instead of "
+                    "overwriting it (ROM data wins on key collisions). "
+                    "Keeps any pre-existing keys the ROM text doesn't "
+                    "reproduce byte-identically (e.g. multi-word move slugs "
+                    "hardcoded elsewhere, like battle.js's MOVE_FX table)")
     args = ap.parse_args()
+
+    def write_json(path, data):
+        if args.merge:
+            real_path = GAME_ROOT / path.relative_to(out_root)
+            if real_path.exists():
+                existing = json.loads(real_path.read_text())
+                existing.update(data)
+                data = existing
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(data, indent=2))
+        return data
 
     ext = Path(args.extraction)
     unpacked = ext / 'unpacked'
@@ -247,26 +287,22 @@ def main():
     if 'stats' in todo:
         data = convert_stats(unpacked, species, abilities)
         p = out_root / 'data/pokemon/base_stats.json'
-        p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps(data, indent=2))
+        data = write_json(p, data)
         written.append((p, f'{len(data)} species'))
     if 'moves' in todo:
         data = convert_moves(unpacked, moves)
         p = out_root / 'data/pokemon/moves.json'
-        p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps(data, indent=2))
+        data = write_json(p, data)
         written.append((p, f'{len(data)} moves'))
     if 'learnsets' in todo:
         data = convert_learnsets(unpacked, species, moves)
         p = out_root / 'data/pokemon/learnsets.json'
-        p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps(data, indent=2))
+        data = write_json(p, data)
         written.append((p, f'{len(data)} learnsets'))
     if args.encounters:
         data = convert_encounters(unpacked, species, args.encounters)
         p = out_root / f'data/encounters/gen5_{args.encounters}.json'
-        p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps(data, indent=2))
+        data = write_json(p, data)
         written.append((p, f'{len(data)} locations'))
 
     print('\nWrote:' + (' (DRY RUN → /tmp)' if args.dry_run else ''))

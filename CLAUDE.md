@@ -466,13 +466,40 @@ trusted until its output renders correctly (the way HnS was verified).
   encrypted text banks for English species/move/ability names (from a/0/0/2:
   species=member 70, abilities=182, moves=203 — verified on the English Black
   ROM IRBO). Defaults to **`--dry-run`-friendly** (real writes overwrite
-  `data/` — diff first). Usage:
-  `python3 tools/rom_to_2d.py source/nds/IRBO --only stats,moves,learnsets [--dry-run]`.
-  Verified: Charizard 78/84 Fire/Flying + Blaze/Solar Power; Flamethrower
-  95pw special; Charmander learnset exact. Use an English ROM for names
-  (`--names-from source/nds/IRBO`) if converting a localized data ROM.
-  Same rationale as the decomp tools: Gen-5 game *data* (stats/moves/movesets/
-  encounters) ports cleanly to 2D; Gen-5 *maps* are 3D and don't.
+  `data/` — diff first). Add **`--merge`** to union with the existing `data/`
+  file instead of overwriting (ROM data wins on key collisions, but any
+  pre-existing key the ROM text doesn't reproduce byte-identically survives)
+  — use this whenever engine code hardcodes move/species slugs elsewhere
+  (see gotcha below), so a re-run can't silently orphan them. Usage:
+  `python3 tools/rom_to_2d.py source/nds/IRBO --only stats,moves,learnsets --merge [--dry-run]`.
+  Verified (full run against Pokémon Black IRBO): 650 species, 560 moves, 675
+  learnsets written to `data/pokemon/`; Charizard 78/84 Fire/Flying +
+  Blaze/Solar Power; Flamethrower 95pw special; Charmander learnset exact;
+  party viewer in-browser renders the merged data correctly. Use an English
+  ROM for names (`--names-from source/nds/IRBO`) if converting a localized
+  data ROM. Same rationale as the decomp tools: Gen-5 game *data*
+  (stats/moves/movesets/encounters) ports cleanly to 2D; Gen-5 *maps* are 3D
+  and don't.
+  **Gotchas fixed while porting Black's data in (all in `tools/rom_to_2d.py`):**
+  1. `convert_moves()` used to emit `[["slug", {...}], ...]` (a list of
+     pairs) — but `battle.js`/`summary.js` do direct `_movesDb[moveId]`
+     object lookups. Now emits a plain `{slug: {...}}` dict.
+  2. Gen-5's font table encodes ♂/♀ as the non-standard code points
+     0x246D/0x246E (verified via national dex #29 Nidoran♀ / #32 Nidoran♂),
+     not the real Unicode symbols — `decode_text_member` now maps them
+     explicitly, else `chr()` renders circled-digit glyphs instead.
+  3. `slug()` (moves) now splits camelCase boundaries before lowering —
+     Gen-5 move text has no spaces (`"DoubleSlap"`, `"ThunderPunch"`) so it
+     used to produce `doubleslap` instead of the existing convention
+     `double_slap`.
+  4. Added `species_key()` (stats/learnsets keys) to strip apostrophes and
+     collapse other punctuation/spaces/gender-symbols to `_`, matching the
+     existing `FARFETCHD` / `MR_MIME` / `HO_OH` / `NIDORAN_F` key convention
+     — plain `name.upper()`/`.lower()` left the raw punctuation in.
+  5. A handful of moves (`torment`, `embargo`, `dark_void`) have anomalously
+     1-byte-short entries in Black's move-data NARC and get skipped; `nuzzle`
+     / `freeze_dry` don't exist yet in Gen 5 (introduced Gen 6). `--merge`
+     is what keeps these from disappearing on a fresh (non-merge) run.
 - `gen_party_assets.py` — regenerate the FireRed party-screen assets in
   `src/assets/party/` (slot boxes, fonts, pokéball, status icons, message frame)
   by decoding `source/pokefirered` graphics/tilemaps/palettes. Re-run if those
