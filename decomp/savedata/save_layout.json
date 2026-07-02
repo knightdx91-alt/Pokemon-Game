@@ -14,7 +14,8 @@
    "checksum": 40017,
    "crc_verified_both_saves": true,
    "class": "Savedata::MyItem",
-   "role": "bag/items \u2014 0xe28 in MyItem::MyItem/Swap"
+   "role": "bag/items \u2014 0xe28 in MyItem::MyItem/Swap",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 1,
@@ -23,7 +24,9 @@
    "length": 124,
    "length_hex": "0x7c",
    "checksum": 61361,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::Situation",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 2,
@@ -32,7 +35,9 @@
    "length": 20,
    "length_hex": "0x14",
    "checksum": 14542,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::RandomGroup",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 3,
@@ -43,7 +48,8 @@
    "checksum": 16279,
    "crc_verified_both_saves": true,
    "class": "Savedata::MyStatus",
-   "role": "trainer card \u2014 GetSerializeDataSize returns 0xc0"
+   "role": "trainer card \u2014 GetSerializeDataSize returns 0xc0",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 4,
@@ -53,7 +59,9 @@
    "length_hex": "0x61c",
    "checksum": 42149,
    "crc_verified_both_saves": true,
-   "role": "party \u2014 6 PokemonParam read from 0x1600 (content-verified)"
+   "role": "party \u2014 6 PokemonParam read from 0x1600 (content-verified)",
+   "class": "Savedata::PokePartySave",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 5,
@@ -62,7 +70,9 @@
    "length": 3584,
    "length_hex": "0xe00",
    "checksum": 58348,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Field::EventWork",
+   "class_source": "construction order (GetSize==footer length)"
   },
   {
    "id": 6,
@@ -73,7 +83,8 @@
    "checksum": 26427,
    "crc_verified_both_saves": true,
    "class": "Savedata::ZukanData",
-   "role": "Pokedex \u2014 0xf78 in ZukanData::SetPokeSee"
+   "role": "Pokedex \u2014 0xf78 in ZukanData::SetPokeSee",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 7,
@@ -82,7 +93,9 @@
    "length": 552,
    "length_hex": "0x228",
    "checksum": 19174,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::GtsData",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 8,
@@ -93,7 +106,8 @@
    "checksum": 54395,
    "crc_verified_both_saves": true,
    "class": "Savedata::UnionPokemon",
-   "role": "size-getter returns 0x30c"
+   "role": "size-getter returns 0x30c",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 9,
@@ -102,7 +116,9 @@
    "length": 508,
    "length_hex": "0x1fc",
    "checksum": 60180,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::Misc",
+   "class_source": "construction order (GetSize==footer length)"
   },
   {
    "id": 10,
@@ -111,7 +127,9 @@
    "length": 76,
    "length_hex": "0x4c",
    "checksum": 16063,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::FieldMenu",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 11,
@@ -122,7 +140,8 @@
    "checksum": 62453,
    "crc_verified_both_saves": true,
    "class": "Savedata::ConfigSave",
-   "role": "options \u2014 size-getter returns 0x4"
+   "role": "options \u2014 size-getter returns 0x4",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 12,
@@ -133,7 +152,8 @@
    "checksum": 63600,
    "crc_verified_both_saves": true,
    "class": "Savedata::GameTime",
-   "role": "RTC datetime \u2014 GetSize (vtable slot3) returns 0x58"
+   "role": "RTC datetime \u2014 GetSize (vtable slot3) returns 0x58",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 13,
@@ -144,7 +164,8 @@
    "checksum": 5693,
    "crc_verified_both_saves": true,
    "class": "Savedata::BOX",
-   "role": "box metadata/teams \u2014 0x5e6 in BOX::DeleteTeam"
+   "role": "box metadata/teams \u2014 0x5e6 in BOX::DeleteTeam",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 14,
@@ -155,7 +176,8 @@
    "checksum": 60433,
    "crc_verified_both_saves": true,
    "role": "PC box storage \u2014 0x36600 in BoxPokemon::PutPokemon; box @0x5200",
-   "class": "Savedata::BoxPokemon"
+   "class": "Savedata::BoxPokemon",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 15,
@@ -164,7 +186,9 @@
    "length": 22316,
    "length_hex": "0x572c",
    "checksum": 1724,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::ResortSave",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 16,
@@ -175,7 +199,8 @@
    "checksum": 18256,
    "crc_verified_both_saves": true,
    "class": "Savedata::PlayTime",
-   "role": "play time h/m/s \u2014 GetSize returns 0x8"
+   "role": "play time h/m/s \u2014 GetSize returns 0x8",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 17,
@@ -184,7 +209,9 @@
    "length": 4632,
    "length_hex": "0x1218",
    "checksum": 16617,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::FieldMoveModelSave",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 18,
@@ -195,7 +222,8 @@
    "checksum": 56959,
    "crc_verified_both_saves": true,
    "class": "Savedata::Fashion",
-   "role": "0x1a08 in Fashion::IsOwned"
+   "role": "0x1a08 in Fashion::IsOwned",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 19,
@@ -204,7 +232,9 @@
    "length": 25608,
    "length_hex": "0x6408",
    "checksum": 64437,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::JoinFestaPersonalSave",
+   "class_source": "construction order (GetSize==footer length)"
   },
   {
    "id": 20,
@@ -213,7 +243,9 @@
    "length": 25608,
    "length_hex": "0x6408",
    "checksum": 6999,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::JoinFestaPersonalSave",
+   "class_source": "construction order (GetSize==footer length)"
   },
   {
    "id": 21,
@@ -224,7 +256,8 @@
    "checksum": 50428,
    "crc_verified_both_saves": true,
    "class": "Savedata::JoinFestaDataSave",
-   "role": "0x3998 in JoinFestaDataSave::SetPattern"
+   "role": "0x3998 in JoinFestaDataSave::SetPattern",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 22,
@@ -233,7 +266,9 @@
    "length": 256,
    "length_hex": "0x100",
    "checksum": 48980,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::FishingSpot",
+   "class_source": "full vtable sweep GetSize match"
   },
   {
    "id": 23,
@@ -242,7 +277,9 @@
    "length": 256,
    "length_hex": "0x100",
    "checksum": 39744,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::BerrySpot",
+   "class_source": "full vtable sweep GetSize match"
   },
   {
    "id": 24,
@@ -251,7 +288,9 @@
    "length": 66856,
    "length_hex": "0x10528",
    "checksum": 21707,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::LiveMatchData",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 25,
@@ -260,7 +299,9 @@
    "length": 516,
    "length_hex": "0x204",
    "checksum": 7634,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::BattleSpotData",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 26,
@@ -269,7 +310,9 @@
    "length": 2912,
    "length_hex": "0xb60",
    "checksum": 13128,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::PokeFinderSave",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 27,
@@ -280,7 +323,8 @@
    "checksum": 59638,
    "crc_verified_both_saves": true,
    "class": "Savedata::MysteryGiftSave",
-   "role": "0x3f50 in MysteryGiftSave::SetupClone"
+   "role": "0x3f50 in MysteryGiftSave::SetupClone",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 28,
@@ -289,7 +333,9 @@
    "length": 856,
    "length_hex": "0x358",
    "checksum": 32539,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::Record",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 29,
@@ -299,8 +345,9 @@
    "length_hex": "0x728",
    "checksum": 18761,
    "crc_verified_both_saves": true,
-   "class": "Savedata::PokeFinderSave",
-   "role": "0x728 in PokeFinderSave::SetTutorialFlags"
+   "class": "Savedata::ValidationSave",
+   "role": "0x728 in PokeFinderSave::SetTutorialFlags",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 30,
@@ -309,7 +356,9 @@
    "length": 512,
    "length_hex": "0x200",
    "checksum": 36280,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::GameSyncSave",
+   "class_source": "construction order (GetSize==footer length)"
   },
   {
    "id": 31,
@@ -318,7 +367,9 @@
    "length": 1816,
    "length_hex": "0x718",
    "checksum": 35865,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::PokeDiarySave",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 32,
@@ -327,7 +378,9 @@
    "length": 508,
    "length_hex": "0x1fc",
    "checksum": 28795,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::BattleInstSave",
+   "class_source": "construction order (GetSize==footer length)"
   },
   {
    "id": 33,
@@ -336,7 +389,9 @@
    "length": 512,
    "length_hex": "0x200",
    "checksum": 5995,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::Sodateya",
+   "class_source": "construction order (GetSize==footer length)"
   },
   {
    "id": 34,
@@ -345,7 +400,9 @@
    "length": 288,
    "length_hex": "0x120",
    "checksum": 13265,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::WeatherSave",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 35,
@@ -354,7 +411,9 @@
    "length": 456,
    "length_hex": "0x1c8",
    "checksum": 14296,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::QRReaderSaveData",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 36,
@@ -363,7 +422,9 @@
    "length": 512,
    "length_hex": "0x200",
    "checksum": 17598,
-   "crc_verified_both_saves": false
+   "crc_verified_both_saves": false,
+   "class": "Savedata::TurtleSalmonSave",
+   "class_source": "construction order (GetSize==footer length)"
   },
   {
    "id": 37,
@@ -374,7 +435,8 @@
    "checksum": 11163,
    "crc_verified_both_saves": true,
    "class": "Savedata::BattleFesSave",
-   "role": "Battle Festival \u2014 GetSize returns 0x39c"
+   "role": "Battle Festival \u2014 GetSize returns 0x39c",
+   "class_source": "unique GetSize==footer length"
   },
   {
    "id": 38,
@@ -383,10 +445,17 @@
    "length": 1024,
    "length_hex": "0x400",
    "checksum": 32452,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::FinderStudioSave",
+   "class_source": "unique GetSize==footer length"
   }
  ],
- "identification": "Block id->class: (a) unique large size appearing only in the class's own code; (b) the class size-getter; (c) the class vtable's GetSize slot (vtable table @VA 0x64d000, 6-method vtables have GetSize at slot 3, validated on MyStatus/ConfigSave/UnionPokemon). 15/39 identified; verify/verify_savedata_ids.py.",
+ "identification": {
+  "blocks_named": "39/39",
+  "method": "RTTI type-name + GetSize(vtable slot 3) matched to footer lengths; shared lengths pinned by container-ctor construction order (tools/usum_save_blocks.py)",
+  "open": "blocks 22/23 are FishingSpot & BerrySpot (both len 0x100) \u2014 the class pair is certain; which id is which is not size-separable (assigned FishingSpot=22, BerrySpot=23 by convention).",
+  "prior_note": "Block id->class: (a) unique large size appearing only in the class's own code; (b) the class size-getter; (c) the class vtable's GetSize slot (vtable table @VA 0x64d000, 6-method vtables have GetSize at slot 3, validated on MyStatus/ConfigSave/UnionPokemon). 15/39 identified; verify/verify_savedata_ids.py."
+ },
  "factory_investigation": {
   "goal": "map all 39 block ids to Savedata classes via the container's construction order",
   "result": "12/39 identified (see per-block class fields); remaining 27 need dynamic tracing",

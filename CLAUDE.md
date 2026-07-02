@@ -836,10 +836,12 @@ rodata pointer tables are zero on disk, filled at load (recovered by
 ### Rules for the decomp work
 - **▶ RESUME POINT: see the "⏩ CHECKPOINT — resume here" block at the top of
   `decomp/README.md`'s next-targets section.** Current state: CoreParam fully
-  decompiled + validated on a real save; save system = CRC-16/USB + full 39-block
-  offset layout + 15/39 blocks named. Immediate next task: name the remaining 24
-  save blocks via the save-body **container constructor at file offset ~0x35a2c0**
-  (recipe in `decomp/savedata/save_layout.json` → factory_investigation).
+  decompiled + validated on a real save; **save system DONE** = CRC-16/USB +
+  full 39-block offset layout + **all 39/39 blocks named** to their `Savedata::`
+  class (RTTI type-name + `GetSize` vtable-slot-3 matched to footer lengths,
+  `tools/usum_save_blocks.py`; VERIFY PASS). Immediate next task: pick from the
+  remaining core in `decomp/README.md` — highest value is **Phase-3 struct/field
+  reconstruction** (name CoreParam / battle-pokemon struct fields).
 - **Never commit ROM bytes.** `source/3ds/ultramoon/` is gitignored. Only
   commit derived analysis (symbol maps, disasm-derived C++, verified data).
 - **Verify before committing.** Every decompiled formula/table must be checked

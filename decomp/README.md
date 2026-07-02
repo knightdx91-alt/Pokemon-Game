@@ -336,22 +336,50 @@ Progress so far (all on `main`, all verified against real data):
   proven by reading 6 party + 880 box Pokémon from a real save
   (`tools/usum_savedump.py`).
 - **Save system**: CRC-16/USB checksum decompiled; **full 39-block offset layout
-  solved & verified in two real saves** (`savedata/save_layout.json`); **15/39
-  blocks named** to their `Savedata::` class.
+  solved & verified in two real saves** (`savedata/save_layout.json`); **all
+  39/39 blocks named** to their `Savedata::` class (see below).
 
-**Immediate next task — name the remaining 24 save blocks via the container
-constructor (JUST LOCATED):**
-1. The save-body **container constructor is at file offset ~`0x35a2c0`** (VA
-   0x45a2c0). It BL-calls the block constructors in sequence — confirmed
-   MyItem@0x35a2c0, MyStatus@0x35a2dc, ZukanData@0x35a2f8, GameTime@0x35a32c.
-2. Disassemble the full function (find its `push{..lr}` start), list **every BL
-   target in order** = the block constructors in construction order.
-3. Name each constructor's class via its stored vtable → a named virtual method
-   (vtable table @VA `0x64d000`; for 6-method vtables **slot 3 = GetSize**).
-4. Align construction order to block id using the 15 known id→class anchors.
-   (Or emulate the ctor with Unicorn — `pip install unicorn` — stub heap, read
-   each sub-object's vtable ptr afterward.) Full recipe in
-   `save_layout.json` → `factory_investigation.container_constructor`.
+**✅ DONE — all 39 save blocks named (`tools/usum_save_blocks.py`).** Method (fully
+static, reproducible, self-verifying — VERIFY PASS: every class's `GetSize`
+equals its footer block length):
+1. The block classes are **polymorphic with RTTI intact** — the Itanium
+   typeinfo type-name string (`_ZTS`-style, e.g. `N8Savedata6MyItemE`) sits one
+   word before each vtable's first virtual, so **every vtable in the .rodata
+   cluster `0x64cf00..0x64d600` demangles directly to its `Savedata::` class** —
+   no reliance on named virtuals (which are `sub_`). 41 distinct classes found.
+2. **`GetSize` is vtable slot 3** (a trivial `return <const>` — validated because
+   for every id-known block it returns the exact footer length). Matching each
+   class's `GetSize` to the footer's per-block length pins the id wherever the
+   length is unique (30 of 39 blocks land uniquely this way).
+3. Shared lengths (the 0x200 trio GameSyncSave/Sodateya/TurtleSalmonSave; 0x1fc
+   Misc/BattleInstSave; etc.) are disambiguated by the **save-body container
+   constructor `sub_35a2a8`**, which BL-calls the block constructors in strictly
+   increasing block-id order — a class's position between two id-pinned
+   neighbours fixes its id. (The container builds 35 of the 39 blocks; the other
+   four — FishingSpot, BerrySpot, PokeFinderSave, WeatherSave — were caught by
+   the full vtable sweep.)
+   RESULT (`save_layout.json` `blocks[].class`): 0 MyItem · 1 Situation ·
+   2 RandomGroup · 3 MyStatus · 4 PokePartySave · 5 Field::EventWork · 6 ZukanData ·
+   7 GtsData · 8 UnionPokemon · 9 Misc · 10 FieldMenu · 11 ConfigSave · 12 GameTime ·
+   13 BOX · 14 BoxPokemon · 15 ResortSave · 16 PlayTime · 17 FieldMoveModelSave ·
+   18 Fashion · 19–20 JoinFestaPersonalSave · 21 JoinFestaDataSave · 22 FishingSpot ·
+   23 BerrySpot · 24 LiveMatchData · 25 BattleSpotData · 26 PokeFinderSave ·
+   27 MysteryGiftSave · 28 Record · 29 ValidationSave · 30 GameSyncSave ·
+   31 PokeDiarySave · 32 BattleInstSave · 33 Sodateya · 34 WeatherSave ·
+   35 QRReaderSaveData · 36 TurtleSalmonSave · 37 BattleFesSave · 38 FinderStudioSave.
+   CORRECTIONS to earlier guesses: **PokeFinderSave is block 26** (not 29 —
+   block 29 is ValidationSave); block 27 = MysteryGiftSave and block 37 =
+   BattleFesSave are re-confirmed. Lone open point: blocks 22/23 are certainly
+   {FishingSpot, BerrySpot} but their identical 0x100 size can't say which id is
+   which (assigned FishingSpot=22, BerrySpot=23 by convention).
+
+**Immediate next task — the four remaining core areas** (the save system is now
+DONE end-to-end: crypto, checksum, 39-block offsets, and all 39 block classes):
+pick from "Known next targets / open issues" below — highest-value is **Phase-3
+struct/field reconstruction** (name CoreParam / battle-pokemon struct fields so
+`decomp/src` reads like source), then the battle-sequence handler bodies, then
+wild encounters. Confirm the 22↔23 FishingSpot/BerrySpot order against a real
+save if a cheap check presents itself.
 
 **Environment reminder:** the ROM extraction is gitignored/ephemeral — re-run the
 bootstrap at the top of the "TRUE DECOMP" section each session (pull the USUM zip
