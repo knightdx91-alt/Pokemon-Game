@@ -232,6 +232,18 @@
             <span class="card-arrow">›</span>
         </a>
 
+        <div class="divider"></div>
+        <p class="section-label">Remote</p>
+
+        <a class="launch-card" href="#" id="card-neko">
+            <div class="card-icon">🧅</div>
+            <div class="card-text">
+                <div class="card-title">Neko — Virtual Browser</div>
+                <div class="card-sub">Tor / desktop in the cloud · long-press to set server</div>
+            </div>
+            <span class="card-arrow">›</span>
+        </a>
+
     </div>
 
     <script src="drive-to-github.js?v=__CACHE_BUST__"></script>
@@ -240,6 +252,43 @@
             e.preventDefault();
             window.DriveToGitHub.start();
         });
+
+        // Neko virtual-browser card. The neko container runs on the user's own
+        // server (e.g. a Hetzner VPS) — this card just opens that URL. The URL
+        // is stored in localStorage so it isn't hardcoded into the static site.
+        (function () {
+            var card = document.getElementById('card-neko');
+            var KEY = 'neko_url';
+            var sub = card.querySelector('.card-sub');
+
+            function saved() { return (localStorage.getItem(KEY) || '').trim(); }
+            function refresh() {
+                var u = saved();
+                if (u) sub.textContent = u.replace(/^https?:\/\//, '') + ' · long-press to change';
+            }
+            function promptUrl() {
+                var u = prompt('Neko server URL (e.g. https://neko.example.com):', saved());
+                if (u === null) return null;
+                u = u.trim();
+                if (u && !/^https?:\/\//.test(u)) u = 'https://' + u;
+                localStorage.setItem(KEY, u);
+                refresh();
+                return u;
+            }
+            refresh();
+
+            card.addEventListener('click', function (e) {
+                e.preventDefault();
+                var u = saved() || promptUrl();
+                if (u) window.open(u, '_blank', 'noopener');
+            });
+            // Long-press (touch) or right-click (desktop) to reconfigure.
+            card.addEventListener('contextmenu', function (e) { e.preventDefault(); promptUrl(); });
+            var t;
+            card.addEventListener('touchstart', function () { t = setTimeout(promptUrl, 600); }, { passive: true });
+            card.addEventListener('touchend', function () { clearTimeout(t); });
+            card.addEventListener('touchmove', function () { clearTimeout(t); });
+        })();
     </script>
 
 </body>
