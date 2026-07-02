@@ -61,7 +61,8 @@
   "pp": 15,
   "category": "physical",
   "effectChance": 10,
-  "effectId": 4
+  "effectId": 4,
+  "status": "burn"
  },
  "ice_punch": {
   "name": "Ice Punch",
@@ -71,7 +72,8 @@
   "pp": 15,
   "category": "physical",
   "effectChance": 10,
-  "effectId": 5
+  "effectId": 5,
+  "status": "freeze"
  },
  "thunder_punch": {
   "name": "Thunder Punch",
@@ -81,7 +83,8 @@
   "pp": 15,
   "category": "physical",
   "effectChance": 10,
-  "effectId": 6
+  "effectId": 6,
+  "status": "paralysis"
  },
  "scratch": {
   "name": "Scratch",
@@ -126,7 +129,14 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 50
+  "effectId": 50,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 2,
+    "target": "self"
+   }
+  ]
  },
  "cut": {
   "name": "Cut",
@@ -254,7 +264,14 @@
   "accuracy": 100,
   "pp": 15,
   "category": "status",
-  "effectId": 23
+  "effectId": 23,
+  "statChanges": [
+   {
+    "stat": "acc",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "headbutt": {
   "name": "Headbutt",
@@ -309,7 +326,8 @@
   "pp": 15,
   "category": "physical",
   "effectChance": 30,
-  "effectId": 6
+  "effectId": 6,
+  "status": "paralysis"
  },
  "wrap": {
   "name": "Wrap",
@@ -355,7 +373,14 @@
   "accuracy": 100,
   "pp": 30,
   "category": "status",
-  "effectId": 19
+  "effectId": 19,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "poison_sting": {
   "name": "Poison Sting",
@@ -365,7 +390,8 @@
   "pp": 35,
   "category": "physical",
   "effectChance": 30,
-  "effectId": 2
+  "effectId": 2,
+  "status": "poison"
  },
  "twineedle": {
   "name": "Twineedle",
@@ -375,7 +401,8 @@
   "pp": 20,
   "category": "physical",
   "effectChance": 20,
-  "effectId": 77
+  "effectId": 77,
+  "status": "poison"
  },
  "pin_missile": {
   "name": "Pin Missile",
@@ -393,7 +420,14 @@
   "accuracy": 100,
   "pp": 30,
   "category": "status",
-  "effectId": 19
+  "effectId": 19,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "bite": {
   "name": "Bite",
@@ -411,7 +445,14 @@
   "accuracy": 100,
   "pp": 40,
   "category": "status",
-  "effectId": 18
+  "effectId": 18,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "roar": {
   "name": "Roar",
@@ -430,7 +471,8 @@
   "accuracy": 55,
   "pp": 15,
   "category": "status",
-  "effectId": 1
+  "effectId": 1,
+  "status": "sleep"
  },
  "supersonic": {
   "name": "Supersonic",
@@ -439,7 +481,8 @@
   "accuracy": 55,
   "pp": 20,
   "category": "status",
-  "effectId": 49
+  "effectId": 49,
+  "status": "confusion"
  },
  "sonic_boom": {
   "name": "Sonic Boom",
@@ -466,7 +509,14 @@
   "accuracy": 100,
   "pp": 30,
   "category": "special",
-  "effectId": 72
+  "effectId": 72,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "ember": {
   "name": "Ember",
@@ -476,7 +526,8 @@
   "pp": 25,
   "category": "special",
   "effectChance": 10,
-  "effectId": 4
+  "effectId": 4,
+  "status": "burn"
  },
  "flamethrower": {
   "name": "Flamethrower",
@@ -486,7 +537,8 @@
   "pp": 15,
   "category": "special",
   "effectChance": 10,
-  "effectId": 4
+  "effectId": 4,
+  "status": "burn"
  },
  "mist": {
   "name": "Mist",
@@ -532,7 +584,8 @@
   "pp": 10,
   "category": "special",
   "effectChance": 10,
-  "effectId": 5
+  "effectId": 5,
+  "status": "freeze"
  },
  "blizzard": {
   "name": "Blizzard",
@@ -542,7 +595,8 @@
   "pp": 5,
   "category": "special",
   "effectChance": 10,
-  "effectId": 260
+  "effectId": 260,
+  "status": "freeze"
  },
  "psybeam": {
   "name": "Psybeam",
@@ -552,7 +606,8 @@
   "pp": 20,
   "category": "special",
   "effectChance": 10,
-  "effectId": 76
+  "effectId": 76,
+  "status": "confusion"
  },
  "bubble_beam": {
   "name": "Bubble Beam",
@@ -561,7 +616,14 @@
   "accuracy": 100,
   "pp": 20,
   "category": "special",
-  "effectId": 70
+  "effectId": 70,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "aurora_beam": {
   "name": "Aurora Beam",
@@ -570,7 +632,14 @@
   "accuracy": 100,
   "pp": 20,
   "category": "special",
-  "effectId": 68
+  "effectId": 68,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "hyper_beam": {
   "name": "Hyper Beam",
@@ -679,7 +748,19 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 316
+  "effectId": 316,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "self"
+   },
+   {
+    "stat": "spa",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "razor_leaf": {
   "name": "Razor Leaf",
@@ -706,7 +787,8 @@
   "accuracy": 75,
   "pp": 35,
   "category": "status",
-  "effectId": 66
+  "effectId": 66,
+  "status": "poison"
  },
  "stun_spore": {
   "name": "Stun Spore",
@@ -715,7 +797,8 @@
   "accuracy": 75,
   "pp": 30,
   "category": "status",
-  "effectId": 67
+  "effectId": 67,
+  "status": "paralysis"
  },
  "sleep_powder": {
   "name": "Sleep Powder",
@@ -724,7 +807,8 @@
   "accuracy": 75,
   "pp": 15,
   "category": "status",
-  "effectId": 1
+  "effectId": 1,
+  "status": "sleep"
  },
  "petal_dance": {
   "name": "Petal Dance",
@@ -742,7 +826,14 @@
   "accuracy": 95,
   "pp": 40,
   "category": "status",
-  "effectId": 60
+  "effectId": 60,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "dragon_rage": {
   "name": "Dragon Rage",
@@ -771,7 +862,8 @@
   "pp": 30,
   "category": "special",
   "effectChance": 10,
-  "effectId": 6
+  "effectId": 6,
+  "status": "paralysis"
  },
  "thunderbolt": {
   "name": "Thunderbolt",
@@ -781,7 +873,8 @@
   "pp": 15,
   "category": "special",
   "effectChance": 10,
-  "effectId": 6
+  "effectId": 6,
+  "status": "paralysis"
  },
  "thunder_wave": {
   "name": "Thunder Wave",
@@ -790,7 +883,8 @@
   "accuracy": 90,
   "pp": 20,
   "category": "status",
-  "effectId": 67
+  "effectId": 67,
+  "status": "paralysis"
  },
  "thunder": {
   "name": "Thunder",
@@ -800,7 +894,8 @@
   "pp": 10,
   "category": "special",
   "effectChance": 30,
-  "effectId": 152
+  "effectId": 152,
+  "status": "paralysis"
  },
  "rock_throw": {
   "name": "Rock Throw",
@@ -845,7 +940,8 @@
   "accuracy": 90,
   "pp": 10,
   "category": "status",
-  "effectId": 33
+  "effectId": 33,
+  "status": "poison"
  },
  "confusion": {
   "name": "Confusion",
@@ -855,7 +951,8 @@
   "pp": 25,
   "category": "special",
   "effectChance": 10,
-  "effectId": 76
+  "effectId": 76,
+  "status": "confusion"
  },
  "psychic": {
   "name": "Psychic",
@@ -864,7 +961,14 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 72
+  "effectId": 72,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "hypnosis": {
   "name": "Hypnosis",
@@ -873,7 +977,8 @@
   "accuracy": 60,
   "pp": 20,
   "category": "status",
-  "effectId": 1
+  "effectId": 1,
+  "status": "sleep"
  },
  "meditate": {
   "name": "Meditate",
@@ -882,7 +987,14 @@
   "accuracy": 101,
   "pp": 40,
   "category": "status",
-  "effectId": 10
+  "effectId": 10,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "agility": {
   "name": "Agility",
@@ -891,7 +1003,14 @@
   "accuracy": 101,
   "pp": 30,
   "category": "status",
-  "effectId": 52
+  "effectId": 52,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": 2,
+    "target": "self"
+   }
+  ]
  },
  "quick_attack": {
   "name": "Quick Attack",
@@ -946,7 +1065,14 @@
   "accuracy": 85,
   "pp": 40,
   "category": "status",
-  "effectId": 59
+  "effectId": 59,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "double_team": {
   "name": "Double Team",
@@ -955,7 +1081,14 @@
   "accuracy": 101,
   "pp": 15,
   "category": "status",
-  "effectId": 16
+  "effectId": 16,
+  "statChanges": [
+   {
+    "stat": "eva",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "recover": {
   "name": "Recover",
@@ -973,7 +1106,14 @@
   "accuracy": 101,
   "pp": 30,
   "category": "status",
-  "effectId": 11
+  "effectId": 11,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "minimize": {
   "name": "Minimize",
@@ -982,7 +1122,14 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 108
+  "effectId": 108,
+  "statChanges": [
+   {
+    "stat": "eva",
+    "stages": 2,
+    "target": "self"
+   }
+  ]
  },
  "smokescreen": {
   "name": "Smokescreen",
@@ -991,7 +1138,14 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 23
+  "effectId": 23,
+  "statChanges": [
+   {
+    "stat": "acc",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "confuse_ray": {
   "name": "Confuse Ray",
@@ -1000,7 +1154,8 @@
   "accuracy": 100,
   "pp": 10,
   "category": "status",
-  "effectId": 49
+  "effectId": 49,
+  "status": "confusion"
  },
  "withdraw": {
   "name": "Withdraw",
@@ -1009,7 +1164,14 @@
   "accuracy": 101,
   "pp": 40,
   "category": "status",
-  "effectId": 11
+  "effectId": 11,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "defense_curl": {
   "name": "Defense Curl",
@@ -1018,7 +1180,14 @@
   "accuracy": 101,
   "pp": 40,
   "category": "status",
-  "effectId": 156
+  "effectId": 156,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "barrier": {
   "name": "Barrier",
@@ -1027,7 +1196,14 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 51
+  "effectId": 51,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": 2,
+    "target": "self"
+   }
+  ]
  },
  "light_screen": {
   "name": "Light Screen",
@@ -1119,7 +1295,8 @@
   "pp": 30,
   "category": "physical",
   "effectChance": 30,
-  "effectId": 6
+  "effectId": 6,
+  "status": "paralysis"
  },
  "smog": {
   "name": "Smog",
@@ -1129,7 +1306,8 @@
   "pp": 20,
   "category": "special",
   "effectChance": 40,
-  "effectId": 2
+  "effectId": 2,
+  "status": "poison"
  },
  "sludge": {
   "name": "Sludge",
@@ -1139,7 +1317,8 @@
   "pp": 20,
   "category": "special",
   "effectChance": 30,
-  "effectId": 2
+  "effectId": 2,
+  "status": "poison"
  },
  "bone_club": {
   "name": "Bone Club",
@@ -1158,7 +1337,8 @@
   "pp": 5,
   "category": "special",
   "effectChance": 10,
-  "effectId": 4
+  "effectId": 4,
+  "status": "burn"
  },
  "waterfall": {
   "name": "Waterfall",
@@ -1214,7 +1394,14 @@
   "accuracy": 100,
   "pp": 35,
   "category": "physical",
-  "effectId": 70
+  "effectId": 70,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "amnesia": {
   "name": "Amnesia",
@@ -1223,7 +1410,14 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 54
+  "effectId": 54,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": 2,
+    "target": "self"
+   }
+  ]
  },
  "kinesis": {
   "name": "Kinesis",
@@ -1232,7 +1426,14 @@
   "accuracy": 80,
   "pp": 15,
   "category": "status",
-  "effectId": 23
+  "effectId": 23,
+  "statChanges": [
+   {
+    "stat": "acc",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "soft_boiled": {
   "name": "Soft-Boiled",
@@ -1259,7 +1460,8 @@
   "accuracy": 100,
   "pp": 30,
   "category": "status",
-  "effectId": 67
+  "effectId": 67,
+  "status": "paralysis"
  },
  "dream_eater": {
   "name": "Dream Eater",
@@ -1277,7 +1479,8 @@
   "accuracy": 90,
   "pp": 40,
   "category": "status",
-  "effectId": 66
+  "effectId": 66,
+  "status": "poison"
  },
  "barrage": {
   "name": "Barrage",
@@ -1304,7 +1507,8 @@
   "accuracy": 75,
   "pp": 10,
   "category": "status",
-  "effectId": 1
+  "effectId": 1,
+  "status": "sleep"
  },
  "sky_attack": {
   "name": "Sky Attack",
@@ -1331,7 +1535,14 @@
   "accuracy": 100,
   "pp": 30,
   "category": "special",
-  "effectId": 70
+  "effectId": 70,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "dizzy_punch": {
   "name": "Dizzy Punch",
@@ -1341,7 +1552,8 @@
   "pp": 10,
   "category": "physical",
   "effectChance": 20,
-  "effectId": 76
+  "effectId": 76,
+  "status": "confusion"
  },
  "spore": {
   "name": "Spore",
@@ -1350,7 +1562,8 @@
   "accuracy": 100,
   "pp": 15,
   "category": "status",
-  "effectId": 1
+  "effectId": 1,
+  "status": "sleep"
  },
  "flash": {
   "name": "Flash",
@@ -1359,7 +1572,14 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 23
+  "effectId": 23,
+  "statChanges": [
+   {
+    "stat": "acc",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "psywave": {
   "name": "Psywave",
@@ -1386,7 +1606,14 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 51
+  "effectId": 51,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": 2,
+    "target": "self"
+   }
+  ]
  },
  "crabhammer": {
   "name": "Crabhammer",
@@ -1458,7 +1685,14 @@
   "accuracy": 101,
   "pp": 30,
   "category": "status",
-  "effectId": 10
+  "effectId": 10,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "conversion": {
   "name": "Conversion",
@@ -1577,7 +1811,8 @@
   "pp": 25,
   "category": "physical",
   "effectChance": 10,
-  "effectId": 125
+  "effectId": 125,
+  "status": "burn"
  },
  "snore": {
   "name": "Snore",
@@ -1631,7 +1866,14 @@
   "accuracy": 100,
   "pp": 40,
   "category": "status",
-  "effectId": 60
+  "effectId": 60,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "reversal": {
   "name": "Reversal",
@@ -1659,7 +1901,8 @@
   "pp": 25,
   "category": "special",
   "effectChance": 10,
-  "effectId": 5
+  "effectId": 5,
+  "status": "freeze"
  },
  "protect": {
   "name": "Protect",
@@ -1688,7 +1931,14 @@
   "accuracy": 100,
   "pp": 10,
   "category": "status",
-  "effectId": 60
+  "effectId": 60,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "feint_attack": {
   "name": "Feint Attack",
@@ -1706,7 +1956,8 @@
   "accuracy": 75,
   "pp": 10,
   "category": "status",
-  "effectId": 49
+  "effectId": 49,
+  "status": "confusion"
  },
  "belly_drum": {
   "name": "Belly Drum",
@@ -1725,7 +1976,8 @@
   "pp": 10,
   "category": "special",
   "effectChance": 30,
-  "effectId": 2
+  "effectId": 2,
+  "status": "poison"
  },
  "mud_slap": {
   "name": "Mud-Slap",
@@ -1734,7 +1986,14 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 73
+  "effectId": 73,
+  "statChanges": [
+   {
+    "stat": "acc",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "octazooka": {
   "name": "Octazooka",
@@ -1743,7 +2002,14 @@
   "accuracy": 85,
   "pp": 10,
   "category": "special",
-  "effectId": 73
+  "effectId": 73,
+  "statChanges": [
+   {
+    "stat": "acc",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "spikes": {
   "name": "Spikes",
@@ -1762,7 +2028,8 @@
   "pp": 5,
   "category": "special",
   "effectChance": 100,
-  "effectId": 6
+  "effectId": 6,
+  "status": "paralysis"
  },
  "foresight": {
   "name": "Foresight",
@@ -1798,7 +2065,14 @@
   "accuracy": 95,
   "pp": 15,
   "category": "special",
-  "effectId": 70
+  "effectId": 70,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "detect": {
   "name": "Detect",
@@ -1872,7 +2146,14 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 58
+  "effectId": 58,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "rollout": {
   "name": "Rollout",
@@ -1899,7 +2180,15 @@
   "accuracy": 85,
   "pp": 15,
   "category": "status",
-  "effectId": 118
+  "effectId": 118,
+  "status": "confusion",
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 2,
+    "target": "target"
+   }
+  ]
  },
  "milk_drink": {
   "name": "Milk Drink",
@@ -1918,7 +2207,8 @@
   "pp": 20,
   "category": "physical",
   "effectChance": 30,
-  "effectId": 6
+  "effectId": 6,
+  "status": "paralysis"
  },
  "fury_cutter": {
   "name": "Fury Cutter",
@@ -1936,7 +2226,14 @@
   "accuracy": 90,
   "pp": 25,
   "category": "physical",
-  "effectId": 138
+  "effectId": 138,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "mean_look": {
   "name": "Mean Look",
@@ -2027,7 +2324,8 @@
   "pp": 5,
   "category": "physical",
   "effectChance": 50,
-  "effectId": 125
+  "effectId": 125,
+  "status": "burn"
  },
  "magnitude": {
   "name": "Magnitude",
@@ -2046,7 +2344,8 @@
   "pp": 5,
   "category": "physical",
   "effectChance": 100,
-  "effectId": 76
+  "effectId": 76,
+  "status": "confusion"
  },
  "megahorn": {
   "name": "Megahorn",
@@ -2065,7 +2364,8 @@
   "pp": 20,
   "category": "special",
   "effectChance": 30,
-  "effectId": 6
+  "effectId": 6,
+  "status": "paralysis"
  },
  "baton_pass": {
   "name": "Baton Pass",
@@ -2110,7 +2410,14 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 24
+  "effectId": 24,
+  "statChanges": [
+   {
+    "stat": "eva",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "iron_tail": {
   "name": "Iron Tail",
@@ -2119,7 +2426,14 @@
   "accuracy": 75,
   "pp": 15,
   "category": "physical",
-  "effectId": 69
+  "effectId": 69,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "metal_claw": {
   "name": "Metal Claw",
@@ -2128,7 +2442,14 @@
   "accuracy": 95,
   "pp": 35,
   "category": "physical",
-  "effectId": 139
+  "effectId": 139,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "vital_throw": {
   "name": "Vital Throw",
@@ -2219,7 +2540,14 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 69
+  "effectId": 69,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "mirror_coat": {
   "name": "Mirror Coat",
@@ -2257,7 +2585,14 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 140
+  "effectId": 140,
+  "statChanges": [
+   {
+    "stat": 8,
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "shadow_ball": {
   "name": "Shadow Ball",
@@ -2266,7 +2601,14 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 72
+  "effectId": 72,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "future_sight": {
   "name": "Future Sight",
@@ -2284,7 +2626,14 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 69
+  "effectId": 69,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "whirlpool": {
   "name": "Whirlpool",
@@ -2359,7 +2708,8 @@
   "pp": 10,
   "category": "special",
   "effectChance": 10,
-  "effectId": 4
+  "effectId": 4,
+  "status": "burn"
  },
  "hail": {
   "name": "Hail",
@@ -2386,7 +2736,15 @@
   "accuracy": 100,
   "pp": 15,
   "category": "status",
-  "effectId": 166
+  "effectId": 166,
+  "status": "confusion",
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "will_o_wisp": {
   "name": "Will-O-Wisp",
@@ -2395,7 +2753,8 @@
   "accuracy": 85,
   "pp": 15,
   "category": "status",
-  "effectId": 167
+  "effectId": 167,
+  "status": "burn"
  },
  "memento": {
   "name": "Memento",
@@ -2460,7 +2819,14 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 174
+  "effectId": 174,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "taunt": {
   "name": "Taunt",
@@ -2533,7 +2899,19 @@
   "accuracy": 100,
   "pp": 5,
   "category": "physical",
-  "effectId": 182
+  "effectId": 182,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -1,
+    "target": "target"
+   },
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "magic_coat": {
   "name": "Magic Coat",
@@ -2699,7 +3077,14 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 321
+  "effectId": 321,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": 3,
+    "target": "self"
+   }
+  ]
  },
  "luster_purge": {
   "name": "Luster Purge",
@@ -2708,7 +3093,14 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 72
+  "effectId": 72,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "mist_ball": {
   "name": "Mist Ball",
@@ -2717,7 +3109,14 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 71
+  "effectId": 71,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "feather_dance": {
   "name": "Feather Dance",
@@ -2726,7 +3125,14 @@
   "accuracy": 100,
   "pp": 15,
   "category": "status",
-  "effectId": 58
+  "effectId": 58,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "teeter_dance": {
   "name": "Teeter Dance",
@@ -2735,7 +3141,8 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 199
+  "effectId": 199,
+  "status": "confusion"
  },
  "blaze_kick": {
   "name": "Blaze Kick",
@@ -2745,7 +3152,8 @@
   "pp": 10,
   "category": "physical",
   "effectChance": 10,
-  "effectId": 200
+  "effectId": 200,
+  "status": "burn"
  },
  "mud_sport": {
   "name": "Mud Sport",
@@ -2800,7 +3208,8 @@
   "pp": 15,
   "category": "physical",
   "effectChance": 50,
-  "effectId": 202
+  "effectId": 202,
+  "status": "poison"
  },
  "crush_claw": {
   "name": "Crush Claw",
@@ -2809,7 +3218,14 @@
   "accuracy": 95,
   "pp": 10,
   "category": "physical",
-  "effectId": 69
+  "effectId": 69,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "blast_burn": {
   "name": "Blast Burn",
@@ -2836,7 +3252,14 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 139
+  "effectId": 139,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "astonish": {
   "name": "Astonish",
@@ -2872,7 +3295,14 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 62
+  "effectId": 62,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "air_cutter": {
   "name": "Air Cutter",
@@ -2890,7 +3320,14 @@
   "accuracy": 90,
   "pp": 5,
   "category": "special",
-  "effectId": 204
+  "effectId": 204,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "odor_sleuth": {
   "name": "Odor Sleuth",
@@ -2908,7 +3345,14 @@
   "accuracy": 95,
   "pp": 15,
   "category": "physical",
-  "effectId": 70
+  "effectId": 70,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "silver_wind": {
   "name": "Silver Wind",
@@ -2917,7 +3361,14 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 140
+  "effectId": 140,
+  "statChanges": [
+   {
+    "stat": 8,
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "metal_sound": {
   "name": "Metal Sound",
@@ -2926,7 +3377,14 @@
   "accuracy": 85,
   "pp": 40,
   "category": "status",
-  "effectId": 62
+  "effectId": 62,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "grass_whistle": {
   "name": "Grass Whistle",
@@ -2935,7 +3393,8 @@
   "accuracy": 55,
   "pp": 15,
   "category": "status",
-  "effectId": 1
+  "effectId": 1,
+  "status": "sleep"
  },
  "tickle": {
   "name": "Tickle",
@@ -2944,7 +3403,19 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 205
+  "effectId": 205,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -1,
+    "target": "target"
+   },
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "cosmic_power": {
   "name": "Cosmic Power",
@@ -2953,7 +3424,19 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 206
+  "effectId": 206,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": 1,
+    "target": "self"
+   },
+   {
+    "stat": "spd",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "water_spout": {
   "name": "Water Spout",
@@ -2972,7 +3455,8 @@
   "pp": 15,
   "category": "special",
   "effectChance": 10,
-  "effectId": 76
+  "effectId": 76,
+  "status": "confusion"
  },
  "shadow_punch": {
   "name": "Shadow Punch",
@@ -3027,7 +3511,14 @@
   "accuracy": 85,
   "pp": 10,
   "category": "special",
-  "effectId": 73
+  "effectId": 73,
+  "statChanges": [
+   {
+    "stat": "acc",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "bullet_seed": {
   "name": "Bullet Seed",
@@ -3063,7 +3554,14 @@
   "accuracy": 101,
   "pp": 15,
   "category": "status",
-  "effectId": 51
+  "effectId": 51,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": 2,
+    "target": "self"
+   }
+  ]
  },
  "block": {
   "name": "Block",
@@ -3081,7 +3579,14 @@
   "accuracy": 101,
   "pp": 40,
   "category": "status",
-  "effectId": 10
+  "effectId": 10,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "dragon_claw": {
   "name": "Dragon Claw",
@@ -3108,7 +3613,19 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 208
+  "effectId": 208,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "self"
+   },
+   {
+    "stat": "def",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "bounce": {
   "name": "Bounce",
@@ -3118,7 +3635,8 @@
   "pp": 5,
   "category": "physical",
   "effectChance": 30,
-  "effectId": 263
+  "effectId": 263,
+  "status": "paralysis"
  },
  "mud_shot": {
   "name": "Mud Shot",
@@ -3127,7 +3645,14 @@
   "accuracy": 95,
   "pp": 15,
   "category": "special",
-  "effectId": 70
+  "effectId": 70,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "poison_tail": {
   "name": "Poison Tail",
@@ -3137,7 +3662,8 @@
   "pp": 25,
   "category": "physical",
   "effectChance": 10,
-  "effectId": 209
+  "effectId": 209,
+  "status": "poison"
  },
  "covet": {
   "name": "Covet",
@@ -3156,7 +3682,8 @@
   "pp": 15,
   "category": "physical",
   "effectChance": 10,
-  "effectId": 262
+  "effectId": 262,
+  "status": "paralysis"
  },
  "magical_leaf": {
   "name": "Magical Leaf",
@@ -3183,7 +3710,19 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 211
+  "effectId": 211,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": 1,
+    "target": "self"
+   },
+   {
+    "stat": "spd",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "leaf_blade": {
   "name": "Leaf Blade",
@@ -3201,7 +3740,19 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 212
+  "effectId": 212,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "self"
+   },
+   {
+    "stat": "spe",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "rock_blast": {
   "name": "Rock Blast",
@@ -3229,7 +3780,8 @@
   "pp": 20,
   "category": "special",
   "effectChance": 20,
-  "effectId": 76
+  "effectId": 76,
+  "status": "confusion"
  },
  "doom_desire": {
   "name": "Doom Desire",
@@ -3247,7 +3799,14 @@
   "accuracy": 90,
   "pp": 5,
   "category": "special",
-  "effectId": 204
+  "effectId": 204,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "roost": {
   "name": "Roost",
@@ -3292,7 +3851,14 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 218
+  "effectId": 218,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "gyro_ball": {
   "name": "Gyro Ball",
@@ -3392,7 +3958,19 @@
   "accuracy": 100,
   "pp": 5,
   "category": "physical",
-  "effectId": 229
+  "effectId": 229,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   },
+   {
+    "stat": "spd",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "payback": {
   "name": "Payback",
@@ -3610,7 +4188,8 @@
   "pp": 15,
   "category": "physical",
   "effectChance": 10,
-  "effectId": 253
+  "effectId": 253,
+  "status": "burn"
  },
  "force_palm": {
   "name": "Force Palm",
@@ -3620,7 +4199,8 @@
   "pp": 10,
   "category": "physical",
   "effectChance": 30,
-  "effectId": 6
+  "effectId": 6,
+  "status": "paralysis"
  },
  "aura_sphere": {
   "name": "Aura Sphere",
@@ -3638,7 +4218,14 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 52
+  "effectId": 52,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": 2,
+    "target": "self"
+   }
+  ]
  },
  "poison_jab": {
   "name": "Poison Jab",
@@ -3648,7 +4235,8 @@
   "pp": 20,
   "category": "physical",
   "effectChance": 30,
-  "effectId": 2
+  "effectId": 2,
+  "status": "poison"
  },
  "dark_pulse": {
   "name": "Dark Pulse",
@@ -3711,7 +4299,14 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 72
+  "effectId": 72,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "dragon_pulse": {
   "name": "Dragon Pulse",
@@ -3766,7 +4361,14 @@
   "accuracy": 70,
   "pp": 5,
   "category": "special",
-  "effectId": 72
+  "effectId": 72,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "energy_ball": {
   "name": "Energy Ball",
@@ -3775,7 +4377,14 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 72
+  "effectId": 72,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "brave_bird": {
   "name": "Brave Bird",
@@ -3793,7 +4402,14 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 72
+  "effectId": 72,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "switcheroo": {
   "name": "Switcheroo",
@@ -3820,7 +4436,14 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 53
+  "effectId": 53,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": 2,
+    "target": "self"
+   }
+  ]
  },
  "bullet_punch": {
   "name": "Bullet Punch",
@@ -3869,7 +4492,8 @@
   "pp": 15,
   "category": "physical",
   "effectChance": 10,
-  "effectId": 275
+  "effectId": 275,
+  "status": "paralysis"
  },
  "ice_fang": {
   "name": "Ice Fang",
@@ -3879,7 +4503,8 @@
   "pp": 15,
   "category": "physical",
   "effectChance": 10,
-  "effectId": 274
+  "effectId": 274,
+  "status": "freeze"
  },
  "fire_fang": {
   "name": "Fire Fang",
@@ -3889,7 +4514,8 @@
   "pp": 15,
   "category": "physical",
   "effectChance": 10,
-  "effectId": 273
+  "effectId": 273,
+  "status": "burn"
  },
  "shadow_sneak": {
   "name": "Shadow Sneak",
@@ -3908,7 +4534,14 @@
   "accuracy": 85,
   "pp": 10,
   "category": "special",
-  "effectId": 73
+  "effectId": 73,
+  "statChanges": [
+   {
+    "stat": "acc",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "psycho_cut": {
   "name": "Psycho Cut",
@@ -3935,7 +4568,14 @@
   "accuracy": 85,
   "pp": 10,
   "category": "special",
-  "effectId": 73
+  "effectId": 73,
+  "statChanges": [
+   {
+    "stat": "acc",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "flash_cannon": {
   "name": "Flash Cannon",
@@ -3944,7 +4584,14 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 72
+  "effectId": 72,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "rock_climb": {
   "name": "Rock Climb",
@@ -3954,7 +4601,8 @@
   "pp": 20,
   "category": "physical",
   "effectChance": 20,
-  "effectId": 76
+  "effectId": 76,
+  "status": "confusion"
  },
  "defog": {
   "name": "Defog",
@@ -3982,7 +4630,14 @@
   "accuracy": 90,
   "pp": 5,
   "category": "special",
-  "effectId": 204
+  "effectId": 204,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "discharge": {
   "name": "Discharge",
@@ -3992,7 +4647,8 @@
   "pp": 15,
   "category": "special",
   "effectChance": 30,
-  "effectId": 6
+  "effectId": 6,
+  "status": "paralysis"
  },
  "lava_plume": {
   "name": "Lava Plume",
@@ -4002,7 +4658,8 @@
   "pp": 15,
   "category": "special",
   "effectChance": 30,
-  "effectId": 4
+  "effectId": 4,
+  "status": "burn"
  },
  "leaf_storm": {
   "name": "Leaf Storm",
@@ -4011,7 +4668,14 @@
   "accuracy": 90,
   "pp": 5,
   "category": "special",
-  "effectId": 204
+  "effectId": 204,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "power_whip": {
   "name": "Power Whip",
@@ -4039,7 +4703,8 @@
   "pp": 20,
   "category": "physical",
   "effectChance": 10,
-  "effectId": 209
+  "effectId": 209,
+  "status": "poison"
  },
  "gunk_shot": {
   "name": "Gunk Shot",
@@ -4049,7 +4714,8 @@
   "pp": 5,
   "category": "physical",
   "effectChance": 30,
-  "effectId": 2
+  "effectId": 2,
+  "status": "poison"
  },
  "iron_head": {
   "name": "Iron Head",
@@ -4085,7 +4751,14 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 265
+  "effectId": 265,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "stealth_rock": {
   "name": "Stealth Rock",
@@ -4113,7 +4786,8 @@
   "pp": 20,
   "category": "special",
   "effectChance": 100,
-  "effectId": 267
+  "effectId": 267,
+  "status": "confusion"
  },
  "judgment": {
   "name": "Judgment",
@@ -4140,7 +4814,14 @@
   "accuracy": 90,
   "pp": 10,
   "category": "special",
-  "effectId": 276
+  "effectId": 276,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "wood_hammer": {
   "name": "Wood Hammer",
@@ -4177,7 +4858,19 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 206
+  "effectId": 206,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": 1,
+    "target": "self"
+   },
+   {
+    "stat": "spd",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "heal_order": {
   "name": "Heal Order",
@@ -4259,7 +4952,8 @@
   "accuracy": 50,
   "pp": 10,
   "category": "status",
-  "effectId": 1
+  "effectId": 1,
+  "status": "sleep"
  },
  "seed_flare": {
   "name": "Seed Flare",
@@ -4268,7 +4962,14 @@
   "accuracy": 85,
   "pp": 5,
   "category": "special",
-  "effectId": 271
+  "effectId": 271,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "ominous_wind": {
   "name": "Ominous Wind",
@@ -4278,7 +4979,14 @@
   "pp": 5,
   "category": "special",
   "effectChance": 10,
-  "effectId": 140
+  "effectId": 140,
+  "statChanges": [
+   {
+    "stat": 8,
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "shadow_force": {
   "name": "Shadow Force",
@@ -4296,7 +5004,19 @@
   "accuracy": 101,
   "pp": 15,
   "category": "status",
-  "effectId": 277
+  "effectId": 277,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "self"
+   },
+   {
+    "stat": "acc",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "wide_guard": {
   "name": "Wide Guard",
@@ -4360,7 +5080,14 @@
   "accuracy": 101,
   "pp": 15,
   "category": "status",
-  "effectId": 284
+  "effectId": 284,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": 2,
+    "target": "self"
+   }
+  ]
  },
  "rage_powder": {
   "name": "Rage Powder",
@@ -4426,7 +5153,8 @@
   "pp": 10,
   "category": "special",
   "effectChance": 10,
-  "effectId": 2
+  "effectId": 2,
+  "status": "poison"
  },
  "quiver_dance": {
   "name": "Quiver Dance",
@@ -4435,7 +5163,24 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 290
+  "effectId": 290,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": 1,
+    "target": "self"
+   },
+   {
+    "stat": "spd",
+    "stages": 1,
+    "target": "self"
+   },
+   {
+    "stat": "spe",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "heavy_slam": {
   "name": "Heavy Slam",
@@ -4480,7 +5225,14 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 295
+  "effectId": 295,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "coil": {
   "name": "Coil",
@@ -4489,7 +5241,24 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 322
+  "effectId": 322,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "self"
+   },
+   {
+    "stat": "def",
+    "stages": 1,
+    "target": "self"
+   },
+   {
+    "stat": "acc",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "low_sweep": {
   "name": "Low Sweep",
@@ -4498,7 +5267,14 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 20
+  "effectId": 20,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "acid_spray": {
   "name": "Acid Spray",
@@ -4507,7 +5283,14 @@
   "accuracy": 100,
   "pp": 20,
   "category": "special",
-  "effectId": 296
+  "effectId": 296,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "foul_play": {
   "name": "Foul Play",
@@ -4618,7 +5401,8 @@
   "pp": 15,
   "category": "special",
   "effectChance": 30,
-  "effectId": 4
+  "effectId": 4,
+  "status": "burn"
  },
  "shell_smash": {
   "name": "Shell Smash",
@@ -4663,7 +5447,19 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 312
+  "effectId": 312,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": 2,
+    "target": "self"
+   },
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "circle_throw": {
   "name": "Circle Throw",
@@ -4746,7 +5542,8 @@
   "pp": 5,
   "category": "special",
   "effectChance": 100,
-  "effectId": 4
+  "effectId": 4,
+  "status": "burn"
  },
  "water_pledge": {
   "name": "Water Pledge",
@@ -4791,7 +5588,14 @@
   "accuracy": 100,
   "pp": 20,
   "category": "special",
-  "effectId": 71
+  "effectId": 71,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "bulldoze": {
   "name": "Bulldoze",
@@ -4800,7 +5604,14 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 70
+  "effectId": 70,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "frost_breath": {
   "name": "Frost Breath",
@@ -4829,7 +5640,19 @@
   "accuracy": 101,
   "pp": 30,
   "category": "status",
-  "effectId": 327
+  "effectId": 327,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "self"
+   },
+   {
+    "stat": "spa",
+    "stages": 1,
+    "target": "self"
+   }
+  ]
  },
  "electroweb": {
   "name": "Electroweb",
@@ -4838,7 +5661,14 @@
   "accuracy": 95,
   "pp": 15,
   "category": "special",
-  "effectId": 20
+  "effectId": 20,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "wild_charge": {
   "name": "Wild Charge",
@@ -4901,7 +5731,14 @@
   "accuracy": 95,
   "pp": 10,
   "category": "physical",
-  "effectId": 69
+  "effectId": 69,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "heat_crash": {
   "name": "Heat Crash",
@@ -4919,7 +5756,14 @@
   "accuracy": 90,
   "pp": 10,
   "category": "special",
-  "effectId": 73
+  "effectId": 73,
+  "statChanges": [
+   {
+    "stat": "acc",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "steamroller": {
   "name": "Steamroller",
@@ -4937,7 +5781,14 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 328
+  "effectId": 328,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": 3,
+    "target": "self"
+   }
+  ]
  },
  "night_daze": {
   "name": "Night Daze",
@@ -4946,7 +5797,14 @@
   "accuracy": 95,
   "pp": 10,
   "category": "special",
-  "effectId": 73
+  "effectId": 73,
+  "statChanges": [
+   {
+    "stat": "acc",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "psystrike": {
   "name": "Psystrike",
@@ -4974,7 +5832,8 @@
   "pp": 10,
   "category": "special",
   "effectChance": 30,
-  "effectId": 333
+  "effectId": 333,
+  "status": "confusion"
  },
  "head_charge": {
   "name": "Head Charge",
@@ -5002,7 +5861,8 @@
   "pp": 5,
   "category": "special",
   "effectChance": 30,
-  "effectId": 4
+  "effectId": 4,
+  "status": "burn"
  },
  "techno_blast": {
   "name": "Techno Blast",
@@ -5021,7 +5881,8 @@
   "pp": 10,
   "category": "special",
   "effectChance": 10,
-  "effectId": 329
+  "effectId": 329,
+  "status": "sleep"
  },
  "secret_sword": {
   "name": "Secret Sword",
@@ -5039,7 +5900,14 @@
   "accuracy": 95,
   "pp": 10,
   "category": "special",
-  "effectId": 330
+  "effectId": 330,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "bolt_strike": {
   "name": "Bolt Strike",
@@ -5049,7 +5917,8 @@
   "pp": 5,
   "category": "physical",
   "effectChance": 20,
-  "effectId": 6
+  "effectId": 6,
+  "status": "paralysis"
  },
  "blue_flare": {
   "name": "Blue Flare",
@@ -5059,7 +5928,8 @@
   "pp": 5,
   "category": "special",
   "effectChance": 20,
-  "effectId": 4
+  "effectId": 4,
+  "status": "burn"
  },
  "fiery_dance": {
   "name": "Fiery Dance",
@@ -5068,7 +5938,14 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 276
+  "effectId": 276,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "freeze_shock": {
   "name": "Freeze Shock",
@@ -5078,7 +5955,8 @@
   "pp": 5,
   "category": "physical",
   "effectChance": 30,
-  "effectId": 331
+  "effectId": 331,
+  "status": "paralysis"
  },
  "ice_burn": {
   "name": "Ice Burn",
@@ -5088,7 +5966,8 @@
   "pp": 5,
   "category": "special",
   "effectChance": 30,
-  "effectId": 332
+  "effectId": 332,
+  "status": "burn"
  },
  "snarl": {
   "name": "Snarl",
@@ -5097,7 +5976,14 @@
   "accuracy": 95,
   "pp": 15,
   "category": "special",
-  "effectId": 71
+  "effectId": 71,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "icicle_crash": {
   "name": "Icicle Crash",
@@ -5115,7 +6001,24 @@
   "accuracy": 95,
   "pp": 5,
   "category": "physical",
-  "effectId": 334
+  "effectId": 334,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   },
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   },
+   {
+    "stat": "spd",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "fusion_flare": {
   "name": "Fusion Flare",
@@ -5169,7 +6072,19 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 339
+  "effectId": 339,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "target"
+   },
+   {
+    "stat": "spa",
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "sticky_web": {
   "name": "Sticky Web",
@@ -5214,7 +6129,19 @@
   "accuracy": 100,
   "pp": 30,
   "category": "status",
-  "effectId": 343
+  "effectId": 343,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -1,
+    "target": "target"
+   },
+   {
+    "stat": "spa",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "ion_deluge": {
   "name": "Ion Deluge",
@@ -5261,7 +6188,8 @@
   "pp": 20,
   "category": "special",
   "effectChance": 10,
-  "effectId": 379
+  "effectId": 379,
+  "status": "freeze"
  },
  "disarming_voice": {
   "name": "Disarming Voice",
@@ -5279,7 +6207,19 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 346
+  "effectId": 346,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -1,
+    "target": "target"
+   },
+   {
+    "stat": "spa",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "topsy_turvy": {
   "name": "Topsy-Turvy",
@@ -5316,7 +6256,14 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 350
+  "effectId": 350,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "grassy_terrain": {
   "name": "Grassy Terrain",
@@ -5352,7 +6299,14 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 68
+  "effectId": 68,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "fairy_wind": {
   "name": "Fairy Wind",
@@ -5370,7 +6324,14 @@
   "accuracy": 100,
   "pp": 15,
   "category": "special",
-  "effectId": 71
+  "effectId": 71,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "boomburst": {
   "name": "Boomburst",
@@ -5407,7 +6368,14 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 356
+  "effectId": 356,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "confide": {
   "name": "Confide",
@@ -5416,7 +6384,14 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 357
+  "effectId": 357,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "diamond_storm": {
   "name": "Diamond Storm",
@@ -5425,7 +6400,14 @@
   "accuracy": 95,
   "pp": 5,
   "category": "physical",
-  "effectId": 358
+  "effectId": 358,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": 2,
+    "target": "target"
+   }
+  ]
  },
  "steam_eruption": {
   "name": "Steam Eruption",
@@ -5435,7 +6417,8 @@
   "pp": 5,
   "category": "special",
   "effectChance": 30,
-  "effectId": 4
+  "effectId": 4,
+  "status": "burn"
  },
  "hyperspace_hole": {
   "name": "Hyperspace Hole",
@@ -5463,7 +6446,14 @@
   "accuracy": 100,
   "pp": 10,
   "category": "special",
-  "effectId": 71
+  "effectId": 71,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "spiky_shield": {
   "name": "Spiky Shield",
@@ -5482,7 +6472,14 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 362
+  "effectId": 362,
+  "statChanges": [
+   {
+    "stat": "spd",
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "eerie_impulse": {
   "name": "Eerie Impulse",
@@ -5491,7 +6488,14 @@
   "accuracy": 100,
   "pp": 15,
   "category": "status",
-  "effectId": 61
+  "effectId": 61,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "venom_drench": {
   "name": "Venom Drench",
@@ -5500,7 +6504,24 @@
   "accuracy": 100,
   "pp": 20,
   "category": "status",
-  "effectId": 363
+  "effectId": 363,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -1,
+    "target": "target"
+   },
+   {
+    "stat": "spa",
+    "stages": -1,
+    "target": "target"
+   },
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "powder": {
   "name": "Powder",
@@ -5519,7 +6540,24 @@
   "accuracy": 101,
   "pp": 10,
   "category": "status",
-  "effectId": 365
+  "effectId": 365,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": 2,
+    "target": "self"
+   },
+   {
+    "stat": "spd",
+    "stages": 2,
+    "target": "self"
+   },
+   {
+    "stat": "spe",
+    "stages": 2,
+    "target": "self"
+   }
+  ]
  },
  "magnetic_flux": {
   "name": "Magnetic Flux",
@@ -5528,7 +6566,19 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 366
+  "effectId": 366,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": 1,
+    "target": "target"
+   },
+   {
+    "stat": "spd",
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "happy_hour": {
   "name": "Happy Hour",
@@ -5583,7 +6633,14 @@
   "pp": 30,
   "category": "status",
   "priority": 1,
-  "effectId": 364
+  "effectId": 364,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "nuzzle": {
   "name": "Nuzzle",
@@ -5593,7 +6650,8 @@
   "pp": 20,
   "category": "physical",
   "effectChance": 100,
-  "effectId": 371
+  "effectId": 371,
+  "status": "paralysis"
  },
  "hold_back": {
   "name": "Hold Back",
@@ -5621,7 +6679,14 @@
   "accuracy": 100,
   "pp": 20,
   "category": "physical",
-  "effectId": 374
+  "effectId": 374,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "oblivion_wing": {
   "name": "Oblivion Wing",
@@ -5694,7 +6759,19 @@
   "accuracy": 100,
   "pp": 5,
   "category": "physical",
-  "effectId": 229
+  "effectId": 229,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   },
+   {
+    "stat": "spd",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "hyperspace_fury": {
   "name": "Hyperspace Fury",
@@ -5703,7 +6780,14 @@
   "accuracy": 101,
   "pp": 5,
   "category": "physical",
-  "effectId": 359
+  "effectId": 359,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "breakneck_blitz": {
   "name": "Breakneck Blitz",
@@ -5939,7 +7023,14 @@
   "accuracy": 90,
   "pp": 10,
   "category": "physical",
-  "effectId": 218
+  "effectId": 218,
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "floral_healing": {
   "name": "Floral Healing",
@@ -5966,7 +7057,14 @@
   "accuracy": 100,
   "pp": 10,
   "category": "status",
-  "effectId": 387
+  "effectId": 387,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "solar_blade": {
   "name": "Solar Blade",
@@ -6004,7 +7102,15 @@
   "pp": 20,
   "category": "status",
   "effectChance": 100,
-  "effectId": 389
+  "effectId": 389,
+  "status": "poison",
+  "statChanges": [
+   {
+    "stat": "spe",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "laser_focus": {
   "name": "Laser Focus",
@@ -6022,7 +7128,19 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 391
+  "effectId": 391,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": 1,
+    "target": "target"
+   },
+   {
+    "stat": "spa",
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  },
  "throat_chop": {
   "name": "Throat Chop",
@@ -6068,7 +7186,14 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 395
+  "effectId": 395,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "fire_lash": {
   "name": "Fire Lash",
@@ -6077,7 +7202,14 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 396
+  "effectId": 396,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "power_trip": {
   "name": "Power Trip",
@@ -6149,7 +7281,14 @@
   "accuracy": 100,
   "pp": 15,
   "category": "physical",
-  "effectId": 395
+  "effectId": 395,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "instruct": {
   "name": "Instruct",
@@ -6177,7 +7316,14 @@
   "accuracy": 100,
   "pp": 5,
   "category": "special",
-  "effectId": 404
+  "effectId": 404,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "dragon_hammer": {
   "name": "Dragon Hammer",
@@ -6259,7 +7405,8 @@
   "pp": 1,
   "category": "special",
   "effectChance": 100,
-  "effectId": 6
+  "effectId": 6,
+  "status": "paralysis"
  },
  "pulverizing_pancake": {
   "name": "Pulverizing Pancake",
@@ -6277,7 +7424,14 @@
   "accuracy": 101,
   "pp": 1,
   "category": "status",
-  "effectId": 413
+  "effectId": 413,
+  "statChanges": [
+   {
+    "stat": 8,
+    "stages": 2,
+    "target": "self"
+   }
+  ]
  },
  "genesis_supernova": {
   "name": "Genesis Supernova",
@@ -6305,7 +7459,14 @@
   "accuracy": 90,
   "pp": 5,
   "category": "special",
-  "effectId": 204
+  "effectId": 204,
+  "statChanges": [
+   {
+    "stat": "spa",
+    "stages": -2,
+    "target": "target"
+   }
+  ]
  },
  "psychic_fangs": {
   "name": "Psychic Fangs",
@@ -6332,7 +7493,14 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 69
+  "effectId": 69,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "accelerock": {
   "name": "Accelerock",
@@ -6351,7 +7519,14 @@
   "accuracy": 100,
   "pp": 10,
   "category": "physical",
-  "effectId": 69
+  "effectId": 69,
+  "statChanges": [
+   {
+    "stat": "def",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "prismatic_laser": {
   "name": "Prismatic Laser",
@@ -6396,7 +7571,19 @@
   "accuracy": 101,
   "pp": 20,
   "category": "status",
-  "effectId": 411
+  "effectId": 411,
+  "statChanges": [
+   {
+    "stat": "atk",
+    "stages": -1,
+    "target": "target"
+   },
+   {
+    "stat": "spa",
+    "stages": -1,
+    "target": "target"
+   }
+  ]
  },
  "zing_zap": {
   "name": "Zing Zap",
@@ -6513,6 +7700,13 @@
   "accuracy": 101,
   "pp": 1,
   "category": "special",
-  "effectId": 418
+  "effectId": 418,
+  "statChanges": [
+   {
+    "stat": 8,
+    "stages": 1,
+    "target": "target"
+   }
+  ]
  }
 }

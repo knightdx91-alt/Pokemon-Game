@@ -67,11 +67,19 @@ namespace battle {
 // with per-field shift/mask. So the full move-effect schema = 37 bitfields ×
 // 728 moves, addressable by field index.
 //
-// REMAINING (bounded next step): transcribe sub_3af788's 37-case bitfield table
-// (field idx → byte/bit offset + width) → then extract status + rank-effects +
-// weather for every move into data/pokemon/ (like effectId already is). The
-// jump-table decode needs care (cases share code blocks; verify the table base
-// and per-case masks before trusting them — a first quick pass mis-resolved).
+// EXTRACTED (verified) — rather than decode sub_3af788's parsed-structure
+// navigation, the same data was read directly from the raw 40-byte move record
+// (which IS the source blob) by correlating known moves:
+//   byte 8  = inflicted STATUS: 1=paralysis 2=sleep 3=freeze 4=burn 5=poison
+//             6=confusion (Thunder Wave→1, Ice Beam→3, Ember→4, Toxic→5, …)
+//   byte 10 = status/effect chance (already `effectChance`)
+//   byte 20 = stat-change target (7 = self, else the opponent)
+//   bytes 21+i = stat id (1=atk 2=def 3=spa 4=spd 5=spe 6=acc 7=eva), up to 3
+//   bytes 24+i = signed stage delta   (Swords Dance +2 atk; Growl −1 atk;
+//             Growth +1 atk/+1 spa; Calm Mind +1 spa/+1 spd; Charm −2 atk)
+// Now in data/pokemon/usum_moves.json (`status`, `statChanges`); verified by
+// decomp/verify/verify_moveeffects.py (83 moves w/ status, 138 w/ stat changes).
+// STILL TODO: weather/flag fields + the battle-sequence handler bodies.
 //
 // ── Status of the ~150 handlers ──────────────────────────────────────────────
 // Manifest (id → handler fn) is committed at

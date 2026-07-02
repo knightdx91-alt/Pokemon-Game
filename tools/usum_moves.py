@@ -28,6 +28,11 @@ TYPES = ['Normal', 'Fighting', 'Flying', 'Poison', 'Ground', 'Rock', 'Bug',
          'Ghost', 'Steel', 'Fire', 'Water', 'Grass', 'Electric', 'Psychic',
          'Ice', 'Dragon', 'Dark', 'Fairy']
 CATEGORY = {0: 'status', 1: 'physical', 2: 'special'}
+# Inflicted-status enum (move struct byte 8), verified by move grouping.
+STATUS = {1: 'paralysis', 2: 'sleep', 3: 'freeze', 4: 'burn',
+          5: 'poison', 6: 'confusion'}
+# Stat-stage target enum (move struct byte 21+i), verified.
+STAT = {1: 'atk', 2: 'def', 3: 'spa', 4: 'spd', 5: 'spe', 6: 'acc', 7: 'eva'}
 
 
 def slug(name):
@@ -74,6 +79,22 @@ def parse():
         # decomp/battle_effects/move_effect_ids.json for the id->moves index.
         if len(e) >= 18:
             rec['effectId'] = struct.unpack_from('<H', e, 16)[0]
+        # Inflicted status (byte 8) + stat-stage changes (verified by move
+        # grouping — see decomp/src/pml/battle/MoveEffects.cpp). Status chance
+        # is `effectChance` (byte 10) above.
+        if len(e) > 8 and e[8] in STATUS:
+            rec['status'] = STATUS[e[8]]
+        if len(e) >= 27:
+            target = 'self' if e[20] == 7 else 'target'
+            changes = []
+            for i in range(3):
+                stat = e[21 + i]
+                delta = struct.unpack_from('<b', e, 24 + i)[0]
+                if stat and delta:
+                    changes.append({'stat': STAT.get(stat, stat),
+                                    'stages': delta, 'target': target})
+            if changes:
+                rec['statChanges'] = changes
         moves[slug(name)] = rec
     return moves
 

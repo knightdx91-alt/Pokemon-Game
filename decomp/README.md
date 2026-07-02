@@ -90,6 +90,14 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
      at `decomp/battle_effects/move_effect_ids.json`. NOTE: this 0..419 enum is
      NOT a direct index into the ~150 rodata handler table — an intermediate
      effect-enum→sequence-handler mapping is the remaining Phase-1 link.
+     **Move-effect DATA extracted & verified:** inflicted status (byte 8:
+     1=par 2=slp 3=frz 4=brn 5=psn 6=confuse) and stat-stage changes (target
+     @byte20, stat @21+i, signed stage @24+i, up to 3) now in
+     `usum_moves.json` (`status`, `statChanges`) — 83 status / 138 stat-change
+     moves, verified (`verify/verify_moveeffects.py`: Swords Dance +2 atk,
+     Growl −1 atk, Growth +1 atk/spa, Calm Mind, Charm −2, Toxic/Ember/Ice
+     Beam statuses). Read straight from the raw move record (the accessor's
+     source blob), sidestepping sub_3af788's parsed-structure navigation.
    - **catch-rate server** (`src/pml/battle/CatchRate.cpp`) — `sub_2d568`:
      `a = (3M−2H)·rateMod·ball·status/(3M)`, auto-catch at a≥255 (0xff000 Q12),
      else the 4-shake check (`^0.1875` shake, the `0.1875f` @0x2da0c that
