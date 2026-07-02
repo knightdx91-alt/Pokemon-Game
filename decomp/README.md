@@ -111,6 +111,19 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
      0x2800=2.5×, para/brn/psn 0x1800=1.5×); base identity verified
      (`verify/verify_catchrate.py`). **This was the last open battle-server
      piece — damage, type, AI, and catch are now all decompiled.**
+   - **CoreParam crypto** (`src/pml/pokepara/CoreParamCrypto.cpp`) — the
+     encrypted ~232-byte Pokémon record. `sub_22258c` decrypt / `sub_222514`
+     encrypt via `sub_220498` (LCRNG XOR keystream `seed=seed·0x41C64E6D+0x6073;
+     word^=seed>>16`, multiplier literal read from .code@0x2204dc) + `sub_220438`
+     (16-bit halfword-sum checksum). Blob layout mapped: PID@0 (seed), sanity@4
+     (bit2 raised on checksum mismatch), checksum@6 (over the 224-byte block
+     region @8), 4×56-byte blocks; a parallel 28-byte party buffer is crypted
+     with the same seed. `StartFastMode`/`EndFastMode` = the decrypt-once /
+     re-encrypt latch (flag@+0xd). NOTE: USUM keeps blocks in PID-shuffled order
+     in RAM (decrypt/serialize never un-shuffle) — the block permutation lives
+     in the accessor/offset layer, not here. Verified (`verify/verify_coreparam.py`:
+     constants, keystream vector, round-trip, checksum + sanity-flag). This
+     unlocks save/box/trade record reads.
    - `pml::pokepara::CoreParam::GetPower` / `GetMaxHp` + the CalcStat/CalcHp/
      ApplyNature cores (`src/pml/pokepara/StatCalc.cpp`) — the full stat
      formula `(2·base+IV+EV/4)·L/100 (+5 | +L+10)` × nature, incl. the
@@ -323,10 +336,12 @@ move-effect DATA layer is extracted. "Full decomp" = game-logic core + data,
 verified; the UI/network/rendering long tail is out of scope. Remaining core,
 in priority order:
 
-1. **`pml::pokepara::CoreParam`** (HARD, highest value) — the encrypted
-   ~232-byte Pokémon blob. Block-shuffle + LCRNG decrypt/encrypt (PKHeX-
-   documented, verifiable) + the accessor set (have GetHp @0x3af3fc / GetMaxHp
-   @0x3af5bc / GetPower). Unlocks save/box/trade + clean battle-struct reads.
+1. **`pml::pokepara::CoreParam` field layout** (was HARD; crypto now DONE) —
+   the LCRNG decrypt/encrypt + checksum are decompiled & verified
+   (`CoreParamCrypto.cpp`). Remaining: the **PID→block-shuffle permutation** (USUM
+   keeps blocks shuffled in RAM) and per-field offsets within the 4×56-byte
+   blocks, plus the accessor set (have GetHp @0x3af3fc / GetMaxHp @0x3af5bc /
+   GetPower). Map via `cro_dataflow.py`; this finishes save/box/trade reads.
 2. **Struct/class reconstruction** (steady; the readability multiplier) — name
    the battle-pokemon struct fields (HP @0xe/0xd, step @0xa94, ballId @0x220,
    move-calc block power@0x10/type@6/dmgType@7) and CoreParam, so `decomp/src`
