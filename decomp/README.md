@@ -373,6 +373,15 @@ in priority order:
    assigns each block its region), not a brute-force scan. A 16-bit CRC also
    yields ~7 false offsets per block in a single save, so dual-save agreement is
    the only reliable locator.
+   **CoreParam pipeline PROVEN end-to-end on the real save** (`tools/usum_savedump.py`):
+   scanning the save for 232-byte records that decrypt (LCRNG) to a matching
+   16-bit checksum finds every stored Pokémon — 6 party + 880 box mons read out
+   with correct species/TID/nature/moves/IVs via the block-shuffle + field map.
+   Located: **party @0x1600** (6× 260-byte PokemonParam), **box storage @0x5200**
+   (960 slots × 0xE8, 32 boxes × 30). This validates CoreParamCrypto.cpp +
+   CoreParamLayout.cpp against real data — the encrypted Pokémon record is fully
+   readable. (The party/box block *file offsets* are thus recovered directly;
+   the remaining 30-odd minor blocks' offsets still want the ROM registrar.)
 4. **Battle-sequence handler BODIES** (deep btl grind, behavioral) — the ~150
    step-state handlers in `battle_effects/effect_handler_table.json`; decode
    per-id. Lower value: the DATA they consume is already extracted. NOTE: the
