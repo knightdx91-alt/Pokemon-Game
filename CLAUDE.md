@@ -785,63 +785,53 @@ All numerically verified against known game values:
   (807 species: stats/types/catch/baseExp/EV/gender/eggs/growth/ability-ids,
   verified). `--verify` self-checks.
 
-### NEXT SESSION — priority work items
-1. **Gen-7 message text — DONE ✅.** `tools/usum_text.py` decodes any text
-   file (per-line XOR, PKHeX algo). `--names` → `data/pokemon/usum_names.json`
-   (species/moves/abilities/items, English = lang dir 2). `usum_base_stats.json`
-   is enriched with `name`+`abilityNames`. **Move data + learnsets DONE ✅**:
-   `tools/usum_moves.py`→`data/pokemon/usum_moves.json` (710 moves) and
-   `tools/usum_learnsets.py`→`data/pokemon/usum_learnsets.json` (807 species),
-   both verified. NEXT: wire the Gen-7 species/moves/learnsets INTO the JS game
-   (`src/engine/battle.js` + party/summary read `data/pokemon/*.json`) so Gen-7
-   Pokémon/Alolan forms are usable — the practical payoff. **The Gen-7 DATA
-   LAYER is essentially COMPLETE & verified** (all in `data/pokemon/usum_*.json`,
-   converters `tools/usum_*.py`): base stats/types/abilities (807), names
-   (species/move/ability/item), moves (710), learnsets (807), evolutions (807,
-   Alolan-aware), egg moves (322), TM list+compat (100 TMs × 807), items (959).
-   ONE data piece left = **wild encounters**: embedded in the `a/0/8/*` zone
-   data (magic-headed, complex), and NOT verifiable without a zone→route-name
-   map — it's a zone-data RE sub-project (like the Unova maps), not a clean
-   GARC struct parse. Defer unless specifically wanted.
-   The two remaining FRONTIERS are both CODE-side: (a) the battle server vtable
-   dispatch (unlocks damage/AI/catch — see item 2 below), and (b) struct/class
-   reconstruction (memory layouts behind the recovered method names).
-2. **Battle damage server — ✅ SOLVED & VERIFIED** (was "the one big open RE
-   problem"). Found via a new data-flow tool (`tools/cro_dataflow.py`): the
-   move-calc block that `sub_86e48` builds (power u16 @0x10, type @6, dmgType
-   @7) is consumed by **`sub_18504`** (the damage orchestrator), which calls
-   **`sub_81f2c`** = base-damage `((2·L/5+2)·P·A/D)/50+2` and **`sub_84d40`**
-   = Q12 `ApplyModifier` `(v·mod+0x800)>>12`, plus **`0xb0414`** (type→Q12
-   multiplier wrapping the TypeAffinity cluster), inline STAB ×1.5 and the
-   85–100 random roll. Decompiled to `decomp/src/pml/battle/DamageCalc.cpp`;
-   numerically verified vs the textbook formula (`decomp/verify/
-   verify_damagecalc.py`, PASS). Along the way corrected the old "type-
-   affinity has ZERO callers / server in static" claim (a scan artifact —
-   static `.code` is **VA == file offset**, NOT 0x100000+off; the type funcs
-   are called by ordinary `bl` from Battle.cro via veneers). AI scorer
-   `sub_9348` now decompiled (`decomp/src/pml/battle/BattleAI.cpp`, structural
-   — damage estimator + move-preference sort). **Fixed a real bug in the
-   committed `MulAffinity`**: map-back returned `bit_index`, but the ROM
-   returns `bit_index+1` (`add r0,r1,#1` @0x21c1a4), which had collapsed
-   neutral×neutral to ½ and every 2×/4× down a step — now correct,
-   dual/triple-type effectiveness verified 0×/¼×/½×/1×/2×/4×
-   (`decomp/verify/verify_typeaffinity.py`).
-   **Catch-rate server — ✅ SOLVED & VERIFIED** (`decomp/src/pml/battle/
-   CatchRate.cpp`): `sub_2d568`, found via the `0.1875f` (3/16 shake exponent)
-   constant @0x2da0c — the anchor that finally cut through the presentation
-   layer (the earlier `0xFF0000`/field-0x220/vtable-0xd4/GetPersonalParam
-   anchors ALL led to catch/throw animation code — recorded so nobody repeats
-   them). Formula: `a = (3·maxHP − 2·curHP)·rateMod·ball·status / (3·maxHP)`,
-   auto-catch at a≥255 (`0xff000` Q12), else the 4-shake check. Reads HP from
-   the battle-pokemon struct (field 0xe=maxHP, 0xd=curHP via sub_924a8), all
-   Q12 through the shared `ApplyModifier`. Status/ball constants match Gen-7
-   exactly (sleep/freeze 0x2800=2.5×, para/brn/psn 0x1800=1.5×); base identity
-   verified (`decomp/verify/verify_catchrate.py`). **The entire battle server
-   — damage, type effectiveness, AI, and catch — is now decompiled & verified.**
-3. **More verified functions** are getting scarce — the clean self-contained
-   `pml` formulas are largely mined out (remaining ones delegate to field
-   accessors or use load-time-relocated pointers, e.g. the berry-taste table
-   pointer isn't in the static `.code` image). Prefer #1/#2 over hunting these.
+### FULL-DECOMP ROADMAP & NEXT SESSION (start here)
+"Full USUM decomp" = the game-logic core + all game data, VERIFIED (not a
+byte-matching recompile). The UI/network/rendering long tail (Box, Shop,
+JoinFesta, gfl2 graphics — most of the 133 CRO modules / 39k functions) is
+OUT of scope unless a specific screen is wanted.
+
+**✅ DONE & VERIFIED this session and before:**
+- **Data layer — COMPLETE.** `data/pokemon/usum_*.json` (+ converters
+  `tools/usum_*.py`): base stats/types/abilities (807), names, learnsets (807),
+  evolutions (807), egg moves (322), TMs (100×807), items (959), and **moves
+  fully — power/type/acc/pp/category/priority + effectId + status +
+  statChanges + flags + weather** (`usum_moves.py`; verified by
+  `decomp/verify/verify_moveeffects.py`).
+- **Battle server — COMPLETE.** damage (`DamageCalc.cpp`), type effectiveness
+  (`TypeAffinity.cpp`, incl. the MulAffinity bit_index+1 fix), AI move ranker
+  (`BattleAI.cpp`), catch rate (`CatchRate.cpp`) — all in
+  `decomp/src/pml/battle/`, each with a `decomp/verify/verify_*.py` (all PASS).
+- **Core pml math** — stat calc, exp/level, shiny, hidden power, RNG.
+- **Move-effect dispatch spine** — `MoveEffects.cpp` + manifest
+  `decomp/battle_effects/effect_handler_table.json` (153 sequence handlers at
+  rodata+0x45a0; step-state machines @work+0xa94).
+
+**NEXT SESSION — priority order (the remaining core):**
+1. **Phase 2 — `pml::pokepara::CoreParam`** (HARD, highest value). The
+   encrypted ~232-byte Pokémon blob every system reads/writes. Do the
+   block-shuffle + LCRNG decrypt/encrypt (PKHeX-documented → verifiable) and
+   the accessor set (we have GetHp/GetMaxHp/GetPower @0x3af3fc/0x3af5bc/…).
+   Unlocks save, box, trade, and clean battle-struct reads.
+2. **Phase 3 — struct/class reconstruction** (steady, the readability
+   multiplier). Name the fields of the battle-pokemon struct (HP @0xe/0xd,
+   step @0xa94, ball id @0x220, move-calc block power@0x10/type@6/dmgType@7 …)
+   and CoreParam, so the committed `decomp/src` reads like real source. Use
+   `tools/cro_dataflow.py` per offset.
+3. **Phase 4 — Save data** (`Savedata::`, tractable/verifiable). Save-block
+   layout + checksum/encryption; verify against a real save file.
+4. **Phase 1 remainder — battle-sequence handler BODIES** (deep btl grind,
+   behavioral not data). The ~150 step-state handlers in the manifest; decode
+   per-id with `cro_disasm`/`cro_dataflow`. The move-effect *data* they'd
+   consume is already extracted, so this is lower-value than 1–3.
+5. **Wild encounters** (data, but a zone-RE subproject) — embedded in `a/0/8/*`
+   zone data; needs a zone→route-name map. Defer unless wanted.
+
+Tooling gotchas to remember: static `.code` is **VA == file offset** (NOT
+0x100000+off). In a `.cro`, text(seg0) and rodata(seg1) SHARE offset numbers —
+rodata pointer tables are zero on disk, filled at load (recovered by
+`cro_vtables.py`). Deep dispatch that name/constant searches miss → use
+`cro_dataflow.py` (the tool that cracked damage & catch).
 
 ### Rules for the decomp work
 - **Never commit ROM bytes.** `source/3ds/ultramoon/` is gitignored. Only

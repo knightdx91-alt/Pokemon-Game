@@ -317,27 +317,34 @@ Battle.cro damage pipeline traced via the graph:
     the decomp's headline open problem — the full damage pipeline
     (base → STAB → type → random → Q12 modifiers) is now readable C++.
 
-### Known next targets / open issues
-- **Damage formula** (`btl`, internal/unnamed in Battle.cro): `sub_9348`
-  (the move base-power/type/IsDamage setup) is decoded; the type-effectiveness
-  step calls `TypeAffinity::CalcAffinity`/`MulAffinity` **indirectly** through
-  a function-pointer table (no direct `bl` to the veneer), so pinning the
-  exact damage function needs indirect-call/data-flow analysis — tracing where
-  the thunk address (0x16d8/0x16d0) is loaded into a register. That's the next
-  RE step; export→address mapping for everything decompiled so far is solid.
-  Update: `CalcAffinity`/`MulAffinity` are *exported by static.crs* (defined
-  at 0x21c1e8/0x21c0e0), and neither an ARM nor Thumb direct-`bl` scan (in
-  Battle.cro or static's pml-battle window) finds a caller — confirming the
-  battle server reaches them only through function-pointer dispatch. Finding
-  the damage server therefore needs either (a) identifying the dedicated `btl`
-  server module and its handler tables, or (b) indirect-call/vtable data-flow
-  analysis. Tracked as the main open RE problem.
-5. **Struct recovery** — rebuild headers (`pml::pokepara::CoreParam`,
-   save blocks, …) from access patterns + community docs (pk3DS, PKHeX
-   research already names many USUM structures — cross-reference).
-6. **Long-term** — matching rewrites where feasible; realistically this stays
-   a research decomp for a long time. Data/asset side is already fully
-   extracted by `tools/3ds_decomp.py`.
+### Known next targets / open issues (NEXT SESSION starts here)
+The battle server is DONE (damage/type/AI/catch, all verified) and the entire
+move-effect DATA layer is extracted. "Full decomp" = game-logic core + data,
+verified; the UI/network/rendering long tail is out of scope. Remaining core,
+in priority order:
+
+1. **`pml::pokepara::CoreParam`** (HARD, highest value) — the encrypted
+   ~232-byte Pokémon blob. Block-shuffle + LCRNG decrypt/encrypt (PKHeX-
+   documented, verifiable) + the accessor set (have GetHp @0x3af3fc / GetMaxHp
+   @0x3af5bc / GetPower). Unlocks save/box/trade + clean battle-struct reads.
+2. **Struct/class reconstruction** (steady; the readability multiplier) — name
+   the battle-pokemon struct fields (HP @0xe/0xd, step @0xa94, ballId @0x220,
+   move-calc block power@0x10/type@6/dmgType@7) and CoreParam, so `decomp/src`
+   reads like real source. `tools/cro_dataflow.py --offset <N>` per field.
+3. **Save data** (`Savedata::`, tractable/verifiable) — block layout +
+   checksum/encryption; verify against a real save file.
+4. **Battle-sequence handler BODIES** (deep btl grind, behavioral) — the ~150
+   step-state handlers in `battle_effects/effect_handler_table.json`; decode
+   per-id. Lower value: the DATA they consume is already extracted.
+5. **Wild encounters** — `a/0/8/*` zone data; needs a zone→route-name map
+   (a zone-RE subproject). Defer unless wanted.
+
+Tooling reminders: static `.code` is **VA == file offset** (NOT 0x100000+off);
+in a `.cro`, text(seg0)/rodata(seg1) share offset numbers and rodata pointer
+tables are zero-on-disk (relocation-filled — use `cro_vtables.py`). For
+dispatch that name/constant scans miss, use `cro_dataflow.py` (cracked damage
+& catch). ROM extraction is gitignored — re-run the bootstrap (top of the
+"TRUE DECOMP" section) each session.
 
 ### Gen-7 data conversion — extended tables (session cont.)
 - `tools/usum_eggmoves.py` → `data/pokemon/usum_eggmoves.json` (322 species with
