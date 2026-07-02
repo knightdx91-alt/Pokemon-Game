@@ -75,6 +75,14 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
      the decomp's headline open problem.
    - **battle AI move ranker** (`src/pml/battle/BattleAI.cpp`) — `sub_9348`
      damage estimator + move-preference sort and its helpers (structural).
+   - **move-effect dispatch spine** (`src/pml/battle/MoveEffects.cpp`) —
+     Phase-1 foundation: the 153-entry handler table at **rodata+0x45a0**
+     (relocation-filled, recovered by `cro_vtables.py`) indexed by move-effect
+     id; handler contract is a step-state machine (step @work+0xa94). Manifest
+     id→handler at `decomp/battle_effects/effect_handler_table.json`; exemplar
+     `sub_458c` (6-state) documented. Per-handler semantics = ongoing Phase-1
+     bulk. ADDRESSING NOTE: text(seg0) and rodata(seg1) share offset numbers —
+     the table is rodata+0x45a0, NOT the code at text+0x45a0.
    - **catch-rate server** (`src/pml/battle/CatchRate.cpp`) — `sub_2d568`:
      `a = (3M−2H)·rateMod·ball·status/(3M)`, auto-catch at a≥255 (0xff000 Q12),
      else the 4-shake check (`^0.1875` shake, the `0.1875f` @0x2da0c that
