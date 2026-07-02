@@ -216,6 +216,24 @@ Real CSS `transform: rotate()` on `<body>` — same approach as EmulatorJS fulls
 - ✅ Kanto maps navigable from PalletTown; Hoenn/Johto/Sinnoh/HeartGold/Platinum map data present
 - ✅ Achievement definitions (bronze/silver/gold/platinum), faction standing system
 
+### ROM decomp & data pipeline (`tools/`) — see full docs in the Tooling section
+- ✅ `nds_decomp.py` — any `.nds` → pret-style tree (NitroFS + NARC unpack + LZ);
+  **verified on the user's real Pokémon Black (IRBO: 54,054 files) and
+  Black 2 (IREO: 69,850 files) ROMs**, downloaded straight from their
+  link-shared Google Drive (commands in the Tooling section — the user is on
+  an FRP-locked device; EVERYTHING must run cloud-side, never ask them to run
+  local commands)
+- ✅ `3ds_decomp.py` — decrypted `.3ds/.cci/.cxi/.cia` → NCSD/CIA→NCCH→RomFS +
+  GARC unpack; verified on synthetic fixtures (incl. CIA); awaiting the user's
+  Pokémon X / Ultra Moon `.cia` Drive links for a real-ROM run
+- ✅ `rom_to_2d.py` — Gen-5 decomp output → the game's `data/pokemon/*.json`
+  formats, with Gen-5 text-bank decryption for English names; values verified
+  against known stats (Charizard, Flamethrower, Charmander learnset).
+  Conversion NOT yet applied to `data/` (defaults to dry-run); encounters
+  converter experimental. Note: the user's B2 ROM is a Portuguese/Spanish
+  fan-translation — pull English names from the Black (IRBO) extraction via
+  `--names-from`
+
 ### Emulator hub (`emulator.html`)
 - ✅ **RetroPlay** brand — CSS variable theme (`--bg`, `--surface`, `--accent`, etc.), gradient logo, tagline
 - ✅ 37 systems with emoji icons, grouped by manufacturer (Nintendo, Sega, Sony, Atari, etc.)
@@ -661,15 +679,21 @@ trusted until its output renders correctly (the way HnS was verified).
   as the data source (superset: all 649 species, BW2 encounters, more
   trainers/maps).
 - `3ds_decomp.py` — **3DS ROM decomp tool** (counterpart to `nds_decomp.py`
-  for Gen 6/7). Takes a **decrypted** `.3ds/.cci/.cxi` and explodes it:
-  NCSD→NCCH→`exefs/` (code, banner) + `romfs/` (full file tree) + `unpacked/`
-  (every **GARC** archive expanded, members LZ11-decompressed, magic-named).
-  `DECOMP_MANIFEST.md` annotates known Pokémon GARCs (X/Y personal data
-  `a/2/1/8`, learnsets `a/2/1/4`, moves `a/2/1/2`, encounters `a/0/1/2`, etc.;
-  tables for X/Y + ORAS product codes). Same stdlib LZ codec as the NDS tool.
-  Usage: `python3 tools/3ds_decomp.py <rom.3ds> [-o source/3ds/<code>] [--list]`.
+  for Gen 6/7). Takes a **decrypted** `.3ds/.cci/.cxi` **or `.cia`** (installer
+  archive — the game NCCH inside is auto-located; verified on a CIA fixture)
+  and explodes it: NCSD/CIA→NCCH→`exefs/` (code, banner) + `romfs/` (full file
+  tree) + `unpacked/` (every **GARC** archive expanded, members
+  LZ11-decompressed, magic-named). `DECOMP_MANIFEST.md` annotates known Pokémon
+  GARCs (X/Y personal data `a/2/1/8`, learnsets `a/2/1/4`, moves `a/2/1/2`,
+  encounters `a/0/1/2`, etc.; tables for X/Y, ORAS, Sun/Moon, and
+  UltraSun/UltraMoon product codes — Gen 7 paths are best-effort, verify on
+  first real extraction). Same stdlib LZ codec as the NDS tool.
+  Usage: `python3 tools/3ds_decomp.py <rom.3ds|.cia> [-o source/3ds/<code>] [--list]`.
   Requires a ROM the user legally owns/backed up (share via Drive link like the
-  NDS ROMs). Note Gen 6 maps are **3D** — data ports to 2D, maps do not.
+  NDS ROMs). **The user has Pokémon X and Ultra Moon backed up as `.cia` in
+  Drive** — decrypted CIAs work directly; if extraction warns about the
+  NoCrypto flag, the dump is encrypted and needs re-dumping decrypted
+  (GodMode9). Note Gen 6/7 maps are **3D** — data ports to 2D, maps do not.
 - `rom_to_2d.py` — **ROM data → 2D game converter.** Reads the `unpacked/`
   tree from `nds_decomp.py` (Gen 5) and emits this game's exact `data/` shapes:
   `data/pokemon/base_stats.json`, `moves.json`, `learnsets.json`, and

@@ -3,7 +3,8 @@
 3ds_decomp.py — Decompile a DECRYPTED 3DS ROM into a pret-style source tree.
 
 Counterpart to tools/nds_decomp.py for the 3DS generation (Pokémon X/Y,
-ORAS, Sun/Moon). Requires a **decrypted** .3ds/.cci (or a bare .cxi); it does
+ORAS, Sun/Moon/USUM). Accepts a **decrypted** .3ds/.cci, .cia (installer
+archive — the NCCH inside is located automatically), or bare .cxi; it does
 no crypto. Layout produced:
 
   <out>/
@@ -38,6 +39,27 @@ _spec.loader.exec_module(_nds)
 lz_decompress = _nds.lz_decompress
 
 MEDIA_UNIT = 0x200
+
+# ------------------------------------------------------------------- CIA ---
+
+def align64(n):
+    return (n + 0x3F) & ~0x3F
+
+def find_cia_content(rom):
+    """If `rom` is a CIA (installer archive), return the offset of its first
+    content (the game NCCH). CIA layout: header, cert chain, ticket, TMD,
+    contents, meta — each section 0x40-aligned."""
+    if len(rom) < 0x2020:
+        return None
+    hdr_size, ctype, version = struct.unpack_from('<IHH', rom, 0)
+    if hdr_size != 0x2020:
+        return None
+    cert_size, tik_size, tmd_size, meta_size = struct.unpack_from('<4I', rom, 8)
+    off = (align64(hdr_size) + align64(cert_size) + align64(tik_size)
+           + align64(tmd_size))
+    if off + 0x104 <= len(rom) and rom[off + 0x100:off + 0x104] == b'NCCH':
+        return off
+    return None
 
 # ------------------------------------------------------------- NCSD/NCCH ---
 
@@ -190,6 +212,20 @@ KNOWN_GARCS = {
         'a/0/0/7': 'pokemon menu icon sprites',
         'a/0/0/8': 'pokemon 3D models/textures (BCH — not 2D-convertible)',
     },
+    # Sun/Moon (CTR-P-BNDA/BNEA) & Ultra Sun/Ultra Moon (CTR-P-A2AA/A2BA).
+    # Best-effort (pkNX research) — verify member counts after extraction.
+    'BN': {
+        'a/0/1/7': 'pokemon personal data',
+        'a/0/1/3': 'pokemon level-up learnsets',
+        'a/0/1/1': 'move data',
+        'a/0/3/2': 'text — common (names)',
+    },
+    'A2': {
+        'a/0/1/7': 'pokemon personal data',
+        'a/0/1/3': 'pokemon level-up learnsets',
+        'a/0/1/1': 'move data',
+        'a/0/3/2': 'text — common (names)',
+    },
     # Omega Ruby / Alpha Sapphire (CTR-P-ECRA / ECLA)
     'EC': {
         'a/1/9/5': 'pokemon personal data',
@@ -209,14 +245,19 @@ KNOWN_GARCS = {
 def extract(rom_path, out_dir, unpack=True, list_only=False):
     rom = Path(rom_path).read_bytes()
 
-    # Accept NCSD (.3ds/.cci) or bare NCCH (.cxi)
+    # Accept NCSD (.3ds/.cci), CIA (installer archive), or bare NCCH (.cxi)
     parts = parse_ncsd(rom)
     if parts:
         game = parse_ncch(rom, parts[0]['offset'])
     else:
-        game = parse_ncch(rom, 0)
+        cia_off = find_cia_content(rom)
+        if cia_off is not None:
+            print(f'CIA container detected; game NCCH at 0x{cia_off:X}')
+            game = parse_ncch(rom, cia_off)
+        else:
+            game = parse_ncch(rom, 0)
     if not game:
-        sys.exit('Not a 3DS ROM (no NCSD/NCCH magic). Is it decrypted?')
+        sys.exit('Not a 3DS ROM (no NCSD/CIA/NCCH magic). Is it decrypted?')
     if not game['no_crypto']:
         print('WARNING: NoCrypto flag not set — ROM may be encrypted; '
               'extraction will produce garbage if so.')
