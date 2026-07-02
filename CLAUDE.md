@@ -806,15 +806,23 @@ All numerically verified against known game values:
    The two remaining FRONTIERS are both CODE-side: (a) the battle server vtable
    dispatch (unlocks damage/AI/catch — see item 2 below), and (b) struct/class
    reconstruction (memory layouts behind the recovered method names).
-2. **Battle damage server** (HARD — the one big open RE problem). Battle.cro is
-   the battle *scene* (graphics/UI), NOT the calc server. The type-affinity
-   cluster (static 0x21c0e0..0x21c3ac) is reached ONLY by function-pointer
-   dispatch — exhaustive ARM+Thumb `bl` scans and stored-pointer searches find
-   ZERO direct callers. Cracking requires vtable/handler-table data-flow
-   analysis (find where thunk/function addresses get loaded into registers or
-   stored in dispatch tables). Pipeline nodes already found: `sub_9348`
-   (move-data fetch), `sub_9698` (per-target damage/effect loop w/ RNG). This
-   unlocks damage formula + catch rate + battle AI as a cluster.
+2. **Battle damage server** (HARD — the one big open RE problem). *Progress
+   this session (see `decomp/README.md` "CORRECTION"):* the old "type-affinity
+   has ZERO callers / server is in static" claim was a **scan artifact** — the
+   static `.code` scan used the wrong VA base (in `.code`, **VA == file
+   offset**, NOT 0x100000+off). With the correct base, the type funcs ARE
+   called by ordinary `bl` **from Battle.cro via import veneers** (0x16d8
+   CalcAffinity, 0x16d0 MulAffinity). Mapped the battle-AI subtree:
+   `sub_9698` (handler in Battle dispatch table @0x45a0) → `sub_9348` (**AI
+   move scorer** — GetPower/GetType/IsDamage, bubble-sorts moves) → `sub_8ddb4`
+   (**multi-type effectiveness combiner**, up to 3 defender types). The **live
+   HP-damage path** is still open but the lead is now concrete: Battle.cro also
+   imports **`ConvAboutAffinity`** (AffinityID→numeric multiplier — what the
+   real formula needs), and it has **zero direct `bl` callers → dispatched
+   indirectly**. NEXT: trace where the `ConvAboutAffinity` thunk address is
+   loaded into a register/table (that call site is the damage server). Also
+   OPEN: re-verify the committed `MulAffinity` AffinityID↔value map-back for
+   4× (dual-super) cases — value table is `{0,2⁰…2¹²}`, index≠bit-position.
 3. **More verified functions** are getting scarce — the clean self-contained
    `pml` formulas are largely mined out (remaining ones delegate to field
    accessors or use load-time-relocated pointers, e.g. the berry-taste table

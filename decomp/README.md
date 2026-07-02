@@ -159,17 +159,53 @@ Battle.cro damage pipeline traced via the graph:
   `btl::BgSystem`, move-anim sequencing), NOT the damage server. Evidence: its
   only variable-divide function (`sub_5ce4`) is an HP-%/status threshold check
   (75/50/25 → 29/30/31), and no function reads attacker/defender stats or the
-  type chart. The numeric battle server lives in the main executable (`.code`).
+  type chart. (But note: the type-effectiveness *consumers* — AI scorer and
+  the `ConvAboutAffinity` multiplier path — are in Battle.cro, so the live
+  damage server is reached from the CRO layer, not purely static; see the
+  CORRECTION below.)
 - **TypeAffinity cluster fully localized** at 0x21c0e0..0x21c3ac in static:
   `MulAffinity` (0x21c0e0), `CalcAffinity` (0x21c1e8, the *sole* reader of the
   18×18 type chart at VA 0x5bb558), and `CalcAffinityForDefender` (0x21c284,
   dual-type combine) — all three now in `src/pml/battle/TypeAffinity.cpp`.
-- **Affinity is called only by function pointer**: exhaustive ARM+Thumb `bl`
-  scans of both Battle.cro and all of static, plus a search for the functions'
-  stored absolute VAs, find *zero* resolvable callers. The battle server
-  dispatches type-effectiveness (and damage) through handler/vtable pointers.
-  Cracking that dispatch (vtable/handler-table data-flow) is the remaining
-  gate on the numeric damage formula.
+- **CORRECTION (this session): affinity IS called by ordinary direct `bl`,
+  from the CRO layer via import veneers** — the earlier "zero resolvable
+  callers" claim was a scan artifact (the static `.code` scan used the wrong
+  VA base — see the tooling gotcha below). Battle.cro's `.crodata` import
+  table (`decomp/map/Battle.json`) imports exactly three TypeAffinity funcs —
+  `CalcAffinity`, `MulAffinity`, `ConvAboutAffinity` — and the veneer thunks
+  (`0x16d8`/`0x16d0`) have real ARM `bl` callers:
+  - `sub_8ddb4` — **multi-type effectiveness combiner** (up to *three*
+    defender types → Gen-6 Trick-or-Treat / Forest's Curse). Calls
+    `CalcAffinity` per defender type and `MulAffinity`-combines, with the
+    `0x12` (TYPE_NONE) sentinel and duplicate-type guards. Calls only the
+    already-verified primitives.
+  - `sub_b0328` — resist-list builder: loops all 18 types, `CalcAffinity`
+    against each, collects those returning half/immune.
+- **The consumer of `sub_8ddb4` is the battle AI**, a self-contained subtree:
+  `sub_9698` (a handler in Battle dispatch table `@0x45a0`, 153 entries) →
+  `sub_9348` (**AI move scorer**: `pml::wazadata::GetPower`/`GetType`/
+  `IsDamage`, estimates damage per candidate move, then bubble-sorts the
+  candidates by score — classic enemy move selection) → `sub_8ddb4`
+  (+ `sub_8de5c` attacker-type extractor, `sub_8dce4` stat-stage shift table).
+- **The live HP-damage path is still the open gate, and the lead is now
+  concrete: `ConvAboutAffinity`** (AffinityID→numeric multiplier — what the
+  real formula needs, vs. the AI's AffinityID scoring) is imported by
+  Battle.cro but has **zero direct `bl` callers** → it is dispatched
+  indirectly. Tracing where the `ConvAboutAffinity` thunk address is loaded
+  into a register/table is the next RE step for the damage server.
+- **TOOLING GOTCHA (cost a wrong conclusion once already):** in the static
+  `exefs/.code` image, **VA == file offset** (verified: `CalcAffinity`'s
+  `cmp r0,#0x12` signature sits at file offset 0x21c1e8, matching its VA).
+  Do NOT scan with `VA = 0x100000 + offset` — that base is wrong for `.code`
+  and makes every BL/pointer target miss. The rodata value/chart tables
+  (e.g. VA 0x5bb69c) live past the `.code` text end and need the segment
+  map, not the flat text offset.
+- **OPEN VERIFY:** re-derive the `AffinityID` ↔ Q6 value-table map-back in
+  `MulAffinity` from first principles. The value table is `{0, 2⁰…2¹²}`
+  (index ≠ bit position), so a naive "return the set bit's position" map-back
+  is off by one; confirm the committed `src/pml/battle/TypeAffinity.cpp`
+  map-back matches the ROM exactly for dual-super (4×) cases before trusting
+  multi-type composition. (Not yet resolved — flagged, not fixed.)
 
 ### Known next targets / open issues
 - **Damage formula** (`btl`, internal/unnamed in Battle.cro): `sub_9348`
