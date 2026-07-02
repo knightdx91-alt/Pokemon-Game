@@ -424,8 +424,24 @@ in priority order:
      origin/language/parent-sex/memories in D). Self-verifying: anchor-checked
      against the canonical PK7 offsets AND decoded from a **real save**
      (`verify/verify_coreparam_fields.py` — party slot 0 species/nature/exp/ball
-     read straight through the derived offsets, matches `usum_savedump.py`). The
-     battle-pokemon in-RAM struct fields remain (next in this item).
+     read straight through the derived offsets, matches `usum_savedump.py`).
+   - **✅ Battle-pokemon in-RAM struct — stat-stage array recovered** —
+     `tools/usum_battlemon_fields.py`. The `btl` engine is symbol-stripped, so
+     there's no named accessor; the engine funnels field reads through one indexed
+     getter `sub_924a8(this, enum)` — a 23-way switch whose jump table
+     (text+0x92508) is zero on disk (relocation-filled). The tool replays
+     Battle.cro's internal relocations to recover the 23 case→handler pointers,
+     then disassembles each handler for the struct offset/width/sign it loads
+     (incl. `mov r0,#imm; ldrsb [r0,r4]` indexed forms). **Certain result:**
+     cases 2–8 read seven contiguous *signed* bytes at 0x1ea–0x1f0 — the
+     stat-stage array (Atk/Def/SpA/SpD/Spe/Acc/Eva), cases 9–13 the
+     apply-stage-to-stat path over the same bytes. Emits
+     `decomp/battle_effects/battlemon_getter_fields.json` +
+     `decomp/src/pml/battle/BattlePokemon.h`; `verify/verify_battlemon_fields.py`
+     PASS. Scalar offsets (0x8/0xe/0x10/0xa0/0x234/…) are recovered exactly but
+     their semantic names are flagged as hypotheses (struct is runtime-only — a
+     live-battle dump, not a save, would confirm; 0xe/0x10 are the u16 curHP/maxHP
+     pair CatchRate reads through this getter).
 3. **Save data** (`Savedata::`) — checksum + block inventory DONE; per-block
    byte offsets are the remaining piece. The block checksum is
    `gfl2::math::Crc::Crc16` (@0x261534) = **CRC-16/USB** (poly 0x8005 reflected

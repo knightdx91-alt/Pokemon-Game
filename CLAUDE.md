@@ -842,9 +842,14 @@ rodata pointer tables are zero on disk, filled at load (recovered by
   `tools/usum_save_blocks.py`; VERIFY PASS). **Phase-3 struct reconstruction
   started: CoreParam field layout auto-derived + verified** (22 stored fields →
   `decomp/src/pml/pokepara/CoreParam.h`, `tools/usum_coreparam_fields.py`,
-  `verify/verify_coreparam_fields.py` — anchor + real-save PASS). Immediate next
-  task: name the **battle-pokemon in-RAM struct** fields (HP @0xe/0xd, step
-  @0xa94, ballId @0x220, move-calc block) via `tools/cro_dataflow.py --offset`.
+  `verify/verify_coreparam_fields.py` — anchor + real-save PASS). **Battle-pokemon
+  in-RAM struct: stat-stage array recovered** (getter sub_924a8's reloc'd switch →
+  7 signed bytes 0x1ea–0x1f0; `tools/usum_battlemon_fields.py`,
+  `decomp/src/pml/battle/BattlePokemon.h`, `verify/verify_battlemon_fields.py` PASS;
+  scalar offsets recovered, semantics flagged as hypotheses since the struct is
+  runtime-only). Immediate next task: continue struct naming (move-calc block /
+  work step-state @0xa94) or move to battle-sequence handler bodies (needs live
+  PIC data-flow) or wild encounters (`a/0/8/*`).
 - **Never commit ROM bytes.** `source/3ds/ultramoon/` is gitignored. Only
   commit derived analysis (symbol maps, disasm-derived C++, verified data).
 - **Verify before committing.** Every decompiled formula/table must be checked
