@@ -830,11 +830,18 @@ All numerically verified against known game values:
    `0xFF0000` shake-constant fingerprint was a false lead (RGB masks in SIMD
    color code). The `item::ITEM_GetBallID` callers `sub_39bc8`/`sub_3c5f0` are
    the **ball-throw SETUP** — they store the resolved ball id into the battle
-   struct at **field +0x220** and queue the throw (same setup/calc split as
-   damage: `sub_86e48`→`sub_18504`). NEXT: the catch calc is the downstream
-   handler that **reads field 0x220 (ball id) + the target's cur/max HP** and
-   divides — find it with `cro_dataflow.py --offset 0x220` (or trace the
-   queued throw action's consumer). Likely a float/VFP shake calc (`^0.1875`).
+   struct at **field +0x220** and queue the throw. The `--offset 0x220`
+   data-flow lead turned out **ambiguous** (0x220 is overloaded across many
+   structs; its 6 readers are all graphics/matrix code — `GetStereoMatrix`,
+   throw-animation color/position vectors — not the catch math). Better lead
+   (this session): `sub_3c5f0` does `ldr r0,[r4]; ldr r2,[r0,#0xd4]; blx r2`
+   **before** storing the ball id — the catch result is computed through the
+   throw-action's **vtable slot +0xd4** (indirect dispatch), which is why
+   offset/constant heuristics miss it. NEXT: resolve that vtable (use
+   `cro_vtables.py` on the action object's class; find the concrete function
+   at slot 0xd4) — that handler is the catch/shake calc (likely float/VFP,
+   `^0.1875`). The catch formula is the last unfinished battle-server piece;
+   damage + type + AI are done & verified.
 3. **More verified functions** are getting scarce — the clean self-contained
    `pml` formulas are largely mined out (remaining ones delegate to field
    accessors or use load-time-relocated pointers, e.g. the berry-taste table
