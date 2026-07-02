@@ -380,8 +380,18 @@ in priority order:
    Located: **party @0x1600** (6× 260-byte PokemonParam), **box storage @0x5200**
    (960 slots × 0xE8, 32 boxes × 30). This validates CoreParamCrypto.cpp +
    CoreParamLayout.cpp against real data — the encrypted Pokémon record is fully
-   readable. (The party/box block *file offsets* are thus recovered directly;
-   the remaining 30-odd minor blocks' offsets still want the ROM registrar.)
+   readable. (The party/box block *file offsets* are thus recovered directly.)
+   **FULL SAVE LAYOUT SOLVED** (`savedata/save_layout.json`,
+   `verify/verify_save_layout.py`): the footer entry is `{u32 length, u16 id,
+   u16 checksum}` (I'd earlier mis-split length from checksum — that off-by-one
+   is why the first dual-scan found almost nothing). With the right format, all
+   39 blocks are in **id order**, each at the previous block's end **rounded up
+   to 0x200**, tiling exactly to the footer at 0x6ca00. 38/39 blocks
+   CRC-verified in TWO independent real saves (block 36 is a zero-padded block
+   whose stored checksum doesn't validate; its offset 0x6c000 is fixed by
+   geometry). Known roles: block 4 = party @0x1600, block 14 = PC box @0x5200
+   (0x36600 = 960×0xE8). Save layout is DONE — only mapping the remaining block
+   ids to their `Savedata::` class names remains (cosmetic).
 4. **Battle-sequence handler BODIES** (deep btl grind, behavioral) — the ~150
    step-state handlers in `battle_effects/effect_handler_table.json`; decode
    per-id. Lower value: the DATA they consume is already extracted. NOTE: the

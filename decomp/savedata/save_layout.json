@@ -1,0 +1,362 @@
+{
+ "save": "USUM main, 0x6CC00",
+ "footer": "0x6ca10: u32 magic 0x42454546, u32 savecount, then 39x{u32 length, u16 id, u16 checksum} from 0x6ca14",
+ "layout": "blocks in id order, each at previous block end rounded up to 0x200; total tiles exactly to footer @0x6ca00",
+ "checksum": "CRC-16/USB over each block's length bytes at its offset",
+ "verified": "38/39 blocks CRC-match in TWO independent USUM saves; block 36 is a zero-padded block whose stored checksum does not validate, offset fixed by geometry",
+ "blocks": [
+  {
+   "id": 0,
+   "offset": 0,
+   "offset_hex": "0x0",
+   "length": 3624,
+   "length_hex": "0xe28",
+   "checksum": 40017,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 1,
+   "offset": 4096,
+   "offset_hex": "0x1000",
+   "length": 124,
+   "length_hex": "0x7c",
+   "checksum": 61361,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 2,
+   "offset": 4608,
+   "offset_hex": "0x1200",
+   "length": 20,
+   "length_hex": "0x14",
+   "checksum": 14542,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 3,
+   "offset": 5120,
+   "offset_hex": "0x1400",
+   "length": 192,
+   "length_hex": "0xc0",
+   "checksum": 16279,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 4,
+   "offset": 5632,
+   "offset_hex": "0x1600",
+   "length": 1564,
+   "length_hex": "0x61c",
+   "checksum": 42149,
+   "crc_verified_both_saves": true,
+   "role": "party (6x PokemonParam)"
+  },
+  {
+   "id": 5,
+   "offset": 7680,
+   "offset_hex": "0x1e00",
+   "length": 3584,
+   "length_hex": "0xe00",
+   "checksum": 58348,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 6,
+   "offset": 11264,
+   "offset_hex": "0x2c00",
+   "length": 3960,
+   "length_hex": "0xf78",
+   "checksum": 26427,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 7,
+   "offset": 15360,
+   "offset_hex": "0x3c00",
+   "length": 552,
+   "length_hex": "0x228",
+   "checksum": 19174,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 8,
+   "offset": 16384,
+   "offset_hex": "0x4000",
+   "length": 780,
+   "length_hex": "0x30c",
+   "checksum": 54395,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 9,
+   "offset": 17408,
+   "offset_hex": "0x4400",
+   "length": 508,
+   "length_hex": "0x1fc",
+   "checksum": 60180,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 10,
+   "offset": 17920,
+   "offset_hex": "0x4600",
+   "length": 76,
+   "length_hex": "0x4c",
+   "checksum": 16063,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 11,
+   "offset": 18432,
+   "offset_hex": "0x4800",
+   "length": 4,
+   "length_hex": "0x4",
+   "checksum": 62453,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 12,
+   "offset": 18944,
+   "offset_hex": "0x4a00",
+   "length": 88,
+   "length_hex": "0x58",
+   "checksum": 63600,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 13,
+   "offset": 19456,
+   "offset_hex": "0x4c00",
+   "length": 1510,
+   "length_hex": "0x5e6",
+   "checksum": 5693,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 14,
+   "offset": 20992,
+   "offset_hex": "0x5200",
+   "length": 222720,
+   "length_hex": "0x36600",
+   "checksum": 60433,
+   "crc_verified_both_saves": true,
+   "role": "PC box storage (960 slots)"
+  },
+  {
+   "id": 15,
+   "offset": 243712,
+   "offset_hex": "0x3b800",
+   "length": 22316,
+   "length_hex": "0x572c",
+   "checksum": 1724,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 16,
+   "offset": 266240,
+   "offset_hex": "0x41000",
+   "length": 8,
+   "length_hex": "0x8",
+   "checksum": 18256,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 17,
+   "offset": 266752,
+   "offset_hex": "0x41200",
+   "length": 4632,
+   "length_hex": "0x1218",
+   "checksum": 16617,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 18,
+   "offset": 271872,
+   "offset_hex": "0x42600",
+   "length": 6664,
+   "length_hex": "0x1a08",
+   "checksum": 56959,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 19,
+   "offset": 279040,
+   "offset_hex": "0x44200",
+   "length": 25608,
+   "length_hex": "0x6408",
+   "checksum": 64437,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 20,
+   "offset": 305152,
+   "offset_hex": "0x4a800",
+   "length": 25608,
+   "length_hex": "0x6408",
+   "checksum": 6999,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 21,
+   "offset": 331264,
+   "offset_hex": "0x50e00",
+   "length": 14744,
+   "length_hex": "0x3998",
+   "checksum": 50428,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 22,
+   "offset": 346112,
+   "offset_hex": "0x54800",
+   "length": 256,
+   "length_hex": "0x100",
+   "checksum": 48980,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 23,
+   "offset": 346624,
+   "offset_hex": "0x54a00",
+   "length": 256,
+   "length_hex": "0x100",
+   "checksum": 39744,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 24,
+   "offset": 347136,
+   "offset_hex": "0x54c00",
+   "length": 66856,
+   "length_hex": "0x10528",
+   "checksum": 21707,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 25,
+   "offset": 414208,
+   "offset_hex": "0x65200",
+   "length": 516,
+   "length_hex": "0x204",
+   "checksum": 7634,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 26,
+   "offset": 415232,
+   "offset_hex": "0x65600",
+   "length": 2912,
+   "length_hex": "0xb60",
+   "checksum": 13128,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 27,
+   "offset": 418304,
+   "offset_hex": "0x66200",
+   "length": 16208,
+   "length_hex": "0x3f50",
+   "checksum": 59638,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 28,
+   "offset": 434688,
+   "offset_hex": "0x6a200",
+   "length": 856,
+   "length_hex": "0x358",
+   "checksum": 32539,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 29,
+   "offset": 435712,
+   "offset_hex": "0x6a600",
+   "length": 1832,
+   "length_hex": "0x728",
+   "checksum": 18761,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 30,
+   "offset": 437760,
+   "offset_hex": "0x6ae00",
+   "length": 512,
+   "length_hex": "0x200",
+   "checksum": 36280,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 31,
+   "offset": 438272,
+   "offset_hex": "0x6b000",
+   "length": 1816,
+   "length_hex": "0x718",
+   "checksum": 35865,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 32,
+   "offset": 440320,
+   "offset_hex": "0x6b800",
+   "length": 508,
+   "length_hex": "0x1fc",
+   "checksum": 28795,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 33,
+   "offset": 440832,
+   "offset_hex": "0x6ba00",
+   "length": 512,
+   "length_hex": "0x200",
+   "checksum": 5995,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 34,
+   "offset": 441344,
+   "offset_hex": "0x6bc00",
+   "length": 288,
+   "length_hex": "0x120",
+   "checksum": 13265,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 35,
+   "offset": 441856,
+   "offset_hex": "0x6be00",
+   "length": 456,
+   "length_hex": "0x1c8",
+   "checksum": 14296,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 36,
+   "offset": 442368,
+   "offset_hex": "0x6c000",
+   "length": 512,
+   "length_hex": "0x200",
+   "checksum": 17598,
+   "crc_verified_both_saves": false
+  },
+  {
+   "id": 37,
+   "offset": 442880,
+   "offset_hex": "0x6c200",
+   "length": 924,
+   "length_hex": "0x39c",
+   "checksum": 11163,
+   "crc_verified_both_saves": true
+  },
+  {
+   "id": 38,
+   "offset": 443904,
+   "offset_hex": "0x6c600",
+   "length": 1024,
+   "length_hex": "0x400",
+   "checksum": 32452,
+   "crc_verified_both_saves": true
+  }
+ ]
+}
