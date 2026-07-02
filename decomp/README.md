@@ -228,6 +228,34 @@ Battle.cro damage pipeline traced via the graph:
     damage core. ⇒ the formula's `/50` (and `/100` roll) are **helper-call
     divisions** (`__aeabi_uidivmod`/`uldivmod`), so magic-constant
     fingerprinting won't find them; trace via the callee instead.
+  - FALSE LEAD ③ (round 2): the damage core is **not Thumb** (a Thumb-BL scan
+    for callers of `GetPower`/`GetDamageType`/`GetType`/type funcs = 0 hits),
+    and **`mov r1,#50; bl` = 0** in both static and Battle.cro — so the `/50`
+    is not a plain `r1=50` helper divide either.
+  - FALSE LEAD ④: none of `sub_86e48`'s **7 callers**
+    (`sub_144ec`/`1c664`/`24040`/`25d78`/`7b51c`/`7b908`/`819f0`) contain a
+    single multiply instruction → the arithmetic is NOT in the immediate
+    move-execution consumers; it's deeper in the `btl` handler graph.
+  - `sub_86e48` precisely decoded: it fills an **output struct** (arg 4) with
+    `{wazaNo@0/2, type@6, dmgType@7, field0x20@4, power@0x10 (=GetPower),
+    flags@0x14}` — the per-move calc parameter block. The HP math reads this
+    block (by field, via the generic getter `sub_879d8`), not the `wazadata`
+    getters directly — which is why getter-caller scans never hit it.
+  - **DECISIVE STRUCTURAL FACT:** an exhaustive symbol sweep shows only the
+    *framework* namespaces (`pml`, `gfl2`, `App`, `Field`, `PokeTool`) shipped
+    with names; the core **`btl` battle engine (in Battle.cro) is
+    symbol-stripped** — the only `Damage`-named symbols in the whole ROM are
+    `pml::wazadata::IsDamage`/`GetDamageType`. So the damage calculator is an
+    unnamed `sub_XXXX` and won't be found by name; it must be reached by
+    data-flow from the move-record block above.
+  - **NEXT-SESSION TECHNIQUE (not just another probe):** build a small
+    data-flow pass — from `sub_86e48`'s output-struct pointer (arg 4), follow
+    which downstream function loads `[struct+0x10]` (power) and multiplies it
+    by a stat field; that callee is the damage server. Equivalent alt: find
+    the shared `btl` "apply-modifier" helper (Gen6/7 4096-based) by locating
+    the most-called small function that does `umull … ; lsr/asr` and works in
+    Q12, then take its multiply-heavy callers. This is the indirect-dispatch/
+    data-flow analysis the top of this section calls for — the remaining gate.
 
 ### Known next targets / open issues
 - **Damage formula** (`btl`, internal/unnamed in Battle.cro): `sub_9348`
