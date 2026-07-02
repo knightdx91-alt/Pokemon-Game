@@ -330,7 +330,39 @@ Battle.cro damage pipeline traced via the graph:
     the decomp's headline open problem — the full damage pipeline
     (base → STAB → type → random → Q12 modifiers) is now readable C++.
 
-### Known next targets / open issues (NEXT SESSION starts here)
+### ⏩ CHECKPOINT — resume here (session handoff)
+Progress so far (all on `main`, all verified against real data):
+- **CoreParam** fully decompiled (crypto + block-shuffle + all field accessors),
+  proven by reading 6 party + 880 box Pokémon from a real save
+  (`tools/usum_savedump.py`).
+- **Save system**: CRC-16/USB checksum decompiled; **full 39-block offset layout
+  solved & verified in two real saves** (`savedata/save_layout.json`); **15/39
+  blocks named** to their `Savedata::` class.
+
+**Immediate next task — name the remaining 24 save blocks via the container
+constructor (JUST LOCATED):**
+1. The save-body **container constructor is at file offset ~`0x35a2c0`** (VA
+   0x45a2c0). It BL-calls the block constructors in sequence — confirmed
+   MyItem@0x35a2c0, MyStatus@0x35a2dc, ZukanData@0x35a2f8, GameTime@0x35a32c.
+2. Disassemble the full function (find its `push{..lr}` start), list **every BL
+   target in order** = the block constructors in construction order.
+3. Name each constructor's class via its stored vtable → a named virtual method
+   (vtable table @VA `0x64d000`; for 6-method vtables **slot 3 = GetSize**).
+4. Align construction order to block id using the 15 known id→class anchors.
+   (Or emulate the ctor with Unicorn — `pip install unicorn` — stub heap, read
+   each sub-object's vtable ptr afterward.) Full recipe in
+   `save_layout.json` → `factory_investigation.container_constructor`.
+
+**Environment reminder:** the ROM extraction is gitignored/ephemeral — re-run the
+bootstrap at the top of the "TRUE DECOMP" section each session (pull the USUM zip
+from Drive, unzip the `.3ds`, `python3 tools/3ds_decomp.py … -o
+source/3ds/ultramoon`, then `cro_symbols/cro_map/cro_disasm --scan`). The two
+real save files used for verification live in the user's Drive
+("Pokemon ultra Moon save" folder + the GRIDELIN "download" zip with two saves);
+re-download to `/tmp` to re-verify save work. `tools/usum_savedump.py <main.sav>`
+dumps trainer + party + box.
+
+### Known next targets / open issues
 The battle server is DONE (damage/type/AI/catch, all verified) and the entire
 move-effect DATA layer is extracted. "Full decomp" = game-logic core + data,
 verified; the UI/network/rendering long tail is out of scope. Remaining core,

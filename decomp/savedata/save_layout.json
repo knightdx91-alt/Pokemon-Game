@@ -403,6 +403,16 @@
    "each block ctor stores a vtable ptr then calls a base-init (e.g. GameTime -> sub_359548); resolving the vtables (no RTTI) would name every block",
    "the true block table (offset/size/checksum-slot per id) is built at runtime; an emulator trace of the container init would dump id->class directly",
    "STRONGEST LEAD: block class vtables sit in a table in .rodata around VA 0x64d000 in id order (MyItem@0x64d37c=block0, GameTime@0x64d3f8=block1/2, ZukanData@0x64d508=block6). Constructors likewise cluster at 0x358000-0x35d000 in id order. Enumerating the ~39 vtables in address order = id order; each vtable's GetSize slot returns the block size (matchable to the layout) and its virtual methods name the class. Blocked only because most vtable slots point to unnamed sub_ thunks in this symbol set; a fuller vtable/RTTI recovery or an emulator trace of the container init would name all 39."
-  ]
+  ],
+  "container_constructor": {
+   "found": "file offset 0x35a2c0 region (VA 0x45a2c0) \u2014 the save-body container constructor. Confirmed: it BL-calls MyItem::MyItem@0x35a2c0, MyStatus::MyStatus@0x35a2dc, ZukanData::ZukanData@0x35a2f8, GameTime::GameTime@0x35a32c in sequence.",
+   "how_found": "scan .code for BL (0xEB......) whose target is a known block constructor (MyItem@0x35881c, MyStatus@0x359ca4, ZukanData@0x35d0bc, GameTime@0x359884); the common caller cluster IS the container ctor.",
+   "TO_FINISH_ALL_39": [
+    "1. Find the container-ctor function bounds (push{..lr} before 0x35a2c0) and disassemble it fully; list EVERY BL target in order \u2014 those are the 39 block constructors in construction order.",
+    "2. For each constructor addr, get its vtable (first `ldr r0,[pc]; str r0,[this]` in the ctor body) and name the class via a named virtual method in that vtable (vtable table @VA 0x64d000).",
+    "3. Map construction-order position -> block id. NOTE: id order == save-file layout order (verified), but construction order may differ; align using the 15 already-known id->class anchors to fix the mapping.",
+    "4. Alternatively emulate the container ctor with Unicorn (pip install unicorn): set r0=scratch 'this' buffer, stub heap alloc (SVC/bl to malloc -> bump pointer), run; afterwards read the vtable ptr at each sub-object -> class. Constructors are plain ARM at these addresses."
+   ]
+  }
  }
 }

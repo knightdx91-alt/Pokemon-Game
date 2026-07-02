@@ -834,6 +834,12 @@ rodata pointer tables are zero on disk, filled at load (recovered by
 `cro_dataflow.py` (the tool that cracked damage & catch).
 
 ### Rules for the decomp work
+- **▶ RESUME POINT: see the "⏩ CHECKPOINT — resume here" block at the top of
+  `decomp/README.md`'s next-targets section.** Current state: CoreParam fully
+  decompiled + validated on a real save; save system = CRC-16/USB + full 39-block
+  offset layout + 15/39 blocks named. Immediate next task: name the remaining 24
+  save blocks via the save-body **container constructor at file offset ~0x35a2c0**
+  (recipe in `decomp/savedata/save_layout.json` → factory_investigation).
 - **Never commit ROM bytes.** `source/3ds/ultramoon/` is gitignored. Only
   commit derived analysis (symbol maps, disasm-derived C++, verified data).
 - **Verify before committing.** Every decompiled formula/table must be checked
