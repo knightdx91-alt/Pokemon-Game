@@ -147,6 +147,12 @@ Battle.cro damage pipeline traced via the graph:
   the extractor renames members starting with byte 0x11 to `.lz` (false LZ11
   magic — many learnsets start with move id 0x0011); `member_bytes` tries
   decompress then falls back to raw. Verified: Bulbasaur/Charizard/Lucario.
+- `tools/usum_evolutions.py` → `data/pokemon/usum_evolutions.json` (807 species).
+  Reads `a/0/1/4` (8 slots × 8 bytes: u16 method, u16 arg, u16 target, s8 form,
+  u8 level; 43-entry Gen-7 method table). Verified: Bulbasaur→Ivysaur L16,
+  Charmeleon→Charizard L36, Eevee's 8 branches (stones + friendship day/night +
+  affection→Sylveon), and the Alolan split (Pikachu→Kanto Raichu form 0 vs
+  Alolan Raichu form 1).
 
 ### Battle architecture findings (server hunt)
 - **Battle.cro is the battle *scene* module** (rendering/UI/animation:

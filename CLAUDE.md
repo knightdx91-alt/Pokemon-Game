@@ -794,8 +794,10 @@ All numerically verified against known game values:
    `tools/usum_learnsets.py`→`data/pokemon/usum_learnsets.json` (807 species),
    both verified. NEXT: wire the Gen-7 species/moves/learnsets INTO the JS game
    (`src/engine/battle.js` + party/summary read `data/pokemon/*.json`) so Gen-7
-   Pokémon/Alolan forms are usable — the practical payoff. Then optionally
-   encounters (GARC location) + evolutions (`a/0/1/4`).
+   Pokémon/Alolan forms are usable — the practical payoff. Evolutions DONE ✅
+   (`tools/usum_evolutions.py`→`data/pokemon/usum_evolutions.json`, 807 species,
+   Alolan-form-aware). Remaining data: encounters (wild/location GARC), items,
+   TM/tutor compatibility, egg moves.
 2. **Battle damage server** (HARD — the one big open RE problem). Battle.cro is
    the battle *scene* (graphics/UI), NOT the calc server. The type-affinity
    cluster (static 0x21c0e0..0x21c3ac) is reached ONLY by function-pointer
