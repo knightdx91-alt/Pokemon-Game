@@ -204,3 +204,22 @@ Battle.cro damage pipeline traced via the graph:
 - `tools/usum_items.py` → `data/pokemon/usum_items.json` (959 items). GARC
   `a/0/1/9` (36-byte entries): price (stored ÷10) + fling power + names.
   Verified Ultra/Great/Poké Ball 800/600/200, Master Ball 0, Potion fling 30.
+
+### Battle dispatch mechanism — CRACKED (handler tables via reloc replay)
+`tools/cro_vtables.py <Module>` → `decomp/vtables/<Module>.json`. The battle
+server reaches most functions by indexing **function-pointer tables in the
+rodata segment**, NOT by direct `bl` — which is why every earlier caller scan
+came up empty. Those pointers are zero on disk; they're written at load by the
+module's **internal relocation table** (header +0x128, 12-byte entries:
+type=2, source seg0 offset, target tagged with dest-segment nibble). Replaying
+those relocations statically recovers every rodata code-pointer slot and the
+function it will hold.
+
+Battle.cro: 2,151 code-pointer slots across **20 dispatch tables**. Largest:
+rodata+0x98ac (444), +0x7e24 (427), +0x67b8 (406) — the per-move-effect /
+per-battle-event handler arrays (Gen-7 has ~400+ effect scripts). The
+**per-target damage loop `sub_9698` sits in the 153-entry table at
+rodata+0x45a0** (150 distinct handlers). This turns the pointer-dispatched
+server from "no callers findable" into a mapped set of handler tables.
+Remaining: label each table index → named battle event (needs the dispatcher's
+index source), then the damage arithmetic in `sub_9698`'s callees.
