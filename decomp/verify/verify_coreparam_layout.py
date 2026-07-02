@@ -48,11 +48,26 @@ def main():
     # Using the identity permutation (shift 0): block A@+8, B@+64.
     A = 8            # block A absolute base (canonical 0x08)
     B = 8 + 56       # block B absolute base (canonical 0x40)
+    C = 8 + 112      # block C absolute base (canonical 0x78)
+    D = 8 + 168      # block D absolute base (canonical 0xB0)
     checks = {
-        "species": (A + 0x00, 0x08),
-        "item":    (A + 0x02, 0x0A),
-        "form":    (A + 0x15, 0x1D),
-        "move1":   (B + 0x1a, 0x5A),
+        # name          block-relative      canonical absolute
+        "species":      (A + 0x00,          0x08),
+        "item":         (A + 0x02,          0x0A),
+        "id32":         (A + 0x04,          0x0C),
+        "ability":      (A + 0x0C,          0x14),
+        "nature":       (A + 0x14,          0x1C),
+        "form/sex":     (A + 0x15,          0x1D),
+        "ev_hp":        (A + 0x16,          0x1E),
+        "move1":        (B + 0x1a,          0x5A),
+        "pp1":          (B + 0x22,          0x62),
+        "ppup1":        (B + 0x26,          0x66),
+        "iv32":         (B + 0x34,          0x74),
+        "friendship":   (C + 0x1b,          0x93),
+        "ball":         (D + 0x2c,          0xDC),
+        "htrain_flags": (D + 0x2e,          0xDE),
+        "version":      (D + 0x2f,          0xDF),
+        "language":     (D + 0x33,          0xE3),
     }
     for name, (got, canon) in checks.items():
         assert got == canon, (name, hex(got), hex(canon))

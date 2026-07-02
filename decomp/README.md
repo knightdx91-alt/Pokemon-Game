@@ -343,9 +343,12 @@ in priority order:
    (four resolvers sub_3ad590/610/690/710, one per block A/B/C/D). The 128-byte
    table (VA 0x5e6994 = canonical Gen-6/7) is extracted to
    `decomp/pokepara/block_position_table.json`; verified species/item/form/move
-   offsets match canonical PK7 (`verify/verify_coreparam_layout.py`). Remaining
-   polish: enumerate the rest of the accessors (IVs/EVs/ribbons/OT) onto the
-   canonical map — mechanical now that the resolver is known.
+   offsets match canonical PK7 (`verify/verify_coreparam_layout.py`). **All the
+   common accessors are now mapped & verified** (16 fields): species/item/ID32/
+   ability/nature/form/sex/EVs in block A, moves/PP/PP-ups/IV32 in block B,
+   friendship in C, ball/hyper-training-flags/version/language in D — each read
+   straight from its accessor and confirmed against the canonical absolute PK7
+   offset. Resolvers: A=sub_3ad590, B=sub_3ad610, C=sub_3ad694, D=sub_3ad718.
 2. **Struct/class reconstruction** (steady; the readability multiplier) — name
    the battle-pokemon struct fields (HP @0xe/0xd, step @0xa94, ballId @0x220,
    move-calc block power@0x10/type@6/dmgType@7) and CoreParam, so `decomp/src`

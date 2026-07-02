@@ -50,25 +50,64 @@ static uint8_t* ResolveBlock(uint8_t* boxblob, Block block) {
 // (each is wrapped by Decrypt/Encrypt in the real accessor; shown here reading
 //  an already-decrypted blob for clarity)
 
-uint16_t GetMonsNo(uint8_t* blob) {              // sub_3ae004
-    return *(uint16_t*)(ResolveBlock(blob, BLOCK_A) + 0x00);   // species
+// ── Block A (sub_3ad590, absolute base 0x08) ──
+uint16_t GetMonsNo(uint8_t* blob) {              // sub_3ae004  species
+    return *(uint16_t*)(ResolveBlock(blob, BLOCK_A) + 0x00);   // abs 0x08
 }
-uint16_t GetItem(uint8_t* blob) {                // sub_3adfa4
-    return *(uint16_t*)(ResolveBlock(blob, BLOCK_A) + 0x02);   // held item
+uint16_t GetItem(uint8_t* blob) {                // sub_3adfa4  held item
+    return *(uint16_t*)(ResolveBlock(blob, BLOCK_A) + 0x02);   // abs 0x0A
 }
-uint8_t GetFormNo(uint8_t* blob) {               // sub_3adf74
-    return ResolveBlock(blob, BLOCK_A)[0x15] >> 3;             // form (bits 3+)
+uint32_t GetID(uint8_t* blob) {                  // sub_3adadc  TID|SID<<16
+    return *(uint32_t*)(ResolveBlock(blob, BLOCK_A) + 0x04);   // abs 0x0C
 }
-uint16_t GetWazaNo(uint8_t* blob, uint8_t idx) { // sub_3ae08c, idx 0..3
-    return *(uint16_t*)(ResolveBlock(blob, BLOCK_B) + 0x1a + idx * 2); // move id
+uint8_t GetTokuseiNo(uint8_t* blob) {            // sub_3ad014  ability id
+    return ResolveBlock(blob, BLOCK_A)[0x0C];                  // abs 0x14
+}
+uint8_t GetSeikaku(uint8_t* blob) {              // sub_3aca28  nature
+    return ResolveBlock(blob, BLOCK_A)[0x14];                  // abs 0x1C
+}
+uint8_t GetFormNo(uint8_t* blob) {               // sub_3adf74  form (bits 3+)
+    return ResolveBlock(blob, BLOCK_A)[0x15] >> 3;             // abs 0x1D
+}
+uint8_t GetSex(uint8_t* blob) {                  // sub_3adcb8  gender (bits 1-2)
+    return (ResolveBlock(blob, BLOCK_A)[0x15] << 29) >> 30;    // abs 0x1D
+}
+uint8_t GetEffortPower(uint8_t* blob, uint8_t stat) { // sub_3acca0..  EVs, stat 0..5
+    return ResolveBlock(blob, BLOCK_A)[0x16 + stat];          // abs 0x1E..0x23
 }
 
-// Canonical block-relative offsets for the remaining common fields (block A at
-// absolute 0x08). Kept as documentation for the next accessor-mapping pass:
-//   A: species 0x00, item 0x02, TID 0x04, SID 0x06, exp 0x08, ability 0x0C,
-//      nature 0x14, form 0x15, EVs 0x1E..0x23
-//   B: moves 0x1a..0x21 (4×u16), PP 0x22..0x25, PP-ups 0x26..0x29, IVs u32 0x34
-//   C: nickname 0x00.. (u16 chars), OT/handler flags
-//   D: OT name, met data
+// ── Block B (sub_3ad610, absolute base 0x40) ──
+uint16_t GetWazaNo(uint8_t* blob, uint8_t idx) { // sub_3ae08c  move id, idx 0..3
+    return *(uint16_t*)(ResolveBlock(blob, BLOCK_B) + 0x1a + idx * 2); // abs 0x5A
+}
+uint8_t GetWazaPP(uint8_t* blob, uint8_t idx) {  // sub_3adb10  current PP
+    return ResolveBlock(blob, BLOCK_B)[0x22 + idx];           // abs 0x62
+}
+uint8_t GetWazaPPUpCount(uint8_t* blob, uint8_t idx) { // sub_3ad52c  PP-ups used
+    return ResolveBlock(blob, BLOCK_B)[0x26 + idx];           // abs 0x66
+}
+uint8_t GetTalentPower(uint8_t* blob, uint8_t stat) { // sub_3ae690  IV, stat 0..5
+    // hyper-trained stats read back as 31 (flag byte @ block D +0x2e, abs 0xDE)
+    if (ResolveBlock(blob, BLOCK_D)[0x2e] & (1 << stat)) return 31;
+    uint32_t iv32 = *(uint32_t*)(ResolveBlock(blob, BLOCK_B) + 0x34); // abs 0x74
+    return (iv32 >> (5 * stat)) & 0x1f;                       // 5 bits/stat
+}
+
+// ── Block C (sub_3ad694, absolute base 0x78) ──
+uint8_t GetFamiliarity(uint8_t* blob) {          // sub_3ad1c0  friendship
+    // current-handler flag @ C+0x1b (abs 0x93) selects HT vs OT friendship byte
+    return ResolveBlock(blob, BLOCK_C)[0x1b];                 // abs 0x93
+}
+
+// ── Block D (sub_3ad718, absolute base 0xB0) ──
+uint8_t GetGetBall(uint8_t* blob) {              // sub_3ac940  caught-in ball
+    return ResolveBlock(blob, BLOCK_D)[0x2c];                 // abs 0xDC
+}
+uint8_t GetCassetteVersion(uint8_t* blob) {      // sub_3ad7fc  game of origin
+    return ResolveBlock(blob, BLOCK_D)[0x2f];                 // abs 0xDF
+}
+uint8_t GetLangId(uint8_t* blob) {               // sub_3adfd0  language
+    return ResolveBlock(blob, BLOCK_D)[0x33];                 // abs 0xE3
+}
 
 }} // namespace pml::pokepara
