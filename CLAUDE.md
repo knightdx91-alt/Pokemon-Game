@@ -515,23 +515,90 @@ reproduce `source/nds/IRBO/` in a fresh session; it's gitignored.
   stitching looks incoherent" mystery: **matrix 0 is the one real
   contiguous Unova overworld**; most of the other 254 matrices are small
   per-interior matrices, so stitching those never looks like an overworld.
-- **What's still open** (each is its own reverse-engineering sub-project,
-  none started from a documented spec):
-  1. Warp destination + NPC/event data — zone-header off 10 (or the off 6/8
-     pair) very likely indexes the events archive; `a/1/2/5` (428 members)
-     is the size-profile favorite. Untested.
-  2. Prop placement (the `WB` tail-block's 16-byte records) + the prop-model
-     archive (`a/0/4/9`, 758 BTX0-containing members, is the candidate) —
-     buildings/trees are missing from textured renders until this is done.
-  3. The `GC`/`NG`/`RD`-magic land-cells (~266 of 649).
-  4. The full textured-render pipeline (`render_bw_maps.py` mirroring
-     `render_platinum_maps.py` steps: per-zone texset resolution → bake
-     `data/maps/unova_textured/*.png` → set `background` on layouts → real
-     map names from zone table instead of "Unova Area <N>") — all the hard
-     unknowns for the base terrain are now solved, this is mostly plumbing.
-  5. Seasonal variants: 4 music ids per zone and multiple texture sets
-     matching the same texture names suggest per-season texture sets;
-     pick one season (spring) for consistency.
+#### ▶ NEXT SESSION — pick up here (Unova textured maps, step by step)
+
+**Session bootstrap (10 min, do this first — extraction is gitignored/ephemeral):**
+```
+# 1. Download the ROM (user's Drive link, verified working) + decomp it:
+curl -sSL "https://drive.usercontent.google.com/download?id=1uog4J8pUbTiNYptaoWAbdrY0E5HMEqwD&export=download&confirm=t" -o /tmp/pokemon-black.nds
+python3 tools/nds_decomp.py /tmp/pokemon-black.nds -o source/nds/IRBO
+# 2. Deps for the render pipeline:
+pip install pillow numpy
+# 3. Sanity-check the whole decoded chain still works (prints zone 389 =
+#    matrix 0, texset 2, 'Nuvema Town'):
+python3 tools/bw_common.py
+```
+**Quick re-validation of the textured render** (the exact PoC that produced
+the Nuvema Town image): parse land-cell 0 via `bw_common.load_land_cell(0)`,
+`g3d.find_model()` its `model_bytes`, `g3d.find_tex0()` on
+`source/nds/IRBO/unpacked/a/0/1/4/0002.nsbtx`, rasterize via
+`render_platinum_maps._draw_model_triangles(fb, yb, model, tex,
+model.up_scale, 0, 24)` into a 512-wide numpy RGBA framebuffer.
+
+**Work items, in priority order** (1–3 = the "look like Platinum" goal;
+4–6 = full parity):
+
+1. **Build `tools/render_bw_maps.py`** (the batch textured renderer —
+   mostly plumbing now, all base-terrain unknowns are solved). Mirror
+   `render_platinum_maps.py`; reuse its `rasterize_triangle` /
+   `_draw_model_triangles` / `texture_rgba` (model-agnostic — imports fine).
+   Per zone (from `bw_common.load_zone_headers()`): resolve matrix →
+   land-cells (`load_matrix`), texset (`a/0/1/4/<texset:04d>.nsbtx`), render
+   each land-cell (and multi-cell zones stitched by matrix position) →
+   `data/maps/unova_textured/<name>.png` at 16px/tile (512px per 32-tile
+   cell). Land-cell world scale: `model.up_scale` (observed 64.0), map
+   spans ±(16*up_scale?) — the PoC just used the Platinum HALF_UNITS=256
+   offset and it aligned; verify alignment against the collision grid
+   before batch-baking.
+   ⚠ Multiple zones share matrix 0 (the overworld) — for those, either
+   render per-zone crops (needs the zone→matrix-rect mapping, not yet
+   found) or render each matrix-0 land-cell once with the texset of any
+   matrix-0 zone (texsets 0–30ish are the seasonal overworld sets; verify
+   which by texture-name overlap, like the PoC did).
+2. **Rewire `extract_bw_maps.py` to be zone-driven instead of
+   land-cell-driven**: emit one map per *zone* (427) named from the zone
+   table (`name_id` → text bank 89, e.g. "Nuvema Town", disambiguate
+   duplicates with a suffix), layout = the zone's matrix's land-cell grid
+   (real collision, already working), `background` = the baked PNG from
+   step 1 (engine already draws `layout.background` — zero engine work,
+   same path Sinnoh uses), `tileset` = `unova_placeholder` kept as
+   fallback. Regenerate `unova_index.json`; keep `game.html?map=…&region=
+   unova` loading. Delete/regenerate the old `area_NNNN` files.
+3. **Props (buildings/trees)** — without these, town renders have empty
+   plazas where houses belong. Two halves:
+   a. Placement: decode the `WB` tail-block (u32 count + count×16-byte
+      records; compare across cells whose renders show where buildings
+      obviously belong — Nuvema cell 0's plaza gives known-good expected
+      positions). Platinum's prop struct was id + fx32 pos/rot/scale in
+      48 bytes; BW squeezed it into 16, so expect id + 3 packed coords.
+   b. Models: find the prop-model archive. Candidate: `a/0/4/9` (758
+      members with BTX0 — but props need geometry too, so look for BMD0
+      members there or a sibling NARC; magic-scan for BMD0 the way BTX0
+      was found).
+4. **Warps + NPCs/events** — zone-header off 10 (u16, unique per zone,
+   max ~468) is the prime candidate archive index; `a/1/2/5` (428 members,
+   variable size, structured) is the size-profile favorite target. Test:
+   for a zone with known door positions (Nuvema: 6 houses/lab), open
+   `a/1/2/5/<off10>.bin` and look for those tile coordinates as u8/u16
+   pairs. The in-map warp *tiles* are already known (per-tile field3
+   bit15) — only destinations are missing. Wire into the existing
+   `warps`/`npcs` map-JSON fields (engine handles the rest).
+5. **`GC`/`NG`/`RD` land-cell containers** (~266 of 649) — same WB-style
+   sub-offset header? Diff their first 32 bytes against WB cells; GC is
+   likely the same grid without a model or with extra blocks. Decode →
+   more maps convert.
+6. **Seasons**: 4 music ids per zone + several texsets sharing the same
+   texture names = per-season texture sets. Pick spring consistently for
+   baking; a future enhancement could bake all 4 and swap by real date.
+
+**Key facts to not re-derive** (all in `tools/bw_common.py` docstring too):
+`a/0/0/8`=649 land-cells (WB container, 32×32×8-byte tile grid, embedded
+geometry-only BMD0); `a/0/0/9`=255 matrices (matrix 0 = the real contiguous
+overworld, rest are interiors); `a/0/1/2`=427×48-byte zone headers (texset
+@2, matrix @4, scripts @6/8, events? @10, seasonal music @12–18, parent
+@24, name_id u8 @26); `a/0/1/4`=282 field texsets (NSBTX); text bank 89 =
+117 location names; collision = tile field3 bit0, warp-marker = bit15;
+`nitro_g3d.py` + the Platinum rasterizer work on BW data UNCHANGED.
 
 ### Planned: fan-game map converters (NOT built yet)
 Two converters discussed as future capability for pulling maps out of other
