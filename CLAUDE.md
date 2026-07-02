@@ -966,6 +966,41 @@ rodata pointer tables are zero on disk, filled at load (recovered by
 
 ---
 
+## Active decomp projects (games we are working on)
+
+Non-Pokémon reverse-engineering / decompilation efforts tracked alongside this
+repo. These are separate from the Pokémon RPG but share the RE tooling mindset.
+
+### Orcs & Elves (Nintendo DS, `YOEE`) — decomp in progress
+- **What:** full matching decomp of *Orcs & Elves* DS (id Software / EA /
+  Fountainhead) — hand-written C/ASM that links back to a **byte-identical**
+  `.nds` (pokered/pokeemerald standard).
+- **ROM:** user-supplied dump (USA, En/Fr/De/Es/It). **No ROM bytes or extracted
+  assets are committed** — source + tools only; users supply their own dump.
+- **Workspace:** currently in the session scratchpad `oe_decomp/` (NOT yet in
+  this repo — it's a distinct project; decide before committing). Layout:
+  `tools/` (extract, disasm, blz, dump_strings), `asm/`, `docs/`, `assets_spec/`,
+  `src/`+`include/`.
+- **Foundation done:**
+  - Extraction — 170 NitroFS files + arm9/arm7, all 133 LZ10 assets decoded.
+  - **ARM9 disasm — 115,540 insns / 7,183 funcs / 99.6% coverage.**
+  - ARM7 disasm — 39,280 insns / 3,254 funcs.
+  - Strings dumped (6 languages); formats drafted (BGR555 palettes, GX models,
+    `.bsp` maps, entities, sounds, UI).
+- **Key fact learned:** the ARM9 is **NOT compressed** (`compressed_static_end`
+  in ModuleParams is `0`). The initial "only 9 instructions" was a disassembler
+  artifact — capstone halts on the first undecodable word, and the ARM9 opens
+  with a `0x800` encrypted secure area (`e7ffdeff` UDF padding). Fix: skip the
+  secure area and continue past non-code gaps.
+- **Roadmap:** `docs/ROADMAP.md` — Phase 0 matching build harness + `sha1sum`
+  gate → segmentation/compiler fingerprint → SDK/libc first → format loaders
+  (cross-validated by exporters) → game logic → cleanup. Est. a few engineer-
+  months for a first full match; Phases 2–4 parallelize by subsystem.
+- **Next action:** stand up the Phase 0 `Makefile` + hash gate from 100% ASM
+  (prove the loop), then generate `funcs.csv` and decompile `_start`.
+
+---
+
 ## What needs to be done (priority order)
 
 ### Pokémon RPG (index.html / src/)
