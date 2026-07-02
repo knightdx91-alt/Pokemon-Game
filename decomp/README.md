@@ -398,8 +398,18 @@ in priority order:
    14=BoxPokemon, 18=Fashion, 21=JoinFestaDataSave, 27=MysteryGiftSave,
    29=PokeFinderSave. MyStatus is content-verified in a real save (OT "Lylliana"
    TID 37488 = the party's OT). The other 27 blocks use computed (count×elem)
-   sizes not stored as literals — resolving them needs the runtime block-factory
-   table (`tools/usum_savedump.py` reads trainer + party + box).
+   sizes not stored as literals — resolving them needs the block-factory
+   (`tools/usum_savedump.py` reads trainer + party + box).
+   **Factory hunt (`save_layout.json` → factory_investigation):** ruled out a
+   flat size table, a constructor pointer-table, RTTI symbols, and callgraph
+   edges (container init is Thumb/indirect). STRONGEST LEAD found: the block
+   class **vtables sit in a .rodata table around VA 0x64d000 in id order**
+   (MyItem@0x64d37c=block0, GameTime@0x64d3f8=block1/2, ZukanData@0x64d508=block6),
+   and the constructors likewise cluster at 0x358000–0x35d000 in id order.
+   Enumerating those vtables in address order = id order; each vtable's GetSize
+   slot yields the size and its virtuals name the class. Blocked only by unnamed
+   sub_ vtable slots in this symbol set — a fuller vtable recovery or an emulator
+   trace of the container init would name all 39. (GameTime is block 1 or 2.)
 4. **Battle-sequence handler BODIES** (deep btl grind, behavioral) — the ~150
    step-state handlers in `battle_effects/effect_handler_table.json`; decode
    per-id. Lower value: the DATA they consume is already extracted. NOTE: the

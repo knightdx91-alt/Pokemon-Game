@@ -380,5 +380,23 @@
    "crc_verified_both_saves": true
   }
  ],
- "identification": "Block id->class mapped by matching each block's unique length to the size constant that appears only inside that Savedata class's own code, or the class's size-getter return value (verify/verify_savedata_ids.py). 12 blocks identified; the rest use computed (count*elem) sizes not stored as literals and need the runtime block-factory table to resolve."
+ "identification": "Block id->class mapped by matching each block's unique length to the size constant that appears only inside that Savedata class's own code, or the class's size-getter return value (verify/verify_savedata_ids.py). 12 blocks identified; the rest use computed (count*elem) sizes not stored as literals and need the runtime block-factory table to resolve.",
+ "factory_investigation": {
+  "goal": "map all 39 block ids to Savedata classes via the container's construction order",
+  "result": "12/39 identified (see per-block class fields); remaining 27 need dynamic tracing",
+  "approaches_tried_and_failed": [
+   "flat size table: the 39 lengths are NOT stored as a consecutive u32 array anywhere",
+   "constructor pointer-table: no rodata/data array of Savedata constructor VAs (>=6 together) found",
+   "RTTI: no 'vtable for'/'typeinfo for Savedata::*' symbols in the recovered symbol tables",
+   "callgraph: no common caller of the block constructors (ARM-only graph; container init is Thumb/indirect)",
+   "size-getters: only small blocks (ConfigSave 0x4, MyStatus 0xc0, UnionPokemon 0x30c) return a literal; large block sizes are computed (count*elem) at runtime",
+   "code-layout order: min-address per class does NOT match id order; even the 4 named constructors share a cluster (0x358000-0x35d000) but other methods scatter"
+  ],
+  "leads": [
+   "the 4 NAMED constructors (MyItem@0x35881c, GameTime@0x359884, MyStatus@0x359ca4, ZukanData@0x35d0bc) ARE in id order (block 0, ~1/2, 3, 6) -> GameTime is block 1 or 2",
+   "each block ctor stores a vtable ptr then calls a base-init (e.g. GameTime -> sub_359548); resolving the vtables (no RTTI) would name every block",
+   "the true block table (offset/size/checksum-slot per id) is built at runtime; an emulator trace of the container init would dump id->class directly",
+   "STRONGEST LEAD: block class vtables sit in a table in .rodata around VA 0x64d000 in id order (MyItem@0x64d37c=block0, GameTime@0x64d3f8=block1/2, ZukanData@0x64d508=block6). Constructors likewise cluster at 0x358000-0x35d000 in id order. Enumerating the ~39 vtables in address order = id order; each vtable's GetSize slot returns the block size (matchable to the layout) and its virtual methods name the class. Blocked only because most vtable slots point to unnamed sub_ thunks in this symbol set; a fuller vtable/RTTI recovery or an emulator trace of the container init would name all 39."
+  ]
+ }
 }
