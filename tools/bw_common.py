@@ -188,8 +188,9 @@ def parse_props(d, tail_off):
           off 10  s16  z  integer tile, relative to cell centre
           off 12  u16  rot  rotation about the up axis (0x10000 == 360 deg)
           off 14  u8   flag (usually 0, occasionally 1 — bank/subtype?)
-          off 15  u8   model_id  (indexes the field object-model archive
-                                  a/1/6/0; see tools/render_bw_maps prop notes)
+          off 15  u8   model_id  (id of the object model to place; the archive
+                                  it indexes is NOT yet identified — a/1/6/0
+                                  direct-index is disproven, see CLAUDE.md)
 
     Returns list of dicts: {x, y, z, rot, model_id, flag} with x/y/z in tiles
     relative to the cell centre (multiply by 16 for base-map world units).

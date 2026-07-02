@@ -594,23 +594,32 @@ model.up_scale, 0, 24)` into a 512-wide numpy RGBA framebuffer.
       the Nuvema render — every prop lands on a path edge where a house/lab/
       sign actually sits. Nuvema (cell 0) = 10 props: id 69 ×3 (houses),
       id 6 (lab), plus signs/objects.
-   b. Models: ⏳ **PARTIAL** — the field object-model archive is **`a/1/6/0`**
-      (252 members, 81 `BMD0`, laid out as `[BMD0 + its BTA0/BCA0/BMA0/BTP0/
-      BVA0 animations]` runs). **Direct index works for many ids**: `model_id`
-      69 and 6 land straight on the correct `BMD0` house/lab models and
-      render as real buildings at the validated positions (see the PoC — the
-      three id-69 houses + the id-6 lab appear correctly on the grass). But
-      the id space runs to 246 while `a/1/6/0` has only 81 `BMD0`, and some
-      ids (e.g. 5, 152, 153, 193) direct-index onto *animation* members, so
-      **the full `model_id → model` mapping needs an index/indirection table
-      that is not yet found**. ⚠ Do NOT use "nearest preceding BMD0" as a
-      fallback — it maps id 5 → member 3 (a huge up_scale=64 Castelia tower)
-      and wrecks the render. Next: look for the id→member table in the small
+   b. Models: ❌ **NOT solved — do not trust `a/1/6/0` direct-index.**
+      `a/1/6/0` (252 members, 81 `BMD0`, laid out as `[BMD0 + its BTA0/BCA0/
+      BMA0/BTP0/BVA0 animations]` runs) was *hypothesised* as the field
+      object-model archive, but this is UNCONFIRMED and direct-indexing it by
+      `model_id` is wrong:
+        - Direct-indexed models render as small blobs sitting in the right
+          places, which *looks* plausible but is a coincidence of placement,
+          not correct art. Checking the geometry disproves the mapping:
+          `a/1/6/0[69]` has y ∈ [-0.2, 0.5] (a FLAT ground patch, not a
+          house); `a/1/6/0[6]` is a thin tall billboard (a sign, only 1724 B,
+          far too small for a lab). So "id 69 = house / id 6 = lab" is FALSE.
+        - The id space runs to 246 while `a/1/6/0` has only 81 `BMD0`, and
+          several ids (5, 152, 153, 193, …) direct-index onto *animation*
+          members. ⚠ Do NOT use "nearest preceding BMD0" as a fallback — it
+          maps id 5 → member 3, a huge up_scale=64 Castelia-style tower, and
+          buries the whole map.
+      **Still open:** which archive holds the actual building models, and the
+      `model_id → model` index table. Leads to try next session: (1) the small
       companion NARCs `a/1/6/1` (3852 B), `a/1/6/3` (416 B), `a/1/6/5`
-      (1560 B), `a/1/6/6` (448 B); or test whether the `flag` byte (0/1)
-      selects a second model bank. Prop models carry their own `TEX0` (fall
-      back to the map texset if absent) and use the same world-translate as
-      Platinum props: `world = tile*16`, vertex `+= pos/up_scale`.
+      (1560 B), `a/1/6/6` (448 B) as an id→member table; (2) whether `a/1/6/0`
+      is even right vs another large model archive; (3) whether the `flag`
+      byte (0/1) selects a model bank. Only trust a candidate once a rendered
+      model is *tall/house-shaped* AND lands on the right tile — position
+      alone is not validation (this was the mistake). Prop world-translate
+      itself is correct: `world = tile*16`, vertex `+= pos/up_scale`, own
+      `TEX0` or map texset fallback.
 4. **Warps + NPCs/events** — zone-header off 10 (u16, unique per zone,
    max ~468) is the prime candidate archive index; `a/1/2/5` (428 members,
    variable size, structured) is the size-profile favorite target. Test:
