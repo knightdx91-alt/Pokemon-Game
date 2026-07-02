@@ -789,11 +789,13 @@ All numerically verified against known game values:
 1. **Gen-7 message text — DONE ✅.** `tools/usum_text.py` decodes any text
    file (per-line XOR, PKHeX algo). `--names` → `data/pokemon/usum_names.json`
    (species/moves/abilities/items, English = lang dir 2). `usum_base_stats.json`
-   is enriched with `name`+`abilityNames`. NEXT textual work: build
-   `usum_moves.json` (GARC `a/0/1/1` move data: power/type/PP/accuracy/category,
-   join with move names 0118) and `usum_learnsets.json` (GARC `a/0/1/3`), then
-   wire the Gen-7 species/moves into the JS game (Alolan forms etc.) — same
-   `data/pokemon/` shapes the engine already consumes.
+   is enriched with `name`+`abilityNames`. **Move data + learnsets DONE ✅**:
+   `tools/usum_moves.py`→`data/pokemon/usum_moves.json` (710 moves) and
+   `tools/usum_learnsets.py`→`data/pokemon/usum_learnsets.json` (807 species),
+   both verified. NEXT: wire the Gen-7 species/moves/learnsets INTO the JS game
+   (`src/engine/battle.js` + party/summary read `data/pokemon/*.json`) so Gen-7
+   Pokémon/Alolan forms are usable — the practical payoff. Then optionally
+   encounters (GARC location) + evolutions (`a/0/1/4`).
 2. **Battle damage server** (HARD — the one big open RE problem). Battle.cro is
    the battle *scene* (graphics/UI), NOT the calc server. The type-affinity
    cluster (static 0x21c0e0..0x21c3ac) is reached ONLY by function-pointer

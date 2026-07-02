@@ -136,6 +136,17 @@ Battle.cro damage pipeline traced via the graph:
   7=Ko,8/9=Zh,0/1=Ja). Verified: #1 Bulbasaur, move1 Pound, ability1 Stench.
   `usum_base_stats.json` is now enriched with `name` + `abilityNames`
   (Charizard→Blaze/Solar Power, Lucario→Steadfast/Inner Focus/Justified — exact).
+- `tools/usum_moves.py` → `data/pokemon/usum_moves.json` (710 moves). Reads the
+  packed `a/0/1/1/0000.bin` ("WD" mini-container: u16 magic, u16 count, count+1
+  u32 offsets, 40-byte entries), joins move names (0118). Fields verified:
+  type/category/power/accuracy/pp/priority/effectChance (Flamethrower 90 Fire
+  special 10% burn; Close Combat 120 Fighting; Swords Dance status). Same
+  `{slug: {...}}` shape as `data/pokemon/moves.json`.
+- `tools/usum_learnsets.py` → `data/pokemon/usum_learnsets.json` (807 species).
+  Reads `a/0/1/3` ((u16 move, u16 level) pairs, 0xFFFF-terminated). Gotcha:
+  the extractor renames members starting with byte 0x11 to `.lz` (false LZ11
+  magic — many learnsets start with move id 0x0011); `member_bytes` tries
+  decompress then falls back to raw. Verified: Bulbasaur/Charizard/Lucario.
 
 ### Battle architecture findings (server hunt)
 - **Battle.cro is the battle *scene* module** (rendering/UI/animation:
