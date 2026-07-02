@@ -85,15 +85,49 @@ def extract(module):
             'tables': out_tables, 'stray': stray}
 
 
+def run(module, out):
+    try:
+        data = extract(module)
+    except (FileNotFoundError, struct.error):
+        return None
+    (out / f'{module}.json').write_text(json.dumps(data, indent=1))
+    return data
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('module')
+    ap.add_argument('module', nargs='?', help='module stem, or omit with --all')
+    ap.add_argument('--all', action='store_true',
+                    help='extract every CRO module + write vtables/INDEX.md')
     ap.add_argument('-o', '--out', default=str(OUT))
     args = ap.parse_args()
-    data = extract(args.module)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    (out / f'{args.module}.json').write_text(json.dumps(data, indent=1))
+
+    if args.all:
+        rows = []
+        for cro in sorted(ROM.glob('*.cro')):
+            data = run(cro.stem, out)
+            if data and data['tables']:
+                biggest = data['tables'][0]['count']
+                rows.append((cro.stem, data['total_code_ptr_slots'],
+                             len(data['tables']), biggest))
+        rows.sort(key=lambda r: -r[1])
+        with (out / 'INDEX.md').open('w') as f:
+            f.write('# CRO dispatch-table (function-pointer) inventory\n\n')
+            f.write('Per module: code-pointer slots recovered by replaying the '
+                    'internal relocation table, grouped into dispatch tables '
+                    '(handler arrays the engine indexes by id). See '
+                    '`tools/cro_vtables.py` / decomp/README.md.\n\n')
+            f.write('| Module | code-ptr slots | tables | largest |\n')
+            f.write('|---|---|---|---|\n')
+            for r in rows:
+                f.write(f'| {r[0]} | {r[1]} | {r[2]} | {r[3]} |\n')
+        print(f'{len(rows)} modules with dispatch tables; wrote {out}/INDEX.md')
+        print('top:', ', '.join(f'{r[0]}({r[1]})' for r in rows[:6]))
+        return
+
+    data = run(args.module, out)
     print(f"{args.module}: {data['total_code_ptr_slots']} code-ptr slots, "
           f"{len(data['tables'])} dispatch tables")
     for t in data['tables'][:8]:

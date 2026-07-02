@@ -223,3 +223,12 @@ rodata+0x45a0** (150 distinct handlers). This turns the pointer-dispatched
 server from "no callers findable" into a mapped set of handler tables.
 Remaining: label each table index → named battle event (needs the dispatcher's
 index source), then the damage arithmetic in `sub_9698`'s callees.
+
+`cro_vtables.py --all` maps this game-wide → `decomp/vtables/INDEX.md`: **94
+CRO modules** carry dispatch tables (Battle 2151 pointers, FieldRo/overworld
+975, BattleSpot/GTS/Resort/FinderStudio the rest). So the whole engine's
+pointer-dispatch architecture is now inventoried, not just the battle server.
+The one thing reloc replay can't give is the *index* each handler is called
+with — the table base (e.g. rodata+0x45a0) is computed at runtime from the
+CRO segment-base register (PIC), not a reloc'd literal, so per-dispatcher
+index labelling needs live PIC data-flow tracing (deferred).
