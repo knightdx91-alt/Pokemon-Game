@@ -389,23 +389,27 @@ equals its footer block length):
    which (assigned FishingSpot=22, BerrySpot=23 by convention).
 
 **Immediate next task — the move effect-id → sequence-handler dispatch** (the
-big open Phase-1 link, now approachable with `cro_emu.py`). State of the hunt:
-- The move-effect id is a Gen-7 enum 0..419 (400 distinct), move record u16 @0x10.
-- The sequence handlers live in relocation-filled tables recovered by
-  `tools/cro_vtables.py` (see `decomp/vtables/Battle.json`). Best size fits for a
-  direct effect-id index: **rodata+0x7e24 (427 entries)** and **+0x98ac (444)**;
-  also +0x67b8 (406) and the 153-entry +0x45a0 (the step-state handlers).
-- There is **no single literal-based dispatch site**: those table bases are
-  referenced only from *inside* large battle handlers (e.g. sub_c1e78 refs the
-  444-table; sub_d6bbc/d8928/d934c ref the 427-table), and the 153-table base is
-  PIC-computed at runtime. So static reading can't pin the enum→handler map.
-- NEXT APPROACH (two options): (a) locate the dispatch entry — trace which
-  function reads wazadata effectId (ParamID for effect) then indexes a 420+ table
-  — and `emu.call` it across ids 0..419; OR (b) if it needs battle context, build
-  a minimal battle-object fixture in the emulator (alloc the btl-mon struct — see
-  `BattlePokemon.h` — and the work object) and run a handler. Validate any result
-  by correlating handlers with `data/pokemon/usum_moves.json` effect semantics
-  (ids with the same effect kind should share a handler).
+big open Phase-1 link). PROGRESS THIS SESSION (`decomp/battle_effects/EFFECT_DISPATCH.md`,
+`tools/usum_effect_dispatch.py`, `verify/verify_effect_dispatch.py` PASS):
+- **Input side SOLVED — where effectId enters battle.** `sub_86e48` (move-exec
+  parameter builder) fetches it via `pml::wazadata::GetParam(WazaNo, ParamID
+  0x1b)` and stores it into the battle **work-struct field-id 0x1f** through the
+  generic setter `sub_8790c`. So the dispatcher reads **work field 0x1f**, not
+  the move record. (ParamID 0x1b = the raw effect enum in `usum_moves.json`.)
+- **Direct-index hypothesis DISPROVEN (rigorously).** Read all four candidate
+  tables out of the *relocated* module (`usum_effect_dispatch.py` via cro_emu →
+  `effect_dispatch_tables.json`; each entry = 8B `{handler, aux}`) and tested
+  `table[effectId]`: on every table, real move-effect ids fall on **null** slots
+  while unused slots carry real handlers (0x7e24: 43 used→null, 27 unused→real;
+  0x98ac: 272/21; 0x67b8: 100/20; 0x45a0: 84/11). If the index were the effect
+  id both counts would be 0 → there is an **intermediate effect-enum → sequence
+  index remap** between field 0x1f and these tables. That remap is the open link.
+- NEXT: find the **reader of work field 0x1f** (`sub_87578`/`sub_879d8` with
+  `r1=0x1f`) that consumes it — a translation table or `switch` — then `emu.call`
+  it across ids 0..419. Field-0x1f readers with indexed loads (scanned):
+  sub_12ee8 (large), sub_698bc, sub_1ac14, sub_df4c0, sub_87e7c, sub_8e520;
+  start inside the move-execution subtree reached from sub_86e48's caller.
+  Validate by correlating handlers with `usum_moves.json` effect semantics.
 Lower-priority leftovers: confirm the 22↔23 FishingSpot/BerrySpot order against a
 real save; battle-sequence handler *bodies* (per-id, deep); wild encounters
 (`a/0/8/*`).
