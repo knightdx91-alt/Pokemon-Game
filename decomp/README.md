@@ -353,8 +353,16 @@ in priority order:
    the battle-pokemon struct fields (HP @0xe/0xd, step @0xa94, ballId @0x220,
    move-calc block power@0x10/type@6/dmgType@7) and CoreParam, so `decomp/src`
    reads like real source. `tools/cro_dataflow.py --offset <N>` per field.
-3. **Save data** (`Savedata::`, tractable/verifiable) — block layout +
-   checksum/encryption; verify against a real save file.
+3. **Save data** (`Savedata::`) — checksum + block inventory DONE; per-block
+   byte offsets are the remaining piece. The block checksum is
+   `gfl2::math::Crc::Crc16` (@0x261534) = **CRC-16/USB** (poly 0x8005 reflected
+   0xA001, init/xorout 0xFFFF), decompiled to `src/gfl2/math/Crc16.cpp` and
+   verified by check value 0xB4C8 (`verify/verify_savecrc.py`); table extracted
+   to `pokepara/crc16_table.json`. The 31 save-body block classes (MyStatus,
+   MyItem, BOX/BoxPokemon, ZukanData, ResortSave, …) are inventoried in
+   `savedata/block_inventory.json`. Remaining: the byte offset/size of each
+   block within the save file — needs a real save file to verify (the one
+   input this project doesn't have yet).
 4. **Battle-sequence handler BODIES** (deep btl grind, behavioral) — the ~150
    step-state handlers in `battle_effects/effect_handler_table.json`; decode
    per-id. Lower value: the DATA they consume is already extracted.
