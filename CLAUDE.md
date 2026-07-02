@@ -847,12 +847,21 @@ All numerically verified against known game values:
      on anim state, `PokeModel::ChangeAnimation`, drives shake via `sub_7bae0`
      the throw-effect renderer). Presentation, not the calc.
    ⇒ Conclusion: the numeric shake-count/catch decision is computed **outside
-   Battle.cro's presentation layer** — either in **static `pml`** (search
-   static `.code` for the catch formula: `3*maxHP` = `add rX,rX,rX,lsl#1` near
-   an HP read + a divide, or the float shake `^0.1875` via `vsqrt`×N) or in a
-   btl server function reached by indirect dispatch. This is a dedicated
-   sub-project (like the damage server was), NOT a quick probe. Damage + type
-   + AI are DONE & verified; catch is the one remaining battle-server piece.
+   Battle.cro's presentation layer**, in a btl server function reached by
+   indirect dispatch. This is a dedicated sub-project (like the damage server
+   was), NOT a quick probe. Damage + type + AI are DONE & verified; catch is
+   the one remaining battle-server piece.
+   Static-`pml` angle also tried & RULED OUT (don't repeat): **no static
+   function calls both `CoreParam::GetHp` (0x3af3fc) and `GetMaxHp` (0x3af5bc)**
+   → the catch calc reads target HP from the **battle-pokemon struct fields**
+   (like the damage server reads stats), not the pml CoreParam getters. And the
+   structural fingerprints are too noisy to isolate (`×3` add + `cmp #0xff`:
+   16 static / 41 Battle hits; `vsqrt`≥2: 69 static, all geometry/rendering).
+   PROMISING UNTRIED ANGLE for next time: the btl battle-pokemon struct loads
+   catch rate once at init via `pml::personal` — find that field, then use
+   `cro_dataflow.py --offset <that field>` in Battle.cro filtered to a divide;
+   OR trace the throw-action's *execute* handler (not the +0xd4 getter) through
+   `cro_vtables.py` by identifying the action class's vtable base first.
 3. **More verified functions** are getting scarce — the clean self-contained
    `pml` formulas are largely mined out (remaining ones delegate to field
    accessors or use load-time-relocated pointers, e.g. the berry-taste table
