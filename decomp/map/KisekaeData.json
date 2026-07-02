@@ -230,5 +230,24 @@
    ],
    "demangled": "strcmp"
   }
- ]
+ ],
+ "veneers": {
+  "0": "gfl2::debug::GFLassert(char const*, unsigned int, int, char const*)",
+  "8": "strcmp",
+  "16": "__cxa_guard_acquire",
+  "24": "__cxa_guard_release",
+  "32": "gfl2::renderingengine::scenegraph::Inheritance::Generate(gfl2::renderingengine::scenegraph::Inheritance const*, gfl2::util::FnvHash)",
+  "1852": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance",
+  "1860": "guard variable for gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash",
+  "1864": "gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash",
+  "1884": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance",
+  "1888": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance",
+  "1892": "guard variable for gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash",
+  "1896": "gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash",
+  "1928": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance",
+  "1932": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance",
+  "1936": "guard variable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash",
+  "1940": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash",
+  "1996": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+ }
 }

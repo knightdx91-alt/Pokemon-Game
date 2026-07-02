@@ -94,8 +94,22 @@ def parse_module(path):
                          {i['mangled'] for i in imports}))
     for rec in (*exports, *imports):
         rec['demangled'] = dm.get(rec['mangled'], rec['mangled'])
+
+    # Import veneers: each named import's patch site in the text segment is a
+    # literal word holding the resolved address, loaded by an `ldr pc,[pc,#-4]`
+    # thunk 4 bytes earlier. In-module callers `bl`/`b` to that thunk address,
+    # so mapping thunk_addr -> imported symbol makes cross-module calls
+    # resolvable in disassembly. (This indirection — not a decoder bug — is why
+    # a naive patch-offset->caller lookup failed earlier.)
+    veneers = {}
+    for imp in imports:
+        for p in imp['patches']:
+            if p['seg'] == 0 and p['offset'] >= 4:
+                veneers[p['offset'] - 4] = imp['demangled']
+
     return {'module': path.name, 'size': len(d), 'segments': segs,
-            'exports': exports, 'imports': imports}
+            'exports': exports, 'imports': imports,
+            'veneers': {str(k): v for k, v in sorted(veneers.items())}}
 
 
 def main():

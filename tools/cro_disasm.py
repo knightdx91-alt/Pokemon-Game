@@ -93,6 +93,9 @@ def disasm_function(name, query):
     if not f:
         sys.exit(f'no function matching {query!r} in {name}')
     by_addr = {fn['addr']: fn['name'] for fn in funcs}
+    # Import veneers (thunk addr -> imported symbol), so cross-module `bl`s
+    # to another CRO's function get labeled with the real callee name.
+    veneers = {int(k): v for k, v in rec.get('veneers', {}).items()}
     ann = patch_annotations(rec)
     md = Cs(CS_ARCH_ARM, CS_MODE_ARM)
     print(f'; {name} :: {f["name"]}  ({f["size"]} bytes at {f["addr"]:#x})')
@@ -102,7 +105,8 @@ def disasm_function(name, query):
         if not note and ins.mnemonic in ('bl', 'b', 'blx'):
             m = re.match(r'#(0x[0-9a-f]+|\d+)', ins.op_str)
             if m:
-                note = by_addr.get(int(m.group(1), 0))
+                tgt = int(m.group(1), 0)
+                note = veneers.get(tgt) or by_addr.get(tgt)
         print(line + (f'    ; -> {note}' if note else ''))
 
 

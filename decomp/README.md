@@ -75,17 +75,25 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
      (`src/pml/pokepara/ExpLevel.cpp`) — the growth-table scan (curves
      themselves are data-driven, loaded by pml::personal).
 
+### Cross-module call resolution (import veneers) — WORKING
+`cro_map.py` now emits a `veneers` map per module. Mechanism: a named
+import's patch site in the text segment is a literal word that receives the
+resolved address at load; an `ldr pc,[pc,#-4]` thunk 4 bytes earlier is what
+in-module code actually branches to. `cro_disasm.py` labels `bl`/`b`/`blx`
+to a thunk with the imported symbol, so cross-module calls read naturally
+(e.g. `bl #0x60 ; -> pml::wazadata::GetPower(WazaNo)`).
+(My earlier "patch decoder bug" note was a misdiagnosis — the decoder was
+correct; the confusion was this veneer indirection plus a bisect wrap-around
+in a throwaway debug script.)
+
 ### Known next targets / open issues
-- **Damage formula** (`btl`, internal/unnamed in Battle.cro): located the
-  unique function reachable from `TypeAffinity::CalcAffinity` +
-  `wazadata::GetPower`, but resolving its exact address is blocked by a
-  bug in the phase-2 **import patch decoder** — the per-import relocation
-  offsets come out too small (0x64, 0x16dc) to be real text offsets, so the
-  entry stride / segment-tag decoding in `cro_map.py:parse_patch_list` is
-  wrong. Fixing that reloc walk is the prerequisite for a reliable
-  cross-module call graph (and for pinning the damage function). Until then
-  export→address mapping (used for all functions decompiled so far) is solid;
-  only import *call-site* mapping is affected.
+- **Damage formula** (`btl`, internal/unnamed in Battle.cro): `sub_9348`
+  (the move base-power/type/IsDamage setup) is decoded; the type-effectiveness
+  step calls `TypeAffinity::CalcAffinity`/`MulAffinity` **indirectly** through
+  a function-pointer table (no direct `bl` to the veneer), so pinning the
+  exact damage function needs indirect-call/data-flow analysis — tracing where
+  the thunk address (0x16d8/0x16d0) is loaded into a register. That's the next
+  RE step; export→address mapping for everything decompiled so far is solid.
 5. **Struct recovery** — rebuild headers (`pml::pokepara::CoreParam`,
    save blocks, …) from access patterns + community docs (pk3DS, PKHeX
    research already names many USUM structures — cross-reference).
