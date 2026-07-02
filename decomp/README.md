@@ -77,6 +77,10 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
    - `pml::pokepara::CoreParam::IsRare` (`src/pml/pokepara/Shiny.cpp`) — the
      shininess check `(TID^SID^PID_hi^PID_lo) < 16`; threshold-16 boundary
      verified exact.
+   - `pml::pokepara::CoreParam::GetMezapaType`
+     (`src/pml/pokepara/HiddenPower.cpp`) — Hidden Power type from the six IV
+     low bits, `sum·15/63`; uses *native* (pre-Hyper-Training) IVs. Verified
+     (all-even→Fighting, all-odd→Dark).
 
 ### Cross-module call resolution (import veneers) — WORKING
 `cro_map.py` now emits a `veneers` map per module. Mechanism: a named
