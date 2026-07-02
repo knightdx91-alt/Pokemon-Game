@@ -1680,6 +1680,43 @@ window.GameStartMenu = (function () {
         });
     }
 
+    // ── Platinum summary-screen assets (real pret/pokeplatinum extraction —
+    //    NSCR tilemaps + NCGR tiles + palettes composited to PNG by a one-off
+    //    tool; see baked output under src/assets/platinum/summary/). ──
+    var PLAT_SUM_DIR = 'src/assets/platinum/summary/';
+    var PLAT_SUM_BG = { info:'page_info.png', skills:'page_skills.png',
+                         battle_moves:'page_battle_moves.png', contest_moves:'page_contest_moves.png' };
+    var _platSum = null, _platSumLoading = false, _platSumQ = [];
+    function _loadPlatSummary(cb) {
+        if (_platSum) { cb(_platSum); return; }
+        _platSumQ.push(cb);
+        if (_platSumLoading) return;
+        _platSumLoading = true;
+        var a = { bg: {}, status: [] };
+        var bgKeys = Object.keys(PLAT_SUM_BG);
+        var pending = bgKeys.length + 7;
+        function done() {
+            if (--pending > 0) return;
+            _platSum = a; _platSumLoading = false;
+            var q = _platSumQ; _platSumQ = [];
+            q.forEach(function(f) { f(a); });
+        }
+        bgKeys.forEach(function(k) {
+            var im = new Image();
+            im.onload = function() { a.bg[k] = im; done(); };
+            im.onerror = function() { done(); };
+            im.src = PLAT_SUM_DIR + PLAT_SUM_BG[k];
+        });
+        for (var s = 0; s < 7; s++) (function(s) {
+            var im = new Image();
+            im.onload = function() { a.status[s] = im; done(); };
+            im.onerror = function() { done(); };
+            im.src = PLAT_SUM_DIR + 'status_' + s + '.png';
+        })(s);
+    }
+    // status_N.png order verified visually: 0=PKR 1=PAR 2=FRZ 3=SLP 4=PSN 5=BRN 6=FNT
+    var PLAT_STATUS_IDX = { para:1, freeze:2, sleep:3, poison:4, badpoison:4, burn:5 };
+
     function _openPartySummary(mon, idx, filled, returnCb) {
         var subEl = document.getElementById('start-menu-sub');
         if (!subEl) return;
@@ -1688,20 +1725,24 @@ window.GameStartMenu = (function () {
         if (existing) existing.remove();
         var win = document.createElement('div');
         win.className = 'sm-win party-summary-overlay';
-        win.style.cssText = 'position:absolute;left:3.3%;top:5%;width:90%;height:90%;pointer-events:all;overflow:hidden;z-index:20;';
+        win.style.cssText = 'position:absolute;left:3.3%;top:5%;width:90%;height:90%;pointer-events:all;overflow:hidden;z-index:20;background:#000;';
         subEl.appendChild(win);
 
-        var S = 2;
+        // Native Platinum single-screen resolution (256×192) — kept exact so
+        // the composited background PNGs need no resampling.
+        var SW = 256, SH = 192, S = 2;
         var canvas = document.createElement('canvas');
-        canvas.width = GBA_W * S; canvas.height = GBA_H * S;
+        canvas.width = SW * S; canvas.height = SH * S;
         canvas.style.cssText = 'width:100%;height:100%;image-rendering:pixelated;display:block;';
         win.appendChild(canvas);
         var ctx = canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false;
 
+        var TAB_KEYS = ['info', 'skills', 'battle_moves', 'contest_moves'];
         var TABS = ['Pokémon Info', 'Pokémon Skills', 'Battle Moves', 'Contest Moves'];
         var _tab = 0;
         var _frontImg = null;
+        var _pa = null; // FireRed font assets (reused for text rendering)
 
         var TYPE_COLORS_SUM = {
             Normal:'#a8a878',Fire:'#f08030',Water:'#6890f0',Electric:'#f8d030',
@@ -1725,245 +1766,119 @@ window.GameStartMenu = (function () {
             img.onerror = function() { drawSummary(); };
             img.src = 'data/sprites/pokemon/front/' + name + '.png';
         });
+        _loadPartyAssets(function(pa) { _pa = pa; drawSummary(); });
+        _loadPlatSummary(function() { drawSummary(); });
+
+        // Draw text with the bundled FireRed bitmap font (matches the rest
+        // of the sub-menus); returns the drawn width.
+        function T(text, gx, gy, opts) {
+            opts = opts || {};
+            if (!_pa) return 0;
+            var kind = opts.kind === 'normal' ? 'normal' : 'small';
+            var fontImg = kind === 'normal' ? _pa.img.font_normal : _pa.img.font_small;
+            var color = opts.color || '#181818';
+            var tinted = _tintFont(fontImg, color, opts.shadow || color);
+            var w = _measureText(_pa.meta, kind, text);
+            var x = gx;
+            if (opts.align === 'right') x = gx - w;
+            else if (opts.align === 'center') x = gx - w / 2;
+            _drawFRText(ctx, tinted, _pa.meta, kind, text, x, gy, S);
+            return w;
+        }
 
         function drawSummary() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.imageSmoothingEnabled = false;
 
-            // Right panel purple bg (EE ref)
-            ctx.fillStyle = '#7858b0';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Header bar (purple gradient)
-            var hdrGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
-            hdrGrad.addColorStop(0, '#8848b8'); hdrGrad.addColorStop(0.6, '#c878e8'); hdrGrad.addColorStop(1, '#e8a8f8');
-            ctx.fillStyle = hdrGrad;
-            ctx.fillRect(0, 0, canvas.width, 14*S);
-
-            // Tab title (small sans-serif, EE style)
-            ctx.font = 'bold '+(7*S)+'px Arial, sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(TABS[_tab], 6*S, 7*S);
-
-            // 4 tab dots
-            for (var ti = 0; ti < 4; ti++) {
-                ctx.fillStyle = ti === _tab ? '#ffffff' : 'rgba(255,255,255,0.4)';
-                ctx.beginPath(); ctx.arc((GBA_W/2 - 14 + ti*10)*S, 7*S, 2*S, 0, Math.PI*2); ctx.fill();
-            }
-
-            // "A Cancel" right
-            ctx.font = (7*S)+'px Arial, sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.textAlign = 'right';
-            ctx.fillText('A Cancel', (GBA_W-4)*S, 7*S);
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'top';
-
-            // Left panel (teal, EE ref)
-            ctx.fillStyle = '#88b098';
-            ctx.fillRect(0, 14*S, 88*S, 134*S);
-            ctx.fillStyle = '#a0c8b0';
-            ctx.fillRect(87*S, 14*S, S, 134*S);
-
-            // Dex number + gender
-            ctx.font = (7*S)+'px Arial, sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.textBaseline = 'top';
-            var _dexNum = (typeof mon.speciesId === 'number') ? mon.speciesId :
-                ((_pokedexNumMap && Object.keys(_pokedexNumMap).find(function(k){ return _pokedexNumMap[k] === (mon.speciesId||'').toLowerCase(); })) || '???');
-            ctx.fillText('No.' + String(_dexNum).padStart(3,'0'), 4*S, 16*S);
-            if (mon.gender) {
-                ctx.fillStyle = mon.gender === 'M' ? '#80b8ff' : '#f87898';
-                ctx.fillText(mon.gender === 'M' ? '♂' : '♀', 50*S, 16*S);
-            }
-
-            // Front sprite
-            if (_frontImg) {
-                ctx.drawImage(_frontImg, Math.round((44-32)*S), 24*S, 64*S, 64*S);
+            var bg = _platSum && _platSum.bg[TAB_KEYS[_tab]];
+            if (bg) {
+                ctx.drawImage(bg, 0, 0, SW, SH, 0, 0, canvas.width, canvas.height);
             } else {
-                ctx.fillStyle = 'rgba(255,255,255,0.12)';
-                ctx.beginPath(); ctx.arc(44*S, 56*S, 28*S, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#3868c0';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            if (!_pa) return;
+
+            // ── Left column (persistent chrome, same on every tab) ──
+            T(_monDisplayName(mon).toUpperCase(), 10, 26, { color:'#181818' });
+            T('Lv' + (mon.level || 1), 10, 51, { color:'#484848' });
+            if (mon.gender === 'M') T('♂', 60, 51, { color:'#3868c0' });
+            else if (mon.gender === 'F') T('♀', 60, 51, { color:'#d84070' });
+
+            if (_frontImg) {
+                var dw = 64, dh = 64;
+                ctx.drawImage(_frontImg, Math.round((56 - dw/2) * S), Math.round((100 - dh/2) * S), dw * S, dh * S);
+            }
+            var stIdx = null;
+            if (mon.maxHp > 0 && (mon.currentHp || 0) <= 0) stIdx = 6;
+            else if (mon.statusCondition) stIdx = PLAT_STATUS_IDX[mon.statusCondition];
+            if (stIdx != null && _platSum && _platSum.status[stIdx]) {
+                ctx.drawImage(_platSum.status[stIdx], 66 * S, 70 * S, 32 * S, 16 * S);
             }
 
-            // Species name + nickname
-            ctx.font = (8*S)+'px Arial, sans-serif';
-            ctx.fillStyle = '#ffffff';
-            var speciesStr = (typeof mon.speciesId === 'string') ? mon.speciesId : ('No.'+_dexNum);
-            ctx.fillText(speciesStr, 4*S, 92*S);
-            ctx.fillStyle = '#c0e8d0';
-            ctx.fillText('/' + _monDisplayName(mon), 4*S, 103*S);
+            var dexNum = (typeof mon.speciesId === 'number') ? mon.speciesId :
+                ((_pokedexNumMap && Object.keys(_pokedexNumMap).find(function(k){ return _pokedexNumMap[k] === (mon.speciesId||'').toLowerCase(); })) || 0);
+            T('No.' + String(dexNum).padStart(3, '0'), 10, 159, { color:'#181818' });
+            T((typeof mon.speciesId === 'string' ? mon.speciesId : '???').toUpperCase(), 10, 173, { color:'#484848', kind:'normal' });
 
-            // Pokeball + lv + gender (bottom of left panel)
-            var pbx = 10*S, pby = 120*S;
-            ctx.fillStyle = '#e82020'; ctx.beginPath(); ctx.arc(pbx, pby, 5*S, Math.PI, 0); ctx.fill();
-            ctx.fillStyle = '#f8f8f8'; ctx.beginPath(); ctx.arc(pbx, pby, 5*S, 0, Math.PI); ctx.fill();
-            ctx.strokeStyle = '#181818'; ctx.lineWidth = S;
-            ctx.beginPath(); ctx.arc(pbx, pby, 5*S, 0, Math.PI*2); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(pbx-5*S, pby); ctx.lineTo(pbx+5*S, pby); ctx.stroke();
-            ctx.fillStyle = '#f8f8f8'; ctx.beginPath(); ctx.arc(pbx, pby, 1.5*S, 0, Math.PI*2); ctx.fill();
-            ctx.font = (8*S)+'px Arial, sans-serif';
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText('lv' + (mon.level||1), 18*S, 116*S);
-            if (mon.gender) {
-                ctx.fillStyle = mon.gender === 'M' ? '#80b8ff' : '#f87898';
-                ctx.fillText(mon.gender === 'M' ? '♂' : '♀', 56*S, 116*S);
-            }
-
-            // Right panel section helper (olive header bar, EE style)
-            function secHdr(label, gy) {
-                ctx.fillStyle = '#909830';
-                ctx.fillRect(88*S, gy*S, (GBA_W-88)*S, 10*S);
-                ctx.font = 'bold '+(7*S)+'px Arial, sans-serif';
-                ctx.fillStyle = '#f8f8e0';
-                ctx.fillText(label, 94*S, (gy+1)*S);
-            }
-
-            var rx = 94, rowH = 12;
-            ctx.textBaseline = 'top';
-
+            // ── Right column (per-tab content) ──
             if (_tab === 0) {
-                secHdr('PROFILE', 14);
-                ctx.font = (8*S)+'px Arial, sans-serif';
-                // OT and ID on same row (EE ref3)
-                ctx.fillStyle = '#d0d8c0'; ctx.fillText('OT/', rx*S, 27*S);
-                ctx.fillStyle = '#f8f8f8'; ctx.fillText(mon.otName||'Player', (rx+16)*S, 27*S);
-                ctx.fillStyle = '#d0d8c0'; ctx.fillText('ID No.', (rx+70)*S, 27*S);
-                ctx.fillStyle = '#f8f8f8'; ctx.fillText(String(mon.otId||'00000').padStart(5,'0'), (rx+100)*S, 27*S);
-
-                // Type
-                var types = Array.isArray(mon.type) ? mon.type : [mon.type||'Normal'];
-                ctx.fillStyle = '#d0d8c0'; ctx.fillText('Type/', rx*S, 41*S);
+                var types = Array.isArray(mon.type) ? mon.type : [mon.type || 'Normal'];
                 types.forEach(function(t, ti) {
-                    var tx2 = (rx+26+ti*34)*S;
+                    var ty = 40 + ti * 26;
                     ctx.fillStyle = TYPE_COLORS_SUM[t] || '#a8a878';
-                    ctx.fillRect(tx2, 41*S, 30*S, 9*S);
-                    ctx.font = (7*S)+'px Arial, sans-serif';
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillText(t.toUpperCase(), tx2+2, 42*S);
-                    ctx.font = (8*S)+'px Arial, sans-serif';
+                    ctx.fillRect(184 * S, ty * S, 56 * S, 16 * S);
+                    T(t.toUpperCase(), 190, ty + 4, { color:'#ffffff' });
                 });
-
-                secHdr('ABILITY', 53);
-                ctx.font = (8*S)+'px Arial, sans-serif';
-                ctx.fillStyle = '#f8f8f8'; ctx.fillText(mon.ability||'Run Away', rx*S, 65*S);
-                ctx.fillStyle = '#d8e8d0'; ctx.fillText('Makes escaping easier.', rx*S, 77*S);
-
-                secHdr('TRAINER MEMO', 89);
-                ctx.font = (8*S)+'px Arial, sans-serif';
-                ctx.fillStyle = '#e8b030'; ctx.fillText((mon.nature||'Hardy') + ' nature,', rx*S, 101*S);
-                ctx.fillStyle = '#f8f8f8'; ctx.fillText('met at lv ' + (mon.metLevel||mon.level||1) + ',', rx*S, 113*S);
-                ctx.fillStyle = '#e8b030'; ctx.fillText(mon.metLocation||'Littleroot Town.', rx*S, 125*S);
-
+                T('OT', 112, 143, { color:'#484848' });
+                T(mon.originalTrainer || 'Player', 190, 143, { color:'#181818' });
+                T('ID No.', 112, 166, { color:'#484848' });
+                T(String(mon.otId || '00000').padStart(5, '0'), 190, 166, { color:'#181818' });
+                T('EXP', 180, 184, { color:'#f8f8f8' });
+                var expPct = Math.min(1, (mon.exp || 0) / Math.max(1, (mon.expToNext || 1000)));
+                ctx.fillStyle = '#303030'; ctx.fillRect(198 * S, 184 * S, 54 * S, 5 * S);
+                ctx.fillStyle = '#f8d030'; ctx.fillRect(199 * S, 185 * S, Math.round(expPct * 52) * S, 3 * S);
             } else if (_tab === 1) {
-                // ITEM + RIBBON headers
-                var hw = Math.floor((GBA_W-88)/2);
-                ctx.fillStyle = '#909830'; ctx.fillRect(88*S, 14*S, hw*S, 10*S);
-                ctx.fillStyle = '#706820'; ctx.fillRect((88+hw)*S, 14*S, (GBA_W-88-hw)*S, 10*S);
-                ctx.font = 'bold '+(7*S)+'px Arial, sans-serif';
-                ctx.fillStyle = '#f8f8e0';
-                ctx.fillText('ITEM', rx*S, 15*S);
-                ctx.fillText('RIBBON', (rx+76)*S, 15*S);
-                // Item/ribbon value boxes
-                ctx.fillStyle = '#e8f0e8';
-                ctx.fillRect(88*S, 24*S, (hw-2)*S, 11*S);
-                ctx.fillRect((88+hw+2)*S, 24*S, (GBA_W-88-hw-4)*S, 11*S);
-                ctx.font = (8*S)+'px Arial, sans-serif';
-                ctx.fillStyle = '#181818';
-                ctx.fillText(mon.heldItem||'None', rx*S, 25*S);
-                ctx.fillText('None', (rx+76)*S, 25*S);
-
-                secHdr('STATS', 37);
-                ctx.font = (8*S)+'px Arial, sans-serif';
-                // HP row with current/max
-                ctx.fillStyle = '#d0d8c0'; ctx.fillText('HP', rx*S, 49*S);
-                ctx.textAlign = 'right';
-                ctx.fillStyle = '#f8f8f8'; ctx.fillText(String(mon.currentHp||0)+'/', (rx+46)*S, 49*S);
-                ctx.fillText(String(mon.maxHp||0), (rx+60)*S, 49*S);
-                ctx.textAlign = 'left';
-                // Stat pairs
-                var statPairs = [
-                    ['Attack', mon.atk||0, 'Sp. Atk', mon.spAtk||0],
-                    ['Defense', mon.def||0, 'Sp. Def', mon.spDef||0],
-                    ['Speed', mon.speed||0, null, null],
+                T('HP', 145, 53, { color:'#181818' });
+                T((mon.currentHp || 0) + '/' + (mon.maxHp || 0), 250, 53, { color:'#181818', align:'right' });
+                var statRows = [
+                    ['Attack', mon.atk], ['Defense', mon.def], ['Sp. Atk', mon.spAtk],
+                    ['Sp. Def', mon.spDef], ['Speed', mon.speed]
                 ];
-                var sry = 61;
-                statPairs.forEach(function(sp) {
-                    ctx.fillStyle = '#d0d8c0'; ctx.fillText(sp[0], rx*S, sry*S);
-                    ctx.textAlign = 'right';
-                    ctx.fillStyle = sp[1] >= 100 ? '#40d870' : sp[1] < 50 ? '#f04040' : '#f8f8f8';
-                    ctx.fillText(String(sp[1]), (rx+58)*S, sry*S);
-                    if (sp[2]) {
-                        ctx.textAlign = 'left';
-                        ctx.fillStyle = '#d0d8c0'; ctx.fillText(sp[2], (rx+64)*S, sry*S);
-                        ctx.textAlign = 'right';
-                        ctx.fillStyle = sp[3] >= 100 ? '#40d870' : sp[3] < 50 ? '#f04040' : '#f8f8f8';
-                        ctx.fillText(String(sp[3]), (rx+128)*S, sry*S);
-                    }
-                    ctx.textAlign = 'left';
-                    sry += rowH;
+                var sy = 68;
+                statRows.forEach(function(r) {
+                    T(r[0], 112, sy, { color:'#181818' });
+                    T(String(r[1] || 0), 250, sy, { color:'#181818', align:'right' });
+                    sy += 15;
                 });
-
-                secHdr('EXP. POINTS', sry + 2);
-                sry += 14;
-                ctx.font = (8*S)+'px Arial, sans-serif';
-                ctx.fillStyle = '#d0d8c0'; ctx.fillText('Exp. Points', rx*S, sry*S);
-                ctx.textAlign = 'right'; ctx.fillStyle = '#f8f8f8';
-                ctx.fillText(String(mon.exp||0), (GBA_W-4)*S, sry*S); ctx.textAlign = 'left';
-                sry += rowH;
-                ctx.fillStyle = '#d0d8c0'; ctx.fillText('Next Lv.', rx*S, sry*S);
-                ctx.textAlign = 'right'; ctx.fillStyle = '#f8f8f8';
-                ctx.fillText(String(Math.max(0,(mon.expToNext||1000)-(mon.exp||0))), (GBA_W-4)*S, sry*S);
-                ctx.textAlign = 'left';
-                sry += rowH + 2;
-                // EXP bar
-                ctx.fillStyle = '#484830'; ctx.fillRect(88*S, sry*S, (GBA_W-88)*S, 4*S);
-                var expPct = Math.min(1, (mon.exp||0)/Math.max(1,(mon.expToNext||1000)));
-                ctx.fillStyle = '#3888f0'; ctx.fillRect(88*S, sry*S, Math.round(expPct*(GBA_W-88))*S, 4*S);
-                ctx.font = (6*S)+'px Arial, sans-serif'; ctx.fillStyle = '#f8f8e0';
-                ctx.fillText('EXP', (88+2)*S, sry*S);
-
-            } else if (_tab === 2 || _tab === 3) {
-                var moves = (mon.moves||[]).slice(0,4);
-                var mry = 16;
-                for (var mi = 0; mi < 4; mi++) {
-                    var mv = moves[mi] || null;
-                    ctx.fillStyle = '#604880'; ctx.fillRect(89*S, mry*S, (GBA_W-90)*S, 30*S);
-                    ctx.fillStyle = mv ? '#9878c8' : '#7858a8'; ctx.fillRect(90*S, (mry+1)*S, (GBA_W-92)*S, 28*S);
-                    if (!mv) {
-                        ctx.font = (8*S)+'px Arial, sans-serif'; ctx.fillStyle = '#b8a8d8';
-                        ctx.fillText('—', rx*S, (mry+10)*S);
-                    } else {
-                        var mtype = (typeof mv === 'object') ? (mv.type||'Normal') : 'Normal';
-                        var mname = (typeof mv === 'string') ? mv : (mv.name||'???');
-                        ctx.fillStyle = TYPE_COLORS_SUM[mtype] || '#a8a878';
-                        ctx.fillRect(rx*S, (mry+2)*S, 30*S, 9*S);
-                        ctx.font = (7*S)+'px Arial, sans-serif'; ctx.fillStyle = '#ffffff';
-                        ctx.fillText(mtype.slice(0,5).toUpperCase(), (rx+1)*S, (mry+3)*S);
-                        ctx.font = (8*S)+'px Arial, sans-serif'; ctx.fillStyle = '#f8f8f8';
-                        ctx.fillText(mname, (rx+34)*S, (mry+3)*S);
-                        var ppStr = (typeof mv === 'object') ? ('PP '+(mv.pp||'?')+'/'+(mv.maxPp||'?')) : '';
-                        if (ppStr) { ctx.font = (7*S)+'px Arial, sans-serif'; ctx.fillStyle = '#d0c8e8'; ctx.fillText(ppStr, (rx+34)*S, (mry+15)*S); }
+                T((mon.nature || 'Hardy') + ' nature.', 116, 160, { color:'#181818' });
+            } else {
+                var moves = (mon.moves || []).slice(0, 4);
+                var rowYs = [50, 83, 116, 149];
+                moves.forEach(function(mv, mi) {
+                    if (!mv) return;
+                    var y = rowYs[mi];
+                    var mtype = (typeof mv === 'object') ? (mv.type || 'Normal') : 'Normal';
+                    var mname = (typeof mv === 'string') ? mv : (mv.name || '???');
+                    ctx.fillStyle = TYPE_COLORS_SUM[mtype] || '#a8a878';
+                    ctx.fillRect(122 * S, (y - 8) * S, 32 * S, 13 * S);
+                    T(mtype.slice(0, 3).toUpperCase(), 126, y - 6, { color:'#ffffff' });
+                    T(mname.toUpperCase(), 168, y - 6, { color:'#181818' });
+                    if (typeof mv === 'object' && mv.pp != null) {
+                        T('PP ' + mv.pp + '/' + (mv.maxPp || mv.pp), 168, y + 4, { color:'#484848' });
                     }
-                    mry += 33;
-                }
+                });
             }
-
-            // Bottom hint bar
-            ctx.fillStyle = '#4a3870';
-            ctx.fillRect(0, 148*S, canvas.width, 12*S);
-            ctx.font = (7*S)+'px Arial, sans-serif';
-            ctx.fillStyle = '#ffffff'; ctx.textBaseline = 'middle';
-            ctx.fillText('B: Back   L/R: Change page', 8*S, 154*S);
-            ctx.textBaseline = 'top';
         }
 
-        // Tab navigation via click
+        // Tab navigation via click (left/right thirds of the header)
         canvas.addEventListener('click', function(e) {
             var rect = canvas.getBoundingClientRect();
-            var gx = (e.clientX - rect.left) * (GBA_W / rect.width);
+            var gx = (e.clientX - rect.left) * (SW / rect.width);
+            var gy = (e.clientY - rect.top) * (SH / rect.height);
+            if (gy > 16) return;
             if (gx < 30) { _tab = (_tab - 1 + 4) % 4; drawSummary(); }
-            else if (gx > GBA_W - 30) { _tab = (_tab + 1) % 4; drawSummary(); }
+            else if (gx > SW - 30) { _tab = (_tab + 1) % 4; drawSummary(); }
         });
 
         // Expose tab navigation so L/R can be wired if needed
