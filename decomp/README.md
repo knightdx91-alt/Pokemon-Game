@@ -85,6 +85,10 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
      (`src/gfl2/math/Random.cpp`) — the two engine RNGs: SFMT MEXP-19937
      (624-word state refill, then `%max`) and a lightweight WELL512-family
      xorshift generator.
+   - **Nature modifier table** extracted to `data/nature_table.json` (25
+     natures × 5 stats, ±1, VA 0x5e6a14 — the table `ApplyNature`/`sub_223744`
+     reads). Verified: Adamant +Atk/−SpA, Modest +SpA/−Atk, Jolly +Spe/−SpA,
+     Bold +Def/−Atk, Hardy neutral.
 
 ### Cross-module call resolution (import veneers) — WORKING
 `cro_map.py` now emits a `veneers` map per module. Mechanism: a named
