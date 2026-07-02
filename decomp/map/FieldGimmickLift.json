@@ -1,0 +1,498 @@
+{
+ "module": "FieldGimmickLift.cro",
+ "size": 20480,
+ "segments": [
+  {
+   "offset": 384,
+   "size": 3928,
+   "id": 0,
+   "name": "text"
+  },
+  {
+   "offset": 8192,
+   "size": 216,
+   "id": 1,
+   "name": "rodata"
+  },
+  {
+   "offset": 17380,
+   "size": 136,
+   "id": 2,
+   "name": "data"
+  },
+  {
+   "offset": 0,
+   "size": 0,
+   "id": 0,
+   "name": "text"
+  },
+  {
+   "offset": 0,
+   "size": 0,
+   "id": 0,
+   "name": "text"
+  }
+ ],
+ "exports": [
+  {
+   "mangled": "nnroControlObject_",
+   "seg": 0,
+   "offset": 3752,
+   "thumb": false,
+   "demangled": "nnroControlObject_"
+  }
+ ],
+ "imports": [
+  {
+   "mangled": "__aeabi_vec_ctor_nocookie_nodtor",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 108,
+     "type": 2
+    }
+   ],
+   "demangled": "__aeabi_vec_ctor_nocookie_nodtor"
+  },
+  {
+   "mangled": "__cxa_guard_acquire",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 116,
+     "type": 2
+    }
+   ],
+   "demangled": "__cxa_guard_acquire"
+  },
+  {
+   "mangled": "__cxa_guard_release",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 124,
+     "type": 2
+    }
+   ],
+   "demangled": "__cxa_guard_release"
+  },
+  {
+   "mangled": "_ZdlPv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 4,
+     "type": 2
+    }
+   ],
+   "demangled": "operator delete(void*)"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18FieldTransformNodeENS1_8instance13TransformNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3680,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldTransformNode, gfl2::renderingengine::scenegraph::instance::TransformNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18IField3DObjectNodeENS3_9FieldNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3484,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::IField3DObjectNode, Field::FieldNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field9FieldNodeENS1_8instance12InstanceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3436,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3196,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance12InstanceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3228,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::InstanceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance13TransformNodeENS3_12InstanceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3264,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::TransformNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3324,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3368,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3200,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8instance13TransformNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3268,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::instance::TransformNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3328,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3372,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph11Inheritance8GenerateEPKS2_NS_4util7FnvHashE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 132,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::Inheritance::Generate(gfl2::renderingengine::scenegraph::Inheritance const*, gfl2::util::FnvHash)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18FieldTransformNodeENS1_8instance13TransformNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3748,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldTransformNode, gfl2::renderingengine::scenegraph::instance::TransformNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18IField3DObjectNodeENS3_9FieldNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3548,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::IField3DObjectNode, Field::FieldNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field9FieldNodeENS1_8instance12InstanceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3480,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3224,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance12InstanceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3260,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::InstanceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance13TransformNodeENS3_12InstanceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3320,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::TransformNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3364,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3432,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph17SceneGraphManager17TraverseModelFastEPNS1_7DagNodeE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 36,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::SceneGraphManager::TraverseModelFast(gfl2::renderingengine::scenegraph::DagNode*)"
+  },
+  {
+   "mangled": "_ZN4gfl25debug9GFLassertEPKcjiS2_",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 12,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::debug::GFLassert(char const*, unsigned int, int, char const*)"
+  },
+  {
+   "mangled": "_ZN5Field9MoveModel21FieldMoveModelManager33GetFieldMoveModelIndexFromEventIdEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 92,
+     "type": 2
+    }
+   ],
+   "demangled": "Field::MoveModel::FieldMoveModelManager::GetFieldMoveModelIndexFromEventId(unsigned int)"
+  },
+  {
+   "mangled": "_ZN5Field9MoveModel27FieldMoveModelShadowManager12UpdateShadowEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 44,
+     "type": 2
+    }
+   ],
+   "demangled": "Field::MoveModel::FieldMoveModelShadowManager::UpdateShadow()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel11SetPositionERKN4gfl24math7Vector3E",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 20,
+     "type": 2
+    }
+   ],
+   "demangled": "poke_3d::model::BaseModel::SetPosition(gfl2::math::Vector3 const&)"
+  },
+  {
+   "mangled": "_ZNK5Field9MoveModel27FieldMoveModelShadowManager15GetEffectShadowEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 52,
+     "type": 2
+    }
+   ],
+   "demangled": "Field::MoveModel::FieldMoveModelShadowManager::GetEffectShadow(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK5Field9MoveModel27FieldMoveModelShadowManager19GetEffectShadowFootEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 60,
+     "type": 2
+    }
+   ],
+   "demangled": "Field::MoveModel::FieldMoveModelShadowManager::GetEffectShadowFoot() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel11GetPositionEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 28,
+     "type": 2
+    }
+   ],
+   "demangled": "poke_3d::model::BaseModel::GetPosition() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel13GetJointIndexEPKc",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 76,
+     "type": 2
+    }
+   ],
+   "demangled": "poke_3d::model::BaseModel::GetJointIndex(char const*) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel21GetJointWorldPositionEi",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 100,
+     "type": 2
+    }
+   ],
+   "demangled": "poke_3d::model::BaseModel::GetJointWorldPosition(int) const"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv117__class_type_infoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 0,
+     "type": 2
+    }
+   ],
+   "demangled": "vtable for __cxxabiv1::__class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv120__si_class_type_infoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 8,
+     "type": 2
+    }
+   ],
+   "demangled": "vtable for __cxxabiv1::__si_class_type_info"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3204,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8instance13TransformNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3272,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::instance::TransformNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3332,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 3376,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  }
+ ]
+}

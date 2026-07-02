@@ -1,0 +1,1303 @@
+{
+ "module": "StaffList.cro",
+ "size": 28672,
+ "segments": [
+  {
+   "offset": 384,
+   "size": 10216,
+   "id": 0,
+   "name": "text"
+  },
+  {
+   "offset": 12288,
+   "size": 716,
+   "id": 1,
+   "name": "rodata"
+  },
+  {
+   "offset": 25744,
+   "size": 148,
+   "id": 2,
+   "name": "data"
+  },
+  {
+   "offset": 0,
+   "size": 0,
+   "id": 0,
+   "name": "text"
+  },
+  {
+   "offset": 0,
+   "size": 0,
+   "id": 0,
+   "name": "text"
+  }
+ ],
+ "exports": [
+  {
+   "mangled": "nnroControlObject_",
+   "seg": 0,
+   "offset": 10028,
+   "thumb": false,
+   "demangled": "nnroControlObject_"
+  }
+ ],
+ "imports": [
+  {
+   "mangled": "__aeabi_memclr4",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 28,
+     "type": 2
+    }
+   ],
+   "demangled": "__aeabi_memclr4"
+  },
+  {
+   "mangled": "__cxa_guard_acquire",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 396,
+     "type": 2
+    }
+   ],
+   "demangled": "__cxa_guard_acquire"
+  },
+  {
+   "mangled": "__cxa_guard_release",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 404,
+     "type": 2
+    }
+   ],
+   "demangled": "__cxa_guard_release"
+  },
+  {
+   "mangled": "_ZdlPv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 140,
+     "type": 2
+    }
+   ],
+   "demangled": "operator delete(void*)"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18FieldTransformNodeENS1_8instance13TransformNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 8548,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldTransformNode, gfl2::renderingengine::scenegraph::instance::TransformNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18IField3DObjectNodeENS3_9FieldNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 8352,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::IField3DObjectNode, Field::FieldNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field9FieldNodeENS1_8instance12InstanceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 8304,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 6912,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 8064,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9180,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9884,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance12InstanceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 8096,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::InstanceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance13TransformNodeENS3_12InstanceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 8132,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::TransformNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 6944,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 8192,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9212,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9916,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 6988,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 8236,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9256,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9960,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 6916,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 8068,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9184,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9888,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8instance13TransformNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 8136,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::instance::TransformNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 6948,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 8196,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9216,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9920,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 6992,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 8240,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9260,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9964,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder16SetInputListenerEPNS0_15UIInputListenerE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 156,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::SetInputListener(app::ui::UIInputListener*)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder17OnSetInputEnabledEb",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 480,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 660,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::OnSetInputEnabled(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder28CallbackFuncOnButtonSelectedEj",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 452,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 632,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonSelected(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder31CallbackFuncOnButtonLongPressedEj",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 456,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 636,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonLongPressed(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder32CallBackFuncOnButtonTouchTriggerEj",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 468,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 648,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::CallBackFuncOnButtonTouchTrigger(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder39CallbackFuncOnButtonSelectedBeforeAnimeEj",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 464,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 644,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonSelectedBeforeAnime(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10AddSubViewEPS1_",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 228,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::AddSubView(app::ui::UIView*)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10SetVisibleEb",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 512,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 692,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::SetVisible(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10UpdateTreeEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 276,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::UpdateTree()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView11Initalize2DEPNS_4util4HeapEPN4gfl23lyt6LytSysEjPKNS2_7G2DUtil10LytResDataEjPKNS9_9LytwkDataEjii",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 528,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 708,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::Initalize2D(app::util::Heap*, gfl2::lyt::LytSys*, unsigned int, app::util::G2DUtil::LytResData const*, unsigned int, app::util::G2DUtil::LytwkData const*, unsigned int, int, int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView13DoInputActionEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 532,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 712,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::DoInputAction()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView19RemoveFromSuperViewEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 244,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::RemoveFromSuperView()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView6UpdateEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 164,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::Update()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8Create2DEPNS_4util4HeapEPN4gfl23lyt6LytSysEjPKNS2_7G2DUtil10LytResDataEjPKNS9_9LytwkDataEjPNS5_3str7MsgDataEPN5print7WordSetEiii",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 116,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::Create2D(app::util::Heap*, gfl2::lyt::LytSys*, unsigned int, app::util::G2DUtil::LytResData const*, unsigned int, app::util::G2DUtil::LytwkData const*, unsigned int, gfl2::str::MsgData*, print::WordSet*, int, int, int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8Delete2DEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 124,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::Delete2D()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8DrawTreeEN4gfl23gfx12CtrDisplayNoE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 340,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::DrawTree(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIViewC2EPNS_4util4HeapEPN4gfl24heap11NwAllocatorES8_",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 180,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::UIView(app::util::Heap*, gfl2::heap::NwAllocator*, gfl2::heap::NwAllocator*)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIViewD2Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 188,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::~UIView()"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor10IsFileLoadEPPv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 308,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::FileAccessor::IsFileLoad(void**)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor10IsFileOpenEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 292,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::FileAccessor::IsFileOpen(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor11IsFileCloseEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 324,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::FileAccessor::IsFileClose(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor8FileLoadEjjPPvPN4gfl24heap11CtrHeapBaseEbjNS4_2fs10ToolDefine11ArcLangType3TagEPjSC_",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 300,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::FileAccessor::FileLoad(unsigned int, unsigned int, void**, gfl2::heap::CtrHeapBase*, bool, unsigned int, gfl2::fs::ToolDefine::ArcLangType::Tag, unsigned int*, unsigned int*)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor8FileOpenEjPN4gfl24heap11CtrHeapBaseEbNS2_2fs10ToolDefine11ArcLangType3TagE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 284,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::FileAccessor::FileOpen(unsigned int, gfl2::heap::CtrHeapBase*, bool, gfl2::fs::ToolDefine::ArcLangType::Tag)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor9FileCloseEjPN4gfl24heap11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 316,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::FileAccessor::FileClose(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN3app4util4Heap15LocalHeapCreateEPN4gfl24heap11CtrHeapBaseES5_jj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 220,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::Heap::LocalHeapCreate(gfl2::heap::CtrHeapBase*, gfl2::heap::CtrHeapBase*, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util4Heap6DeleteEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 252,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::Heap::Delete()"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapC1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 196,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::Heap::Heap()"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapD1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 268,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::Heap::~Heap()"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil10SetPanePosEjjPKN4gfl24math22ExtendedVectorTemplateINS3_33SpecializedExtendedVectorTemplateIN2nn4math4VEC3EEEEE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 36,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::SetPanePos(unsigned int, unsigned int, gfl2::math::ExtendedVectorTemplate<gfl2::math::SpecializedExtendedVectorTemplate<nn::math::VEC3> > const*)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil12GetPaneAlphaEjj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 20,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::GetPaneAlpha(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil12SetPaneAlphaEjjh",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 12,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::SetPaneAlpha(unsigned int, unsigned int, unsigned char)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil13GetTempStrBufEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 44,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::GetTempStrBuf(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil20SetTextBoxPaneStringEjjPN4gfl23str6StrBufE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 60,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneString(unsigned int, unsigned int, gfl2::str::StrBuf*)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil27AddDrawableLytWkForOneFrameEPNS0_19AppRenderingManagerEN4gfl23gfx12CtrDisplayNoEjhj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 148,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::AddDrawableLytWkForOneFrame(app::util::AppRenderingManager*, gfl2::gfx::CtrDisplayNo, unsigned int, unsigned char, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil7SetSizeEjjRKN2nw3lyt4SizeE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 172,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::SetSize(unsigned int, unsigned int, nw::lyt::Size const&)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil9GetStringEPN4gfl23str6StrBufEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 52,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::GetString(gfl2::str::StrBuf*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph11Inheritance8GenerateEPKS2_NS_4util7FnvHashE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 412,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::Inheritance::Generate(gfl2::renderingengine::scenegraph::Inheritance const*, gfl2::util::FnvHash)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18FieldTransformNodeENS1_8instance13TransformNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 8616,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldTransformNode, gfl2::renderingengine::scenegraph::instance::TransformNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18IField3DObjectNodeENS3_9FieldNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 8416,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::IField3DObjectNode, Field::FieldNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field9FieldNodeENS1_8instance12InstanceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 8348,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 6940,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 8092,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9208,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9912,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance12InstanceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 8128,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::InstanceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance13TransformNodeENS3_12InstanceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 8188,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::TransformNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 6984,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 8232,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9252,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9956,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 7052,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 8300,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9320,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 10024,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl23str7MsgDataC1EPKvPNS_4heap11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 100,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::str::MsgData::MsgData(void const*, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap22GflHeapFreeMemoryBlockEPv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 332,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::heap::GflHeapFreeMemoryBlock(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager10CreateHeapEPNS0_11CtrHeapBaseEiiNS0_8HeapTypeEbPKc",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 212,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::heap::Manager::CreateHeap(gfl2::heap::CtrHeapBase*, int, int, gfl2::heap::HeapType, bool, char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager10DeleteHeapEPNS0_11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 260,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::heap::Manager::DeleteHeap(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager15GetHeapByHeapIdEi",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 204,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::heap::Manager::GetHeapByHeapId(int)"
+  },
+  {
+   "mangled": "_ZN4gfl25debug13GFLassertStopEPKcjS2_",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 236,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::debug::GFLassertStop(char const*, unsigned int, char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl25debug9GFLassertEPKcjiS2_",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 84,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::debug::GFLassert(char const*, unsigned int, int, char const*)"
+  },
+  {
+   "mangled": "_ZN5print15GetMessageArcIdEN6System9MSGLANGIDE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 348,
+     "type": 2
+    }
+   ],
+   "demangled": "print::GetMessageArcId(System::MSGLANGID)"
+  },
+  {
+   "mangled": "_ZN5print7WordSetC1EPN4gfl24heap11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 108,
+     "type": 2
+    }
+   ],
+   "demangled": "print::WordSet::WordSet(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN5print7WordSetD1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 132,
+     "type": 2
+    }
+   ],
+   "demangled": "print::WordSet::~WordSet()"
+  },
+  {
+   "mangled": "_ZN6applib5frame7Manager3EndEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 356,
+     "type": 2
+    }
+   ],
+   "demangled": "applib::frame::Manager::End()"
+  },
+  {
+   "mangled": "_ZN6applib5frame7Manager4DrawEN4gfl23gfx12CtrDisplayNoE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 388,
+     "type": 2
+    }
+   ],
+   "demangled": "applib::frame::Manager::Draw(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN6applib5frame7Manager4MainEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 380,
+     "type": 2
+    }
+   ],
+   "demangled": "applib::frame::Manager::Main()"
+  },
+  {
+   "mangled": "_ZN6applib5frame7Manager8CallProcEPNS0_9CellSuperE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 372,
+     "type": 2
+    }
+   ],
+   "demangled": "applib::frame::Manager::CallProc(applib::frame::CellSuper*)"
+  },
+  {
+   "mangled": "_ZN6applib5frame7ManagerC1EPN4gfl24heap11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 364,
+     "type": 2
+    }
+   ],
+   "demangled": "applib::frame::Manager::Manager(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZNK3app2ui11UIResponder17IsButtonAnimationEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 484,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 664,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::IsButtonAnimation() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView10GetG2DUtilEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 4,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::GetG2DUtil() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView9IsDrawingEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 520,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 700,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::IsDrawing() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView9IsVisibleEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 516,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 696,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::IsVisible() const"
+  },
+  {
+   "mangled": "_ZNK3app4util7G2DUtil13GetLayoutWorkEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 68,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::GetLayoutWork(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl23lyt5LytWk14GetTextBoxPaneEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 76,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::lyt::LytWk::GetTextBoxPane(unsigned int) const"
+  },
+  {
+   "mangled": "_ZnwjPN4gfl24heap11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 92,
+     "type": 2
+    }
+   ],
+   "demangled": "operator new(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZTIN3app2ui6UIViewE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 192,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 236,
+     "type": 2
+    }
+   ],
+   "demangled": "typeinfo for app::ui::UIView"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv117__class_type_infoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 208,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 240,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 248,
+     "type": 2
+    }
+   ],
+   "demangled": "vtable for __cxxabiv1::__class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv120__si_class_type_infoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 216,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 228,
+     "type": 2
+    }
+   ],
+   "demangled": "vtable for __cxxabiv1::__si_class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv121__vmi_class_type_infoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 176,
+     "type": 2
+    }
+   ],
+   "demangled": "vtable for __cxxabiv1::__vmi_class_type_info"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 6920,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 8072,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9188,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9892,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8instance13TransformNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 8140,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::instance::TransformNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 6952,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 8200,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9220,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9924,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 6996,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 8244,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9264,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 9968,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  }
+ ]
+}

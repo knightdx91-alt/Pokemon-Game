@@ -1,0 +1,737 @@
+{
+ "module": "FieldBattleInstEvent.cro",
+ "size": 20480,
+ "segments": [
+  {
+   "offset": 384,
+   "size": 5988,
+   "id": 0,
+   "name": "text"
+  },
+  {
+   "offset": 8192,
+   "size": 616,
+   "id": 1,
+   "name": "rodata"
+  },
+  {
+   "offset": 18912,
+   "size": 104,
+   "id": 2,
+   "name": "data"
+  },
+  {
+   "offset": 0,
+   "size": 0,
+   "id": 0,
+   "name": "text"
+  },
+  {
+   "offset": 0,
+   "size": 0,
+   "id": 0,
+   "name": "text"
+  }
+ ],
+ "exports": [
+  {
+   "mangled": "nnroControlObject_",
+   "seg": 0,
+   "offset": 5812,
+   "thumb": false,
+   "demangled": "nnroControlObject_"
+  }
+ ],
+ "imports": [
+  {
+   "mangled": "__cxa_guard_acquire",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 276,
+     "type": 2
+    }
+   ],
+   "demangled": "__cxa_guard_acquire"
+  },
+  {
+   "mangled": "__cxa_guard_release",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 284,
+     "type": 2
+    }
+   ],
+   "demangled": "__cxa_guard_release"
+  },
+  {
+   "mangled": "__cxa_pure_virtual",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 424,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 436,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 448,
+     "type": 2
+    }
+   ],
+   "demangled": "__cxa_pure_virtual"
+  },
+  {
+   "mangled": "_ZdlPv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 156,
+     "type": 2
+    }
+   ],
+   "demangled": "operator delete(void*)"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18IField3DObjectNodeENS3_9FieldNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5736,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::IField3DObjectNode, Field::FieldNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field9FieldNodeENS1_8instance12InstanceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5688,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5508,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance12InstanceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5540,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::InstanceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5576,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5620,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5512,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5580,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5624,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZN10BattleInst10BattleInst11SetCommDataEPNS0_12CommSendDataE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 108,
+     "type": 2
+    }
+   ],
+   "demangled": "BattleInst::BattleInst::SetCommData(BattleInst::BattleInst::CommSendData*)"
+  },
+  {
+   "mangled": "_ZN10BattleInst10BattleInst13SelectTrainerEi",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 228,
+     "type": 2
+    }
+   ],
+   "demangled": "BattleInst::BattleInst::SelectTrainer(int)"
+  },
+  {
+   "mangled": "_ZN10BattleInst10BattleInst13SetupSendDataEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 84,
+     "type": 2
+    }
+   ],
+   "demangled": "BattleInst::BattleInst::SetupSendData()"
+  },
+  {
+   "mangled": "_ZN10BattleInst10BattleInst15GetSendCommDataEPNS0_12CommSendDataE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 92,
+     "type": 2
+    }
+   ],
+   "demangled": "BattleInst::BattleInst::GetSendCommData(BattleInst::BattleInst::CommSendData*)"
+  },
+  {
+   "mangled": "_ZN10BattleInst10BattleInst15SetCommWinCountEi",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 140,
+     "type": 2
+    }
+   ],
+   "demangled": "BattleInst::BattleInst::SetCommWinCount(int)"
+  },
+  {
+   "mangled": "_ZN10BattleInst10BattleInst16GetCommVsTrainerEPNS0_17CommSendVsTrainerE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 260,
+     "type": 2
+    }
+   ],
+   "demangled": "BattleInst::BattleInst::GetCommVsTrainer(BattleInst::BattleInst::CommSendVsTrainer*)"
+  },
+  {
+   "mangled": "_ZN10BattleInst10BattleInst16SetCommVsTrainerEPNS0_17CommSendVsTrainerE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 268,
+     "type": 2
+    }
+   ],
+   "demangled": "BattleInst::BattleInst::SetCommVsTrainer(BattleInst::BattleInst::CommSendVsTrainer*)"
+  },
+  {
+   "mangled": "_ZN10BattleInst10BattleInst17SetNoEntryTrainerEii",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 236,
+     "type": 2
+    }
+   ],
+   "demangled": "BattleInst::BattleInst::SetNoEntryTrainer(int, int)"
+  },
+  {
+   "mangled": "_ZN10BattleInst10BattleInst22SelectVsPokemonForCommEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 252,
+     "type": 2
+    }
+   ],
+   "demangled": "BattleInst::BattleInst::SelectVsPokemonForComm()"
+  },
+  {
+   "mangled": "_ZN10BattleInst10BattleInst23MakeTrainerDataWithBossEii",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 244,
+     "type": 2
+    }
+   ],
+   "demangled": "BattleInst::BattleInst::MakeTrainerDataWithBoss(int, int)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph11Inheritance8GenerateEPKS2_NS_4util7FnvHashE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 292,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::Inheritance::Generate(gfl2::renderingengine::scenegraph::Inheritance const*, gfl2::util::FnvHash)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18IField3DObjectNodeENS3_9FieldNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5800,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::IField3DObjectNode, Field::FieldNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field9FieldNodeENS1_8instance12InstanceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5732,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5536,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance12InstanceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5572,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::InstanceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5616,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5684,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN6NetLib3P2P20P2pConnectionManagerEE11GetInstanceEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 116,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::base::SingletonAccessor<NetLib::P2P::P2pConnectionManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN6NetLib5Error23NijiNetworkErrorManagerEE11GetInstanceEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 52,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::base::SingletonAccessor<NetLib::Error::NijiNetworkErrorManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager15GetHeapByHeapIdEi",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 164,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::heap::Manager::GetHeapByHeapId(int)"
+  },
+  {
+   "mangled": "_ZN5Field11FieldScript4Work16SetTempWorkValueEtj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 180,
+     "type": 2
+    }
+   ],
+   "demangled": "Field::FieldScript::Work::SetTempWorkValue(unsigned short, unsigned int)"
+  },
+  {
+   "mangled": "_ZN6NetLib17NijiNetworkSystem16TerminateNetworkEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 212,
+     "type": 2
+    }
+   ],
+   "demangled": "NetLib::NijiNetworkSystem::TerminateNetwork()"
+  },
+  {
+   "mangled": "_ZN6NetLib3P2P17P2pPacketTransfer15GetReceivedDataEjhRiPvj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 44,
+     "type": 2
+    }
+   ],
+   "demangled": "NetLib::P2P::P2pPacketTransfer::GetReceivedData(unsigned int, unsigned char, int&, void*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN6NetLib3P2P17P2pPacketTransfer15SendDataCommandEPvjh",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 100,
+     "type": 2
+    }
+   ],
+   "demangled": "NetLib::P2P::P2pPacketTransfer::SendDataCommand(void*, unsigned int, unsigned char)"
+  },
+  {
+   "mangled": "_ZN6NetLib3P2P17P2pPacketTransfer20GetReceivedDataCountEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 36,
+     "type": 2
+    }
+   ],
+   "demangled": "NetLib::P2P::P2pPacketTransfer::GetReceivedDataCount()"
+  },
+  {
+   "mangled": "_ZN6NetLib3P2P17P2pPacketTransfer6UpdateEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 68,
+     "type": 2
+    }
+   ],
+   "demangled": "NetLib::P2P::P2pPacketTransfer::Update()"
+  },
+  {
+   "mangled": "_ZN6NetLib3P2P17P2pPacketTransferC1EPN4gfl24heap11CtrHeapBaseEPNS0_25P2pPacketTransferListenerE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 172,
+     "type": 2
+    }
+   ],
+   "demangled": "NetLib::P2P::P2pPacketTransfer::P2pPacketTransfer(gfl2::heap::CtrHeapBase*, NetLib::P2P::P2pPacketTransferListener*)"
+  },
+  {
+   "mangled": "_ZN6NetLib3P2P20P2pConnectionManager13IsNijiConnectEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 124,
+     "type": 2
+    }
+   ],
+   "demangled": "NetLib::P2P::P2pConnectionManager::IsNijiConnect()"
+  },
+  {
+   "mangled": "_ZN6NetLib3P2P20P2pConnectionManager15DisconnectStartEb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 188,
+     "type": 2
+    }
+   ],
+   "demangled": "NetLib::P2P::P2pConnectionManager::DisconnectStart(bool)"
+  },
+  {
+   "mangled": "_ZN6NetLib3P2P20P2pConnectionManager19IsDisconnectSuccessEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 196,
+     "type": 2
+    }
+   ],
+   "demangled": "NetLib::P2P::P2pConnectionManager::IsDisconnectSuccess()"
+  },
+  {
+   "mangled": "_ZN6NetLib3P2P20P2pConnectionManager9TerminateEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 204,
+     "type": 2
+    }
+   ],
+   "demangled": "NetLib::P2P::P2pConnectionManager::Terminate()"
+  },
+  {
+   "mangled": "_ZN6NetLib5Error23NijiNetworkErrorManager5ClearEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 220,
+     "type": 2
+    }
+   ],
+   "demangled": "NetLib::Error::NijiNetworkErrorManager::Clear()"
+  },
+  {
+   "mangled": "_ZN7GameSys16GameEventManager11ChangeEventEPNS_9GameEventE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 76,
+     "type": 2
+    }
+   ],
+   "demangled": "GameSys::GameEventManager::ChangeEvent(GameSys::GameEvent*)"
+  },
+  {
+   "mangled": "_ZN7GameSys16GameEventManager7GetHeapEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 4,
+     "type": 2
+    }
+   ],
+   "demangled": "GameSys::GameEventManager::GetHeap()"
+  },
+  {
+   "mangled": "_ZN7GameSys16GameEventManager9CallEventEPNS_9GameEventE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 28,
+     "type": 2
+    }
+   ],
+   "demangled": "GameSys::GameEventManager::CallEvent(GameSys::GameEvent*)"
+  },
+  {
+   "mangled": "_ZN7GameSys9GameEventC2EPN4gfl24heap11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 20,
+     "type": 2
+    }
+   ],
+   "demangled": "GameSys::GameEvent::GameEvent(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN7GameSys9GameEventD2Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 148,
+     "type": 2
+    }
+   ],
+   "demangled": "GameSys::GameEvent::~GameEvent()"
+  },
+  {
+   "mangled": "_ZNK6NetLib5Error23NijiNetworkErrorManager7IsErrorEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 60,
+     "type": 2
+    }
+   ],
+   "demangled": "NetLib::Error::NijiNetworkErrorManager::IsError() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus14GetTransferdIDEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 132,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::MyStatus::GetTransferdID() const"
+  },
+  {
+   "mangled": "_ZnwjPN4gfl24heap11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 12,
+     "type": 2
+    }
+   ],
+   "demangled": "operator new(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZTIN7GameSys9GameEventE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 28,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 64,
+     "type": 2
+    }
+   ],
+   "demangled": "typeinfo for GameSys::GameEvent"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv117__class_type_infoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 80,
+     "type": 2
+    }
+   ],
+   "demangled": "vtable for __cxxabiv1::__class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv120__si_class_type_infoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 0,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 44,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 56,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 68,
+     "type": 2
+    }
+   ],
+   "demangled": "vtable for __cxxabiv1::__si_class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv121__vmi_class_type_infoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 12,
+     "type": 2
+    }
+   ],
+   "demangled": "vtable for __cxxabiv1::__vmi_class_type_info"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5516,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5584,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 5628,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  }
+ ]
+}

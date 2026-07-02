@@ -37,15 +37,20 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
 - `symbols/` — per-module symbol inventory (`<Module>.json`: exports/imports/
   scanned, mangled + demangled). `INDEX.md` = summary table.
   Regenerate: `python3 tools/cro_symbols.py`.
-- `asm/` (phase 2) — per-module ARM disassembly with symbols applied.
+- `map/` — per-module address maps (`<Module>.json`: segments, export
+  addresses, import patch sites). Regenerate: `python3 tools/cro_map.py`.
+- `asm/` (phase 3) — per-module ARM disassembly with symbols applied.
 - `src/` (phase 3) — decompiled/rewritten C++, organized by original namespace.
 
 ## Roadmap
 
 1. ✅ **Symbol recovery** — `tools/cro_symbols.py` (this commit).
-2. **CRO segment/relocation parser** — map each module's code/rodata/data
-   segments and resolve import patches, so exports+imports become concrete
-   code addresses. (3dbrew documents the CRO format.)
+2. ✅ **CRO segment/address maps** — `tools/cro_map.py` → `map/`. Segment
+   tables, export addresses (`btl::BgSystem::SetUseVram` = text+0xdfba0,
+   validated by disassembly), and import patch sites (where each imported
+   symbol's address gets written at load — i.e. cross-module call sites).
+   Header gotcha: named imports live at header+0x100; +0xF8 is the raw
+   external-patch table.
 3. **Disassembly pipeline** — Capstone (ARMv6k/ARM11, Thumb2) over `.code`,
    `static.crs`, and each CRO's text segment; label functions from the symbol
    map; function-boundary detection for the unnamed remainder.

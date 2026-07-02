@@ -1,0 +1,4197 @@
+{
+ "module": "Kisekae.cro",
+ "size": 98304,
+ "segments": [
+  {
+   "offset": 384,
+   "size": 53156,
+   "id": 0,
+   "name": "text"
+  },
+  {
+   "offset": 57344,
+   "size": 4716,
+   "id": 1,
+   "name": "rodata"
+  },
+  {
+   "offset": 94208,
+   "size": 124,
+   "id": 2,
+   "name": "data"
+  },
+  {
+   "offset": 0,
+   "size": 0,
+   "id": 0,
+   "name": "text"
+  },
+  {
+   "offset": 0,
+   "size": 0,
+   "id": 0,
+   "name": "text"
+  }
+ ],
+ "exports": [
+  {
+   "mangled": "nnroControlObject_",
+   "seg": 0,
+   "offset": 52924,
+   "thumb": false,
+   "demangled": "nnroControlObject_"
+  }
+ ],
+ "imports": [
+  {
+   "mangled": "__aeabi_memclr4",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1220,
+     "type": 2
+    }
+   ],
+   "demangled": "__aeabi_memclr4"
+  },
+  {
+   "mangled": "__aeabi_memcpy",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 644,
+     "type": 2
+    }
+   ],
+   "demangled": "__aeabi_memcpy"
+  },
+  {
+   "mangled": "__aeabi_memcpy4",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 580,
+     "type": 2
+    }
+   ],
+   "demangled": "__aeabi_memcpy4"
+  },
+  {
+   "mangled": "__aeabi_vec_ctor_nocookie_nodtor",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 540,
+     "type": 2
+    }
+   ],
+   "demangled": "__aeabi_vec_ctor_nocookie_nodtor"
+  },
+  {
+   "mangled": "__aeabi_vec_dtor",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 628,
+     "type": 2
+    }
+   ],
+   "demangled": "__aeabi_vec_dtor"
+  },
+  {
+   "mangled": "__cxa_guard_acquire",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1732,
+     "type": 2
+    }
+   ],
+   "demangled": "__cxa_guard_acquire"
+  },
+  {
+   "mangled": "__cxa_guard_release",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1740,
+     "type": 2
+    }
+   ],
+   "demangled": "__cxa_guard_release"
+  },
+  {
+   "mangled": "__cxa_pure_virtual",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 4600,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4604,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4616,
+     "type": 2
+    }
+   ],
+   "demangled": "__cxa_pure_virtual"
+  },
+  {
+   "mangled": "_ZdlPv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 36,
+     "type": 2
+    }
+   ],
+   "demangled": "operator delete(void*)"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 42924,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 43628,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 44332,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45036,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45740,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 46444,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47148,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47852,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 48556,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49260,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49964,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50668,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 51372,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52076,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52780,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 42956,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 43660,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 44364,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45068,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45772,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 46476,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47180,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47884,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 48588,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49292,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49996,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50700,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 51404,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52108,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52812,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 43000,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 43704,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 44408,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45112,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45816,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 46520,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47224,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47928,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 48632,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49336,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50040,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50744,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 51448,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52152,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52856,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 42928,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 43632,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 44336,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45040,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45744,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 46448,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47152,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47856,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 48560,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49264,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49968,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50672,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 51376,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52080,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52784,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 42960,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 43664,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 44368,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45072,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45776,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 46480,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47184,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47888,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 48592,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49296,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50000,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50704,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 51408,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52112,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52816,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 43004,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 43708,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 44412,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45116,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45820,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 46524,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47228,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47932,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 48636,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49340,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50044,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50748,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 51452,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52156,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52860,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder15SetInputEnabledEb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 988,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::SetInputEnabled(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder16GetButtonManagerEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 172,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::GetButtonManager()"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder16SetInputListenerEPNS0_15UIInputListenerE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 252,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::SetInputListener(app::ui::UIInputListener*)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder17OnSetInputEnabledEb",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3164,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3260,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3416,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4656,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::OnSetInputEnabled(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder19CreateButtonManagerEPNS_4util4HeapEPN4gfl23lyt5LytWkEPKNS0_12ButtonInfoExEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 244,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::CreateButtonManager(app::util::Heap*, gfl2::lyt::LytWk*, app::ui::ButtonInfoEx const*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder28CallbackFuncOnButtonSelectedEj",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3136,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3232,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3388,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4628,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonSelected(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder31CallbackFuncOnButtonLongPressedEj",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3140,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3236,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3392,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4632,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonLongPressed(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder32CallBackFuncOnButtonTouchTriggerEj",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3152,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3248,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3404,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4644,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::CallBackFuncOnButtonTouchTrigger(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder39CallbackFuncOnButtonSelectedBeforeAnimeEj",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3148,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3244,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3400,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4640,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonSelectedBeforeAnime(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10AddSubViewEPS1_",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 444,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::AddSubView(app::ui::UIView*)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10SetVisibleEb",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3196,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3292,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3448,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4688,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::SetVisible(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10UpdateTreeEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1548,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::UpdateTree()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView11Initalize2DEPNS_4util4HeapEPN4gfl23lyt6LytSysEjPKNS2_7G2DUtil10LytResDataEjPKNS9_9LytwkDataEjii",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3212,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3308,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3464,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4704,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::Initalize2D(app::util::Heap*, gfl2::lyt::LytSys*, unsigned int, app::util::G2DUtil::LytResData const*, unsigned int, app::util::G2DUtil::LytwkData const*, unsigned int, int, int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView12GetSuperViewEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 668,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::GetSuperView()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView13DoInputActionEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3216,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3312,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3468,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4708,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::DoInputAction()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView16RemoveAllSubViewEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 604,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::RemoveAllSubView()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView19RemoveFromSuperViewEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 636,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::RemoveFromSuperView()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView22SetInputEnabledAllViewEb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 196,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::SetInputEnabledAllView(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView6UpdateEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 220,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3188,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4680,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::Update()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8DrawTreeEN4gfl23gfx12CtrDisplayNoE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1540,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::DrawTree(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8SetModalEb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 764,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::SetModal(bool)"
+  },
+  {
+   "mangled": "_ZN3app4tool10MenuCursor10SetVisibleEbj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1172,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::MenuCursor::SetVisible(bool, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4tool12PaneListView11GetPaneListEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 412,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneListView::GetPaneList()"
+  },
+  {
+   "mangled": "_ZN3app4tool12PaneListView11SetListenerEPNS1_8ListenerE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 404,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneListView::SetListener(app::tool::PaneListView::Listener*)"
+  },
+  {
+   "mangled": "_ZN3app4tool12PaneListView13ResetPaneListEPKNS0_8PaneList11SETUP_PARAME",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 396,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneListView::ResetPaneList(app::tool::PaneList::SETUP_PARAM const*)"
+  },
+  {
+   "mangled": "_ZN3app4tool12PaneListView14DeletePaneListEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 612,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneListView::DeletePaneList()"
+  },
+  {
+   "mangled": "_ZN3app4tool12PaneListView15CreateScrollBarEPKNS_4util9ScrollBar11SETUP_PARAME",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 388,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneListView::CreateScrollBar(app::util::ScrollBar::SETUP_PARAM const*)"
+  },
+  {
+   "mangled": "_ZN3app4tool12PaneListView15DeleteScrollBarEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 380,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneListView::DeleteScrollBar()"
+  },
+  {
+   "mangled": "_ZN3app4tool12PaneListViewC1EPNS_4util4HeapEb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 572,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneListView::PaneListView(app::util::Heap*, bool)"
+  },
+  {
+   "mangled": "_ZN3app4tool13ButtonManager14ANIMATION_NULLE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 10284,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::ButtonManager::ANIMATION_NULL"
+  },
+  {
+   "mangled": "_ZN3app4tool13ButtonManager15SetButtonActiveEjb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1116,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::ButtonManager::SetButtonActive(unsigned int, bool)"
+  },
+  {
+   "mangled": "_ZN3app4tool13ButtonManager16SetButtonPassiveEjb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1124,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::ButtonManager::SetButtonPassive(unsigned int, bool)"
+  },
+  {
+   "mangled": "_ZN3app4tool13ButtonManager16SetButtonVisibleEjb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 468,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::ButtonManager::SetButtonVisible(unsigned int, bool)"
+  },
+  {
+   "mangled": "_ZN3app4tool13ButtonManager16StartSelectedActEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 180,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::ButtonManager::StartSelectedAct(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4tool13ButtonManager17SetButtonSelectSEEjj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 260,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::ButtonManager::SetButtonSelectSE(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4tool13ButtonManager18SetButtonInvisibleEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 948,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::ButtonManager::SetButtonInvisible(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3App4Tool15MessageMenuView13SetYNListModeEbj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 852,
+     "type": 2
+    }
+   ],
+   "demangled": "App::Tool::MessageMenuView::SetYNListMode(bool, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3App4Tool15MessageMenuView15SetMessageSpeedEN8Savedata10ConfigSave9MSG_SPEEDE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 964,
+     "type": 2
+    }
+   ],
+   "demangled": "App::Tool::MessageMenuView::SetMessageSpeed(Savedata::ConfigSave::MSG_SPEED)"
+  },
+  {
+   "mangled": "_ZN3App4Tool15MessageMenuView17SetMessageAutoFlgEb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 972,
+     "type": 2
+    }
+   ],
+   "demangled": "App::Tool::MessageMenuView::SetMessageAutoFlg(bool)"
+  },
+  {
+   "mangled": "_ZN3App4Tool15MessageMenuView23ShowMessageWithListMenuEPKN4gfl23str6StrBufEbRKNS3_7MsgDataEjjjjjj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 908,
+     "type": 2
+    }
+   ],
+   "demangled": "App::Tool::MessageMenuView::ShowMessageWithListMenu(gfl2::str::StrBuf const*, bool, gfl2::str::MsgData const&, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4tool15TimerIconUIView10SetIconPosERN4gfl24math22ExtendedVectorTemplateINS3_33SpecializedExtendedVectorTemplateIN2nn4math4VEC3EEEEE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1684,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::TimerIconUIView::SetIconPos(gfl2::math::ExtendedVectorTemplate<gfl2::math::SpecializedExtendedVectorTemplate<nn::math::VEC3> >&)"
+  },
+  {
+   "mangled": "_ZN3app4tool15TimerIconUIView10StartAnimeEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1108,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::TimerIconUIView::StartAnime()"
+  },
+  {
+   "mangled": "_ZN3app4tool15TimerIconUIView12GetArcDataIdEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1396,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::TimerIconUIView::GetArcDataId()"
+  },
+  {
+   "mangled": "_ZN3app4tool15TimerIconUIView13IsArcDataCompEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1388,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::TimerIconUIView::IsArcDataComp()"
+  },
+  {
+   "mangled": "_ZN3app4tool15TimerIconUIView8EndAnimeEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1588,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::TimerIconUIView::EndAnime()"
+  },
+  {
+   "mangled": "_ZN3app4tool15TimerIconUIView8GetArcIdEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1404,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::TimerIconUIView::GetArcId()"
+  },
+  {
+   "mangled": "_ZN3app4tool15TimerIconUIViewC1EPNS_4util4HeapEPNS2_19AppRenderingManagerEPvNS2_7G2DUtil18SETUP_DISPLAY_TYPEE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1676,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::TimerIconUIView::TimerIconUIView(app::util::Heap*, app::util::AppRenderingManager*, void*, app::util::G2DUtil::SETUP_DISPLAY_TYPE)"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel10SetVisibleEb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1020,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::SetVisible(bool)"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel12GetBaseModelEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 780,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::GetBaseModel()"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel12PlayEyeAnimeEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1652,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::PlayEyeAnime()"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel14SetMotionAnimeEijb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1644,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::SetMotionAnime(int, unsigned int, bool)"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel21GetCharaBattleCharaIdEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1332,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::GetCharaBattleCharaId(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel23CheckDressUpCombinationERKN7poke_3d5model12DressUpParamE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1028,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::CheckDressUpCombination(poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel25GetCharaBattltAnimeWaitIdEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1340,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::GetCharaBattltAnimeWaitId(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel34GetDressUpModelResourceManagerCoreEN7poke_3d5model12DressUpParam3SexE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 804,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::GetDressUpModelResourceManagerCore(poke_3d::model::DressUpParam::Sex)"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel5SetupERNS1_11SETUP_PARAMEPN4gfl22fs16AsyncFileManagerEjPi",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1636,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::Setup(app::tool::CharaSimpleModel::SETUP_PARAM&, gfl2::fs::AsyncFileManager*, unsigned int, int*)"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel6SetPosERKN4gfl24math7Vector3E",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1012,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::SetPos(gfl2::math::Vector3 const&)"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel6SetRotERKN4gfl24math7Vector3E",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1572,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::SetRot(gfl2::math::Vector3 const&)"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel6UpdateEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1596,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::Update()"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel7IsReadyEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1580,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::IsReady()"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel8IsDeleteEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1620,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::IsDelete()"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel9StartLoadEiRKN7poke_3d5model12DressUpParamE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1100,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::StartLoad(int, poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModel9TerminateEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1612,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::Terminate()"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModelC1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1660,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::CharaSimpleModel()"
+  },
+  {
+   "mangled": "_ZN3app4tool16CharaSimpleModelD1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1708,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CharaSimpleModel::~CharaSimpleModel()"
+  },
+  {
+   "mangled": "_ZN3app4tool18AppToolBaseGrpFont7IsReadyEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1476,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::AppToolBaseGrpFont::IsReady()"
+  },
+  {
+   "mangled": "_ZN3app4tool19CommonMessageObject11HideMessageEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 460,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CommonMessageObject::HideMessage()"
+  },
+  {
+   "mangled": "_ZN3app4tool19CommonMessageObject11ShowMessageERN4gfl23str6StrBufEb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 940,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CommonMessageObject::ShowMessage(gfl2::str::StrBuf&, bool)"
+  },
+  {
+   "mangled": "_ZN3app4tool19CommonMessageObject19ShowMessageTextPaneEPPN4gfl23str6StrBufEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 188,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CommonMessageObject::ShowMessageTextPane(gfl2::str::StrBuf**, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4tool19CommonMessageObject6UpdateEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 212,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CommonMessageObject::Update()"
+  },
+  {
+   "mangled": "_ZN3app4tool19CommonMessageObject7EndFuncEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 300,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CommonMessageObject::EndFunc()"
+  },
+  {
+   "mangled": "_ZN3app4tool19CommonMessageObject8InitFuncERKNS1_10INIT_PARAMEPN4gfl24heap11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 292,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CommonMessageObject::InitFunc(app::tool::CommonMessageObject::INIT_PARAM const&, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN3app4tool19CommonMessageObjectC1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 268,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::CommonMessageObject::CommonMessageObject()"
+  },
+  {
+   "mangled": "_ZN3app4tool19ModelViewerSequence10UpdateFuncEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1564,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::ModelViewerSequence::UpdateFunc()"
+  },
+  {
+   "mangled": "_ZN3app4tool19ModelViewerSequence5StartERKNS1_11START_PARAME",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 788,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::ModelViewerSequence::Start(app::tool::ModelViewerSequence::START_PARAM const&)"
+  },
+  {
+   "mangled": "_ZN3app4tool19ModelViewerSequence7EndFuncEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1604,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::ModelViewerSequence::EndFunc()"
+  },
+  {
+   "mangled": "_ZN3app4tool19ModelViewerSequence8InitFuncEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1628,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::ModelViewerSequence::InitFunc()"
+  },
+  {
+   "mangled": "_ZN3app4tool19ModelViewerSequence9NoticeCmdENS1_5CmdIdERKNS1_8CMD_DATAE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1068,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::ModelViewerSequence::NoticeCmd(app::tool::ModelViewerSequence::CmdId, app::tool::ModelViewerSequence::CMD_DATA const&)"
+  },
+  {
+   "mangled": "_ZN3app4tool19ModelViewerSequenceC1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1668,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::ModelViewerSequence::ModelViewerSequence()"
+  },
+  {
+   "mangled": "_ZN3app4tool20AppCommonGrpIconData10InitializeEPNS_4util4HeapEN4gfl22fs10ToolDefine11ArcLangType3TagE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1508,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::AppCommonGrpIconData::Initialize(app::util::Heap*, gfl2::fs::ToolDefine::ArcLangType::Tag)"
+  },
+  {
+   "mangled": "_ZN3app4tool20AppCommonGrpIconData27ReplacePaneTextureByNewIconEPN2nw3lyt7PictureE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 324,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::AppCommonGrpIconData::ReplacePaneTextureByNewIcon(nw::lyt::Picture*)"
+  },
+  {
+   "mangled": "_ZN3app4tool20AppCommonGrpIconDataC1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1500,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::AppCommonGrpIconData::AppCommonGrpIconData()"
+  },
+  {
+   "mangled": "_ZN3app4tool20AppCommonGrpIconDataD1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1516,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::AppCommonGrpIconData::~AppCommonGrpIconData()"
+  },
+  {
+   "mangled": "_ZN3App4Tool30CommonMessageWindowManipulator18SetFinishMode_NoneEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 892,
+     "type": 2
+    }
+   ],
+   "demangled": "App::Tool::CommonMessageWindowManipulator::SetFinishMode_None()"
+  },
+  {
+   "mangled": "_ZN3App4Tool30CommonMessageWindowManipulator23SetFinishMode_UserInputEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 868,
+     "type": 2
+    }
+   ],
+   "demangled": "App::Tool::CommonMessageWindowManipulator::SetFinishMode_UserInput()"
+  },
+  {
+   "mangled": "_ZN3app4tool8PaneList11InitListPutEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 500,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneList::InitListPut()"
+  },
+  {
+   "mangled": "_ZN3app4tool8PaneList13MakeTouchAreaEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1180,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneList::MakeTouchArea()"
+  },
+  {
+   "mangled": "_ZN3app4tool8PaneList15GetPosPaneIndexEi",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 484,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneList::GetPosPaneIndex(int)"
+  },
+  {
+   "mangled": "_ZN3app4tool8PaneList15SetInputEnabledEb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1164,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneList::SetInputEnabled(bool)"
+  },
+  {
+   "mangled": "_ZN3app4tool8PaneList20SetButtonSEPaneIndexEjj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 436,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneList::SetButtonSEPaneIndex(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4tool8PaneList5SetSEEjjj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 428,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneList::SetSE(unsigned int, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4tool8PaneList9PutCursorEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1188,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneList::PutCursor()"
+  },
+  {
+   "mangled": "_ZN3app4tool8PaneList9SetConfigENS1_12PageSkipModeEaaaa",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 420,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneList::SetConfig(app::tool::PaneList::PageSkipMode, signed char, signed char, signed char, signed char)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper14GetPicturePaneEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 316,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::GetPaneHelper::GetPicturePane(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper14GetTextBoxPaneEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 92,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::GetPaneHelper::GetTextBoxPane(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper15GetBoundingPaneEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 588,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::GetPaneHelper::GetBoundingPane(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper4PeekEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 284,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::GetPaneHelper::Peek()"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper4PushEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 276,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::GetPaneHelper::Push(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper7GetPaneEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 140,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::GetPaneHelper::GetPane(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelperC1EPN4gfl23lyt5LytWkEPNS3_13LytMultiResIDE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 76,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::GetPaneHelper::GetPaneHelper(gfl2::lyt::LytWk*, gfl2::lyt::LytMultiResID*)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelperD1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 108,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::GetPaneHelper::~GetPaneHelper()"
+  },
+  {
+   "mangled": "_ZN3app4util19AppRenderingManager10AddDrawEnvENS1_15RenderPlaceType3TagEPN4gfl215renderingengine10scenegraph8instance11DrawEnvNodeEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1700,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::AppRenderingManager::AddDrawEnv(app::util::AppRenderingManager::RenderPlaceType::Tag, gfl2::renderingengine::scenegraph::instance::DrawEnvNode*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util19AppRenderingManager11UnsetCameraENS1_15RenderPlaceType3TagEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1356,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::AppRenderingManager::UnsetCamera(app::util::AppRenderingManager::RenderPlaceType::Tag, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util19AppRenderingManager19CreateDefaultCameraEPNS0_4HeapEPPN4gfl215renderingengine10scenegraph8instance11DrawEnvNodeEPPN7poke_3d5model10BaseCameraENS1_15RenderPlaceType3TagE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1300,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::AppRenderingManager::CreateDefaultCamera(app::util::Heap*, gfl2::renderingengine::scenegraph::instance::DrawEnvNode**, poke_3d::model::BaseCamera**, app::util::AppRenderingManager::RenderPlaceType::Tag)"
+  },
+  {
+   "mangled": "_ZN3app4util19AppRenderingManager20CreateDefaultDrawEnvEPNS0_4HeapENS1_10PresetType3TagEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1692,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::AppRenderingManager::CreateDefaultDrawEnv(app::util::Heap*, app::util::AppRenderingManager::PresetType::Tag, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util19AppRenderingManager9SetCameraENS1_15RenderPlaceType3TagEPN7poke_3d5model10BaseCameraEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1348,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::AppRenderingManager::SetCamera(app::util::AppRenderingManager::RenderPlaceType::Tag, poke_3d::model::BaseCamera*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util19KeyRepeatController10UpdateInfoEPN4gfl22ui12VectorDeviceEjjPNS3_6ButtonE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 340,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::KeyRepeatController::UpdateInfo(gfl2::ui::VectorDevice*, unsigned int, unsigned int, gfl2::ui::Button*)"
+  },
+  {
+   "mangled": "_ZN3app4util19KeyRepeatController8IsRepeatEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 348,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::KeyRepeatController::IsRepeat(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util19KeyRepeatControllerC1Ejj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 596,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::KeyRepeatController::KeyRepeatController(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util23AppUtilFileControlState5IsEndEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1428,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::AppUtilFileControlState::IsEnd()"
+  },
+  {
+   "mangled": "_ZN3app4util23AppUtilFileControlState6UpdateEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1412,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::AppUtilFileControlState::Update()"
+  },
+  {
+   "mangled": "_ZN3app4util23AppUtilFileControlStateC1EjPN4gfl24heap11CtrHeapBaseEbjNS2_2fs10ToolDefine11ArcLangType3TagE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1444,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::AppUtilFileControlState::AppUtilFileControlState(unsigned int, gfl2::heap::CtrHeapBase*, bool, unsigned int, gfl2::fs::ToolDefine::ArcLangType::Tag)"
+  },
+  {
+   "mangled": "_ZN3app4util4Heap15LocalHeapCreateEPN4gfl24heap11CtrHeapBaseES5_jj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 564,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::Heap::LocalHeapCreate(gfl2::heap::CtrHeapBase*, gfl2::heap::CtrHeapBase*, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapC1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 556,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::Heap::Heap()"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil10GetWordSetEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1076,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::GetWordSet()"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil10IsAnimeEndEjj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 508,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::IsAnimeEnd(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil10StartAnimeEjjbb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1036,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::StartAnime(unsigned int, unsigned int, bool, bool)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil13SetAnimeFrameEjjf",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1148,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::SetAnimeFrame(unsigned int, unsigned int, float)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil14SetPaneVisibleEjjb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1132,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::SetPaneVisible(unsigned int, unsigned int, bool)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil14SetPaneVisibleEPN2nw3lyt4PaneEb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 116,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::SetPaneVisible(nw::lyt::Pane*, bool)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil15SetRegisterWordEjRKN4gfl23str6StrBufEN5print7WordSet7GrammerENS8_4FormE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1092,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::SetRegisterWord(unsigned int, gfl2::str::StrBuf const&, print::WordSet::Grammer, print::WordSet::Form)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil15StartAnimeFrameEjjfbb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1204,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::StartAnimeFrame(unsigned int, unsigned int, float, bool, bool)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil16GetAnimeMaxFrameEjj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1140,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::GetAnimeMaxFrame(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil19GetLayoutResourceIDEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 52,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::GetLayoutResourceID(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil20SetTextBoxPaneNumberEPN2nw3lyt7TextBoxEjjjjN5print14NumberDispTypeENS6_14NumberCodeTypeE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1156,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneNumber(nw::lyt::TextBox*, unsigned int, unsigned int, unsigned int, unsigned int, print::NumberDispType, print::NumberCodeType)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil20SetTextBoxPaneNumberEPN2nw3lyt7TextBoxEPN4gfl23str6StrBufEjjjN5print14NumberDispTypeENSA_14NumberCodeTypeE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1212,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneNumber(nw::lyt::TextBox*, gfl2::str::StrBuf*, unsigned int, unsigned int, unsigned int, print::NumberDispType, print::NumberCodeType)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil20SetTextBoxPaneStringEPN2nw3lyt7TextBoxEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 332,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneString(nw::lyt::TextBox*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil20SetTextBoxPaneStringEPN2nw3lyt7TextBoxEPKw",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 148,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneString(nw::lyt::TextBox*, wchar_t const*)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil20SetTextBoxPaneStringEPN2nw3lyt7TextBoxEPN4gfl23str6StrBufE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 100,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneString(nw::lyt::TextBox*, gfl2::str::StrBuf*)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil26SetTextBoxPaneStringExpandEPN2nw3lyt7TextBoxEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1084,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneStringExpand(nw::lyt::TextBox*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil27AddDrawableLytWkForOneFrameEPNS0_19AppRenderingManagerEN4gfl23gfx12CtrDisplayNoEjhj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 124,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::AddDrawableLytWkForOneFrame(app::util::AppRenderingManager*, gfl2::gfx::CtrDisplayNo, unsigned int, unsigned char, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil9BindAnimeEjjb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1196,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::BindAnime(unsigned int, unsigned int, bool)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil9StopAnimeEjjb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1044,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::StopAnime(unsigned int, unsigned int, bool)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph11Inheritance8GenerateEPKS2_NS_4util7FnvHashE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1748,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::Inheritance::Generate(gfl2::renderingengine::scenegraph::Inheritance const*, gfl2::util::FnvHash)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 42952,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 43656,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 44360,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45064,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45768,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 46472,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47176,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47880,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 48584,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49288,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49992,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50696,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 51400,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52104,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52808,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 42996,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 43700,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 44404,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45108,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45812,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 46516,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47220,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47924,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 48628,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49332,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50036,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50740,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 51444,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52148,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52852,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 43064,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 43768,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 44472,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45176,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45880,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 46584,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47288,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47992,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 48696,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49400,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50104,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50808,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 51512,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52216,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52920,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl23lyt13LytMultiResIDD1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 452,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::lyt::LytMultiResID::~LytMultiResID()"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBufC1EjPNS_4heap11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1492,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::str::StrBuf::StrBuf(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN7GameSys11GameManagerEE11GetInstanceEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 364,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::base::SingletonAccessor<GameSys::GameManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24heap22GflHeapFreeMemoryBlockEPv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 28,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::heap::GflHeapFreeMemoryBlock(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager15GetHeapByHeapIdEi",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 4,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::heap::Manager::GetHeapByHeapId(int)"
+  },
+  {
+   "mangled": "_ZN4gfl25debug9GFLassertEPKcjiS2_",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 68,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::debug::GFLassert(char const*, unsigned int, int, char const*)"
+  },
+  {
+   "mangled": "_ZN5print15GetMessageArcIdEN6System9MSGLANGIDE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1380,
+     "type": 2
+    }
+   ],
+   "demangled": "print::GetMessageArcId(System::MSGLANGID)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet14RegisterNumberEjijNS_14NumberDispTypeENS_14NumberCodeTypeE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 876,
+     "type": 2
+    }
+   ],
+   "demangled": "print::WordSet::RegisterNumber(unsigned int, int, unsigned int, print::NumberDispType, print::NumberCodeType)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet23RegisterKisekaeItemNameEjjj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 980,
+     "type": 2
+    }
+   ],
+   "demangled": "print::WordSet::RegisterKisekaeItemName(unsigned int, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet6ExpandEPN4gfl23str6StrBufEPKS3_",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 884,
+     "type": 2
+    }
+   ],
+   "demangled": "print::WordSet::Expand(gfl2::str::StrBuf*, gfl2::str::StrBuf const*)"
+  },
+  {
+   "mangled": "_ZN5Sound12IsSEFinishedEji",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 740,
+     "type": 2
+    }
+   ],
+   "demangled": "Sound::IsSEFinished(unsigned int, int)"
+  },
+  {
+   "mangled": "_ZN5Sound6PlaySEEjjij",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 676,
+     "type": 2
+    }
+   ],
+   "demangled": "Sound::PlaySE(unsigned int, unsigned int, int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN6System7DressUp25GetDressUpArcIdListBattleEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1308,
+     "type": 2
+    }
+   ],
+   "demangled": "System::DressUp::GetDressUpArcIdListBattle()"
+  },
+  {
+   "mangled": "_ZN6System7DressUp39GetDressUpParamDefaultIndispensableHeroEPN7poke_3d5model12DressUpParamE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1228,
+     "type": 2
+    }
+   ],
+   "demangled": "System::DressUp::GetDressUpParamDefaultIndispensableHero(poke_3d::model::DressUpParam*)"
+  },
+  {
+   "mangled": "_ZN6System7DressUp42GetDressUpParamDefaultIndispensableHeroineEPN7poke_3d5model12DressUpParamE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1236,
+     "type": 2
+    }
+   ],
+   "demangled": "System::DressUp::GetDressUpParamDefaultIndispensableHeroine(poke_3d::model::DressUpParam*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc14EventCheckFuncEPNS_11GameManagerE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3124,
+     "type": 2
+    }
+   ],
+   "demangled": "GameSys::GameProc::EventCheckFunc(GameSys::GameManager*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc17NextFrameMainFuncEPN4gfl24proc7ManagerE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3120,
+     "type": 2
+    }
+   ],
+   "demangled": "GameSys::GameProc::NextFrameMainFunc(gfl2::proc::Manager*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProcC1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 20,
+     "type": 2
+    }
+   ],
+   "demangled": "GameSys::GameProc::GameProc()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model10BaseCamera11SetPositionERKN4gfl24math7Vector3E",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 996,
+     "type": 2
+    }
+   ],
+   "demangled": "poke_3d::model::BaseCamera::SetPosition(gfl2::math::Vector3 const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model10BaseCamera7SetFovyEf",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1004,
+     "type": 2
+    }
+   ],
+   "demangled": "poke_3d::model::BaseCamera::SetFovy(float)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave7SubCoinEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 700,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::JoinFestaDataSave::SubCoin(unsigned int)"
+  },
+  {
+   "mangled": "_ZN8Savedata4Misc7SubGoldEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 916,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::Misc::SubGold(unsigned int)"
+  },
+  {
+   "mangled": "_ZN8Savedata7Fashion12ClearNewFlagEji",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 772,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::Fashion::ClearNewFlag(unsigned int, int)"
+  },
+  {
+   "mangled": "_ZN8Savedata7Fashion20GetCagoryItmeDataNumENS0_8CategoryE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 820,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::Fashion::GetCagoryItmeDataNum(Savedata::Fashion::Category)"
+  },
+  {
+   "mangled": "_ZN8Savedata7Fashion20IsChangeDressUpParamERKN7poke_3d5model12DressUpParamES5_",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 924,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::Fashion::IsChangeDressUpParam(poke_3d::model::DressUpParam const&, poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN8Savedata7Fashion3AddEji",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1252,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::Fashion::Add(unsigned int, int)"
+  },
+  {
+   "mangled": "_ZN8Savedata7Fashion3DelEji",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1276,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::Fashion::Del(unsigned int, int)"
+  },
+  {
+   "mangled": "_ZN8Savedata7Fashion49ConvDressUpParamItemCategoryFromtSavedataCategoryENS0_8CategoryE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 660,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::Fashion::ConvDressUpParamItemCategoryFromtSavedataCategory(Savedata::Fashion::Category)"
+  },
+  {
+   "mangled": "_ZN8Savedata7Fashion5IsNewEji",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1244,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::Fashion::IsNew(unsigned int, int)"
+  },
+  {
+   "mangled": "_ZN8Savedata7Fashion7IsOwnedEji",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 812,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::Fashion::IsOwned(unsigned int, int)"
+  },
+  {
+   "mangled": "_ZN8Savedata8MyStatus10SetDressupEN7poke_3d5model12DressUpParamE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 652,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::MyStatus::SetDressup(poke_3d::model::DressUpParam)"
+  },
+  {
+   "mangled": "_ZN8Savedata9IncRecordENS_6Record9RECORD_IDE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1436,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::IncRecord(Savedata::Record::RECORD_ID)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppMenuCursor4DrawEN4gfl23gfx12CtrDisplayNoE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 492,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::UI::NetAppMenuCursor::Draw(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppMenuCursor6UpdateEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 532,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::UI::NetAppMenuCursor::Update()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppMenuCursor7DestroyEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 620,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::UI::NetAppMenuCursor::Destroy()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppMenuCursorC1EPNS_6System19ApplicationWorkBaseEPN3app4util7G2DUtilEijj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 548,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::UI::NetAppMenuCursor::NetAppMenuCursor(NetAppLib::System::ApplicationWorkBase*, app::util::G2DUtil*, int, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI17NetAppMessageMenu11ShowMessageEjjbbb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 860,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::UI::NetAppMessageMenu::ShowMessage(unsigned int, unsigned int, bool, bool, bool)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI17NetAppMessageMenu23ShowMessageWithListMenuEjjbjjjjjjj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 932,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::UI::NetAppMessageMenu::ShowMessageWithListMenu(unsigned int, unsigned int, bool, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase10UpdateFuncEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3600,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3788,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3952,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::NetAppFrameBase::UpdateFunc()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase7EndFuncEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3608,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3796,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3960,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::NetAppFrameBase::EndFunc()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase8DrawFuncEN4gfl23gfx12CtrDisplayNoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3604,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3792,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3956,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::NetAppFrameBase::DrawFunc(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase8InitFuncEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3596,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3784,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3948,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::NetAppFrameBase::InitFunc()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase9exitFrameEi",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3624,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3812,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3976,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::NetAppFrameBase::exitFrame(int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBaseC1EPNS0_19ApplicationWorkBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 684,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::NetAppFrameBase::NetAppFrameBase(NetAppLib::System::ApplicationWorkBase*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBaseD1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 692,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::NetAppFrameBase::~NetAppFrameBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15ResourceManager14AddLoadRequestEijjbbN4gfl22fs10ToolDefine11ArcLangType3TagE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1372,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ResourceManager::AddLoadRequest(int, unsigned int, unsigned int, bool, bool, gfl2::fs::ToolDefine::ArcLangType::Tag)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15ResourceManager17GetResourceBufferEi",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1324,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ResourceManager::GetResourceBuffer(int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System19ApplicationWorkBaseC1Ejj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1484,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ApplicationWorkBase::ApplicationWorkBase(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System19ApplicationWorkBaseD1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1524,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ApplicationWorkBase::~ApplicationWorkBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase3EndEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1420,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ApplicationSystemBase::End()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase4DrawEN4gfl23gfx12CtrDisplayNoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 4328,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Draw(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase5BuildEPNS0_25IApplicationSystemBuilderE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1452,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4312,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Build(NetAppLib::System::IApplicationSystemBuilder*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase6ResumeEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 4340,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Resume()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase6UpdateEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 4320,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Update()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase7DestroyEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 4344,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Destroy()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase7LoadingEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 4316,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Loading()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase7PreDrawEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 4324,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ApplicationSystemBase::PreDraw()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase7SuspendEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 4336,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Suspend()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBaseC1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1460,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ApplicationSystemBase::ApplicationSystemBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBaseD1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1468,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::ApplicationSystemBase::~ApplicationSystemBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System22NetApplicationViewBase17Create2DOneLayoutEPNS0_19ApplicationWorkBaseEijjN3app4util7G2DUtil18SETUP_DISPLAY_TYPEEPNS_7Message14MessageUtilityEj",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3220,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3316,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3472,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4712,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::NetApplicationViewBase::Create2DOneLayout(NetAppLib::System::ApplicationWorkBase*, int, unsigned int, unsigned int, app::util::G2DUtil::SETUP_DISPLAY_TYPE, NetAppLib::Message::MessageUtility*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System22NetApplicationViewBaseC2EPN3app4util4HeapE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1556,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::NetApplicationViewBase::NetApplicationViewBase(app::util::Heap*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System22NetApplicationViewBaseC2EPNS0_19ApplicationWorkBaseEijjN3app4util7G2DUtil18SETUP_DISPLAY_TYPEEPNS_7Message14MessageUtilityEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 132,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::NetApplicationViewBase::NetApplicationViewBase(NetAppLib::System::ApplicationWorkBase*, int, unsigned int, unsigned int, app::util::G2DUtil::SETUP_DISPLAY_TYPE, NetAppLib::Message::MessageUtility*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System22NetApplicationViewBaseD2Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 156,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::System::NetApplicationViewBase::~NetApplicationViewBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility14LoadFromMemoryEjPKv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1364,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::Message::MessageUtility::LoadFromMemory(unsigned int, void const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility7GetDataEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 900,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::Message::MessageUtility::GetData(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility9GetStringEjj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 84,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::Message::MessageUtility::GetString(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9PokeDiary3SetE4PDIDttt",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 748,
+     "type": 2
+    }
+   ],
+   "demangled": "PokeDiary::Set(PDID, unsigned short, unsigned short, unsigned short)"
+  },
+  {
+   "mangled": "_ZnajPN4gfl24heap11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1532,
+     "type": 2
+    }
+   ],
+   "demangled": "operator new[](unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZNK3app2ui11UIResponder14IsInputEnabledEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 516,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::IsInputEnabled() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui11UIResponder17IsButtonAnimationEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 204,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3168,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3264,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3420,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4660,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIResponder::IsButtonAnimation() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView10GetG2DUtilEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 44,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::GetG2DUtil() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView13GetLayoutWorkEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 308,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::GetLayoutWork(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView9IsDrawingEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1716,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3204,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4696,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::IsDrawing() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView9IsVisibleEv",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 3200,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3296,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 3452,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 4692,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::IsVisible() const"
+  },
+  {
+   "mangled": "_ZNK3app4tool12PaneListView15GetUpdateResultEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 524,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneListView::GetUpdateResult() const"
+  },
+  {
+   "mangled": "_ZNK3app4tool8PaneList13GetCursorDataEPjPf",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 476,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::PaneList::GetCursorData(unsigned int*, float*) const"
+  },
+  {
+   "mangled": "_ZNK3app4util7G2DUtil13GetLayoutWorkEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 60,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::G2DUtil::GetLayoutWork(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui12VectorDevice6IsHoldEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1060,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::ui::VectorDevice::IsHold(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui6Button6IsHoldEjNS1_12InputStateIDE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1052,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::ui::Button::IsHold(unsigned int, gfl2::ui::Button::InputStateID) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui6Button9IsTriggerEjNS1_12InputStateIDE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 164,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::ui::Button::IsTrigger(unsigned int, gfl2::ui::Button::InputStateID) const"
+  },
+  {
+   "mangled": "_ZNK4gfl23lyt5LytWk12GetPartsPaneEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 228,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::lyt::LytWk::GetPartsPane(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl23lyt5LytWk15GetBoundingPaneEPN2nw3lyt5PartsEjPKNS0_13LytMultiResIDE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 236,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::lyt::LytWk::GetBoundingPane(nw::lyt::Parts*, unsigned int, gfl2::lyt::LytMultiResID const*) const"
+  },
+  {
+   "mangled": "_ZNK4gfl23lyt5LytWk7GetPaneEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 356,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::lyt::LytWk::GetPane(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK7GameSys11GameManager18GetUiDeviceManagerEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 372,
+     "type": 2
+    }
+   ],
+   "demangled": "GameSys::GameManager::GetUiDeviceManager() const"
+  },
+  {
+   "mangled": "_ZNK7GameSys11GameManager19GetAsyncFileManagerEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1316,
+     "type": 2
+    }
+   ],
+   "demangled": "GameSys::GameManager::GetAsyncFileManager() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model31DressUpModelResourceManagerCore19GetDressUpItemIndexENS0_12DressUpParam12ItemCategoryEjj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 844,
+     "type": 2
+    }
+   ],
+   "demangled": "poke_3d::model::DressUpModelResourceManagerCore::GetDressUpItemIndex(poke_3d::model::DressUpParam::ItemCategory, unsigned int, unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model31DressUpModelResourceManagerCore20GetDressUpColorIndexENS0_12DressUpParam12ItemCategoryEi",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 732,
+     "type": 2
+    }
+   ],
+   "demangled": "poke_3d::model::DressUpModelResourceManagerCore::GetDressUpColorIndex(poke_3d::model::DressUpParam::ItemCategory, int) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model31DressUpModelResourceManagerCore20GetDressUpPartsIndexENS0_12DressUpParam12ItemCategoryEi",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 716,
+     "type": 2
+    }
+   ],
+   "demangled": "poke_3d::model::DressUpModelResourceManagerCore::GetDressUpPartsIndex(poke_3d::model::DressUpParam::ItemCategory, int) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model31DressUpModelResourceManagerCore26IsDressUpPartsColorEnabledENS0_12DressUpParam12ItemCategoryEjj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 836,
+     "type": 2
+    }
+   ],
+   "demangled": "poke_3d::model::DressUpModelResourceManagerCore::IsDressUpPartsColorEnabled(poke_3d::model::DressUpParam::ItemCategory, unsigned int, unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata10ConfigSave15GetTalkingSpeedEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 956,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::ConfigSave::GetTalkingSpeed() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave7GetCoinEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 708,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::JoinFestaDataSave::GetCoin() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata4Misc7GetGoldEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 756,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::Misc::GetGold() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus10GetDressupEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 724,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::MyStatus::GetDressup() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus6GetSexEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 796,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::MyStatus::GetSex() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib2UI16NetAppMenuCursor10CanDestroyEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1724,
+     "type": 2
+    }
+   ],
+   "demangled": "NetAppLib::UI::NetAppMenuCursor::CanDestroy() const"
+  },
+  {
+   "mangled": "_ZnwjPN4gfl24heap11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 12,
+     "type": 2
+    }
+   ],
+   "demangled": "operator new(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZTIN7GameSys8GameProcE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 1176,
+     "type": 2
+    }
+   ],
+   "demangled": "typeinfo for GameSys::GameProc"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib6System15NetAppFrameBaseE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 1312,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1368,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1416,
+     "type": 2
+    }
+   ],
+   "demangled": "typeinfo for NetAppLib::System::NetAppFrameBase"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib6System19ApplicationWorkBaseE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 1588,
+     "type": 2
+    }
+   ],
+   "demangled": "typeinfo for NetAppLib::System::ApplicationWorkBase"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib6System21ApplicationSystemBaseE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 1568,
+     "type": 2
+    }
+   ],
+   "demangled": "typeinfo for NetAppLib::System::ApplicationSystemBase"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib6System22NetApplicationViewBaseE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 1188,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1208,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1248,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1676,
+     "type": 2
+    }
+   ],
+   "demangled": "typeinfo for NetAppLib::System::NetApplicationViewBase"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv117__class_type_infoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 1160,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1224,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1280,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1288,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1448,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1492,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1572,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1604,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1612,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1620,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1628,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1636,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1644,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1652,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1660,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1680,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1688,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1696,
+     "type": 2
+    }
+   ],
+   "demangled": "vtable for __cxxabiv1::__class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv120__si_class_type_infoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 1168,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1180,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1456,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1468,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1480,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1500,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1512,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1524,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1536,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1548,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1560,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1580,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1592,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1668,
+     "type": 2
+    }
+   ],
+   "demangled": "vtable for __cxxabiv1::__si_class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv121__vmi_class_type_infoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 1192,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1232,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1296,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1352,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 1400,
+     "type": 2
+    }
+   ],
+   "demangled": "vtable for __cxxabiv1::__vmi_class_type_info"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 42932,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 43636,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 44340,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45044,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45748,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 46452,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47156,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47860,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 48564,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49268,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49972,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50676,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 51380,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52084,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52788,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 42964,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 43668,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 44372,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45076,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45780,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 46484,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47188,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47892,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 48596,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49300,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50004,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50708,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 51412,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52116,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52820,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 43008,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 43712,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 44416,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45120,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 45824,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 46528,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47232,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 47936,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 48640,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 49344,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50048,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 50752,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 51456,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52160,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 52864,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  }
+ ]
+}

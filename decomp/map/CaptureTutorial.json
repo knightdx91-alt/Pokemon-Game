@@ -1,0 +1,1334 @@
+{
+ "module": "CaptureTutorial.cro",
+ "size": 49152,
+ "segments": [
+  {
+   "offset": 384,
+   "size": 22892,
+   "id": 0,
+   "name": "text"
+  },
+  {
+   "offset": 24576,
+   "size": 2660,
+   "id": 1,
+   "name": "rodata"
+  },
+  {
+   "offset": 41760,
+   "size": 6340,
+   "id": 2,
+   "name": "data"
+  },
+  {
+   "offset": 0,
+   "size": 16,
+   "id": 3,
+   "name": "bss"
+  },
+  {
+   "offset": 0,
+   "size": 0,
+   "id": 0,
+   "name": "text"
+  }
+ ],
+ "exports": [
+  {
+   "mangled": "nnroControlObject_",
+   "seg": 0,
+   "offset": 22696,
+   "thumb": false,
+   "demangled": "nnroControlObject_"
+  },
+  {
+   "mangled": "_ZN3btl8BgSystem10SetUseVramEb",
+   "seg": 0,
+   "offset": 15984,
+   "thumb": false,
+   "demangled": "btl::BgSystem::SetUseVram(bool)"
+  },
+  {
+   "mangled": "_ZN3btl8BgSystem19GetNowTimeAnimationEv",
+   "seg": 0,
+   "offset": 15992,
+   "thumb": false,
+   "demangled": "btl::BgSystem::GetNowTimeAnimation()"
+  },
+  {
+   "mangled": "_ZN3btl8BgSystem8IsEnalbeEv",
+   "seg": 0,
+   "offset": 16000,
+   "thumb": false,
+   "demangled": "btl::BgSystem::IsEnalbe()"
+  },
+  {
+   "mangled": "_ZN3btl8BgSystem9IsVisibleEv",
+   "seg": 0,
+   "offset": 16016,
+   "thumb": false,
+   "demangled": "btl::BgSystem::IsVisible()"
+  },
+  {
+   "mangled": "_ZNK3btl8BgSystem9IsUseVramEv",
+   "seg": 0,
+   "offset": 16528,
+   "thumb": false,
+   "demangled": "btl::BgSystem::IsUseVram() const"
+  }
+ ],
+ "imports": [
+  {
+   "mangled": "__aeabi_memclr4",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 996,
+     "type": 2
+    }
+   ],
+   "demangled": "__aeabi_memclr4"
+  },
+  {
+   "mangled": "__aeabi_memcpy4",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 1004,
+     "type": 2
+    }
+   ],
+   "demangled": "__aeabi_memcpy4"
+  },
+  {
+   "mangled": "__aeabi_vec_ctor_nocookie_nodtor",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 4,
+     "type": 2
+    }
+   ],
+   "demangled": "__aeabi_vec_ctor_nocookie_nodtor"
+  },
+  {
+   "mangled": "__cxa_guard_acquire",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 972,
+     "type": 2
+    }
+   ],
+   "demangled": "__cxa_guard_acquire"
+  },
+  {
+   "mangled": "__cxa_guard_release",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 980,
+     "type": 2
+    }
+   ],
+   "demangled": "__cxa_guard_release"
+  },
+  {
+   "mangled": "__cxa_pure_virtual",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 2316,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 2640,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 2644,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 2656,
+     "type": 2
+    }
+   ],
+   "demangled": "__cxa_pure_virtual"
+  },
+  {
+   "mangled": "_Z17BATTLE_SETUP_InitP18BATTLE_SETUP_PARAM",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 148,
+     "type": 2
+    }
+   ],
+   "demangled": "BATTLE_SETUP_Init(BATTLE_SETUP_PARAM*)"
+  },
+  {
+   "mangled": "_Z22BATTLE_EFFECT_GetParam14BattleEffectIdP17BSP_BATTLE_EFFECT",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 284,
+     "type": 2
+    }
+   ],
+   "demangled": "BATTLE_EFFECT_GetParam(BattleEffectId, BSP_BATTLE_EFFECT*)"
+  },
+  {
+   "mangled": "_Z26DEFAULT_POWERUP_DESC_ClearP18DefaultPowerUpDesc",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 348,
+     "type": 2
+    }
+   ],
+   "demangled": "DEFAULT_POWERUP_DESC_Clear(DefaultPowerUpDesc*)"
+  },
+  {
+   "mangled": "_ZdlPv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 68,
+     "type": 2
+    }
+   ],
+   "demangled": "operator delete(void*)"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 17104,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 17808,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21144,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21848,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 22552,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 17136,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 17840,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21176,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21880,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 22584,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 17180,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 17884,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21220,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21924,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 22628,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 17108,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 17812,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21148,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21852,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 22556,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 17140,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 17844,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21180,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21884,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 22588,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 17184,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 17888,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21224,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21928,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 22632,
+     "type": 2
+    }
+   ],
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10UpdateTreeEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 588,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::UpdateTree()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8DrawTreeEN4gfl23gfx12CtrDisplayNoE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 556,
+     "type": 2
+    }
+   ],
+   "demangled": "app::ui::UIView::DrawTree(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN3app4tool12FingerCursor10StartAnimeENS1_8FormTypeE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 444,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::FingerCursor::StartAnime(app::tool::FingerCursor::FormType)"
+  },
+  {
+   "mangled": "_ZN3app4tool12FingerCursor14IsEndPushAnimeENS1_8FormTypeE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 508,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::FingerCursor::IsEndPushAnime(app::tool::FingerCursor::FormType)"
+  },
+  {
+   "mangled": "_ZN3app4tool12FingerCursor16CreateLytBinDataEPNS_4util4HeapE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 228,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::FingerCursor::CreateLytBinData(app::util::Heap*)"
+  },
+  {
+   "mangled": "_ZN3app4tool12FingerCursor16DeleteLytBinDataEPv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 620,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::FingerCursor::DeleteLytBinData(void*)"
+  },
+  {
+   "mangled": "_ZN3app4tool12FingerCursor6SetPosERN4gfl24math22ExtendedVectorTemplateINS3_33SpecializedExtendedVectorTemplateIN2nn4math4VEC3EEEEE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 452,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::FingerCursor::SetPos(gfl2::math::ExtendedVectorTemplate<gfl2::math::SpecializedExtendedVectorTemplate<nn::math::VEC3> >&)"
+  },
+  {
+   "mangled": "_ZN3app4tool12FingerCursor9PushAnimeENS1_8FormTypeE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 524,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::FingerCursor::PushAnime(app::tool::FingerCursor::FormType)"
+  },
+  {
+   "mangled": "_ZN3app4tool12FingerCursorC1EPNS_4util4HeapEPvPNS2_19AppRenderingManagerENS2_7G2DUtil18SETUP_DISPLAY_TYPEEh",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 236,
+     "type": 2
+    }
+   ],
+   "demangled": "app::tool::FingerCursor::FingerCursor(app::util::Heap*, void*, app::util::AppRenderingManager*, app::util::G2DUtil::SETUP_DISPLAY_TYPE, unsigned char)"
+  },
+  {
+   "mangled": "_ZN3app4util4Heap15LocalHeapCreateEPN4gfl24heap11CtrHeapBaseES5_jj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 52,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::Heap::LocalHeapCreate(gfl2::heap::CtrHeapBase*, gfl2::heap::CtrHeapBase*, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapC1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 36,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::Heap::Heap()"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapD1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 60,
+     "type": 2
+    }
+   ],
+   "demangled": "app::util::Heap::~Heap()"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara12PokemonParamC1EPN4gfl24heap11CtrHeapBaseERKNS0_11InitialSpecE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 308,
+     "type": 2
+    }
+   ],
+   "demangled": "pml::pokepara::PokemonParam::PokemonParam(gfl2::heap::CtrHeapBase*, pml::pokepara::InitialSpec const&)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParam15SetTokuseiIndexEh",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 468,
+     "type": 2
+    }
+   ],
+   "demangled": "pml::pokepara::CoreParam::SetTokuseiIndex(unsigned char)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParam17ChangeEffortPowerENS0_7PowerIDEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 340,
+     "type": 2
+    }
+   ],
+   "demangled": "pml::pokepara::CoreParam::ChangeEffortPower(pml::pokepara::PowerID, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParam17ChangeTalentPowerENS0_7PowerIDEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 332,
+     "type": 2
+    }
+   ],
+   "demangled": "pml::pokepara::CoreParam::ChangeTalentPower(pml::pokepara::PowerID, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParam7SetItemEt",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 460,
+     "type": 2
+    }
+   ],
+   "demangled": "pml::pokepara::CoreParam::SetItem(unsigned short)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParam7SetWazaEh6WazaNo",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 324,
+     "type": 2
+    }
+   ],
+   "demangled": "pml::pokepara::CoreParam::SetWaza(unsigned char, WazaNo)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParam9ChangeSexENS_3SexE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 316,
+     "type": 2
+    }
+   ],
+   "demangled": "pml::pokepara::CoreParam::ChangeSex(pml::Sex)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph11Inheritance8GenerateEPKS2_NS_4util7FnvHashE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 988,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::Inheritance::Generate(gfl2::renderingengine::scenegraph::Inheritance const*, gfl2::util::FnvHash)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 17132,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 17836,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21172,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21876,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 22580,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 17176,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 17880,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21216,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21920,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 22624,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 17244,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 17948,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21284,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21988,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 22692,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBufC1EjPNS_4heap11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 196,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::str::StrBuf::StrBuf(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl23str7MsgData9GetStringEjRNS0_6StrBufE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 244,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::str::MsgData::GetString(unsigned int, gfl2::str::StrBuf&)"
+  },
+  {
+   "mangled": "_ZN4gfl23str7MsgDataC1EjjPNS_4heap11CtrHeapBaseENS1_8LoadTypeE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 188,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::str::MsgData::MsgData(unsigned int, unsigned int, gfl2::heap::CtrHeapBase*, gfl2::str::MsgData::LoadType)"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN7GameSys11GameManagerEE11GetInstanceEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 292,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::base::SingletonAccessor<GameSys::GameManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorINS_4Fade11FadeManagerEE11GetInstanceEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 92,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::base::SingletonAccessor<gfl2::Fade::FadeManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24Fade11FadeManager15ForceDefaultOutENS0_4DISPE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 100,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::Fade::FadeManager::ForceDefaultOut(gfl2::Fade::DISP)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap22GflHeapFreeMemoryBlockEPv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 124,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::heap::GflHeapFreeMemoryBlock(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager10CreateHeapEPNS0_11CtrHeapBaseEiiNS0_8HeapTypeEbPKc",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 84,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::heap::Manager::CreateHeap(gfl2::heap::CtrHeapBase*, int, int, gfl2::heap::HeapType, bool, char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager10DeleteHeapEPNS0_11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 76,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::heap::Manager::DeleteHeap(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager15GetHeapByHeapIdEi",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 44,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::heap::Manager::GetHeapByHeapId(int)"
+  },
+  {
+   "mangled": "_ZN4gfl25debug13GFLassertStopEPKcjS2_",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 140,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::debug::GFLassertStop(char const*, unsigned int, char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl25debug9GFLassertEPKcjiS2_",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 12,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::debug::GFLassert(char const*, unsigned int, int, char const*)"
+  },
+  {
+   "mangled": "_ZN5Field19SetUpFieldSituationEP19BTL_FIELD_SITUATIONPN7GameSys11GameManagerEPPKNS_14ZoneDataLoaderEjN3btl2bg16bgsys_far_typeIDENSA_17bgsys_near_typeIDEa",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 300,
+     "type": 2
+    }
+   ],
+   "demangled": "Field::SetUpFieldSituation(BTL_FIELD_SITUATION*, GameSys::GameManager*, Field::ZoneDataLoader const**, unsigned int, btl::bg::bgsys_far_typeID, btl::bg::bgsys_near_typeID, signed char)"
+  },
+  {
+   "mangled": "_ZN5print15GetMessageArcIdEN6System9MSGLANGIDE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 180,
+     "type": 2
+    }
+   ],
+   "demangled": "print::GetMessageArcId(System::MSGLANGID)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet12RegisterWordEjPN4gfl23str7MsgDataEjNS0_4FormE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 548,
+     "type": 2
+    }
+   ],
+   "demangled": "print::WordSet::RegisterWord(unsigned int, gfl2::str::MsgData*, unsigned int, print::WordSet::Form)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet22RegisterPokeMonsNameNoEj6MonsNo",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 540,
+     "type": 2
+    }
+   ],
+   "demangled": "print::WordSet::RegisterPokeMonsNameNo(unsigned int, MonsNo)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet6ExpandEPN4gfl23str6StrBufEPKS3_",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 268,
+     "type": 2
+    }
+   ],
+   "demangled": "print::WordSet::Expand(gfl2::str::StrBuf*, gfl2::str::StrBuf const*)"
+  },
+  {
+   "mangled": "_ZN5print7WordSetC1EPN4gfl24heap11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 204,
+     "type": 2
+    }
+   ],
+   "demangled": "print::WordSet::WordSet(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN5print7WordSetD1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 652,
+     "type": 2
+    }
+   ],
+   "demangled": "print::WordSet::~WordSet()"
+  },
+  {
+   "mangled": "_ZN5Sound12IsMEFinishedEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 684,
+     "type": 2
+    }
+   ],
+   "demangled": "Sound::IsMEFinished(unsigned int)"
+  },
+  {
+   "mangled": "_ZN5Sound17StartNewBGMFromMEEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 692,
+     "type": 2
+    }
+   ],
+   "demangled": "Sound::StartNewBGMFromME(unsigned int)"
+  },
+  {
+   "mangled": "_ZN5Sound7StartMEEj",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 852,
+     "type": 2
+    }
+   ],
+   "demangled": "Sound::StartME(unsigned int)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc14EventCheckFuncEPNS_11GameManagerE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 1744,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 2484,
+     "type": 2
+    }
+   ],
+   "demangled": "GameSys::GameProc::EventCheckFunc(GameSys::GameManager*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc14GetGameManagerEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 108,
+     "type": 2
+    }
+   ],
+   "demangled": "GameSys::GameProc::GetGameManager()"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc17NextFrameMainFuncEPN4gfl24proc7ManagerE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 1740,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 2480,
+     "type": 2
+    }
+   ],
+   "demangled": "GameSys::GameProc::NextFrameMainFunc(gfl2::proc::Manager*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProcC1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 116,
+     "type": 2
+    }
+   ],
+   "demangled": "GameSys::GameProc::GameProc()"
+  },
+  {
+   "mangled": "_ZN8Savedata6MyItem3AddEttb",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 172,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::MyItem::Add(unsigned short, unsigned short, bool)"
+  },
+  {
+   "mangled": "_ZN8Savedata6MyItemC1Ev",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 164,
+     "type": 2
+    }
+   ],
+   "demangled": "Savedata::MyItem::MyItem()"
+  },
+  {
+   "mangled": "_ZNK3pml8pokepara9CoreParam5GetHpEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 868,
+     "type": 2
+    }
+   ],
+   "demangled": "pml::pokepara::CoreParam::GetHp() const"
+  },
+  {
+   "mangled": "_ZNK4gfl23str7MsgData11GetStrCountEv",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 532,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::str::MsgData::GetStrCount() const"
+  },
+  {
+   "mangled": "_ZnwjPN4gfl24heap11CtrHeapBaseE",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 20,
+     "type": 2
+    }
+   ],
+   "demangled": "operator new(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZnwjPN4gfl24heap11CtrHeapBaseEi",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 828,
+     "type": 2
+    }
+   ],
+   "demangled": "operator new(unsigned int, gfl2::heap::CtrHeapBase*, int)"
+  },
+  {
+   "mangled": "_ZTIN7GameSys8GameProcE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 68,
+     "type": 2
+    }
+   ],
+   "demangled": "typeinfo for GameSys::GameProc"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv117__class_type_infoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 144,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 260,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 364,
+     "type": 2
+    }
+   ],
+   "demangled": "vtable for __cxxabiv1::__class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv120__si_class_type_infoE",
+   "patches": [
+    {
+     "seg": 1,
+     "offset": 24,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 36,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 48,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 60,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 72,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 84,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 96,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 108,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 120,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 132,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 152,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 164,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 176,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 188,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 200,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 212,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 224,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 236,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 248,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 268,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 280,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 292,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 304,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 316,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 328,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 340,
+     "type": 2
+    },
+    {
+     "seg": 1,
+     "offset": 352,
+     "type": 2
+    }
+   ],
+   "demangled": "vtable for __cxxabiv1::__si_class_type_info"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 17112,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 17816,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21152,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21856,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 22560,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 17144,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 17848,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21184,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21888,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 22592,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "patches": [
+    {
+     "seg": 0,
+     "offset": 17188,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 17892,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21228,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 21932,
+     "type": 2
+    },
+    {
+     "seg": 0,
+     "offset": 22636,
+     "type": 2
+    }
+   ],
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  }
+ ]
+}
