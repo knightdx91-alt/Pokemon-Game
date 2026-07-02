@@ -70,6 +70,22 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
      formula `(2·base+IV+EV/4)·L/100 (+5 | +L+10)` × nature, incl. the
      Shedinja 1-HP case; verified against the canonical Garchomp spread
      (all six stats exact).
+   - `pml::pokepara::CoreParam` EXP↔level: `CalcLevelFromExp`,
+     `GetExpForNextLevel`, `GetExpForCurrentLevel`
+     (`src/pml/pokepara/ExpLevel.cpp`) — the growth-table scan (curves
+     themselves are data-driven, loaded by pml::personal).
+
+### Known next targets / open issues
+- **Damage formula** (`btl`, internal/unnamed in Battle.cro): located the
+  unique function reachable from `TypeAffinity::CalcAffinity` +
+  `wazadata::GetPower`, but resolving its exact address is blocked by a
+  bug in the phase-2 **import patch decoder** — the per-import relocation
+  offsets come out too small (0x64, 0x16dc) to be real text offsets, so the
+  entry stride / segment-tag decoding in `cro_map.py:parse_patch_list` is
+  wrong. Fixing that reloc walk is the prerequisite for a reliable
+  cross-module call graph (and for pinning the damage function). Until then
+  export→address mapping (used for all functions decompiled so far) is solid;
+  only import *call-site* mapping is affected.
 5. **Struct recovery** — rebuild headers (`pml::pokepara::CoreParam`,
    save blocks, …) from access patterns + community docs (pk3DS, PKHeX
    research already names many USUM structures — cross-reference).
