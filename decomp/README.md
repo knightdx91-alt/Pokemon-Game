@@ -119,6 +119,17 @@ Battle.cro damage pipeline traced via the graph:
   callers — reached by function pointer, as expected). The exact damage
   arithmetic lives in its callees (`sub_8f04c`, `sub_e3a50`, …) — next to trace.
 
+### Gen-7 data conversion (practical payoff)
+- `tools/usum_personal.py` converts the `a/0/1/7` personal-data GARC (977
+  members) → `data/pokemon/usum_base_stats.json` (807 species): base stats,
+  named types, catch rate, base EXP, EV yield, gender ratio, egg cycles/groups,
+  base friendship, growth rate, ability ids. Verified against known species
+  (Bulbasaur/Charizard/Mewtwo/Lucario — stats, types, growth, base-exp, gender
+  all exact; `--verify`). Species **names** need Gen-7 message-text decoding
+  (per-line XOR) — a separate step; records are keyed by national-dex number.
+  This is the clean 2D-portable slice of the ROM (Gen-7 *data* ports; Gen-7
+  3D *maps* do not).
+
 ### Battle architecture findings (server hunt)
 - **Battle.cro is the battle *scene* module** (rendering/UI/animation:
   `btl::BgSystem`, move-anim sequencing), NOT the damage server. Evidence: its
