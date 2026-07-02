@@ -83,6 +83,13 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
      `sub_458c` (6-state) documented. Per-handler semantics = ongoing Phase-1
      bulk. ADDRESSING NOTE: text(seg0) and rodata(seg1) share offset numbers —
      the table is rodata+0x45a0, NOT the code at text+0x45a0.
+     **Move-effect id decoded & extracted (verified):** move struct u16 @0x10 =
+     the Gen-7 move-effect enum (400 distinct, 0..419) — 4=10%burn, 6=para-
+     chance, 32=heal, 48=recoil, 50=+2Atk, 67=paralyze status (validated by
+     move grouping). Now in `data/pokemon/usum_moves.json` (`effectId`); index
+     at `decomp/battle_effects/move_effect_ids.json`. NOTE: this 0..419 enum is
+     NOT a direct index into the ~150 rodata handler table — an intermediate
+     effect-enum→sequence-handler mapping is the remaining Phase-1 link.
    - **catch-rate server** (`src/pml/battle/CatchRate.cpp`) — `sub_2d568`:
      `a = (3M−2H)·rateMod·ball·status/(3M)`, auto-catch at a≥255 (0xff000 Q12),
      else the 4-shake check (`^0.1875` shake, the `0.1875f` @0x2da0c that

@@ -1,0 +1,1534 @@
+{
+ "note": "Gen-7 move-effect id (move struct u16 @0x10) -> moves with that effect. Verified by grouping (Ember/Flamethrower=4=10%burn, Thunderbolt/BodySlam=6=10%para). This is the ~430-value pk3DS move-effect enum, NOT the 153 rodata handler-table index.",
+ "distinct_effects": 400,
+ "effect_to_moves": {
+  "0": [
+   "10,000,000 Volt Thunderbolt",
+   "Acid Downpour",
+   "Acid Downpour",
+   "All-Out Pummeling",
+   "All-Out Pummeling",
+   "Aqua Tail",
+   "Black Hole Eclipse",
+   "Black Hole Eclipse",
+   "Bloom Doom",
+   "Bloom Doom",
+   "Breakneck Blitz",
+   "Breakneck Blitz",
+   "Catastropika",
+   "Continental Crush",
+   "Continental Crush",
+   "Corkscrew Crash",
+   "Corkscrew Crash",
+   "Cut",
+   "Dazzling Gleam",
+   "Devastating Drake",
+   "Devastating Drake",
+   "Dragon Claw",
+   "Dragon Hammer",
+   "Dragon Pulse",
+   "Drill Peck",
+   "Egg Bomb",
+   "Fairy Wind",
+   "Gigavolt Havoc",
+   "Gigavolt Havoc",
+   "High Horsepower",
+   "Horn Attack",
+   "Hydro Pump",
+   "Hydro Vortex",
+   "Hydro Vortex",
+   "Hyper Voice",
+   "Inferno Overdrive",
+   "Inferno Overdrive",
+   "Land\u2019s Wrath",
+   "Leafage",
+   "Malicious Moonsault",
+   "Mega Kick",
+   "Mega Punch",
+   "Megahorn",
+   "Never-Ending Nightmare",
+   "Never-Ending Nightmare",
+   "Oceanic Operetta",
+   "Origin Pulse",
+   "Peck",
+   "Photon Geyser",
+   "Plasma Fists",
+   "Pound",
+   "Power Gem",
+   "Power Whip",
+   "Precipice Blades",
+   "Pulverizing Pancake",
+   "Rock Throw",
+   "Savage Spin-Out",
+   "Savage Spin-Out",
+   "Scratch",
+   "Seed Bomb",
+   "Shattered Psyche",
+   "Shattered Psyche",
+   "Sinister Arrow Raid",
+   "Slam",
+   "Soul-Stealing 7-Star Strike",
+   "Strength",
+   "Subzero Slammer",
+   "Subzero Slammer",
+   "Supersonic Skystrike",
+   "Supersonic Skystrike",
+   "Tackle",
+   "Tectonic Rage",
+   "Tectonic Rage",
+   "Twinkle Tackle",
+   "Twinkle Tackle",
+   "Vice Grip",
+   "Vine Whip",
+   "Water Gun",
+   "Wing Attack",
+   "X-Scissor"
+  ],
+  "1": [
+   "Dark Void",
+   "Grass Whistle",
+   "Hypnosis",
+   "Lovely Kiss",
+   "Sing",
+   "Sleep Powder",
+   "Spore"
+  ],
+  "2": [
+   "Gunk Shot",
+   "Poison Jab",
+   "Poison Sting",
+   "Sludge",
+   "Sludge Bomb",
+   "Sludge Wave",
+   "Smog"
+  ],
+  "3": [
+   "Absorb",
+   "Drain Punch",
+   "Giga Drain",
+   "Horn Leech",
+   "Leech Life",
+   "Mega Drain"
+  ],
+  "4": [
+   "Blue Flare",
+   "Ember",
+   "Fire Blast",
+   "Fire Punch",
+   "Flamethrower",
+   "Heat Wave",
+   "Inferno",
+   "Lava Plume",
+   "Scald",
+   "Searing Shot",
+   "Steam Eruption"
+  ],
+  "5": [
+   "Ice Beam",
+   "Ice Punch",
+   "Powder Snow"
+  ],
+  "6": [
+   "Body Slam",
+   "Bolt Strike",
+   "Discharge",
+   "Dragon Breath",
+   "Force Palm",
+   "Lick",
+   "Spark",
+   "Stoked Sparksurfer",
+   "Thunder Punch",
+   "Thunder Shock",
+   "Thunderbolt",
+   "Zap Cannon"
+  ],
+  "7": [
+   "Explosion",
+   "Self-Destruct"
+  ],
+  "8": [
+   "Dream Eater"
+  ],
+  "9": [
+   "Mirror Move"
+  ],
+  "10": [
+   "Howl",
+   "Meditate",
+   "Sharpen"
+  ],
+  "11": [
+   "Harden",
+   "Withdraw"
+  ],
+  "16": [
+   "Double Team"
+  ],
+  "17": [
+   "Aerial Ace",
+   "Aura Sphere",
+   "Feint Attack",
+   "Magical Leaf",
+   "Magnet Bomb",
+   "Shadow Punch",
+   "Shock Wave",
+   "Smart Strike",
+   "Swift"
+  ],
+  "18": [
+   "Growl"
+  ],
+  "19": [
+   "Leer",
+   "Tail Whip"
+  ],
+  "20": [
+   "Electroweb",
+   "Low Sweep"
+  ],
+  "23": [
+   "Flash",
+   "Kinesis",
+   "Sand Attack",
+   "Smokescreen"
+  ],
+  "24": [
+   "Sweet Scent"
+  ],
+  "25": [
+   "Haze"
+  ],
+  "26": [
+   "Bide"
+  ],
+  "27": [
+   "Outrage",
+   "Petal Dance",
+   "Thrash"
+  ],
+  "28": [
+   "Roar",
+   "Whirlwind"
+  ],
+  "29": [
+   "Arm Thrust",
+   "Barrage",
+   "Bone Rush",
+   "Bullet Seed",
+   "Comet Punch",
+   "Double Slap",
+   "Fury Attack",
+   "Fury Swipes",
+   "Icicle Spear",
+   "Pin Missile",
+   "Rock Blast",
+   "Spike Cannon",
+   "Tail Slap"
+  ],
+  "30": [
+   "Conversion"
+  ],
+  "31": [
+   "Air Slash",
+   "Astonish",
+   "Bite",
+   "Bone Club",
+   "Dark Pulse",
+   "Dragon Rush",
+   "Extrasensory",
+   "Headbutt",
+   "Heart Stamp",
+   "Hyper Fang",
+   "Icicle Crash",
+   "Iron Head",
+   "Needle Arm",
+   "Rock Slide",
+   "Rolling Kick",
+   "Waterfall",
+   "Zen Headbutt",
+   "Zing Zap"
+  ],
+  "32": [
+   "Heal Order",
+   "Milk Drink",
+   "Recover",
+   "Slack Off",
+   "Soft-Boiled"
+  ],
+  "33": [
+   "Toxic"
+  ],
+  "34": [
+   "Pay Day"
+  ],
+  "35": [
+   "Light Screen"
+  ],
+  "36": [
+   "Tri Attack"
+  ],
+  "37": [
+   "Rest"
+  ],
+  "38": [
+   "Fissure",
+   "Guillotine",
+   "Horn Drill",
+   "Sheer Cold"
+  ],
+  "39": [
+   "Razor Wind"
+  ],
+  "40": [
+   "Nature\u2019s Madness",
+   "Super Fang"
+  ],
+  "41": [
+   "Dragon Rage"
+  ],
+  "42": [
+   "Bind",
+   "Clamp",
+   "Fire Spin",
+   "Infestation",
+   "Magma Storm",
+   "Sand Tomb",
+   "Wrap"
+  ],
+  "43": [
+   "Aeroblast",
+   "Air Cutter",
+   "Attack Order",
+   "Crabhammer",
+   "Cross Chop",
+   "Drill Run",
+   "Karate Chop",
+   "Leaf Blade",
+   "Night Slash",
+   "Psycho Cut",
+   "Razor Leaf",
+   "Shadow Claw",
+   "Slash",
+   "Spacial Rend",
+   "Stone Edge"
+  ],
+  "44": [
+   "Bonemerang",
+   "Double Hit",
+   "Double Kick",
+   "Dual Chop",
+   "Gear Grind"
+  ],
+  "45": [
+   "High Jump Kick",
+   "Jump Kick"
+  ],
+  "46": [
+   "Mist"
+  ],
+  "47": [
+   "Focus Energy"
+  ],
+  "48": [
+   "Head Charge",
+   "Submission",
+   "Take Down",
+   "Wild Charge"
+  ],
+  "49": [
+   "Confuse Ray",
+   "Supersonic",
+   "Sweet Kiss"
+  ],
+  "50": [
+   "Swords Dance"
+  ],
+  "51": [
+   "Acid Armor",
+   "Barrier",
+   "Iron Defense"
+  ],
+  "52": [
+   "Agility",
+   "Rock Polish"
+  ],
+  "53": [
+   "Nasty Plot"
+  ],
+  "54": [
+   "Amnesia"
+  ],
+  "57": [
+   "Transform"
+  ],
+  "58": [
+   "Charm",
+   "Feather Dance"
+  ],
+  "59": [
+   "Screech"
+  ],
+  "60": [
+   "Cotton Spore",
+   "Scary Face",
+   "String Shot"
+  ],
+  "61": [
+   "Eerie Impulse"
+  ],
+  "62": [
+   "Fake Tears",
+   "Metal Sound"
+  ],
+  "65": [
+   "Reflect"
+  ],
+  "66": [
+   "Poison Gas",
+   "Poison Powder"
+  ],
+  "67": [
+   "Glare",
+   "Stun Spore",
+   "Thunder Wave"
+  ],
+  "68": [
+   "Aurora Beam",
+   "Play Rough"
+  ],
+  "69": [
+   "Crunch",
+   "Crush Claw",
+   "Iron Tail",
+   "Liquidation",
+   "Razor Shell",
+   "Rock Smash",
+   "Shadow Bone"
+  ],
+  "70": [
+   "Bubble",
+   "Bubble Beam",
+   "Bulldoze",
+   "Constrict",
+   "Icy Wind",
+   "Mud Shot",
+   "Rock Tomb"
+  ],
+  "71": [
+   "Mist Ball",
+   "Moonblast",
+   "Mystical Fire",
+   "Snarl",
+   "Struggle Bug"
+  ],
+  "72": [
+   "Acid",
+   "Bug Buzz",
+   "Earth Power",
+   "Energy Ball",
+   "Flash Cannon",
+   "Focus Blast",
+   "Luster Purge",
+   "Psychic",
+   "Shadow Ball"
+  ],
+  "73": [
+   "Leaf Tornado",
+   "Mirror Shot",
+   "Mud Bomb",
+   "Mud-Slap",
+   "Muddy Water",
+   "Night Daze",
+   "Octazooka"
+  ],
+  "75": [
+   "Sky Attack"
+  ],
+  "76": [
+   "Confusion",
+   "Dizzy Punch",
+   "Dynamic Punch",
+   "Psybeam",
+   "Rock Climb",
+   "Signal Beam",
+   "Water Pulse"
+  ],
+  "77": [
+   "Twineedle"
+  ],
+  "78": [
+   "Vital Throw"
+  ],
+  "79": [
+   "Substitute"
+  ],
+  "80": [
+   "Blast Burn",
+   "Frenzy Plant",
+   "Giga Impact",
+   "Hydro Cannon",
+   "Hyper Beam",
+   "Prismatic Laser",
+   "Roar of Time",
+   "Rock Wrecker"
+  ],
+  "81": [
+   "Rage"
+  ],
+  "82": [
+   "Mimic"
+  ],
+  "83": [
+   "Metronome"
+  ],
+  "84": [
+   "Leech Seed"
+  ],
+  "85": [
+   "Splash"
+  ],
+  "86": [
+   "Disable"
+  ],
+  "87": [
+   "Night Shade",
+   "Seismic Toss"
+  ],
+  "88": [
+   "Psywave"
+  ],
+  "89": [
+   "Counter"
+  ],
+  "90": [
+   "Encore"
+  ],
+  "91": [
+   "Pain Split"
+  ],
+  "92": [
+   "Snore"
+  ],
+  "93": [
+   "Conversion 2"
+  ],
+  "94": [
+   "Lock-On",
+   "Mind Reader"
+  ],
+  "95": [
+   "Sketch"
+  ],
+  "97": [
+   "Sleep Talk"
+  ],
+  "98": [
+   "Destiny Bond"
+  ],
+  "99": [
+   "Flail",
+   "Reversal"
+  ],
+  "100": [
+   "Spite"
+  ],
+  "101": [
+   "False Swipe",
+   "Hold Back"
+  ],
+  "102": [
+   "Aromatherapy",
+   "Heal Bell"
+  ],
+  "103": [
+   "Accelerock",
+   "Aqua Jet",
+   "Bullet Punch",
+   "Extreme Speed",
+   "Ice Shard",
+   "Mach Punch",
+   "Quick Attack",
+   "Shadow Sneak",
+   "Vacuum Wave"
+  ],
+  "104": [
+   "Triple Kick"
+  ],
+  "105": [
+   "Covet",
+   "Thief"
+  ],
+  "106": [
+   "Block",
+   "Mean Look",
+   "Spider Web"
+  ],
+  "107": [
+   "Nightmare"
+  ],
+  "108": [
+   "Minimize"
+  ],
+  "109": [
+   "Curse"
+  ],
+  "111": [
+   "Detect",
+   "Protect"
+  ],
+  "112": [
+   "Spikes"
+  ],
+  "113": [
+   "Foresight",
+   "Odor Sleuth"
+  ],
+  "114": [
+   "Perish Song"
+  ],
+  "115": [
+   "Sandstorm"
+  ],
+  "116": [
+   "Endure"
+  ],
+  "117": [
+   "Ice Ball",
+   "Rollout"
+  ],
+  "118": [
+   "Swagger"
+  ],
+  "119": [
+   "Fury Cutter"
+  ],
+  "120": [
+   "Attract"
+  ],
+  "121": [
+   "Return"
+  ],
+  "122": [
+   "Present"
+  ],
+  "123": [
+   "Frustration"
+  ],
+  "124": [
+   "Safeguard"
+  ],
+  "125": [
+   "Flame Wheel",
+   "Sacred Fire"
+  ],
+  "126": [
+   "Magnitude"
+  ],
+  "127": [
+   "Baton Pass"
+  ],
+  "128": [
+   "Pursuit"
+  ],
+  "129": [
+   "Rapid Spin"
+  ],
+  "130": [
+   "Sonic Boom"
+  ],
+  "132": [
+   "Moonlight",
+   "Morning Sun",
+   "Synthesis"
+  ],
+  "135": [
+   "Hidden Power"
+  ],
+  "136": [
+   "Rain Dance"
+  ],
+  "137": [
+   "Sunny Day"
+  ],
+  "138": [
+   "Steel Wing"
+  ],
+  "139": [
+   "Metal Claw",
+   "Meteor Mash"
+  ],
+  "140": [
+   "Ancient Power",
+   "Ominous Wind",
+   "Silver Wind"
+  ],
+  "142": [
+   "Belly Drum"
+  ],
+  "143": [
+   "Psych Up"
+  ],
+  "144": [
+   "Mirror Coat"
+  ],
+  "145": [
+   "Skull Bash"
+  ],
+  "146": [
+   "Twister"
+  ],
+  "147": [
+   "Earthquake"
+  ],
+  "148": [
+   "Doom Desire",
+   "Future Sight"
+  ],
+  "149": [
+   "Gust"
+  ],
+  "150": [
+   "Steamroller",
+   "Stomp"
+  ],
+  "151": [
+   "Solar Beam",
+   "Solar Blade"
+  ],
+  "152": [
+   "Thunder"
+  ],
+  "153": [
+   "Teleport"
+  ],
+  "154": [
+   "Beat Up"
+  ],
+  "155": [
+   "Fly"
+  ],
+  "156": [
+   "Defense Curl"
+  ],
+  "158": [
+   "Fake Out"
+  ],
+  "159": [
+   "Uproar"
+  ],
+  "160": [
+   "Stockpile"
+  ],
+  "161": [
+   "Spit Up"
+  ],
+  "162": [
+   "Swallow"
+  ],
+  "164": [
+   "Hail"
+  ],
+  "165": [
+   "Torment"
+  ],
+  "166": [
+   "Flatter"
+  ],
+  "167": [
+   "Will-O-Wisp"
+  ],
+  "168": [
+   "Memento"
+  ],
+  "169": [
+   "Facade"
+  ],
+  "170": [
+   "Focus Punch"
+  ],
+  "171": [
+   "Smelling Salts"
+  ],
+  "172": [
+   "Follow Me",
+   "Rage Powder"
+  ],
+  "173": [
+   "Nature Power"
+  ],
+  "174": [
+   "Charge"
+  ],
+  "175": [
+   "Taunt"
+  ],
+  "176": [
+   "Helping Hand"
+  ],
+  "177": [
+   "Switcheroo",
+   "Trick"
+  ],
+  "178": [
+   "Role Play"
+  ],
+  "179": [
+   "Wish"
+  ],
+  "180": [
+   "Assist"
+  ],
+  "181": [
+   "Ingrain"
+  ],
+  "182": [
+   "Superpower"
+  ],
+  "183": [
+   "Magic Coat"
+  ],
+  "184": [
+   "Recycle"
+  ],
+  "185": [
+   "Avalanche",
+   "Revenge"
+  ],
+  "186": [
+   "Brick Break",
+   "Psychic Fangs"
+  ],
+  "187": [
+   "Yawn"
+  ],
+  "188": [
+   "Knock Off"
+  ],
+  "189": [
+   "Endeavor"
+  ],
+  "190": [
+   "Eruption",
+   "Water Spout"
+  ],
+  "191": [
+   "Skill Swap"
+  ],
+  "192": [
+   "Imprison"
+  ],
+  "193": [
+   "Refresh"
+  ],
+  "194": [
+   "Grudge"
+  ],
+  "195": [
+   "Snatch"
+  ],
+  "196": [
+   "Grass Knot",
+   "Low Kick"
+  ],
+  "197": [
+   "Secret Power"
+  ],
+  "198": [
+   "Brave Bird",
+   "Double-Edge",
+   "Wood Hammer"
+  ],
+  "199": [
+   "Teeter Dance"
+  ],
+  "200": [
+   "Blaze Kick"
+  ],
+  "201": [
+   "Mud Sport"
+  ],
+  "202": [
+   "Poison Fang"
+  ],
+  "203": [
+   "Weather Ball"
+  ],
+  "204": [
+   "Draco Meteor",
+   "Fleur Cannon",
+   "Leaf Storm",
+   "Overheat",
+   "Psycho Boost"
+  ],
+  "205": [
+   "Tickle"
+  ],
+  "206": [
+   "Cosmic Power",
+   "Defend Order"
+  ],
+  "207": [
+   "Sky Uppercut"
+  ],
+  "208": [
+   "Bulk Up"
+  ],
+  "209": [
+   "Cross Poison",
+   "Poison Tail"
+  ],
+  "210": [
+   "Water Sport"
+  ],
+  "211": [
+   "Calm Mind"
+  ],
+  "212": [
+   "Dragon Dance"
+  ],
+  "213": [
+   "Camouflage"
+  ],
+  "214": [
+   "Roost"
+  ],
+  "215": [
+   "Gravity"
+  ],
+  "216": [
+   "Miracle Eye"
+  ],
+  "217": [
+   "Wake-Up Slap"
+  ],
+  "218": [
+   "Hammer Arm",
+   "Ice Hammer"
+  ],
+  "219": [
+   "Gyro Ball"
+  ],
+  "220": [
+   "Healing Wish"
+  ],
+  "221": [
+   "Brine"
+  ],
+  "222": [
+   "Natural Gift"
+  ],
+  "223": [
+   "Feint"
+  ],
+  "224": [
+   "Bug Bite",
+   "Pluck"
+  ],
+  "225": [
+   "Tailwind"
+  ],
+  "226": [
+   "Acupressure"
+  ],
+  "227": [
+   "Metal Burst"
+  ],
+  "228": [
+   "U-turn",
+   "Volt Switch"
+  ],
+  "229": [
+   "Close Combat",
+   "Dragon Ascent"
+  ],
+  "230": [
+   "Payback"
+  ],
+  "231": [
+   "Assurance"
+  ],
+  "232": [
+   "Embargo"
+  ],
+  "233": [
+   "Fling"
+  ],
+  "234": [
+   "Psycho Shift"
+  ],
+  "235": [
+   "Trump Card"
+  ],
+  "236": [
+   "Heal Block"
+  ],
+  "237": [
+   "Crush Grip",
+   "Wring Out"
+  ],
+  "238": [
+   "Power Trick"
+  ],
+  "239": [
+   "Gastro Acid"
+  ],
+  "240": [
+   "Lucky Chant"
+  ],
+  "241": [
+   "Me First"
+  ],
+  "242": [
+   "Copycat"
+  ],
+  "243": [
+   "Power Swap"
+  ],
+  "244": [
+   "Guard Swap"
+  ],
+  "245": [
+   "Punishment"
+  ],
+  "246": [
+   "Last Resort"
+  ],
+  "247": [
+   "Worry Seed"
+  ],
+  "248": [
+   "Sucker Punch"
+  ],
+  "249": [
+   "Toxic Spikes"
+  ],
+  "250": [
+   "Heart Swap"
+  ],
+  "251": [
+   "Aqua Ring"
+  ],
+  "252": [
+   "Magnet Rise"
+  ],
+  "253": [
+   "Flare Blitz"
+  ],
+  "254": [
+   "Struggle"
+  ],
+  "255": [
+   "Dive"
+  ],
+  "256": [
+   "Dig"
+  ],
+  "257": [
+   "Surf"
+  ],
+  "258": [
+   "Defog"
+  ],
+  "259": [
+   "Trick Room"
+  ],
+  "260": [
+   "Blizzard"
+  ],
+  "261": [
+   "Whirlpool"
+  ],
+  "262": [
+   "Volt Tackle"
+  ],
+  "263": [
+   "Bounce"
+  ],
+  "265": [
+   "Captivate"
+  ],
+  "266": [
+   "Stealth Rock"
+  ],
+  "267": [
+   "Chatter"
+  ],
+  "268": [
+   "Judgment",
+   "Multi-Attack",
+   "Techno Blast"
+  ],
+  "269": [
+   "Head Smash",
+   "Light of Ruin"
+  ],
+  "270": [
+   "Lunar Dance"
+  ],
+  "271": [
+   "Seed Flare"
+  ],
+  "272": [
+   "Phantom Force",
+   "Shadow Force"
+  ],
+  "273": [
+   "Fire Fang"
+  ],
+  "274": [
+   "Ice Fang"
+  ],
+  "275": [
+   "Thunder Fang"
+  ],
+  "276": [
+   "Charge Beam",
+   "Fiery Dance"
+  ],
+  "277": [
+   "Hone Claws"
+  ],
+  "278": [
+   "Wide Guard"
+  ],
+  "279": [
+   "Guard Split"
+  ],
+  "280": [
+   "Power Split"
+  ],
+  "281": [
+   "Wonder Room"
+  ],
+  "282": [
+   "Psyshock",
+   "Psystrike",
+   "Secret Sword"
+  ],
+  "283": [
+   "Venoshock"
+  ],
+  "284": [
+   "Autotomize"
+  ],
+  "285": [
+   "Telekinesis"
+  ],
+  "286": [
+   "Magic Room"
+  ],
+  "287": [
+   "Smack Down"
+  ],
+  "288": [
+   "Frost Breath",
+   "Storm Throw"
+  ],
+  "289": [
+   "Flame Burst"
+  ],
+  "290": [
+   "Quiver Dance"
+  ],
+  "291": [
+   "Heat Crash",
+   "Heavy Slam"
+  ],
+  "292": [
+   "Synchronoise"
+  ],
+  "293": [
+   "Electro Ball"
+  ],
+  "294": [
+   "Soak"
+  ],
+  "295": [
+   "Flame Charge"
+  ],
+  "296": [
+   "Acid Spray"
+  ],
+  "297": [
+   "Foul Play"
+  ],
+  "298": [
+   "Simple Beam"
+  ],
+  "299": [
+   "Entrainment"
+  ],
+  "300": [
+   "After You"
+  ],
+  "301": [
+   "Round"
+  ],
+  "302": [
+   "Echoed Voice"
+  ],
+  "303": [
+   "Chip Away",
+   "Darkest Lariat",
+   "Sacred Sword"
+  ],
+  "304": [
+   "Clear Smog"
+  ],
+  "305": [
+   "Power Trip",
+   "Stored Power"
+  ],
+  "306": [
+   "Quick Guard"
+  ],
+  "307": [
+   "Ally Switch"
+  ],
+  "308": [
+   "Shell Smash"
+  ],
+  "309": [
+   "Heal Pulse"
+  ],
+  "310": [
+   "Hex"
+  ],
+  "311": [
+   "Sky Drop"
+  ],
+  "312": [
+   "Shift Gear"
+  ],
+  "313": [
+   "Circle Throw",
+   "Dragon Tail"
+  ],
+  "314": [
+   "Incinerate"
+  ],
+  "315": [
+   "Quash"
+  ],
+  "316": [
+   "Growth"
+  ],
+  "317": [
+   "Acrobatics"
+  ],
+  "318": [
+   "Reflect Type"
+  ],
+  "319": [
+   "Retaliate"
+  ],
+  "320": [
+   "Final Gambit"
+  ],
+  "321": [
+   "Tail Glow"
+  ],
+  "322": [
+   "Coil"
+  ],
+  "323": [
+   "Bestow"
+  ],
+  "324": [
+   "Water Pledge"
+  ],
+  "325": [
+   "Fire Pledge"
+  ],
+  "326": [
+   "Grass Pledge"
+  ],
+  "327": [
+   "Work Up"
+  ],
+  "328": [
+   "Cotton Guard"
+  ],
+  "329": [
+   "Relic Song"
+  ],
+  "330": [
+   "Glaciate"
+  ],
+  "331": [
+   "Freeze Shock"
+  ],
+  "332": [
+   "Ice Burn"
+  ],
+  "333": [
+   "Hurricane"
+  ],
+  "334": [
+   "V-create"
+  ],
+  "335": [
+   "Fusion Flare"
+  ],
+  "336": [
+   "Fusion Bolt"
+  ],
+  "337": [
+   "Flying Press"
+  ],
+  "338": [
+   "Belch"
+  ],
+  "339": [
+   "Rototiller"
+  ],
+  "340": [
+   "Sticky Web"
+  ],
+  "341": [
+   "Fell Stinger"
+  ],
+  "342": [
+   "Trick-or-Treat"
+  ],
+  "343": [
+   "Noble Roar"
+  ],
+  "344": [
+   "Ion Deluge"
+  ],
+  "345": [
+   "Parabolic Charge"
+  ],
+  "346": [
+   "Parting Shot"
+  ],
+  "347": [
+   "Topsy-Turvy"
+  ],
+  "348": [
+   "Draining Kiss",
+   "Oblivion Wing"
+  ],
+  "349": [
+   "Crafty Shield"
+  ],
+  "350": [
+   "Flower Shield"
+  ],
+  "351": [
+   "Grassy Terrain"
+  ],
+  "352": [
+   "Misty Terrain"
+  ],
+  "353": [
+   "Electrify"
+  ],
+  "354": [
+   "Fairy Lock"
+  ],
+  "355": [
+   "King\u2019s Shield"
+  ],
+  "356": [
+   "Play Nice"
+  ],
+  "357": [
+   "Confide"
+  ],
+  "358": [
+   "Diamond Storm"
+  ],
+  "359": [
+   "Hyperspace Fury",
+   "Hyperspace Hole"
+  ],
+  "360": [
+   "Water Shuriken"
+  ],
+  "361": [
+   "Spiky Shield"
+  ],
+  "362": [
+   "Aromatic Mist"
+  ],
+  "363": [
+   "Venom Drench"
+  ],
+  "364": [
+   "Baby-Doll Eyes"
+  ],
+  "365": [
+   "Geomancy"
+  ],
+  "366": [
+   "Magnetic Flux"
+  ],
+  "367": [
+   "Happy Hour"
+  ],
+  "368": [
+   "Electric Terrain"
+  ],
+  "369": [
+   "Celebrate"
+  ],
+  "370": [
+   "Hold Hands"
+  ],
+  "371": [
+   "Nuzzle"
+  ],
+  "372": [
+   "Thousand Arrows"
+  ],
+  "373": [
+   "Thousand Waves"
+  ],
+  "374": [
+   "Power-Up Punch"
+  ],
+  "375": [
+   "Forest\u2019s Curse"
+  ],
+  "376": [
+   "Mat Block"
+  ],
+  "377": [
+   "Powder"
+  ],
+  "378": [
+   "Boomburst",
+   "Petal Blizzard"
+  ],
+  "379": [
+   "Freeze-Dry"
+  ],
+  "380": [
+   "Disarming Voice"
+  ],
+  "381": [
+   "Shore Up"
+  ],
+  "382": [
+   "First Impression"
+  ],
+  "383": [
+   "Baneful Bunker"
+  ],
+  "384": [
+   "Anchor Shot",
+   "Spirit Shackle"
+  ],
+  "385": [
+   "Sparkling Aria"
+  ],
+  "386": [
+   "Floral Healing"
+  ],
+  "387": [
+   "Strength Sap"
+  ],
+  "388": [
+   "Spotlight"
+  ],
+  "389": [
+   "Toxic Thread"
+  ],
+  "390": [
+   "Laser Focus"
+  ],
+  "391": [
+   "Gear Up"
+  ],
+  "392": [
+   "Throat Chop"
+  ],
+  "393": [
+   "Pollen Puff"
+  ],
+  "394": [
+   "Psychic Terrain"
+  ],
+  "395": [
+   "Lunge",
+   "Trop Kick"
+  ],
+  "396": [
+   "Fire Lash"
+  ],
+  "397": [
+   "Burn Up"
+  ],
+  "398": [
+   "Speed Swap"
+  ],
+  "399": [
+   "Purify"
+  ],
+  "400": [
+   "Revelation Dance"
+  ],
+  "401": [
+   "Core Enforcer"
+  ],
+  "402": [
+   "Instruct"
+  ],
+  "403": [
+   "Beak Blast"
+  ],
+  "404": [
+   "Clanging Scales"
+  ],
+  "405": [
+   "Brutal Swing"
+  ],
+  "406": [
+   "Aurora Veil"
+  ],
+  "407": [
+   "Shell Trap"
+  ],
+  "408": [
+   "Stomping Tantrum"
+  ],
+  "409": [
+   "Spectral Thief"
+  ],
+  "410": [
+   "Menacing Moonraze Maelstrom",
+   "Moongeist Beam",
+   "Searing Sunraze Smash",
+   "Sunsteel Strike"
+  ],
+  "411": [
+   "Tearful Look"
+  ],
+  "412": [
+   "Guardian of Alola"
+  ],
+  "413": [
+   "Extreme Evoboost"
+  ],
+  "414": [
+   "Genesis Supernova"
+  ],
+  "415": [
+   "Light That Burns the Sky"
+  ],
+  "416": [
+   "Let\u2019s Snuggle Forever"
+  ],
+  "417": [
+   "Splintered Stormshards"
+  ],
+  "418": [
+   "Clangorous Soulblaze"
+  ],
+  "419": [
+   "Mind Blown"
+  ]
+ }
+}

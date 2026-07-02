@@ -68,6 +68,12 @@ def parse():
         status_chance = e[10] if len(e) > 10 else 0
         if status_chance:
             rec['effectChance'] = status_chance
+        # Move-effect id (u16 @0x10): the ~430-value Gen-7 move-effect enum.
+        # Verified by grouping — 4=10% burn, 6=paralyze-chance, 32=heal,
+        # 48=recoil, 50=+2 Atk self, 67=paralyze status. See
+        # decomp/battle_effects/move_effect_ids.json for the id->moves index.
+        if len(e) >= 18:
+            rec['effectId'] = struct.unpack_from('<H', e, 16)[0]
         moves[slug(name)] = rec
     return moves
 

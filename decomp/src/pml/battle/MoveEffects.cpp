@@ -17,10 +17,25 @@
 namespace pml {
 namespace battle {
 
-// The move-effect handler table: 153 slots at rodata+0x45a0, indexed by a
-// move's effect id. Each slot is a code pointer to a handler; the damage
-// handler sub_9698 occupies the "deal damage" effect ids (140, 144).
-//   extern EffectHandler sMoveEffectTable[153];   // rodata+0x45a0
+// ── The move-effect id (move struct u16 @0x10) ───────────────────────────────
+// VERIFIED: every move carries a Gen-7 move-effect id in its 40-byte record at
+// offset 0x10 (~430-value enum; 400 distinct ids used). Grouping validates it:
+//   0  = no secondary effect (Pound, Scratch, Cut, …)      4  = 10% burn (Ember,
+//   Flamethrower, Fire Blast, …)   6 = paralyze-chance (Thunderbolt, Body Slam)
+//   32 = heal ½ HP (Recover, Soft-Boiled)   48 = recoil (Take Down, Wild Charge)
+//   50 = +2 Atk self (Swords Dance)   67 = paralyze status (Thunder Wave, Glare).
+// Now extracted into data/pokemon/usum_moves.json (`effectId`); full id→moves
+// index at decomp/battle_effects/move_effect_ids.json.
+//
+// ── CORRECTION: the effect id does NOT directly index the rodata handler table.
+// The rodata+0x45a0 table has ~150 handler slots, but move-effect ids range
+// 0..419 (400 distinct) — so byte 0x10 is the high-level move-effect enum, and
+// it reaches the battle-sequence handlers through an INTERMEDIATE mapping
+// (effect-enum → sequence-handler), not a direct table index. That intermediate
+// (a switch or a second table) is the remaining Phase-1 link. The rodata table
+// is still a real relocation-filled dispatch (the damage/effect *sequence*
+// handlers, step-state machines); its precise index domain is TBD.
+//   extern SeqHandler sBattleSeqTable[/*~150*/];   // rodata+0x45a0
 
 // Handler contract (observed across handlers):
 //   int handler(BtlEffectWork* w);
