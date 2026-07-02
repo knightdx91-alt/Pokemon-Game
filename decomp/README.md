@@ -81,6 +81,10 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
      (`src/pml/pokepara/HiddenPower.cpp`) — Hidden Power type from the six IV
      low bits, `sum·15/63`; uses *native* (pre-Hyper-Training) IVs. Verified
      (all-even→Fighting, all-odd→Dark).
+   - `gfl2::math::SFMTRandom::Next` + `gfl2::math::Random::Next`
+     (`src/gfl2/math/Random.cpp`) — the two engine RNGs: SFMT MEXP-19937
+     (624-word state refill, then `%max`) and a lightweight WELL512-family
+     xorshift generator.
 
 ### Cross-module call resolution (import veneers) — WORKING
 `cro_map.py` now emits a `veneers` map per module. Mechanism: a named
