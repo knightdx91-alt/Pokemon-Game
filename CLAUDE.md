@@ -724,6 +724,103 @@ trusted until its output renders correctly (the way HnS was verified).
   LZ77 decompression, varies for repointed/expanded hacks; user supplies the ROM
   (legal caveat). This is the better path when GBA fidelity matters.
 
+## ▶ Pokémon Ultra Moon TRUE DECOMP — IN PROGRESS ⏳ (start here to continue)
+
+A research decompilation of **Pokémon Ultra Moon** (3DS, NCCH `CTR-P-A2BA`)
+lives in **`decomp/`**. Goal: pret-style readable, verified C++ for the game's
+code + verified data extraction — NOT a byte-matching recompile (that's a
+years-long armcc-matching grind; we produce the material a matching decomp is
+made from). All output is committed to `main`; the ROM extraction itself is
+gitignored/ephemeral and must be regenerated each session.
+
+### Session bootstrap (do this FIRST — extraction is gitignored, ~15 min)
+```
+# 1. Pull the ROM zip from the user's Google Drive (verified working) — it's a
+#    DECRYPTED .3ds inside a .zip. Use the Google Drive MCP tools to find it
+#    ("Pokemon Ultra Moon (USA) ... .zip", id 1T9i0ItuNp8Ba0--MZhr5nna2rDswdren),
+#    then download to /tmp:
+curl -sSL "https://drive.usercontent.google.com/download?id=1T9i0ItuNp8Ba0--MZhr5nna2rDswdren&export=download&confirm=t" -o /tmp/pokemon-ultra-moon.zip
+cd /tmp && unzip -o pokemon-ultra-moon.zip "*.3ds"
+# 2. Decomp it (first real-ROM run verified: 747 romfs files, 268 GARCs,
+#    78,675 members). Output is gitignored.
+python3 tools/3ds_decomp.py "/tmp/Pokemon Ultra Moon (USA) (En,Ja,Fr,De,Es,It,Zh,Ko) Decrypted.3ds" -o source/3ds/ultramoon
+# 3. Deps + regenerate the analysis layers (all committed, but rerun if stale):
+pip install capstone
+python3 tools/cro_symbols.py      # decomp/symbols/  (23,638 C++ names)
+python3 tools/cro_map.py          # decomp/map/      (addresses + import veneers)
+python3 tools/cro_disasm.py --scan # decomp/functions/ (39,182 funcs)
+python3 tools/cro_callgraph.py --build Battle  # decomp/callgraph/Battle.json
+```
+
+### The RE pipeline (all in `tools/`, all committed & proven)
+1. `cro_symbols.py` — pulls Game Freak's surviving mangled C++ names from the
+   132 CRO modules + `static.crs` (they shipped the symbol tables intact).
+2. `cro_map.py` — per-module segment tables, **export addresses**, and
+   **import veneers**. KEY FORMAT FACTS: header +0xC8 segment table, +0xD0
+   named-export table (tag = seg<<0 | off<<4), **+0x100 named-import table**
+   (NOT +0xF8, which is the raw patch table). Import call indirection: a named
+   import's patch site is a literal word in text; an `ldr pc,[pc,#-4]` thunk 4
+   bytes earlier is what callers `bl` to → `veneers` map resolves it.
+3. `cro_disasm.py <Module> <name|addr>` — symbol-annotated ARM disasm of any
+   function; `--scan` builds function tables. static.crs code = **exefs
+   `.code`** (text VA base 0x100000; export offset == file offset). CRO code =
+   segment-relative in the `.cro`. Runtime VA of a static function = 0x100000 +
+   offset (matters when searching for stored function pointers).
+4. `cro_callgraph.py --build/--callers/--callees/--find` — call graph with
+   veneer-resolved cross-module edges. ARM-only sweep (Thumb regions noisy).
+
+### DONE — verified decompiled functions (`decomp/src/`) & data (`decomp/data/`)
+All numerically verified against known game values:
+- `pml/battle/TypeAffinity.cpp` — CalcAffinity + MulAffinity +
+  CalcAffinityForDefender (dual-type). Type chart baked to
+  `data/type_chart.json` (18×18, exact Gen-7).
+- `pml/pokepara/StatCalc.cpp` — GetPower/GetMaxHp stat formula
+  `(2·base+IV+EV/4)·L/100 (+5 | +L+10)`×nature, Shedinja=1HP. Nature table in
+  `data/nature_table.json` (25×5, verified).
+- `pml/pokepara/ExpLevel.cpp` — CalcLevelFromExp + Get{Next,Current}LevelExp.
+- `pml/pokepara/Shiny.cpp` — IsRare, `(TID^SID^PIDhi^PIDlo)<16`.
+- `pml/pokepara/HiddenPower.cpp` — GetMezapaType, `sum·15/63`, native IVs.
+- `gfl2/math/Random.cpp` — SFMTRandom::Next (MT-19937, 624-word) + WELL512 Next.
+- **Gen-7 game data**: `tools/usum_personal.py` → `data/pokemon/usum_base_stats.json`
+  (807 species: stats/types/catch/baseExp/EV/gender/eggs/growth/ability-ids,
+  verified). `--verify` self-checks.
+
+### NEXT SESSION — priority work items
+1. **Gen-7 message-text decoder** (HIGHEST VALUE — unblocks everything textual).
+   Species/move/ability/item NAMES live in the `a/0/3/N` text GARCs (10 langs ×
+   127 message files). Gen-7 text format = per-line XOR (seed varies per line,
+   key increments ~0x2983) — documented by pk3DS/PKHeX. Build
+   `tools/usum_text.py`, decode English names, then key `usum_base_stats.json`
+   by name and add `usum_moves.json`/`usum_abilities.json` (GARC `a/0/1/1`
+   moves, `a/0/1/3` learnsets, `a/0/1/7` personal — see decomp/README.md /
+   `DECOMP_MANIFEST.md`). This makes the extracted data usable by the JS game
+   (Alolan forms, Gen-7 species) — the practical payoff.
+2. **Battle damage server** (HARD — the one big open RE problem). Battle.cro is
+   the battle *scene* (graphics/UI), NOT the calc server. The type-affinity
+   cluster (static 0x21c0e0..0x21c3ac) is reached ONLY by function-pointer
+   dispatch — exhaustive ARM+Thumb `bl` scans and stored-pointer searches find
+   ZERO direct callers. Cracking requires vtable/handler-table data-flow
+   analysis (find where thunk/function addresses get loaded into registers or
+   stored in dispatch tables). Pipeline nodes already found: `sub_9348`
+   (move-data fetch), `sub_9698` (per-target damage/effect loop w/ RNG). This
+   unlocks damage formula + catch rate + battle AI as a cluster.
+3. **More verified functions** are getting scarce — the clean self-contained
+   `pml` formulas are largely mined out (remaining ones delegate to field
+   accessors or use load-time-relocated pointers, e.g. the berry-taste table
+   pointer isn't in the static `.code` image). Prefer #1/#2 over hunting these.
+
+### Rules for the decomp work
+- **Never commit ROM bytes.** `source/3ds/ultramoon/` is gitignored. Only
+  commit derived analysis (symbol maps, disasm-derived C++, verified data).
+- **Verify before committing.** Every decompiled formula/table must be checked
+  numerically against a known game value (as all current ones are). Do NOT
+  commit an unverified formula or a table whose pointer can't be resolved.
+- The other 3DS ROMs (Pokémon X = Kalos, in the user's Drive as zip) use the
+  same `tools/3ds_decomp.py` + this pipeline — Gen-6/7 data ports to 2D, 3D
+  maps do not.
+- Full details + open format notes: **`decomp/README.md`** and the extraction's
+  `DECOMP_MANIFEST.md`.
+
 ### Tooling (`tools/`)
 - `build_tileset_index.py` — regenerate `data/tilesets/_index.json` (editor's
   tileset list) after adding tilesets.
@@ -818,6 +915,11 @@ trusted until its output renders correctly (the way HnS was verified).
      1-byte-short entries in Black's move-data NARC and get skipped; `nuzzle`
      / `freeze_dry` don't exist yet in Gen 5 (introduced Gen 6). `--merge`
      is what keeps these from disappearing on a fresh (non-merge) run.
+- **Ultra Moon decomp tools** (see the "TRUE DECOMP" section above for the full
+  workflow): `cro_symbols.py` (C++ names), `cro_map.py` (addresses + import
+  veneers), `cro_disasm.py` (symbol-annotated ARM disasm / `--scan`),
+  `cro_callgraph.py` (veneer-resolved call graph), `usum_personal.py` (Gen-7
+  personal data → `data/pokemon/usum_base_stats.json`).
 - `gen_party_assets.py` — regenerate the FireRed party-screen assets in
   `src/assets/party/` (slot boxes, fonts, pokéball, status icons, message frame)
   by decoding `source/pokefirered` graphics/tilemaps/palettes. Re-run if those
