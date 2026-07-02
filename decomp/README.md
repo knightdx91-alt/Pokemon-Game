@@ -61,10 +61,15 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
    VA 0x100000); CRO code = segment-relative inside the .cro.
 4. ⏳ **Decompiler pass** — per-function reconstructed C++ under `src/`,
    starting with `pml` (stats/damage), `btl` (battle flow), `Field`.
-   First functions done: `pml::battle::TypeAffinity::CalcAffinity` +
-   `MulAffinity` (`src/pml/battle/TypeAffinity.cpp`) — the type-effectiveness
-   engine, with the verified 18×18 chart baked to `data/type_chart.json`
-   (matches the Gen-7 chart exactly).
+   Done so far:
+   - `pml::battle::TypeAffinity::CalcAffinity` + `MulAffinity`
+     (`src/pml/battle/TypeAffinity.cpp`) — type-effectiveness engine; verified
+     18×18 chart baked to `data/type_chart.json` (exact Gen-7 match).
+   - `pml::pokepara::CoreParam::GetPower` / `GetMaxHp` + the CalcStat/CalcHp/
+     ApplyNature cores (`src/pml/pokepara/StatCalc.cpp`) — the full stat
+     formula `(2·base+IV+EV/4)·L/100 (+5 | +L+10)` × nature, incl. the
+     Shedinja 1-HP case; verified against the canonical Garchomp spread
+     (all six stats exact).
 5. **Struct recovery** — rebuild headers (`pml::pokepara::CoreParam`,
    save blocks, …) from access patterns + community docs (pk3DS, PKHeX
    research already names many USUM structures — cross-reference).
