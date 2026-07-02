@@ -89,6 +89,24 @@ to a thunk with the imported symbol, so cross-module calls read naturally
 correct; the confusion was this veneer indirection plus a bisect wrap-around
 in a throwaway debug script.)
 
+### Call graph (`tools/cro_callgraph.py`) — damage pipeline located
+`cro_callgraph.py --build <mod>` emits `callgraph/<mod>.json`: every direct
+`bl`/`b`/`blx` edge, with local callees resolved to functions and cross-module
+edges resolved through import veneers. Queries: `--callers`, `--callees`,
+`--find <symbol-substr>`. (ARM linear sweep — Thumb regions are noisy, but the
+ARM battle-engine core resolves cleanly.)
+
+Battle.cro damage pipeline traced via the graph:
+- `sub_9348` (848 B) — **move-data fetch**: the only function pulling
+  `wazadata::GetPower` + `GetType` + `IsDamage` together (base power, type,
+  is-it-a-damaging-move).
+- `sub_9698` (732 B) — **per-target damage/effect loop**: calls `sub_9348`,
+  clamps the target count to 4 (spread-move handling), iterates targets, and
+  rolls `gfl2::math::Random::Next` per target. This is the move-execution node
+  that sits just below the battle handler-table dispatch (no direct ARM
+  callers — reached by function pointer, as expected). The exact damage
+  arithmetic lives in its callees (`sub_8f04c`, `sub_e3a50`, …) — next to trace.
+
 ### Known next targets / open issues
 - **Damage formula** (`btl`, internal/unnamed in Battle.cro): `sub_9348`
   (the move base-power/type/IsDamage setup) is decoded; the type-effectiveness
