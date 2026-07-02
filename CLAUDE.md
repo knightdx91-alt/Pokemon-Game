@@ -584,15 +584,33 @@ model.up_scale, 0, 24)` into a 512-wide numpy RGBA framebuffer.
    unova` loading. Delete/regenerate the old `area_NNNN` files.
 3. **Props (buildings/trees)** — without these, town renders have empty
    plazas where houses belong. Two halves:
-   a. Placement: decode the `WB` tail-block (u32 count + count×16-byte
-      records; compare across cells whose renders show where buildings
-      obviously belong — Nuvema cell 0's plaza gives known-good expected
-      positions). Platinum's prop struct was id + fx32 pos/rot/scale in
-      48 bytes; BW squeezed it into 16, so expect id + 3 packed coords.
-   b. Models: find the prop-model archive. Candidate: `a/0/4/9` (758
-      members with BTX0 — but props need geometry too, so look for BMD0
-      members there or a sibling NARC; magic-scan for BMD0 the way BTX0
-      was found).
+   a. Placement: ✅ **SOLVED & validated** — decoded in
+      `bw_common.parse_props()` / returned as `load_land_cell()["props"]`.
+      The `WB` tail-block is `u32 count` + `count×16-byte` records, each =
+      three `(u16 frac, s16 int)` tile coordinates (x, height-y, z relative
+      to the 32×32 cell centre), a `u16` rotation (0x10000 = 360°), a `u8`
+      flag (usually 0, rarely 1), and a `u8 model_id`. Multiply tile coords
+      by 16 to get base-map world units. Validated by overlaying markers on
+      the Nuvema render — every prop lands on a path edge where a house/lab/
+      sign actually sits. Nuvema (cell 0) = 10 props: id 69 ×3 (houses),
+      id 6 (lab), plus signs/objects.
+   b. Models: ⏳ **PARTIAL** — the field object-model archive is **`a/1/6/0`**
+      (252 members, 81 `BMD0`, laid out as `[BMD0 + its BTA0/BCA0/BMA0/BTP0/
+      BVA0 animations]` runs). **Direct index works for many ids**: `model_id`
+      69 and 6 land straight on the correct `BMD0` house/lab models and
+      render as real buildings at the validated positions (see the PoC — the
+      three id-69 houses + the id-6 lab appear correctly on the grass). But
+      the id space runs to 246 while `a/1/6/0` has only 81 `BMD0`, and some
+      ids (e.g. 5, 152, 153, 193) direct-index onto *animation* members, so
+      **the full `model_id → model` mapping needs an index/indirection table
+      that is not yet found**. ⚠ Do NOT use "nearest preceding BMD0" as a
+      fallback — it maps id 5 → member 3 (a huge up_scale=64 Castelia tower)
+      and wrecks the render. Next: look for the id→member table in the small
+      companion NARCs `a/1/6/1` (3852 B), `a/1/6/3` (416 B), `a/1/6/5`
+      (1560 B), `a/1/6/6` (448 B); or test whether the `flag` byte (0/1)
+      selects a second model bank. Prop models carry their own `TEX0` (fall
+      back to the map texset if absent) and use the same world-translate as
+      Platinum props: `world = tile*16`, vertex `+= pos/up_scale`.
 4. **Warps + NPCs/events** — zone-header off 10 (u16, unique per zone,
    max ~468) is the prime candidate archive index; `a/1/2/5` (428 members,
    variable size, structured) is the size-profile favorite target. Test:

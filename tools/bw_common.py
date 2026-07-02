@@ -136,6 +136,14 @@ def load_land_cell(index):
                               unclassified appearance fields
       model_bytes           : the embedded BMD0 model, raw bytes (for
                               tools/nitro_g3d.py)
+      props                 : list of decoded object/prop placements from the
+                              tail block — see parse_props() for the field map
+
+    Prop placements (the tail block) were reverse-engineered and validated by
+    overlaying them on the rendered Nuvema Town terrain: every prop lands on
+    the dirt-path edges where the town's houses/lab/signs actually sit. Each
+    16-byte record is 3 signed tile coordinates (x, height-y, z) relative to
+    the cell centre, a u16 rotation, and a model id (see parse_props()).
     """
     path = os.path.join(LAND_NARC, f"{index:04d}.bin")
     d = open(path, "rb").read()
@@ -160,7 +168,52 @@ def load_land_cell(index):
         "special": special,
         "raw_records": records,
         "model_bytes": d[model_off:grid_off],
+        "props": parse_props(d, tail_off),
     }
+
+
+def parse_props(d, tail_off):
+    """
+    Decode the "WB" land-cell tail block: object/prop placements (buildings,
+    trees, signs, doors). Layout, reverse-engineered from Pokémon Black and
+    validated visually against Nuvema Town:
+
+        u32 count
+        count * 16-byte records, each:
+          off  0  u16  x  fractional part (/65536 of a tile)
+          off  2  s16  x  integer tile, relative to the 32x32 cell centre
+          off  4  u16  y  (height/up axis) fractional part
+          off  6  s16  y  integer
+          off  8  u16  z  fractional part
+          off 10  s16  z  integer tile, relative to cell centre
+          off 12  u16  rot  rotation about the up axis (0x10000 == 360 deg)
+          off 14  u8   flag (usually 0, occasionally 1 — bank/subtype?)
+          off 15  u8   model_id  (indexes the field object-model archive
+                                  a/1/6/0; see tools/render_bw_maps prop notes)
+
+    Returns list of dicts: {x, y, z, rot, model_id, flag} with x/y/z in tiles
+    relative to the cell centre (multiply by 16 for base-map world units).
+    """
+    props = []
+    if tail_off + 4 > len(d):
+        return props
+    (count,) = struct.unpack_from("<I", d, tail_off)
+    for i in range(count):
+        o = tail_off + 4 + i * 16
+        if o + 16 > len(d):
+            break
+        fx, ix, fy, iy, fz, iz, rot, flag, model_id = struct.unpack_from(
+            "<HhHhHhHBB", d, o
+        )
+        props.append({
+            "x": ix + fx / 65536.0,
+            "y": iy + fy / 65536.0,
+            "z": iz + fz / 65536.0,
+            "rot": rot,
+            "flag": flag,
+            "model_id": model_id,
+        })
+    return props
 
 
 def load_matrix(index):
