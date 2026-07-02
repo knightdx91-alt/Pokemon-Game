@@ -59,9 +59,12 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
    disassembly of any function, with cross-module calls labeled via import
    patch sites. static.crs code = exefs `.code` (text at file offset 0,
    VA 0x100000); CRO code = segment-relative inside the .cro.
-4. **Decompiler pass** — per-function pseudo-C, committed under `src/`,
-   starting with the systems most valuable to the 2D game: `pml` (stats/
-   damage), `btl` (battle flow), `Field` (maps/encounters).
+4. ⏳ **Decompiler pass** — per-function reconstructed C++ under `src/`,
+   starting with `pml` (stats/damage), `btl` (battle flow), `Field`.
+   First functions done: `pml::battle::TypeAffinity::CalcAffinity` +
+   `MulAffinity` (`src/pml/battle/TypeAffinity.cpp`) — the type-effectiveness
+   engine, with the verified 18×18 chart baked to `data/type_chart.json`
+   (matches the Gen-7 chart exactly).
 5. **Struct recovery** — rebuild headers (`pml::pokepara::CoreParam`,
    save blocks, …) from access patterns + community docs (pk3DS, PKHeX
    research already names many USUM structures — cross-reference).
