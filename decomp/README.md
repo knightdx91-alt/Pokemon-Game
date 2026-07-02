@@ -360,9 +360,19 @@ in priority order:
    verified by check value 0xB4C8 (`verify/verify_savecrc.py`); table extracted
    to `pokepara/crc16_table.json`. The 31 save-body block classes (MyStatus,
    MyItem, BOX/BoxPokemon, ZukanData, ResortSave, …) are inventoried in
-   `savedata/block_inventory.json`. Remaining: the byte offset/size of each
-   block within the save file — needs a real save file to verify (the one
-   input this project doesn't have yet).
+   `savedata/block_inventory.json`.
+   **Validated against a REAL save** (two independent USUM `main` files, 0x6CC00):
+   the footer at 0x6ca10 is `u32 magic 0x42454546 + u32 + 39×{u16 id, u16 crc,
+   u32 length}` (`savedata/save_footer.json`). The CRC-16/USB is confirmed on
+   real data — block 19's stored checksum equals CRC-16/USB over its 0x6408
+   bytes at file offset 0x44200 in BOTH saves (a 25 KB match, not coincidence);
+   block 22 at 0x54800. **Open:** a full dual-save CRC scan pins only blocks 19
+   & 22 at a common offset — the other 37 don't share a file offset between two
+   different saves and no offset table sits by the footer, so the full per-block
+   offset map needs the ROM's save-layout registrar (the `Savedata` init that
+   assigns each block its region), not a brute-force scan. A 16-bit CRC also
+   yields ~7 false offsets per block in a single save, so dual-save agreement is
+   the only reliable locator.
 4. **Battle-sequence handler BODIES** (deep btl grind, behavioral) — the ~150
    step-state handlers in `battle_effects/effect_handler_table.json`; decode
    per-id. Lower value: the DATA they consume is already extracted. NOTE: the

@@ -1,0 +1,208 @@
+{
+ "save": "USUM main, 0x6CC00",
+ "footer_offset": "0x6ca10",
+ "footer_format": "u32 magic 0x42454546 + u32 + then 39 entries of {u16 id, u16 checksum, u32 length}",
+ "checksum": "gfl2::math::Crc::Crc16 = CRC-16/USB (verified against real save: block 19 over 0x6408 bytes @0x44200 in two independent saves)",
+ "verified_offsets": {
+  "19": "0x44200",
+  "22": "0x54800"
+ },
+ "note": "Full dual-save CRC scan pins only blocks 19 & 22 at a common file offset; the other 37 blocks are not positionally shared between two different saves and no offset table sits beside the footer. Per-block file offsets need the ROM save-layout table (SaveData init), not brute force.",
+ "entries": [
+  {
+   "id": 0,
+   "checksum": 40017,
+   "length": 124
+  },
+  {
+   "id": 1,
+   "checksum": 61361,
+   "length": 20
+  },
+  {
+   "id": 2,
+   "checksum": 14542,
+   "length": 192
+  },
+  {
+   "id": 3,
+   "checksum": 16279,
+   "length": 1564
+  },
+  {
+   "id": 4,
+   "checksum": 42149,
+   "length": 3584
+  },
+  {
+   "id": 5,
+   "checksum": 58348,
+   "length": 3960
+  },
+  {
+   "id": 6,
+   "checksum": 26427,
+   "length": 552
+  },
+  {
+   "id": 7,
+   "checksum": 19174,
+   "length": 780
+  },
+  {
+   "id": 8,
+   "checksum": 54395,
+   "length": 508
+  },
+  {
+   "id": 9,
+   "checksum": 60180,
+   "length": 76
+  },
+  {
+   "id": 10,
+   "checksum": 16063,
+   "length": 4
+  },
+  {
+   "id": 11,
+   "checksum": 62453,
+   "length": 88
+  },
+  {
+   "id": 12,
+   "checksum": 63600,
+   "length": 1510
+  },
+  {
+   "id": 13,
+   "checksum": 5693,
+   "length": 222720
+  },
+  {
+   "id": 14,
+   "checksum": 60433,
+   "length": 22316
+  },
+  {
+   "id": 15,
+   "checksum": 1724,
+   "length": 8
+  },
+  {
+   "id": 16,
+   "checksum": 18256,
+   "length": 4632
+  },
+  {
+   "id": 17,
+   "checksum": 16617,
+   "length": 6664
+  },
+  {
+   "id": 18,
+   "checksum": 56959,
+   "length": 25608
+  },
+  {
+   "id": 19,
+   "checksum": 64437,
+   "length": 25608
+  },
+  {
+   "id": 20,
+   "checksum": 6999,
+   "length": 14744
+  },
+  {
+   "id": 21,
+   "checksum": 50428,
+   "length": 256
+  },
+  {
+   "id": 22,
+   "checksum": 48980,
+   "length": 256
+  },
+  {
+   "id": 23,
+   "checksum": 39744,
+   "length": 66856
+  },
+  {
+   "id": 24,
+   "checksum": 21707,
+   "length": 516
+  },
+  {
+   "id": 25,
+   "checksum": 7634,
+   "length": 2912
+  },
+  {
+   "id": 26,
+   "checksum": 13128,
+   "length": 16208
+  },
+  {
+   "id": 27,
+   "checksum": 59638,
+   "length": 856
+  },
+  {
+   "id": 28,
+   "checksum": 32539,
+   "length": 1832
+  },
+  {
+   "id": 29,
+   "checksum": 18761,
+   "length": 512
+  },
+  {
+   "id": 30,
+   "checksum": 36280,
+   "length": 1816
+  },
+  {
+   "id": 31,
+   "checksum": 35865,
+   "length": 508
+  },
+  {
+   "id": 32,
+   "checksum": 28795,
+   "length": 512
+  },
+  {
+   "id": 33,
+   "checksum": 5995,
+   "length": 288
+  },
+  {
+   "id": 34,
+   "checksum": 13265,
+   "length": 456
+  },
+  {
+   "id": 35,
+   "checksum": 14296,
+   "length": 512
+  },
+  {
+   "id": 36,
+   "checksum": 17598,
+   "length": 924
+  },
+  {
+   "id": 37,
+   "checksum": 11163,
+   "length": 1024
+  },
+  {
+   "id": 38,
+   "checksum": 32452,
+   "length": 0
+  }
+ ]
+}
