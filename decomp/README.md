@@ -39,7 +39,9 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
   Regenerate: `python3 tools/cro_symbols.py`.
 - `map/` — per-module address maps (`<Module>.json`: segments, export
   addresses, import patch sites). Regenerate: `python3 tools/cro_map.py`.
-- `asm/` (phase 3) — per-module ARM disassembly with symbols applied.
+- `functions/` — per-module function tables (`{addr, size, name}` — named
+  from symbols or `sub_<addr>`). Regenerate: `tools/cro_disasm.py --scan`.
+  On-demand disassembly: `python3 tools/cro_disasm.py Battle "BgSystem"`.
 - `src/` (phase 3) — decompiled/rewritten C++, organized by original namespace.
 
 ## Roadmap
@@ -51,9 +53,12 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
    symbol's address gets written at load — i.e. cross-module call sites).
    Header gotcha: named imports live at header+0x100; +0xF8 is the raw
    external-patch table.
-3. **Disassembly pipeline** — Capstone (ARMv6k/ARM11, Thumb2) over `.code`,
-   `static.crs`, and each CRO's text segment; label functions from the symbol
-   map; function-boundary detection for the unnamed remainder.
+3. ✅ **Disassembly pipeline** — `tools/cro_disasm.py`. `--scan` builds
+   `functions/` (39,182 functions detected via exports + ARM prologue scan,
+   4,850 named); `cro_disasm.py <Module> <name|addr>` prints symbol-annotated
+   disassembly of any function, with cross-module calls labeled via import
+   patch sites. static.crs code = exefs `.code` (text at file offset 0,
+   VA 0x100000); CRO code = segment-relative inside the .cro.
 4. **Decompiler pass** — per-function pseudo-C, committed under `src/`,
    starting with the systems most valuable to the 2D game: `pml` (stats/
    damage), `btl` (battle flow), `Field` (maps/encounters).
