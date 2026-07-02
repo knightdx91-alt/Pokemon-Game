@@ -75,6 +75,13 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
      the decomp's headline open problem.
    - **battle AI move ranker** (`src/pml/battle/BattleAI.cpp`) — `sub_9348`
      damage estimator + move-preference sort and its helpers (structural).
+   - **catch-rate server** (`src/pml/battle/CatchRate.cpp`) — `sub_2d568`:
+     `a = (3M−2H)·rateMod·ball·status/(3M)`, auto-catch at a≥255 (0xff000 Q12),
+     else the 4-shake check (`^0.1875` shake, the `0.1875f` @0x2da0c that
+     located it). Status/ball Q12 constants match Gen-7 exactly (sleep/freeze
+     0x2800=2.5×, para/brn/psn 0x1800=1.5×); base identity verified
+     (`verify/verify_catchrate.py`). **This was the last open battle-server
+     piece — damage, type, AI, and catch are now all decompiled.**
    - `pml::pokepara::CoreParam::GetPower` / `GetMaxHp` + the CalcStat/CalcHp/
      ApplyNature cores (`src/pml/pokepara/StatCalc.cpp`) — the full stat
      formula `(2·base+IV+EV/4)·L/100 (+5 | +L+10)` × nature, incl. the

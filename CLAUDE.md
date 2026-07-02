@@ -825,43 +825,19 @@ All numerically verified against known game values:
    returns `bit_index+1` (`add r0,r1,#1` @0x21c1a4), which had collapsed
    neutral×neutral to ½ and every 2×/4× down a step — now correct,
    dual/triple-type effectiveness verified 0×/¼×/½×/1×/2×/4×
-   (`decomp/verify/verify_typeaffinity.py`). Remaining battle sub-item:
-   **catch-rate formula** — NOT yet found, but narrowed to a concrete lead.
-   `0xFF0000` shake-constant fingerprint was a false lead (RGB masks in SIMD
-   color code). The `item::ITEM_GetBallID` callers `sub_39bc8`/`sub_3c5f0` are
-   the **ball-throw SETUP** — they store the resolved ball id into the battle
-   struct at **field +0x220** and queue the throw. The `--offset 0x220`
-   data-flow lead turned out **ambiguous** (0x220 is overloaded across many
-   structs; its 6 readers are all graphics/matrix code — `GetStereoMatrix`,
-   throw-animation color/position vectors — not the catch math). **Investigated hard, still open — key finding: the numeric
-   calc is NOT in Battle.cro's obvious paths, which are all presentation.**
-   Chased four anchors, ALL landing on catch/throw *presentation* code, not the
-   shake-count math:
-   - vtable slot `+0xd4` (`sub_3c5f0`: `ldr r0,[r4]; ldr r2,[r0,#0xd4]; blx`) —
-     turned out a **getter** (result → field 0x21c), not catch.
-   - `--offset 0x220` readers — **ambiguous** (offset overloaded; all 6 are
-     graphics/matrix: `GetStereoMatrix`, throw-anim vectors).
-   - `pml::personal::GetPersonalParam` → only Battle caller is wrapper
-     `sub_7cd58` → its callers are `sub_2a850` and **`sub_551b8`** (42 VFP) —
-     but `sub_551b8` is the **catch/throw ANIMATION state machine** (switches
-     on anim state, `PokeModel::ChangeAnimation`, drives shake via `sub_7bae0`
-     the throw-effect renderer). Presentation, not the calc.
-   ⇒ Conclusion: the numeric shake-count/catch decision is computed **outside
-   Battle.cro's presentation layer**, in a btl server function reached by
-   indirect dispatch. This is a dedicated sub-project (like the damage server
-   was), NOT a quick probe. Damage + type + AI are DONE & verified; catch is
-   the one remaining battle-server piece.
-   Static-`pml` angle also tried & RULED OUT (don't repeat): **no static
-   function calls both `CoreParam::GetHp` (0x3af3fc) and `GetMaxHp` (0x3af5bc)**
-   → the catch calc reads target HP from the **battle-pokemon struct fields**
-   (like the damage server reads stats), not the pml CoreParam getters. And the
-   structural fingerprints are too noisy to isolate (`×3` add + `cmp #0xff`:
-   16 static / 41 Battle hits; `vsqrt`≥2: 69 static, all geometry/rendering).
-   PROMISING UNTRIED ANGLE for next time: the btl battle-pokemon struct loads
-   catch rate once at init via `pml::personal` — find that field, then use
-   `cro_dataflow.py --offset <that field>` in Battle.cro filtered to a divide;
-   OR trace the throw-action's *execute* handler (not the +0xd4 getter) through
-   `cro_vtables.py` by identifying the action class's vtable base first.
+   (`decomp/verify/verify_typeaffinity.py`).
+   **Catch-rate server — ✅ SOLVED & VERIFIED** (`decomp/src/pml/battle/
+   CatchRate.cpp`): `sub_2d568`, found via the `0.1875f` (3/16 shake exponent)
+   constant @0x2da0c — the anchor that finally cut through the presentation
+   layer (the earlier `0xFF0000`/field-0x220/vtable-0xd4/GetPersonalParam
+   anchors ALL led to catch/throw animation code — recorded so nobody repeats
+   them). Formula: `a = (3·maxHP − 2·curHP)·rateMod·ball·status / (3·maxHP)`,
+   auto-catch at a≥255 (`0xff000` Q12), else the 4-shake check. Reads HP from
+   the battle-pokemon struct (field 0xe=maxHP, 0xd=curHP via sub_924a8), all
+   Q12 through the shared `ApplyModifier`. Status/ball constants match Gen-7
+   exactly (sleep/freeze 0x2800=2.5×, para/brn/psn 0x1800=1.5×); base identity
+   verified (`decomp/verify/verify_catchrate.py`). **The entire battle server
+   — damage, type effectiveness, AI, and catch — is now decompiled & verified.**
 3. **More verified functions** are getting scarce — the clean self-contained
    `pml` formulas are largely mined out (remaining ones delegate to field
    accessors or use load-time-relocated pointers, e.g. the berry-taste table
