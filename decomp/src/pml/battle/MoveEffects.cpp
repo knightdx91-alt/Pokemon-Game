@@ -54,6 +54,25 @@ namespace battle {
 // Used at effect ids 1 and 14. [Structural: the per-state semantics are decoded
 // per-id as the Phase-1 bulk; this documents the shared shape.]
 
+// ── Gen-7 move-effect DATA model (mapped this session) ───────────────────────
+// Effects are NOT one opaque script — they're decomposed into data fields read
+// by pml::wazadata accessors (all verified as callers of the packed reader):
+//   GetSickCont   (0x226350) — status the move inflicts   → fields 0xd/0xe/0xf
+//   GetRankEffectCount (0x22662c) / GetRankEffect (0x2263e8) — stat-stage
+//                   changes (up to 3) → stat at field 0x10+i, stage at 0x13+i
+//   GetWeather    (0x226290), GetFlag, GetParam, GetType, GetDamageType, …
+// All of them call **sub_2267d0(wazaNo≤0x2d8, fieldIdx<0x25)** — a two-level
+// packed-field reader: it caches the move's data blob, then tail-calls
+// **sub_3af788(blob, fieldIdx)**, a 37-case jump table that extracts each field
+// with per-field shift/mask. So the full move-effect schema = 37 bitfields ×
+// 728 moves, addressable by field index.
+//
+// REMAINING (bounded next step): transcribe sub_3af788's 37-case bitfield table
+// (field idx → byte/bit offset + width) → then extract status + rank-effects +
+// weather for every move into data/pokemon/ (like effectId already is). The
+// jump-table decode needs care (cases share code blocks; verify the table base
+// and per-case masks before trusting them — a first quick pass mis-resolved).
+//
 // ── Status of the ~150 handlers ──────────────────────────────────────────────
 // Manifest (id → handler fn) is committed at
 // decomp/battle_effects/effect_handler_table.json. Decoding each handler's
