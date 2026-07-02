@@ -467,8 +467,8 @@ reproduce `source/nds/IRBO/` in a fresh session; it's gitignored.
     (decodable by the *existing, generic* `tools/nitro_g3d.py` — it's a
     from-spec Nitro G3D decoder, not Platinum-specific, so it works on any
     DS game's models unchanged), a 32×32 grid of 8-byte per-tile records, and
-    a small ~10-entry trailing block (probably object/prop placements, not
-    decoded).
+    a trailing block = **building/prop placements** (SOLVED — see the props
+    work item below and `bw_common.parse_props()`).
   - Per-tile record (4× u16 LE): **field3 low byte bit0 = collision**
     (1=blocked) — validated by rendering it standalone for several land-cells
     and getting recognizable shapes (building footprints with walkable
@@ -582,44 +582,58 @@ model.up_scale, 0, 24)` into a 512-wide numpy RGBA framebuffer.
    same path Sinnoh uses), `tileset` = `unova_placeholder` kept as
    fallback. Regenerate `unova_index.json`; keep `game.html?map=…&region=
    unova` loading. Delete/regenerate the old `area_NNNN` files.
-3. **Props (buildings/trees)** — without these, town renders have empty
-   plazas where houses belong. Two halves:
-   a. Placement: ✅ **SOLVED & validated** — decoded in
-      `bw_common.parse_props()` / returned as `load_land_cell()["props"]`.
-      The `WB` tail-block is `u32 count` + `count×16-byte` records, each =
-      three `(u16 frac, s16 int)` tile coordinates (x, height-y, z relative
-      to the 32×32 cell centre), a `u16` rotation (0x10000 = 360°), a `u8`
-      flag (usually 0, rarely 1), and a `u8 model_id`. Multiply tile coords
-      by 16 to get base-map world units. Validated by overlaying markers on
-      the Nuvema render — every prop lands on a path edge where a house/lab/
-      sign actually sits. Nuvema (cell 0) = 10 props: id 69 ×3 (houses),
-      id 6 (lab), plus signs/objects.
-   b. Models: ❌ **NOT solved — do not trust `a/1/6/0` direct-index.**
-      `a/1/6/0` (252 members, 81 `BMD0`, laid out as `[BMD0 + its BTA0/BCA0/
-      BMA0/BTP0/BVA0 animations]` runs) was *hypothesised* as the field
-      object-model archive, but this is UNCONFIRMED and direct-indexing it by
-      `model_id` is wrong:
-        - Direct-indexed models render as small blobs sitting in the right
-          places, which *looks* plausible but is a coincidence of placement,
-          not correct art. Checking the geometry disproves the mapping:
-          `a/1/6/0[69]` has y ∈ [-0.2, 0.5] (a FLAT ground patch, not a
-          house); `a/1/6/0[6]` is a thin tall billboard (a sign, only 1724 B,
-          far too small for a lab). So "id 69 = house / id 6 = lab" is FALSE.
-        - The id space runs to 246 while `a/1/6/0` has only 81 `BMD0`, and
-          several ids (5, 152, 153, 193, …) direct-index onto *animation*
-          members. ⚠ Do NOT use "nearest preceding BMD0" as a fallback — it
-          maps id 5 → member 3, a huge up_scale=64 Castelia-style tower, and
-          buries the whole map.
-      **Still open:** which archive holds the actual building models, and the
-      `model_id → model` index table. Leads to try next session: (1) the small
-      companion NARCs `a/1/6/1` (3852 B), `a/1/6/3` (416 B), `a/1/6/5`
-      (1560 B), `a/1/6/6` (448 B) as an id→member table; (2) whether `a/1/6/0`
-      is even right vs another large model archive; (3) whether the `flag`
-      byte (0/1) selects a model bank. Only trust a candidate once a rendered
-      model is *tall/house-shaped* AND lands on the right tile — position
-      alone is not validation (this was the mistake). Prop world-translate
-      itself is correct: `world = tile*16`, vertex `+= pos/up_scale`, own
-      `TEX0` or map texset fallback.
+3. **Props (buildings/trees)** — ✅ **SOLVED end-to-end & visually verified**
+   (Nuvema renders with its 3 houses + Juniper's lab, correctly textured &
+   positioned). NOT yet committed as code — the AB-container decode below
+   lives only in this doc + session scratch scripts; `bw_common.parse_props()`
+   (placement) IS committed. Remaining defect: rotation convention (see ⚠).
+   a. Placement: ✅ decoded in `bw_common.parse_props()` /
+      `load_land_cell()["props"]`. `WB` tail-block = `u32 count` +
+      `count×16-byte` records: three `(u16 frac, s16 int)` tile coords
+      (x, height-y, z relative to cell centre), `u16` rotation
+      (0x10000 = 360°), `u8` flag, `u8 model_id`. World units = tile × 16.
+   b. Models: ✅ **`a/2/2/9` — the building-model archive** (52 "AB"
+      containers; sibling `a/2/3/0` = 64 more AB containers). Each AB
+      container is one map/town's building SET:
+        - header: `"AB"` magic, `u16 count` (sub-resource count), then
+          `count` u32 offsets. First half of sub-resources = tiny id-headers
+          (u16 model_id each, sorted ascending); second half = the BMD0
+          models. **Pair k-th id-header with k-th BMD0** (46+46 in
+          container 0).
+        - `model_id` in the prop record matches the id-header value —
+          container 0 covers Nuvema's full id set {0,5,6,69,152,153,193,…}
+          uniquely (containers are found per-zone by id-set coverage; the
+          zone-header field that selects the container directly is still
+          unidentified — off-40 u16 has range 0..8 only, so it's not that).
+        - Textures: `a/1/7/6` (52 BTX0) pairs 1:1 with `a/2/2/9`;
+          `a/1/7/7` (64 BTX0) pairs with `a/2/3/0`. Building models are
+          geometry-only; texture names like `pc_kabe02`/`pc_win1`
+          (Pokémon Center), `gate_1`, `h_mado`, `yane` resolve there.
+        - **Verified id semantics (container 0)**: id 0 = Pokémon Center,
+          id 2 = shop, id 4/5 = houses (5 = Nuvema's blue-roof house ×3),
+          id 6 = red-roof lab, id 26/69 = trees, id 152/153 = signs. (An
+          earlier session claim "69 = house" was wrong — 69 is the tree
+          NEXT to each house. Ground truth: render the whole container as a
+          labeled grid before trusting any id.)
+      ⚠ **Rotation not calibrated.** Applying `rot` as yaw about the model
+      origin gets houses right (0°/180° at Nuvema) but the lab's door faces
+      the water; adding 180° fixes the lab and breaks the houses — so it is
+      NOT a global offset. Each model type appears to have its own default
+      facing / pivot convention. Fix before committing the renderer: derive
+      per-model facing from the door geometry or find the facing flag
+      (candidate: the `flag` byte or the id-header's remaining bytes).
+      ⚠ Ruled OUT (do not re-derive): `a/1/6/0` = special/event models
+      (Castelia gym floors `c04gym`, bay scenery, ships, legendary `shin_*`,
+      battle fx) — its companions a/1/6/1..6 are palettes/interiors/427-zone
+      configs, not id tables. `a/0/4/9` = overworld SPRITE archive
+      (`t4x4hero` player, `t4x4flip` NPCs) — prop ids landing on it was
+      coincidence. GC/NG/RD land-cells = terrain *variants* (cliffs/bridges/
+      forests; GC has a 5-offset header, embeds BMD0 at its first offset) —
+      not buildings. No LZ-compressed BMD0 anywhere. Some land-cells DO bake
+      buildings into terrain (e.g. cell 120 = a whole town with `pk_l_yane`/
+      `pk_l_kabe` roofs/walls, texsets 126–129 cover it 40/40) — that's why
+      *some* maps show buildings with the plain terrain render and towns
+      like Nuvema don't.
 4. **Warps + NPCs/events** — zone-header off 10 (u16, unique per zone,
    max ~468) is the prime candidate archive index; `a/1/2/5` (428 members,
    variable size, structured) is the size-profile favorite target. Test:
@@ -628,13 +642,55 @@ model.up_scale, 0, 24)` into a 512-wide numpy RGBA framebuffer.
    pairs. The in-map warp *tiles* are already known (per-tile field3
    bit15) — only destinations are missing. Wire into the existing
    `warps`/`npcs` map-JSON fields (engine handles the rest).
-5. **`GC`/`NG`/`RD` land-cell containers** (~266 of 649) — same WB-style
-   sub-offset header? Diff their first 32 bytes against WB cells; GC is
-   likely the same grid without a model or with extra blocks. Decode →
-   more maps convert.
+5. **`GC`/`NG`/`RD` land-cell containers** (77 of 649: GC=47, NG=22, RD=8 —
+   the rest are WB) — partially decoded: they are terrain VARIANTS (cliff/
+   bridge/forest/bay cells), not buildings. GC = `"GC"` + u16 ver + FIVE u32
+   offsets (vs WB's four); first offset → embedded BMD0 (renders fine with
+   the standard pipeline + a matching texset). NG/RD similar with 2/3
+   offsets before the model. Grid/collision offsets not yet mapped —
+   decode those to convert the remaining 77 cells.
 6. **Seasons**: 4 music ids per zone + several texsets sharing the same
    texture names = per-season texture sets. Pick spring consistently for
    baking; a future enhancement could bake all 4 and swap by real date.
+
+#### Zone-header field profile (all 427 zones, from empirical scan)
+Useful when hunting the remaining tables. Per-u16-field (offset = idx×2):
+off6/off8 = script_a/script_b (427 distinct each); **off10 = unique per
+zone, max 468 — the per-zone events/warps archive index candidate** (note:
+`a/0/0/3` has 472 members but member 428 (Nuvema) parses like a text/message
+container, not events — a/1/2/5 with 428 members is still the better warp
+candidate); off12–18 = 4 seasonal music ids; off20 = 0..111; off22 = zone id;
+off24 = parent zone; off26 = name_id; off28/off30 = camera-ish 32-bit pair;
+off32 = 0..281 (texset); off36 = 0..801 (57 distinct); off40 = 0..8 (5
+distinct — NOT the 0..51 building-container selector); off44 = 0..758
+(55 distinct — range matches `a/0/4/9`'s 764 sprites?).
+
+#### 3D-camera path (prototyped, works — decide 2D vs 3D per region later)
+A perspective-projection render of Nuvema (terrain + placed buildings, tilted
+camera like the real DS view) was built as a throwaway PoC and **works** —
+building FRONTS (doors/windows) become visible, which the flat top-down
+projection can never show. Key facts learned:
+- Building models are full 3D — all four sides have geometry & textures —
+  but these are **fixed-camera assets**: back faces are plain/low-detail
+  (artists never intended them to be seen). A free-orbit camera therefore
+  always looks wrong somewhere; a **bounded camera** (a few snap angles,
+  e.g. L+d-pad) is the viable design — this is what the real games do.
+- Trees/small props are flat billboard planes — must be rotated to face the
+  camera in any 3D view or they show edge-on as slivers.
+- The top-down flatten inherently can't show door faces on north-facing
+  buildings — the "lab door faces the water" effect. Not a bug in placement;
+  it's the projection. 2D stays the robust default; 3D is a possible
+  enhancement for DS/3DS-sourced regions only (GBA Kanto/Hoenn have no 3D
+  models at all).
+
+#### Region coverage — the user's ROM library ⇒ 3D models of ~every region
+DS ROMs work with THIS session's proven pipeline (nds_decomp → NARC →
+NSBMD/nitro_g3d): **Black = Unova (proven)**, **Platinum = Sinnoh (decomp in
+repo)**, **HGSS = Johto + Kanto (user backing up ROM)**. 3DS ROMs contain
+full 3D worlds but need a NEW extractor (GARC/BCH formats, community-
+documented): **Omega Ruby = Hoenn (user backing up)**, **Pokémon X = Kalos
+(already in user's Drive as zip)**, **Ultra Moon = Alola (already in
+Drive)**. Black 2 `.nds` is also in Drive (Unova 2 maps).
 
 **Key facts to not re-derive** (all in `tools/bw_common.py` docstring too):
 `a/0/0/8`=649 land-cells (WB container, 32×32×8-byte tile grid, embedded
