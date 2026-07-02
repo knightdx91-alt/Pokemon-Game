@@ -745,7 +745,8 @@ cd /tmp && unzip -o pokemon-ultra-moon.zip "*.3ds"
 #    78,675 members). Output is gitignored.
 python3 tools/3ds_decomp.py "/tmp/Pokemon Ultra Moon (USA) (En,Ja,Fr,De,Es,It,Zh,Ko) Decrypted.3ds" -o source/3ds/ultramoon
 # 3. Deps + regenerate the analysis layers (all committed, but rerun if stale):
-pip install capstone
+pip install capstone unicorn   # unicorn is required by tools/cro_emu.py
+python3 tools/cro_emu.py --selftest  # sanity-check the CPU emulator loads Battle.cro
 python3 tools/cro_symbols.py      # decomp/symbols/  (23,638 C++ names)
 python3 tools/cro_map.py          # decomp/map/      (addresses + import veneers)
 python3 tools/cro_disasm.py --scan # decomp/functions/ (39,182 funcs)
@@ -768,6 +769,14 @@ python3 tools/cro_callgraph.py --build Battle  # decomp/callgraph/Battle.json
    offset (matters when searching for stored function pointers).
 4. `cro_callgraph.py --build/--callers/--callees/--find` — call graph with
    veneer-resolved cross-module edges. ARM-only sweep (Thumb regions noisy).
+5. `cro_vtables.py <Module>` — replays internal relocations to recover the
+   relocation-only function-pointer/dispatch tables (zero on disk).
+6. `cro_emu.py` — **Unicorn ARM CPU emulator**: loads a `.cro`, replays internal
+   relocations (entry = `(target_tag, (src_seg<<8)|type, value)` at 12-byte
+   alignment; write `base[src]+value` → `base[tseg]+off`), stubs imports, and
+   runs functions: `CroEmu("Battle").call(off,[args])` → r0, plus alloc/read/
+   write for struct fixtures. Use it to execute PIC dispatch static reading
+   can't follow. `--selftest` runs the in-battle field getter and checks offsets.
 
 ### DONE — verified decompiled functions (`decomp/src/`) & data (`decomp/data/`)
 All numerically verified against known game values:
@@ -847,9 +856,13 @@ rodata pointer tables are zero on disk, filled at load (recovered by
   7 signed bytes 0x1ea–0x1f0; `tools/usum_battlemon_fields.py`,
   `decomp/src/pml/battle/BattlePokemon.h`, `verify/verify_battlemon_fields.py` PASS;
   scalar offsets recovered, semantics flagged as hypotheses since the struct is
-  runtime-only). Immediate next task: continue struct naming (move-calc block /
-  work step-state @0xa94) or move to battle-sequence handler bodies (needs live
-  PIC data-flow) or wild encounters (`a/0/8/*`).
+  runtime-only). **CPU-EMULATION HARNESS: `tools/cro_emu.py`** (Unicorn ARM) —
+  loads a `.cro`, replays internal relocations so PIC switch/handler tables
+  resolve, stubs imports, runs functions (`emu.call(off,[args])`); `--selftest`
+  PASS; it caught the switch-table off-by-one. Immediate next task: the **move
+  effect-id → sequence-handler dispatch** using `cro_emu.py` (candidate tables
+  rodata+0x7e24/0x98ac; full recipe + the two dispatch approaches are in the
+  `⏩ CHECKPOINT` block of `decomp/README.md`).
 - **Never commit ROM bytes.** `source/3ds/ultramoon/` is gitignored. Only
   commit derived analysis (symbol maps, disasm-derived C++, verified data).
 - **Verify before committing.** Every decompiled formula/table must be checked

@@ -331,13 +331,28 @@ Battle.cro damage pipeline traced via the graph:
     (base → STAB → type → random → Q12 modifiers) is now readable C++.
 
 ### ⏩ CHECKPOINT — resume here (session handoff)
-Progress so far (all on `main`, all verified against real data):
+Progress so far (all on `main`, all verified). Latest first:
+- **CPU-EMULATION HARNESS BUILT — `tools/cro_emu.py`** (Unicorn ARM). Loads a
+  `.cro`, replays the internal relocations (so relocation-only switch/handler
+  tables resolve), stubs imports, and runs functions: `emu.call(off,[args])`.
+  Self-test PASS (`--selftest`). This is the tool for all remaining live-PIC
+  work. **It already caught a real off-by-one** in the static switch-table parse
+  (reloc entry order is `(target,type,value)`, 12-byte aligned).
+- **Phase-3 struct reconstruction — IN PROGRESS.**
+  - CoreParam: 22 stored fields auto-derived + verified →
+    `decomp/src/pml/pokepara/CoreParam.h` (`tools/usum_coreparam_fields.py`,
+    `verify/verify_coreparam_fields.py`; anchor + real-save PASS).
+  - Battle-pokemon in-RAM struct: stat-stage array (0x1ea–0x1f0, 7 signed bytes)
+    recovered + emulator-confirmed → `decomp/src/pml/battle/BattlePokemon.h`
+    (`tools/usum_battlemon_fields.py`, `verify/verify_battlemon_fields.py` PASS).
+    Scalar offsets recovered exactly; their *names* are hypotheses (runtime-only
+    struct — needs a live-battle dump to confirm).
 - **CoreParam** fully decompiled (crypto + block-shuffle + all field accessors),
   proven by reading 6 party + 880 box Pokémon from a real save
   (`tools/usum_savedump.py`).
-- **Save system**: CRC-16/USB checksum decompiled; **full 39-block offset layout
-  solved & verified in two real saves** (`savedata/save_layout.json`); **all
-  39/39 blocks named** to their `Savedata::` class (see below).
+- **Save system DONE**: CRC-16/USB checksum; **full 39-block offset layout**
+  solved & verified in two real saves; **all 39/39 blocks named** to their
+  `Savedata::` class (`tools/usum_save_blocks.py`, `save_layout.json`; see below).
 
 **✅ DONE — all 39 save blocks named (`tools/usum_save_blocks.py`).** Method (fully
 static, reproducible, self-verifying — VERIFY PASS: every class's `GetSize`
@@ -373,22 +388,39 @@ equals its footer block length):
    {FishingSpot, BerrySpot} but their identical 0x100 size can't say which id is
    which (assigned FishingSpot=22, BerrySpot=23 by convention).
 
-**Immediate next task — the four remaining core areas** (the save system is now
-DONE end-to-end: crypto, checksum, 39-block offsets, and all 39 block classes):
-pick from "Known next targets / open issues" below — highest-value is **Phase-3
-struct/field reconstruction** (name CoreParam / battle-pokemon struct fields so
-`decomp/src` reads like source), then the battle-sequence handler bodies, then
-wild encounters. Confirm the 22↔23 FishingSpot/BerrySpot order against a real
-save if a cheap check presents itself.
+**Immediate next task — the move effect-id → sequence-handler dispatch** (the
+big open Phase-1 link, now approachable with `cro_emu.py`). State of the hunt:
+- The move-effect id is a Gen-7 enum 0..419 (400 distinct), move record u16 @0x10.
+- The sequence handlers live in relocation-filled tables recovered by
+  `tools/cro_vtables.py` (see `decomp/vtables/Battle.json`). Best size fits for a
+  direct effect-id index: **rodata+0x7e24 (427 entries)** and **+0x98ac (444)**;
+  also +0x67b8 (406) and the 153-entry +0x45a0 (the step-state handlers).
+- There is **no single literal-based dispatch site**: those table bases are
+  referenced only from *inside* large battle handlers (e.g. sub_c1e78 refs the
+  444-table; sub_d6bbc/d8928/d934c ref the 427-table), and the 153-table base is
+  PIC-computed at runtime. So static reading can't pin the enum→handler map.
+- NEXT APPROACH (two options): (a) locate the dispatch entry — trace which
+  function reads wazadata effectId (ParamID for effect) then indexes a 420+ table
+  — and `emu.call` it across ids 0..419; OR (b) if it needs battle context, build
+  a minimal battle-object fixture in the emulator (alloc the btl-mon struct — see
+  `BattlePokemon.h` — and the work object) and run a handler. Validate any result
+  by correlating handlers with `data/pokemon/usum_moves.json` effect semantics
+  (ids with the same effect kind should share a handler).
+Lower-priority leftovers: confirm the 22↔23 FishingSpot/BerrySpot order against a
+real save; battle-sequence handler *bodies* (per-id, deep); wild encounters
+(`a/0/8/*`).
 
-**Environment reminder:** the ROM extraction is gitignored/ephemeral — re-run the
-bootstrap at the top of the "TRUE DECOMP" section each session (pull the USUM zip
-from Drive, unzip the `.3ds`, `python3 tools/3ds_decomp.py … -o
-source/3ds/ultramoon`, then `cro_symbols/cro_map/cro_disasm --scan`). The two
-real save files used for verification live in the user's Drive
-("Pokemon ultra Moon save" folder + the GRIDELIN "download" zip with two saves);
-re-download to `/tmp` to re-verify save work. `tools/usum_savedump.py <main.sav>`
-dumps trainer + party + box.
+**Environment reminder (do FIRST each session — extraction is gitignored):**
+`pip install capstone unicorn`, then pull the USUM zip from Drive via the direct
+curl in the "Session bootstrap" (CLAUDE.md), unzip the `.3ds`, `python3
+tools/3ds_decomp.py … -o source/3ds/ultramoon`, then
+`cro_symbols.py`/`cro_map.py`/`cro_disasm.py --scan`. **Unicorn is required for
+`cro_emu.py`.** The two real save files for verification live in Drive
+("Pokemon ultra Moon save" folder → the "download" zip = two `main` saves,
+GRIDELIN/Harvey); re-download to `/tmp` to re-verify save/CoreParam work.
+`tools/usum_savedump.py <main.sav>` dumps trainer + party + box;
+`decomp/verify/verify_coreparam_fields.py <main.sav>` and
+`decomp/verify/verify_battlemon_fields.py` re-check the struct maps.
 
 ### Known next targets / open issues
 The battle server is DONE (damage/type/AI/catch, all verified) and the entire
