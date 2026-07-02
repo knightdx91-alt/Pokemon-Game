@@ -192,3 +192,12 @@ Battle.cro damage pipeline traced via the graph:
 6. **Long-term** — matching rewrites where feasible; realistically this stays
    a research decomp for a long time. Data/asset side is already fully
    extracted by `tools/3ds_decomp.py`.
+
+### Gen-7 data conversion — extended tables (session cont.)
+- `tools/usum_eggmoves.py` → `data/pokemon/usum_eggmoves.json` (322 species with
+  egg moves). GARC `a/0/1/2`: u16 species_id, u16 count, count×u16 move. Verified
+  Bulbasaur/Charmander/Squirtle.
+- `tools/usum_tmcompat.py` → `data/pokemon/usum_tm_compat.json`. TM01–100 move
+  table from `.code` @ 0x4bb98e (Work Up…Confide), per-species compatibility
+  from the 100-bit flag field in personal data @ byte 0x28. Verified Bulbasaur
+  (Toxic) / Charizard (Fly, 43 TMs).
