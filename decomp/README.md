@@ -201,3 +201,6 @@ Battle.cro damage pipeline traced via the graph:
   table from `.code` @ 0x4bb98e (Work Up…Confide), per-species compatibility
   from the 100-bit flag field in personal data @ byte 0x28. Verified Bulbasaur
   (Toxic) / Charizard (Fly, 43 TMs).
+- `tools/usum_items.py` → `data/pokemon/usum_items.json` (959 items). GARC
+  `a/0/1/9` (36-byte entries): price (stored ÷10) + fling power + names.
+  Verified Ultra/Great/Poké Ball 800/600/200, Master Ball 0, Potion fling 30.
