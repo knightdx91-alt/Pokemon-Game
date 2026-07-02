@@ -94,11 +94,17 @@ AffinityID MulAffinity(AffinityID a, AffinityID b)
 // sub_21c284 — effectiveness of an attacking type against a (dual-type)
 // defender. Calls CalcAffinity for the attack type vs each of the defender's
 // two types, combines the two results the same way MulAffinity does (product
-// of their Q6 values, renormalised, mapped back to an AffinityID). This is
-// the type-multiplier entry point the battle damage server consumes — the
-// TypeAffinity cluster (0x21c0e0..0x21c3ac) is self-contained and reached
-// only through function-pointer dispatch (no direct/stored-pointer caller is
-// resolvable statically — see decomp/README.md).
+// of their Q6 values, renormalised, mapped back to an AffinityID).
+//
+// NOTE (corrected): the internal combiner lives at 0x21c284; the *exported*
+// dual-type entry point is `CalcAffinityAbout(atk, def1, def2, bool)` at
+// 0x21c3b0, which calls 0x21c284. The full cluster exports are:
+//   MulAffinity 0x21c0e0 · CalcAffinity 0x21c1e8 · (internal 0x21c284) ·
+//   CalcAffinityAbout 0x21c3b0 · ConvAboutAffinity 0x21c3d8.
+// The earlier "reached only by function-pointer dispatch, no resolvable
+// caller" claim was a scan artifact (wrong VA base — static .code is
+// VA==file-offset). Real callers exist in Battle.cro via import veneers; see
+// decomp/README.md "CORRECTION".
 //   attackType vs (defType1, defType2); pass defType2 == TYPE_NONE for a
 //   single-typed defender (CalcAffinity returns neutral for TYPE_NONE).
 AffinityID CalcAffinityForDefender(unsigned char attackType,
@@ -109,6 +115,32 @@ AffinityID CalcAffinityForDefender(unsigned char attackType,
     AffinityID a1 = CalcAffinity(attackType, defType1, inverse);
     AffinityID a2 = CalcAffinity(attackType, defType2, inverse);
     return MulAffinity(a1, a2);
+}
+
+// pml::battle::TypeAffinity::ConvAboutAffinity(AffinityID) @ VA 0x21c3d8
+// Collapses an AffinityID into a coarse display/AI category ("about" = the
+// general effectiveness bucket, NOT a numeric multiplier). Fully decoded from
+// the ROM (cmp #7 / moveq #1 / movhi #2 / cmp #0 / movne #3):
+//   immune (id 0)            -> 0
+//   not-very-effective (1..6)-> 3
+//   neutral (id 7)           -> 1
+//   super-effective (id >=8) -> 2
+// Verified by construction against the branch constants; this is the value
+// the effectiveness message / AI switching logic keys off (it is one of the
+// three TypeAffinity funcs Battle.cro imports).
+enum AffinityAbout {
+    ABOUT_NONE   = 0,   // no effect
+    ABOUT_NORMAL = 1,   // 1x
+    ABOUT_SUPER  = 2,   // super effective
+    ABOUT_WEAK   = 3,   // not very effective
+};
+
+AffinityAbout ConvAboutAffinity(AffinityID id)
+{
+    if (id == AFF_NEUTRAL) return ABOUT_NORMAL;   // == 7
+    if (id > AFF_NEUTRAL)  return ABOUT_SUPER;    // >  7
+    if (id != AFF_IMMUNE)  return ABOUT_WEAK;     // 1..6
+    return ABOUT_NONE;                            // == 0
 }
 
 }  // namespace battle

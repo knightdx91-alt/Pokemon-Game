@@ -206,6 +206,28 @@ Battle.cro damage pipeline traced via the graph:
   is off by one; confirm the committed `src/pml/battle/TypeAffinity.cpp`
   map-back matches the ROM exactly for dual-super (4×) cases before trusting
   multi-type composition. (Not yet resolved — flagged, not fixed.)
+- **Full cluster mapped from exports** (`decomp/map/static.json`):
+  `MulAffinity` 0x21c0e0 · `CalcAffinity` 0x21c1e8 · internal combiner
+  0x21c284 · `CalcAffinityAbout(atk,def1,def2,bool)` 0x21c3b0 (the exported
+  dual-type entry, calls 0x21c284) · `ConvAboutAffinity(AffinityID)` 0x21c3d8.
+  **`ConvAboutAffinity` fully decoded & added to `TypeAffinity.cpp`** — it is
+  a display/AI category bucket (immune→0, nve→3, neutral→1, super→2), NOT a
+  numeric multiplier. **`CalcAffinityAbout` has *zero* callers** anywhere
+  (no static bl, no CRO import) — effectively dead/indirect-only in USUM.
+- **Damage-server hunt — leads narrowed, two false trails cleared:**
+  - Candidate appliers (call `GetPower`+`GetDamageType`): `sub_86e48` (turned
+    out to be the **move-execution parameter builder** — packs type/dmg-type/
+    power/flags into an event record via `set_field(id,val)` calls, not the
+    arithmetic), `sub_d4608`, `sub_3175c`. Next: follow the event record
+    `sub_86e48` builds to its consumer (that handler does the HP math).
+  - FALSE LEAD ①: the `(x·mod + 0x800) >> 12` 4096-fixed-point modifier-round
+    is **not** inline in Battle.cro (0 hits) — USUM likely applies modifiers
+    via a helper call or a different round form.
+  - FALSE LEAD ②: the `/50` division magic `0xA3D70A3D` occurs exactly once,
+    inside `__aeabi_uldivmod`'s reciprocal table — a libgcc artifact, not the
+    damage core. ⇒ the formula's `/50` (and `/100` roll) are **helper-call
+    divisions** (`__aeabi_uidivmod`/`uldivmod`), so magic-constant
+    fingerprinting won't find them; trace via the callee instead.
 
 ### Known next targets / open issues
 - **Damage formula** (`btl`, internal/unnamed in Battle.cro): `sub_9348`
