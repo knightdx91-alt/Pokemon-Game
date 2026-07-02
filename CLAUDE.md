@@ -493,20 +493,45 @@ reproduce `source/nds/IRBO/` in a fresh session; it's gitignored.
   movement into wall tiles and allows it elsewhere, camera scrolls, HUD
   updates. Spot-checked several more (`area_0002`, `area_0014`, `area_0100`,
   `area_0300`) with no console errors.
+- **BREAKTHROUGH (follow-up session): the zone-header table + texture sets
+  are decoded and validated.** A magic-scan for `BTX0` found the field
+  texture sets at **`a/0/1/4`** (282 NSBTX sets), and **`a/0/1/2`** (single
+  member, 427 records × 48 bytes) turned out to be the **zone-header
+  table** — BW's equivalent of Platinum's `sMapHeaders[]`. Decoded fields
+  (full offset map in `tools/bw_common.py`'s docstring; parser:
+  `bw_common.load_zone_headers()`): texture-set id (off 2), matrix id
+  (off 4), two consecutive per-zone script/text indices (off 6/8), another
+  per-zone archive index (off 10, prime **candidate for the events/warps
+  archive** — untested), 4 seasonal music ids (off 12–18), parent zone
+  (off 24), and **location-name id (off 26, u8)** into text bank 89.
+  **Validated end-to-end:** zone 389 = matrix 0 + texset 2 + "Nuvema Town",
+  interiors as dedicated matrices with interior texsets; and rendering
+  land-cell 0's BMD0 with texset 2 through the **unchanged Platinum
+  rasterizer** (`render_platinum_maps.rasterize_triangle`/`_draw_model_
+  triangles`/`texture_rgba` — they're model-agnostic) produced a
+  **pixel-real Nuvema Town terrain render** (path loop, tree borders,
+  beach, pier). `nitro_g3d.py` parses BW BMD0s as-is (geometry-only MDL0,
+  no TEX0 — same split as Platinum). This also solved the earlier "matrix
+  stitching looks incoherent" mystery: **matrix 0 is the one real
+  contiguous Unova overworld**; most of the other 254 matrices are small
+  per-interior matrices, so stitching those never looks like an overworld.
 - **What's still open** (each is its own reverse-engineering sub-project,
   none started from a documented spec):
-  1. Warp destination data (target map + coordinates) — the per-tile
-     "special" marker is confirmed but not its payload.
-  2. NPC / scripted event placement — no candidate archive confirmed yet;
-     `a/1/6/7` was ruled out (it's sprite graphics: NCLR/NANR/NCER/NCGR, not
-     events). `a/1/2/5` (428 members, variable size, structured-looking) is
-     an untried candidate.
-  3. Land-cell index → human map name — no per-cell name table found.
-  4. The `GC`/`NG`/`RD`-magic land-cells (~266 of 649).
-  5. Real texture/area-data rendering (Sinnoh's `render_platinum_maps.py`
-     equivalent) — needs the texture-set archive identified first.
-  6. Making maps connect to each other (needs either warps or a correct
-     understanding of what the matrix actually encodes).
+  1. Warp destination + NPC/event data — zone-header off 10 (or the off 6/8
+     pair) very likely indexes the events archive; `a/1/2/5` (428 members)
+     is the size-profile favorite. Untested.
+  2. Prop placement (the `WB` tail-block's 16-byte records) + the prop-model
+     archive (`a/0/4/9`, 758 BTX0-containing members, is the candidate) —
+     buildings/trees are missing from textured renders until this is done.
+  3. The `GC`/`NG`/`RD`-magic land-cells (~266 of 649).
+  4. The full textured-render pipeline (`render_bw_maps.py` mirroring
+     `render_platinum_maps.py` steps: per-zone texset resolution → bake
+     `data/maps/unova_textured/*.png` → set `background` on layouts → real
+     map names from zone table instead of "Unova Area <N>") — all the hard
+     unknowns for the base terrain are now solved, this is mostly plumbing.
+  5. Seasonal variants: 4 music ids per zone and multiple texture sets
+     matching the same texture names suggest per-season texture sets;
+     pick one season (spring) for consistency.
 
 ### Planned: fan-game map converters (NOT built yet)
 Two converters discussed as future capability for pulling maps out of other

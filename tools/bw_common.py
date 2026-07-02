@@ -59,13 +59,41 @@ Map matrix (a/0/0/9/<NNNN>.bin):
     each land-cell as an independent standalone map for now; do not assume
     matrix adjacency implies walkable adjacency.
 
+Zone headers (a/0/1/2, single member, 427 records x 48 bytes) — the BW
+equivalent of Platinum's sMapHeaders[]. Decoded fields (u16 LE unless noted;
+offsets within each 48-byte record):
+    off  2  u16  texture-set id   -> a/0/1/4/<id>.nsbtx  (282 sets)
+    off  4  u16  matrix id        -> a/0/0/9/<id>.bin    (255 matrices)
+    off  6  u16  \  per-zone script/text archive indices (unique per zone,
+    off  8  u16  /  off8 == off6+1 in every record — consecutive pairs)
+    off 10  u16  another per-zone archive index (unique per zone; candidate
+                 for the events archive — untested)
+    off 12..18  4x u16  music ids ~1001..1170 (four SEASONAL variants —
+                 BW has spring/summer/autumn/winter)
+    off 22  u16  the zone's own id (== record index)
+    off 24  u16  parent zone id (93 distinct — city a zone's interiors
+                 belong to)
+    off 26  u8   location-name id -> text bank 89 (117 names)
+VALIDATED end-to-end: zone 389 = matrix 0 + texset 2 + name "Nuvema Town";
+its interiors (zones 390-395) = dedicated matrices 35-40 + interior texset
+212. Rendering land-cell 0's BMD0 with texset 2 through the (unchanged!)
+Platinum rasterizer (render_platinum_maps.rasterize_triangle et al.)
+produced a pixel-real Nuvema Town terrain render — geometry, texture
+lookup, palette binding all correct. Land-cell BMD0s are geometry-only
+(MDL0, no TEX0), same split as Platinum.
+
+This also explains the earlier "matrix stitching looks incoherent" note:
+matrix 0 is the one real contiguous Unova overworld; most of the other 254
+matrices are small dedicated interior matrices (houses/labs/gates), so
+stitching an arbitrary matrix was never going to look like an overworld.
+
 What's still unknown (see CLAUDE.md task list for this investigation):
-    - warp destination data (target map / coordinates)
-    - NPC / scripted event placement
-    - land-cell index -> human map name (text bank 89 is only the coarse
-      117-entry Town Map region list, not a 1:1 per-land-cell name table)
-    - texture/area data for real 3D->2D rendering (Platinum's
-      render_platinum_maps.py equivalent)
+    - warp destination data (target map / coordinates); zone header off 10
+      (or the off6/off8 pair) likely points at the events archive — untested
+    - NPC / scripted event placement (same lead as above)
+    - prop placement (the WB tail block's 16-byte records) + prop model
+      archive -> buildings/trees are missing from textured renders
+    - the GC/NG/RD-magic land-cells (~266 of 649)
 """
 
 import os
@@ -77,6 +105,11 @@ IRBO_ROOT = os.path.join(REPO_ROOT, "source", "nds", "IRBO", "unpacked")
 
 LAND_NARC = os.path.join(IRBO_ROOT, "a", "0", "0", "8")
 MATRIX_NARC = os.path.join(IRBO_ROOT, "a", "0", "0", "9")
+ZONE_HEADER_FILE = os.path.join(IRBO_ROOT, "a", "0", "1", "2", "0000.bin")
+TEXSET_NARC = os.path.join(IRBO_ROOT, "a", "0", "1", "4")
+
+ZONE_RECORD_SIZE = 48
+TEXT_LOCATION_NAMES = 89  # a/0/0/2 member holding the 117 location names
 
 TILE_GRID_SIZE = 32   # width/height observed on every land-cell so far
 COLLISION_BIT = 0x01  # field3 low byte, bit 0
@@ -152,6 +185,37 @@ def load_matrix(index):
     return {"width": w, "height": h, "cells": cells}
 
 
+def load_zone_headers():
+    """
+    Parse a/0/1/2 (427 zone-header records; see module docstring for the
+    decoded field map). Returns list of dicts, index == zone id.
+    """
+    d = open(ZONE_HEADER_FILE, "rb").read()
+    n = len(d) // ZONE_RECORD_SIZE
+    zones = []
+    for i in range(n):
+        rec = d[i * ZONE_RECORD_SIZE:(i + 1) * ZONE_RECORD_SIZE]
+        zones.append({
+            "zone": i,
+            "texset": struct.unpack_from("<H", rec, 2)[0],
+            "matrix": struct.unpack_from("<H", rec, 4)[0],
+            "script_a": struct.unpack_from("<H", rec, 6)[0],
+            "script_b": struct.unpack_from("<H", rec, 8)[0],
+            "archive_c": struct.unpack_from("<H", rec, 10)[0],
+            "music_seasons": list(struct.unpack_from("<4H", rec, 12)),
+            "parent_zone": struct.unpack_from("<H", rec, 24)[0],
+            "name_id": rec[26],
+        })
+    return zones
+
+
+def load_location_names():
+    """The 117 location names from text bank 89 (needs tools/rom_to_2d.py)."""
+    import rom_to_2d as r2d
+    from pathlib import Path
+    return r2d.load_text(Path(IRBO_ROOT), TEXT_LOCATION_NAMES)
+
+
 if __name__ == "__main__":
     print(f"land cells: {land_cell_count()}, matrices: {matrix_count()}")
     for i in (0, 1, 10):
@@ -160,3 +224,9 @@ if __name__ == "__main__":
         specials = sum(c["special"])
         print(f"  land-cell {i}: {c['width']}x{c['height']}, "
               f"blocked={blocked}/{len(c['collision'])}, special={specials}")
+    zones = load_zone_headers()
+    names = load_location_names()
+    print(f"zones: {len(zones)}")
+    for z in zones[:3] + [zones[389]]:
+        nm = names[z["name_id"]] if z["name_id"] < len(names) else "?"
+        print(f"  zone {z['zone']}: matrix={z['matrix']} texset={z['texset']} name={nm!r}")
