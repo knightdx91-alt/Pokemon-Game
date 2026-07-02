@@ -310,14 +310,28 @@ block. Warp tiles are always walkable.
 - **Sinnoh** comes from the **DS** decomp (pokeplatinum). DS maps are 3D geometry
   (BMD0/NSBMD models + map matrix), with no 2D metatile grid to extract directly,
   so a pure "image → 2D map" conversion isn't possible from DS sources — the DS
-  path needs its own converter (see the Sinnoh TODO below).
+  path needs its own converter (see the Sinnoh section above).
+- **Unova** (Pokémon Black) is also DS/3D, same category as Sinnoh, but had
+  **no reachable decomp source** when it was built (see the Unova section
+  above) — it was reverse-engineered blind from the raw ROM instead of from
+  a documented spec, which is why it's a smaller, rougher conversion
+  (collision-only, no warps/npcs/real textures yet) than Sinnoh.
 
-### Environment egress note (for web sessions)
-Submodules **cannot be `git clone`d** here — the git proxy is scoped to this repo
-only and returns **403** for `pret/*`, `PokemonHnS-Development/*`, etc. But general
-HTTPS egress DOES reach GitHub: `api.github.com`, `raw.githubusercontent.com`, and
-`codeload.github.com` all return 200 through `$HTTPS_PROXY`. So to get a source
-repo, download its **tarball** and extract into the submodule path, e.g.:
+### Environment egress note (session-dependent — verify, don't assume)
+GitHub egress scope **varies by session type** and has changed at least once —
+don't trust an old note (including this one) without testing first.
+A past web session had broad HTTPS egress: submodules couldn't be `git clone`d
+(proxy 403 on `pret/*`, `PokemonHnS-Development/*`, etc.) but
+`codeload.github.com` tarball downloads of arbitrary GitHub repos worked (200),
+which is how `source/pokeplatinum` was fetched for the Sinnoh conversion. A
+later GitHub-task-triggered session (the one that did the Unova work above)
+had egress **scoped to only this one repo** — the exact same
+`codeload.github.com/pret/pokeplatinum` tarball URL that worked before
+returned 403. **Test with a `curl -o /dev/null -w '%{http_code}'` tarball
+request before planning any work that depends on fetching an external decomp
+repo** — if it 403s, that session cannot use the "fetch a source tree"
+strategy at all, only raw-ROM reverse engineering (see `nds_decomp.py` /
+`bw_common.py`). If it works, the tarball approach below applies:
 ```
 curl -L "https://codeload.github.com/PokemonHnS-Development/pokemonHnS/tar.gz/refs/heads/main" -o hns.tar.gz
 mkdir -p source/pokemonhns && tar xzf hns.tar.gz -C source/pokemonhns --strip-components=1
@@ -372,22 +386,127 @@ Johto is now a **fully converted, wired, playable region** sourced from HnS.
   `LAYOUT_ROUTE7` (unused Kanto route) reference metatiles beyond what their
   tileset defines — unfinished HnS content, not a converter bug; render harmlessly.
 
-### Sinnoh via pokeplatinum — TODO ⏳ (the DS path, harder — NEXT TASK)
-- **`source/pokeplatinum`** (pret) is the agreed Sinnoh source. (User said
-  disregard pokeheartgold; the old metadata-only `data/maps/heartgold/*` was
-  **removed** and the `heartgold` region key retired from `INDEX_FILES`.)
+### Sinnoh via pokeplatinum — DONE ✅ (the DS path)
+- **`source/pokeplatinum`** (pret) was the Sinnoh source (fetched via the
+  tarball method — codeload.github.com — in a past session; NOT present in
+  every session, see the Unova section below for what happens without it).
+  (User said disregard pokeheartgold; the old metadata-only
+  `data/maps/heartgold/*` was **removed** and the `heartgold` region key
+  retired from `INDEX_FILES`.)
 - Platinum is a **DS** game: field maps are 3D geometry (BMD0/NSBMD models + a
-  map matrix), NOT 2D metatile tilemaps — so HnS's straight approach won't work.
-  `tools/extract_tilesets_platinum.py` currently only dumps NSBTX texture atlases
-  (not real maps), and `data/maps/platinum/*` is area-metadata only.
-- **Plan for a real converter:** parse the map matrix → per-chunk
-  **movement-permission grid** (this IS a 2D collision grid, extractable) +
-  warps/events → engine `layout.json` + `map.json`; for the *visual* either
-  (a) render the field BMD0 orthographically top-down and slice into a
-  16px/16-per-row tileset, or (b) a behavior/permission-coloured fallback tileset
-  (always works, immediately walkable). Fetch source via the tarball method above
-  (`pret/pokeplatinum`, default branch `main`). Wire as region `sinnoh`
-  (already in `REGIONS`/`INDEX_FILES` expectations).
+  map matrix + a 32×32 terrain-attributes grid per land-data cell), not 2D
+  metatile tilemaps. The full documented format lives in
+  `source/pokeplatinum/docs/maps/file_format_specifications.md` — that
+  human-written spec (the payoff of years of community decomp work) is what
+  made a real converter tractable; see `tools/platinum_common.py`'s docstring
+  for the resolved MAP_HEADER → matrix → land-data chain.
+- **Pipeline (in `tools/`, run in this order):**
+  1. `extract_platinum_maps.py` — walks every map header, resolves its matrix
+     footprint + land-data cell(s), emits `data/layouts/sinnoh/<name>.json`
+     (metatiles/collision/behavior/props) + `data/maps/sinnoh/<name>.json`
+     (warps/npcs/signs) + `data/maps/sinnoh_index.json` +
+     `data/maps/sinnoh_matrix/*.json`.
+  2. `generate_platinum_tileset.py` — synthesizes the `sinnoh_overworld`
+     placeholder tileset (one flat-colored 16×16 tile per behavior category)
+     as a fallback appearance layer.
+  3. `render_platinum_maps.py` — the real visual: parses each map's NSBMD
+     model + NSBTX textures (`tools/nitro_g3d.py`, a from-spec Nitro G3D
+     decoder — generic, not Platinum-specific), orthographically projects and
+     rasterizes every triangle top-down, and bakes one real textured PNG per
+     map to `data/maps/sinnoh_textured/<name>.png`.
+  4. `extract_platinum_npcs.py` — decodes overworld NPC sprites from the
+     `mmodel` NSBTX archive.
+  5. `add_map_tilesets.py` — links each map to its `sinnoh_NNN` texture-set
+     tileset (name-similarity heuristic against `area_data`).
+- **Engine side:** `src/engine/map.js`'s `getBackground()` returns
+  `layoutData.background`; `src/engine/renderer.js`'s `loadBackground()` /
+  the "textured background" fast path draws that pre-rendered PNG instead of
+  the metatile grid whenever a layout has one — the metatile/tileset fields
+  stay as a fallback. Collision/warps/npcs still come from the layout/map
+  JSON exactly like GBA regions.
+- Result: 533 Sinnoh maps, real per-map textured top-down renders, walkable
+  and warp-connected. Region `sinnoh` already wired in `REGIONS`/`INDEX_FILES`.
+
+### Unova via Pokémon Black ROM — IN PROGRESS ⏳ (blind reverse engineering, no decomp source)
+Started as "make the Black maps work like the Platinum maps." The critical
+difference from Sinnoh: **GitHub access in a web/task session is scoped to
+only this repo** (confirmed by testing — `codeload.github.com` 403s on
+`pret/pokeplatinum` itself, the same tarball that worked in the session that
+built Sinnoh). There is no `source/pokeblack`, and no known mature public
+decomp for Gen-5 BW exists to fetch even if egress were open. Everything
+below was reverse-engineered **blind**, straight from the raw ROM NARCs
+produced by `tools/nds_decomp.py` against `source/nds/IRBO` (Pokémon Black,
+US) — validated empirically by rendering hypothesized fields and checking
+whether the output looks like a real map, not from any spec. Re-run the ROM
+download + decomp commands (see the `nds_decomp.py` section above) to
+reproduce `source/nds/IRBO/` in a fresh session; it's gitignored.
+
+- **`tools/bw_common.py`** — the format writeup (read its module docstring
+  for the full byte-level breakdown) and parser, playing the same role as
+  `platinum_common.py` but for reverse-engineered-not-documented BW data:
+  - `a/0/0/8` (649 members) = **land-data cells**. Each is a small `"WB"`
+    container: header gives 3 sub-offsets → an embedded `BMD0` 3D model
+    (decodable by the *existing, generic* `tools/nitro_g3d.py` — it's a
+    from-spec Nitro G3D decoder, not Platinum-specific, so it works on any
+    DS game's models unchanged), a 32×32 grid of 8-byte per-tile records, and
+    a small ~10-entry trailing block (probably object/prop placements, not
+    decoded).
+  - Per-tile record (4× u16 LE): **field3 low byte bit0 = collision**
+    (1=blocked) — validated by rendering it standalone for several land-cells
+    and getting recognizable shapes (building footprints with walkable
+    plazas, route paths, cave layouts — see investigation notes/screenshots
+    in that session). **field3 bit15 = a "special" marker** (a handful of
+    tiles per map) — consistent with warp/door placement but the
+    destination data was never located, so these render as an inert
+    placeholder tile, not a working warp.
+  - `a/0/0/9` (255 members) = **map matrices** (grid header + per-cell
+    records referencing land-data indices, `0xFFFF`-sentinel empty cells) —
+    structurally similar to Platinum's `map_matrix_*.json`. **However**,
+    stitching matrix cells into one contiguous world image did NOT produce
+    coherent overworld geography (interior-looking room shapes scattered
+    through the grid) — it appears to be a bookkeeping/placement table, not
+    literal world layout, unlike Platinum's matrix. Conclusion: **don't
+    assume matrix adjacency implies walkable adjacency**; each land-cell is
+    currently converted as an independent standalone map.
+  - Text bank **89** (of 288 in `a/0/0/2`) is the location-name list (117
+    names — Nuvema Town, Route 1, Striaton City, …) but it's the coarse Town
+    Map region granularity, not a 1:1 table for the 649 land-cells, so it
+    could **not** be used to name individual converted maps.
+  - Roughly **383 of 649** land-cells use this `"WB"` format; the rest start
+    with different magics (`GC`, `NG`, `RD` — seen ~266 times combined,
+    unidentified) and are skipped by the converter.
+- **`tools/extract_bw_maps.py`** — converts every eligible (`"WB"`-magic,
+  15–90% collision-ratio) land-cell into a standalone map: `python3
+  tools/extract_bw_maps.py [--limit N]`. Outputs `data/layouts/unova/area_
+  <NNNN>.json`, `data/maps/unova/area_<NNNN>.json`,
+  `data/maps/unova_index.json`. Maps are honestly labeled `"Unova Area
+  <N>"` (no confirmed land-cell → real-name mapping exists) with **no
+  npcs/warps/connections** (not yet located) — walkable-only.
+- **`tools/generate_bw_tileset.py`** — the `unova_placeholder` tileset: 3
+  flat-colored 16×16 tiles (floor / wall / special-marker). No appearance/
+  texture data has been decoded yet, unlike Sinnoh's real `render_platinum_
+  maps.py` output — this is the Platinum pipeline's step-2 fallback tier
+  only, step-3 (real textured rendering) has no BW equivalent yet.
+- **Verified working end-to-end in-browser**: region `unova` wired into
+  `REGIONS`/`INDEX_FILES` in `src/engine/map.js`; `game.html?map=area_0000&
+  region=unova` loads, renders, and is walkable — collision correctly blocks
+  movement into wall tiles and allows it elsewhere, camera scrolls, HUD
+  updates. Spot-checked several more (`area_0002`, `area_0014`, `area_0100`,
+  `area_0300`) with no console errors.
+- **What's still open** (each is its own reverse-engineering sub-project,
+  none started from a documented spec):
+  1. Warp destination data (target map + coordinates) — the per-tile
+     "special" marker is confirmed but not its payload.
+  2. NPC / scripted event placement — no candidate archive confirmed yet;
+     `a/1/6/7` was ruled out (it's sprite graphics: NCLR/NANR/NCER/NCGR, not
+     events). `a/1/2/5` (428 members, variable size, structured-looking) is
+     an untried candidate.
+  3. Land-cell index → human map name — no per-cell name table found.
+  4. The `GC`/`NG`/`RD`-magic land-cells (~266 of 649).
+  5. Real texture/area-data rendering (Sinnoh's `render_platinum_maps.py`
+     equivalent) — needs the texture-set archive identified first.
+  6. Making maps connect to each other (needs either warps or a correct
+     understanding of what the matrix actually encodes).
 
 ### Planned: fan-game map converters (NOT built yet)
 Two converters discussed as future capability for pulling maps out of other

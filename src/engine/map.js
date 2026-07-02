@@ -4,7 +4,7 @@ window.GameMap = (function () {
 
     const DEFAULT_SIZE = 20;
 
-    const REGIONS = { kanto: 'kanto', johto: 'johto', hoenn: 'hoenn', sinnoh: 'sinnoh' };
+    const REGIONS = { kanto: 'kanto', johto: 'johto', hoenn: 'hoenn', sinnoh: 'sinnoh', unova: 'unova' };
 
     // Tall grass / long grass / short grass behavior bytes → trigger land encounters
     const GRASS_BEHAVIORS = new Set([0x02, 0x03, 0x07]);
@@ -52,6 +52,7 @@ window.GameMap = (function () {
         hoenn:     'data/maps/hoenn_index.json',
         johto:     'data/maps/johto_index.json',   // from pokemonHnS (2D metatile maps)
         sinnoh:    'data/maps/sinnoh_index.json',
+        unova:     'data/maps/unova_index.json',   // reverse-engineered from Black ROM (source/nds/IRBO)
         custom:    'data/maps/custom_index.json',
     };
 
