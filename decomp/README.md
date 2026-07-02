@@ -248,14 +248,27 @@ Battle.cro damage pipeline traced via the graph:
     `pml::wazadata::IsDamage`/`GetDamageType`. So the damage calculator is an
     unnamed `sub_XXXX` and won't be found by name; it must be reached by
     data-flow from the move-record block above.
-  - **NEXT-SESSION TECHNIQUE (not just another probe):** build a small
-    data-flow pass — from `sub_86e48`'s output-struct pointer (arg 4), follow
-    which downstream function loads `[struct+0x10]` (power) and multiplies it
-    by a stat field; that callee is the damage server. Equivalent alt: find
-    the shared `btl` "apply-modifier" helper (Gen6/7 4096-based) by locating
-    the most-called small function that does `umull … ; lsr/asr` and works in
-    Q12, then take its multiply-heavy callers. This is the indirect-dispatch/
-    data-flow analysis the top of this section calls for — the remaining gate.
+  - **✅ SOLVED — the damage server is found and verified.** Built the
+    data-flow pass (`tools/cro_dataflow.py`); querying "functions that load
+    move-block `+0x10` (power) with companion offsets `0x6/0x7/0x14/0x4`"
+    ranks **`sub_18504`** first (all 4 companions) — the **damage
+    orchestrator**. It calls:
+    - **`sub_81f2c` = base-damage core** = `((2·L/5+2)·Power·Atk/Def)/50 + 2`
+      (/5 via magic 0xCCCCCCCD»2, /50 via 0x51EB851F»4, /Def via
+      `__aeabi_uidivmod`). **Verified exact** on 6 cases vs the textbook
+      formula.
+    - **`sub_84d40` = ApplyModifier** = `(value·mod + round)>>12` Q12
+      round-half-up (frac>0x800). **Verified** (STAB ×1.5→150, ×2→74,
+      ×0.5→18).
+    - **`0xb0414` = type-effectiveness→Q12 multiplier** (wraps the
+      TypeAffinity cluster; the veneer-imported consumer that resolved the
+      "no callers" puzzle).
+    - inline in `sub_18504`: **STAB ×1.5** (`n·15/10`) and the **random roll
+      ×(85..100)/100** (`0x55` base, /100 via magic »5).
+    Decompiled to `decomp/src/pml/battle/DamageCalc.cpp`; self-check
+    `decomp/verify/verify_damagecalc.py` (PASS, no ROM needed). This closes
+    the decomp's headline open problem — the full damage pipeline
+    (base → STAB → type → random → Q12 modifiers) is now readable C++.
 
 ### Known next targets / open issues
 - **Damage formula** (`btl`, internal/unnamed in Battle.cro): `sub_9348`

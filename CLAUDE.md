@@ -806,23 +806,23 @@ All numerically verified against known game values:
    The two remaining FRONTIERS are both CODE-side: (a) the battle server vtable
    dispatch (unlocks damage/AI/catch — see item 2 below), and (b) struct/class
    reconstruction (memory layouts behind the recovered method names).
-2. **Battle damage server** (HARD — the one big open RE problem). *Progress
-   this session (see `decomp/README.md` "CORRECTION"):* the old "type-affinity
-   has ZERO callers / server is in static" claim was a **scan artifact** — the
-   static `.code` scan used the wrong VA base (in `.code`, **VA == file
-   offset**, NOT 0x100000+off). With the correct base, the type funcs ARE
-   called by ordinary `bl` **from Battle.cro via import veneers** (0x16d8
-   CalcAffinity, 0x16d0 MulAffinity). Mapped the battle-AI subtree:
-   `sub_9698` (handler in Battle dispatch table @0x45a0) → `sub_9348` (**AI
-   move scorer** — GetPower/GetType/IsDamage, bubble-sorts moves) → `sub_8ddb4`
-   (**multi-type effectiveness combiner**, up to 3 defender types). The **live
-   HP-damage path** is still open but the lead is now concrete: Battle.cro also
-   imports **`ConvAboutAffinity`** (AffinityID→numeric multiplier — what the
-   real formula needs), and it has **zero direct `bl` callers → dispatched
-   indirectly**. NEXT: trace where the `ConvAboutAffinity` thunk address is
-   loaded into a register/table (that call site is the damage server). Also
-   OPEN: re-verify the committed `MulAffinity` AffinityID↔value map-back for
-   4× (dual-super) cases — value table is `{0,2⁰…2¹²}`, index≠bit-position.
+2. **Battle damage server — ✅ SOLVED & VERIFIED** (was "the one big open RE
+   problem"). Found via a new data-flow tool (`tools/cro_dataflow.py`): the
+   move-calc block that `sub_86e48` builds (power u16 @0x10, type @6, dmgType
+   @7) is consumed by **`sub_18504`** (the damage orchestrator), which calls
+   **`sub_81f2c`** = base-damage `((2·L/5+2)·P·A/D)/50+2` and **`sub_84d40`**
+   = Q12 `ApplyModifier` `(v·mod+0x800)>>12`, plus **`0xb0414`** (type→Q12
+   multiplier wrapping the TypeAffinity cluster), inline STAB ×1.5 and the
+   85–100 random roll. Decompiled to `decomp/src/pml/battle/DamageCalc.cpp`;
+   numerically verified vs the textbook formula (`decomp/verify/
+   verify_damagecalc.py`, PASS). Along the way corrected the old "type-
+   affinity has ZERO callers / server in static" claim (a scan artifact —
+   static `.code` is **VA == file offset**, NOT 0x100000+off; the type funcs
+   are called by ordinary `bl` from Battle.cro via veneers). Remaining battle
+   sub-items: catch-rate formula, and the AI scorer `sub_9348` (found, not yet
+   fully decompiled). Still OPEN: re-verify the committed `MulAffinity`
+   AffinityID↔value map-back for 4× (dual-super) cases (value table
+   `{0,2⁰…2¹²}`, index≠bit-position).
 3. **More verified functions** are getting scarce — the clean self-contained
    `pml` formulas are largely mined out (remaining ones delegate to field
    accessors or use load-time-relocated pointers, e.g. the berry-taste table
@@ -937,7 +937,11 @@ All numerically verified against known game values:
 - **Ultra Moon decomp tools** (see the "TRUE DECOMP" section above for the full
   workflow): `cro_symbols.py` (C++ names), `cro_map.py` (addresses + import
   veneers), `cro_disasm.py` (symbol-annotated ARM disasm / `--scan`),
-  `cro_callgraph.py` (veneer-resolved call graph), `usum_personal.py` (Gen-7
+  `cro_callgraph.py` (veneer-resolved call graph), `cro_vtables.py` (dispatch
+  tables from relocations), `cro_dataflow.py` (**intra-proc data-flow search —
+  "which function loads struct offset X and multiplies/divides it"; this is
+  what cracked the damage server**, finding `sub_18504`→`sub_81f2c`/`sub_84d40`
+  when name + constant searches all failed), `usum_personal.py` (Gen-7
   personal data → `data/pokemon/usum_base_stats.json`).
 - `gen_party_assets.py` — regenerate the FireRed party-screen assets in
   `src/assets/party/` (slot boxes, fonts, pokéball, status icons, message frame)
