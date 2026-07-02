@@ -4,19 +4,11 @@
  "fields": [
   {
    "enum": 0,
-   "handler": "0x91988",
-   "offset": 496,
-   "width": 1,
-   "signed": true,
-   "name": "rankEvasion"
-  },
-  {
-   "enum": 1,
    "handler": "0x92698",
    "note": "non-field (default/computed)"
   },
   {
-   "enum": 2,
+   "enum": 1,
    "handler": "0x925dc",
    "offset": 490,
    "width": 1,
@@ -24,7 +16,7 @@
    "name": "rankAtk"
   },
   {
-   "enum": 3,
+   "enum": 2,
    "handler": "0x925e8",
    "offset": 491,
    "width": 1,
@@ -32,7 +24,7 @@
    "name": "rankDef"
   },
   {
-   "enum": 4,
+   "enum": 3,
    "handler": "0x925f4",
    "offset": 492,
    "width": 1,
@@ -40,7 +32,7 @@
    "name": "rankSpAtk"
   },
   {
-   "enum": 5,
+   "enum": 4,
    "handler": "0x92600",
    "offset": 493,
    "width": 1,
@@ -48,7 +40,7 @@
    "name": "rankSpDef"
   },
   {
-   "enum": 6,
+   "enum": 5,
    "handler": "0x9260c",
    "offset": 494,
    "width": 1,
@@ -56,7 +48,7 @@
    "name": "rankSpeed"
   },
   {
-   "enum": 7,
+   "enum": 6,
    "handler": "0x92618",
    "offset": 495,
    "width": 1,
@@ -64,7 +56,7 @@
    "name": "rankAccuracy"
   },
   {
-   "enum": 8,
+   "enum": 7,
    "handler": "0x92624",
    "offset": 496,
    "width": 1,
@@ -72,7 +64,7 @@
    "name": "rankEvasion"
   },
   {
-   "enum": 9,
+   "enum": 8,
    "handler": "0x92564",
    "offset": 490,
    "width": 1,
@@ -80,7 +72,7 @@
    "name": "rankAtk"
   },
   {
-   "enum": 10,
+   "enum": 9,
    "handler": "0x9257c",
    "offset": 491,
    "width": 1,
@@ -88,7 +80,7 @@
    "name": "rankDef"
   },
   {
-   "enum": 11,
+   "enum": 10,
    "handler": "0x92594",
    "offset": 492,
    "width": 1,
@@ -96,7 +88,7 @@
    "name": "rankSpAtk"
   },
   {
-   "enum": 12,
+   "enum": 11,
    "handler": "0x925ac",
    "offset": 493,
    "width": 1,
@@ -104,7 +96,7 @@
    "name": "rankSpDef"
   },
   {
-   "enum": 13,
+   "enum": 12,
    "handler": "0x925c4",
    "offset": 494,
    "width": 1,
@@ -112,7 +104,7 @@
    "name": "rankSpeed"
   },
   {
-   "enum": 14,
+   "enum": 13,
    "handler": "0x92640",
    "offset": 16,
    "width": 2,
@@ -120,7 +112,7 @@
    "name": null
   },
   {
-   "enum": 15,
+   "enum": 14,
    "handler": "0x92648",
    "offset": 14,
    "width": 2,
@@ -128,7 +120,7 @@
    "name": null
   },
   {
-   "enum": 16,
+   "enum": 15,
    "handler": "0x92630",
    "offset": 24,
    "width": 1,
@@ -136,7 +128,7 @@
    "name": null
   },
   {
-   "enum": 17,
+   "enum": 16,
    "handler": "0x92670",
    "offset": 564,
    "width": 2,
@@ -144,7 +136,7 @@
    "name": null
   },
   {
-   "enum": 18,
+   "enum": 17,
    "handler": "0x92660",
    "offset": 160,
    "width": 4,
@@ -152,7 +144,7 @@
    "name": null
   },
   {
-   "enum": 19,
+   "enum": 18,
    "handler": "0x92638",
    "offset": 487,
    "width": 1,
@@ -160,7 +152,7 @@
    "name": null
   },
   {
-   "enum": 20,
+   "enum": 19,
    "handler": "0x9267c",
    "offset": 8,
    "width": 4,
@@ -168,7 +160,7 @@
    "name": null
   },
   {
-   "enum": 21,
+   "enum": 20,
    "handler": "0x92650",
    "offset": 26,
    "width": 1,
@@ -176,10 +168,18 @@
    "name": null
   },
   {
-   "enum": 22,
+   "enum": 21,
    "handler": "0x92658",
    "offset": 27,
    "width": 1,
+   "signed": false,
+   "name": null
+  },
+  {
+   "enum": 22,
+   "handler": "0x92684",
+   "offset": 12,
+   "width": 2,
    "signed": false,
    "name": null
   }

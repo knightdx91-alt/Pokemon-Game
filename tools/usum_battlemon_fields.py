@@ -63,18 +63,20 @@ def load():
 
 
 def recover_table(d):
+    """Recover the switch table by replaying internal relocations.
+    Entry (12B, aligned) = (target_tag, (src_seg<<8)|type, value_offset),
+    target_tag = (offset<<4)|target_seg. A switch slot is a type-2 reloc whose
+    target is in the jump-table text range; value = the handler's seg0 offset."""
     off = struct.unpack_from("<I", d, 0x128)[0]
     cnt = struct.unpack_from("<I", d, 0x12c)[0]
     lo, hi = JT, JT + NCASES * 4
-    hits, o, end = {}, off, off + cnt * 12 + 12
-    while o + 12 <= end and o + 12 <= len(d):
-        a, b, c = struct.unpack_from("<III", d, o)
-        if a == 2 and (c & 0xF) == 0 and lo <= (c >> 4) < hi:
-            hits[c >> 4] = b
-            o += 12
-        else:
-            o += 4
-    return {(slot - JT) // 4: hits[slot] for slot in hits}
+    hits = {}
+    for i in range(cnt):
+        f0, f1, f2 = struct.unpack_from("<III", d, off + i * 12)
+        tseg, toff, typ = f0 & 0xF, f0 >> 4, f1 & 0xFF
+        if typ == 2 and tseg == 0 and lo <= toff < hi:
+            hits[(toff - lo) // 4] = f2       # value = handler seg0 offset
+    return hits
 
 
 def u32(d, addr):

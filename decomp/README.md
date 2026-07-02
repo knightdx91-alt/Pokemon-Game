@@ -438,10 +438,26 @@ in priority order:
      apply-stage-to-stat path over the same bytes. Emits
      `decomp/battle_effects/battlemon_getter_fields.json` +
      `decomp/src/pml/battle/BattlePokemon.h`; `verify/verify_battlemon_fields.py`
-     PASS. Scalar offsets (0x8/0xe/0x10/0xa0/0x234/…) are recovered exactly but
+     PASS. Scalar offsets (0x8/0xc/0xe/0x10/0xa0/0x234/…) are recovered exactly but
      their semantic names are flagged as hypotheses (struct is runtime-only — a
      live-battle dump, not a save, would confirm; 0xe/0x10 are the u16 curHP/maxHP
      pair CatchRate reads through this getter).
+
+### CPU emulation harness (`tools/cro_emu.py`) — PIC dispatch is now executable
+The btl engine reaches code through PIC segment-relative dispatch that static
+reading can't follow, so `tools/cro_emu.py` loads a `.cro` into a **Unicorn ARM
+CPU**: maps the segments at chosen bases, replays the internal relocation table
+(entry = `(target_tag, (src_seg<<8)|type, value)`, write `base[src]+value` into
+`base[tseg]+off`) so the relocation-only switch/handler tables resolve, and traps
+unpatched import veneers (null-branch) into an immediate return. `emu.call(off,
+[args])` runs a function and returns r0; `alloc/read/write` set up structs.
+Self-test PASS: it executes the in-battle field getter `sub_924a8(this, enum)`
+and reads back the exact struct offsets. **This immediately paid off** — running
+it against the getter exposed and fixed an **off-by-one** in the earlier *static*
+switch-table parse (the reloc entry field order is `(target,type,value)`, not the
+`(type,value,target)` an unaligned scan implied): the enum→offset map is now
+emulator-confirmed (`verify_battlemon_fields.py` cross-checks static vs emulated).
+This is the tool for the remaining live-PIC work (effect-id→handler dispatch).
 3. **Save data** (`Savedata::`) — checksum + block inventory DONE; per-block
    byte offsets are the remaining piece. The block checksum is
    `gfl2::math::Crc::Crc16` (@0x261534) = **CRC-16/USB** (poly 0x8005 reflected

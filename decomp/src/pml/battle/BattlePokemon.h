@@ -15,6 +15,7 @@ namespace pml { namespace battle {
 // Offsets are into the in-RAM battle-pokemon object (getter arg `this`).
 struct BattlePokemonFields {
   /* 0x008 */ uint32_t  field_8;  // semantic TBD
+  /* 0x00c */ uint16_t  field_c;  // semantic TBD
   /* 0x00e */ uint16_t  field_e;  // ? u16 HP pair with 0x10 — likely curHP (CatchRate reads HP here)
   /* 0x010 */ uint16_t  field_10;  // ? u16 HP pair with 0xe — likely maxHP
   /* 0x018 */ uint8_t   field_18;  // semantic TBD
