@@ -336,12 +336,16 @@ move-effect DATA layer is extracted. "Full decomp" = game-logic core + data,
 verified; the UI/network/rendering long tail is out of scope. Remaining core,
 in priority order:
 
-1. **`pml::pokepara::CoreParam` field layout** (was HARD; crypto now DONE) —
-   the LCRNG decrypt/encrypt + checksum are decompiled & verified
-   (`CoreParamCrypto.cpp`). Remaining: the **PID→block-shuffle permutation** (USUM
-   keeps blocks shuffled in RAM) and per-field offsets within the 4×56-byte
-   blocks, plus the accessor set (have GetHp @0x3af3fc / GetMaxHp @0x3af5bc /
-   GetPower). Map via `cro_dataflow.py`; this finishes save/box/trade reads.
+1. **`pml::pokepara::CoreParam` field layout** — DONE (crypto + shuffle +
+   offsets). Crypto/checksum in `CoreParamCrypto.cpp`; the block-shuffle
+   resolver + field map in `CoreParamLayout.cpp`. The PID→block permutation is
+   `shift=(PID>>13)&0x1F; pos=BlockPositionTable[shift*4+block]; ptr=blob+8+56·pos`
+   (four resolvers sub_3ad590/610/690/710, one per block A/B/C/D). The 128-byte
+   table (VA 0x5e6994 = canonical Gen-6/7) is extracted to
+   `decomp/pokepara/block_position_table.json`; verified species/item/form/move
+   offsets match canonical PK7 (`verify/verify_coreparam_layout.py`). Remaining
+   polish: enumerate the rest of the accessors (IVs/EVs/ribbons/OT) onto the
+   canonical map — mechanical now that the resolver is known.
 2. **Struct/class reconstruction** (steady; the readability multiplier) — name
    the battle-pokemon struct fields (HP @0xe/0xd, step @0xa94, ballId @0x220,
    move-calc block power@0x10/type@6/dmgType@7) and CoreParam, so `decomp/src`
