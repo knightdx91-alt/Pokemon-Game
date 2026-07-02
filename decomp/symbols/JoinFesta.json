@@ -1,0 +1,3186 @@
+{
+ "module": "JoinFesta.cro",
+ "size": 151552,
+ "exports": [
+  {
+   "mangled": "nnroControlObject_",
+   "demangled": "nnroControlObject_"
+  }
+ ],
+ "imports": [
+  {
+   "mangled": "__aeabi_memclr4",
+   "demangled": "__aeabi_memclr4"
+  },
+  {
+   "mangled": "__aeabi_uidivmod",
+   "demangled": "__aeabi_uidivmod"
+  },
+  {
+   "mangled": "__aeabi_uldivmod",
+   "demangled": "__aeabi_uldivmod"
+  },
+  {
+   "mangled": "__aeabi_vec_ctor_nocookie_nodtor",
+   "demangled": "__aeabi_vec_ctor_nocookie_nodtor"
+  },
+  {
+   "mangled": "__aeabi_vec_dtor",
+   "demangled": "__aeabi_vec_dtor"
+  },
+  {
+   "mangled": "__cxa_guard_acquire",
+   "demangled": "__cxa_guard_acquire"
+  },
+  {
+   "mangled": "__cxa_guard_release",
+   "demangled": "__cxa_guard_release"
+  },
+  {
+   "mangled": "__hardfp_cosf",
+   "demangled": "__hardfp_cosf"
+  },
+  {
+   "mangled": "__hardfp_sinf",
+   "demangled": "__hardfp_sinf"
+  },
+  {
+   "mangled": "_ZdaPv",
+   "demangled": "operator delete[](void*)"
+  },
+  {
+   "mangled": "_ZdlPv",
+   "demangled": "operator delete(void*)"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field10TrialModel15FieldTrialModelENS3_18IField3DObjectNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::TrialModel::FieldTrialModel, Field::IField3DObjectNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18FieldTransformNodeENS1_8instance13TransformNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldTransformNode, gfl2::renderingengine::scenegraph::instance::TransformNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18IField3DObjectNodeENS3_9FieldNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::IField3DObjectNode, Field::FieldNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field9FieldNodeENS1_8instance12InstanceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance12InstanceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::InstanceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance13TransformNodeENS3_12InstanceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::TransformNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8instance13TransformNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::instance::TransformNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZN13BattleFesTool15GetBtlFieldTypeEh",
+   "demangled": "BattleFesTool::GetBtlFieldType(unsigned char)"
+  },
+  {
+   "mangled": "_ZN13BattleFesTool21GetDressUpParamRandomEjPN4gfl24heap11CtrHeapBaseEPN7poke_3d5model12DressUpParamE",
+   "demangled": "BattleFesTool::GetDressUpParamRandom(unsigned int, gfl2::heap::CtrHeapBase*, poke_3d::model::DressUpParam*)"
+  },
+  {
+   "mangled": "_ZN13BattleFesTool28GetBattleFesValidPatherCountEv",
+   "demangled": "BattleFesTool::GetBattleFesValidPatherCount()"
+  },
+  {
+   "mangled": "_ZN13BattleFesTool29CreateRandomBattleTreePokemonEPN4gfl24heap11CtrHeapBaseEPN9BattleFes16BATTLE_TREE_DATAE",
+   "demangled": "BattleFesTool::CreateRandomBattleTreePokemon(gfl2::heap::CtrHeapBase*, BattleFes::BATTLE_TREE_DATA*)"
+  },
+  {
+   "mangled": "_ZN2nn4math5ARMv612MTX34MultAsmEPNS0_5MTX34EPKS2_S5_",
+   "demangled": "nn::math::ARMv6::MTX34MultAsm(nn::math::MTX34*, nn::math::MTX34 const*, nn::math::MTX34 const*)"
+  },
+  {
+   "mangled": "_ZN2nn4math9Atan2FIdxEff",
+   "demangled": "nn::math::Atan2FIdx(float, float)"
+  },
+  {
+   "mangled": "_ZN3app4tool14ResourceLoader11ObserveLoadEv",
+   "demangled": "app::tool::ResourceLoader::ObserveLoad()"
+  },
+  {
+   "mangled": "_ZN3app4tool14ResourceLoader11ReleaseDataEv",
+   "demangled": "app::tool::ResourceLoader::ReleaseData()"
+  },
+  {
+   "mangled": "_ZN3app4tool14ResourceLoader11RequestLoadEPNS_4util4HeapEjjbb",
+   "demangled": "app::tool::ResourceLoader::RequestLoad(app::util::Heap*, unsigned int, unsigned int, bool, bool)"
+  },
+  {
+   "mangled": "_ZN3app4tool14ResourceLoaderC1Ev",
+   "demangled": "app::tool::ResourceLoader::ResourceLoader()"
+  },
+  {
+   "mangled": "_ZN3app4tool14ResourceLoaderD1Ev",
+   "demangled": "app::tool::ResourceLoader::~ResourceLoader()"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor10IsFileLoadEPPv",
+   "demangled": "app::util::FileAccessor::IsFileLoad(void**)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor10IsFileOpenEj",
+   "demangled": "app::util::FileAccessor::IsFileOpen(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor11IsFileCloseEj",
+   "demangled": "app::util::FileAccessor::IsFileClose(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor8FileLoadEjjPPvPN4gfl24heap11CtrHeapBaseEbjNS4_2fs10ToolDefine11ArcLangType3TagEPjSC_",
+   "demangled": "app::util::FileAccessor::FileLoad(unsigned int, unsigned int, void**, gfl2::heap::CtrHeapBase*, bool, unsigned int, gfl2::fs::ToolDefine::ArcLangType::Tag, unsigned int*, unsigned int*)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor8FileOpenEjPN4gfl24heap11CtrHeapBaseEbNS2_2fs10ToolDefine11ArcLangType3TagE",
+   "demangled": "app::util::FileAccessor::FileOpen(unsigned int, gfl2::heap::CtrHeapBase*, bool, gfl2::fs::ToolDefine::ArcLangType::Tag)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor9FileCloseEjPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "app::util::FileAccessor::FileClose(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN3App5Event12ShopBuyEvent10StartEventEPN7GameSys11GameManagerE",
+   "demangled": "App::Event::ShopBuyEvent::StartEvent(GameSys::GameManager*)"
+  },
+  {
+   "mangled": "_ZN3App5Event12ShopBuyEvent15SetupParamForFCENS_4Shop8ShopTypeEjjjjjjjjPNS2_20IShopFeatureDelegateE",
+   "demangled": "App::Event::ShopBuyEvent::SetupParamForFC(App::Shop::ShopType, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, App::Shop::IShopFeatureDelegate*)"
+  },
+  {
+   "mangled": "_ZN3App5Event12ShopBuyEvent9SetupHeapEPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "App::Event::ShopBuyEvent::SetupHeap(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN3pml6battle12TypeAffinity17CalcAffinityAboutEhhhb",
+   "demangled": "pml::battle::TypeAffinity::CalcAffinityAbout(unsigned char, unsigned char, unsigned char, bool)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParam10SetGetBallEj",
+   "demangled": "pml::pokepara::CoreParam::SetGetBall(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParam12SetParentSexENS_3SexE",
+   "demangled": "pml::pokepara::CoreParam::SetParentSex(pml::Sex)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParam13SetParentNameEPKw",
+   "demangled": "pml::pokepara::CoreParam::SetParentName(wchar_t const*)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParam5SetIDEj",
+   "demangled": "pml::pokepara::CoreParam::SetID(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParamC1EPN4gfl24heap11CtrHeapBaseE6MonsNoty",
+   "demangled": "pml::pokepara::CoreParam::CoreParam(gfl2::heap::CtrHeapBase*, MonsNo, unsigned short, unsigned long long)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph11Inheritance8GenerateEPKS2_NS_4util7FnvHashE",
+   "demangled": "gfl2::renderingengine::scenegraph::Inheritance::Generate(gfl2::renderingengine::scenegraph::Inheritance const*, gfl2::util::FnvHash)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field10TrialModel15FieldTrialModelENS3_18IField3DObjectNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::TrialModel::FieldTrialModel, Field::IField3DObjectNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18FieldTransformNodeENS1_8instance13TransformNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldTransformNode, gfl2::renderingengine::scenegraph::instance::TransformNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18IField3DObjectNodeENS3_9FieldNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::IField3DObjectNode, Field::FieldNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field9FieldNodeENS1_8instance12InstanceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance12InstanceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::InstanceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance13TransformNodeENS3_12InstanceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::TransformNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph7DagNode11RemoveChildEPS2_",
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::RemoveChild(gfl2::renderingengine::scenegraph::DagNode*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15ResourceManager19createResourceNode_EPNS2_13IResourceDataE",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceManager::createResourceNode_(gfl2::renderingengine::scenegraph::resource::IResourceData*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15ResourceManager4s_GpE",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceManager::s_Gp"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPack12SetModelDataEPc",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::SetModelData(char*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPackC1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::GfBinaryMdlDataPack()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPackD1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::~GfBinaryMdlDataPack()"
+  },
+  {
+   "mangled": "_ZN4gfl22fs17BinLinkerAccessor10InitializeEPv",
+   "demangled": "gfl2::fs::BinLinkerAccessor::Initialize(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs17BinLinkerAccessorC1Ev",
+   "demangled": "gfl2::fs::BinLinkerAccessor::BinLinkerAccessor()"
+  },
+  {
+   "mangled": "_ZN4gfl22fs17BinLinkerAccessorD1Ev",
+   "demangled": "gfl2::fs::BinLinkerAccessor::~BinLinkerAccessor()"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory20s_pInstanceAllocatorE",
+   "demangled": "gfl2::gfx::GLMemory::s_pInstanceAllocator"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory24s_InstanceAllocatorCountE",
+   "demangled": "gfl2::gfx::GLMemory::s_InstanceAllocatorCount"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBuf5ClearEv",
+   "demangled": "gfl2::str::StrBuf::Clear()"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBuf6SetStrEPKw",
+   "demangled": "gfl2::str::StrBuf::SetStr(wchar_t const*)"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBufC1EjPNS_4heap11CtrHeapBaseE",
+   "demangled": "gfl2::str::StrBuf::StrBuf(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBufC1EPKwPNS_4heap11CtrHeapBaseE",
+   "demangled": "gfl2::str::StrBuf::StrBuf(wchar_t const*, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBufD1Ev",
+   "demangled": "gfl2::str::StrBuf::~StrBuf()"
+  },
+  {
+   "mangled": "_ZN4gfl23str7MsgDataC1EjjPNS_4heap11CtrHeapBaseENS1_8LoadTypeE",
+   "demangled": "gfl2::str::MsgData::MsgData(unsigned int, unsigned int, gfl2::heap::CtrHeapBase*, gfl2::str::MsgData::LoadType)"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN7GameSys11GameManagerEE11GetInstanceEv",
+   "demangled": "gfl2::base::SingletonAccessor<GameSys::GameManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN9NetAppLib9JoinFesta22JoinFestaPacketManagerEE11GetInstanceEv",
+   "demangled": "gfl2::base::SingletonAccessor<NetAppLib::JoinFesta::JoinFestaPacketManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN9NetAppLib9JoinFesta26JoinFestaAttractionManagerEE11GetInstanceEv",
+   "demangled": "gfl2::base::SingletonAccessor<NetAppLib::JoinFesta::JoinFestaAttractionManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN9NetAppLib9JoinFesta28JoinFestaPersonalDataManagerEE11GetInstanceEv",
+   "demangled": "gfl2::base::SingletonAccessor<NetAppLib::JoinFesta::JoinFestaPersonalDataManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24heap22GflHeapFreeMemoryBlockEPv",
+   "demangled": "gfl2::heap::GflHeapFreeMemoryBlock(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager10CreateHeapEPNS0_11CtrHeapBaseEiiNS0_8HeapTypeEbPKc",
+   "demangled": "gfl2::heap::Manager::CreateHeap(gfl2::heap::CtrHeapBase*, int, int, gfl2::heap::HeapType, bool, char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager10DeleteHeapEPNS0_11CtrHeapBaseE",
+   "demangled": "gfl2::heap::Manager::DeleteHeap(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager15GetHeapByHeapIdEi",
+   "demangled": "gfl2::heap::Manager::GetHeapByHeapId(int)"
+  },
+  {
+   "mangled": "_ZN4gfl24math6Random10InitializeEj",
+   "demangled": "gfl2::math::Random::Initialize(unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl24math6Random4NextEj",
+   "demangled": "gfl2::math::Random::Next(unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl24math6RandomC1Ev",
+   "demangled": "gfl2::math::Random::Random()"
+  },
+  {
+   "mangled": "_ZN4gfl24pawn8PawnBase25GetGlobalParameterPointerEPKc",
+   "demangled": "gfl2::pawn::PawnBase::GetGlobalParameterPointer(char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl25debug9GFLassertEPKcjiS2_",
+   "demangled": "gfl2::debug::GFLassert(char const*, unsigned int, int, char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl26system4Date6GetNowEPS1_",
+   "demangled": "gfl2::system::Date::GetNow(gfl2::system::Date*)"
+  },
+  {
+   "mangled": "_ZN4gfl26system4DateC1Ev",
+   "demangled": "gfl2::system::Date::Date()"
+  },
+  {
+   "mangled": "_ZN4gfl26system4DateD1Ev",
+   "demangled": "gfl2::system::Date::~Date()"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackList10InitializeEPNS_4heap11CtrHeapBaseEj",
+   "demangled": "gfl2::animation::AnimationPackList::Initialize(gfl2::heap::CtrHeapBase*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackList8FinalizeEv",
+   "demangled": "gfl2::animation::AnimationPackList::Finalize()"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackList8LoadDataEjPNS_3gfx12IGLAllocatorEPNS_4heap11CtrHeapBaseEPc",
+   "demangled": "gfl2::animation::AnimationPackList::LoadData(unsigned int, gfl2::gfx::IGLAllocator*, gfl2::heap::CtrHeapBase*, char*)"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackListC1Ev",
+   "demangled": "gfl2::animation::AnimationPackList::AnimationPackList()"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackListD1Ev",
+   "demangled": "gfl2::animation::AnimationPackList::~AnimationPackList()"
+  },
+  {
+   "mangled": "_ZN5Field11FieldScript17FieldScriptSystem7SuspendEv",
+   "demangled": "Field::FieldScript::FieldScriptSystem::Suspend()"
+  },
+  {
+   "mangled": "_ZN5Field11FieldScript4Work12SetWorkValueEtj",
+   "demangled": "Field::FieldScript::Work::SetWorkValue(unsigned short, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5Field11FieldScript4Work16GetTempWorkValueEt",
+   "demangled": "Field::FieldScript::Work::GetTempWorkValue(unsigned short)"
+  },
+  {
+   "mangled": "_ZN5Field11FieldScript4Work17IsTargetObjidNoneEv",
+   "demangled": "Field::FieldScript::Work::IsTargetObjidNone()"
+  },
+  {
+   "mangled": "_ZN5Field9EventWork16CheckIDFlagRengeEt",
+   "demangled": "Field::EventWork::CheckIDFlagRenge(unsigned short)"
+  },
+  {
+   "mangled": "_ZN5Field9EventWork16GetEventWorkAdrsEt",
+   "demangled": "Field::EventWork::GetEventWorkAdrs(unsigned short)"
+  },
+  {
+   "mangled": "_ZN5Field9MoveModel14FieldMoveModel15ReSetParentNodeEv",
+   "demangled": "Field::MoveModel::FieldMoveModel::ReSetParentNode()"
+  },
+  {
+   "mangled": "_ZN5Field9MoveModel14FieldMoveModel16RemoveParentNodeEv",
+   "demangled": "Field::MoveModel::FieldMoveModel::RemoveParentNode()"
+  },
+  {
+   "mangled": "_ZN5Field9MoveModel20FieldMoveCodeManager13IsNpcMoveCodeENS0_18FIELD_MOVE_CODE_IDE",
+   "demangled": "Field::MoveModel::FieldMoveCodeManager::IsNpcMoveCode(Field::MoveModel::FIELD_MOVE_CODE_ID)"
+  },
+  {
+   "mangled": "_ZN5Field9MoveModel20FieldMoveModelPlayer14IsRunLoopStateEv",
+   "demangled": "Field::MoveModel::FieldMoveModelPlayer::IsRunLoopState()"
+  },
+  {
+   "mangled": "_ZN5Field9MoveModel21FieldMoveModelManager10SetupModelEj",
+   "demangled": "Field::MoveModel::FieldMoveModelManager::SetupModel(unsigned int)"
+  },
+  {
+   "mangled": "_ZN5print15GetMessageArcIdEN6System9MSGLANGIDE",
+   "demangled": "print::GetMessageArcId(System::MSGLANGID)"
+  },
+  {
+   "mangled": "_ZN5print22GetMessageArcId_ScriptEN6System9MSGLANGIDE",
+   "demangled": "print::GetMessageArcId_Script(System::MSGLANGID)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet12RegisterWordEjPN4gfl23str7MsgDataEjNS0_4FormE",
+   "demangled": "print::WordSet::RegisterWord(unsigned int, gfl2::str::MsgData*, unsigned int, print::WordSet::Form)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet12RegisterWordEjRKN4gfl23str6StrBufENS0_7GrammerENS0_4FormE",
+   "demangled": "print::WordSet::RegisterWord(unsigned int, gfl2::str::StrBuf const&, print::WordSet::Grammer, print::WordSet::Form)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet14RegisterNumberEjijNS_14NumberDispTypeENS_14NumberCodeTypeE",
+   "demangled": "print::WordSet::RegisterNumber(unsigned int, int, unsigned int, print::NumberDispType, print::NumberCodeType)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet16RegisterItemNameEjjj",
+   "demangled": "print::WordSet::RegisterItemName(unsigned int, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet16RegisterWazaNameEjj",
+   "demangled": "print::WordSet::RegisterWazaName(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet17RegisterPlaceNameEjj",
+   "demangled": "print::WordSet::RegisterPlaceName(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet18RegisterTrTypeNameEjt",
+   "demangled": "print::WordSet::RegisterTrTypeName(unsigned int, unsigned short)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet22RegisterAttractionNameEjj",
+   "demangled": "print::WordSet::RegisterAttractionName(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet22RegisterPokeMonsNameNoEj6MonsNo",
+   "demangled": "print::WordSet::RegisterPokeMonsNameNo(unsigned int, MonsNo)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet23RegisterKisekaeItemNameEjjj",
+   "demangled": "print::WordSet::RegisterKisekaeItemName(unsigned int, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN6NetApp4Util14ConvertUtility8U64ToStrEyPN4gfl23str6StrBufEb",
+   "demangled": "NetApp::Util::ConvertUtility::U64ToStr(unsigned long long, gfl2::str::StrBuf*, bool)"
+  },
+  {
+   "mangled": "_ZN6NetLib17NijiNetworkSystem14GetNetworkModeEv",
+   "demangled": "NetLib::NijiNetworkSystem::GetNetworkMode()"
+  },
+  {
+   "mangled": "_ZN6NetLib17NijiNetworkSystem18IsWLANSwitchEnableEv",
+   "demangled": "NetLib::NijiNetworkSystem::IsWLANSwitchEnable()"
+  },
+  {
+   "mangled": "_ZN6System13nijiAllocatorC1EPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "System::nijiAllocator::nijiAllocator(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN6System13nijiAllocatorC1EPN4gfl24heap11CtrHeapBaseENS0_15VramControlTypeENS0_14VramMallocModeE",
+   "demangled": "System::nijiAllocator::nijiAllocator(gfl2::heap::CtrHeapBase*, System::nijiAllocator::VramControlType, System::nijiAllocator::VramMallocMode)"
+  },
+  {
+   "mangled": "_ZN6System20DressUpParamSaveData16OverrideNijiBnglEPN7poke_3d5model12DressUpParamE",
+   "demangled": "System::DressUpParamSaveData::OverrideNijiBngl(poke_3d::model::DressUpParam*)"
+  },
+  {
+   "mangled": "_ZN6System20DressUpParamSaveData21ConvertToDressUpParamEPN7poke_3d5model12DressUpParamERKS0_",
+   "demangled": "System::DressUpParamSaveData::ConvertToDressUpParam(poke_3d::model::DressUpParam*, System::DressUpParamSaveData const&)"
+  },
+  {
+   "mangled": "_ZN6System6GflUse13GetPublicRandEj",
+   "demangled": "System::GflUse::GetPublicRand(unsigned int)"
+  },
+  {
+   "mangled": "_ZN6System6GflUse13GetPublicRandEv",
+   "demangled": "System::GflUse::GetPublicRand()"
+  },
+  {
+   "mangled": "_ZN6System7DressUp24GetDressUpArcIdListFieldEv",
+   "demangled": "System::DressUp::GetDressUpArcIdListField()"
+  },
+  {
+   "mangled": "_ZN7GameSys16GameEventManager7GetHeapEv",
+   "demangled": "GameSys::GameEventManager::GetHeap()"
+  },
+  {
+   "mangled": "_ZN7GameSys16GameEventManager9CallEventEPNS_9GameEventE",
+   "demangled": "GameSys::GameEventManager::CallEvent(GameSys::GameEvent*)"
+  },
+  {
+   "mangled": "_ZN7GameSys9GameEventC2EPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "GameSys::GameEvent::GameEvent(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN7GameSys9GameEventD2Ev",
+   "demangled": "GameSys::GameEvent::~GameEvent()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory13IsModelLoadedEj",
+   "demangled": "poke_3d::model::CharaModelFactory::IsModelLoaded(unsigned int)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory14LoadModelAsyncEj",
+   "demangled": "poke_3d::model::CharaModelFactory::LoadModelAsync(unsigned int)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager10InitializeEPN4gfl22fs16AsyncFileManagerEPNS2_4heap11CtrHeapBaseEPi",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::Initialize(gfl2::fs::AsyncFileManager*, gfl2::heap::CtrHeapBase*, int*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager17SetupDressUpPartsEPN4gfl23gfx12IGLAllocatorERKNS0_12DressUpParamE",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::SetupDressUpParts(gfl2::gfx::IGLAllocator*, poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager18UnloadDressUpPartsERKNS0_12DressUpParamE",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::UnloadDressUpParts(poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager20IsDressUpPartsLoadedERKNS0_12DressUpParamE",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::IsDressUpPartsLoaded(poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager21LoadDressUpPartsAsyncERKNS0_12DressUpParamE",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::LoadDressUpPartsAsync(poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager8FinalizeEv",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::Finalize()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManagerC1Ev",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::DressUpModelResourceManager()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManagerD1Ev",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::~DressUpModelResourceManager()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel11SetPositionERKN4gfl24math7Vector3E",
+   "demangled": "poke_3d::model::BaseModel::SetPosition(gfl2::math::Vector3 const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel11SetRotationEfffN4gfl24math13EulerRotation13RotationOrderE",
+   "demangled": "poke_3d::model::BaseModel::SetRotation(float, float, float, gfl2::math::EulerRotation::RotationOrder)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel14GetWorldMatrixEv",
+   "demangled": "poke_3d::model::BaseModel::GetWorldMatrix()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel20SetAnimationPackListEPN4gfl29animation17AnimationPackListE",
+   "demangled": "poke_3d::model::BaseModel::SetAnimationPackList(gfl2::animation::AnimationPackList*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel6CreateEPN4gfl23gfx12IGLAllocatorEPNS2_4heap11CtrHeapBaseEPNS2_15renderingengine10scenegraph8resource12ResourceNodeESD_",
+   "demangled": "poke_3d::model::BaseModel::Create(gfl2::gfx::IGLAllocator*, gfl2::heap::CtrHeapBase*, gfl2::renderingengine::scenegraph::resource::ResourceNode*, gfl2::renderingengine::scenegraph::resource::ResourceNode*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModelC1Ev",
+   "demangled": "poke_3d::model::BaseModel::BaseModel()"
+  },
+  {
+   "mangled": "_ZN8Savedata10ResortSave15SetPokeBeansNumENS0_13PokeBeansEnumEi",
+   "demangled": "Savedata::ResortSave::SetPokeBeansNum(Savedata::ResortSave::PokeBeansEnum, int)"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave11AddWinCountEv",
+   "demangled": "Savedata::BattleFesSave::AddWinCount()"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave12ClearUseShopEv",
+   "demangled": "Savedata::BattleFesSave::ClearUseShop()"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave13ClearWinCountEv",
+   "demangled": "Savedata::BattleFesSave::ClearWinCount()"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave13IsFullPartnerEv",
+   "demangled": "Savedata::BattleFesSave::IsFullPartner()"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave15ClearBattleDataEPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "Savedata::BattleFesSave::ClearBattleData(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave16AddFesFunPartnerEjjPKN3pml8pokepara9CoreParamEPN7poke_3d5model12DressUpParamE",
+   "demangled": "Savedata::BattleFesSave::AddFesFunPartner(unsigned int, unsigned int, pml::pokepara::CoreParam const*, poke_3d::model::DressUpParam*)"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave16ClearTrainerDataEv",
+   "demangled": "Savedata::BattleFesSave::ClearTrainerData()"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave17SetBattleTreeDataEN9BattleFes16BATTLE_TREE_DATAE",
+   "demangled": "Savedata::BattleFesSave::SetBattleTreeData(BattleFes::BATTLE_TREE_DATA)"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave17ZeroClearWinCountEv",
+   "demangled": "Savedata::BattleFesSave::ZeroClearWinCount()"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave20SetRentalPokemonDataEPKN3pml8pokepara9CoreParamE",
+   "demangled": "Savedata::BattleFesSave::SetRentalPokemonData(pml::pokepara::CoreParam const*)"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave20UpdateTotalRandCountEv",
+   "demangled": "Savedata::BattleFesSave::UpdateTotalRandCount()"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave7AddRankEv",
+   "demangled": "Savedata::BattleFesSave::AddRank()"
+  },
+  {
+   "mangled": "_ZN8Savedata13PokeDiarySave3GetE4PDIDbPNS0_10DIARY_DATAE",
+   "demangled": "Savedata::PokeDiarySave::Get(PDID, bool, Savedata::PokeDiarySave::DIARY_DATA*)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave14SetRewardStateEN15JoinFestaScript10RewardTypeENS1_15RewardStateTypeE",
+   "demangled": "Savedata::JoinFestaDataSave::SetRewardState(JoinFestaScript::RewardType, JoinFestaScript::RewardStateType)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave15IsFacilitiesBuyEj",
+   "demangled": "Savedata::JoinFestaDataSave::IsFacilitiesBuy(unsigned int)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave16FacilitiesChangeEN15JoinFestaScript15FacilitiesIndexEhjh",
+   "demangled": "Savedata::JoinFestaDataSave::FacilitiesChange(JoinFestaScript::FacilitiesIndex, unsigned char, unsigned int, unsigned char)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave16SetFacilitiesBuyEj",
+   "demangled": "Savedata::JoinFestaDataSave::SetFacilitiesBuy(unsigned int)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave16SetFortuneResultEN15JoinFestaScript15FacilitiesIndexENS1_16FortuneResultHitENS1_19FortuneResultActionE",
+   "demangled": "Savedata::JoinFestaDataSave::SetFortuneResult(JoinFestaScript::FacilitiesIndex, JoinFestaScript::FortuneResultHit, JoinFestaScript::FortuneResultAction)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave16SetTempSaveThemeEh",
+   "demangled": "Savedata::JoinFestaDataSave::SetTempSaveTheme(unsigned char)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave16SetUseSelectWordEj",
+   "demangled": "Savedata::JoinFestaDataSave::SetUseSelectWord(unsigned int)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave17GetFacilitiesDataEN15JoinFestaScript15FacilitiesIndexE",
+   "demangled": "Savedata::JoinFestaDataSave::GetFacilitiesData(JoinFestaScript::FacilitiesIndex)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave18GetLastP2pPersonalEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetLastP2pPersonal()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave21FacilitiesChangeIndexEN15JoinFestaScript15FacilitiesIndexES2_",
+   "demangled": "Savedata::JoinFestaDataSave::FacilitiesChangeIndex(JoinFestaScript::FacilitiesIndex, JoinFestaScript::FacilitiesIndex)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave21SetIsSkipMessageStallEb",
+   "demangled": "Savedata::JoinFestaDataSave::SetIsSkipMessageStall(bool)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave22SetIsSkipMessageAirToyEb",
+   "demangled": "Savedata::JoinFestaDataSave::SetIsSkipMessageAirToy(bool)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave22SetQuestionnaireAnswerEjj",
+   "demangled": "Savedata::JoinFestaDataSave::SetQuestionnaireAnswer(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave23FacilitiesFakeChangeEndEv",
+   "demangled": "Savedata::JoinFestaDataSave::FacilitiesFakeChangeEnd()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave23GetGlobalAttractionDataEh",
+   "demangled": "Savedata::JoinFestaDataSave::GetGlobalAttractionData(unsigned char)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave24GetFacilitiesLotterySeedEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetFacilitiesLotterySeed()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave25FacilitiesFakeChangeStartEN15JoinFestaScript15FacilitiesIndexEhjh",
+   "demangled": "Savedata::JoinFestaDataSave::FacilitiesFakeChangeStart(JoinFestaScript::FacilitiesIndex, unsigned char, unsigned int, unsigned char)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave26AddPersonalTalkCameraCountEv",
+   "demangled": "Savedata::JoinFestaDataSave::AddPersonalTalkCameraCount()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave26GetPersonalTalkCameraCountEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetPersonalTalkCameraCount()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave26ResetFacilitiesLotterySeedEv",
+   "demangled": "Savedata::JoinFestaDataSave::ResetFacilitiesLotterySeed()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave27GetCoinNecessaryForNextRankEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetCoinNecessaryForNextRank()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave27SetIsSkipMessageHorrorHouseEb",
+   "demangled": "Savedata::JoinFestaDataSave::SetIsSkipMessageHorrorHouse(bool)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave30SetFacilitiesIndexOfScriptCallEN15JoinFestaScript15FacilitiesIndexE",
+   "demangled": "Savedata::JoinFestaDataSave::SetFacilitiesIndexOfScriptCall(JoinFestaScript::FacilitiesIndex)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave34GetQuestionnaireIdForPersonalEventEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetQuestionnaireIdForPersonalEvent()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave7AddCoinEj",
+   "demangled": "Savedata::JoinFestaDataSave::AddCoin(unsigned int)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave7SetRankEt",
+   "demangled": "Savedata::JoinFestaDataSave::SetRank(unsigned short)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave7SubCoinEj",
+   "demangled": "Savedata::JoinFestaDataSave::SubCoin(unsigned int)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave8SetThemeEh",
+   "demangled": "Savedata::JoinFestaDataSave::SetTheme(unsigned char)"
+  },
+  {
+   "mangled": "_ZN8Savedata7Fashion48ConvSavedataCategoryFromDressUpParamItemCategoryEN7poke_3d5model12DressUpParam12ItemCategoryE",
+   "demangled": "Savedata::Fashion::ConvSavedataCategoryFromDressUpParamItemCategory(poke_3d::model::DressUpParam::ItemCategory)"
+  },
+  {
+   "mangled": "_ZN8Savedata7Fashion7IsOwnedEji",
+   "demangled": "Savedata::Fashion::IsOwned(unsigned int, int)"
+  },
+  {
+   "mangled": "_ZN8Savedata9IncRecordENS_6Record9RECORD_IDE",
+   "demangled": "Savedata::IncRecord(Savedata::Record::RECORD_ID)"
+  },
+  {
+   "mangled": "_ZN9BattleFes16BattleFesManager10GetMsgDataEv",
+   "demangled": "BattleFes::BattleFesManager::GetMsgData()"
+  },
+  {
+   "mangled": "_ZN9BattleFes16BattleFesManager32CreateBattleFesPokeLotterySystemEPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "BattleFes::BattleFesManager::CreateBattleFesPokeLotterySystem(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN9BattleFes16BattleFesManager32DeleteBattleFesPokeLotterySystemEv",
+   "demangled": "BattleFes::BattleFesManager::DeleteBattleFesPokeLotterySystem()"
+  },
+  {
+   "mangled": "_ZN9BattleFes16BattleFesManager6CreateEPN7GameSys11GameManagerE",
+   "demangled": "BattleFes::BattleFesManager::Create(GameSys::GameManager*)"
+  },
+  {
+   "mangled": "_ZN9BattleFes16BattleFesManager6DeleteEv",
+   "demangled": "BattleFes::BattleFesManager::Delete()"
+  },
+  {
+   "mangled": "_ZN9BattleFes26BattleFesPokeLotterySystem14PokemonLotteryEjPN4gfl24heap11CtrHeapBaseEb",
+   "demangled": "BattleFes::BattleFesPokeLotterySystem::PokemonLottery(unsigned int, gfl2::heap::CtrHeapBase*, bool)"
+  },
+  {
+   "mangled": "_ZN9BattleFes26BattleFesPokeLotterySystem17UpdatePokemonDataEPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "BattleFes::BattleFesPokeLotterySystem::UpdatePokemonData(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes11StartBattleEv",
+   "demangled": "BattleFes::BattleFes::StartBattle()"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes13AddTrainerObjEN5Field20BATTLE_FES_POS_INDEXEifff",
+   "demangled": "BattleFes::BattleFes::AddTrainerObj(Field::BATTLE_FES_POS_INDEX, int, float, float, float)"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes13WaitModelLoadEv",
+   "demangled": "BattleFes::BattleFes::WaitModelLoad()"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes14ClearModelDataEj",
+   "demangled": "BattleFes::BattleFes::ClearModelData(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes14GetCharacterIDEt",
+   "demangled": "BattleFes::BattleFes::GetCharacterID(unsigned short)"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes15WaitModelDeleteEv",
+   "demangled": "BattleFes::BattleFes::WaitModelDelete()"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes20AddDressupTrainerObjEN5Field20BATTLE_FES_POS_INDEXEfff",
+   "demangled": "BattleFes::BattleFes::AddDressupTrainerObj(Field::BATTLE_FES_POS_INDEX, float, float, float)"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes31WordSetTrainerNameFromTrainerNoEtt",
+   "demangled": "BattleFes::BattleFes::WordSetTrainerNameFromTrainerNo(unsigned short, unsigned short)"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes35WordSetTrainerTypeNameFromTrainerNoEtt",
+   "demangled": "BattleFes::BattleFes::WordSetTrainerTypeNameFromTrainerNo(unsigned short, unsigned short)"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes5IsWinEv",
+   "demangled": "BattleFes::BattleFes::IsWin()"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes9DeleteObjEv",
+   "demangled": "BattleFes::BattleFes::DeleteObj()"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes9EndBattleEv",
+   "demangled": "BattleFes::BattleFes::EndBattle()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib11JoinFestaUI29JoinFestaRecordRankingManager10GetVipRankENS1_14RecordCategoryE18nnfriendsFriendKey",
+   "demangled": "NetAppLib::JoinFestaUI::JoinFestaRecordRankingManager::GetVipRank(NetAppLib::JoinFestaUI::JoinFestaRecordRankingManager::RecordCategory, nnfriendsFriendKey)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib11JoinFestaUI29JoinFestaRecordRankingManager12GetGuestRankENS1_14RecordCategoryE18nnfriendsFriendKey",
+   "demangled": "NetAppLib::JoinFestaUI::JoinFestaRecordRankingManager::GetGuestRank(NetAppLib::JoinFestaUI::JoinFestaRecordRankingManager::RecordCategory, nnfriendsFriendKey)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib11JoinFestaUI29JoinFestaRecordRankingManager17UpdateRankingListEPNS_9JoinFesta21JoinFestaPersonalDataE",
+   "demangled": "NetAppLib::JoinFestaUI::JoinFestaRecordRankingManager::UpdateRankingList(NetAppLib::JoinFesta::JoinFestaPersonalData*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib11JoinFestaUI29JoinFestaRecordRankingManagerC1Ev",
+   "demangled": "NetAppLib::JoinFestaUI::JoinFestaRecordRankingManager::JoinFestaRecordRankingManager()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility14LoadFromMemoryEjPKv",
+   "demangled": "NetAppLib::Message::MessageUtility::LoadFromMemory(unsigned int, void const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility17GetExpandedStringEjj",
+   "demangled": "NetAppLib::Message::MessageUtility::GetExpandedString(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility7GetDataEj",
+   "demangled": "NetAppLib::Message::MessageUtility::GetData(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility9GetStringEjj",
+   "demangled": "NetAppLib::Message::MessageUtility::GetString(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtilityC1EPN4gfl24heap11CtrHeapBaseEj",
+   "demangled": "NetAppLib::Message::MessageUtility::MessageUtility(gfl2::heap::CtrHeapBase*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtilityD1Ev",
+   "demangled": "NetAppLib::Message::MessageUtility::~MessageUtility()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta19JoinFestaPacketUtil15IsSameFriendKeyERK18nnfriendsFriendKeyS4_",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPacketUtil::IsSameFriendKey(nnfriendsFriendKey const&, nnfriendsFriendKey const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta19JoinFestaPacketUtil16IsValidFriendKeyERK18nnfriendsFriendKey",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPacketUtil::IsValidFriendKey(nnfriendsFriendKey const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData11SetRelationENS0_15JoinFestaDefine21E_JOIN_FESTA_RELATIONE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetRelation(NetAppLib::JoinFesta::JoinFestaDefine::E_JOIN_FESTA_RELATION)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData17SetCommRouteForceEN15JoinFestaScript13CommRouteTypeE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetCommRouteForce(JoinFestaScript::CommRouteType)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData18ResetPersonalEventEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::ResetPersonalEvent()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData19FinishPersonalEventEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::FinishPersonalEvent()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData21SetupPresetNpcDressUpEPKN6NetApp9JoinFesta18JoinFestaDataTableE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetupPresetNpcDressUp(NetApp::JoinFesta::JoinFestaDataTable const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData22SetupTutorialDummyDataEjPKN6NetApp9JoinFesta18JoinFestaDataTableE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetupTutorialDummyData(unsigned int, NetApp::JoinFesta::JoinFestaDataTable const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData23SetLastP2PPersonalEventEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetLastP2PPersonalEvent()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData23SetRequestJoinFestaShopEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetRequestJoinFestaShop()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData23SetupTutorialDummyEventEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetupTutorialDummyEvent()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData27SetRequestJoinFestaPersonalEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetRequestJoinFestaPersonal()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData28SetAttractionAppearanceStateENS0_25JoinFestaAttractionDefine15AppearanceStateE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetAttractionAppearanceState(NetAppLib::JoinFesta::JoinFestaAttractionDefine::AppearanceState)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData4CopyERKNS1_8CoreDataE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::Copy(NetAppLib::JoinFesta::JoinFestaPersonalData::CoreData const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData4CopyERKS1_",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::Copy(NetAppLib::JoinFesta::JoinFestaPersonalData const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalDataC1Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::JoinFestaPersonalData()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalDataD1Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::~JoinFestaPersonalData()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta22JoinFestaPacketManager10SendMyDataEb",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPacketManager::SendMyData(bool)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta22JoinFestaPacketManager22RegistPersonalListenerEPNS0_25JoinFestaPersonalListenerE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPacketManager::RegistPersonalListener(NetAppLib::JoinFesta::JoinFestaPersonalListener*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta22JoinFestaPacketManager22RemovePersonalListenerEPNS0_25JoinFestaPersonalListenerE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPacketManager::RemovePersonalListener(NetAppLib::JoinFesta::JoinFestaPersonalListener*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta22JoinFestaPacketManager25SetPacketGameStatusWithMeEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPacketManager::SetPacketGameStatusWithMe()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta22JoinFestaPersonalEvent14GetBaseFesCoinEj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalEvent::GetBaseFesCoin(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta22JoinFestaPersonalEvent20GetRecordCategoryNumEh",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalEvent::GetRecordCategoryNum(unsigned char)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta22JoinFestaPersonalEvent39GetWordWindowMessageIdFromPersonalEventEjj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalEvent::GetWordWindowMessageIdFromPersonalEvent(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaAttractionUtil27GetPokeTypeFromAttractionIdEN15JoinFestaScript12AttractionIdE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionUtil::GetPokeTypeFromAttractionId(JoinFestaScript::AttractionId)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaAttractionUtil31GetAnswerMaxFromQuestionnaireIdEh",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionUtil::GetAnswerMaxFromQuestionnaireId(unsigned char)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaAttractionUtil34GetQuestionnaireIdFromAttractionIdEN15JoinFestaScript12AttractionIdE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionUtil::GetQuestionnaireIdFromAttractionId(JoinFestaScript::AttractionId)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaAttractionUtil36CreateFieldPersonalListForAttractionEN15JoinFestaScript12AttractionIdEPKN6NetApp9JoinFesta18JoinFestaDataTableE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionUtil::CreateFieldPersonalListForAttraction(JoinFestaScript::AttractionId, NetApp::JoinFesta::JoinFestaDataTable const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaFacilitiesUtil14GetRandomColorEPN4gfl24math6RandomEN15JoinFestaScript14FacilitiesTypeEj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaFacilitiesUtil::GetRandomColor(gfl2::math::Random*, JoinFestaScript::FacilitiesType, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaFacilitiesUtil19LotteryFacilitiesIdEPN4gfl24math6RandomEPKN6NetApp9JoinFesta18JoinFestaDataTableE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaFacilitiesUtil::LotteryFacilitiesId(gfl2::math::Random*, NetApp::JoinFesta::JoinFestaDataTable const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaFacilitiesUtil24GetTrTypeFromCharacterIdEj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaFacilitiesUtil::GetTrTypeFromCharacterId(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaFacilitiesUtil26GetCharaSexFromCharacterIdEj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaFacilitiesUtil::GetCharaSexFromCharacterId(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaFacilitiesUtil30GetCharaModelIdFromCharacterIdEj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaFacilitiesUtil::GetCharaModelIdFromCharacterId(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta24JoinFestaSelectWordTable5SetupEPvS2_",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaSelectWordTable::Setup(void*, void*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta24JoinFestaSelectWordTableC1Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaSelectWordTable::JoinFestaSelectWordTable()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta24JoinFestaSelectWordTableD1Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaSelectWordTable::~JoinFestaSelectWordTable()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager13GetResultDataEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::GetResultData()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager13IsErrorRetireEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::IsErrorRetire()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager17GetAttractionDataEN15JoinFestaScript12AttractionIdE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::GetAttractionData(JoinFestaScript::AttractionId)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager18TimeCountDownStartEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::TimeCountDownStart()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager19GetPlayAttractionIdEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::GetPlayAttractionId()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager20IsKairikyRideScoreUpEPKNS0_21JoinFestaPersonalDataE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::IsKairikyRideScoreUp(NetAppLib::JoinFesta::JoinFestaPersonalData const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager22GetQuestionAnswerMsgIdEN15JoinFestaScript12AttractionIdEj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::GetQuestionAnswerMsgId(JoinFestaScript::AttractionId, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager23IsQuestionAnswerScoreUpEN15JoinFestaScript12AttractionIdEj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::IsQuestionAnswerScoreUp(JoinFestaScript::AttractionId, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager27SetKentarosuRideRockBreakerEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::SetKentarosuRideRockBreaker()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager8AddScoreEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::AddScore()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager9IsPlayingEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::IsPlaying()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager15GetPersonalDataERK18nnfriendsFriendKey",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetPersonalData(nnfriendsFriendKey const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager18GetLastP2pPersonalEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetLastP2pPersonal()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager20AddFieldPersonalListERKNS0_21JoinFestaPersonalDataE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::AddFieldPersonalList(NetAppLib::JoinFesta::JoinFestaPersonalData const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager20GetFieldPersonalDataERK18nnfriendsFriendKey",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetFieldPersonalData(nnfriendsFriendKey const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager20GetFieldPersonalListEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetFieldPersonalList()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager20GetRecruiterPersonalEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetRecruiterPersonal()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager21SetRecruiterVisibleOnEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::SetRecruiterVisibleOn()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager22ChangePersonalRelationENS0_15JoinFestaDefine21E_JOIN_FESTA_RELATIONERK18nnfriendsFriendKey",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::ChangePersonalRelation(NetAppLib::JoinFesta::JoinFestaDefine::E_JOIN_FESTA_RELATION, nnfriendsFriendKey const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager22ResetRecruiterPersonalEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::ResetRecruiterPersonal()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager22SetScriptTalkFriendKeyEPNS0_21JoinFestaPersonalDataE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::SetScriptTalkFriendKey(NetAppLib::JoinFesta::JoinFestaPersonalData*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager23GetScriptSelectPersonalEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetScriptSelectPersonal()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager24ReleaseFieldPersonalListEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::ReleaseFieldPersonalList()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager24ResetScriptTalkFriendKeyEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::ResetScriptTalkFriendKey()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager25ResetScriptSelectPersonalEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::ResetScriptSelectPersonal()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager30GetScriptTalkFieldPersonalDataEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetScriptTalkFieldPersonalData()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager9GetMyDataEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetMyData()"
+  },
+  {
+   "mangled": "_ZnajPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "operator new[](unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZNK3pml8pokepara9CoreParam9GetMonsNoEv",
+   "demangled": "pml::pokepara::CoreParam::GetMonsNo() const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs17BinLinkerAccessor7GetDataEj",
+   "demangled": "gfl2::fs::BinLinkerAccessor::GetData(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl23str6StrBuf6GetPtrEv",
+   "demangled": "gfl2::str::StrBuf::GetPtr() const"
+  },
+  {
+   "mangled": "_ZNK4gfl26system4Date13GetParametersEv",
+   "demangled": "gfl2::system::Date::GetParameters() const"
+  },
+  {
+   "mangled": "_ZNK4gfl26system4Date14GetMilliSecondEv",
+   "demangled": "gfl2::system::Date::GetMilliSecond() const"
+  },
+  {
+   "mangled": "_ZNK4gfl26system4Date7GetHourEv",
+   "demangled": "gfl2::system::Date::GetHour() const"
+  },
+  {
+   "mangled": "_ZNK4gfl26system4Date9GetMinuteEv",
+   "demangled": "gfl2::system::Date::GetMinute() const"
+  },
+  {
+   "mangled": "_ZNK4gfl26system4Date9GetSecondEv",
+   "demangled": "gfl2::system::Date::GetSecond() const"
+  },
+  {
+   "mangled": "_ZNK5Field11FieldScript17FieldScriptSystem15GetScriptObjectEv",
+   "demangled": "Field::FieldScript::FieldScriptSystem::GetScriptObject() const"
+  },
+  {
+   "mangled": "_ZNK5Field9EventWork14CheckEventFlagEt",
+   "demangled": "Field::EventWork::CheckEventFlag(unsigned short) const"
+  },
+  {
+   "mangled": "_ZNK5Field9MoveModel20FieldMoveModelPlayer11IsMoveStateEv",
+   "demangled": "Field::MoveModel::FieldMoveModelPlayer::IsMoveState() const"
+  },
+  {
+   "mangled": "_ZNK7GameSys11GameManager19GetAsyncFileManagerEv",
+   "demangled": "GameSys::GameManager::GetAsyncFileManager() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model27DressUpModelResourceManager21CanUnloadDressUpPartsERKNS0_12DressUpParamE",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::CanUnloadDressUpParts(poke_3d::model::DressUpParam const&) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel11GetPositionEv",
+   "demangled": "poke_3d::model::BaseModel::GetPosition() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel22HasAnimationControllerEv",
+   "demangled": "poke_3d::model::BaseModel::HasAnimationController() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel9IsCreatedEv",
+   "demangled": "poke_3d::model::BaseModel::IsCreated() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata11RandomGroup16GetTodayRandSeedEv",
+   "demangled": "Savedata::RandomGroup::GetTodayRandSeed() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata12GameSyncSave25GetIsCreateGameSyncSaveIDEv",
+   "demangled": "Savedata::GameSyncSave::GetIsCreateGameSyncSaveID() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave11GetWinCountEv",
+   "demangled": "Savedata::BattleFesSave::GetWinCount() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave13GetPartnerSexEj",
+   "demangled": "Savedata::BattleFesSave::GetPartnerSex(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave14GetPartnerNameEjPw",
+   "demangled": "Savedata::BattleFesSave::GetPartnerName(unsigned int, wchar_t*) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave14GetTrainerDataEj",
+   "demangled": "Savedata::BattleFesSave::GetTrainerData(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave15GetPartnerHelloEj",
+   "demangled": "Savedata::BattleFesSave::GetPartnerHello(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave20GetNowBattleSetCountEv",
+   "demangled": "Savedata::BattleFesSave::GetNowBattleSetCount() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave20GetRentalPokemonDataEPN3pml8pokepara9CoreParamE",
+   "demangled": "Savedata::BattleFesSave::GetRentalPokemonData(pml::pokepara::CoreParam*) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave23GetRankUpBattleSetCountEv",
+   "demangled": "Savedata::BattleFesSave::GetRankUpBattleSetCount() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave24IsExistRentalPokemonDataEv",
+   "demangled": "Savedata::BattleFesSave::IsExistRentalPokemonData() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave6IsBossEj",
+   "demangled": "Savedata::BattleFesSave::IsBoss(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave7GetRankEv",
+   "demangled": "Savedata::BattleFesSave::GetRank() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave9IsPartnerEj",
+   "demangled": "Savedata::BattleFesSave::IsPartner(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave11IsBlackListE18nnfriendsFriendKey",
+   "demangled": "Savedata::JoinFestaDataSave::IsBlackList(nnfriendsFriendKey) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave11IsRejectVipEv",
+   "demangled": "Savedata::JoinFestaDataSave::IsRejectVip() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave12GetTotalCoinEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetTotalCoin() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave13IsRejectGuestEv",
+   "demangled": "Savedata::JoinFestaDataSave::IsRejectGuest() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave14GetRewardStateEN15JoinFestaScript10RewardTypeE",
+   "demangled": "Savedata::JoinFestaDataSave::GetRewardState(JoinFestaScript::RewardType) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave14IsRejectFriendEv",
+   "demangled": "Savedata::JoinFestaDataSave::IsRejectFriend() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave15IsUseSelectWordEj",
+   "demangled": "Savedata::JoinFestaDataSave::IsUseSelectWord(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave16GetTempSaveThemeEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetTempSaveTheme() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave21GetIsSkipMessageStallEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetIsSkipMessageStall() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave22GetIsSkipMessageAirToyEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetIsSkipMessageAirToy() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave22GetJoinFestaNameStringEPN4gfl23str6StrBufE",
+   "demangled": "Savedata::JoinFestaDataSave::GetJoinFestaNameString(gfl2::str::StrBuf*) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave22GetQuestionnaireAnswerEj",
+   "demangled": "Savedata::JoinFestaDataSave::GetQuestionnaireAnswer(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave27GetFortuneResultHitByActionEN15JoinFestaScript19FortuneResultActionE",
+   "demangled": "Savedata::JoinFestaDataSave::GetFortuneResultHitByAction(JoinFestaScript::FortuneResultAction) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave27GetIsSkipMessageHorrorHouseEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetIsSkipMessageHorrorHouse() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave28IsFinishLastP2pPersonalEventEv",
+   "demangled": "Savedata::JoinFestaDataSave::IsFinishLastP2pPersonalEvent() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave7GetCoinEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetCoin() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave7GetRankEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetRank() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave8GetThemeEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetTheme() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8GameTime13IsPenaltyModeEv",
+   "demangled": "Savedata::GameTime::IsPenaltyMode() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus13GetNameStringEPw",
+   "demangled": "Savedata::MyStatus::GetNameString(wchar_t*) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus14GetNexUniqueIDEv",
+   "demangled": "Savedata::MyStatus::GetNexUniqueID() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus5GetIDEv",
+   "demangled": "Savedata::MyStatus::GetID() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus6GetSexEv",
+   "demangled": "Savedata::MyStatus::GetSex() const"
+  },
+  {
+   "mangled": "_ZNK9BattleFes26BattleFesPokeLotterySystem10GetPokemonEj",
+   "demangled": "BattleFes::BattleFesPokeLotterySystem::GetPokemon(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK9BattleFes26BattleFesPokeLotterySystem17GetBattleTreeDataEj",
+   "demangled": "BattleFes::BattleFesPokeLotterySystem::GetBattleTreeData(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData10GetPatternEN15JoinFestaScript11PatternTypeE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPattern(JoinFestaScript::PatternType) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData11GetRelationEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetRelation() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData11IsCtrFriendEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsCtrFriend() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData11IsRelatonMeEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsRelatonMe() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData12GetCommRouteEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetCommRoute() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData12IsRelatonVipEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsRelatonVip() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData13GetLanguageIdEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetLanguageId() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData13GetRecordDataEjj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetRecordData(unsigned int, unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData13GetUpdateDateEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetUpdateDate() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData14GetPresetNpcIdEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPresetNpcId() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData15GetDressUpParamEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetDressUpParam() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData15GetTransferedIDEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetTransferedID() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData15IsPresetNpcDataEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsPresetNpcData() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData15IsSameFriendKeyERK18nnfriendsFriendKey",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsSameFriendKey(nnfriendsFriendKey const&) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData16IsOpenAttractionEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsOpenAttraction() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData18GetPacketPhotoDataEPN3App12FinderStudio6Static9PhotoDataE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPacketPhotoData(App::FinderStudio::Static::PhotoData*) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData18GetPersonalEventIdEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventId() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData19GetAttractionMonsNoEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetAttractionMonsNo() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData20GetPacketGameStatus1EPNS0_17PacketGameStatus1E",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPacketGameStatus1(NetAppLib::JoinFesta::PacketGameStatus1*) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData20GetPacketGameStatus5EPNS0_17PacketGameStatus5E",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPacketGameStatus5(NetAppLib::JoinFesta::PacketGameStatus5*) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData20GetUpdateElapsedDateEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetUpdateElapsedDate() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData20IsAttractionAddPointEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsAttractionAddPoint() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData21GetAttractionPokeTypeERhS2_",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetAttractionPokeType(unsigned char&, unsigned char&) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData21GetJoinFestaFriendKeyEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetJoinFestaFriendKey() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData21IsAttractionDummyDataEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsAttractionDummyData() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData21IsPersonalEventEnableEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsPersonalEventEnable() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData24GetRecommendFacilitiesIdEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetRecommendFacilitiesId() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData25GetPersonalEventRecordID1Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventRecordID1() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData25GetPersonalEventRecordID2Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventRecordID2() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData25GetPersonalEventRecordID3Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventRecordID3() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData26GetPersonalEventQuestionIdEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventQuestionId() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData27GetRecommendFacilitiesColorEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetRecommendFacilitiesColor() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData28GetAttractionAppearanceStateEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetAttractionAppearanceState() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData28IsDressUpParamRomVersionNijiEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsDressUpParamRomVersionNiji() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData30GetAttractionPersonalEventFakeEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetAttractionPersonalEventFake() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData30GetAttractionSingleWordMessageEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetAttractionSingleWordMessage() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData31GetPersonalEventRecordCategory1Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventRecordCategory1() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData31GetPersonalEventRecordCategory2Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventRecordCategory2() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData31GetPersonalEventRecordCategory3Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventRecordCategory3() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData31IsAttractionPersonalEventEnableEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsAttractionPersonalEventEnable() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData33GetRecommendFacilitiesCharacterIdEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetRecommendFacilitiesCharacterId() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData6GetSexEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetSex() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData7GetNameEPw",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetName(wchar_t*) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData7GetNameEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetName() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData8IsEnableEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsEnable() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta28JoinFestaPersonalDataManager18IsRecruiterVisibleEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::IsRecruiterVisible() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta28JoinFestaPersonalDataManager6IsFullENS0_15JoinFestaDefine21E_JOIN_FESTA_RELATIONE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::IsFull(NetAppLib::JoinFesta::JoinFestaDefine::E_JOIN_FESTA_RELATION) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta28JoinFestaPersonalDataManager8GetCountENS0_15JoinFestaDefine21E_JOIN_FESTA_RELATIONE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetCount(NetAppLib::JoinFesta::JoinFestaDefine::E_JOIN_FESTA_RELATION) const"
+  },
+  {
+   "mangled": "_ZnwjPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "operator new(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZTIN7GameSys9GameEventE",
+   "demangled": "typeinfo for GameSys::GameEvent"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv117__class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv120__si_class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__si_class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv121__vmi_class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__vmi_class_type_info"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8instance13TransformNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::TransformNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  }
+ ],
+ "scanned": [
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field10TrialModel15FieldTrialModelENS3_18IField3DObjectNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::TrialModel::FieldTrialModel, Field::IField3DObjectNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18FieldTransformNodeENS1_8instance13TransformNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldTransformNode, gfl2::renderingengine::scenegraph::instance::TransformNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18IField3DObjectNodeENS3_9FieldNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::IField3DObjectNode, Field::FieldNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field9FieldNodeENS1_8instance12InstanceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance12InstanceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::InstanceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance13TransformNodeENS3_12InstanceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::TransformNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8instance13TransformNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::instance::TransformNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZN13BattleFesTool15GetBtlFieldTypeEh",
+   "demangled": "BattleFesTool::GetBtlFieldType(unsigned char)"
+  },
+  {
+   "mangled": "_ZN13BattleFesTool21GetDressUpParamRandomEjPN4gfl24heap11CtrHeapBaseEPN7poke_3d5model12DressUpParamE",
+   "demangled": "BattleFesTool::GetDressUpParamRandom(unsigned int, gfl2::heap::CtrHeapBase*, poke_3d::model::DressUpParam*)"
+  },
+  {
+   "mangled": "_ZN13BattleFesTool28GetBattleFesValidPatherCountEv",
+   "demangled": "BattleFesTool::GetBattleFesValidPatherCount()"
+  },
+  {
+   "mangled": "_ZN13BattleFesTool29CreateRandomBattleTreePokemonEPN4gfl24heap11CtrHeapBaseEPN9BattleFes16BATTLE_TREE_DATAE",
+   "demangled": "BattleFesTool::CreateRandomBattleTreePokemon(gfl2::heap::CtrHeapBase*, BattleFes::BATTLE_TREE_DATA*)"
+  },
+  {
+   "mangled": "_ZN2nn4math5ARMv612MTX34MultAsmEPNS0_5MTX34EPKS2_S5_",
+   "demangled": "nn::math::ARMv6::MTX34MultAsm(nn::math::MTX34*, nn::math::MTX34 const*, nn::math::MTX34 const*)"
+  },
+  {
+   "mangled": "_ZN2nn4math9Atan2FIdxEff",
+   "demangled": "nn::math::Atan2FIdx(float, float)"
+  },
+  {
+   "mangled": "_ZN3App5Event12ShopBuyEvent10StartEventEPN7GameSys11GameManagerE",
+   "demangled": "App::Event::ShopBuyEvent::StartEvent(GameSys::GameManager*)"
+  },
+  {
+   "mangled": "_ZN3App5Event12ShopBuyEvent15SetupParamForFCENS_4Shop8ShopTypeEjjjjjjjjPNS2_20IShopFeatureDelegateE",
+   "demangled": "App::Event::ShopBuyEvent::SetupParamForFC(App::Shop::ShopType, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, App::Shop::IShopFeatureDelegate*)"
+  },
+  {
+   "mangled": "_ZN3App5Event12ShopBuyEvent9SetupHeapEPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "App::Event::ShopBuyEvent::SetupHeap(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN3app4tool14ResourceLoader11ObserveLoadEv",
+   "demangled": "app::tool::ResourceLoader::ObserveLoad()"
+  },
+  {
+   "mangled": "_ZN3app4tool14ResourceLoader11ReleaseDataEv",
+   "demangled": "app::tool::ResourceLoader::ReleaseData()"
+  },
+  {
+   "mangled": "_ZN3app4tool14ResourceLoader11RequestLoadEPNS_4util4HeapEjjbb",
+   "demangled": "app::tool::ResourceLoader::RequestLoad(app::util::Heap*, unsigned int, unsigned int, bool, bool)"
+  },
+  {
+   "mangled": "_ZN3app4tool14ResourceLoaderC1Ev",
+   "demangled": "app::tool::ResourceLoader::ResourceLoader()"
+  },
+  {
+   "mangled": "_ZN3app4tool14ResourceLoaderD1Ev",
+   "demangled": "app::tool::ResourceLoader::~ResourceLoader()"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor10IsFileLoadEPPv",
+   "demangled": "app::util::FileAccessor::IsFileLoad(void**)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor10IsFileOpenEj",
+   "demangled": "app::util::FileAccessor::IsFileOpen(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor11IsFileCloseEj",
+   "demangled": "app::util::FileAccessor::IsFileClose(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor8FileLoadEjjPPvPN4gfl24heap11CtrHeapBaseEbjNS4_2fs10ToolDefine11ArcLangType3TagEPjSC_",
+   "demangled": "app::util::FileAccessor::FileLoad(unsigned int, unsigned int, void**, gfl2::heap::CtrHeapBase*, bool, unsigned int, gfl2::fs::ToolDefine::ArcLangType::Tag, unsigned int*, unsigned int*)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor8FileOpenEjPN4gfl24heap11CtrHeapBaseEbNS2_2fs10ToolDefine11ArcLangType3TagE",
+   "demangled": "app::util::FileAccessor::FileOpen(unsigned int, gfl2::heap::CtrHeapBase*, bool, gfl2::fs::ToolDefine::ArcLangType::Tag)"
+  },
+  {
+   "mangled": "_ZN3app4util12FileAccessor9FileCloseEjPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "app::util::FileAccessor::FileClose(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN3pml6battle12TypeAffinity17CalcAffinityAboutEhhhb",
+   "demangled": "pml::battle::TypeAffinity::CalcAffinityAbout(unsigned char, unsigned char, unsigned char, bool)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParam10SetGetBallEj",
+   "demangled": "pml::pokepara::CoreParam::SetGetBall(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParam12SetParentSexENS_3SexE",
+   "demangled": "pml::pokepara::CoreParam::SetParentSex(pml::Sex)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParam13SetParentNameEPKw",
+   "demangled": "pml::pokepara::CoreParam::SetParentName(wchar_t const*)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParam5SetIDEj",
+   "demangled": "pml::pokepara::CoreParam::SetID(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3pml8pokepara9CoreParamC1EPN4gfl24heap11CtrHeapBaseE6MonsNoty",
+   "demangled": "pml::pokepara::CoreParam::CoreParam(gfl2::heap::CtrHeapBase*, MonsNo, unsigned short, unsigned long long)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph11Inheritance8GenerateEPKS2_NS_4util7FnvHashE",
+   "demangled": "gfl2::renderingengine::scenegraph::Inheritance::Generate(gfl2::renderingengine::scenegraph::Inheritance const*, gfl2::util::FnvHash)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field10TrialModel15FieldTrialModelENS3_18IField3DObjectNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::TrialModel::FieldTrialModel, Field::IField3DObjectNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18FieldTransformNodeENS1_8instance13TransformNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldTransformNode, gfl2::renderingengine::scenegraph::instance::TransformNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18IField3DObjectNodeENS3_9FieldNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::IField3DObjectNode, Field::FieldNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field9FieldNodeENS1_8instance12InstanceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance12InstanceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::InstanceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance13TransformNodeENS3_12InstanceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::TransformNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph7DagNode11RemoveChildEPS2_",
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::RemoveChild(gfl2::renderingengine::scenegraph::DagNode*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15ResourceManager19createResourceNode_EPNS2_13IResourceDataE",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceManager::createResourceNode_(gfl2::renderingengine::scenegraph::resource::IResourceData*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15ResourceManager4s_GpE",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceManager::s_Gp"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPack12SetModelDataEPc",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::SetModelData(char*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPackC1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::GfBinaryMdlDataPack()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPackD1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::~GfBinaryMdlDataPack()"
+  },
+  {
+   "mangled": "_ZN4gfl22fs17BinLinkerAccessor10InitializeEPv",
+   "demangled": "gfl2::fs::BinLinkerAccessor::Initialize(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs17BinLinkerAccessorC1Ev",
+   "demangled": "gfl2::fs::BinLinkerAccessor::BinLinkerAccessor()"
+  },
+  {
+   "mangled": "_ZN4gfl22fs17BinLinkerAccessorD1Ev",
+   "demangled": "gfl2::fs::BinLinkerAccessor::~BinLinkerAccessor()"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory20s_pInstanceAllocatorE",
+   "demangled": "gfl2::gfx::GLMemory::s_pInstanceAllocator"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory24s_InstanceAllocatorCountE",
+   "demangled": "gfl2::gfx::GLMemory::s_InstanceAllocatorCount"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBuf5ClearEv",
+   "demangled": "gfl2::str::StrBuf::Clear()"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBuf6SetStrEPKw",
+   "demangled": "gfl2::str::StrBuf::SetStr(wchar_t const*)"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBufC1EPKwPNS_4heap11CtrHeapBaseE",
+   "demangled": "gfl2::str::StrBuf::StrBuf(wchar_t const*, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBufC1EjPNS_4heap11CtrHeapBaseE",
+   "demangled": "gfl2::str::StrBuf::StrBuf(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBufD1Ev",
+   "demangled": "gfl2::str::StrBuf::~StrBuf()"
+  },
+  {
+   "mangled": "_ZN4gfl23str7MsgDataC1EjjPNS_4heap11CtrHeapBaseENS1_8LoadTypeE",
+   "demangled": "gfl2::str::MsgData::MsgData(unsigned int, unsigned int, gfl2::heap::CtrHeapBase*, gfl2::str::MsgData::LoadType)"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN7GameSys11GameManagerEE11GetInstanceEv",
+   "demangled": "gfl2::base::SingletonAccessor<GameSys::GameManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN9NetAppLib9JoinFesta22JoinFestaPacketManagerEE11GetInstanceEv",
+   "demangled": "gfl2::base::SingletonAccessor<NetAppLib::JoinFesta::JoinFestaPacketManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN9NetAppLib9JoinFesta26JoinFestaAttractionManagerEE11GetInstanceEv",
+   "demangled": "gfl2::base::SingletonAccessor<NetAppLib::JoinFesta::JoinFestaAttractionManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN9NetAppLib9JoinFesta28JoinFestaPersonalDataManagerEE11GetInstanceEv",
+   "demangled": "gfl2::base::SingletonAccessor<NetAppLib::JoinFesta::JoinFestaPersonalDataManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24heap22GflHeapFreeMemoryBlockEPv",
+   "demangled": "gfl2::heap::GflHeapFreeMemoryBlock(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager10CreateHeapEPNS0_11CtrHeapBaseEiiNS0_8HeapTypeEbPKc",
+   "demangled": "gfl2::heap::Manager::CreateHeap(gfl2::heap::CtrHeapBase*, int, int, gfl2::heap::HeapType, bool, char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager10DeleteHeapEPNS0_11CtrHeapBaseE",
+   "demangled": "gfl2::heap::Manager::DeleteHeap(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager15GetHeapByHeapIdEi",
+   "demangled": "gfl2::heap::Manager::GetHeapByHeapId(int)"
+  },
+  {
+   "mangled": "_ZN4gfl24math6Random10InitializeEj",
+   "demangled": "gfl2::math::Random::Initialize(unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl24math6Random4NextEj",
+   "demangled": "gfl2::math::Random::Next(unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl24math6RandomC1Ev",
+   "demangled": "gfl2::math::Random::Random()"
+  },
+  {
+   "mangled": "_ZN4gfl24pawn8PawnBase25GetGlobalParameterPointerEPKc",
+   "demangled": "gfl2::pawn::PawnBase::GetGlobalParameterPointer(char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl25debug9GFLassertEPKcjiS2_",
+   "demangled": "gfl2::debug::GFLassert(char const*, unsigned int, int, char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl26system4Date6GetNowEPS1_",
+   "demangled": "gfl2::system::Date::GetNow(gfl2::system::Date*)"
+  },
+  {
+   "mangled": "_ZN4gfl26system4DateC1Ev",
+   "demangled": "gfl2::system::Date::Date()"
+  },
+  {
+   "mangled": "_ZN4gfl26system4DateD1Ev",
+   "demangled": "gfl2::system::Date::~Date()"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackList10InitializeEPNS_4heap11CtrHeapBaseEj",
+   "demangled": "gfl2::animation::AnimationPackList::Initialize(gfl2::heap::CtrHeapBase*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackList8FinalizeEv",
+   "demangled": "gfl2::animation::AnimationPackList::Finalize()"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackList8LoadDataEjPNS_3gfx12IGLAllocatorEPNS_4heap11CtrHeapBaseEPc",
+   "demangled": "gfl2::animation::AnimationPackList::LoadData(unsigned int, gfl2::gfx::IGLAllocator*, gfl2::heap::CtrHeapBase*, char*)"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackListC1Ev",
+   "demangled": "gfl2::animation::AnimationPackList::AnimationPackList()"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackListD1Ev",
+   "demangled": "gfl2::animation::AnimationPackList::~AnimationPackList()"
+  },
+  {
+   "mangled": "_ZN5Field11FieldScript17FieldScriptSystem7SuspendEv",
+   "demangled": "Field::FieldScript::FieldScriptSystem::Suspend()"
+  },
+  {
+   "mangled": "_ZN5Field11FieldScript4Work12SetWorkValueEtj",
+   "demangled": "Field::FieldScript::Work::SetWorkValue(unsigned short, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5Field11FieldScript4Work16GetTempWorkValueEt",
+   "demangled": "Field::FieldScript::Work::GetTempWorkValue(unsigned short)"
+  },
+  {
+   "mangled": "_ZN5Field11FieldScript4Work17IsTargetObjidNoneEv",
+   "demangled": "Field::FieldScript::Work::IsTargetObjidNone()"
+  },
+  {
+   "mangled": "_ZN5Field9EventWork16CheckIDFlagRengeEt",
+   "demangled": "Field::EventWork::CheckIDFlagRenge(unsigned short)"
+  },
+  {
+   "mangled": "_ZN5Field9EventWork16GetEventWorkAdrsEt",
+   "demangled": "Field::EventWork::GetEventWorkAdrs(unsigned short)"
+  },
+  {
+   "mangled": "_ZN5Field9MoveModel14FieldMoveModel15ReSetParentNodeEv",
+   "demangled": "Field::MoveModel::FieldMoveModel::ReSetParentNode()"
+  },
+  {
+   "mangled": "_ZN5Field9MoveModel14FieldMoveModel16RemoveParentNodeEv",
+   "demangled": "Field::MoveModel::FieldMoveModel::RemoveParentNode()"
+  },
+  {
+   "mangled": "_ZN5Field9MoveModel20FieldMoveCodeManager13IsNpcMoveCodeENS0_18FIELD_MOVE_CODE_IDE",
+   "demangled": "Field::MoveModel::FieldMoveCodeManager::IsNpcMoveCode(Field::MoveModel::FIELD_MOVE_CODE_ID)"
+  },
+  {
+   "mangled": "_ZN5Field9MoveModel20FieldMoveModelPlayer14IsRunLoopStateEv",
+   "demangled": "Field::MoveModel::FieldMoveModelPlayer::IsRunLoopState()"
+  },
+  {
+   "mangled": "_ZN5Field9MoveModel21FieldMoveModelManager10SetupModelEj",
+   "demangled": "Field::MoveModel::FieldMoveModelManager::SetupModel(unsigned int)"
+  },
+  {
+   "mangled": "_ZN5print15GetMessageArcIdEN6System9MSGLANGIDE",
+   "demangled": "print::GetMessageArcId(System::MSGLANGID)"
+  },
+  {
+   "mangled": "_ZN5print22GetMessageArcId_ScriptEN6System9MSGLANGIDE",
+   "demangled": "print::GetMessageArcId_Script(System::MSGLANGID)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet12RegisterWordEjPN4gfl23str7MsgDataEjNS0_4FormE",
+   "demangled": "print::WordSet::RegisterWord(unsigned int, gfl2::str::MsgData*, unsigned int, print::WordSet::Form)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet12RegisterWordEjRKN4gfl23str6StrBufENS0_7GrammerENS0_4FormE",
+   "demangled": "print::WordSet::RegisterWord(unsigned int, gfl2::str::StrBuf const&, print::WordSet::Grammer, print::WordSet::Form)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet14RegisterNumberEjijNS_14NumberDispTypeENS_14NumberCodeTypeE",
+   "demangled": "print::WordSet::RegisterNumber(unsigned int, int, unsigned int, print::NumberDispType, print::NumberCodeType)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet16RegisterItemNameEjjj",
+   "demangled": "print::WordSet::RegisterItemName(unsigned int, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet16RegisterWazaNameEjj",
+   "demangled": "print::WordSet::RegisterWazaName(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet17RegisterPlaceNameEjj",
+   "demangled": "print::WordSet::RegisterPlaceName(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet18RegisterTrTypeNameEjt",
+   "demangled": "print::WordSet::RegisterTrTypeName(unsigned int, unsigned short)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet22RegisterAttractionNameEjj",
+   "demangled": "print::WordSet::RegisterAttractionName(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet22RegisterPokeMonsNameNoEj6MonsNo",
+   "demangled": "print::WordSet::RegisterPokeMonsNameNo(unsigned int, MonsNo)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet23RegisterKisekaeItemNameEjjj",
+   "demangled": "print::WordSet::RegisterKisekaeItemName(unsigned int, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN6NetApp4Util14ConvertUtility8U64ToStrEyPN4gfl23str6StrBufEb",
+   "demangled": "NetApp::Util::ConvertUtility::U64ToStr(unsigned long long, gfl2::str::StrBuf*, bool)"
+  },
+  {
+   "mangled": "_ZN6NetLib17NijiNetworkSystem14GetNetworkModeEv",
+   "demangled": "NetLib::NijiNetworkSystem::GetNetworkMode()"
+  },
+  {
+   "mangled": "_ZN6NetLib17NijiNetworkSystem18IsWLANSwitchEnableEv",
+   "demangled": "NetLib::NijiNetworkSystem::IsWLANSwitchEnable()"
+  },
+  {
+   "mangled": "_ZN6System13nijiAllocatorC1EPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "System::nijiAllocator::nijiAllocator(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN6System13nijiAllocatorC1EPN4gfl24heap11CtrHeapBaseENS0_15VramControlTypeENS0_14VramMallocModeE",
+   "demangled": "System::nijiAllocator::nijiAllocator(gfl2::heap::CtrHeapBase*, System::nijiAllocator::VramControlType, System::nijiAllocator::VramMallocMode)"
+  },
+  {
+   "mangled": "_ZN6System20DressUpParamSaveData16OverrideNijiBnglEPN7poke_3d5model12DressUpParamE",
+   "demangled": "System::DressUpParamSaveData::OverrideNijiBngl(poke_3d::model::DressUpParam*)"
+  },
+  {
+   "mangled": "_ZN6System20DressUpParamSaveData21ConvertToDressUpParamEPN7poke_3d5model12DressUpParamERKS0_",
+   "demangled": "System::DressUpParamSaveData::ConvertToDressUpParam(poke_3d::model::DressUpParam*, System::DressUpParamSaveData const&)"
+  },
+  {
+   "mangled": "_ZN6System6GflUse13GetPublicRandEj",
+   "demangled": "System::GflUse::GetPublicRand(unsigned int)"
+  },
+  {
+   "mangled": "_ZN6System6GflUse13GetPublicRandEv",
+   "demangled": "System::GflUse::GetPublicRand()"
+  },
+  {
+   "mangled": "_ZN6System7DressUp24GetDressUpArcIdListFieldEv",
+   "demangled": "System::DressUp::GetDressUpArcIdListField()"
+  },
+  {
+   "mangled": "_ZN7GameSys16GameEventManager7GetHeapEv",
+   "demangled": "GameSys::GameEventManager::GetHeap()"
+  },
+  {
+   "mangled": "_ZN7GameSys16GameEventManager9CallEventEPNS_9GameEventE",
+   "demangled": "GameSys::GameEventManager::CallEvent(GameSys::GameEvent*)"
+  },
+  {
+   "mangled": "_ZN7GameSys9GameEventC2EPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "GameSys::GameEvent::GameEvent(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN7GameSys9GameEventD2Ev",
+   "demangled": "GameSys::GameEvent::~GameEvent()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory13IsModelLoadedEj",
+   "demangled": "poke_3d::model::CharaModelFactory::IsModelLoaded(unsigned int)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model17CharaModelFactory14LoadModelAsyncEj",
+   "demangled": "poke_3d::model::CharaModelFactory::LoadModelAsync(unsigned int)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager10InitializeEPN4gfl22fs16AsyncFileManagerEPNS2_4heap11CtrHeapBaseEPi",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::Initialize(gfl2::fs::AsyncFileManager*, gfl2::heap::CtrHeapBase*, int*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager17SetupDressUpPartsEPN4gfl23gfx12IGLAllocatorERKNS0_12DressUpParamE",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::SetupDressUpParts(gfl2::gfx::IGLAllocator*, poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager18UnloadDressUpPartsERKNS0_12DressUpParamE",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::UnloadDressUpParts(poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager20IsDressUpPartsLoadedERKNS0_12DressUpParamE",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::IsDressUpPartsLoaded(poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager21LoadDressUpPartsAsyncERKNS0_12DressUpParamE",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::LoadDressUpPartsAsync(poke_3d::model::DressUpParam const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManager8FinalizeEv",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::Finalize()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManagerC1Ev",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::DressUpModelResourceManager()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model27DressUpModelResourceManagerD1Ev",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::~DressUpModelResourceManager()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel11SetPositionERKN4gfl24math7Vector3E",
+   "demangled": "poke_3d::model::BaseModel::SetPosition(gfl2::math::Vector3 const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel11SetRotationEfffN4gfl24math13EulerRotation13RotationOrderE",
+   "demangled": "poke_3d::model::BaseModel::SetRotation(float, float, float, gfl2::math::EulerRotation::RotationOrder)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel14GetWorldMatrixEv",
+   "demangled": "poke_3d::model::BaseModel::GetWorldMatrix()"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel20SetAnimationPackListEPN4gfl29animation17AnimationPackListE",
+   "demangled": "poke_3d::model::BaseModel::SetAnimationPackList(gfl2::animation::AnimationPackList*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel6CreateEPN4gfl23gfx12IGLAllocatorEPNS2_4heap11CtrHeapBaseEPNS2_15renderingengine10scenegraph8resource12ResourceNodeESD_",
+   "demangled": "poke_3d::model::BaseModel::Create(gfl2::gfx::IGLAllocator*, gfl2::heap::CtrHeapBase*, gfl2::renderingengine::scenegraph::resource::ResourceNode*, gfl2::renderingengine::scenegraph::resource::ResourceNode*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModelC1Ev",
+   "demangled": "poke_3d::model::BaseModel::BaseModel()"
+  },
+  {
+   "mangled": "_ZN8Savedata10ResortSave15SetPokeBeansNumENS0_13PokeBeansEnumEi",
+   "demangled": "Savedata::ResortSave::SetPokeBeansNum(Savedata::ResortSave::PokeBeansEnum, int)"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave11AddWinCountEv",
+   "demangled": "Savedata::BattleFesSave::AddWinCount()"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave12ClearUseShopEv",
+   "demangled": "Savedata::BattleFesSave::ClearUseShop()"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave13ClearWinCountEv",
+   "demangled": "Savedata::BattleFesSave::ClearWinCount()"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave13IsFullPartnerEv",
+   "demangled": "Savedata::BattleFesSave::IsFullPartner()"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave15ClearBattleDataEPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "Savedata::BattleFesSave::ClearBattleData(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave16AddFesFunPartnerEjjPKN3pml8pokepara9CoreParamEPN7poke_3d5model12DressUpParamE",
+   "demangled": "Savedata::BattleFesSave::AddFesFunPartner(unsigned int, unsigned int, pml::pokepara::CoreParam const*, poke_3d::model::DressUpParam*)"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave16ClearTrainerDataEv",
+   "demangled": "Savedata::BattleFesSave::ClearTrainerData()"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave17SetBattleTreeDataEN9BattleFes16BATTLE_TREE_DATAE",
+   "demangled": "Savedata::BattleFesSave::SetBattleTreeData(BattleFes::BATTLE_TREE_DATA)"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave17ZeroClearWinCountEv",
+   "demangled": "Savedata::BattleFesSave::ZeroClearWinCount()"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave20SetRentalPokemonDataEPKN3pml8pokepara9CoreParamE",
+   "demangled": "Savedata::BattleFesSave::SetRentalPokemonData(pml::pokepara::CoreParam const*)"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave20UpdateTotalRandCountEv",
+   "demangled": "Savedata::BattleFesSave::UpdateTotalRandCount()"
+  },
+  {
+   "mangled": "_ZN8Savedata13BattleFesSave7AddRankEv",
+   "demangled": "Savedata::BattleFesSave::AddRank()"
+  },
+  {
+   "mangled": "_ZN8Savedata13PokeDiarySave3GetE4PDIDbPNS0_10DIARY_DATAE",
+   "demangled": "Savedata::PokeDiarySave::Get(PDID, bool, Savedata::PokeDiarySave::DIARY_DATA*)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave14SetRewardStateEN15JoinFestaScript10RewardTypeENS1_15RewardStateTypeE",
+   "demangled": "Savedata::JoinFestaDataSave::SetRewardState(JoinFestaScript::RewardType, JoinFestaScript::RewardStateType)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave15IsFacilitiesBuyEj",
+   "demangled": "Savedata::JoinFestaDataSave::IsFacilitiesBuy(unsigned int)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave16FacilitiesChangeEN15JoinFestaScript15FacilitiesIndexEhjh",
+   "demangled": "Savedata::JoinFestaDataSave::FacilitiesChange(JoinFestaScript::FacilitiesIndex, unsigned char, unsigned int, unsigned char)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave16SetFacilitiesBuyEj",
+   "demangled": "Savedata::JoinFestaDataSave::SetFacilitiesBuy(unsigned int)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave16SetFortuneResultEN15JoinFestaScript15FacilitiesIndexENS1_16FortuneResultHitENS1_19FortuneResultActionE",
+   "demangled": "Savedata::JoinFestaDataSave::SetFortuneResult(JoinFestaScript::FacilitiesIndex, JoinFestaScript::FortuneResultHit, JoinFestaScript::FortuneResultAction)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave16SetTempSaveThemeEh",
+   "demangled": "Savedata::JoinFestaDataSave::SetTempSaveTheme(unsigned char)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave16SetUseSelectWordEj",
+   "demangled": "Savedata::JoinFestaDataSave::SetUseSelectWord(unsigned int)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave17GetFacilitiesDataEN15JoinFestaScript15FacilitiesIndexE",
+   "demangled": "Savedata::JoinFestaDataSave::GetFacilitiesData(JoinFestaScript::FacilitiesIndex)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave18GetLastP2pPersonalEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetLastP2pPersonal()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave21FacilitiesChangeIndexEN15JoinFestaScript15FacilitiesIndexES2_",
+   "demangled": "Savedata::JoinFestaDataSave::FacilitiesChangeIndex(JoinFestaScript::FacilitiesIndex, JoinFestaScript::FacilitiesIndex)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave21SetIsSkipMessageStallEb",
+   "demangled": "Savedata::JoinFestaDataSave::SetIsSkipMessageStall(bool)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave22SetIsSkipMessageAirToyEb",
+   "demangled": "Savedata::JoinFestaDataSave::SetIsSkipMessageAirToy(bool)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave22SetQuestionnaireAnswerEjj",
+   "demangled": "Savedata::JoinFestaDataSave::SetQuestionnaireAnswer(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave23FacilitiesFakeChangeEndEv",
+   "demangled": "Savedata::JoinFestaDataSave::FacilitiesFakeChangeEnd()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave23GetGlobalAttractionDataEh",
+   "demangled": "Savedata::JoinFestaDataSave::GetGlobalAttractionData(unsigned char)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave24GetFacilitiesLotterySeedEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetFacilitiesLotterySeed()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave25FacilitiesFakeChangeStartEN15JoinFestaScript15FacilitiesIndexEhjh",
+   "demangled": "Savedata::JoinFestaDataSave::FacilitiesFakeChangeStart(JoinFestaScript::FacilitiesIndex, unsigned char, unsigned int, unsigned char)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave26AddPersonalTalkCameraCountEv",
+   "demangled": "Savedata::JoinFestaDataSave::AddPersonalTalkCameraCount()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave26GetPersonalTalkCameraCountEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetPersonalTalkCameraCount()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave26ResetFacilitiesLotterySeedEv",
+   "demangled": "Savedata::JoinFestaDataSave::ResetFacilitiesLotterySeed()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave27GetCoinNecessaryForNextRankEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetCoinNecessaryForNextRank()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave27SetIsSkipMessageHorrorHouseEb",
+   "demangled": "Savedata::JoinFestaDataSave::SetIsSkipMessageHorrorHouse(bool)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave30SetFacilitiesIndexOfScriptCallEN15JoinFestaScript15FacilitiesIndexE",
+   "demangled": "Savedata::JoinFestaDataSave::SetFacilitiesIndexOfScriptCall(JoinFestaScript::FacilitiesIndex)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave34GetQuestionnaireIdForPersonalEventEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetQuestionnaireIdForPersonalEvent()"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave7AddCoinEj",
+   "demangled": "Savedata::JoinFestaDataSave::AddCoin(unsigned int)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave7SetRankEt",
+   "demangled": "Savedata::JoinFestaDataSave::SetRank(unsigned short)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave7SubCoinEj",
+   "demangled": "Savedata::JoinFestaDataSave::SubCoin(unsigned int)"
+  },
+  {
+   "mangled": "_ZN8Savedata17JoinFestaDataSave8SetThemeEh",
+   "demangled": "Savedata::JoinFestaDataSave::SetTheme(unsigned char)"
+  },
+  {
+   "mangled": "_ZN8Savedata7Fashion48ConvSavedataCategoryFromDressUpParamItemCategoryEN7poke_3d5model12DressUpParam12ItemCategoryE",
+   "demangled": "Savedata::Fashion::ConvSavedataCategoryFromDressUpParamItemCategory(poke_3d::model::DressUpParam::ItemCategory)"
+  },
+  {
+   "mangled": "_ZN8Savedata7Fashion7IsOwnedEji",
+   "demangled": "Savedata::Fashion::IsOwned(unsigned int, int)"
+  },
+  {
+   "mangled": "_ZN8Savedata9IncRecordENS_6Record9RECORD_IDE",
+   "demangled": "Savedata::IncRecord(Savedata::Record::RECORD_ID)"
+  },
+  {
+   "mangled": "_ZN9BattleFes16BattleFesManager10GetMsgDataEv",
+   "demangled": "BattleFes::BattleFesManager::GetMsgData()"
+  },
+  {
+   "mangled": "_ZN9BattleFes16BattleFesManager32CreateBattleFesPokeLotterySystemEPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "BattleFes::BattleFesManager::CreateBattleFesPokeLotterySystem(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN9BattleFes16BattleFesManager32DeleteBattleFesPokeLotterySystemEv",
+   "demangled": "BattleFes::BattleFesManager::DeleteBattleFesPokeLotterySystem()"
+  },
+  {
+   "mangled": "_ZN9BattleFes16BattleFesManager6CreateEPN7GameSys11GameManagerE",
+   "demangled": "BattleFes::BattleFesManager::Create(GameSys::GameManager*)"
+  },
+  {
+   "mangled": "_ZN9BattleFes16BattleFesManager6DeleteEv",
+   "demangled": "BattleFes::BattleFesManager::Delete()"
+  },
+  {
+   "mangled": "_ZN9BattleFes26BattleFesPokeLotterySystem14PokemonLotteryEjPN4gfl24heap11CtrHeapBaseEb",
+   "demangled": "BattleFes::BattleFesPokeLotterySystem::PokemonLottery(unsigned int, gfl2::heap::CtrHeapBase*, bool)"
+  },
+  {
+   "mangled": "_ZN9BattleFes26BattleFesPokeLotterySystem17UpdatePokemonDataEPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "BattleFes::BattleFesPokeLotterySystem::UpdatePokemonData(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes11StartBattleEv",
+   "demangled": "BattleFes::BattleFes::StartBattle()"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes13AddTrainerObjEN5Field20BATTLE_FES_POS_INDEXEifff",
+   "demangled": "BattleFes::BattleFes::AddTrainerObj(Field::BATTLE_FES_POS_INDEX, int, float, float, float)"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes13WaitModelLoadEv",
+   "demangled": "BattleFes::BattleFes::WaitModelLoad()"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes14ClearModelDataEj",
+   "demangled": "BattleFes::BattleFes::ClearModelData(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes14GetCharacterIDEt",
+   "demangled": "BattleFes::BattleFes::GetCharacterID(unsigned short)"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes15WaitModelDeleteEv",
+   "demangled": "BattleFes::BattleFes::WaitModelDelete()"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes20AddDressupTrainerObjEN5Field20BATTLE_FES_POS_INDEXEfff",
+   "demangled": "BattleFes::BattleFes::AddDressupTrainerObj(Field::BATTLE_FES_POS_INDEX, float, float, float)"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes31WordSetTrainerNameFromTrainerNoEtt",
+   "demangled": "BattleFes::BattleFes::WordSetTrainerNameFromTrainerNo(unsigned short, unsigned short)"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes35WordSetTrainerTypeNameFromTrainerNoEtt",
+   "demangled": "BattleFes::BattleFes::WordSetTrainerTypeNameFromTrainerNo(unsigned short, unsigned short)"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes5IsWinEv",
+   "demangled": "BattleFes::BattleFes::IsWin()"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes9DeleteObjEv",
+   "demangled": "BattleFes::BattleFes::DeleteObj()"
+  },
+  {
+   "mangled": "_ZN9BattleFes9BattleFes9EndBattleEv",
+   "demangled": "BattleFes::BattleFes::EndBattle()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib11JoinFestaUI29JoinFestaRecordRankingManager10GetVipRankENS1_14RecordCategoryE18nnfriendsFriendKey",
+   "demangled": "NetAppLib::JoinFestaUI::JoinFestaRecordRankingManager::GetVipRank(NetAppLib::JoinFestaUI::JoinFestaRecordRankingManager::RecordCategory, nnfriendsFriendKey)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib11JoinFestaUI29JoinFestaRecordRankingManager12GetGuestRankENS1_14RecordCategoryE18nnfriendsFriendKey",
+   "demangled": "NetAppLib::JoinFestaUI::JoinFestaRecordRankingManager::GetGuestRank(NetAppLib::JoinFestaUI::JoinFestaRecordRankingManager::RecordCategory, nnfriendsFriendKey)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib11JoinFestaUI29JoinFestaRecordRankingManager17UpdateRankingListEPNS_9JoinFesta21JoinFestaPersonalDataE",
+   "demangled": "NetAppLib::JoinFestaUI::JoinFestaRecordRankingManager::UpdateRankingList(NetAppLib::JoinFesta::JoinFestaPersonalData*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib11JoinFestaUI29JoinFestaRecordRankingManagerC1Ev",
+   "demangled": "NetAppLib::JoinFestaUI::JoinFestaRecordRankingManager::JoinFestaRecordRankingManager()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility14LoadFromMemoryEjPKv",
+   "demangled": "NetAppLib::Message::MessageUtility::LoadFromMemory(unsigned int, void const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility17GetExpandedStringEjj",
+   "demangled": "NetAppLib::Message::MessageUtility::GetExpandedString(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility7GetDataEj",
+   "demangled": "NetAppLib::Message::MessageUtility::GetData(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility9GetStringEjj",
+   "demangled": "NetAppLib::Message::MessageUtility::GetString(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtilityC1EPN4gfl24heap11CtrHeapBaseEj",
+   "demangled": "NetAppLib::Message::MessageUtility::MessageUtility(gfl2::heap::CtrHeapBase*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtilityD1Ev",
+   "demangled": "NetAppLib::Message::MessageUtility::~MessageUtility()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta19JoinFestaPacketUtil15IsSameFriendKeyERK18nnfriendsFriendKeyS4_",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPacketUtil::IsSameFriendKey(nnfriendsFriendKey const&, nnfriendsFriendKey const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta19JoinFestaPacketUtil16IsValidFriendKeyERK18nnfriendsFriendKey",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPacketUtil::IsValidFriendKey(nnfriendsFriendKey const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData11SetRelationENS0_15JoinFestaDefine21E_JOIN_FESTA_RELATIONE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetRelation(NetAppLib::JoinFesta::JoinFestaDefine::E_JOIN_FESTA_RELATION)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData17SetCommRouteForceEN15JoinFestaScript13CommRouteTypeE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetCommRouteForce(JoinFestaScript::CommRouteType)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData18ResetPersonalEventEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::ResetPersonalEvent()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData19FinishPersonalEventEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::FinishPersonalEvent()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData21SetupPresetNpcDressUpEPKN6NetApp9JoinFesta18JoinFestaDataTableE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetupPresetNpcDressUp(NetApp::JoinFesta::JoinFestaDataTable const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData22SetupTutorialDummyDataEjPKN6NetApp9JoinFesta18JoinFestaDataTableE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetupTutorialDummyData(unsigned int, NetApp::JoinFesta::JoinFestaDataTable const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData23SetLastP2PPersonalEventEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetLastP2PPersonalEvent()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData23SetRequestJoinFestaShopEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetRequestJoinFestaShop()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData23SetupTutorialDummyEventEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetupTutorialDummyEvent()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData27SetRequestJoinFestaPersonalEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetRequestJoinFestaPersonal()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData28SetAttractionAppearanceStateENS0_25JoinFestaAttractionDefine15AppearanceStateE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::SetAttractionAppearanceState(NetAppLib::JoinFesta::JoinFestaAttractionDefine::AppearanceState)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData4CopyERKNS1_8CoreDataE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::Copy(NetAppLib::JoinFesta::JoinFestaPersonalData::CoreData const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalData4CopyERKS1_",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::Copy(NetAppLib::JoinFesta::JoinFestaPersonalData const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalDataC1Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::JoinFestaPersonalData()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta21JoinFestaPersonalDataD1Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::~JoinFestaPersonalData()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta22JoinFestaPacketManager10SendMyDataEb",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPacketManager::SendMyData(bool)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta22JoinFestaPacketManager22RegistPersonalListenerEPNS0_25JoinFestaPersonalListenerE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPacketManager::RegistPersonalListener(NetAppLib::JoinFesta::JoinFestaPersonalListener*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta22JoinFestaPacketManager22RemovePersonalListenerEPNS0_25JoinFestaPersonalListenerE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPacketManager::RemovePersonalListener(NetAppLib::JoinFesta::JoinFestaPersonalListener*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta22JoinFestaPacketManager25SetPacketGameStatusWithMeEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPacketManager::SetPacketGameStatusWithMe()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta22JoinFestaPersonalEvent14GetBaseFesCoinEj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalEvent::GetBaseFesCoin(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta22JoinFestaPersonalEvent20GetRecordCategoryNumEh",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalEvent::GetRecordCategoryNum(unsigned char)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta22JoinFestaPersonalEvent39GetWordWindowMessageIdFromPersonalEventEjj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalEvent::GetWordWindowMessageIdFromPersonalEvent(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaAttractionUtil27GetPokeTypeFromAttractionIdEN15JoinFestaScript12AttractionIdE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionUtil::GetPokeTypeFromAttractionId(JoinFestaScript::AttractionId)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaAttractionUtil31GetAnswerMaxFromQuestionnaireIdEh",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionUtil::GetAnswerMaxFromQuestionnaireId(unsigned char)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaAttractionUtil34GetQuestionnaireIdFromAttractionIdEN15JoinFestaScript12AttractionIdE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionUtil::GetQuestionnaireIdFromAttractionId(JoinFestaScript::AttractionId)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaAttractionUtil36CreateFieldPersonalListForAttractionEN15JoinFestaScript12AttractionIdEPKN6NetApp9JoinFesta18JoinFestaDataTableE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionUtil::CreateFieldPersonalListForAttraction(JoinFestaScript::AttractionId, NetApp::JoinFesta::JoinFestaDataTable const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaFacilitiesUtil14GetRandomColorEPN4gfl24math6RandomEN15JoinFestaScript14FacilitiesTypeEj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaFacilitiesUtil::GetRandomColor(gfl2::math::Random*, JoinFestaScript::FacilitiesType, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaFacilitiesUtil19LotteryFacilitiesIdEPN4gfl24math6RandomEPKN6NetApp9JoinFesta18JoinFestaDataTableE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaFacilitiesUtil::LotteryFacilitiesId(gfl2::math::Random*, NetApp::JoinFesta::JoinFestaDataTable const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaFacilitiesUtil24GetTrTypeFromCharacterIdEj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaFacilitiesUtil::GetTrTypeFromCharacterId(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaFacilitiesUtil26GetCharaSexFromCharacterIdEj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaFacilitiesUtil::GetCharaSexFromCharacterId(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta23JoinFestaFacilitiesUtil30GetCharaModelIdFromCharacterIdEj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaFacilitiesUtil::GetCharaModelIdFromCharacterId(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta24JoinFestaSelectWordTable5SetupEPvS2_",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaSelectWordTable::Setup(void*, void*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta24JoinFestaSelectWordTableC1Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaSelectWordTable::JoinFestaSelectWordTable()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta24JoinFestaSelectWordTableD1Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaSelectWordTable::~JoinFestaSelectWordTable()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager13GetResultDataEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::GetResultData()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager13IsErrorRetireEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::IsErrorRetire()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager17GetAttractionDataEN15JoinFestaScript12AttractionIdE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::GetAttractionData(JoinFestaScript::AttractionId)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager18TimeCountDownStartEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::TimeCountDownStart()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager19GetPlayAttractionIdEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::GetPlayAttractionId()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager20IsKairikyRideScoreUpEPKNS0_21JoinFestaPersonalDataE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::IsKairikyRideScoreUp(NetAppLib::JoinFesta::JoinFestaPersonalData const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager22GetQuestionAnswerMsgIdEN15JoinFestaScript12AttractionIdEj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::GetQuestionAnswerMsgId(JoinFestaScript::AttractionId, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager23IsQuestionAnswerScoreUpEN15JoinFestaScript12AttractionIdEj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::IsQuestionAnswerScoreUp(JoinFestaScript::AttractionId, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager27SetKentarosuRideRockBreakerEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::SetKentarosuRideRockBreaker()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager8AddScoreEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::AddScore()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta26JoinFestaAttractionManager9IsPlayingEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaAttractionManager::IsPlaying()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager15GetPersonalDataERK18nnfriendsFriendKey",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetPersonalData(nnfriendsFriendKey const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager18GetLastP2pPersonalEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetLastP2pPersonal()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager20AddFieldPersonalListERKNS0_21JoinFestaPersonalDataE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::AddFieldPersonalList(NetAppLib::JoinFesta::JoinFestaPersonalData const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager20GetFieldPersonalDataERK18nnfriendsFriendKey",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetFieldPersonalData(nnfriendsFriendKey const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager20GetFieldPersonalListEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetFieldPersonalList()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager20GetRecruiterPersonalEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetRecruiterPersonal()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager21SetRecruiterVisibleOnEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::SetRecruiterVisibleOn()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager22ChangePersonalRelationENS0_15JoinFestaDefine21E_JOIN_FESTA_RELATIONERK18nnfriendsFriendKey",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::ChangePersonalRelation(NetAppLib::JoinFesta::JoinFestaDefine::E_JOIN_FESTA_RELATION, nnfriendsFriendKey const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager22ResetRecruiterPersonalEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::ResetRecruiterPersonal()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager22SetScriptTalkFriendKeyEPNS0_21JoinFestaPersonalDataE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::SetScriptTalkFriendKey(NetAppLib::JoinFesta::JoinFestaPersonalData*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager23GetScriptSelectPersonalEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetScriptSelectPersonal()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager24ReleaseFieldPersonalListEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::ReleaseFieldPersonalList()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager24ResetScriptTalkFriendKeyEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::ResetScriptTalkFriendKey()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager25ResetScriptSelectPersonalEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::ResetScriptSelectPersonal()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager30GetScriptTalkFieldPersonalDataEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetScriptTalkFieldPersonalData()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib9JoinFesta28JoinFestaPersonalDataManager9GetMyDataEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetMyData()"
+  },
+  {
+   "mangled": "_ZNK3pml8pokepara9CoreParam9GetMonsNoEv",
+   "demangled": "pml::pokepara::CoreParam::GetMonsNo() const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs17BinLinkerAccessor7GetDataEj",
+   "demangled": "gfl2::fs::BinLinkerAccessor::GetData(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl23str6StrBuf6GetPtrEv",
+   "demangled": "gfl2::str::StrBuf::GetPtr() const"
+  },
+  {
+   "mangled": "_ZNK4gfl26system4Date13GetParametersEv",
+   "demangled": "gfl2::system::Date::GetParameters() const"
+  },
+  {
+   "mangled": "_ZNK4gfl26system4Date14GetMilliSecondEv",
+   "demangled": "gfl2::system::Date::GetMilliSecond() const"
+  },
+  {
+   "mangled": "_ZNK4gfl26system4Date7GetHourEv",
+   "demangled": "gfl2::system::Date::GetHour() const"
+  },
+  {
+   "mangled": "_ZNK4gfl26system4Date9GetMinuteEv",
+   "demangled": "gfl2::system::Date::GetMinute() const"
+  },
+  {
+   "mangled": "_ZNK4gfl26system4Date9GetSecondEv",
+   "demangled": "gfl2::system::Date::GetSecond() const"
+  },
+  {
+   "mangled": "_ZNK5Field11FieldScript17FieldScriptSystem15GetScriptObjectEv",
+   "demangled": "Field::FieldScript::FieldScriptSystem::GetScriptObject() const"
+  },
+  {
+   "mangled": "_ZNK5Field9EventWork14CheckEventFlagEt",
+   "demangled": "Field::EventWork::CheckEventFlag(unsigned short) const"
+  },
+  {
+   "mangled": "_ZNK5Field9MoveModel20FieldMoveModelPlayer11IsMoveStateEv",
+   "demangled": "Field::MoveModel::FieldMoveModelPlayer::IsMoveState() const"
+  },
+  {
+   "mangled": "_ZNK7GameSys11GameManager19GetAsyncFileManagerEv",
+   "demangled": "GameSys::GameManager::GetAsyncFileManager() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model27DressUpModelResourceManager21CanUnloadDressUpPartsERKNS0_12DressUpParamE",
+   "demangled": "poke_3d::model::DressUpModelResourceManager::CanUnloadDressUpParts(poke_3d::model::DressUpParam const&) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel11GetPositionEv",
+   "demangled": "poke_3d::model::BaseModel::GetPosition() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel22HasAnimationControllerEv",
+   "demangled": "poke_3d::model::BaseModel::HasAnimationController() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel9IsCreatedEv",
+   "demangled": "poke_3d::model::BaseModel::IsCreated() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata11RandomGroup16GetTodayRandSeedEv",
+   "demangled": "Savedata::RandomGroup::GetTodayRandSeed() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata12GameSyncSave25GetIsCreateGameSyncSaveIDEv",
+   "demangled": "Savedata::GameSyncSave::GetIsCreateGameSyncSaveID() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave11GetWinCountEv",
+   "demangled": "Savedata::BattleFesSave::GetWinCount() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave13GetPartnerSexEj",
+   "demangled": "Savedata::BattleFesSave::GetPartnerSex(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave14GetPartnerNameEjPw",
+   "demangled": "Savedata::BattleFesSave::GetPartnerName(unsigned int, wchar_t*) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave14GetTrainerDataEj",
+   "demangled": "Savedata::BattleFesSave::GetTrainerData(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave15GetPartnerHelloEj",
+   "demangled": "Savedata::BattleFesSave::GetPartnerHello(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave20GetNowBattleSetCountEv",
+   "demangled": "Savedata::BattleFesSave::GetNowBattleSetCount() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave20GetRentalPokemonDataEPN3pml8pokepara9CoreParamE",
+   "demangled": "Savedata::BattleFesSave::GetRentalPokemonData(pml::pokepara::CoreParam*) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave23GetRankUpBattleSetCountEv",
+   "demangled": "Savedata::BattleFesSave::GetRankUpBattleSetCount() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave24IsExistRentalPokemonDataEv",
+   "demangled": "Savedata::BattleFesSave::IsExistRentalPokemonData() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave6IsBossEj",
+   "demangled": "Savedata::BattleFesSave::IsBoss(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave7GetRankEv",
+   "demangled": "Savedata::BattleFesSave::GetRank() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13BattleFesSave9IsPartnerEj",
+   "demangled": "Savedata::BattleFesSave::IsPartner(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave11IsBlackListE18nnfriendsFriendKey",
+   "demangled": "Savedata::JoinFestaDataSave::IsBlackList(nnfriendsFriendKey) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave11IsRejectVipEv",
+   "demangled": "Savedata::JoinFestaDataSave::IsRejectVip() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave12GetTotalCoinEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetTotalCoin() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave13IsRejectGuestEv",
+   "demangled": "Savedata::JoinFestaDataSave::IsRejectGuest() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave14GetRewardStateEN15JoinFestaScript10RewardTypeE",
+   "demangled": "Savedata::JoinFestaDataSave::GetRewardState(JoinFestaScript::RewardType) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave14IsRejectFriendEv",
+   "demangled": "Savedata::JoinFestaDataSave::IsRejectFriend() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave15IsUseSelectWordEj",
+   "demangled": "Savedata::JoinFestaDataSave::IsUseSelectWord(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave16GetTempSaveThemeEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetTempSaveTheme() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave21GetIsSkipMessageStallEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetIsSkipMessageStall() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave22GetIsSkipMessageAirToyEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetIsSkipMessageAirToy() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave22GetJoinFestaNameStringEPN4gfl23str6StrBufE",
+   "demangled": "Savedata::JoinFestaDataSave::GetJoinFestaNameString(gfl2::str::StrBuf*) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave22GetQuestionnaireAnswerEj",
+   "demangled": "Savedata::JoinFestaDataSave::GetQuestionnaireAnswer(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave27GetFortuneResultHitByActionEN15JoinFestaScript19FortuneResultActionE",
+   "demangled": "Savedata::JoinFestaDataSave::GetFortuneResultHitByAction(JoinFestaScript::FortuneResultAction) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave27GetIsSkipMessageHorrorHouseEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetIsSkipMessageHorrorHouse() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave28IsFinishLastP2pPersonalEventEv",
+   "demangled": "Savedata::JoinFestaDataSave::IsFinishLastP2pPersonalEvent() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave7GetCoinEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetCoin() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave7GetRankEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetRank() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata17JoinFestaDataSave8GetThemeEv",
+   "demangled": "Savedata::JoinFestaDataSave::GetTheme() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8GameTime13IsPenaltyModeEv",
+   "demangled": "Savedata::GameTime::IsPenaltyMode() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus13GetNameStringEPw",
+   "demangled": "Savedata::MyStatus::GetNameString(wchar_t*) const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus14GetNexUniqueIDEv",
+   "demangled": "Savedata::MyStatus::GetNexUniqueID() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus5GetIDEv",
+   "demangled": "Savedata::MyStatus::GetID() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus6GetSexEv",
+   "demangled": "Savedata::MyStatus::GetSex() const"
+  },
+  {
+   "mangled": "_ZNK9BattleFes26BattleFesPokeLotterySystem10GetPokemonEj",
+   "demangled": "BattleFes::BattleFesPokeLotterySystem::GetPokemon(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK9BattleFes26BattleFesPokeLotterySystem17GetBattleTreeDataEj",
+   "demangled": "BattleFes::BattleFesPokeLotterySystem::GetBattleTreeData(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData10GetPatternEN15JoinFestaScript11PatternTypeE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPattern(JoinFestaScript::PatternType) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData11GetRelationEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetRelation() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData11IsCtrFriendEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsCtrFriend() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData11IsRelatonMeEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsRelatonMe() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData12GetCommRouteEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetCommRoute() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData12IsRelatonVipEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsRelatonVip() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData13GetLanguageIdEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetLanguageId() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData13GetRecordDataEjj",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetRecordData(unsigned int, unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData13GetUpdateDateEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetUpdateDate() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData14GetPresetNpcIdEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPresetNpcId() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData15GetDressUpParamEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetDressUpParam() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData15GetTransferedIDEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetTransferedID() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData15IsPresetNpcDataEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsPresetNpcData() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData15IsSameFriendKeyERK18nnfriendsFriendKey",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsSameFriendKey(nnfriendsFriendKey const&) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData16IsOpenAttractionEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsOpenAttraction() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData18GetPacketPhotoDataEPN3App12FinderStudio6Static9PhotoDataE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPacketPhotoData(App::FinderStudio::Static::PhotoData*) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData18GetPersonalEventIdEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventId() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData19GetAttractionMonsNoEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetAttractionMonsNo() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData20GetPacketGameStatus1EPNS0_17PacketGameStatus1E",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPacketGameStatus1(NetAppLib::JoinFesta::PacketGameStatus1*) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData20GetPacketGameStatus5EPNS0_17PacketGameStatus5E",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPacketGameStatus5(NetAppLib::JoinFesta::PacketGameStatus5*) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData20GetUpdateElapsedDateEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetUpdateElapsedDate() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData20IsAttractionAddPointEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsAttractionAddPoint() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData21GetAttractionPokeTypeERhS2_",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetAttractionPokeType(unsigned char&, unsigned char&) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData21GetJoinFestaFriendKeyEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetJoinFestaFriendKey() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData21IsAttractionDummyDataEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsAttractionDummyData() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData21IsPersonalEventEnableEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsPersonalEventEnable() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData24GetRecommendFacilitiesIdEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetRecommendFacilitiesId() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData25GetPersonalEventRecordID1Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventRecordID1() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData25GetPersonalEventRecordID2Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventRecordID2() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData25GetPersonalEventRecordID3Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventRecordID3() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData26GetPersonalEventQuestionIdEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventQuestionId() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData27GetRecommendFacilitiesColorEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetRecommendFacilitiesColor() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData28GetAttractionAppearanceStateEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetAttractionAppearanceState() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData28IsDressUpParamRomVersionNijiEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsDressUpParamRomVersionNiji() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData30GetAttractionPersonalEventFakeEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetAttractionPersonalEventFake() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData30GetAttractionSingleWordMessageEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetAttractionSingleWordMessage() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData31GetPersonalEventRecordCategory1Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventRecordCategory1() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData31GetPersonalEventRecordCategory2Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventRecordCategory2() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData31GetPersonalEventRecordCategory3Ev",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetPersonalEventRecordCategory3() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData31IsAttractionPersonalEventEnableEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsAttractionPersonalEventEnable() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData33GetRecommendFacilitiesCharacterIdEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetRecommendFacilitiesCharacterId() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData6GetSexEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetSex() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData7GetNameEPw",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetName(wchar_t*) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData7GetNameEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::GetName() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta21JoinFestaPersonalData8IsEnableEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalData::IsEnable() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta28JoinFestaPersonalDataManager18IsRecruiterVisibleEv",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::IsRecruiterVisible() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta28JoinFestaPersonalDataManager6IsFullENS0_15JoinFestaDefine21E_JOIN_FESTA_RELATIONE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::IsFull(NetAppLib::JoinFesta::JoinFestaDefine::E_JOIN_FESTA_RELATION) const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib9JoinFesta28JoinFestaPersonalDataManager8GetCountENS0_15JoinFestaDefine21E_JOIN_FESTA_RELATIONE",
+   "demangled": "NetAppLib::JoinFesta::JoinFestaPersonalDataManager::GetCount(NetAppLib::JoinFesta::JoinFestaDefine::E_JOIN_FESTA_RELATION) const"
+  },
+  {
+   "mangled": "_ZTIN7GameSys9GameEventE",
+   "demangled": "typeinfo for GameSys::GameEvent"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv117__class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv120__si_class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__si_class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv121__vmi_class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__vmi_class_type_info"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8instance13TransformNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::TransformNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZdaPv",
+   "demangled": "operator delete[](void*)"
+  },
+  {
+   "mangled": "_ZdlPv",
+   "demangled": "operator delete(void*)"
+  },
+  {
+   "mangled": "_ZnajPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "operator new[](unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZnwjPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "operator new(unsigned int, gfl2::heap::CtrHeapBase*)"
+  }
+ ]
+}

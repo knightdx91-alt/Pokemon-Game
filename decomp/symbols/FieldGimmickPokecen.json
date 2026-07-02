@@ -1,0 +1,802 @@
+{
+ "module": "FieldGimmickPokecen.cro",
+ "size": 28672,
+ "exports": [
+  {
+   "mangled": "nnroControlObject_",
+   "demangled": "nnroControlObject_"
+  }
+ ],
+ "imports": [
+  {
+   "mangled": "__aeabi_memcpy4",
+   "demangled": "__aeabi_memcpy4"
+  },
+  {
+   "mangled": "__aeabi_vec_ctor_nocookie_nodtor",
+   "demangled": "__aeabi_vec_ctor_nocookie_nodtor"
+  },
+  {
+   "mangled": "__aeabi_vec_dtor",
+   "demangled": "__aeabi_vec_dtor"
+  },
+  {
+   "mangled": "__cxa_guard_acquire",
+   "demangled": "__cxa_guard_acquire"
+  },
+  {
+   "mangled": "__cxa_guard_release",
+   "demangled": "__cxa_guard_release"
+  },
+  {
+   "mangled": "_ZdlPv",
+   "demangled": "operator delete(void*)"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18FieldTransformNodeENS1_8instance13TransformNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldTransformNode, gfl2::renderingengine::scenegraph::instance::TransformNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18IField3DObjectNodeENS3_9FieldNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::IField3DObjectNode, Field::FieldNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field9FieldNodeENS1_8instance12InstanceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance12InstanceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::InstanceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance13TransformNodeENS3_12InstanceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::TransformNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource19TextureResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::TextureResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8instance13TransformNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::instance::TransformNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource19TextureResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::TextureResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZN3app4util4Heap6CreateEPN4gfl24heap11CtrHeapBaseES5_PNS3_11NwAllocatorES7_PNS2_4util15GLHeapAllocatorESA_",
+   "demangled": "app::util::Heap::Create(gfl2::heap::CtrHeapBase*, gfl2::heap::CtrHeapBase*, gfl2::heap::NwAllocator*, gfl2::heap::NwAllocator*, gfl2::util::GLHeapAllocator*, gfl2::util::GLHeapAllocator*)"
+  },
+  {
+   "mangled": "_ZN3app4util4Heap6DeleteEv",
+   "demangled": "app::util::Heap::Delete()"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapC1Ev",
+   "demangled": "app::util::Heap::Heap()"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapD1Ev",
+   "demangled": "app::util::Heap::~Heap()"
+  },
+  {
+   "mangled": "_ZN3pml9PokeParty16GetMemberPointerEj",
+   "demangled": "pml::PokeParty::GetMemberPointer(unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph11Inheritance8GenerateEPKS2_NS_4util7FnvHashE",
+   "demangled": "gfl2::renderingengine::scenegraph::Inheritance::Generate(gfl2::renderingengine::scenegraph::Inheritance const*, gfl2::util::FnvHash)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18FieldTransformNodeENS1_8instance13TransformNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldTransformNode, gfl2::renderingengine::scenegraph::instance::TransformNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18IField3DObjectNodeENS3_9FieldNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::IField3DObjectNode, Field::FieldNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field9FieldNodeENS1_8instance12InstanceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance12InstanceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::InstanceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance13TransformNodeENS3_12InstanceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::TransformNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource19TextureResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::TextureResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph7DagNode11RemoveChildEPS2_",
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::RemoveChild(gfl2::renderingengine::scenegraph::DagNode*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8instance12DrawableNode10SetVisibleEi",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::DrawableNode::SetVisible(int)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15GfBinaryTexData14SetTextureDataEPc",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryTexData::SetTextureData(char*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15GfBinaryTexDataC1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryTexData::GfBinaryTexData()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15GfBinaryTexDataD1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryTexData::~GfBinaryTexData()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15ResourceManager19createResourceNode_EPNS2_13IResourceDataE",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceManager::createResourceNode_(gfl2::renderingengine::scenegraph::resource::IResourceData*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15ResourceManager4s_GpE",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceManager::s_Gp"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPack12SetModelDataEPc",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::SetModelData(char*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPackC1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::GfBinaryMdlDataPack()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPackD1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::~GfBinaryMdlDataPack()"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager16SyncArcFileCloseERKNS1_15ArcFileCloseReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::SyncArcFileClose(gfl2::fs::AsyncFileManager::ArcFileCloseReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager17AddArcFileOpenReqERKNS1_14ArcFileOpenReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::AddArcFileOpenReq(gfl2::fs::AsyncFileManager::ArcFileOpenReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager21AddArcFileLoadDataReqERKNS1_18ArcFileLoadDataReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::AddArcFileLoadDataReq(gfl2::fs::AsyncFileManager::ArcFileLoadDataReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs17BinLinkerAccessor10InitializeEPv",
+   "demangled": "gfl2::fs::BinLinkerAccessor::Initialize(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs17BinLinkerAccessorC1Ev",
+   "demangled": "gfl2::fs::BinLinkerAccessor::BinLinkerAccessor()"
+  },
+  {
+   "mangled": "_ZN4gfl22fs17BinLinkerAccessorD1Ev",
+   "demangled": "gfl2::fs::BinLinkerAccessor::~BinLinkerAccessor()"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory20s_pInstanceAllocatorE",
+   "demangled": "gfl2::gfx::GLMemory::s_pInstanceAllocator"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory24s_InstanceAllocatorCountE",
+   "demangled": "gfl2::gfx::GLMemory::s_InstanceAllocatorCount"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN7GameSys11GameManagerEE11GetInstanceEv",
+   "demangled": "gfl2::base::SingletonAccessor<GameSys::GameManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24heap22GflHeapFreeMemoryBlockEPv",
+   "demangled": "gfl2::heap::GflHeapFreeMemoryBlock(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl25debug9GFLassertEPKcjiS2_",
+   "demangled": "gfl2::debug::GFLassert(char const*, unsigned int, int, char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackList10InitializeEPNS_4heap11CtrHeapBaseEj",
+   "demangled": "gfl2::animation::AnimationPackList::Initialize(gfl2::heap::CtrHeapBase*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackList8FinalizeEv",
+   "demangled": "gfl2::animation::AnimationPackList::Finalize()"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackList8LoadDataEjPNS_3gfx12IGLAllocatorEPNS_4heap11CtrHeapBaseEPc",
+   "demangled": "gfl2::animation::AnimationPackList::LoadData(unsigned int, gfl2::gfx::IGLAllocator*, gfl2::heap::CtrHeapBase*, char*)"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackListC1Ev",
+   "demangled": "gfl2::animation::AnimationPackList::AnimationPackList()"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackListD1Ev",
+   "demangled": "gfl2::animation::AnimationPackList::~AnimationPackList()"
+  },
+  {
+   "mangled": "_ZN5Field11FieldScript17FieldScriptSystem16SetReserveScriptEijjjj",
+   "demangled": "Field::FieldScript::FieldScriptSystem::SetReserveScript(int, unsigned int, unsigned int, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5Field11FieldScript17FieldScriptSystem19IsEnableSceneScriptEv",
+   "demangled": "Field::FieldScript::FieldScriptSystem::IsEnableSceneScript()"
+  },
+  {
+   "mangled": "_ZN5Field9EventWork12GetEventWorkEt",
+   "demangled": "Field::EventWork::GetEventWork(unsigned short)"
+  },
+  {
+   "mangled": "_ZN5Sound9EndBGMReqENS_9FadeFrameE",
+   "demangled": "Sound::EndBGMReq(Sound::FadeFrame)"
+  },
+  {
+   "mangled": "_ZN6AppLib4Tool15PokeCapAccesser15GetArcFileIndexEPN3pml8pokepara9CoreParamE",
+   "demangled": "AppLib::Tool::PokeCapAccesser::GetArcFileIndex(pml::pokepara::CoreParam*)"
+  },
+  {
+   "mangled": "_ZN6AppLib4Tool15PokeCapAccesser18OpenPokemonCaptureEv",
+   "demangled": "AppLib::Tool::PokeCapAccesser::OpenPokemonCapture()"
+  },
+  {
+   "mangled": "_ZN6AppLib4Tool15PokeCapAccesser18PokemonCaptureReadEiPPv",
+   "demangled": "AppLib::Tool::PokeCapAccesser::PokemonCaptureRead(int, void**)"
+  },
+  {
+   "mangled": "_ZN6AppLib4Tool15PokeCapAccesser19ClosePokemonCaptureEv",
+   "demangled": "AppLib::Tool::PokeCapAccesser::ClosePokemonCapture()"
+  },
+  {
+   "mangled": "_ZN6AppLib4Tool15PokeCapAccesserC1EPN3app4util4HeapEPN4gfl22fs16AsyncFileManagerE",
+   "demangled": "AppLib::Tool::PokeCapAccesser::PokeCapAccesser(app::util::Heap*, gfl2::fs::AsyncFileManager*)"
+  },
+  {
+   "mangled": "_ZN6System13nijiAllocatorC1EPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "System::nijiAllocator::nijiAllocator(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel11SetPositionERKN4gfl24math7Vector3E",
+   "demangled": "poke_3d::model::BaseModel::SetPosition(gfl2::math::Vector3 const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel15SetRotationQuatERKN4gfl24math10QuaternionE",
+   "demangled": "poke_3d::model::BaseModel::SetRotationQuat(gfl2::math::Quaternion const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel20SetAnimationPackListEPN4gfl29animation17AnimationPackListE",
+   "demangled": "poke_3d::model::BaseModel::SetAnimationPackList(gfl2::animation::AnimationPackList*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel6CreateEPN4gfl23gfx12IGLAllocatorEPNS2_4heap11CtrHeapBaseEPNS2_15renderingengine10scenegraph8resource12ResourceNodeESD_",
+   "demangled": "poke_3d::model::BaseModel::Create(gfl2::gfx::IGLAllocator*, gfl2::heap::CtrHeapBase*, gfl2::renderingengine::scenegraph::resource::ResourceNode*, gfl2::renderingengine::scenegraph::resource::ResourceNode*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModelC1Ev",
+   "demangled": "poke_3d::model::BaseModel::BaseModel()"
+  },
+  {
+   "mangled": "_ZNK3pml8pokepara9CoreParam10GetGetBallEv",
+   "demangled": "pml::pokepara::CoreParam::GetGetBall() const"
+  },
+  {
+   "mangled": "_ZNK3pml8pokepara9CoreParam5IsEggENS0_12EggCheckTypeE",
+   "demangled": "pml::pokepara::CoreParam::IsEgg(pml::pokepara::EggCheckType) const"
+  },
+  {
+   "mangled": "_ZNK3pml9PokeParty14GetMemberCountEv",
+   "demangled": "pml::PokeParty::GetMemberCount() const"
+  },
+  {
+   "mangled": "_ZNK3pml9PokeParty16GetMemberCountExENS0_9CountTypeE",
+   "demangled": "pml::PokeParty::GetMemberCountEx(pml::PokeParty::CountType) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs16AsyncFileManager21IsArcFileOpenFinishedEj",
+   "demangled": "gfl2::fs::AsyncFileManager::IsArcFileOpenFinished(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs16AsyncFileManager22IsArcFileCloseFinishedEj",
+   "demangled": "gfl2::fs::AsyncFileManager::IsArcFileCloseFinished(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs16AsyncFileManager25IsArcFileLoadDataFinishedEPPv",
+   "demangled": "gfl2::fs::AsyncFileManager::IsArcFileLoadDataFinished(void**) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs17BinLinkerAccessor7GetDataEj",
+   "demangled": "gfl2::fs::BinLinkerAccessor::GetData(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK5Field11FieldScript17FieldScriptSystem22IsReserveScriptSettingEv",
+   "demangled": "Field::FieldScript::FieldScriptSystem::IsReserveScriptSetting() const"
+  },
+  {
+   "mangled": "_ZNK5Field9EventWork14CheckEventFlagEt",
+   "demangled": "Field::EventWork::CheckEventFlag(unsigned short) const"
+  },
+  {
+   "mangled": "_ZNK7GameSys11GameManager19GetAsyncFileManagerEv",
+   "demangled": "GameSys::GameManager::GetAsyncFileManager() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel13GetJointIndexEPKc",
+   "demangled": "poke_3d::model::BaseModel::GetJointIndex(char const*) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel14GetAnimationIdEjNS1_12AnimationBitE",
+   "demangled": "poke_3d::model::BaseModel::GetAnimationId(unsigned int, poke_3d::model::BaseModel::AnimationBit) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel16GetMaterialIndexEPKc",
+   "demangled": "poke_3d::model::BaseModel::GetMaterialIndex(char const*) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel19GetJointWorldMatrixEi",
+   "demangled": "poke_3d::model::BaseModel::GetJointWorldMatrix(int) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel20IsAnimationLastFrameEjNS1_12AnimationBitE",
+   "demangled": "poke_3d::model::BaseModel::IsAnimationLastFrame(unsigned int, poke_3d::model::BaseModel::AnimationBit) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel22HasAnimationControllerEv",
+   "demangled": "poke_3d::model::BaseModel::HasAnimationController() const"
+  },
+  {
+   "mangled": "_ZnwjPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "operator new(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv117__class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv120__si_class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__si_class_type_info"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8instance13TransformNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::TransformNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource19TextureResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::TextureResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  }
+ ],
+ "scanned": [
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18FieldTransformNodeENS1_8instance13TransformNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldTransformNode, gfl2::renderingengine::scenegraph::instance::TransformNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18IField3DObjectNodeENS3_9FieldNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::IField3DObjectNode, Field::FieldNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field9FieldNodeENS1_8instance12InstanceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance12InstanceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::InstanceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance13TransformNodeENS3_12InstanceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::TransformNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource19TextureResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::TextureResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8instance13TransformNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::instance::TransformNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource19TextureResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::TextureResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZN3app4util4Heap6CreateEPN4gfl24heap11CtrHeapBaseES5_PNS3_11NwAllocatorES7_PNS2_4util15GLHeapAllocatorESA_",
+   "demangled": "app::util::Heap::Create(gfl2::heap::CtrHeapBase*, gfl2::heap::CtrHeapBase*, gfl2::heap::NwAllocator*, gfl2::heap::NwAllocator*, gfl2::util::GLHeapAllocator*, gfl2::util::GLHeapAllocator*)"
+  },
+  {
+   "mangled": "_ZN3app4util4Heap6DeleteEv",
+   "demangled": "app::util::Heap::Delete()"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapC1Ev",
+   "demangled": "app::util::Heap::Heap()"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapD1Ev",
+   "demangled": "app::util::Heap::~Heap()"
+  },
+  {
+   "mangled": "_ZN3pml9PokeParty16GetMemberPointerEj",
+   "demangled": "pml::PokeParty::GetMemberPointer(unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph11Inheritance8GenerateEPKS2_NS_4util7FnvHashE",
+   "demangled": "gfl2::renderingengine::scenegraph::Inheritance::Generate(gfl2::renderingengine::scenegraph::Inheritance const*, gfl2::util::FnvHash)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18FieldTransformNodeENS1_8instance13TransformNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldTransformNode, gfl2::renderingengine::scenegraph::instance::TransformNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field18IField3DObjectNodeENS3_9FieldNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::IField3DObjectNode, Field::FieldNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceIN5Field9FieldNodeENS1_8instance12InstanceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<Field::FieldNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance12InstanceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::InstanceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8instance13TransformNodeENS3_12InstanceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::instance::TransformNode, gfl2::renderingengine::scenegraph::instance::InstanceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource19TextureResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::TextureResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph7DagNode11RemoveChildEPS2_",
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::RemoveChild(gfl2::renderingengine::scenegraph::DagNode*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8instance12DrawableNode10SetVisibleEi",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::DrawableNode::SetVisible(int)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15GfBinaryTexData14SetTextureDataEPc",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryTexData::SetTextureData(char*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15GfBinaryTexDataC1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryTexData::GfBinaryTexData()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15GfBinaryTexDataD1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryTexData::~GfBinaryTexData()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15ResourceManager19createResourceNode_EPNS2_13IResourceDataE",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceManager::createResourceNode_(gfl2::renderingengine::scenegraph::resource::IResourceData*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource15ResourceManager4s_GpE",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceManager::s_Gp"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPack12SetModelDataEPc",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::SetModelData(char*)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPackC1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::GfBinaryMdlDataPack()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph8resource19GfBinaryMdlDataPackD1Ev",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::GfBinaryMdlDataPack::~GfBinaryMdlDataPack()"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager16SyncArcFileCloseERKNS1_15ArcFileCloseReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::SyncArcFileClose(gfl2::fs::AsyncFileManager::ArcFileCloseReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager17AddArcFileOpenReqERKNS1_14ArcFileOpenReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::AddArcFileOpenReq(gfl2::fs::AsyncFileManager::ArcFileOpenReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs16AsyncFileManager21AddArcFileLoadDataReqERKNS1_18ArcFileLoadDataReqE",
+   "demangled": "gfl2::fs::AsyncFileManager::AddArcFileLoadDataReq(gfl2::fs::AsyncFileManager::ArcFileLoadDataReq const&)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs17BinLinkerAccessor10InitializeEPv",
+   "demangled": "gfl2::fs::BinLinkerAccessor::Initialize(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl22fs17BinLinkerAccessorC1Ev",
+   "demangled": "gfl2::fs::BinLinkerAccessor::BinLinkerAccessor()"
+  },
+  {
+   "mangled": "_ZN4gfl22fs17BinLinkerAccessorD1Ev",
+   "demangled": "gfl2::fs::BinLinkerAccessor::~BinLinkerAccessor()"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory20s_pInstanceAllocatorE",
+   "demangled": "gfl2::gfx::GLMemory::s_pInstanceAllocator"
+  },
+  {
+   "mangled": "_ZN4gfl23gfx8GLMemory24s_InstanceAllocatorCountE",
+   "demangled": "gfl2::gfx::GLMemory::s_InstanceAllocatorCount"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN7GameSys11GameManagerEE11GetInstanceEv",
+   "demangled": "gfl2::base::SingletonAccessor<GameSys::GameManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24heap22GflHeapFreeMemoryBlockEPv",
+   "demangled": "gfl2::heap::GflHeapFreeMemoryBlock(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl25debug9GFLassertEPKcjiS2_",
+   "demangled": "gfl2::debug::GFLassert(char const*, unsigned int, int, char const*)"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackList10InitializeEPNS_4heap11CtrHeapBaseEj",
+   "demangled": "gfl2::animation::AnimationPackList::Initialize(gfl2::heap::CtrHeapBase*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackList8FinalizeEv",
+   "demangled": "gfl2::animation::AnimationPackList::Finalize()"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackList8LoadDataEjPNS_3gfx12IGLAllocatorEPNS_4heap11CtrHeapBaseEPc",
+   "demangled": "gfl2::animation::AnimationPackList::LoadData(unsigned int, gfl2::gfx::IGLAllocator*, gfl2::heap::CtrHeapBase*, char*)"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackListC1Ev",
+   "demangled": "gfl2::animation::AnimationPackList::AnimationPackList()"
+  },
+  {
+   "mangled": "_ZN4gfl29animation17AnimationPackListD1Ev",
+   "demangled": "gfl2::animation::AnimationPackList::~AnimationPackList()"
+  },
+  {
+   "mangled": "_ZN5Field11FieldScript17FieldScriptSystem16SetReserveScriptEijjjj",
+   "demangled": "Field::FieldScript::FieldScriptSystem::SetReserveScript(int, unsigned int, unsigned int, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5Field11FieldScript17FieldScriptSystem19IsEnableSceneScriptEv",
+   "demangled": "Field::FieldScript::FieldScriptSystem::IsEnableSceneScript()"
+  },
+  {
+   "mangled": "_ZN5Field9EventWork12GetEventWorkEt",
+   "demangled": "Field::EventWork::GetEventWork(unsigned short)"
+  },
+  {
+   "mangled": "_ZN5Sound9EndBGMReqENS_9FadeFrameE",
+   "demangled": "Sound::EndBGMReq(Sound::FadeFrame)"
+  },
+  {
+   "mangled": "_ZN6AppLib4Tool15PokeCapAccesser15GetArcFileIndexEPN3pml8pokepara9CoreParamE",
+   "demangled": "AppLib::Tool::PokeCapAccesser::GetArcFileIndex(pml::pokepara::CoreParam*)"
+  },
+  {
+   "mangled": "_ZN6AppLib4Tool15PokeCapAccesser18OpenPokemonCaptureEv",
+   "demangled": "AppLib::Tool::PokeCapAccesser::OpenPokemonCapture()"
+  },
+  {
+   "mangled": "_ZN6AppLib4Tool15PokeCapAccesser18PokemonCaptureReadEiPPv",
+   "demangled": "AppLib::Tool::PokeCapAccesser::PokemonCaptureRead(int, void**)"
+  },
+  {
+   "mangled": "_ZN6AppLib4Tool15PokeCapAccesser19ClosePokemonCaptureEv",
+   "demangled": "AppLib::Tool::PokeCapAccesser::ClosePokemonCapture()"
+  },
+  {
+   "mangled": "_ZN6AppLib4Tool15PokeCapAccesserC1EPN3app4util4HeapEPN4gfl22fs16AsyncFileManagerE",
+   "demangled": "AppLib::Tool::PokeCapAccesser::PokeCapAccesser(app::util::Heap*, gfl2::fs::AsyncFileManager*)"
+  },
+  {
+   "mangled": "_ZN6System13nijiAllocatorC1EPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "System::nijiAllocator::nijiAllocator(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel11SetPositionERKN4gfl24math7Vector3E",
+   "demangled": "poke_3d::model::BaseModel::SetPosition(gfl2::math::Vector3 const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel15SetRotationQuatERKN4gfl24math10QuaternionE",
+   "demangled": "poke_3d::model::BaseModel::SetRotationQuat(gfl2::math::Quaternion const&)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel20SetAnimationPackListEPN4gfl29animation17AnimationPackListE",
+   "demangled": "poke_3d::model::BaseModel::SetAnimationPackList(gfl2::animation::AnimationPackList*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModel6CreateEPN4gfl23gfx12IGLAllocatorEPNS2_4heap11CtrHeapBaseEPNS2_15renderingengine10scenegraph8resource12ResourceNodeESD_",
+   "demangled": "poke_3d::model::BaseModel::Create(gfl2::gfx::IGLAllocator*, gfl2::heap::CtrHeapBase*, gfl2::renderingengine::scenegraph::resource::ResourceNode*, gfl2::renderingengine::scenegraph::resource::ResourceNode*)"
+  },
+  {
+   "mangled": "_ZN7poke_3d5model9BaseModelC1Ev",
+   "demangled": "poke_3d::model::BaseModel::BaseModel()"
+  },
+  {
+   "mangled": "_ZNK3pml8pokepara9CoreParam10GetGetBallEv",
+   "demangled": "pml::pokepara::CoreParam::GetGetBall() const"
+  },
+  {
+   "mangled": "_ZNK3pml8pokepara9CoreParam5IsEggENS0_12EggCheckTypeE",
+   "demangled": "pml::pokepara::CoreParam::IsEgg(pml::pokepara::EggCheckType) const"
+  },
+  {
+   "mangled": "_ZNK3pml9PokeParty14GetMemberCountEv",
+   "demangled": "pml::PokeParty::GetMemberCount() const"
+  },
+  {
+   "mangled": "_ZNK3pml9PokeParty16GetMemberCountExENS0_9CountTypeE",
+   "demangled": "pml::PokeParty::GetMemberCountEx(pml::PokeParty::CountType) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs16AsyncFileManager21IsArcFileOpenFinishedEj",
+   "demangled": "gfl2::fs::AsyncFileManager::IsArcFileOpenFinished(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs16AsyncFileManager22IsArcFileCloseFinishedEj",
+   "demangled": "gfl2::fs::AsyncFileManager::IsArcFileCloseFinished(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs16AsyncFileManager25IsArcFileLoadDataFinishedEPPv",
+   "demangled": "gfl2::fs::AsyncFileManager::IsArcFileLoadDataFinished(void**) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22fs17BinLinkerAccessor7GetDataEj",
+   "demangled": "gfl2::fs::BinLinkerAccessor::GetData(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK5Field11FieldScript17FieldScriptSystem22IsReserveScriptSettingEv",
+   "demangled": "Field::FieldScript::FieldScriptSystem::IsReserveScriptSetting() const"
+  },
+  {
+   "mangled": "_ZNK5Field9EventWork14CheckEventFlagEt",
+   "demangled": "Field::EventWork::CheckEventFlag(unsigned short) const"
+  },
+  {
+   "mangled": "_ZNK7GameSys11GameManager19GetAsyncFileManagerEv",
+   "demangled": "GameSys::GameManager::GetAsyncFileManager() const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel13GetJointIndexEPKc",
+   "demangled": "poke_3d::model::BaseModel::GetJointIndex(char const*) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel14GetAnimationIdEjNS1_12AnimationBitE",
+   "demangled": "poke_3d::model::BaseModel::GetAnimationId(unsigned int, poke_3d::model::BaseModel::AnimationBit) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel16GetMaterialIndexEPKc",
+   "demangled": "poke_3d::model::BaseModel::GetMaterialIndex(char const*) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel19GetJointWorldMatrixEi",
+   "demangled": "poke_3d::model::BaseModel::GetJointWorldMatrix(int) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel20IsAnimationLastFrameEjNS1_12AnimationBitE",
+   "demangled": "poke_3d::model::BaseModel::IsAnimationLastFrame(unsigned int, poke_3d::model::BaseModel::AnimationBit) const"
+  },
+  {
+   "mangled": "_ZNK7poke_3d5model9BaseModel22HasAnimationControllerEv",
+   "demangled": "poke_3d::model::BaseModel::HasAnimationController() const"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv117__class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv120__si_class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__si_class_type_info"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8instance13TransformNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::instance::TransformNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource19TextureResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::TextureResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZdlPv",
+   "demangled": "operator delete(void*)"
+  },
+  {
+   "mangled": "_ZnwjPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "operator new(unsigned int, gfl2::heap::CtrHeapBase*)"
+  }
+ ]
+}

@@ -1,0 +1,2026 @@
+{
+ "module": "Live.cro",
+ "size": 94208,
+ "exports": [
+  {
+   "mangled": "nnroControlObject_",
+   "demangled": "nnroControlObject_"
+  }
+ ],
+ "imports": [
+  {
+   "mangled": "__aeabi_memclr4",
+   "demangled": "__aeabi_memclr4"
+  },
+  {
+   "mangled": "__aeabi_memcpy4",
+   "demangled": "__aeabi_memcpy4"
+  },
+  {
+   "mangled": "__aeabi_memset",
+   "demangled": "__aeabi_memset"
+  },
+  {
+   "mangled": "__aeabi_vec_ctor_nocookie_nodtor",
+   "demangled": "__aeabi_vec_ctor_nocookie_nodtor"
+  },
+  {
+   "mangled": "__cxa_guard_acquire",
+   "demangled": "__cxa_guard_acquire"
+  },
+  {
+   "mangled": "__cxa_guard_release",
+   "demangled": "__cxa_guard_release"
+  },
+  {
+   "mangled": "__cxa_pure_virtual",
+   "demangled": "__cxa_pure_virtual"
+  },
+  {
+   "mangled": "_Z17BATTLE_SETUP_CommP18BATTLE_SETUP_PARAMPN7GameSys11GameManagerEPK19BTL_FIELD_SITUATIONhhPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "BATTLE_SETUP_Comm(BATTLE_SETUP_PARAM*, GameSys::GameManager*, BTL_FIELD_SITUATION const*, unsigned char, unsigned char, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_Z18BATTLE_SETUP_ClearP18BATTLE_SETUP_PARAM",
+   "demangled": "BATTLE_SETUP_Clear(BATTLE_SETUP_PARAM*)"
+  },
+  {
+   "mangled": "_Z25BATTLE_PARAM_SetPokePartyP18BATTLE_SETUP_PARAMPKN3pml9PokePartyE13BTL_CLIENT_ID",
+   "demangled": "BATTLE_PARAM_SetPokeParty(BATTLE_SETUP_PARAM*, pml::PokeParty const*, BTL_CLIENT_ID)"
+  },
+  {
+   "mangled": "_Z26BATTLE_PARAM_SetRegulationP18BATTLE_SETUP_PARAMP10RegulationPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "BATTLE_PARAM_SetRegulation(BATTLE_SETUP_PARAM*, Regulation*, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZdaPv",
+   "demangled": "operator delete[](void*)"
+  },
+  {
+   "mangled": "_ZdlPv",
+   "demangled": "operator delete(void*)"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZN10Regulation11DeserializeEPKvj",
+   "demangled": "Regulation::Deserialize(void const*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN10RegulationC1EPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "Regulation::Regulation(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN11ExtSavedata22BattleRecorderSaveData11GetMyStatusE13BTL_CLIENT_IDPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::GetMyStatus(BTL_CLIENT_ID, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN11ExtSavedata22BattleRecorderSaveData15LiveCupLoadDataEv",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::LiveCupLoadData()"
+  },
+  {
+   "mangled": "_ZN11ExtSavedata22BattleRecorderSaveData15LiveCupSaveDataEv",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::LiveCupSaveData()"
+  },
+  {
+   "mangled": "_ZN11ExtSavedata22BattleRecorderSaveData17LiveCupDeleteDataEv",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::LiveCupDeleteData()"
+  },
+  {
+   "mangled": "_ZN11ExtSavedata22BattleRecorderSaveData21ClearBattleSetupParamEP18BATTLE_SETUP_PARAM",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::ClearBattleSetupParam(BATTLE_SETUP_PARAM*)"
+  },
+  {
+   "mangled": "_ZN11ExtSavedata22BattleRecorderSaveData22CreateBattleSetupParamEP18BATTLE_SETUP_PARAMPKN8Savedata10ConfigSaveE",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::CreateBattleSetupParam(BATTLE_SETUP_PARAM*, Savedata::ConfigSave const*)"
+  },
+  {
+   "mangled": "_ZN11ExtSavedata22BattleRecorderSaveData28CheckLiveCupSaveDataValidityEPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::CheckLiveCupSaveDataValidity(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder15SetButtonEnableEjbb",
+   "demangled": "app::ui::UIResponder::SetButtonEnable(unsigned int, bool, bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder15SetInputEnabledEb",
+   "demangled": "app::ui::UIResponder::SetInputEnabled(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder16GetButtonManagerEv",
+   "demangled": "app::ui::UIResponder::GetButtonManager()"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder16SetInputListenerEPNS0_15UIInputListenerE",
+   "demangled": "app::ui::UIResponder::SetInputListener(app::ui::UIInputListener*)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder17OnSetInputEnabledEb",
+   "demangled": "app::ui::UIResponder::OnSetInputEnabled(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder19CreateButtonManagerEPNS_4util4HeapEPN4gfl23lyt5LytWkEPKNS0_12ButtonInfoExEj",
+   "demangled": "app::ui::UIResponder::CreateButtonManager(app::util::Heap*, gfl2::lyt::LytWk*, app::ui::ButtonInfoEx const*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder28CallbackFuncOnButtonSelectedEj",
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonSelected(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder31CallbackFuncOnButtonLongPressedEj",
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonLongPressed(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder32CallBackFuncOnButtonTouchTriggerEj",
+   "demangled": "app::ui::UIResponder::CallBackFuncOnButtonTouchTrigger(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder39CallbackFuncOnButtonSelectedBeforeAnimeEj",
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonSelectedBeforeAnime(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10AddSubViewEPS1_",
+   "demangled": "app::ui::UIView::AddSubView(app::ui::UIView*)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10SetVisibleEb",
+   "demangled": "app::ui::UIView::SetVisible(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10UpdateTreeEv",
+   "demangled": "app::ui::UIView::UpdateTree()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView11Initalize2DEPNS_4util4HeapEPN4gfl23lyt6LytSysEjPKNS2_7G2DUtil10LytResDataEjPKNS9_9LytwkDataEjii",
+   "demangled": "app::ui::UIView::Initalize2D(app::util::Heap*, gfl2::lyt::LytSys*, unsigned int, app::util::G2DUtil::LytResData const*, unsigned int, app::util::G2DUtil::LytwkData const*, unsigned int, int, int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView13DoInputActionEv",
+   "demangled": "app::ui::UIView::DoInputAction()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView19RemoveFromSuperViewEv",
+   "demangled": "app::ui::UIView::RemoveFromSuperView()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView20DeleteGraphicsSystemEv",
+   "demangled": "app::ui::UIView::DeleteGraphicsSystem()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView21SetTextboxPaneMessageEPN2nw3lyt7TextBoxEi",
+   "demangled": "app::ui::UIView::SetTextboxPaneMessage(nw::lyt::TextBox*, int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView6UpdateEv",
+   "demangled": "app::ui::UIView::Update()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8Delete2DEv",
+   "demangled": "app::ui::UIView::Delete2D()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8DrawTreeEN4gfl23gfx12CtrDisplayNoE",
+   "demangled": "app::ui::UIView::DrawTree(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN3app4tool13ButtonManager17SetButtonSelectSEEjj",
+   "demangled": "app::tool::ButtonManager::SetButtonSelectSE(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3App4Tool15MessageMenuView10SelectMenuEj",
+   "demangled": "App::Tool::MessageMenuView::SelectMenu(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3App4Tool15MessageMenuView11ShowMessageEPKN4gfl23str6StrBufEbbb",
+   "demangled": "App::Tool::MessageMenuView::ShowMessage(gfl2::str::StrBuf const*, bool, bool, bool)"
+  },
+  {
+   "mangled": "_ZN3App4Tool15MessageMenuView13SetYNListModeEbj",
+   "demangled": "App::Tool::MessageMenuView::SetYNListMode(bool, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3App4Tool15MessageMenuView31CommonMessageWindowView_OnEventENS0_23CommonMessageWindowView13IEventHandler9EventCodeE",
+   "demangled": "App::Tool::MessageMenuView::CommonMessageWindowView_OnEvent(App::Tool::CommonMessageWindowView::IEventHandler::EventCode)"
+  },
+  {
+   "mangled": "_ZN3App4Tool23CommonMessageWindowView38CommonMessageWindowManipulator_OnEventENS0_30CommonMessageWindowManipulator7EventIDE",
+   "demangled": "App::Tool::CommonMessageWindowView::CommonMessageWindowManipulator_OnEvent(App::Tool::CommonMessageWindowManipulator::EventID)"
+  },
+  {
+   "mangled": "_ZN3App4Tool23CommonMessageWindowView6UpdateEv",
+   "demangled": "App::Tool::CommonMessageWindowView::Update()"
+  },
+  {
+   "mangled": "_ZN3App4Tool23CommonMessageWindowViewC1ERKNS1_5PARAMEPNS1_13IEventHandlerE",
+   "demangled": "App::Tool::CommonMessageWindowView::CommonMessageWindowView(App::Tool::CommonMessageWindowView::PARAM const&, App::Tool::CommonMessageWindowView::IEventHandler*)"
+  },
+  {
+   "mangled": "_ZN3App4Tool23CommonMessageWindowViewD1Ev",
+   "demangled": "App::Tool::CommonMessageWindowView::~CommonMessageWindowView()"
+  },
+  {
+   "mangled": "_ZN3app4tool27AppToolTrainerIconRendering16ICON_OBJECT_DATA24ConvFromMyStatusIconDataERKN8Savedata8MyStatus9ICON_DATAE",
+   "demangled": "app::tool::AppToolTrainerIconRendering::ICON_OBJECT_DATA::ConvFromMyStatusIconData(Savedata::MyStatus::ICON_DATA const&)"
+  },
+  {
+   "mangled": "_ZN3App4Tool30CommonMessageWindowManipulator18SetFinishMode_NoneEv",
+   "demangled": "App::Tool::CommonMessageWindowManipulator::SetFinishMode_None()"
+  },
+  {
+   "mangled": "_ZN3App4Tool30CommonMessageWindowManipulator5SetupERKNS1_11_SSetupInfoE",
+   "demangled": "App::Tool::CommonMessageWindowManipulator::Setup(App::Tool::CommonMessageWindowManipulator::_SSetupInfo const&)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper12GetPartsPaneEj",
+   "demangled": "app::util::GetPaneHelper::GetPartsPane(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper14GetPicturePaneEj",
+   "demangled": "app::util::GetPaneHelper::GetPicturePane(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper14GetTextBoxPaneEj",
+   "demangled": "app::util::GetPaneHelper::GetTextBoxPane(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper15GetBoundingPaneEj",
+   "demangled": "app::util::GetPaneHelper::GetBoundingPane(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper3PopEv",
+   "demangled": "app::util::GetPaneHelper::Pop()"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper4PeekEv",
+   "demangled": "app::util::GetPaneHelper::Peek()"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper4PushEj",
+   "demangled": "app::util::GetPaneHelper::Push(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper5ClearEv",
+   "demangled": "app::util::GetPaneHelper::Clear()"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper7GetPaneEj",
+   "demangled": "app::util::GetPaneHelper::GetPane(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelperC1EPN4gfl23lyt5LytWkEPNS3_13LytMultiResIDE",
+   "demangled": "app::util::GetPaneHelper::GetPaneHelper(gfl2::lyt::LytWk*, gfl2::lyt::LytMultiResID*)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelperD1Ev",
+   "demangled": "app::util::GetPaneHelper::~GetPaneHelper()"
+  },
+  {
+   "mangled": "_ZN3app4util4Heap15LocalHeapCreateEPN4gfl24heap11CtrHeapBaseES5_jj",
+   "demangled": "app::util::Heap::LocalHeapCreate(gfl2::heap::CtrHeapBase*, gfl2::heap::CtrHeapBase*, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapC1Ev",
+   "demangled": "app::util::Heap::Heap()"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapD1Ev",
+   "demangled": "app::util::Heap::~Heap()"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil10StartAnimeEjjbb",
+   "demangled": "app::util::G2DUtil::StartAnime(unsigned int, unsigned int, bool, bool)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil15SetRegisterWordEjRKN4gfl23str6StrBufEN5print7WordSet7GrammerENS8_4FormE",
+   "demangled": "app::util::G2DUtil::SetRegisterWord(unsigned int, gfl2::str::StrBuf const&, print::WordSet::Grammer, print::WordSet::Form)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil19GetLayoutResourceIDEj",
+   "demangled": "app::util::G2DUtil::GetLayoutResourceID(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil20SetTextBoxPaneNumberEPN2nw3lyt7TextBoxEPN4gfl23str6StrBufEjjjN5print14NumberDispTypeENSA_14NumberCodeTypeE",
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneNumber(nw::lyt::TextBox*, gfl2::str::StrBuf*, unsigned int, unsigned int, unsigned int, print::NumberDispType, print::NumberCodeType)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil20SetTextBoxPaneStringEPN2nw3lyt7TextBoxEj",
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneString(nw::lyt::TextBox*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil20SetTextBoxPaneStringEPN2nw3lyt7TextBoxEPKw",
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneString(nw::lyt::TextBox*, wchar_t const*)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil20SetTextBoxPaneStringEPN2nw3lyt7TextBoxEPN4gfl23str6StrBufE",
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneString(nw::lyt::TextBox*, gfl2::str::StrBuf*)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil21SetRegisterPlayerNameEjPKN8Savedata8MyStatusE",
+   "demangled": "app::util::G2DUtil::SetRegisterPlayerName(unsigned int, Savedata::MyStatus const*)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil26SetTextBoxPaneStringExpandEPN2nw3lyt7TextBoxEj",
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneStringExpand(nw::lyt::TextBox*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil27AddDrawableLytWkForOneFrameEPNS0_19AppRenderingManagerEN4gfl23gfx12CtrDisplayNoEjhj",
+   "demangled": "app::util::G2DUtil::AddDrawableLytWkForOneFrame(app::util::AppRenderingManager*, gfl2::gfx::CtrDisplayNo, unsigned int, unsigned char, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil8Update2DEv",
+   "demangled": "app::util::G2DUtil::Update2D()"
+  },
+  {
+   "mangled": "_ZN3btl18GetBgComponentDataENS_2bg16bgsys_far_typeIDENS0_17bgsys_near_typeIDEPNS_15BgComponentDataE",
+   "demangled": "btl::GetBgComponentData(btl::bg::bgsys_far_typeID, btl::bg::bgsys_near_typeID, btl::BgComponentData*)"
+  },
+  {
+   "mangled": "_ZN3pml9PokeParty15DeserializeCoreEPKNS0_14SERIALIZE_DATAE",
+   "demangled": "pml::PokeParty::DeserializeCore(pml::PokeParty::SERIALIZE_DATA const*)"
+  },
+  {
+   "mangled": "_ZN3pml9PokePartyC1EPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "pml::PokeParty::PokeParty(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN3pml9PokePartyD1Ev",
+   "demangled": "pml::PokeParty::~PokeParty()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph11Inheritance8GenerateEPKS2_NS_4util7FnvHashE",
+   "demangled": "gfl2::renderingengine::scenegraph::Inheritance::Generate(gfl2::renderingengine::scenegraph::Inheritance const*, gfl2::util::FnvHash)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBuf6SetStrEPKw",
+   "demangled": "gfl2::str::StrBuf::SetStr(wchar_t const*)"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBufC1ERKS1_PNS_4heap11CtrHeapBaseE",
+   "demangled": "gfl2::str::StrBuf::StrBuf(gfl2::str::StrBuf const&, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBufD1Ev",
+   "demangled": "gfl2::str::StrBuf::~StrBuf()"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN7GameSys11GameManagerEE11GetInstanceEv",
+   "demangled": "gfl2::base::SingletonAccessor<GameSys::GameManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24heap22GflHeapFreeMemoryBlockEPv",
+   "demangled": "gfl2::heap::GflHeapFreeMemoryBlock(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager15GetHeapByHeapIdEi",
+   "demangled": "gfl2::heap::Manager::GetHeapByHeapId(int)"
+  },
+  {
+   "mangled": "_ZN4gfl25debug9GFLassertEPKcjiS2_",
+   "demangled": "gfl2::debug::GFLassert(char const*, unsigned int, int, char const*)"
+  },
+  {
+   "mangled": "_ZN5print15GetMessageArcIdEN6System9MSGLANGIDE",
+   "demangled": "print::GetMessageArcId(System::MSGLANGID)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet12RegisterWordEjRKN4gfl23str6StrBufENS0_7GrammerENS0_4FormE",
+   "demangled": "print::WordSet::RegisterWord(unsigned int, gfl2::str::StrBuf const&, print::WordSet::Grammer, print::WordSet::Form)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet14RegisterNumberEjijNS_14NumberDispTypeENS_14NumberCodeTypeE",
+   "demangled": "print::WordSet::RegisterNumber(unsigned int, int, unsigned int, print::NumberDispType, print::NumberCodeType)"
+  },
+  {
+   "mangled": "_ZN5Sound6PlaySEEjjij",
+   "demangled": "Sound::PlaySE(unsigned int, unsigned int, int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN6NetApp4Live7LiveNet10DisconnectEv",
+   "demangled": "NetApp::Live::LiveNet::Disconnect()"
+  },
+  {
+   "mangled": "_ZN6NetApp4Live7LiveNet11IsConnectedEv",
+   "demangled": "NetApp::Live::LiveNet::IsConnected()"
+  },
+  {
+   "mangled": "_ZN6NetApp4Live7LiveNet14IsDisconnectedEv",
+   "demangled": "NetApp::Live::LiveNet::IsDisconnected()"
+  },
+  {
+   "mangled": "_ZN6NetApp4Live7LiveNet17SetupMyBattleInfoERK10RegulationRKN3pml9PokePartyE",
+   "demangled": "NetApp::Live::LiveNet::SetupMyBattleInfo(Regulation const&, pml::PokeParty const&)"
+  },
+  {
+   "mangled": "_ZN6NetApp4Live7LiveNet18ExchangeBattleInfoEv",
+   "demangled": "NetApp::Live::LiveNet::ExchangeBattleInfo()"
+  },
+  {
+   "mangled": "_ZN6NetApp4Live7LiveNet18ExchangeRegulationEPK10Regulation",
+   "demangled": "NetApp::Live::LiveNet::ExchangeRegulation(Regulation const*)"
+  },
+  {
+   "mangled": "_ZN6NetApp4Live7LiveNet7ConnectEv",
+   "demangled": "NetApp::Live::LiveNet::Connect()"
+  },
+  {
+   "mangled": "_ZN6NetLib17NijiNetworkSystem13SetRegulationEP10Regulation",
+   "demangled": "NetLib::NijiNetworkSystem::SetRegulation(Regulation*)"
+  },
+  {
+   "mangled": "_ZN6NetLib17NijiNetworkSystem17StopLiveRecSenderEv",
+   "demangled": "NetLib::NijiNetworkSystem::StopLiveRecSender()"
+  },
+  {
+   "mangled": "_ZN6NetLib17NijiNetworkSystem18ResetLiveRecSenderEv",
+   "demangled": "NetLib::NijiNetworkSystem::ResetLiveRecSender()"
+  },
+  {
+   "mangled": "_ZN6NetLib17NijiNetworkSystem18SetupLiveRecSenderEjP18BATTLE_SETUP_PARAM",
+   "demangled": "NetLib::NijiNetworkSystem::SetupLiveRecSender(unsigned int, BATTLE_SETUP_PARAM*)"
+  },
+  {
+   "mangled": "_ZN6System3CTR15RegionNameCache14LoadRegionNameEPN4gfl24heap11CtrHeapBaseEN2nn3cfg3CTR15CfgLanguageCodeENS8_14CfgCountryCodeE",
+   "demangled": "System::CTR::RegionNameCache::LoadRegionName(gfl2::heap::CtrHeapBase*, nn::cfg::CTR::CfgLanguageCode, nn::cfg::CTR::CfgCountryCode)"
+  },
+  {
+   "mangled": "_ZN6System3CTR15RegionNameCacheC1EPKwPh",
+   "demangled": "System::CTR::RegionNameCache::RegionNameCache(wchar_t const*, unsigned char*)"
+  },
+  {
+   "mangled": "_ZN6System3CTR16CountryNameCache15LoadCountryNameEPN4gfl24heap11CtrHeapBaseEN2nn3cfg3CTR15CfgLanguageCodeE",
+   "demangled": "System::CTR::CountryNameCache::LoadCountryName(gfl2::heap::CtrHeapBase*, nn::cfg::CTR::CfgLanguageCode)"
+  },
+  {
+   "mangled": "_ZN6System3CTR16CountryNameCacheC1Ev",
+   "demangled": "System::CTR::CountryNameCache::CountryNameCache()"
+  },
+  {
+   "mangled": "_ZN6System7GetLangEv",
+   "demangled": "System::GetLang()"
+  },
+  {
+   "mangled": "_ZN6System8Language13ConvertPM2CTREh",
+   "demangled": "System::Language::ConvertPM2CTR(unsigned char)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameData8SaveMainEv",
+   "demangled": "GameSys::GameData::SaveMain()"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameData9SaveStartEPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "GameSys::GameData::SaveStart(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc14EventCheckFuncEPNS_11GameManagerE",
+   "demangled": "GameSys::GameProc::EventCheckFunc(GameSys::GameManager*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc17NextFrameMainFuncEPN4gfl24proc7ManagerE",
+   "demangled": "GameSys::GameProc::NextFrameMainFunc(gfl2::proc::Manager*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProcC1Ev",
+   "demangled": "GameSys::GameProc::GameProc()"
+  },
+  {
+   "mangled": "_ZN7GameSys9AlolaTime10InitializeEv",
+   "demangled": "GameSys::AlolaTime::Initialize()"
+  },
+  {
+   "mangled": "_ZN7GameSys9AlolaTimeC1Ev",
+   "demangled": "GameSys::AlolaTime::AlolaTime()"
+  },
+  {
+   "mangled": "_ZN7GameSys9AlolaTimeD1Ev",
+   "demangled": "GameSys::AlolaTime::~AlolaTime()"
+  },
+  {
+   "mangled": "_ZN8Savedata13LiveMatchData16SetLiveEntryWorkEh",
+   "demangled": "Savedata::LiveMatchData::SetLiveEntryWork(unsigned char)"
+  },
+  {
+   "mangled": "_ZN8Savedata13LiveMatchData17GetLastLiveRecordEv",
+   "demangled": "Savedata::LiveMatchData::GetLastLiveRecord()"
+  },
+  {
+   "mangled": "_ZN8Savedata3BOX11SetTeamLockEjb",
+   "demangled": "Savedata::BOX::SetTeamLock(unsigned int, bool)"
+  },
+  {
+   "mangled": "_ZN8Savedata8MyStatus8CopyFromERKS0_",
+   "demangled": "Savedata::MyStatus::CopyFrom(Savedata::MyStatus const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView11OnKeyActionEPN4gfl22ui6ButtonEPNS3_12VectorDeviceES7_",
+   "demangled": "NetAppLib::UI::NetAppCursorView::OnKeyAction(gfl2::ui::Button*, gfl2::ui::VectorDevice*, gfl2::ui::VectorDevice*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView12CreateCursorEijj",
+   "demangled": "NetAppLib::UI::NetAppCursorView::CreateCursor(int, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView13ReleaseCursorEv",
+   "demangled": "NetAppLib::UI::NetAppCursorView::ReleaseCursor()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView16SetCursorVisibleEb",
+   "demangled": "NetAppLib::UI::NetAppCursorView::SetCursorVisible(bool)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView16SetCusorPosPanesEPPN2nw3lyt4PaneEPKji",
+   "demangled": "NetAppLib::UI::NetAppCursorView::SetCusorPosPanes(nw::lyt::Pane**, unsigned int const*, int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView24CursorController_OnEventEPN3app4tool16CursorControllerENS4_13IEventHandler9EventCodeE",
+   "demangled": "NetAppLib::UI::NetAppCursorView::CursorController_OnEvent(app::tool::CursorController*, app::tool::CursorController::IEventHandler::EventCode)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView29OnLayoutPaneTouchTriggerEventEj",
+   "demangled": "NetAppLib::UI::NetAppCursorView::OnLayoutPaneTouchTriggerEvent(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView4DrawEN4gfl23gfx12CtrDisplayNoE",
+   "demangled": "NetAppLib::UI::NetAppCursorView::Draw(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView6UpdateEv",
+   "demangled": "NetAppLib::UI::NetAppCursorView::Update()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorViewC1EPNS_6System19ApplicationWorkBaseE",
+   "demangled": "NetAppLib::UI::NetAppCursorView::NetAppCursorView(NetAppLib::System::ApplicationWorkBase*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorViewD1Ev",
+   "demangled": "NetAppLib::UI::NetAppCursorView::~NetAppCursorView()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI17NetAppMessageMenu11ShowMessageEjjbbb",
+   "demangled": "NetAppLib::UI::NetAppMessageMenu::ShowMessage(unsigned int, unsigned int, bool, bool, bool)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI17NetAppMessageMenu23ShowMessageWithListMenuEPKN4gfl23str6StrBufEbS6_S6_S6_S6_S6_S6_",
+   "demangled": "NetAppLib::UI::NetAppMessageMenu::ShowMessageWithListMenu(gfl2::str::StrBuf const*, bool, gfl2::str::StrBuf const*, gfl2::str::StrBuf const*, gfl2::str::StrBuf const*, gfl2::str::StrBuf const*, gfl2::str::StrBuf const*, gfl2::str::StrBuf const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI17NetAppMessageMenu5SetupEjPNS_7Message14MessageUtilityE",
+   "demangled": "NetAppLib::UI::NetAppMessageMenu::Setup(unsigned int, NetAppLib::Message::MessageUtility*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI17NetAppMessageMenuC1EPNS_6System19ApplicationWorkBaseEPN3App4Tool15MessageMenuView13IEventHandlerE",
+   "demangled": "NetAppLib::UI::NetAppMessageMenu::NetAppMessageMenu(NetAppLib::System::ApplicationWorkBase*, App::Tool::MessageMenuView::IEventHandler*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI17NetAppMessageMenuD1Ev",
+   "demangled": "NetAppLib::UI::NetAppMessageMenu::~NetAppMessageMenu()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI21NetAppPokeparaUtility8OnUpdateEv",
+   "demangled": "NetAppLib::UI::NetAppPokeparaUtility::OnUpdate()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI22NetAppPokePartyUtility12SetPokePartyEjPKN3pml9PokePartyE",
+   "demangled": "NetAppLib::UI::NetAppPokePartyUtility::SetPokeParty(unsigned int, pml::PokeParty const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI22NetAppPokePartyUtility22RegisterStatusResourceEjjRKNS0_21NetAppPokeparaUtility12RegisterInfoE",
+   "demangled": "NetAppLib::UI::NetAppPokePartyUtility::RegisterStatusResource(unsigned int, unsigned int, NetAppLib::UI::NetAppPokeparaUtility::RegisterInfo const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI22NetAppPokePartyUtility5SetupEjPN3app2ui6UIViewEj",
+   "demangled": "NetAppLib::UI::NetAppPokePartyUtility::Setup(unsigned int, app::ui::UIView*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI22NetAppPokePartyUtility7CleanupEv",
+   "demangled": "NetAppLib::UI::NetAppPokePartyUtility::Cleanup()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI22NetAppPokePartyUtilityC1EPNS_6System19ApplicationWorkBaseE",
+   "demangled": "NetAppLib::UI::NetAppPokePartyUtility::NetAppPokePartyUtility(NetAppLib::System::ApplicationWorkBase*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI22NetAppPokePartyUtilityD1Ev",
+   "demangled": "NetAppLib::UI::NetAppPokePartyUtility::~NetAppPokePartyUtility()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBG13PopClearColorEv",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::PopClearColor()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBG14PushClearColorEffff",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::PushClearColor(float, float, float, float)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBG14SetLowerCameraEffffffffffff",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::SetLowerCamera(float, float, float, float, float, float, float, float, float, float, float, float)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBG14SetUpperCameraEffffffffffff",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::SetUpperCamera(float, float, float, float, float, float, float, float, float, float, float, float)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBG5SetupEPNS_6System19ApplicationWorkBaseEPjj",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::Setup(NetAppLib::System::ApplicationWorkBase*, unsigned int*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBG6UpdateEv",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::Update()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBG7CleanupEv",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::Cleanup()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBGC1Ev",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::NetAppEffectBG()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBGD1Ev",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::~NetAppEffectBG()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util24NetAppTrainerIconUtility17SetIconObjectDataEjRKN3app4tool27AppToolTrainerIconRendering16ICON_OBJECT_DATAEb",
+   "demangled": "NetAppLib::Util::NetAppTrainerIconUtility::SetIconObjectData(unsigned int, app::tool::AppToolTrainerIconRendering::ICON_OBJECT_DATA const&, bool)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase10UpdateFuncEv",
+   "demangled": "NetAppLib::System::NetAppFrameBase::UpdateFunc()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase7EndFuncEv",
+   "demangled": "NetAppLib::System::NetAppFrameBase::EndFunc()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase8DrawFuncEN4gfl23gfx12CtrDisplayNoE",
+   "demangled": "NetAppLib::System::NetAppFrameBase::DrawFunc(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase8InitFuncEv",
+   "demangled": "NetAppLib::System::NetAppFrameBase::InitFunc()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase9exitFrameEi",
+   "demangled": "NetAppLib::System::NetAppFrameBase::exitFrame(int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBaseC1EPNS0_19ApplicationWorkBaseE",
+   "demangled": "NetAppLib::System::NetAppFrameBase::NetAppFrameBase(NetAppLib::System::ApplicationWorkBase*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBaseD1Ev",
+   "demangled": "NetAppLib::System::NetAppFrameBase::~NetAppFrameBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15ResourceManager14AddLoadRequestEijjbbN4gfl22fs10ToolDefine11ArcLangType3TagE",
+   "demangled": "NetAppLib::System::ResourceManager::AddLoadRequest(int, unsigned int, unsigned int, bool, bool, gfl2::fs::ToolDefine::ArcLangType::Tag)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15ResourceManager15FontLoadRequestENS1_8FontTypeE",
+   "demangled": "NetAppLib::System::ResourceManager::FontLoadRequest(NetAppLib::System::ResourceManager::FontType)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15ResourceManager17GetResourceBufferEi",
+   "demangled": "NetAppLib::System::ResourceManager::GetResourceBuffer(int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System19ApplicationWorkBaseC1Ejj",
+   "demangled": "NetAppLib::System::ApplicationWorkBase::ApplicationWorkBase(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System19ApplicationWorkBaseD1Ev",
+   "demangled": "NetAppLib::System::ApplicationWorkBase::~ApplicationWorkBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase3EndEv",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::End()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase4DrawEN4gfl23gfx12CtrDisplayNoE",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Draw(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase5BuildEPNS0_25IApplicationSystemBuilderE",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Build(NetAppLib::System::IApplicationSystemBuilder*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase6ResumeEv",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Resume()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase6UpdateEv",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Update()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase7DestroyEv",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Destroy()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase7LoadingEv",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Loading()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase7PreDrawEv",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::PreDraw()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase7SuspendEv",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Suspend()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBaseC1Ev",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::ApplicationSystemBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBaseD1Ev",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::~ApplicationSystemBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System22NetApplicationViewBase17Create2DOneLayoutEPNS0_19ApplicationWorkBaseEijjN3app4util7G2DUtil18SETUP_DISPLAY_TYPEEPNS_7Message14MessageUtilityEj",
+   "demangled": "NetAppLib::System::NetApplicationViewBase::Create2DOneLayout(NetAppLib::System::ApplicationWorkBase*, int, unsigned int, unsigned int, app::util::G2DUtil::SETUP_DISPLAY_TYPE, NetAppLib::Message::MessageUtility*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System22NetApplicationViewBaseC2EPNS0_19ApplicationWorkBaseEijjN3app4util7G2DUtil18SETUP_DISPLAY_TYPEEPNS_7Message14MessageUtilityEj",
+   "demangled": "NetAppLib::System::NetApplicationViewBase::NetApplicationViewBase(NetAppLib::System::ApplicationWorkBase*, int, unsigned int, unsigned int, app::util::G2DUtil::SETUP_DISPLAY_TYPE, NetAppLib::Message::MessageUtility*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System22NetApplicationViewBaseD2Ev",
+   "demangled": "NetAppLib::System::NetApplicationViewBase::~NetApplicationViewBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility14LoadFromMemoryEjPKv",
+   "demangled": "NetAppLib::Message::MessageUtility::LoadFromMemory(unsigned int, void const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility17GetExpandedStringEjj",
+   "demangled": "NetAppLib::Message::MessageUtility::GetExpandedString(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility7GetDataEj",
+   "demangled": "NetAppLib::Message::MessageUtility::GetData(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility9GetStringEjj",
+   "demangled": "NetAppLib::Message::MessageUtility::GetString(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtilityC1EPN4gfl24heap11CtrHeapBaseEj",
+   "demangled": "NetAppLib::Message::MessageUtility::MessageUtility(gfl2::heap::CtrHeapBase*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtilityD1Ev",
+   "demangled": "NetAppLib::Message::MessageUtility::~MessageUtility()"
+  },
+  {
+   "mangled": "_ZnajPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "operator new[](unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZNK10Regulation12GetBoolParamENS_11BoolParamIdE",
+   "demangled": "Regulation::GetBoolParam(Regulation::BoolParamId) const"
+  },
+  {
+   "mangled": "_ZNK10Regulation12GetTextParamENS_11TextParamIdE",
+   "demangled": "Regulation::GetTextParam(Regulation::TextParamId) const"
+  },
+  {
+   "mangled": "_ZNK10Regulation12GetTextParamENS_11TextParamIdEPN4gfl23str6StrBufE",
+   "demangled": "Regulation::GetTextParam(Regulation::TextParamId, gfl2::str::StrBuf*) const"
+  },
+  {
+   "mangled": "_ZNK10Regulation13CheckParamRomEi",
+   "demangled": "Regulation::CheckParamRom(int) const"
+  },
+  {
+   "mangled": "_ZNK10Regulation13GetValueParamENS_12ValueParamIdE",
+   "demangled": "Regulation::GetValueParam(Regulation::ValueParamId) const"
+  },
+  {
+   "mangled": "_ZNK10Regulation18CheckParamLanguageEi",
+   "demangled": "Regulation::CheckParamLanguage(int) const"
+  },
+  {
+   "mangled": "_ZNK10Regulation8CheckCrcEv",
+   "demangled": "Regulation::CheckCrc() const"
+  },
+  {
+   "mangled": "_ZNK10Regulation9SerializeEPv",
+   "demangled": "Regulation::Serialize(void*) const"
+  },
+  {
+   "mangled": "_ZNK11ExtSavedata22BattleRecorderSaveData22GetBattleRecUploadDataEv",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::GetBattleRecUploadData() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui11UIResponder17IsButtonAnimationEv",
+   "demangled": "app::ui::UIResponder::IsButtonAnimation() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView10GetG2DUtilEv",
+   "demangled": "app::ui::UIView::GetG2DUtil() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView9IsDrawingEv",
+   "demangled": "app::ui::UIView::IsDrawing() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView9IsVisibleEv",
+   "demangled": "app::ui::UIView::IsVisible() const"
+  },
+  {
+   "mangled": "_ZNK3app4util7G2DUtil13GetLayoutWorkEj",
+   "demangled": "app::util::G2DUtil::GetLayoutWork(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui13DeviceManager9GetButtonEh",
+   "demangled": "gfl2::ui::DeviceManager::GetButton(unsigned char) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui6Button6IsHoldEjNS1_12InputStateIDE",
+   "demangled": "gfl2::ui::Button::IsHold(unsigned int, gfl2::ui::Button::InputStateID) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui6Button9IsTriggerEjNS1_12InputStateIDE",
+   "demangled": "gfl2::ui::Button::IsTrigger(unsigned int, gfl2::ui::Button::InputStateID) const"
+  },
+  {
+   "mangled": "_ZNK4gfl23str7MsgData11GetStrCountEv",
+   "demangled": "gfl2::str::MsgData::GetStrCount() const"
+  },
+  {
+   "mangled": "_ZNK6NetApp4Live7LiveNet16GetClientID_MineEv",
+   "demangled": "NetApp::Live::LiveNet::GetClientID_Mine() const"
+  },
+  {
+   "mangled": "_ZNK6NetApp4Live7LiveNet16GetMyStatus_MineEv",
+   "demangled": "NetApp::Live::LiveNet::GetMyStatus_Mine() const"
+  },
+  {
+   "mangled": "_ZNK6NetApp4Live7LiveNet20GetClientID_OpponentEv",
+   "demangled": "NetApp::Live::LiveNet::GetClientID_Opponent() const"
+  },
+  {
+   "mangled": "_ZNK6NetApp4Live7LiveNet20GetMyStatus_OpponentEv",
+   "demangled": "NetApp::Live::LiveNet::GetMyStatus_Opponent() const"
+  },
+  {
+   "mangled": "_ZNK6System3CTR15RegionNameCache13GetRegionNameERN2nn3cfg3CTR15SimpleAddressIdE",
+   "demangled": "System::CTR::RegionNameCache::GetRegionName(nn::cfg::CTR::SimpleAddressId&) const"
+  },
+  {
+   "mangled": "_ZNK6System3CTR16CountryNameCache14GetCountryNameEN2nn3cfg3CTR14CfgCountryCodeE",
+   "demangled": "System::CTR::CountryNameCache::GetCountryName(nn::cfg::CTR::CfgCountryCode) const"
+  },
+  {
+   "mangled": "_ZNK6System3CTR16CountryNameCache20GetUnkownCountryNameEv",
+   "demangled": "System::CTR::CountryNameCache::GetUnkownCountryName() const"
+  },
+  {
+   "mangled": "_ZNK7GameSys11GameManager18GetUiDeviceManagerEv",
+   "demangled": "GameSys::GameManager::GetUiDeviceManager() const"
+  },
+  {
+   "mangled": "_ZNK7GameSys9AlolaTime7GetHourEv",
+   "demangled": "GameSys::AlolaTime::GetHour() const"
+  },
+  {
+   "mangled": "_ZNK7GameSys9AlolaTime9GetMinuteEv",
+   "demangled": "GameSys::AlolaTime::GetMinute() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13LiveMatchData14GetLiveResultsEv",
+   "demangled": "Savedata::LiveMatchData::GetLiveResults() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13LiveMatchData16GetLiveEntryWorkEv",
+   "demangled": "Savedata::LiveMatchData::GetLiveEntryWork() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus10GetCountryEv",
+   "demangled": "Savedata::MyStatus::GetCountry() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus17GetPokeLanguageIdEv",
+   "demangled": "Savedata::MyStatus::GetPokeLanguageId() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus7GetAreaEv",
+   "demangled": "Savedata::MyStatus::GetArea() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus7GetIconEv",
+   "demangled": "Savedata::MyStatus::GetIcon() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib2UI16NetAppCursorView9IsDrawingEv",
+   "demangled": "NetAppLib::UI::NetAppCursorView::IsDrawing() const"
+  },
+  {
+   "mangled": "_ZnwjPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "operator new(unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZThn128_N3App4Tool15MessageMenuView10SelectMenuEj",
+   "demangled": "non-virtual thunk to App::Tool::MessageMenuView::SelectMenu(unsigned int)"
+  },
+  {
+   "mangled": "_ZThn128_N3App4Tool23CommonMessageWindowView38CommonMessageWindowManipulator_OnEventENS0_30CommonMessageWindowManipulator7EventIDE",
+   "demangled": "non-virtual thunk to App::Tool::CommonMessageWindowView::CommonMessageWindowManipulator_OnEvent(App::Tool::CommonMessageWindowManipulator::EventID)"
+  },
+  {
+   "mangled": "_ZThn132_N3App4Tool15MessageMenuView31CommonMessageWindowView_OnEventENS0_23CommonMessageWindowView13IEventHandler9EventCodeE",
+   "demangled": "non-virtual thunk to App::Tool::MessageMenuView::CommonMessageWindowView_OnEvent(App::Tool::CommonMessageWindowView::IEventHandler::EventCode)"
+  },
+  {
+   "mangled": "_ZThn160_N9NetAppLib2UI16NetAppCursorView29OnLayoutPaneTouchTriggerEventEj",
+   "demangled": "non-virtual thunk to NetAppLib::UI::NetAppCursorView::OnLayoutPaneTouchTriggerEvent(unsigned int)"
+  },
+  {
+   "mangled": "_ZThn164_N9NetAppLib2UI16NetAppCursorView24CursorController_OnEventEPN3app4tool16CursorControllerENS4_13IEventHandler9EventCodeE",
+   "demangled": "non-virtual thunk to NetAppLib::UI::NetAppCursorView::CursorController_OnEvent(app::tool::CursorController*, app::tool::CursorController::IEventHandler::EventCode)"
+  },
+  {
+   "mangled": "_ZTIN3App4Tool23CommonMessageWindowViewE",
+   "demangled": "typeinfo for App::Tool::CommonMessageWindowView"
+  },
+  {
+   "mangled": "_ZTIN7GameSys8GameProcE",
+   "demangled": "typeinfo for GameSys::GameProc"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib2UI16NetAppCursorViewE",
+   "demangled": "typeinfo for NetAppLib::UI::NetAppCursorView"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib2UI17NetAppMessageMenuE",
+   "demangled": "typeinfo for NetAppLib::UI::NetAppMessageMenu"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib6System15NetAppFrameBaseE",
+   "demangled": "typeinfo for NetAppLib::System::NetAppFrameBase"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib6System19ApplicationWorkBaseE",
+   "demangled": "typeinfo for NetAppLib::System::ApplicationWorkBase"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib6System21ApplicationSystemBaseE",
+   "demangled": "typeinfo for NetAppLib::System::ApplicationSystemBase"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib6System22NetApplicationViewBaseE",
+   "demangled": "typeinfo for NetAppLib::System::NetApplicationViewBase"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv117__class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv120__si_class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__si_class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv121__vmi_class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__vmi_class_type_info"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  }
+ ],
+ "scanned": [
+  {
+   "mangled": "_Z17BATTLE_SETUP_CommP18BATTLE_SETUP_PARAMPN7GameSys11GameManagerEPK19BTL_FIELD_SITUATIONhhPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "BATTLE_SETUP_Comm(BATTLE_SETUP_PARAM*, GameSys::GameManager*, BTL_FIELD_SITUATION const*, unsigned char, unsigned char, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_Z18BATTLE_SETUP_ClearP18BATTLE_SETUP_PARAM",
+   "demangled": "BATTLE_SETUP_Clear(BATTLE_SETUP_PARAM*)"
+  },
+  {
+   "mangled": "_Z25BATTLE_PARAM_SetPokePartyP18BATTLE_SETUP_PARAMPKN3pml9PokePartyE13BTL_CLIENT_ID",
+   "demangled": "BATTLE_PARAM_SetPokeParty(BATTLE_SETUP_PARAM*, pml::PokeParty const*, BTL_CLIENT_ID)"
+  },
+  {
+   "mangled": "_Z26BATTLE_PARAM_SetRegulationP18BATTLE_SETUP_PARAMP10RegulationPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "BATTLE_PARAM_SetRegulation(BATTLE_SETUP_PARAM*, Regulation*, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZGVZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "guard variable for gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZN10Regulation11DeserializeEPKvj",
+   "demangled": "Regulation::Deserialize(void const*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN10RegulationC1EPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "Regulation::Regulation(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN11ExtSavedata22BattleRecorderSaveData11GetMyStatusE13BTL_CLIENT_IDPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::GetMyStatus(BTL_CLIENT_ID, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN11ExtSavedata22BattleRecorderSaveData15LiveCupLoadDataEv",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::LiveCupLoadData()"
+  },
+  {
+   "mangled": "_ZN11ExtSavedata22BattleRecorderSaveData15LiveCupSaveDataEv",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::LiveCupSaveData()"
+  },
+  {
+   "mangled": "_ZN11ExtSavedata22BattleRecorderSaveData17LiveCupDeleteDataEv",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::LiveCupDeleteData()"
+  },
+  {
+   "mangled": "_ZN11ExtSavedata22BattleRecorderSaveData21ClearBattleSetupParamEP18BATTLE_SETUP_PARAM",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::ClearBattleSetupParam(BATTLE_SETUP_PARAM*)"
+  },
+  {
+   "mangled": "_ZN11ExtSavedata22BattleRecorderSaveData22CreateBattleSetupParamEP18BATTLE_SETUP_PARAMPKN8Savedata10ConfigSaveE",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::CreateBattleSetupParam(BATTLE_SETUP_PARAM*, Savedata::ConfigSave const*)"
+  },
+  {
+   "mangled": "_ZN11ExtSavedata22BattleRecorderSaveData28CheckLiveCupSaveDataValidityEPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::CheckLiveCupSaveDataValidity(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN3App4Tool15MessageMenuView10SelectMenuEj",
+   "demangled": "App::Tool::MessageMenuView::SelectMenu(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3App4Tool15MessageMenuView11ShowMessageEPKN4gfl23str6StrBufEbbb",
+   "demangled": "App::Tool::MessageMenuView::ShowMessage(gfl2::str::StrBuf const*, bool, bool, bool)"
+  },
+  {
+   "mangled": "_ZN3App4Tool15MessageMenuView13SetYNListModeEbj",
+   "demangled": "App::Tool::MessageMenuView::SetYNListMode(bool, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3App4Tool15MessageMenuView31CommonMessageWindowView_OnEventENS0_23CommonMessageWindowView13IEventHandler9EventCodeE",
+   "demangled": "App::Tool::MessageMenuView::CommonMessageWindowView_OnEvent(App::Tool::CommonMessageWindowView::IEventHandler::EventCode)"
+  },
+  {
+   "mangled": "_ZN3App4Tool23CommonMessageWindowView38CommonMessageWindowManipulator_OnEventENS0_30CommonMessageWindowManipulator7EventIDE",
+   "demangled": "App::Tool::CommonMessageWindowView::CommonMessageWindowManipulator_OnEvent(App::Tool::CommonMessageWindowManipulator::EventID)"
+  },
+  {
+   "mangled": "_ZN3App4Tool23CommonMessageWindowView6UpdateEv",
+   "demangled": "App::Tool::CommonMessageWindowView::Update()"
+  },
+  {
+   "mangled": "_ZN3App4Tool23CommonMessageWindowViewC1ERKNS1_5PARAMEPNS1_13IEventHandlerE",
+   "demangled": "App::Tool::CommonMessageWindowView::CommonMessageWindowView(App::Tool::CommonMessageWindowView::PARAM const&, App::Tool::CommonMessageWindowView::IEventHandler*)"
+  },
+  {
+   "mangled": "_ZN3App4Tool23CommonMessageWindowViewD1Ev",
+   "demangled": "App::Tool::CommonMessageWindowView::~CommonMessageWindowView()"
+  },
+  {
+   "mangled": "_ZN3App4Tool30CommonMessageWindowManipulator18SetFinishMode_NoneEv",
+   "demangled": "App::Tool::CommonMessageWindowManipulator::SetFinishMode_None()"
+  },
+  {
+   "mangled": "_ZN3App4Tool30CommonMessageWindowManipulator5SetupERKNS1_11_SSetupInfoE",
+   "demangled": "App::Tool::CommonMessageWindowManipulator::Setup(App::Tool::CommonMessageWindowManipulator::_SSetupInfo const&)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder15SetButtonEnableEjbb",
+   "demangled": "app::ui::UIResponder::SetButtonEnable(unsigned int, bool, bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder15SetInputEnabledEb",
+   "demangled": "app::ui::UIResponder::SetInputEnabled(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder16GetButtonManagerEv",
+   "demangled": "app::ui::UIResponder::GetButtonManager()"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder16SetInputListenerEPNS0_15UIInputListenerE",
+   "demangled": "app::ui::UIResponder::SetInputListener(app::ui::UIInputListener*)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder17OnSetInputEnabledEb",
+   "demangled": "app::ui::UIResponder::OnSetInputEnabled(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder19CreateButtonManagerEPNS_4util4HeapEPN4gfl23lyt5LytWkEPKNS0_12ButtonInfoExEj",
+   "demangled": "app::ui::UIResponder::CreateButtonManager(app::util::Heap*, gfl2::lyt::LytWk*, app::ui::ButtonInfoEx const*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder28CallbackFuncOnButtonSelectedEj",
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonSelected(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder31CallbackFuncOnButtonLongPressedEj",
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonLongPressed(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder32CallBackFuncOnButtonTouchTriggerEj",
+   "demangled": "app::ui::UIResponder::CallBackFuncOnButtonTouchTrigger(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui11UIResponder39CallbackFuncOnButtonSelectedBeforeAnimeEj",
+   "demangled": "app::ui::UIResponder::CallbackFuncOnButtonSelectedBeforeAnime(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10AddSubViewEPS1_",
+   "demangled": "app::ui::UIView::AddSubView(app::ui::UIView*)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10SetVisibleEb",
+   "demangled": "app::ui::UIView::SetVisible(bool)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView10UpdateTreeEv",
+   "demangled": "app::ui::UIView::UpdateTree()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView11Initalize2DEPNS_4util4HeapEPN4gfl23lyt6LytSysEjPKNS2_7G2DUtil10LytResDataEjPKNS9_9LytwkDataEjii",
+   "demangled": "app::ui::UIView::Initalize2D(app::util::Heap*, gfl2::lyt::LytSys*, unsigned int, app::util::G2DUtil::LytResData const*, unsigned int, app::util::G2DUtil::LytwkData const*, unsigned int, int, int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView13DoInputActionEv",
+   "demangled": "app::ui::UIView::DoInputAction()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView19RemoveFromSuperViewEv",
+   "demangled": "app::ui::UIView::RemoveFromSuperView()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView20DeleteGraphicsSystemEv",
+   "demangled": "app::ui::UIView::DeleteGraphicsSystem()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView21SetTextboxPaneMessageEPN2nw3lyt7TextBoxEi",
+   "demangled": "app::ui::UIView::SetTextboxPaneMessage(nw::lyt::TextBox*, int)"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView6UpdateEv",
+   "demangled": "app::ui::UIView::Update()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8Delete2DEv",
+   "demangled": "app::ui::UIView::Delete2D()"
+  },
+  {
+   "mangled": "_ZN3app2ui6UIView8DrawTreeEN4gfl23gfx12CtrDisplayNoE",
+   "demangled": "app::ui::UIView::DrawTree(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN3app4tool13ButtonManager17SetButtonSelectSEEjj",
+   "demangled": "app::tool::ButtonManager::SetButtonSelectSE(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4tool27AppToolTrainerIconRendering16ICON_OBJECT_DATA24ConvFromMyStatusIconDataERKN8Savedata8MyStatus9ICON_DATAE",
+   "demangled": "app::tool::AppToolTrainerIconRendering::ICON_OBJECT_DATA::ConvFromMyStatusIconData(Savedata::MyStatus::ICON_DATA const&)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper12GetPartsPaneEj",
+   "demangled": "app::util::GetPaneHelper::GetPartsPane(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper14GetPicturePaneEj",
+   "demangled": "app::util::GetPaneHelper::GetPicturePane(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper14GetTextBoxPaneEj",
+   "demangled": "app::util::GetPaneHelper::GetTextBoxPane(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper15GetBoundingPaneEj",
+   "demangled": "app::util::GetPaneHelper::GetBoundingPane(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper3PopEv",
+   "demangled": "app::util::GetPaneHelper::Pop()"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper4PeekEv",
+   "demangled": "app::util::GetPaneHelper::Peek()"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper4PushEj",
+   "demangled": "app::util::GetPaneHelper::Push(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper5ClearEv",
+   "demangled": "app::util::GetPaneHelper::Clear()"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelper7GetPaneEj",
+   "demangled": "app::util::GetPaneHelper::GetPane(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelperC1EPN4gfl23lyt5LytWkEPNS3_13LytMultiResIDE",
+   "demangled": "app::util::GetPaneHelper::GetPaneHelper(gfl2::lyt::LytWk*, gfl2::lyt::LytMultiResID*)"
+  },
+  {
+   "mangled": "_ZN3app4util13GetPaneHelperD1Ev",
+   "demangled": "app::util::GetPaneHelper::~GetPaneHelper()"
+  },
+  {
+   "mangled": "_ZN3app4util4Heap15LocalHeapCreateEPN4gfl24heap11CtrHeapBaseES5_jj",
+   "demangled": "app::util::Heap::LocalHeapCreate(gfl2::heap::CtrHeapBase*, gfl2::heap::CtrHeapBase*, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapC1Ev",
+   "demangled": "app::util::Heap::Heap()"
+  },
+  {
+   "mangled": "_ZN3app4util4HeapD1Ev",
+   "demangled": "app::util::Heap::~Heap()"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil10StartAnimeEjjbb",
+   "demangled": "app::util::G2DUtil::StartAnime(unsigned int, unsigned int, bool, bool)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil15SetRegisterWordEjRKN4gfl23str6StrBufEN5print7WordSet7GrammerENS8_4FormE",
+   "demangled": "app::util::G2DUtil::SetRegisterWord(unsigned int, gfl2::str::StrBuf const&, print::WordSet::Grammer, print::WordSet::Form)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil19GetLayoutResourceIDEj",
+   "demangled": "app::util::G2DUtil::GetLayoutResourceID(unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil20SetTextBoxPaneNumberEPN2nw3lyt7TextBoxEPN4gfl23str6StrBufEjjjN5print14NumberDispTypeENSA_14NumberCodeTypeE",
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneNumber(nw::lyt::TextBox*, gfl2::str::StrBuf*, unsigned int, unsigned int, unsigned int, print::NumberDispType, print::NumberCodeType)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil20SetTextBoxPaneStringEPN2nw3lyt7TextBoxEPKw",
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneString(nw::lyt::TextBox*, wchar_t const*)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil20SetTextBoxPaneStringEPN2nw3lyt7TextBoxEPN4gfl23str6StrBufE",
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneString(nw::lyt::TextBox*, gfl2::str::StrBuf*)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil20SetTextBoxPaneStringEPN2nw3lyt7TextBoxEj",
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneString(nw::lyt::TextBox*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil21SetRegisterPlayerNameEjPKN8Savedata8MyStatusE",
+   "demangled": "app::util::G2DUtil::SetRegisterPlayerName(unsigned int, Savedata::MyStatus const*)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil26SetTextBoxPaneStringExpandEPN2nw3lyt7TextBoxEj",
+   "demangled": "app::util::G2DUtil::SetTextBoxPaneStringExpand(nw::lyt::TextBox*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil27AddDrawableLytWkForOneFrameEPNS0_19AppRenderingManagerEN4gfl23gfx12CtrDisplayNoEjhj",
+   "demangled": "app::util::G2DUtil::AddDrawableLytWkForOneFrame(app::util::AppRenderingManager*, gfl2::gfx::CtrDisplayNo, unsigned int, unsigned char, unsigned int)"
+  },
+  {
+   "mangled": "_ZN3app4util7G2DUtil8Update2DEv",
+   "demangled": "app::util::G2DUtil::Update2D()"
+  },
+  {
+   "mangled": "_ZN3btl18GetBgComponentDataENS_2bg16bgsys_far_typeIDENS0_17bgsys_near_typeIDEPNS_15BgComponentDataE",
+   "demangled": "btl::GetBgComponentData(btl::bg::bgsys_far_typeID, btl::bg::bgsys_near_typeID, btl::BgComponentData*)"
+  },
+  {
+   "mangled": "_ZN3pml9PokeParty15DeserializeCoreEPKNS0_14SERIALIZE_DATAE",
+   "demangled": "pml::PokeParty::DeserializeCore(pml::PokeParty::SERIALIZE_DATA const*)"
+  },
+  {
+   "mangled": "_ZN3pml9PokePartyC1EPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "pml::PokeParty::PokeParty(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN3pml9PokePartyD1Ev",
+   "demangled": "pml::PokeParty::~PokeParty()"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph11Inheritance8GenerateEPKS2_NS_4util7FnvHashE",
+   "demangled": "gfl2::renderingengine::scenegraph::Inheritance::Generate(gfl2::renderingengine::scenegraph::Inheritance const*, gfl2::util::FnvHash)"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_7DagNodeENS1_4NodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::DagNode, gfl2::renderingengine::scenegraph::Node>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource12ResourceNodeENS1_7DagNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::ResourceNode, gfl2::renderingengine::scenegraph::DagNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl215renderingengine10scenegraph15NodeInheritanceINS1_8resource21AnimationResourceNodeENS3_12ResourceNodeEE13s_InheritanceE",
+   "demangled": "gfl2::renderingengine::scenegraph::NodeInheritance<gfl2::renderingengine::scenegraph::resource::AnimationResourceNode, gfl2::renderingengine::scenegraph::resource::ResourceNode>::s_Inheritance"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBuf6SetStrEPKw",
+   "demangled": "gfl2::str::StrBuf::SetStr(wchar_t const*)"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBufC1ERKS1_PNS_4heap11CtrHeapBaseE",
+   "demangled": "gfl2::str::StrBuf::StrBuf(gfl2::str::StrBuf const&, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN4gfl23str6StrBufD1Ev",
+   "demangled": "gfl2::str::StrBuf::~StrBuf()"
+  },
+  {
+   "mangled": "_ZN4gfl24base17SingletonAccessorIN7GameSys11GameManagerEE11GetInstanceEv",
+   "demangled": "gfl2::base::SingletonAccessor<GameSys::GameManager>::GetInstance()"
+  },
+  {
+   "mangled": "_ZN4gfl24heap22GflHeapFreeMemoryBlockEPv",
+   "demangled": "gfl2::heap::GflHeapFreeMemoryBlock(void*)"
+  },
+  {
+   "mangled": "_ZN4gfl24heap7Manager15GetHeapByHeapIdEi",
+   "demangled": "gfl2::heap::Manager::GetHeapByHeapId(int)"
+  },
+  {
+   "mangled": "_ZN4gfl25debug9GFLassertEPKcjiS2_",
+   "demangled": "gfl2::debug::GFLassert(char const*, unsigned int, int, char const*)"
+  },
+  {
+   "mangled": "_ZN5Sound6PlaySEEjjij",
+   "demangled": "Sound::PlaySE(unsigned int, unsigned int, int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN5print15GetMessageArcIdEN6System9MSGLANGIDE",
+   "demangled": "print::GetMessageArcId(System::MSGLANGID)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet12RegisterWordEjRKN4gfl23str6StrBufENS0_7GrammerENS0_4FormE",
+   "demangled": "print::WordSet::RegisterWord(unsigned int, gfl2::str::StrBuf const&, print::WordSet::Grammer, print::WordSet::Form)"
+  },
+  {
+   "mangled": "_ZN5print7WordSet14RegisterNumberEjijNS_14NumberDispTypeENS_14NumberCodeTypeE",
+   "demangled": "print::WordSet::RegisterNumber(unsigned int, int, unsigned int, print::NumberDispType, print::NumberCodeType)"
+  },
+  {
+   "mangled": "_ZN6NetApp4Live7LiveNet10DisconnectEv",
+   "demangled": "NetApp::Live::LiveNet::Disconnect()"
+  },
+  {
+   "mangled": "_ZN6NetApp4Live7LiveNet11IsConnectedEv",
+   "demangled": "NetApp::Live::LiveNet::IsConnected()"
+  },
+  {
+   "mangled": "_ZN6NetApp4Live7LiveNet14IsDisconnectedEv",
+   "demangled": "NetApp::Live::LiveNet::IsDisconnected()"
+  },
+  {
+   "mangled": "_ZN6NetApp4Live7LiveNet17SetupMyBattleInfoERK10RegulationRKN3pml9PokePartyE",
+   "demangled": "NetApp::Live::LiveNet::SetupMyBattleInfo(Regulation const&, pml::PokeParty const&)"
+  },
+  {
+   "mangled": "_ZN6NetApp4Live7LiveNet18ExchangeBattleInfoEv",
+   "demangled": "NetApp::Live::LiveNet::ExchangeBattleInfo()"
+  },
+  {
+   "mangled": "_ZN6NetApp4Live7LiveNet18ExchangeRegulationEPK10Regulation",
+   "demangled": "NetApp::Live::LiveNet::ExchangeRegulation(Regulation const*)"
+  },
+  {
+   "mangled": "_ZN6NetApp4Live7LiveNet7ConnectEv",
+   "demangled": "NetApp::Live::LiveNet::Connect()"
+  },
+  {
+   "mangled": "_ZN6NetLib17NijiNetworkSystem13SetRegulationEP10Regulation",
+   "demangled": "NetLib::NijiNetworkSystem::SetRegulation(Regulation*)"
+  },
+  {
+   "mangled": "_ZN6NetLib17NijiNetworkSystem17StopLiveRecSenderEv",
+   "demangled": "NetLib::NijiNetworkSystem::StopLiveRecSender()"
+  },
+  {
+   "mangled": "_ZN6NetLib17NijiNetworkSystem18ResetLiveRecSenderEv",
+   "demangled": "NetLib::NijiNetworkSystem::ResetLiveRecSender()"
+  },
+  {
+   "mangled": "_ZN6NetLib17NijiNetworkSystem18SetupLiveRecSenderEjP18BATTLE_SETUP_PARAM",
+   "demangled": "NetLib::NijiNetworkSystem::SetupLiveRecSender(unsigned int, BATTLE_SETUP_PARAM*)"
+  },
+  {
+   "mangled": "_ZN6System3CTR15RegionNameCache14LoadRegionNameEPN4gfl24heap11CtrHeapBaseEN2nn3cfg3CTR15CfgLanguageCodeENS8_14CfgCountryCodeE",
+   "demangled": "System::CTR::RegionNameCache::LoadRegionName(gfl2::heap::CtrHeapBase*, nn::cfg::CTR::CfgLanguageCode, nn::cfg::CTR::CfgCountryCode)"
+  },
+  {
+   "mangled": "_ZN6System3CTR15RegionNameCacheC1EPKwPh",
+   "demangled": "System::CTR::RegionNameCache::RegionNameCache(wchar_t const*, unsigned char*)"
+  },
+  {
+   "mangled": "_ZN6System3CTR16CountryNameCache15LoadCountryNameEPN4gfl24heap11CtrHeapBaseEN2nn3cfg3CTR15CfgLanguageCodeE",
+   "demangled": "System::CTR::CountryNameCache::LoadCountryName(gfl2::heap::CtrHeapBase*, nn::cfg::CTR::CfgLanguageCode)"
+  },
+  {
+   "mangled": "_ZN6System3CTR16CountryNameCacheC1Ev",
+   "demangled": "System::CTR::CountryNameCache::CountryNameCache()"
+  },
+  {
+   "mangled": "_ZN6System7GetLangEv",
+   "demangled": "System::GetLang()"
+  },
+  {
+   "mangled": "_ZN6System8Language13ConvertPM2CTREh",
+   "demangled": "System::Language::ConvertPM2CTR(unsigned char)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameData8SaveMainEv",
+   "demangled": "GameSys::GameData::SaveMain()"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameData9SaveStartEPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "GameSys::GameData::SaveStart(gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc14EventCheckFuncEPNS_11GameManagerE",
+   "demangled": "GameSys::GameProc::EventCheckFunc(GameSys::GameManager*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProc17NextFrameMainFuncEPN4gfl24proc7ManagerE",
+   "demangled": "GameSys::GameProc::NextFrameMainFunc(gfl2::proc::Manager*)"
+  },
+  {
+   "mangled": "_ZN7GameSys8GameProcC1Ev",
+   "demangled": "GameSys::GameProc::GameProc()"
+  },
+  {
+   "mangled": "_ZN7GameSys9AlolaTime10InitializeEv",
+   "demangled": "GameSys::AlolaTime::Initialize()"
+  },
+  {
+   "mangled": "_ZN7GameSys9AlolaTimeC1Ev",
+   "demangled": "GameSys::AlolaTime::AlolaTime()"
+  },
+  {
+   "mangled": "_ZN7GameSys9AlolaTimeD1Ev",
+   "demangled": "GameSys::AlolaTime::~AlolaTime()"
+  },
+  {
+   "mangled": "_ZN8Savedata13LiveMatchData16SetLiveEntryWorkEh",
+   "demangled": "Savedata::LiveMatchData::SetLiveEntryWork(unsigned char)"
+  },
+  {
+   "mangled": "_ZN8Savedata13LiveMatchData17GetLastLiveRecordEv",
+   "demangled": "Savedata::LiveMatchData::GetLastLiveRecord()"
+  },
+  {
+   "mangled": "_ZN8Savedata3BOX11SetTeamLockEjb",
+   "demangled": "Savedata::BOX::SetTeamLock(unsigned int, bool)"
+  },
+  {
+   "mangled": "_ZN8Savedata8MyStatus8CopyFromERKS0_",
+   "demangled": "Savedata::MyStatus::CopyFrom(Savedata::MyStatus const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView11OnKeyActionEPN4gfl22ui6ButtonEPNS3_12VectorDeviceES7_",
+   "demangled": "NetAppLib::UI::NetAppCursorView::OnKeyAction(gfl2::ui::Button*, gfl2::ui::VectorDevice*, gfl2::ui::VectorDevice*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView12CreateCursorEijj",
+   "demangled": "NetAppLib::UI::NetAppCursorView::CreateCursor(int, unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView13ReleaseCursorEv",
+   "demangled": "NetAppLib::UI::NetAppCursorView::ReleaseCursor()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView16SetCursorVisibleEb",
+   "demangled": "NetAppLib::UI::NetAppCursorView::SetCursorVisible(bool)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView16SetCusorPosPanesEPPN2nw3lyt4PaneEPKji",
+   "demangled": "NetAppLib::UI::NetAppCursorView::SetCusorPosPanes(nw::lyt::Pane**, unsigned int const*, int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView24CursorController_OnEventEPN3app4tool16CursorControllerENS4_13IEventHandler9EventCodeE",
+   "demangled": "NetAppLib::UI::NetAppCursorView::CursorController_OnEvent(app::tool::CursorController*, app::tool::CursorController::IEventHandler::EventCode)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView29OnLayoutPaneTouchTriggerEventEj",
+   "demangled": "NetAppLib::UI::NetAppCursorView::OnLayoutPaneTouchTriggerEvent(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView4DrawEN4gfl23gfx12CtrDisplayNoE",
+   "demangled": "NetAppLib::UI::NetAppCursorView::Draw(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorView6UpdateEv",
+   "demangled": "NetAppLib::UI::NetAppCursorView::Update()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorViewC1EPNS_6System19ApplicationWorkBaseE",
+   "demangled": "NetAppLib::UI::NetAppCursorView::NetAppCursorView(NetAppLib::System::ApplicationWorkBase*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI16NetAppCursorViewD1Ev",
+   "demangled": "NetAppLib::UI::NetAppCursorView::~NetAppCursorView()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI17NetAppMessageMenu11ShowMessageEjjbbb",
+   "demangled": "NetAppLib::UI::NetAppMessageMenu::ShowMessage(unsigned int, unsigned int, bool, bool, bool)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI17NetAppMessageMenu23ShowMessageWithListMenuEPKN4gfl23str6StrBufEbS6_S6_S6_S6_S6_S6_",
+   "demangled": "NetAppLib::UI::NetAppMessageMenu::ShowMessageWithListMenu(gfl2::str::StrBuf const*, bool, gfl2::str::StrBuf const*, gfl2::str::StrBuf const*, gfl2::str::StrBuf const*, gfl2::str::StrBuf const*, gfl2::str::StrBuf const*, gfl2::str::StrBuf const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI17NetAppMessageMenu5SetupEjPNS_7Message14MessageUtilityE",
+   "demangled": "NetAppLib::UI::NetAppMessageMenu::Setup(unsigned int, NetAppLib::Message::MessageUtility*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI17NetAppMessageMenuC1EPNS_6System19ApplicationWorkBaseEPN3App4Tool15MessageMenuView13IEventHandlerE",
+   "demangled": "NetAppLib::UI::NetAppMessageMenu::NetAppMessageMenu(NetAppLib::System::ApplicationWorkBase*, App::Tool::MessageMenuView::IEventHandler*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI17NetAppMessageMenuD1Ev",
+   "demangled": "NetAppLib::UI::NetAppMessageMenu::~NetAppMessageMenu()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI21NetAppPokeparaUtility8OnUpdateEv",
+   "demangled": "NetAppLib::UI::NetAppPokeparaUtility::OnUpdate()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI22NetAppPokePartyUtility12SetPokePartyEjPKN3pml9PokePartyE",
+   "demangled": "NetAppLib::UI::NetAppPokePartyUtility::SetPokeParty(unsigned int, pml::PokeParty const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI22NetAppPokePartyUtility22RegisterStatusResourceEjjRKNS0_21NetAppPokeparaUtility12RegisterInfoE",
+   "demangled": "NetAppLib::UI::NetAppPokePartyUtility::RegisterStatusResource(unsigned int, unsigned int, NetAppLib::UI::NetAppPokeparaUtility::RegisterInfo const&)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI22NetAppPokePartyUtility5SetupEjPN3app2ui6UIViewEj",
+   "demangled": "NetAppLib::UI::NetAppPokePartyUtility::Setup(unsigned int, app::ui::UIView*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI22NetAppPokePartyUtility7CleanupEv",
+   "demangled": "NetAppLib::UI::NetAppPokePartyUtility::Cleanup()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI22NetAppPokePartyUtilityC1EPNS_6System19ApplicationWorkBaseE",
+   "demangled": "NetAppLib::UI::NetAppPokePartyUtility::NetAppPokePartyUtility(NetAppLib::System::ApplicationWorkBase*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib2UI22NetAppPokePartyUtilityD1Ev",
+   "demangled": "NetAppLib::UI::NetAppPokePartyUtility::~NetAppPokePartyUtility()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBG13PopClearColorEv",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::PopClearColor()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBG14PushClearColorEffff",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::PushClearColor(float, float, float, float)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBG14SetLowerCameraEffffffffffff",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::SetLowerCamera(float, float, float, float, float, float, float, float, float, float, float, float)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBG14SetUpperCameraEffffffffffff",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::SetUpperCamera(float, float, float, float, float, float, float, float, float, float, float, float)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBG5SetupEPNS_6System19ApplicationWorkBaseEPjj",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::Setup(NetAppLib::System::ApplicationWorkBase*, unsigned int*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBG6UpdateEv",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::Update()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBG7CleanupEv",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::Cleanup()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBGC1Ev",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::NetAppEffectBG()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util14NetAppEffectBGD1Ev",
+   "demangled": "NetAppLib::Util::NetAppEffectBG::~NetAppEffectBG()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib4Util24NetAppTrainerIconUtility17SetIconObjectDataEjRKN3app4tool27AppToolTrainerIconRendering16ICON_OBJECT_DATAEb",
+   "demangled": "NetAppLib::Util::NetAppTrainerIconUtility::SetIconObjectData(unsigned int, app::tool::AppToolTrainerIconRendering::ICON_OBJECT_DATA const&, bool)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase10UpdateFuncEv",
+   "demangled": "NetAppLib::System::NetAppFrameBase::UpdateFunc()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase7EndFuncEv",
+   "demangled": "NetAppLib::System::NetAppFrameBase::EndFunc()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase8DrawFuncEN4gfl23gfx12CtrDisplayNoE",
+   "demangled": "NetAppLib::System::NetAppFrameBase::DrawFunc(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase8InitFuncEv",
+   "demangled": "NetAppLib::System::NetAppFrameBase::InitFunc()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBase9exitFrameEi",
+   "demangled": "NetAppLib::System::NetAppFrameBase::exitFrame(int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBaseC1EPNS0_19ApplicationWorkBaseE",
+   "demangled": "NetAppLib::System::NetAppFrameBase::NetAppFrameBase(NetAppLib::System::ApplicationWorkBase*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15NetAppFrameBaseD1Ev",
+   "demangled": "NetAppLib::System::NetAppFrameBase::~NetAppFrameBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15ResourceManager14AddLoadRequestEijjbbN4gfl22fs10ToolDefine11ArcLangType3TagE",
+   "demangled": "NetAppLib::System::ResourceManager::AddLoadRequest(int, unsigned int, unsigned int, bool, bool, gfl2::fs::ToolDefine::ArcLangType::Tag)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15ResourceManager15FontLoadRequestENS1_8FontTypeE",
+   "demangled": "NetAppLib::System::ResourceManager::FontLoadRequest(NetAppLib::System::ResourceManager::FontType)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System15ResourceManager17GetResourceBufferEi",
+   "demangled": "NetAppLib::System::ResourceManager::GetResourceBuffer(int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System19ApplicationWorkBaseC1Ejj",
+   "demangled": "NetAppLib::System::ApplicationWorkBase::ApplicationWorkBase(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System19ApplicationWorkBaseD1Ev",
+   "demangled": "NetAppLib::System::ApplicationWorkBase::~ApplicationWorkBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase3EndEv",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::End()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase4DrawEN4gfl23gfx12CtrDisplayNoE",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Draw(gfl2::gfx::CtrDisplayNo)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase5BuildEPNS0_25IApplicationSystemBuilderE",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Build(NetAppLib::System::IApplicationSystemBuilder*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase6ResumeEv",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Resume()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase6UpdateEv",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Update()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase7DestroyEv",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Destroy()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase7LoadingEv",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Loading()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase7PreDrawEv",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::PreDraw()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBase7SuspendEv",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::Suspend()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBaseC1Ev",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::ApplicationSystemBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System21ApplicationSystemBaseD1Ev",
+   "demangled": "NetAppLib::System::ApplicationSystemBase::~ApplicationSystemBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System22NetApplicationViewBase17Create2DOneLayoutEPNS0_19ApplicationWorkBaseEijjN3app4util7G2DUtil18SETUP_DISPLAY_TYPEEPNS_7Message14MessageUtilityEj",
+   "demangled": "NetAppLib::System::NetApplicationViewBase::Create2DOneLayout(NetAppLib::System::ApplicationWorkBase*, int, unsigned int, unsigned int, app::util::G2DUtil::SETUP_DISPLAY_TYPE, NetAppLib::Message::MessageUtility*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System22NetApplicationViewBaseC2EPNS0_19ApplicationWorkBaseEijjN3app4util7G2DUtil18SETUP_DISPLAY_TYPEEPNS_7Message14MessageUtilityEj",
+   "demangled": "NetAppLib::System::NetApplicationViewBase::NetApplicationViewBase(NetAppLib::System::ApplicationWorkBase*, int, unsigned int, unsigned int, app::util::G2DUtil::SETUP_DISPLAY_TYPE, NetAppLib::Message::MessageUtility*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib6System22NetApplicationViewBaseD2Ev",
+   "demangled": "NetAppLib::System::NetApplicationViewBase::~NetApplicationViewBase()"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility14LoadFromMemoryEjPKv",
+   "demangled": "NetAppLib::Message::MessageUtility::LoadFromMemory(unsigned int, void const*)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility17GetExpandedStringEjj",
+   "demangled": "NetAppLib::Message::MessageUtility::GetExpandedString(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility7GetDataEj",
+   "demangled": "NetAppLib::Message::MessageUtility::GetData(unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtility9GetStringEjj",
+   "demangled": "NetAppLib::Message::MessageUtility::GetString(unsigned int, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtilityC1EPN4gfl24heap11CtrHeapBaseEj",
+   "demangled": "NetAppLib::Message::MessageUtility::MessageUtility(gfl2::heap::CtrHeapBase*, unsigned int)"
+  },
+  {
+   "mangled": "_ZN9NetAppLib7Message14MessageUtilityD1Ev",
+   "demangled": "NetAppLib::Message::MessageUtility::~MessageUtility()"
+  },
+  {
+   "mangled": "_ZNK10Regulation12GetBoolParamENS_11BoolParamIdE",
+   "demangled": "Regulation::GetBoolParam(Regulation::BoolParamId) const"
+  },
+  {
+   "mangled": "_ZNK10Regulation12GetTextParamENS_11TextParamIdE",
+   "demangled": "Regulation::GetTextParam(Regulation::TextParamId) const"
+  },
+  {
+   "mangled": "_ZNK10Regulation12GetTextParamENS_11TextParamIdEPN4gfl23str6StrBufE",
+   "demangled": "Regulation::GetTextParam(Regulation::TextParamId, gfl2::str::StrBuf*) const"
+  },
+  {
+   "mangled": "_ZNK10Regulation13CheckParamRomEi",
+   "demangled": "Regulation::CheckParamRom(int) const"
+  },
+  {
+   "mangled": "_ZNK10Regulation13GetValueParamENS_12ValueParamIdE",
+   "demangled": "Regulation::GetValueParam(Regulation::ValueParamId) const"
+  },
+  {
+   "mangled": "_ZNK10Regulation18CheckParamLanguageEi",
+   "demangled": "Regulation::CheckParamLanguage(int) const"
+  },
+  {
+   "mangled": "_ZNK10Regulation8CheckCrcEv",
+   "demangled": "Regulation::CheckCrc() const"
+  },
+  {
+   "mangled": "_ZNK10Regulation9SerializeEPv",
+   "demangled": "Regulation::Serialize(void*) const"
+  },
+  {
+   "mangled": "_ZNK11ExtSavedata22BattleRecorderSaveData22GetBattleRecUploadDataEv",
+   "demangled": "ExtSavedata::BattleRecorderSaveData::GetBattleRecUploadData() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui11UIResponder17IsButtonAnimationEv",
+   "demangled": "app::ui::UIResponder::IsButtonAnimation() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView10GetG2DUtilEv",
+   "demangled": "app::ui::UIView::GetG2DUtil() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView9IsDrawingEv",
+   "demangled": "app::ui::UIView::IsDrawing() const"
+  },
+  {
+   "mangled": "_ZNK3app2ui6UIView9IsVisibleEv",
+   "demangled": "app::ui::UIView::IsVisible() const"
+  },
+  {
+   "mangled": "_ZNK3app4util7G2DUtil13GetLayoutWorkEj",
+   "demangled": "app::util::G2DUtil::GetLayoutWork(unsigned int) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui13DeviceManager9GetButtonEh",
+   "demangled": "gfl2::ui::DeviceManager::GetButton(unsigned char) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui6Button6IsHoldEjNS1_12InputStateIDE",
+   "demangled": "gfl2::ui::Button::IsHold(unsigned int, gfl2::ui::Button::InputStateID) const"
+  },
+  {
+   "mangled": "_ZNK4gfl22ui6Button9IsTriggerEjNS1_12InputStateIDE",
+   "demangled": "gfl2::ui::Button::IsTrigger(unsigned int, gfl2::ui::Button::InputStateID) const"
+  },
+  {
+   "mangled": "_ZNK4gfl23str7MsgData11GetStrCountEv",
+   "demangled": "gfl2::str::MsgData::GetStrCount() const"
+  },
+  {
+   "mangled": "_ZNK6NetApp4Live7LiveNet16GetClientID_MineEv",
+   "demangled": "NetApp::Live::LiveNet::GetClientID_Mine() const"
+  },
+  {
+   "mangled": "_ZNK6NetApp4Live7LiveNet16GetMyStatus_MineEv",
+   "demangled": "NetApp::Live::LiveNet::GetMyStatus_Mine() const"
+  },
+  {
+   "mangled": "_ZNK6NetApp4Live7LiveNet20GetClientID_OpponentEv",
+   "demangled": "NetApp::Live::LiveNet::GetClientID_Opponent() const"
+  },
+  {
+   "mangled": "_ZNK6NetApp4Live7LiveNet20GetMyStatus_OpponentEv",
+   "demangled": "NetApp::Live::LiveNet::GetMyStatus_Opponent() const"
+  },
+  {
+   "mangled": "_ZNK6System3CTR15RegionNameCache13GetRegionNameERN2nn3cfg3CTR15SimpleAddressIdE",
+   "demangled": "System::CTR::RegionNameCache::GetRegionName(nn::cfg::CTR::SimpleAddressId&) const"
+  },
+  {
+   "mangled": "_ZNK6System3CTR16CountryNameCache14GetCountryNameEN2nn3cfg3CTR14CfgCountryCodeE",
+   "demangled": "System::CTR::CountryNameCache::GetCountryName(nn::cfg::CTR::CfgCountryCode) const"
+  },
+  {
+   "mangled": "_ZNK6System3CTR16CountryNameCache20GetUnkownCountryNameEv",
+   "demangled": "System::CTR::CountryNameCache::GetUnkownCountryName() const"
+  },
+  {
+   "mangled": "_ZNK7GameSys11GameManager18GetUiDeviceManagerEv",
+   "demangled": "GameSys::GameManager::GetUiDeviceManager() const"
+  },
+  {
+   "mangled": "_ZNK7GameSys9AlolaTime7GetHourEv",
+   "demangled": "GameSys::AlolaTime::GetHour() const"
+  },
+  {
+   "mangled": "_ZNK7GameSys9AlolaTime9GetMinuteEv",
+   "demangled": "GameSys::AlolaTime::GetMinute() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13LiveMatchData14GetLiveResultsEv",
+   "demangled": "Savedata::LiveMatchData::GetLiveResults() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata13LiveMatchData16GetLiveEntryWorkEv",
+   "demangled": "Savedata::LiveMatchData::GetLiveEntryWork() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus10GetCountryEv",
+   "demangled": "Savedata::MyStatus::GetCountry() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus17GetPokeLanguageIdEv",
+   "demangled": "Savedata::MyStatus::GetPokeLanguageId() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus7GetAreaEv",
+   "demangled": "Savedata::MyStatus::GetArea() const"
+  },
+  {
+   "mangled": "_ZNK8Savedata8MyStatus7GetIconEv",
+   "demangled": "Savedata::MyStatus::GetIcon() const"
+  },
+  {
+   "mangled": "_ZNK9NetAppLib2UI16NetAppCursorView9IsDrawingEv",
+   "demangled": "NetAppLib::UI::NetAppCursorView::IsDrawing() const"
+  },
+  {
+   "mangled": "_ZTIN3App4Tool23CommonMessageWindowViewE",
+   "demangled": "typeinfo for App::Tool::CommonMessageWindowView"
+  },
+  {
+   "mangled": "_ZTIN7GameSys8GameProcE",
+   "demangled": "typeinfo for GameSys::GameProc"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib2UI16NetAppCursorViewE",
+   "demangled": "typeinfo for NetAppLib::UI::NetAppCursorView"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib2UI17NetAppMessageMenuE",
+   "demangled": "typeinfo for NetAppLib::UI::NetAppMessageMenu"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib6System15NetAppFrameBaseE",
+   "demangled": "typeinfo for NetAppLib::System::NetAppFrameBase"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib6System19ApplicationWorkBaseE",
+   "demangled": "typeinfo for NetAppLib::System::ApplicationWorkBase"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib6System21ApplicationSystemBaseE",
+   "demangled": "typeinfo for NetAppLib::System::ApplicationSystemBase"
+  },
+  {
+   "mangled": "_ZTIN9NetAppLib6System22NetApplicationViewBaseE",
+   "demangled": "typeinfo for NetAppLib::System::NetApplicationViewBase"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv117__class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv120__si_class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__si_class_type_info"
+  },
+  {
+   "mangled": "_ZTVN10__cxxabiv121__vmi_class_type_infoE",
+   "demangled": "vtable for __cxxabiv1::__vmi_class_type_info"
+  },
+  {
+   "mangled": "_ZThn128_N3App4Tool15MessageMenuView10SelectMenuEj",
+   "demangled": "non-virtual thunk to App::Tool::MessageMenuView::SelectMenu(unsigned int)"
+  },
+  {
+   "mangled": "_ZThn128_N3App4Tool23CommonMessageWindowView38CommonMessageWindowManipulator_OnEventENS0_30CommonMessageWindowManipulator7EventIDE",
+   "demangled": "non-virtual thunk to App::Tool::CommonMessageWindowView::CommonMessageWindowManipulator_OnEvent(App::Tool::CommonMessageWindowManipulator::EventID)"
+  },
+  {
+   "mangled": "_ZThn132_N3App4Tool15MessageMenuView31CommonMessageWindowView_OnEventENS0_23CommonMessageWindowView13IEventHandler9EventCodeE",
+   "demangled": "non-virtual thunk to App::Tool::MessageMenuView::CommonMessageWindowView_OnEvent(App::Tool::CommonMessageWindowView::IEventHandler::EventCode)"
+  },
+  {
+   "mangled": "_ZThn160_N9NetAppLib2UI16NetAppCursorView29OnLayoutPaneTouchTriggerEventEj",
+   "demangled": "non-virtual thunk to NetAppLib::UI::NetAppCursorView::OnLayoutPaneTouchTriggerEvent(unsigned int)"
+  },
+  {
+   "mangled": "_ZThn164_N9NetAppLib2UI16NetAppCursorView24CursorController_OnEventEPN3app4tool16CursorControllerENS4_13IEventHandler9EventCodeE",
+   "demangled": "non-virtual thunk to NetAppLib::UI::NetAppCursorView::CursorController_OnEvent(app::tool::CursorController*, app::tool::CursorController::IEventHandler::EventCode)"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph7DagNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::DagNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource12ResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::ResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZZN4gfl215renderingengine10scenegraph8resource21AnimationResourceNode11GetTypeHashEvE4hash",
+   "demangled": "gfl2::renderingengine::scenegraph::resource::AnimationResourceNode::GetTypeHash()::hash"
+  },
+  {
+   "mangled": "_ZdaPv",
+   "demangled": "operator delete[](void*)"
+  },
+  {
+   "mangled": "_ZdlPv",
+   "demangled": "operator delete(void*)"
+  },
+  {
+   "mangled": "_ZnajPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "operator new[](unsigned int, gfl2::heap::CtrHeapBase*)"
+  },
+  {
+   "mangled": "_ZnwjPN4gfl24heap11CtrHeapBaseE",
+   "demangled": "operator new(unsigned int, gfl2::heap::CtrHeapBase*)"
+  }
+ ]
+}
