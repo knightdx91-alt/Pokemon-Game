@@ -23,12 +23,15 @@ EXPECT = {
     6:  ("Savedata::ZukanData",        0xf78),
     8:  ("Savedata::UnionPokemon",     0x30c),
     11: ("Savedata::ConfigSave",       0x4),
+    12: ("Savedata::GameTime",         0x58),
     13: ("Savedata::BOX",              0x5e6),
     14: ("Savedata::BoxPokemon",       0x36600),
+    16: ("Savedata::PlayTime",         0x8),
     18: ("Savedata::Fashion",          0x1a08),
     21: ("Savedata::JoinFestaDataSave",0x3998),
     27: ("Savedata::MysteryGiftSave",  0x3f50),
     29: ("Savedata::PokeFinderSave",   0x728),
+    37: ("Savedata::BattleFesSave",    0x39c),
 }
 
 def main():

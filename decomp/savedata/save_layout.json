@@ -131,7 +131,9 @@
    "length": 88,
    "length_hex": "0x58",
    "checksum": 63600,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::GameTime",
+   "role": "RTC datetime \u2014 GetSize (vtable slot3) returns 0x58"
   },
   {
    "id": 13,
@@ -171,7 +173,9 @@
    "length": 8,
    "length_hex": "0x8",
    "checksum": 18256,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::PlayTime",
+   "role": "play time h/m/s \u2014 GetSize returns 0x8"
   },
   {
    "id": 17,
@@ -368,7 +372,9 @@
    "length": 924,
    "length_hex": "0x39c",
    "checksum": 11163,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::BattleFesSave",
+   "role": "Battle Festival \u2014 GetSize returns 0x39c"
   },
   {
    "id": 38,
@@ -380,7 +386,7 @@
    "crc_verified_both_saves": true
   }
  ],
- "identification": "Block id->class mapped by matching each block's unique length to the size constant that appears only inside that Savedata class's own code, or the class's size-getter return value (verify/verify_savedata_ids.py). 12 blocks identified; the rest use computed (count*elem) sizes not stored as literals and need the runtime block-factory table to resolve.",
+ "identification": "Block id->class: (a) unique large size appearing only in the class's own code; (b) the class size-getter; (c) the class vtable's GetSize slot (vtable table @VA 0x64d000, 6-method vtables have GetSize at slot 3, validated on MyStatus/ConfigSave/UnionPokemon). 15/39 identified; verify/verify_savedata_ids.py.",
  "factory_investigation": {
   "goal": "map all 39 block ids to Savedata classes via the container's construction order",
   "result": "12/39 identified (see per-block class fields); remaining 27 need dynamic tracing",

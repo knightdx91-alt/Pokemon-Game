@@ -408,8 +408,16 @@ in priority order:
    and the constructors likewise cluster at 0x358000–0x35d000 in id order.
    Enumerating those vtables in address order = id order; each vtable's GetSize
    slot yields the size and its virtuals name the class. Blocked only by unnamed
-   sub_ vtable slots in this symbol set — a fuller vtable recovery or an emulator
-   trace of the container init would name all 39. (GameTime is block 1 or 2.)
+   sub_ vtable slots in this symbol set.
+   **Factory cracked (partly):** the vtable table @0x64d000 was segmented into
+   per-class vtables; a class's virtual method names it, and for 6-method
+   vtables **slot 3 is GetSize** (validated: MyStatus 0xc0, ConfigSave 0x4,
+   UnionPokemon 0x30c). That added GameTime=block12, PlayTime=block16,
+   BattleFesSave=block37 (GameTime year 2018 + PlayTime 151h content-verified in
+   the real save). **15/39 identified.** The rest have shared sizes (0x1fc,
+   0x200, 0x100 appear on 2–3 blocks) or GetSize at a non-slot-3 position
+   (5-method vtables), so disambiguating them needs the container's construction
+   order (dynamic trace).
 4. **Battle-sequence handler BODIES** (deep btl grind, behavioral) — the ~150
    step-state handlers in `battle_effects/effect_handler_table.json`; decode
    per-id. Lower value: the DATA they consume is already extracted. NOTE: the
