@@ -839,9 +839,12 @@ rodata pointer tables are zero on disk, filled at load (recovered by
   decompiled + validated on a real save; **save system DONE** = CRC-16/USB +
   full 39-block offset layout + **all 39/39 blocks named** to their `Savedata::`
   class (RTTI type-name + `GetSize` vtable-slot-3 matched to footer lengths,
-  `tools/usum_save_blocks.py`; VERIFY PASS). Immediate next task: pick from the
-  remaining core in `decomp/README.md` — highest value is **Phase-3 struct/field
-  reconstruction** (name CoreParam / battle-pokemon struct fields).
+  `tools/usum_save_blocks.py`; VERIFY PASS). **Phase-3 struct reconstruction
+  started: CoreParam field layout auto-derived + verified** (22 stored fields →
+  `decomp/src/pml/pokepara/CoreParam.h`, `tools/usum_coreparam_fields.py`,
+  `verify/verify_coreparam_fields.py` — anchor + real-save PASS). Immediate next
+  task: name the **battle-pokemon in-RAM struct** fields (HP @0xe/0xd, step
+  @0xa94, ballId @0x220, move-calc block) via `tools/cro_dataflow.py --offset`.
 - **Never commit ROM bytes.** `source/3ds/ultramoon/` is gitignored. Only
   commit derived analysis (symbol maps, disasm-derived C++, verified data).
 - **Verify before committing.** Every decompiled formula/table must be checked

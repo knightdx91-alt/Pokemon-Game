@@ -413,6 +413,19 @@ in priority order:
    the battle-pokemon struct fields (HP @0xe/0xd, step @0xa94, ballId @0x220,
    move-calc block power@0x10/type@6/dmgType@7) and CoreParam, so `decomp/src`
    reads like real source. `tools/cro_dataflow.py --offset <N>` per field.
+   - **✅ CoreParam field layout auto-derived & verified** — `tools/usum_coreparam_fields.py`
+     disassembles every named `pml::pokepara::CoreParam::Get*` accessor and its
+     field helper (each is the fixed shape `bl Decrypt → bl ResolveBlock{A/B/C/D}
+     → ldr[b/h] [ptr+off] → bl Encrypt`), classifying the block from the resolver
+     and reading the load offset/width — **no offsets guessed**. Emits
+     `decomp/pokepara/coreparam_fields.json` and a readable struct header
+     `decomp/src/pml/pokepara/CoreParam.h` (22 stored fields: species/item/ID32/
+     exp/ability/nature/form/sex/EVs in A, IV32 in B, friendship/feed in C, ball/
+     origin/language/parent-sex/memories in D). Self-verifying: anchor-checked
+     against the canonical PK7 offsets AND decoded from a **real save**
+     (`verify/verify_coreparam_fields.py` — party slot 0 species/nature/exp/ball
+     read straight through the derived offsets, matches `usum_savedump.py`). The
+     battle-pokemon in-RAM struct fields remain (next in this item).
 3. **Save data** (`Savedata::`) — checksum + block inventory DONE; per-block
    byte offsets are the remaining piece. The block checksum is
    `gfl2::math::Crc::Crc16` (@0x261534) = **CRC-16/USB** (poly 0x8005 reflected
