@@ -390,8 +390,16 @@ in priority order:
    CRC-verified in TWO independent real saves (block 36 is a zero-padded block
    whose stored checksum doesn't validate; its offset 0x6c000 is fixed by
    geometry). Known roles: block 4 = party @0x1600, block 14 = PC box @0x5200
-   (0x36600 = 960×0xE8). Save layout is DONE — only mapping the remaining block
-   ids to their `Savedata::` class names remains (cosmetic).
+   (0x36600 = 960×0xE8). Save layout is DONE.
+   **Block id→class identified** (`verify/verify_savedata_ids.py`) by matching
+   each block's unique length to the size constant that appears only inside that
+   `Savedata` class's code (or its size-getter): block 0=MyItem, 3=MyStatus,
+   4=party, 6=ZukanData(Pokédex), 8=UnionPokemon, 11=ConfigSave, 13=BOX,
+   14=BoxPokemon, 18=Fashion, 21=JoinFestaDataSave, 27=MysteryGiftSave,
+   29=PokeFinderSave. MyStatus is content-verified in a real save (OT "Lylliana"
+   TID 37488 = the party's OT). The other 27 blocks use computed (count×elem)
+   sizes not stored as literals — resolving them needs the runtime block-factory
+   table (`tools/usum_savedump.py` reads trainer + party + box).
 4. **Battle-sequence handler BODIES** (deep btl grind, behavioral) — the ~150
    step-state handlers in `battle_effects/effect_handler_table.json`; decode
    per-id. Lower value: the DATA they consume is already extracted. NOTE: the

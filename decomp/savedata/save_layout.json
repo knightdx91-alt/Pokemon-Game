@@ -12,7 +12,9 @@
    "length": 3624,
    "length_hex": "0xe28",
    "checksum": 40017,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::MyItem",
+   "role": "bag/items \u2014 0xe28 in MyItem::MyItem/Swap"
   },
   {
    "id": 1,
@@ -39,7 +41,9 @@
    "length": 192,
    "length_hex": "0xc0",
    "checksum": 16279,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::MyStatus",
+   "role": "trainer card \u2014 GetSerializeDataSize returns 0xc0"
   },
   {
    "id": 4,
@@ -49,7 +53,7 @@
    "length_hex": "0x61c",
    "checksum": 42149,
    "crc_verified_both_saves": true,
-   "role": "party (6x PokemonParam)"
+   "role": "party \u2014 6 PokemonParam read from 0x1600 (content-verified)"
   },
   {
    "id": 5,
@@ -67,7 +71,9 @@
    "length": 3960,
    "length_hex": "0xf78",
    "checksum": 26427,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::ZukanData",
+   "role": "Pokedex \u2014 0xf78 in ZukanData::SetPokeSee"
   },
   {
    "id": 7,
@@ -85,7 +91,9 @@
    "length": 780,
    "length_hex": "0x30c",
    "checksum": 54395,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::UnionPokemon",
+   "role": "size-getter returns 0x30c"
   },
   {
    "id": 9,
@@ -112,7 +120,9 @@
    "length": 4,
    "length_hex": "0x4",
    "checksum": 62453,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::ConfigSave",
+   "role": "options \u2014 size-getter returns 0x4"
   },
   {
    "id": 12,
@@ -130,7 +140,9 @@
    "length": 1510,
    "length_hex": "0x5e6",
    "checksum": 5693,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::BOX",
+   "role": "box metadata/teams \u2014 0x5e6 in BOX::DeleteTeam"
   },
   {
    "id": 14,
@@ -140,7 +152,8 @@
    "length_hex": "0x36600",
    "checksum": 60433,
    "crc_verified_both_saves": true,
-   "role": "PC box storage (960 slots)"
+   "role": "PC box storage \u2014 0x36600 in BoxPokemon::PutPokemon; box @0x5200",
+   "class": "Savedata::BoxPokemon"
   },
   {
    "id": 15,
@@ -176,7 +189,9 @@
    "length": 6664,
    "length_hex": "0x1a08",
    "checksum": 56959,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::Fashion",
+   "role": "0x1a08 in Fashion::IsOwned"
   },
   {
    "id": 19,
@@ -203,7 +218,9 @@
    "length": 14744,
    "length_hex": "0x3998",
    "checksum": 50428,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::JoinFestaDataSave",
+   "role": "0x3998 in JoinFestaDataSave::SetPattern"
   },
   {
    "id": 22,
@@ -257,7 +274,9 @@
    "length": 16208,
    "length_hex": "0x3f50",
    "checksum": 59638,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::MysteryGiftSave",
+   "role": "0x3f50 in MysteryGiftSave::SetupClone"
   },
   {
    "id": 28,
@@ -275,7 +294,9 @@
    "length": 1832,
    "length_hex": "0x728",
    "checksum": 18761,
-   "crc_verified_both_saves": true
+   "crc_verified_both_saves": true,
+   "class": "Savedata::PokeFinderSave",
+   "role": "0x728 in PokeFinderSave::SetTutorialFlags"
   },
   {
    "id": 30,
@@ -358,5 +379,6 @@
    "checksum": 32452,
    "crc_verified_both_saves": true
   }
- ]
+ ],
+ "identification": "Block id->class mapped by matching each block's unique length to the size constant that appears only inside that Savedata class's own code, or the class's size-getter return value (verify/verify_savedata_ids.py). 12 blocks identified; the rest use computed (count*elem) sizes not stored as literals and need the runtime block-factory table to resolve."
 }

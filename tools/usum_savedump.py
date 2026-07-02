@@ -24,8 +24,18 @@ import sys, os, json, struct
 HERE = os.path.dirname(__file__)
 BP = json.load(open(os.path.join(HERE, "..", "decomp", "pokepara",
                                   "block_position_table.json")))["rows_by_shift"]
-PARTY_OFF, PARTY_N, PARTY_STRIDE = 0x1600, 6, 260
-BOX_OFF, BOX_N, BOX_STRIDE = 0x5200, 960, 0xE8
+PARTY_OFF, PARTY_N, PARTY_STRIDE = 0x1600, 6, 260   # block 4
+BOX_OFF, BOX_N, BOX_STRIDE = 0x5200, 960, 0xE8       # block 14 = Savedata::BoxPokemon
+MYSTATUS_OFF = 0x1400                                 # block 3 = Savedata::MyStatus
+
+def trainer(d):
+    tid, sid = struct.unpack_from('<HH', d, MYSTATUS_OFF)
+    name = ""
+    for i in range(MYSTATUS_OFF + 0x38, MYSTATUS_OFF + 0x50, 2):
+        c = struct.unpack_from('<H', d, i)[0]
+        if c == 0: break
+        name += chr(c)
+    return name, tid, sid
 
 def decrypt(buf):
     """Return the decrypted 224-byte block region, or None if checksum fails."""
@@ -71,6 +81,10 @@ def main():
     if len(d) != 0x6CC00:
         print("warning: expected 0x6CC00-byte USUM main save, got 0x%x" % len(d))
     show_all = "--all" in sys.argv
+
+    name, tid, sid = trainer(d)
+    print("=== TRAINER (MyStatus @0x%04X) ===" % MYSTATUS_OFF)
+    print("  OT: %s   TID: %d   SID: %d\n" % (name, tid, sid))
 
     print("=== PARTY @0x%04X ===" % PARTY_OFF)
     for i in range(PARTY_N):
