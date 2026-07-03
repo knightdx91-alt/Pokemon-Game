@@ -118,5 +118,150 @@
         399
       ]
     }
+  },
+  "category_dispatch_DECISIVE": {
+    "_note": "DECISIVE non-KO capture (0-power 100%-effect status moves poked into the lead's battlemon move-records via /tmp/poke, target survives so the effect always applies; broad watch over rodata [0x7de000,0x7e4800]). The move-effect dispatch IS in the 0x45a0 table but keyed by effect CATEGORY, not per-effectId: seqId 80 = inflict status (burn/sleep/confuse), 71 = stat-change on TARGET, 70 = stat-change on SELF (each +a message/anim sub-step 31/43/41). The specific status/stat/stages are data-driven from usum_moves.json (already extracted). This overturns the earlier 'no clean table' reading (an artifact of KO-masking).",
+    "effect_category_seqId": {
+      "inflict_status(burn/sleep/confuse)": 80,
+      "stat_change_target": 71,
+      "stat_change_self": 70
+    },
+    "captures": {
+      "will_o_wisp": {
+        "effectId": 167,
+        "effect": "burn",
+        "seq_order_0x45a0": [
+          6,
+          11,
+          5,
+          4,
+          62,
+          65,
+          22,
+          23,
+          80,
+          31,
+          19,
+          95,
+          97,
+          62,
+          65,
+          22,
+          23,
+          58,
+          28
+        ]
+      },
+      "growl": {
+        "effectId": 18,
+        "effect": "stat -Atk (target)",
+        "seq_order_0x45a0": [
+          6,
+          11,
+          5,
+          4,
+          62,
+          65,
+          22,
+          23,
+          71,
+          43,
+          19,
+          95,
+          97,
+          62,
+          65,
+          22
+        ]
+      },
+      "hypnosis": {
+        "effectId": 1,
+        "effect": "sleep",
+        "seq_order_0x45a0": [
+          6,
+          11,
+          5,
+          4,
+          62,
+          65,
+          22,
+          23,
+          80,
+          31,
+          19,
+          95,
+          97,
+          19
+        ]
+      },
+      "swords_dance": {
+        "effectId": 50,
+        "effect": "stat +2Atk (self)",
+        "seq_order_0x45a0": [
+          6,
+          11,
+          5,
+          4,
+          62,
+          65,
+          22,
+          23,
+          70,
+          41,
+          19,
+          95,
+          97,
+          82,
+          31,
+          19,
+          62,
+          65,
+          22
+        ]
+      },
+      "sand_attack": {
+        "effectId": 23,
+        "effect": "stat -Acc (target)",
+        "seq_order_0x45a0": [
+          6,
+          11,
+          5,
+          4,
+          19,
+          62,
+          65,
+          22,
+          23,
+          71,
+          43,
+          19,
+          95,
+          97,
+          62,
+          65,
+          22
+        ]
+      },
+      "confuse_ray": {
+        "effectId": 49,
+        "effect": "confuse",
+        "seq_order_0x45a0": [
+          6,
+          11,
+          5,
+          4,
+          19,
+          62,
+          65,
+          22,
+          23,
+          80,
+          19,
+          95,
+          97,
+          19
+        ]
+      }
+    }
   }
 }

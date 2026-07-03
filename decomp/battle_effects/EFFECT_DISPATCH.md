@@ -1,6 +1,50 @@
-# Move-effect → sequence-handler dispatch (status: LIVE seqId DISPATCH CAPTURED via in-process JIT hook ✅)
+# Move-effect → sequence-handler dispatch (status: RESOLVED ✅ — dispatch is by effect CATEGORY in the 0x45a0 table)
 
-## BREAKTHROUGH — the in-process hook reads the live sequence dispatch
+## ✅ RESOLVED — the effect dispatch is by CATEGORY, keyed in the 0x45a0 table
+Decisive non-KO captures (0-power, 100%-effect status moves poked into the lead's
+battlemon move-records via `/tmp/poke` so the target survives and the effect
+*always* applies; broad read-watch over rodata `[0x7de000,0x7e4800)`) settle it.
+Six effects, each captured live:
+
+| effect (move)            | effectId | effect seqId (0x45a0) |
+|--------------------------|----------|-----------------------|
+| burn  (Will-O-Wisp)      | 167      | **80** (+31)          |
+| sleep (Hypnosis)         | 1        | **80** (+31)          |
+| confuse (Confuse Ray)    | 49       | **80**                |
+| −Atk  (Growl)            | 18       | **71** (+43)          |
+| −Acc  (Sand Attack)      | 23       | **71** (+43)          |
+| +2Atk self (Swords Dance)| 50       | **70** (+41)          |
+
+**The move-effect dispatch IS in the `0x45a0` table, but keyed by effect
+CATEGORY, not by the 400-value effectId:**
+- seqId **80** = *inflict a status condition* (burn / sleep / confuse all share it),
+- seqId **71** = *apply a stat-stage change to the TARGET*,
+- seqId **70** = *apply a stat-stage change to SELF*
+- (each followed by a message/anim sub-step: 31 / 43 / 41).
+
+The **specific** status, stat, and stage count come from the move's DATA, which is
+**already fully extracted** (`data/pokemon/usum_moves.json`:
+status/statChanges/effectId). So: there is **no 400-entry effectId→seqId table** to
+recover; the effect layer is a handful of category handlers + the extracted data —
+**and it is complete.** This overturns two earlier readings: (a) the pre-refinement
+"burn adds 16,133,143…" (that was the faint/exp flow), and (b) the follow-up "no
+clean table at all" — both were artifacts of KO-masking, now removed by the
+guaranteed-effect-on-a-survivor method.
+
+Full move-flow around the effect handler:
+`[6,11,5,4,62,65,22,23] → <category seqId> → [19,95,97,62,65,22,23,58,28]`.
+Traces: `seq_traces/*.txt`; parsed table + note in `seq_dispatch_traces.json`
+(`category_dispatch_DECISIVE`). Method/tooling: `effect_seq_hook.patch`
+(read-watch + `/tmp/poke`), `tools/citra_gdb/hookcap.py`.
+
+**Remaining (optional, low-value):** more category coverage (recoil, heal, flinch,
+multi-hit, OHKO, charge…) by poking the corresponding moves — same method. But the
+core question ("is there an effectId→seqId remap?") is answered: it's a
+category dispatch, and the per-effect data is already in hand.
+
+---
+
+## (historical) BREAKTHROUGH — the in-process hook reads the live sequence dispatch
 The gdbstub route was a dead end (Z0/Z3 no-ops, registers zero). Instead, Citra
 was **rebuilt with a software read-watchpoint in the JIT read callback**
 (`decomp/citra/effect_seq_hook.patch`): the A32 JIT is built with
