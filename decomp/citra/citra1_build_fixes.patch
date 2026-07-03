@@ -20,7 +20,7 @@ index a9b0b3e..b55d79c 100644
      Core::Movie::GetInstance().Shutdown();
      if (system.VideoDumper().IsDumping()) {
 diff --git a/src/citra/emu_window/emu_window_sdl2.cpp b/src/citra/emu_window/emu_window_sdl2.cpp
-index ef53b3d..8d80e89 100644
+index ef53b3d..e8c25fd 100644
 --- a/src/citra/emu_window/emu_window_sdl2.cpp
 +++ b/src/citra/emu_window/emu_window_sdl2.cpp
 @@ -3,8 +3,11 @@
@@ -43,7 +43,7 @@ index ef53b3d..8d80e89 100644
  #include "core/settings.h"
  #include "input_common/keyboard.h"
  #include "input_common/main.h"
-@@ -222,14 +226,145 @@ std::unique_ptr<Frontend::GraphicsContext> EmuWindow_SDL2::CreateSharedContext()
+@@ -222,14 +226,199 @@ std::unique_ptr<Frontend::GraphicsContext> EmuWindow_SDL2::CreateSharedContext()
      return std::make_unique<SharedContext_SDL2>();
  }
  
@@ -76,7 +76,8 @@ index ef53b3d..8d80e89 100644
 +    int dn, sc;
 +    while (in >> fr >> dn >> sc) {
 +        ap_events.push_back({fr, dn, sc});
-+    }
+     }
+-    SDL_GL_MakeCurrent(render_window, nullptr);
 +}
 +
 +void ApTick(long frame) {
@@ -119,8 +120,7 @@ index ef53b3d..8d80e89 100644
 +    std::FILE* done = std::fopen("/tmp/fcram.done", "wb");
 +    if (done) {
 +        std::fclose(done);
-     }
--    SDL_GL_MakeCurrent(render_window, nullptr);
++    }
 +}
 +
 +// Save/load Citra save states via trigger files, so a driver can checkpoint
@@ -170,6 +170,58 @@ index ef53b3d..8d80e89 100644
 +    }
 +    std::fclose(f);
 +}
++
++// ---- Live interactive control (frame-by-frame see->act driving) -------------
++// /tmp/ap_key: lines "<down> <scancode>" applied immediately then file removed.
++// /tmp/shot   : dump the current framebuffer to /tmp/frames/live.ppm now.
++void ApLiveInput() {
++    std::ifstream in("/tmp/ap_key");
++    if (!in) {
++        return;
++    }
++    int dn, sc;
++    while (in >> dn >> sc) {
++        if (dn) {
++            InputCommon::GetKeyboard()->PressKey(sc);
++        } else {
++            InputCommon::GetKeyboard()->ReleaseKey(sc);
++        }
++    }
++    in.close();
++    std::remove("/tmp/ap_key");
++    std::FILE* d = std::fopen("/tmp/ap_key.done", "wb");
++    if (d) {
++        std::fclose(d);
++    }
++}
++
++void ApLiveShot(SDL_Window* win) {
++    if (!std::fopen("/tmp/shot", "rb")) {
++        return;
++    }
++    std::remove("/tmp/shot");
++    int w = 0, h = 0;
++    SDL_GetWindowSize(win, &w, &h);
++    if (w <= 0 || h <= 0) {
++        return;
++    }
++    std::vector<unsigned char> buf(static_cast<std::size_t>(w) * h * 3);
++    glPixelStorei(GL_PACK_ALIGNMENT, 1);
++    glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buf.data());
++    std::FILE* f = std::fopen("/tmp/frames/live.ppm", "wb");
++    if (f) {
++        std::fprintf(f, "P6\n%d %d\n255\n", w, h);
++        for (int y = h - 1; y >= 0; --y) {
++            std::fwrite(&buf[static_cast<std::size_t>(y) * w * 3], 1,
++                        static_cast<std::size_t>(w) * 3, f);
++        }
++        std::fclose(f);
++    }
++    std::FILE* d = std::fopen("/tmp/shot.done", "wb");
++    if (d) {
++        std::fclose(d);
++    }
++}
 +} // namespace
 +
 +void EmuWindow_SDL2::SwapBuffers() {
@@ -186,6 +238,8 @@ index ef53b3d..8d80e89 100644
 +        }();
 +        ++ap_frame;
 +        ApTick(ap_frame);
++        ApLiveInput();
++        ApLiveShot(render_window);
 +        ApMaybeState();
 +        ApMaybeDumpFcram();
 +        if (ap_frame % shot_every == 0) {
@@ -196,7 +250,7 @@ index ef53b3d..8d80e89 100644
  }
  
  void EmuWindow_SDL2::PollEvents() {
-@@ -309,11 +444,16 @@ bool EmuWindow_SDL2::NeedsClearing() const {
+@@ -309,11 +498,16 @@ bool EmuWindow_SDL2::NeedsClearing() const {
  void EmuWindow_SDL2::SetupFramebuffer() {}
  
  void EmuWindow_SDL2::MakeCurrent() {
@@ -292,48 +346,6 @@ index 28738df..4ad4828 100644
  #include <vector>
  #include "common/swap.h"
  #include "common/threadsafe_queue.h"
-diff --git a/src/core/frontend/scope_acquire_context.h b/src/core/frontend/scope_acquire_context.h
-new file mode 100644
-index 0000000..fb6bae3
---- /dev/null
-+++ b/src/core/frontend/scope_acquire_context.h
-@@ -0,0 +1,36 @@
-+// Copyright 2019 Citra Emulator Project
-+// Licensed under GPLv2 or any later version
-+// Refer to the license.txt file included.
-+
-+#pragma once
-+
-+#include "common/common_types.h"
-+
-+namespace Frontend {
-+
-+/// RAII helper that makes a rendering context current for the lifetime of the
-+/// object and releases it on destruction. Templated so it accepts either an
-+/// EmuWindow or a GraphicsContext (both expose MakeCurrent()/DoneCurrent()).
-+template <typename Context>
-+class ScopeAcquireContext {
-+public:
-+    explicit ScopeAcquireContext(Context& context_) : context{context_} {
-+        context.MakeCurrent();
-+    }
-+    ~ScopeAcquireContext() {
-+        context.DoneCurrent();
-+    }
-+
-+    ScopeAcquireContext(const ScopeAcquireContext&) = delete;
-+    ScopeAcquireContext& operator=(const ScopeAcquireContext&) = delete;
-+
-+private:
-+    Context& context;
-+};
-+
-+// Deduction guide so `ScopeAcquireContext scope(*emu_window);` works without
-+// spelling out the template argument at the call sites.
-+template <typename Context>
-+ScopeAcquireContext(Context&) -> ScopeAcquireContext<Context>;
-+
-+} // namespace Frontend
 diff --git a/src/core/hle/service/cfg/cfg.cpp b/src/core/hle/service/cfg/cfg.cpp
 index 92bdd3c..f9627fd 100644
 --- a/src/core/hle/service/cfg/cfg.cpp
