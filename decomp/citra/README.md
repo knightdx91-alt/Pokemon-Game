@@ -58,7 +58,54 @@ xvfb-run -a env LIBGL_ALWAYS_SOFTWARE=1 ./build/bin/Release/citra \
    (`LibRetro::settings`) into core unconditionally → undefined reference when the
    libretro frontend is off. Guard the include + use with `#ifdef ENABLE_LIBRETRO`.
 
+## Headless autopilot + FCRAM capture (in the patch, VERIFIED)
+
+The patch adds a decomp-research navigation harness to the SDL frontend, all
+gated by env `CITRA_AUTOPILOT=1` (no effect otherwise):
+
+- **Scripted input** — reads `/tmp/autopilot.txt`, whitespace-separated
+  `<frame> <down> <scancode>` per line (down 1=press/0=release; SDL scancode;
+  frame = SwapBuffers tick). Injected via `InputCommon::GetKeyboard()`.
+  Default key map (this fork's `config.cpp`): A=`A` B=`S` X=`Z` Y=`X`,
+  d-pad=`T`/`G`/`F`/`H`, **circle pad=arrow keys** (overworld walking),
+  Start=`M` Select=`N`, L=`Q` R=`W`.
+- **FCRAM dump** — when `/tmp/dump_now` appears, writes the full 256 MB N3DS
+  FCRAM to `/tmp/fcram.bin` (+ `/tmp/fcram.done`). VERIFIED: a mid-run dump
+  contains the live CRO cluster — `CRO0` magic + `Battle`/`Savedata`/`PokeTool`/
+  `gfl2`/`Field` module strings (e.g. Battle.cro CRO0 header ~`0x73a4080` in one
+  run; **CROs are relocated, so resolve the base per-boot, don't hardcode**).
+- **Framebuffer PPM** — `/tmp/frames/f*.ppm` every `CITRA_SHOT_EVERY` frames.
+  KNOWN LIMITATION: currently dumps **black** — the sync-render reconciliation
+  (fix #4) renders on the shared *core* context (hidden `dummy_window`) and no
+  longer blits to a framebuffer `glReadPixels` can read. Fixing needs either a
+  proper blit-to-`render_window`, or reading the renderer's screen textures
+  directly. **Not needed for the RAM route** — battle state is detectable from
+  memory (below).
+
+Save install: the user's decrypted USUM `main` save (0x6CC00 = 445440 bytes)
+goes at `~/.local/share/citra-emu/sdmc/Nintendo 3DS/<0*32>/<0*32>/title/00040000/001b5100/data/00000001/main`.
+Citra boots it with NO keys (decrypted-exheader → force no crypto).
+
 ## NEXT: capture the mid-battle RAM image
+
+The infrastructure is done and verified (boot+save+input+FCRAM dump). Remaining,
+via the **memory route** (sidesteps the black-frame issue entirely):
+1. **Battle detection from memory** — poll FCRAM (dump on a cadence, or add a
+   lighter in-process probe) for the in-battle signature: Battle.cro's dispatch
+   tables live + the battle event-queue / battlemon objects present (out-of-
+   battle they are not). Resolve Battle.cro's relocated base first.
+2. **Blind-ish navigation** — script: skip title (tap A), the save auto-continues
+   to where it was saved, then hold a walk direction (arrows) to trigger a wild
+   encounter; on the battle menu, tap A to FIGHT + pick a move so the effect
+   object is live. Correlate against the memory probe to know when each phase
+   lands (no visuals needed).
+3. **Dump + solve** — on in-battle detection, `touch /tmp/dump_now`, then feed
+   `/tmp/fcram.bin` to `tools/usum_effect_remap.py` (seed the real effect-object /
+   event-queue global `bss+0x394`, read the sequence id off the `rodata+0x45a0`
+   watch per move → the effect→sequence remap) and read the battle-pokemon
+   struct scalars directly → the `BattlePokemon.h` field names.
+
+## Original MEMORY-CAPTURE / trace notes
 
 The build is the means; the remaining work is getting FCRAM from an in-battle
 state and feeding it to `tools/usum_effect_remap.py`:

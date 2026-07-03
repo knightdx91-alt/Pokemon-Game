@@ -20,10 +20,30 @@ index a9b0b3e..b55d79c 100644
      Core::Movie::GetInstance().Shutdown();
      if (system.VideoDumper().IsDumping()) {
 diff --git a/src/citra/emu_window/emu_window_sdl2.cpp b/src/citra/emu_window/emu_window_sdl2.cpp
-index ef53b3d..32df09f 100644
+index ef53b3d..64af572 100644
 --- a/src/citra/emu_window/emu_window_sdl2.cpp
 +++ b/src/citra/emu_window/emu_window_sdl2.cpp
-@@ -222,14 +222,11 @@ std::unique_ptr<Frontend::GraphicsContext> EmuWindow_SDL2::CreateSharedContext()
+@@ -3,8 +3,11 @@
+ // Refer to the license.txt file included.
+ 
+ #include <algorithm>
++#include <cstdio>
+ #include <cstdlib>
++#include <fstream>
+ #include <string>
++#include <vector>
+ #define SDL_MAIN_HANDLED
+ #include <SDL.h>
+ #include <fmt/format.h>
+@@ -14,6 +17,7 @@
+ #include "common/scm_rev.h"
+ #include "core/3ds.h"
+ #include "core/core.h"
++#include "core/memory.h"
+ #include "core/settings.h"
+ #include "input_common/keyboard.h"
+ #include "input_common/main.h"
+@@ -222,14 +226,118 @@ std::unique_ptr<Frontend::GraphicsContext> EmuWindow_SDL2::CreateSharedContext()
      return std::make_unique<SharedContext_SDL2>();
  }
  
@@ -33,12 +53,118 @@ index ef53b3d..32df09f 100644
 -    while (IsOpen()) {
 -        VideoCore::g_renderer->Present();
 -        SDL_GL_SwapWindow(render_window);
--    }
--    SDL_GL_MakeCurrent(render_window, nullptr);
++namespace {
++// ---- Headless autopilot (enabled by env CITRA_AUTOPILOT) --------------------
++// Injects a scripted keyboard sequence and dumps the window framebuffer to
++// /tmp/frames/*.ppm so a driver can observe game state and script inputs.
++// Script file /tmp/autopilot.txt: whitespace-separated "<frame> <down> <scancode>"
++// per line (down: 1=press, 0=release; scancode = SDL scancode; frame = SwapBuffers
++// tick at which to fire). Purely a decomp-research navigation aid.
++struct ApEvent {
++    long frame;
++    int down;
++    int scancode;
++};
++std::vector<ApEvent> ap_events;
++std::size_t ap_idx = 0;
++bool ap_loaded = false;
++
++void ApLoad() {
++    ap_loaded = true;
++    std::ifstream in("/tmp/autopilot.txt");
++    long fr;
++    int dn, sc;
++    while (in >> fr >> dn >> sc) {
++        ap_events.push_back({fr, dn, sc});
++    }
++}
++
++void ApTick(long frame) {
++    if (!ap_loaded) {
++        ApLoad();
++    }
++    while (ap_idx < ap_events.size() && ap_events[ap_idx].frame <= frame) {
++        const ApEvent& e = ap_events[ap_idx++];
++        if (e.down) {
++            InputCommon::GetKeyboard()->PressKey(e.scancode);
++        } else {
++            InputCommon::GetKeyboard()->ReleaseKey(e.scancode);
++        }
++    }
++}
++
++// Dump the emulated New-3DS FCRAM (256 MB physical RAM) to a file. Triggered
++// when /tmp/dump_now exists; the file is consumed. Used to capture a mid-battle
++// memory image for the decomp's effect->sequence remap + battlemon scalars.
++void ApMaybeDumpFcram() {
++    std::FILE* trig = std::fopen("/tmp/dump_now", "rb");
++    if (!trig) {
++        return;
++    }
++    std::fclose(trig);
++    std::remove("/tmp/dump_now");
++    if (!Core::System::GetInstance().IsPoweredOn()) {
++        return;
++    }
++    const u8* fcram = Core::System::GetInstance().Memory().GetFCRAMPointer(0);
++    if (!fcram) {
++        return;
++    }
++    std::FILE* f = std::fopen("/tmp/fcram.bin", "wb");
++    if (!f) {
++        return;
++    }
++    std::fwrite(fcram, 1, Memory::FCRAM_N3DS_SIZE, f);
++    std::fclose(f);
++    std::FILE* done = std::fopen("/tmp/fcram.done", "wb");
++    if (done) {
++        std::fclose(done);
++    }
++}
++
++void ApDumpFrame(SDL_Window* win, long frame) {
++    int w = 0, h = 0;
++    SDL_GetWindowSize(win, &w, &h);
++    if (w <= 0 || h <= 0) {
++        return;
++    }
++    std::vector<unsigned char> buf(static_cast<std::size_t>(w) * h * 3);
++    glPixelStorei(GL_PACK_ALIGNMENT, 1);
++    glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buf.data());
++    char path[256];
++    std::snprintf(path, sizeof(path), "/tmp/frames/f%06ld.ppm", frame);
++    std::FILE* f = std::fopen(path, "wb");
++    if (!f) {
++        return;
++    }
++    std::fprintf(f, "P6\n%d %d\n255\n", w, h);
++    for (int y = h - 1; y >= 0; --y) { // GL origin is bottom-left; flip vertically
++        std::fwrite(&buf[static_cast<std::size_t>(y) * w * 3], 1, static_cast<std::size_t>(w) * 3, f);
++    }
++    std::fclose(f);
++}
++} // namespace
++
 +void EmuWindow_SDL2::SwapBuffers() {
 +    // Synchronous-renderer model: the GPU emulation thread drives frame
 +    // composition via g_renderer->SwapBuffers(), which calls this to present
 +    // the finished frame. (This fork's video_core has no threaded Present.)
++    static const bool ap_enabled = std::getenv("CITRA_AUTOPILOT") != nullptr;
++    if (ap_enabled) {
++        static long ap_frame = -1;
++        static const long shot_every = [] {
++            const char* s = std::getenv("CITRA_SHOT_EVERY");
++            const long v = s ? std::atol(s) : 30;
++            return v > 0 ? v : 30;
++        }();
++        ++ap_frame;
++        ApTick(ap_frame);
++        ApMaybeDumpFcram();
++        if (ap_frame % shot_every == 0) {
++            ApDumpFrame(render_window, ap_frame);
++        }
+     }
+-    SDL_GL_MakeCurrent(render_window, nullptr);
 +    SDL_GL_SwapWindow(render_window);
  }
  
