@@ -391,11 +391,13 @@ equals its footer block length):
 **Immediate next task — the move effect-id → sequence-handler dispatch** (the
 big open Phase-1 link). PROGRESS THIS SESSION (`decomp/battle_effects/EFFECT_DISPATCH.md`,
 `tools/usum_effect_dispatch.py`, `verify/verify_effect_dispatch.py` PASS):
-- **Input side SOLVED — where effectId enters battle.** `sub_86e48` (move-exec
-  parameter builder) fetches it via `pml::wazadata::GetParam(WazaNo, ParamID
-  0x1b)` and stores it into the battle **work-struct field-id 0x1f** through the
-  generic setter `sub_8790c`. So the dispatcher reads **work field 0x1f**, not
-  the move record. (ParamID 0x1b = the raw effect enum in `usum_moves.json`.)
+- **Input side SOLVED — effectId is emitted as a battle EVENT (tag 0x1f).**
+  `sub_86e48` (move-exec parameter builder) fetches it via `GetParam(WazaNo,
+  ParamID 0x1b)` and calls `sub_8790c(tag=0x1f, payload=effectId)`. `sub_8790c`
+  is an **event-queue push** (96-slot parallel arrays at a relocated global; tag
+  at `base+n*2+4`, payload at `base+n*4+0xc4`), NOT a struct-field setter — this
+  corrects the earlier "work field 0x1f" reading. The effect id is queued and
+  consumed asynchronously by the sequence runner.
 - **Direct-index hypothesis DISPROVEN (rigorously).** Read all four candidate
   tables out of the *relocated* module (`usum_effect_dispatch.py` via cro_emu →
   `effect_dispatch_tables.json`; each entry = 8B `{handler, aux}`) and tested
@@ -403,13 +405,23 @@ big open Phase-1 link). PROGRESS THIS SESSION (`decomp/battle_effects/EFFECT_DIS
   while unused slots carry real handlers (0x7e24: 43 used→null, 27 unused→real;
   0x98ac: 272/21; 0x67b8: 100/20; 0x45a0: 84/11). If the index were the effect
   id both counts would be 0 → there is an **intermediate effect-enum → sequence
-  index remap** between field 0x1f and these tables. That remap is the open link.
-- NEXT: find the **reader of work field 0x1f** (`sub_87578`/`sub_879d8` with
-  `r1=0x1f`) that consumes it — a translation table or `switch` — then `emu.call`
-  it across ids 0..419. Field-0x1f readers with indexed loads (scanned):
-  sub_12ee8 (large), sub_698bc, sub_1ac14, sub_df4c0, sub_87e7c, sub_8e520;
-  start inside the move-execution subtree reached from sub_86e48's caller.
+  index remap** between the event payload and these tables — the open link.
+- NEXT: trace the **consumer of event tag 0x1f** out of the queue. `sub_e47fc`
+  (912 B) is a queue-scanner that repeatedly matches entry tags to `0x1f` — the
+  best lead; follow how the `+0xc4` payload selects a sequence handler, then
+  emulate across ids 0..419 with `cro_emu.py`. See `battle_effects/EFFECT_DISPATCH.md`.
   Validate by correlating handlers with `usum_moves.json` effect semantics.
+
+**Phase-3 struct naming — battle-pokemon init fields NAMED (verified).** The
+runtime battle-pokemon struct is built from a CoreParam by `sub_6188c`, a
+straight-line copy (`bl CoreParam::GetX → str [this+off]`). `tools/usum_battlemon_init.py`
+follows those pairs (no guessing) → `battle_effects/battlemon_init_fields.json`
+and refreshes `src/pml/battle/BattlePokemon.h`: 0xc monsNo, **0xe maxHp**,
+**0x10 curHp** (the old header had these two swapped — now corrected & proven
+via GetPower(HP)/GetHp), 0x12 heldItem, 0x16 tokuseiNo (ability), 0x18 level,
+0x1c formNo; plus 0x1a/0x1b type1/type2, EVs @0x1f4, pokerus @0x1fa, and the
+stat stages @0x1ea..0x1f0 stored as **stage+6** (init=6=neutral, not signed).
+`verify/verify_battlemon_init.py` PASS.
 Lower-priority leftovers: confirm the 22↔23 FishingSpot/BerrySpot order against a
 real save; battle-sequence handler *bodies* (per-id, deep); wild encounters
 (`a/0/8/*`).

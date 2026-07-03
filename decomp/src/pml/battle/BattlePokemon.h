@@ -13,27 +13,38 @@
 namespace pml { namespace battle {
 
 // Offsets are into the in-RAM battle-pokemon object (getter arg `this`).
+// Names marked [init] are CONFIRMED by data flow in the initializer sub_6188c
+// (each is `bl CoreParam::GetX -> str [this+off]`; tools/usum_battlemon_init.py).
+// Names marked [getter] come from the indexed getter sub_924a8's switch.
 struct BattlePokemonFields {
-  /* 0x008 */ uint32_t  field_8;  // semantic TBD
-  /* 0x00c */ uint16_t  field_c;  // semantic TBD
-  /* 0x00e */ uint16_t  field_e;  // ? u16 HP pair with 0x10 — likely curHP (CatchRate reads HP here)
-  /* 0x010 */ uint16_t  field_10;  // ? u16 HP pair with 0xe — likely maxHP
-  /* 0x018 */ uint8_t   field_18;  // semantic TBD
-  /* 0x01a */ uint8_t   field_1a;  // semantic TBD
-  /* 0x01b */ uint8_t   field_1b;  // semantic TBD
-  /* 0x0a0 */ uint32_t  field_a0;  // ? flag word (handler does tst #7)
-  /* 0x1e7 */ uint8_t   field_1e7;  // semantic TBD
-  /* 0x1ea */ int8_t    rankAtk;
-  /* 0x1eb */ int8_t    rankDef;
-  /* 0x1ec */ int8_t    rankSpAtk;
-  /* 0x1ed */ int8_t    rankSpDef;
-  /* 0x1ee */ int8_t    rankSpeed;
-  /* 0x1ef */ int8_t    rankAccuracy;
-  /* 0x1f0 */ int8_t    rankEvasion;
-  /* 0x234 */ uint16_t  field_234;  // semantic TBD
+  /* 0x000 */ void*      corePtr;    // [init] the source CoreParam* (str [r4],[r5])
+  /* 0x008 */ uint32_t   field_8;    // semantic TBD
+  /* 0x00c */ uint16_t   monsNo;     // [init] CoreParam::GetMonsNo (species)
+  /* 0x00e */ uint16_t   maxHp;      // [init] CoreParam::GetPower(HP)  — was mislabeled curHP
+  /* 0x010 */ uint16_t   curHp;      // [init] CoreParam::GetHp         — was mislabeled maxHP
+  /* 0x012 */ uint16_t   heldItem;   // [init] CoreParam::GetItem (0 if >= 0x3c0)
+  /* 0x016 */ uint16_t   tokuseiNo;  // [init] CoreParam::GetTokuseiNo (ability)
+  /* 0x018 */ uint8_t    level;      // [init] CoreParam::GetLevel
+  /* 0x01a */ uint8_t    type1;      // [init] sub_7dda8(species,form,slot=1)
+  /* 0x01b */ uint8_t    type2;      // [init] sub_7dda8(species,form,slot=3)
+  /* 0x01c */ uint16_t   formFlags;  // [init] low 5 bits = CoreParam::GetFormNo; upper bits = flags
+  /* 0x020 */ uint8_t    status[..]; // [init] status block, GetSick() written at 0x20 + sickCode*8
+  /* 0x0a0 */ uint32_t   field_a0;   // ? flag word (handler does tst #7)
+  /* 0x1e7 */ uint8_t    field_1e7;  // semantic TBD
+  /* 0x1ea */ uint8_t    rankAtk;    // [getter] stat stage, stored as stage+6 (init=6=neutral)
+  /* 0x1eb */ uint8_t    rankDef;    //          getter sub_924a8 returns it; the +6 bias is
+  /* 0x1ec */ uint8_t    rankSpAtk;  //          removed on the apply path (enum 9..13 -> sub_81904)
+  /* 0x1ed */ uint8_t    rankSpDef;
+  /* 0x1ee */ uint8_t    rankSpeed;
+  /* 0x1ef */ uint8_t    rankAccuracy;
+  /* 0x1f0 */ uint8_t    rankEvasion;
+  /* 0x1f4 */ uint8_t    ev[6];      // [init] CoreParam::GetEffortPower(0..5) loop
+  /* 0x1fa */ uint8_t    pokerus;    // [init] CoreParam::HavePokerusUntilNow
+  /* 0x234 */ uint16_t   field_234;  // semantic TBD
 };
 
 // getter enum -> field (see battlemon_getter_fields.json):
-//   2..8  -> rank{Atk,Def,SpAtk,SpDef,Speed,Accuracy,Evasion} (signed)
+//   1..7  -> rank{Atk,Def,SpAtk,SpDef,Speed,Accuracy,Evasion} (raw stage+6)
 //   9..13 -> same first five via sub_81904 (apply-stage-to-stat path)
+// init source map (verifiable): decomp/battle_effects/battlemon_init_fields.json
 }} // namespace pml::battle

@@ -1,0 +1,49 @@
+{
+ "struct": "pml::battle in-RAM Pokemon",
+ "init_fn": "sub_6188c",
+ "note": "field offset -> the CoreParam accessor that initializes it in sub_6188c (verifiable data flow, no guessing).",
+ "fields": {
+  "0xc": {
+   "name": "monsNo",
+   "accessor": "GetMonsNo",
+   "powerId": null,
+   "width": 2
+  },
+  "0xe": {
+   "name": "maxHp",
+   "accessor": "GetPower",
+   "powerId": 0,
+   "width": 2
+  },
+  "0x10": {
+   "name": "curHp",
+   "accessor": "GetHp",
+   "powerId": null,
+   "width": 2
+  },
+  "0x12": {
+   "name": "heldItem",
+   "accessor": "GetItem",
+   "powerId": null,
+   "width": 2
+  },
+  "0x16": {
+   "name": "tokuseiNo",
+   "accessor": "GetTokuseiNo",
+   "powerId": null,
+   "width": 2
+  },
+  "0x18": {
+   "name": "level",
+   "accessor": "GetLevel",
+   "powerId": null,
+   "width": 1
+  },
+  "0x1c": {
+   "name": "formNo",
+   "accessor": "GetFormNo",
+   "powerId": null,
+   "width": 2
+  }
+ }
+}
