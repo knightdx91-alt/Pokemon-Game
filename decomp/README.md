@@ -423,6 +423,58 @@ big open Phase-1 link). PROGRESS THIS SESSION (`decomp/battle_effects/EFFECT_DIS
   blocker as the battle-pokemon scalar names), then feed `probe()` a real object.
   See `battle_effects/EFFECT_DISPATCH.md`.
 
+### ⏩⏩ MEMORY-CAPTURE ROUTE — build Citra to finish B + A-scalars (NEXT SESSION)
+Both open items (the effect→sequence remap AND the battle-pokemon *scalar* field
+names) are gated on the same thing: a **live-battle 3DS RAM image**. The save
+files only carry CoreParam, not in-battle objects. Static + blind emulation are
+exhausted and proven insufficient (dirty-emu false hits; see EFFECT_DISPATCH.md).
+Plan: build a 3DS emulator here, run USUM to a battle, dump RAM, feed it to the
+harness.
+
+**What we found (do NOT re-derive):**
+- Env can't `curl`/`codeload`/download GitHub release zips — egress policy 403 on
+  ALL of them (tested torvalds/linux too). BUT **`git clone` over https WORKS**
+  through the proxy. Use git, not curl, for GitHub.
+- Citra itself was DMCA'd; most backup forks are dead because their submodules
+  point at deleted orgs (`citra-emu/ext-boost`, `merryhime/dynarmic` = GONE →
+  e.g. `TayouVR/citra-backup` is unbuildable).
+- ✅ **`StonedEdge/citra-1` IS buildable** — all 20 submodules point at LIVE
+  maintainer forks and every one `git ls-remote`s OK: boost=`PabloMK7/ext-boost`,
+  **dynarmic (the ARM JIT)=`rtiangha/dynarmic-old`**, libressl=`PabloMK7/ext-libressl-portable`,
+  SDL/fmt/cryptopp/zstd/ffmpeg/etc. all fine. Submodules are NOT vendored (empty
+  gitlinks) — must fetch recursively.
+- Toolchain present: Ubuntu 24.04, apt/gcc, cmake, **xvfb + mesa llvmpipe** (so a
+  software-GL headless run is possible), ~13 GB free on /tmp.
+
+**Build steps (next session):**
+1. `git clone --depth 1 https://github.com/StonedEdge/citra-1 /tmp/citra2`
+2. `cd /tmp/citra2 && git submodule update --init --recursive` (recursive; dynarmic
+   has nested submodules — do NOT use a bad `-j`/`--depth` combo, plain recursive
+   is safest; shallow only if SHAs allow).
+3. `apt-get install -y build-essential cmake ninja-build pkg-config libsdl2-dev`
+   (+ system ffmpeg dev libs to skip building bundled FFmpeg).
+4. Configure the **SDL frontend only** (no Qt): `cmake -B build -G Ninja
+   -DENABLE_QT=OFF -DENABLE_QT_TRANSLATION=OFF -DENABLE_WEB_SERVICE=OFF
+   -DCITRA_ENABLE_COMPATIBILITY_REPORTING=OFF -DUSE_DISCORD_PRESENCE=OFF
+   -DCMAKE_BUILD_TYPE=Release` then `ninja -C build citra` (the SDL binary).
+5. Run headless: `xvfb-run -a ./build/bin/Release/citra "<USUM .3ds>"` with
+   `LIBGL_ALWAYS_SOFTWARE=1` (llvmpipe). ROM: re-pull from Drive per the CLAUDE.md
+   bootstrap. Use the user's save (Drive "Pokemon ultra Moon save").
+
+**Capture the battle image:** get into a wild battle (and pick a move so the
+effect-object is live), then dump RAM. Options in priority order: (a) Citra
+**save state** (.cst is a full compressed memory snapshot — zstd; decompress and
+scan) — the user can also just make one on their own machine and drop it in Drive,
+which skips the whole build; (b) Citra **GDB stub** (`-DENABLE_GDBSTUB`/config,
+`use_gdbstub=true`), attach gdb-multiarch, `dump memory`; (c) an on-exit RAM dump.
+
+**Then finish both items:** load the captured FCRAM into `tools/usum_effect_remap.py`
+(seed the real effect-object / event-queue global bss+0x394 with the live bytes,
+`fresh_probe()`), read the sequence id off the 0x45a0 watch per move → the remap;
+and read the battle-pokemon struct scalars directly from the image → the field
+names in `BattlePokemon.h`. FASTEST alternative to the whole build: user supplies
+a mid-battle `.cst` savestate.
+
 **Phase-3 struct naming — battle-pokemon init fields NAMED (verified).** The
 runtime battle-pokemon struct is built from a CoreParam by `sub_6188c`, a
 straight-line copy (`bl CoreParam::GetX → str [this+off]`). `tools/usum_battlemon_init.py`

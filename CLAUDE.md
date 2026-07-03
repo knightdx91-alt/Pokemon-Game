@@ -844,7 +844,17 @@ rodata pointer tables are zero on disk, filled at load (recovered by
 
 ### Rules for the decomp work
 - **▶ RESUME POINT: see the "⏩ CHECKPOINT — resume here" block at the top of
-  `decomp/README.md`'s next-targets section.** Current state: CoreParam fully
+  `decomp/README.md`'s next-targets section.** The two remaining open items (the
+  move effect→sequence remap, and the battle-pokemon *scalar* field names) are
+  BOTH gated on a **live-battle RAM image** — static/blind emulation is exhausted
+  and proven insufficient. The concrete next task is to **build a 3DS emulator
+  and capture that image**: see the new **"⏩⏩ MEMORY-CAPTURE ROUTE — build Citra"**
+  block in `decomp/README.md`. Key facts already established: `git clone` works
+  through the proxy (curl/codeload 403); **`StonedEdge/citra-1` is the buildable
+  fork** (all 20 submodules live, incl. the `rtiangha/dynarmic-old` JIT); build
+  the SDL frontend (`-DENABLE_QT=OFF`), run headless via `xvfb-run` + llvmpipe;
+  capture a mid-battle `.cst` savestate (or the user supplies one → skips the
+  build). Current state: CoreParam fully
   decompiled + validated on a real save; **save system DONE** = CRC-16/USB +
   full 39-block offset layout + **all 39/39 blocks named** to their `Savedata::`
   class (RTTI type-name + `GetSize` vtable-slot-3 matched to footer lengths,
