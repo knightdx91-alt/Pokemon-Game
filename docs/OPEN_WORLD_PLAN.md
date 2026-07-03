@@ -55,20 +55,26 @@ Keep BOTH input styles, they're not in conflict:
 
 ---
 
-## Seamless world (no map transitions) — chunk streaming
+## Seamless world (no map transitions) — ALREADY BUILT, extend it
 
-This is the hardest single piece. Today the engine loads one map and swaps on
-warp/connection. Replace that with:
-- **Chunk streaming:** keep the player's current map plus all neighboring
-  connected maps loaded at once; load/unload chunks as the player crosses
-  boundaries, so there's never a black-screen transition.
-- The map `connections` data already defines neighbor offsets — that's the input a
-  streaming system needs. The work is a coordinate system that spans chunks (a
-  global world-space) instead of per-map local coordinates.
+**This already works today** — I was wrong to call it greenfield. `src/main.js`
+implements it:
+- `seamlessConnectionStep()` (GBA-style connections) and `seamlessMatrixStep()`
+  (DS matrix seams) prefetch neighbor maps and step the player across the seam by
+  shifting into the new map's local frame **mid-walk**, so the walk interpolation
+  continues with no black screen. `switchToNeighbor()` / `switchToMap()` in
+  `src/engine/map.js` do the frame swap.
+- The async `transitionToConnection()` / `transitionToMatrix()` are only
+  *fallbacks* for the first few frames before prefetch completes.
+- The map `connections` data + matrix origins are the neighbor-offset inputs.
+
+**So the remaining work is extension, not invention:**
+- Widen prefetch from immediate neighbors to a ring (keep player's chunk + all
+  chunks within N tiles loaded) so fast movement never outruns the prefetch.
 - **Regions connect via land bridges/sea routes** authored as normal connected
   maps, so "walk from Kanto to Johto" is just more chunks — no special-casing.
-- Interiors (buildings, caves) can stay as discrete loads with a door
-  fade — OSRS does the same; only the *overworld* must be seamless.
+- Interiors (buildings, caves) can stay as discrete door-fade loads — OSRS does
+  the same; only the overworld must be seamless (and is).
 
 ---
 
@@ -101,12 +107,20 @@ Server-side persistent world roles. Design as you described:
 
 ---
 
-## Platinum look, over a 2D world
-- "Looks/acts like Platinum" = **DS dual-screen HUD + menu + battle framing**
-  wrapped around the existing 2D top-down overworld. Mine the Platinum pret
-  (`source/pokeplatinum`) and the Sinnoh textured renders for the UI art.
-- True DS 3D overworld rendering for all regions is a **stretch goal**, not
-  Phase 1 — regions 1–3 are 2D-native and have no 3D models at all.
+## UI direction (per your call): menus = RPG card, everything else = Platinum
+- **Menus:** match the **Pokémon RPG card** look (the EE dark-theme GBA window
+  system already built in `src/ui/startmenu.js` + sub-menus). Keep that — it's the
+  menu style you want.
+- **Battle scenes, battle backgrounds, healthboxes, dialogue, HUD framing:**
+  **Pokémon Platinum.** Re-skin `src/engine/battle.js` (DOM battle UI) and the
+  battle overlay to Platinum's DS look — dual-screen framing, Platinum healthboxes,
+  Platinum battle backdrops/terrain, Platinum message window. Art source:
+  `source/pokeplatinum` (pret) + the Sinnoh textured renders already in the repo.
+- "Both screens": emulate Platinum's dual-screen layout (main view + bottom
+  status/menu screen) as the frame around the 2D top-down world and battles.
+- True DS **3D overworld** rendering for all regions stays a **stretch goal** —
+  regions 1–3 are 2D-native with no 3D models. The 2D top-down world wears a
+  Platinum *skin*, it isn't re-rendered in 3D.
 
 ---
 
@@ -114,9 +128,12 @@ Server-side persistent world roles. Design as you described:
 
 ### Phase 0 — Foundation & prototype (client-only, no server yet)
 - A* pathfinding + tap-to-walk on the current engine, D-pad kept as option.
-- Global world-space coordinate system; chunk streaming for 2+ connected maps
-  with zero transition (prove it across one region).
+- **Seamless movement is already built** (`seamlessConnectionStep` /
+  `seamlessMatrixStep`) — extend prefetch from single-neighbor to a ring so fast
+  movement can't outrun it; verify no black screens across a whole region.
 - Player sprite rendering on canvas (currently a placeholder).
+- Reuse the **Crater overlay pattern** (`overworld.js drawOverlay`) as the render
+  hook that other players will later plug into.
 - **Exit criteria:** walk seamlessly across a whole region, tap-to-move, no black
   screens.
 
