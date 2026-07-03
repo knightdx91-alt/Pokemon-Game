@@ -41,6 +41,13 @@ active, verified body of work in THIS repo. Go work on it. Details:**
   DECOMP — IN PROGRESS ⏳ (start here to continue)"** section below. It has the
   exact session bootstrap, the `tools/cro_*.py` RE pipeline, and the current
   open problems (effect→sequence remap, PIC index labelling via Citra trace).
+- **Citra capture pipeline is BUILT & VERIFIED** — see **`decomp/citra/README.md`**.
+  The emulator builds (5 fork fixes frozen in `citra1_build_fixes.patch`), boots
+  USUM with no AES keys, loads the user's save (OT "Lylliana" seen in RAM), and
+  the headless autopilot injects scripted input + dumps 256 MB FCRAM on demand.
+  The Citra tree + ROM extraction are ephemeral (clone→`git apply` patch→build
+  each session, ~20 min; fixes never re-derived). Remaining: memory-route
+  battle capture → `tools/usum_effect_remap.py`.
 
 **Bottom line: the user has spent many sessions on this. When they say "work on
 the moon decomp," the correct first action is to run the bootstrap above and
@@ -889,18 +896,40 @@ rodata pointer tables are zero on disk, filled at load (recovered by
 `cro_dataflow.py` (the tool that cracked damage & catch).
 
 ### Rules for the decomp work
-- **▶ RESUME POINT: see the "⏩ CHECKPOINT — resume here" block at the top of
-  `decomp/README.md`'s next-targets section.** The two remaining open items (the
-  move effect→sequence remap, and the battle-pokemon *scalar* field names) are
-  BOTH gated on a **live-battle RAM image** — static/blind emulation is exhausted
-  and proven insufficient. The concrete next task is to **build a 3DS emulator
-  and capture that image**: see the new **"⏩⏩ MEMORY-CAPTURE ROUTE — build Citra"**
-  block in `decomp/README.md`. Key facts already established: `git clone` works
-  through the proxy (curl/codeload 403); **`StonedEdge/citra-1` is the buildable
-  fork** (all 20 submodules live, incl. the `rtiangha/dynarmic-old` JIT); build
-  the SDL frontend (`-DENABLE_QT=OFF`), run headless via `xvfb-run` + llvmpipe;
-  capture a mid-battle `.cst` savestate (or the user supplies one → skips the
-  build). Current state: CoreParam fully
+- **▶ RESUME POINT (updated): the Citra capture pipeline is BUILT & VERIFIED —
+  see `decomp/citra/README.md`.** The two remaining open items (the move
+  effect→sequence remap, and the battle-pokemon *scalar* field names) are BOTH
+  gated on a **live-battle RAM image**. That capture path is now working end to
+  end:
+  - **Citra builds & boots USUM.** `StonedEdge/citra-1` was never actually
+    compile-validated ("buildable" = submodules resolve); it needs **5 fork-skew
+    fixes** now frozen in **`decomp/citra/citra1_build_fixes.patch`** (GCC-13
+    includes, a missing `scope_acquire_context.h`, the `GraphicsContext` base
+    `emu_window.h` predates, a threaded-present→synchronous-`SwapBuffers`
+    reconciliation, and a leaked `LibRetro::settings` ref). Boots the decrypted
+    `.3ds` with **NO AES keys** (decrypted exheader → force no crypto), Program
+    ID `00040000001B5100`.
+  - **The user's save loads.** Decrypted USUM `main` (0x6CC00) installed at
+    Citra's `title/00040000/001b5100/data/00000001/main`; OT name **"Lylliana"**
+    confirmed live in FCRAM after a scripted title-skip → Continue.
+  - **Headless autopilot + FCRAM dump (in the patch, gated by `CITRA_AUTOPILOT`):**
+    scripted keyboard input via `/tmp/autopilot.txt`; `touch /tmp/dump_now` →
+    256 MB N3DS FCRAM to `/tmp/fcram.bin` (VERIFIED to contain the live CRO
+    cluster). Framebuffer PPM dump is currently **black** (sync-render
+    reconciliation renders on the shared core context, not a readable window FBO)
+    — not needed; battle state is detectable from memory.
+  - **NEXT (the actual remaining work): the memory-route battle capture.** From
+    the loaded overworld, walk into grass to trigger an encounter, detect
+    "in-battle" from a battle-only FCRAM signature (Battle.cro event-queue /
+    battlemon objects; resolve Battle.cro's relocated base per boot), dump, then
+    feed `/tmp/fcram.bin` to `tools/usum_effect_remap.py` for the
+    effect→sequence remap + battlemon scalar names. Iterative (no visuals — RNG
+    encounters, save-dependent start position). Full plan + key map + save path:
+    `decomp/citra/README.md`.
+  - **Re-run each session:** the Citra tree (`/tmp/citra2`) and the ROM
+    extraction are BOTH ephemeral/gitignored — reproduce via clone → `git apply`
+    the committed patch → `ninja` (~20 min); the fixes are never re-derived.
+  Current decomp state: CoreParam fully
   decompiled + validated on a real save; **save system DONE** = CRC-16/USB +
   full 39-block offset layout + **all 39/39 blocks named** to their `Savedata::`
   class (RTTI type-name + `GetSize` vtable-slot-3 matched to footer lengths,

@@ -423,13 +423,31 @@ big open Phase-1 link). PROGRESS THIS SESSION (`decomp/battle_effects/EFFECT_DIS
   blocker as the battle-pokemon scalar names), then feed `probe()` a real object.
   See `battle_effects/EFFECT_DISPATCH.md`.
 
-### ⏩⏩ MEMORY-CAPTURE ROUTE — build Citra to finish B + A-scalars (NEXT SESSION)
+### ⏩⏩ MEMORY-CAPTURE ROUTE — Citra pipeline BUILT & VERIFIED ✅ (see decomp/citra/)
 Both open items (the effect→sequence remap AND the battle-pokemon *scalar* field
 names) are gated on the same thing: a **live-battle 3DS RAM image**. The save
 files only carry CoreParam, not in-battle objects. Static + blind emulation are
 exhausted and proven insufficient (dirty-emu false hits; see EFFECT_DISPATCH.md).
 Plan: build a 3DS emulator here, run USUM to a battle, dump RAM, feed it to the
 harness.
+
+**STATUS UPDATE — the emulator + capture harness are DONE and VERIFIED.** Full
+detail in **`decomp/citra/README.md`** (recipe + `citra1_build_fixes.patch`):
+- `StonedEdge/citra-1` built (SDL frontend) after **5 fork-skew fixes** — it was
+  never actually compile-validated. Boots the decrypted USUM `.3ds` with **no AES
+  keys** (decrypted exheader → force no crypto), Program ID `00040000001B5100`.
+- The user's decrypted USUM `main` save (0x6CC00) loads; OT **"Lylliana"**
+  confirmed live in FCRAM after a scripted title-skip → Continue.
+- Headless **autopilot** (env `CITRA_AUTOPILOT`): scripted keyboard input via
+  `/tmp/autopilot.txt` + **`touch /tmp/dump_now` → 256 MB N3DS FCRAM to
+  `/tmp/fcram.bin`** (verified to hold the live CRO cluster). Framebuffer PPM
+  dump is black (render reconciliation) — not needed; use the memory route.
+- **REMAINING:** memory-route battle capture — walk into grass, detect in-battle
+  from a battle-only FCRAM signature (resolve Battle.cro's relocated base per
+  boot), dump, feed to `tools/usum_effect_remap.py`. The build/tree is ephemeral:
+  reproduce via clone → `git apply citra1_build_fixes.patch` → `ninja` (~20 min).
+
+**What we found (do NOT re-derive):**
 
 **What we found (do NOT re-derive):**
 - Env can't `curl`/`codeload`/download GitHub release zips — egress policy 403 on
