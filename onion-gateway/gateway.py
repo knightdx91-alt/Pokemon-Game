@@ -108,9 +108,10 @@ def browse():
         target = "http://" + target
     try:
         if request.method == "POST":
-            r = session.post(target, data=request.form, timeout=90, allow_redirects=True)
+            r = session.post(target, data=request.form, timeout=180,
+                             allow_redirects=True, stream=True)
         else:
-            r = session.get(target, timeout=90, allow_redirects=True)
+            r = session.get(target, timeout=180, allow_redirects=True, stream=True)
     except Exception as e:
         return Response(
             top_bar(target) + '<div style="padding:20px;font-family:sans-serif;color:#e6e6f0">'
@@ -120,8 +121,14 @@ def browse():
 
     ctype = r.headers.get("Content-Type", "")
     if "text/html" not in ctype.lower():
+        # A file / non-page response: stream it through and forward the headers
+        # that make the browser download it (filename, size, range support).
         guessed = ctype or mimetypes.guess_type(r.url)[0] or "application/octet-stream"
-        return Response(r.content, mimetype=guessed)
+        headers = {}
+        for hk in ("Content-Disposition", "Content-Length", "Accept-Ranges", "Last-Modified"):
+            if hk in r.headers:
+                headers[hk] = r.headers[hk]
+        return Response(r.iter_content(chunk_size=65536), mimetype=guessed, headers=headers)
 
     soup = BeautifulSoup(r.content, "html.parser")
 
