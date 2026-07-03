@@ -419,9 +419,13 @@ big open Phase-1 link). PROGRESS THIS SESSION (`decomp/battle_effects/EFFECT_DIS
   **no function exposes an effect-id-dependent 0x45a0 index**: the dispatcher
   reads the id via a structured pointer walk into the live effect-object, which
   a blind fixture can't route. NEXT is now a data-capture problem — reconstruct
-  the effect-object layout (realistically needs a **live-battle RAM dump**, same
-  blocker as the battle-pokemon scalar names), then feed `probe()` a real object.
-  See `battle_effects/EFFECT_DISPATCH.md`.
+  the effect-object layout, then feed `probe()` a real object.
+  **UPDATE: the live-capture route is BUILT** (the sibling blocker, the
+  battle-pokemon scalar names, is already SOLVED this way — verified). Take a
+  mid-move-execution **VA dump** (`/tmp/dump_va`, not the MMU-scattered physical
+  FCRAM dump) and read the active sequence id (`work+0xa94`) + queued effectId
+  (`bss+0x394`) from Battle.cro (`.text` @ VA ~0x6de000). Full recipe + VA map in
+  `battle_effects/EFFECT_DISPATCH.md` and `decomp/citra/README.md`.
 
 ### ⏩⏩ MEMORY-CAPTURE ROUTE — LIVE CAPTURE DONE ✅ battlemon scalars CONFIRMED
 Both open items were gated on a **live-battle 3DS RAM image**. That capture is

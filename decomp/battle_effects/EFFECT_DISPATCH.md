@@ -90,10 +90,26 @@ runtime (the effect-object graph reached from the live battle system); a
 synthetic fixture can't stand that up without effectively emulating the whole
 title. This is a **memory-capture** problem, not a static/blind-emulation one.
 
-## Next step
-Reconstruct the **effect-object layout** the dispatcher walks (step byte @+0xa94
-is one known field), then hand `usum_effect_remap.py`'s `probe()` a correctly
-shaped object so the index falls out of the watch. That layout realistically
-needs a **live-battle RAM dump** (the same blocker as the battle-pokemon scalar
-field names) — the save files only carry CoreParam, not the in-battle objects.
-This is now a data-capture problem, not a static-RE one.
+## Next step — the live-capture route is now BUILT (see decomp/citra/README.md)
+The "needs a live-battle RAM dump" blocker is resolved: the Citra pipeline can
+now boot USUM (prebuilt binary + Route 4 grass save committed), reach a wild
+battle, and dump memory. The **sibling blocker — the battle-pokemon scalar field
+names — is SOLVED** from a real move-select capture (`verify/verify_battlemon_
+live.py` PASS), which validates the whole route end to end.
+
+For THIS remap, one nuance was found: a **physical** FCRAM dump (`/tmp/dump_now`)
+is MMU-scattered, so `.bss` (where the event queue at `bss+0x394` lives) can't be
+located by offset. Use the added **VA-space dump** (`/tmp/dump_va` → `/tmp/va.bin`,
+VA-contiguous) instead. In an in-battle VA dump: `|static|` CRO0 @ VA 0x8b2000;
+**Battle.cro `.text` @ VA ~0x6de000** (found by matching disk seg0 bytes; its
+header is `text_va - 0x180`, seg table at `+0xC8` → rodata/bss runtime VAs).
+
+Remaining recipe (all infra in place):
+1. Genuinely execute a move (confirm on the move menu; verify via screenshot it's
+   animating — ours always goes first vs a wild Lv1x mon).
+2. ~0.4 s into execution take ONE `/tmp/dump_va` (a tight burst freezes the game).
+3. From `va.bin`: read Battle.cro's seg table → rodata_va (`0x45a0` seq table) and
+   bss_va; read the active **sequence id** from the step-state work field
+   (`work+0xa94`) and the queued **effectId** from the event queue (`bss+0x394`,
+   tag 0x1f). That pair = one (effectId→seqId) entry; repeat for a few moves, or
+   seed `usum_effect_remap.py probe_queue()` with the live bss image.
