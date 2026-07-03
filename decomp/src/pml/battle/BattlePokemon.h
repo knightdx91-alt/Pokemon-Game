@@ -16,30 +16,49 @@ namespace pml { namespace battle {
 // Names marked [init] are CONFIRMED by data flow in the initializer sub_6188c
 // (each is `bl CoreParam::GetX -> str [this+off]`; tools/usum_battlemon_init.py).
 // Names marked [getter] come from the indexed getter sub_924a8's switch.
+// [LIVE] 0xe-byte move record (offsets 0x1fc/0x20a/0x218/0x226). The move id is
+// stored twice — the base id and a "current" id at +6 (for Mimic/Transform),
+// both equal for a normal move. PP verified against the in-battle move menu.
+struct MoveSlot {
+  /* +0x0 */ uint16_t moveId;     // base move id
+  /* +0x2 */ uint8_t  curPp;      // current PP
+  /* +0x3 */ uint8_t  maxPp;      // max PP (with PP-ups)
+  /* +0x4 */ uint16_t field_4;    // TBD (0 in captures)
+  /* +0x6 */ uint16_t curMoveId;  // current move id (== moveId unless Mimic/Transform)
+  /* +0x8 */ uint8_t  curPp2;     // mirror PP
+  /* +0x9 */ uint8_t  maxPp2;
+  /* +0xa */ uint16_t field_a;
+  /* +0xc */ uint16_t field_c;    // low byte == 1 in captures (enabled/flags?)
+};
+
+// Fields marked [LIVE] are CONFIRMED against a real move-select FCRAM capture
+// (Volcanion Lv85 + wild Grubbin Lv13, Route 4) — decomp/verify/verify_battlemon_live.py
+// + decomp/verify/fixtures/battlemon_*.bin. These supersede earlier guesses.
 struct BattlePokemonFields {
   /* 0x000 */ void*      corePtr;    // [init] the source CoreParam* (str [r4],[r5])
   /* 0x008 */ uint32_t   field_8;    // semantic TBD
-  /* 0x00c */ uint16_t   monsNo;     // [init] CoreParam::GetMonsNo (species)
-  /* 0x00e */ uint16_t   maxHp;      // [init] CoreParam::GetPower(HP)  — was mislabeled curHP
-  /* 0x010 */ uint16_t   curHp;      // [init] CoreParam::GetHp         — was mislabeled maxHP
+  /* 0x00c */ uint16_t   monsNo;     // [LIVE] species (721 Volcanion / 736 Grubbin)
+  /* 0x00e */ uint16_t   maxHp;      // [LIVE] max HP (260 / 39; == curHp at full)
+  /* 0x010 */ uint16_t   curHp;      // [LIVE] current HP
   /* 0x012 */ uint16_t   heldItem;   // [init] CoreParam::GetItem (0 if >= 0x3c0)
-  /* 0x016 */ uint16_t   tokuseiNo;  // [init] CoreParam::GetTokuseiNo (ability)
-  /* 0x018 */ uint8_t    level;      // [init] CoreParam::GetLevel
-  /* 0x01a */ uint8_t    type1;      // [init] sub_7dda8(species,form,slot=1)
-  /* 0x01b */ uint8_t    type2;      // [init] sub_7dda8(species,form,slot=3)
+  /* 0x016 */ uint16_t   tokuseiNo;  // [LIVE] ability (11 Water Absorb / 68 Swarm)
+  /* 0x018 */ uint8_t    level;      // [LIVE] level (85 / 13)
+  /* 0x01a */ uint8_t    field_1a;   // NOT type1 — live values (110/62) are not type ids; TBD
+  /* 0x01b */ uint8_t    field_1b;   // NOT type2 — live values (70/46) are not type ids; TBD
   /* 0x01c */ uint16_t   formFlags;  // [init] low 5 bits = CoreParam::GetFormNo; upper bits = flags
-  /* 0x020 */ uint8_t    status[..]; // [init] status block, GetSick() written at 0x20 + sickCode*8
+  /* 0x020 */ uint8_t    status[..]; // [init] status block; [LIVE] all-zero for both healthy mons
   /* 0x0a0 */ uint32_t   field_a0;   // ? flag word (handler does tst #7)
   /* 0x1e7 */ uint8_t    field_1e7;  // semantic TBD
-  /* 0x1ea */ uint8_t    rankAtk;    // [getter] stat stage, stored as stage+6 (init=6=neutral)
+  /* 0x1ea */ uint8_t    rankAtk;    // [getter/LIVE] stat stage, stored as stage+6 (init=6=neutral)
   /* 0x1eb */ uint8_t    rankDef;    //          getter sub_924a8 returns it; the +6 bias is
   /* 0x1ec */ uint8_t    rankSpAtk;  //          removed on the apply path (enum 9..13 -> sub_81904)
-  /* 0x1ed */ uint8_t    rankSpDef;
+  /* 0x1ed */ uint8_t    rankSpDef;  //          [LIVE] all seven == 6 for both mons at battle start
   /* 0x1ee */ uint8_t    rankSpeed;
   /* 0x1ef */ uint8_t    rankAccuracy;
   /* 0x1f0 */ uint8_t    rankEvasion;
   /* 0x1f4 */ uint8_t    ev[6];      // [init] CoreParam::GetEffortPower(0..5) loop
   /* 0x1fa */ uint8_t    pokerus;    // [init] CoreParam::HavePokerusUntilNow
+  /* 0x1fc */ MoveSlot   moves[4];   // [LIVE] 4 records, 0xe bytes each; id+PP verified vs menu
   /* 0x234 */ uint16_t   field_234;  // semantic TBD
 };
 
