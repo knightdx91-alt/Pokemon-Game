@@ -68,6 +68,13 @@ damage-calc framework). Traces in `seq_dispatch_traces.json`; analyzer
 `tools/citra_gdb/hookcap.py`. seqId 6's handler = Battle.cro `sub_4b40` (0x6e1cc0).
 
 ## REFINEMENT (follow-up captures) — 0x45a0 is the MOVE-FLOW, not the effect table
+> ⚠️ **SUPERSEDED by the RESOLVED section at the top.** This section's conclusion
+> ("not a clean table / effect is applied with no distinct dispatch") was itself a
+> KO/immunity artifact: the moves used (Steam vs Hydro) KO'd the target so the
+> effect step never ran, and the sparse big-table reads were noise. The decisive
+> non-KO status-move captures (top of file) show the effect IS dispatched off
+> `0x45a0` by **category** (80/71/70). Kept for the investigation trail.
+
 A later session captured **non-KO** moves (weakened the lead to Lv1 via the new
 file-poke `/tmp/poke`; see `effect_seq_hook.patch`) and **widened the watch to a
 broad rodata span `[0x7de000,0x7e4800)`** covering all four EFFECT_DISPATCH

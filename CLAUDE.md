@@ -54,7 +54,7 @@ active, verified body of work in THIS repo. Go work on it. Details:**
   **LIVE CAPTURE DONE ✅:** captured a real wild battle, carved the two battlemon
   structs, and **CONFIRMED the `BattlePokemon.h` scalar fields** (species/HP/level/
   ability/moves/stat-stages) — `verify/verify_battlemon_live.py` PASS.
-- **EFFECT→SEQUENCE DISPATCH — now CAPTURED LIVE ✅ (the last big open item).**
+- **EFFECT→SEQUENCE DISPATCH — RESOLVED ✅ (was the last big open item).**
   The gdbstub route is a dead end (Z0/Z3 watchpoints no-op, registers read zero —
   matrix in `tools/citra_gdb/README.md`). Instead Citra was **rebuilt with a
   software read-watchpoint in the JIT read callback** (`config.page_table=nullptr`
@@ -923,17 +923,18 @@ rodata pointer tables are zero on disk, filled at load (recovered by
 ### Rules for the decomp work
 - **▶ RESUME POINT (updated): BOTH live-gated items are now DONE.** The
   battle-pokemon scalar fields are confirmed (`verify_battlemon_live.py` PASS),
-  and the **effect→sequence dispatch is captured live** via an in-process JIT
-  read-watch hook (see the "EFFECT→SEQUENCE DISPATCH" bullet in the 🌙 header
-  block above, `decomp/battle_effects/EFFECT_DISPATCH.md`, and
+  and the **effect→sequence dispatch is RESOLVED** via the in-process JIT
+  read-watch hook + non-KO captures (see the "EFFECT→SEQUENCE DISPATCH" bullet in
+  the 🌙 header block above, `decomp/battle_effects/EFFECT_DISPATCH.md`, and
   `decomp/citra/effect_seq_hook.patch`). The gdbstub route was abandoned as a
   dead end (memory-read only; Z0/Z3/registers non-functional — matrix in
-  `tools/citra_gdb/README.md`). **Only refinement left:** non-KO captures across
-  effectIds to line up the per-move seqId scripts and pin each effectId→seqId
-  (the Lv85 lead one-shots wild mons before the secondary-effect step runs).
-  The historical FCRAM/`usum_effect_remap.py` route below is SUPERSEDED by the
-  hook, but kept for context. The Citra pipeline itself is BUILT & VERIFIED —
-  see `decomp/citra/README.md`:
+  `tools/citra_gdb/README.md`). **Result:** the dispatch is by effect **CATEGORY**
+  in the `0x45a0` table (seqId 80=inflict-status, 71=stat-change-target,
+  70=stat-change-self); there is no 400-entry effectId→seqId table, and the
+  per-effect specifics are already extracted in `usum_moves.json` — so the effect
+  layer is complete. The historical FCRAM/`usum_effect_remap.py` route below is
+  SUPERSEDED by the hook, but kept for context. The Citra pipeline itself is
+  BUILT & VERIFIED — see `decomp/citra/README.md`:
   - **Citra builds & boots USUM.** `StonedEdge/citra-1` was never actually
     compile-validated ("buildable" = submodules resolve); it needs **5 fork-skew
     fixes** now frozen in **`decomp/citra/citra1_build_fixes.patch`** (GCC-13
@@ -951,11 +952,11 @@ rodata pointer tables are zero on disk, filled at load (recovered by
     cluster). Framebuffer PPM dump is currently **black** (sync-render
     reconciliation renders on the shared core context, not a readable window FBO)
     — not needed; battle state is detectable from memory.
-  - **NEXT (superseded — done via the hook, not FCRAM):** the effect→sequence
-    dispatch is now read live by the `effect_seq_hook.patch` JIT read-watch (arm
-    `/tmp/hook_arm`, read `/tmp/hook_out`, analyze with `hookcap.py`), and the
-    battlemon scalars were confirmed from a live capture. The only remaining
-    effect→seq work is non-KO captures across effectIds. Full plan + key map +
+  - **DONE (via the hook, not FCRAM):** the effect→sequence dispatch is read live
+    by the `effect_seq_hook.patch` JIT read-watch (arm `/tmp/hook_arm`, read
+    `/tmp/hook_out`, analyze with `hookcap.py`), the battlemon scalars were
+    confirmed from a live capture, and the effect→seq question is RESOLVED
+    (category dispatch in `0x45a0`; see the header bullet). Full plan + key map +
     save path + the gdbstub dead-end matrix: `decomp/citra/README.md` and
     `tools/citra_gdb/README.md`.
   - **Re-run each session:** the Citra tree (`/tmp/citra2`) and the ROM

@@ -160,11 +160,22 @@ rm -f /tmp/hook_out; echo "7de5a0 7dea68" > /tmp/hook_arm   # waits -> /tmp/hook
 python3 tools/citra_gdb/hookcap.py 0x7de5a0    # seqId = (vaddr-0x7de5a0)/8
 ```
 Each `/tmp/hook_out` line is `<vaddr> <r0..r15>` (hex). A move runs a *script* of
-handlers; the shared prologue is `[6,11,5,4,62,65,22,23,58,28]` and the
-effect-specific handlers diverge in the tail. Captured traces:
-`decomp/battle_effects/seq_dispatch_traces.json`. **Remaining:** non-KO captures
-across effectIds (the Lv85 lead one-shots wild mons before the secondary-effect
-step) to pin each effectId→seqId.
+handlers; the shared prologue is `[6,11,5,4,62,65,22,23]` and the effect handler
+is dispatched right after. **RESOLVED ✅:** non-KO captures (poke the lead's
+battlemon move-records to 0-power 100%-effect status moves via `/tmp/poke` so the
+target survives — see `find_and_poke_moves` usage below) show the effect is
+dispatched off `0x45a0` by **category**: seqId 80=inflict-status
+(burn/sleep/confuse), 71=stat-change-target, 70=stat-change-self. No per-effectId
+table; per-effect specifics are data-driven from `usum_moves.json`. Table + 6
+traces: `decomp/battle_effects/EFFECT_DISPATCH.md`,
+`seq_dispatch_traces.json` (`category_dispatch_DECISIVE`), `seq_traces/`.
+
+To poke a move into the lead's battlemon (for a guaranteed-effect capture): dump
+the `0x30000000` region (`echo "30000000 00100000" > /tmp/dump_va`), find the
+Volcanion battlemon (species 721 @+0xc, lv85, maxHp260) and its 4 MoveSlots
+(battlemon+0x1fc, 0xe bytes each; `moveId@+0x0` + `curMoveId@+0x6`), then
+`echo "<moveId_va> <newid> 2" > /tmp/poke`. The menu still shows old labels but
+execution uses the poked record (verified via the "used X!" text).
 
 The two finishes originally considered (kept for the record):
 1. **Static + halt/memread:** find the battle-`work` global, launch a move,

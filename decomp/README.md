@@ -88,19 +88,21 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
      chance, 32=heal, 48=recoil, 50=+2Atk, 67=paralyze status (validated by
      move grouping). Now in `data/pokemon/usum_moves.json` (`effectId`); index
      at `decomp/battle_effects/move_effect_ids.json`. NOTE: this 0..419 enum is
-     NOT a direct index into the ~150 rodata handler table — an intermediate
-     effect-enum→sequence-handler mapping is the remaining Phase-1 link.
-     **UPDATE — the live seqId dispatch is now CAPTURED** (see
+     NOT a direct index into the ~150 rodata handler table.
+     **RESOLVED ✅ — the dispatch is by effect CATEGORY** (see
      `decomp/battle_effects/EFFECT_DISPATCH.md`): after the gdbstub proved
      memory-read-only (Z0/Z3 no-ops, registers zero), Citra was rebuilt with a
      software read-watchpoint in the JIT read callback
      (`decomp/citra/effect_seq_hook.patch`) that records every guest read of the
-     seq table (VA 0x7de5a0) → `seqId = (vaddr-0x7de5a0)/8`. A move runs a
-     *script* of sequence handlers; e.g. Steam Eruption (effectId 4) =
-     `[6,11,5,4,62,65,22,23,58,28,16,133,143,…]`, Hydro Pump (effectId 0) =
-     `[6,11,5,4,62,65,22,23,58,28]` — shared prologue, effect-specific tail.
-     Traces in `seq_dispatch_traces.json`. Fully reversing effectId→seqId now
-     just needs non-KO captures across effectIds to line up the tails.
+     seq table (VA 0x7de5a0) → `seqId = (vaddr-0x7de5a0)/8`. Live non-KO captures
+     (0-power 100%-effect moves poked into the lead's battlemon so the target
+     survives) show the effect handler dispatched off `0x45a0` is keyed by
+     **category**, not effectId: seqId **80** = inflict status (burn/sleep/
+     confuse), **71** = stat-change on target, **70** = stat-change on self. There
+     is **no 400-entry effectId→seqId table**; the per-effect status/stat/stages
+     come from the already-extracted move data (`usum_moves.json`), so the effect
+     layer is complete. Six traces + table: `seq_dispatch_traces.json`
+     (`category_dispatch_DECISIVE`), `seq_traces/`.
      **Move-effect DATA extracted & verified:** inflicted status (byte 8:
      1=par 2=slp 3=frz 4=brn 5=psn 6=confuse) and stat-stage changes (target
      @byte20, stat @21+i, signed stage @24+i, up to 3) now in
@@ -416,10 +418,12 @@ big open Phase-1 link). PROGRESS THIS SESSION (`decomp/battle_effects/EFFECT_DIS
   while unused slots carry real handlers (0x7e24: 43 used→null, 27 unused→real;
   0x98ac: 272/21; 0x67b8: 100/20; 0x45a0: 84/11). If the index were the effect
   id both counts would be 0 → there is an **intermediate effect-enum → sequence
-  index remap** between the event payload and these tables — the open link.
-  *(This remap is now read directly at runtime by the JIT read-watch hook, which
-  logs the live seqId dispatched off the `0x45a0` table per move — see the
-  Effect→sequence status above and `EFFECT_DISPATCH.md`.)*
+  index remap** between the event payload and these tables.
+  *(RESOLVED: the live JIT read-watch showed the effect handler dispatched off
+  `0x45a0` is keyed by effect CATEGORY (inflict-status=80, stat-target=71,
+  stat-self=70), not by the 400-value effectId — there is no per-effectId remap
+  table. Per-effect specifics are data-driven from `usum_moves.json`. See
+  `EFFECT_DISPATCH.md`.)*
 - **Remap is a code lookup, not data (two more exhaustive disproofs,
   `usum_effect_dispatch.py --scan`).** No move-record u16 field indexes any
   handler table cleanly; no contiguous byte/u16 array indexed by effectId maps
@@ -463,9 +467,12 @@ now DONE and one of the two items is SOLVED:
   table (`decomp/citra/effect_seq_hook.patch`; arm `/tmp/hook_arm`, read
   `/tmp/hook_out`, analyze `tools/citra_gdb/hookcap.py`). It reads the dispatched
   `seqId=(vaddr-0x7de5a0)/8` per frame during a real move. Traces:
-  `decomp/battle_effects/seq_dispatch_traces.json` (Steam Eruption eff4 vs Hydro
-  Pump eff0 — shared prologue `[6,11,5,4,62,65,22,23,58,28]`, effect-specific
-  tail). Remaining: non-KO captures across effectIds to pin each effectId→seqId.
+  `decomp/battle_effects/seq_dispatch_traces.json`. **RESOLVED ✅:** non-KO
+  captures (0-power 100%-effect status moves poked into the lead's battlemon so the
+  target survives) show the `0x45a0` effect dispatch is by **category** — seqId
+  80=inflict-status, 71=stat-change-target, 70=stat-change-self — NOT a per-effectId
+  table; per-effect specifics are data-driven from `usum_moves.json`. See
+  `EFFECT_DISPATCH.md` + `seq_dispatch_traces.json` `category_dispatch_DECISIVE`.
   (Superseded plan, for the record: auto-dump keyed to the move executing → feed
   `tools/usum_effect_remap.py` `probe_queue()`.)
 
@@ -559,12 +566,14 @@ GDB-stub `rwatch` alternative was tried and **does not work** in this fork
 (watchpoints/breakpoints/registers are no-ops — `tools/citra_gdb/README.md`).
 
 What the filtered trace resolves (priority order):
-1. **✅ Effect→sequence dispatch (was THE open link).** The read-watch on the
-   153-seq table `rodata+0x45a0` (VA 0x7de5a0) logs the dispatched seqId per frame
-   during a move → `seqId=(vaddr-0x7de5a0)/8`. (The event-queue tag-0x1f payload is
-   a sub-frame transient and is NOT the read path — effectId is known from the
-   chosen move instead.) Traces captured; **remaining: run more moves covering
-   distinct effectIds with a non-KO setup** to pin each effectId→seqId.
+1. **✅ Effect→sequence dispatch — RESOLVED.** The read-watch on the 153-seq table
+   `rodata+0x45a0` (VA 0x7de5a0) logs the dispatched seqId per frame during a move
+   → `seqId=(vaddr-0x7de5a0)/8`. Non-KO captures (0-power 100%-effect moves poked
+   into the lead's battlemon so the target survives, six effects) show the effect
+   handler is dispatched by **category**: seqId 80=inflict-status
+   (burn/sleep/confuse), 71=stat-change-target, 70=stat-change-self. No per-effectId
+   table; per-effect specifics are data-driven from `usum_moves.json`. Table +
+   traces: `EFFECT_DISPATCH.md`, `seq_dispatch_traces.json`, `seq_traces/`.
 2. **The 427/444 tables' true index key.** Same technique on `rodata+0x7e24` /
    `+0x98ac` reads reveals what those `{handler,aux}` tables are indexed by
    (still unknown — not effectId).
