@@ -67,11 +67,26 @@ few legitimate data-only gaps (effects with no dedicated sequence). The 153-entr
 NOT the move-effect id — its old "index = move-effect id" note was the wrong
 assumption this analysis overturns). Damage sequence = `sub_9698`.
 
-## Next step (needs battle-context emulation)
-Static analysis has bottomed out; the remaining move is dynamic. In `cro_emu.py`,
-build a minimal fixture — an effect object (step byte @+0xa94) plus the event
-queue with one tag-0x1f entry carrying an effectId — and single-step the
-move-execution consumer (a caller of `sub_86e48`: sub_144ec/1c664/24040/25d78/
-7b51c/7b908/819f0) until it computes a 153-table index; read that index per
-effectId 0..419 to recover the remap directly. Validate by correlating handlers
-with `usum_moves.json` effect semantics (ids of the same kind share a handler).
+## Emulation attempt (built) — and why it doesn't finish yet
+`tools/usum_effect_remap.py` is a **fault-tolerant Unicorn harness**: it applies
+the internal relocations (so the 0x45a0 table is populated), lazily maps any
+unmapped data page zero-filled, stubs import fetches, and installs a **memory
+watch on `[rodata+0x45a0 .. +153*8)`** — every read there records the sequence
+id being dispatched. It sweeps every function, calling each with the effect id
+in r0 and in filled argument buffers (the id repeated at every offset), and
+reports any function whose watched index depends on the effect id.
+
+RESULT: **no function exposes an effect-id-dependent 0x45a0 index** under either
+fixture. (The one zero-fixture hit, `sub_8c80`, is a 7-way step-state handler
+keyed on `[r1]`, not the remap.) The watch *does* fire when state happens to line
+up, so the harness works — but the dispatcher reads the effect id through a
+**structured pointer walk** (a relocated global or a multi-level deref into the
+live effect-object), which a blind fixture doesn't route correctly.
+
+## Next step
+Reconstruct the **effect-object layout** the dispatcher walks (step byte @+0xa94
+is one known field), then hand `usum_effect_remap.py`'s `probe()` a correctly
+shaped object so the index falls out of the watch. That layout realistically
+needs a **live-battle RAM dump** (the same blocker as the battle-pokemon scalar
+field names) — the save files only carry CoreParam, not the in-battle objects.
+This is now a data-capture problem, not a static-RE one.

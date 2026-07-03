@@ -413,10 +413,15 @@ big open Phase-1 link). PROGRESS THIS SESSION (`decomp/battle_effects/EFFECT_DIS
   PIC `switch`/structured table in code (consistent with the 153-table base
   being PIC-computed). Also confirmed: 0x45a0 is the **sequence** table (index =
   0..152 sequence id, NOT the move-effect id — overturning its old note).
-- NEXT (needs battle-context emulation): static analysis has bottomed out. Build
-  an effect-object + tag-0x1f queue fixture in `cro_emu.py` and single-step a
-  `sub_86e48` caller until it computes a 153-table index; read it per effectId
-  0..419 to recover the remap. See `battle_effects/EFFECT_DISPATCH.md`.
+- EMULATION HARNESS BUILT (`tools/usum_effect_remap.py`): fault-tolerant Unicorn
+  runner (lazy page-map + import stubs) with a memory watch on the 0x45a0 table.
+  Swept all functions with the effect id in r0 and in filled arg buffers →
+  **no function exposes an effect-id-dependent 0x45a0 index**: the dispatcher
+  reads the id via a structured pointer walk into the live effect-object, which
+  a blind fixture can't route. NEXT is now a data-capture problem — reconstruct
+  the effect-object layout (realistically needs a **live-battle RAM dump**, same
+  blocker as the battle-pokemon scalar names), then feed `probe()` a real object.
+  See `battle_effects/EFFECT_DISPATCH.md`.
 
 **Phase-3 struct naming — battle-pokemon init fields NAMED (verified).** The
 runtime battle-pokemon struct is built from a CoreParam by `sub_6188c`, a
