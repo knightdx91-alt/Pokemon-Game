@@ -14,15 +14,27 @@ simple sites work well. This is a personal tool — see the security note in
 setup-onion-gateway.sh about who can reach the port.
 """
 import mimetypes
-from urllib.parse import urljoin, quote
+import os
+import shutil
+import subprocess
+import tempfile
+import time
+import uuid
+from html import escape
+from urllib.parse import urljoin, quote, unquote
 
 import requests
 from bs4 import BeautifulSoup
-from flask import Flask, request, Response, redirect
+from flask import Flask, request, Response, redirect, send_file
+from werkzeug.utils import safe_join
 
 TOR_PROXY = "socks5h://127.0.0.1:9050"   # socks5h = resolve hostnames (.onion) via Tor
 LISTEN_HOST = "0.0.0.0"
 LISTEN_PORT = 8888
+
+EXTRACT_ROOT = "/tmp/onion-extract"       # where archives are unpacked
+MAX_ARCHIVE_BYTES = 2 * 1024 * 1024 * 1024  # 2 GB download cap
+EXTRACT_TTL = 3600                          # delete extractions older than 1 h
 
 app = Flask(__name__)
 session = requests.Session()
@@ -121,14 +133,54 @@ def browse():
 
     ctype = r.headers.get("Content-Type", "")
     if "text/html" not in ctype.lower():
-        # A file / non-page response: stream it through and forward the headers
-        # that make the browser download it (filename, size, range support).
+        # Peek the first chunk to sniff whether this is an archive.
+        it = r.iter_content(chunk_size=65536)
+        try:
+            first = next(it)
+        except StopIteration:
+            first = b""
+
+        if archive_kind(first[:8]):
+            # It's a zip/rar/7z — catch it, save it, and auto-extract.
+            purge_old()
+            token = uuid.uuid4().hex
+            d = os.path.join(EXTRACT_ROOT, token)
+            os.makedirs(d, exist_ok=True)
+            archive_path = os.path.join(d, "archive.bin")
+            total = 0
+            with open(archive_path, "wb") as f:
+                f.write(first); total = len(first)
+                for chunk in it:
+                    f.write(chunk); total += len(chunk)
+                    if total > MAX_ARCHIVE_BYTES:
+                        shutil.rmtree(d, ignore_errors=True)
+                        return _msg_page("Archive too large",
+                                         "That file is over the %d GB limit." %
+                                         (MAX_ARCHIVE_BYTES // (1024**3)))
+            # remember the source name for nicer display
+            with open(os.path.join(d, "name.txt"), "w") as nf:
+                nf.write(os.path.basename(r.url.split("?")[0]) or "archive")
+            ok, needpw, _ = do_extract(archive_path, d, None)
+            if ok:
+                return _extract_result(token)
+            if needpw:
+                return password_form(token, None)
+            shutil.rmtree(d, ignore_errors=True)
+            return _msg_page("Couldn't open that archive",
+                             "It may be corrupt or an unsupported format.")
+
+        # Not an archive: stream it through with download headers intact.
         guessed = ctype or mimetypes.guess_type(r.url)[0] or "application/octet-stream"
         headers = {}
         for hk in ("Content-Disposition", "Content-Length", "Accept-Ranges", "Last-Modified"):
             if hk in r.headers:
                 headers[hk] = r.headers[hk]
-        return Response(r.iter_content(chunk_size=65536), mimetype=guessed, headers=headers)
+
+        def gen(prefix, iterator):
+            yield prefix
+            for c in iterator:
+                yield c
+        return Response(gen(first, it), mimetype=guessed, headers=headers)
 
     soup = BeautifulSoup(r.content, "html.parser")
 
@@ -197,7 +249,154 @@ def browse():
     return Response(html, mimetype="text/html")
 
 
+# --------------------------------------------------------------------------
+# Archive catching / auto-extraction
+# --------------------------------------------------------------------------
+
+def archive_kind(magic):
+    """Identify zip/rar/7z by magic bytes (reliable regardless of extension)."""
+    if magic[:4] in (b"PK\x03\x04", b"PK\x05\x06", b"PK\x07\x08"):
+        return "zip"
+    if magic[:4] == b"Rar!":
+        return "rar"
+    if magic[:6] == b"7z\xbc\xaf\x27\x1c":
+        return "7z"
+    return None
+
+
+def _out_dir(token):
+    return os.path.join(EXTRACT_ROOT, token, "out")
+
+
+def do_extract(archive_path, token_dir, password):
+    """Extract with `unar`. Returns (ok, needs_password, message)."""
+    out = os.path.join(token_dir, "out")
+    shutil.rmtree(out, ignore_errors=True)
+    os.makedirs(out, exist_ok=True)
+    cmd = ["unar", "-quiet", "-force-overwrite", "-output-directory", out]
+    if password:
+        cmd += ["-password", password]
+    cmd += [archive_path]
+    try:
+        p = subprocess.run(cmd, stdin=subprocess.DEVNULL,
+                           capture_output=True, text=True, timeout=600)
+    except subprocess.TimeoutExpired:
+        return (False, False, "Extraction timed out.")
+    except FileNotFoundError:
+        return (False, False, "The 'unar' tool isn't installed on the server.")
+    combined = (p.stdout + p.stderr).lower()
+    # did anything actually come out?
+    extracted = any(files for _, _, files in os.walk(out))
+    if p.returncode == 0 and extracted:
+        return (True, False, "")
+    if ("password" in combined or "encrypted" in combined
+            or "passphrase" in combined or "wrong" in combined):
+        return (False, True, "Password required or incorrect.")
+    return (False, False, combined.strip() or "Extraction failed.")
+
+
+def purge_old():
+    """Delete extractions older than EXTRACT_TTL."""
+    try:
+        now = time.time()
+        for name in os.listdir(EXTRACT_ROOT):
+            path = os.path.join(EXTRACT_ROOT, name)
+            try:
+                if now - os.path.getmtime(path) > EXTRACT_TTL:
+                    shutil.rmtree(path, ignore_errors=True)
+            except OSError:
+                pass
+    except FileNotFoundError:
+        pass
+
+
+def _page(title, body):
+    return Response(
+        "<!doctype html><meta charset=utf-8>"
+        "<meta name=viewport content='width=device-width,initial-scale=1'>"
+        "<style>body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;"
+        "background:#0c0c14;color:#e6e6f0;padding:20px;line-height:1.5}"
+        "a{color:#9a8bff}input{padding:12px;border-radius:10px;border:1px solid #2a2a3a;"
+        "background:#16161f;color:#fff;font-size:1rem}"
+        "button{padding:12px 18px;border:0;border-radius:10px;background:#7c6af7;color:#fff;"
+        "font-size:1rem;font-weight:600}"
+        ".f{display:block;padding:10px 12px;margin:6px 0;background:#16161f;border-radius:10px;"
+        "text-decoration:none;color:#e6e6f0}.f b{color:#9a8bff}"
+        ".sz{color:#8a8aa0;font-size:.85rem}</style>"
+        "<h2>" + title + "</h2>" + body +
+        "<p style='margin-top:24px'><a href='/'>&#129441; Onion Reader home</a></p>",
+        mimetype="text/html")
+
+
+def _msg_page(title, msg):
+    return _page(title, "<p>" + escape(msg) + "</p>")
+
+
+def password_form(token, error):
+    err = "<p style='color:#e88'>" + escape(error) + "</p>" if error else ""
+    return _page(
+        "&#128274; Password needed",
+        "<p>This archive is password-protected. Enter the password to unpack it.</p>"
+        + err +
+        "<form action='/unpack' method='post'>"
+        "<input type='hidden' name='token' value='" + escape(token) + "'>"
+        "<p><input name='pw' type='password' autofocus placeholder='Password' "
+        "autocapitalize='off' autocomplete='off'></p>"
+        "<button type='submit'>Unpack</button></form>")
+
+
+def _extract_result(token):
+    """List extracted files (or jump straight to the file if there's only one)."""
+    out = _out_dir(token)
+    files = []
+    for root, _, names in os.walk(out):
+        for n in names:
+            full = os.path.join(root, n)
+            rel = os.path.relpath(full, out)
+            files.append((rel, os.path.getsize(full)))
+    if not files:
+        return _msg_page("Nothing inside", "The archive extracted but was empty.")
+    files.sort()
+    if len(files) == 1:
+        return redirect("/dl/" + token + "/" + quote(files[0][0]))
+    rows = []
+    for rel, size in files:
+        kb = size / 1024.0
+        human = ("%.1f KB" % kb) if kb < 1024 else ("%.1f MB" % (kb / 1024.0))
+        rows.append("<a class=f href='/dl/" + token + "/" + quote(rel) + "'>"
+                    "<b>&#11015;</b> " + escape(rel) +
+                    " <span class=sz>" + human + "</span></a>")
+    return _page("Unpacked " + str(len(files)) + " files", "".join(rows))
+
+
+@app.route("/unpack", methods=["POST"])
+def unpack():
+    token = request.form.get("token", "")
+    pw = request.form.get("pw", "")
+    token_dir = safe_join(EXTRACT_ROOT, token)
+    if not token_dir or not os.path.isdir(token_dir):
+        return _msg_page("Expired", "That archive is no longer available — reload it.")
+    archive_path = os.path.join(token_dir, "archive.bin")
+    ok, needpw, msg = do_extract(archive_path, token_dir, pw)
+    if ok:
+        return _extract_result(token)
+    if needpw:
+        return password_form(token, "Wrong password — try again.")
+    return _msg_page("Couldn't open that archive", msg)
+
+
+@app.route("/dl/<token>/<path:subpath>")
+def download_extracted(token, subpath):
+    base = safe_join(EXTRACT_ROOT, token, "out")
+    full = safe_join(base, unquote(subpath)) if base else None
+    if not full or not os.path.isfile(full):
+        return _msg_page("Not found", "That file is no longer available.")
+    return send_file(full, as_attachment=True,
+                     download_name=os.path.basename(full))
+
+
 if __name__ == "__main__":
+    os.makedirs(EXTRACT_ROOT, exist_ok=True)
     try:
         from waitress import serve
         serve(app, host=LISTEN_HOST, port=LISTEN_PORT, threads=8)
