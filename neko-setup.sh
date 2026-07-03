@@ -45,6 +45,8 @@ services:
       NEKO_MEMBER_MULTIUSER_ADMIN_PASSWORD: "${NEKO_PW}"
       NEKO_WEBRTC_EPR: "52000-52100"
       NEKO_WEBRTC_ICELITE: "1"
+      NEKO_SESSION_IMPLICIT_HOSTING: "1"
+      NEKO_SESSION_MERCIFUL_RECONNECT: "1"
       NEKO_WEBRTC_NAT1TO1: "${IP}"
     volumes:
       - neko-profile:/home/neko
@@ -62,6 +64,8 @@ services:
       NEKO_MEMBER_MULTIUSER_ADMIN_PASSWORD: "${NEKO_PW}"
       NEKO_WEBRTC_EPR: "52200-52300"
       NEKO_WEBRTC_ICELITE: "1"
+      NEKO_SESSION_IMPLICIT_HOSTING: "1"
+      NEKO_SESSION_MERCIFUL_RECONNECT: "1"
       NEKO_WEBRTC_NAT1TO1: "${IP}"
     volumes:
       - neko-desktop:/home/neko
