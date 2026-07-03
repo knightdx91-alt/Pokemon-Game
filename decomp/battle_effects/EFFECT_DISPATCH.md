@@ -1,4 +1,4 @@
-# Move-effect → sequence-handler dispatch (status: input side solved, remap open)
+# Move-effect → sequence-handler dispatch (status: live VA map + queue base CONFIRMED; remap reduced to reading seqId @ work+0xa94)
 
 The battle engine runs a per-move "sequence handler" chosen from the move's
 Gen-7 move-effect id. This note records what is now proven about that path.
@@ -104,12 +104,65 @@ VA-contiguous) instead. In an in-battle VA dump: `|static|` CRO0 @ VA 0x8b2000;
 **Battle.cro `.text` @ VA ~0x6de000** (found by matching disk seg0 bytes; its
 header is `text_va - 0x180`, seg table at `+0xC8` → rodata/bss runtime VAs).
 
-Remaining recipe (all infra in place):
-1. Genuinely execute a move (confirm on the move menu; verify via screenshot it's
-   animating — ours always goes first vs a wild Lv1x mon).
-2. ~0.4 s into execution take ONE `/tmp/dump_va` (a tight burst freezes the game).
-3. From `va.bin`: read Battle.cro's seg table → rodata_va (`0x45a0` seq table) and
-   bss_va; read the active **sequence id** from the step-state work field
-   (`work+0xa94`) and the queued **effectId** from the event queue (`bss+0x394`,
-   tag 0x1f). That pair = one (effectId→seqId) entry; repeat for a few moves, or
-   seed `usum_effect_remap.py probe_queue()` with the live bss image.
+## LIVE CAPTURE RUN — Battle.cro runtime layout resolved & queue base CONFIRMED ✅
+A real wild battle was driven end-to-end (boot → Route 4 grass → wild encounter →
+FIGHT → move) and Battle.cro's runtime map was resolved from an in-battle
+`/tmp/dump_va` image (`tools/usum_battle_resolve.py`). All four segment sizes
+match the disk CRO exactly, so the base is pinned unambiguously:
+
+| seg | runtime VA | size | note |
+|---|---|---|---|
+| text   | `0x6dd180`  | `0xfc7f4` | base is **deterministic** across battles (seen in 3 encounters) |
+| rodata | `0x7da000`  | `0xe694`  | **sequence-handler table (rodata+0x45a0) @ `0x7de5a0`** |
+| data   | `0x8145c90` | `0xe68`   | |
+| bss    | `0x8146af8` | `0xbaa0`  | |
+
+`sub_8790c` (the event-queue push) sits at runtime **`0x764a8c`**; its
+relocation-filled queue-base literal (disk file off `0x879d4`) resolves to
+**`0x8146e8c` == bss+0x394** — this **confirms EFFECT_DISPATCH's queue base
+against live memory** for the first time. (`text` unloads on the overworld, so
+all reads must come from a single in-battle dump.)
+
+## The tag-0x1f event is a SUB-FRAME transient — external dumps CANNOT catch it
+Across **25 frozen burst-dumps + 2 free-run single dumps** spanning full
+Steam-Eruption executions, the queue at `0x8146e8c` held **zero** tag-0x1f
+entries. The effect id is pushed by `sub_86e48` and drained by the sequence
+runner within a single frame; a file-triggered `/tmp/dump_va` freezes the game
+~1 frame and always lands between the push and the drain. **The queue is the
+wrong read** — it is empty by the time any external dump samples it.
+
+## Sharpened recipe — read the seqId, not the transient effectId
+1. **effectId does NOT need a memory read.** It is fixed by the *move you choose*
+   (`data/pokemon/usum_moves.json` `effectId` — e.g. Steam Eruption = 4,
+   Hydro Pump = 0, Explosion = 7). Pick the move → you know the effectId.
+2. The **seqId persists** at `work+0xa94` for the whole multi-frame move (the
+   step-state machine advances across frames), so a single mid-move dump *can*
+   read it — unlike the queue. The one remaining unknown is the **`work` object
+   base**: a global pointer in Battle.cro `data`/`bss` (in range at `~0x814xxxx`).
+3. **Two ways to finish it:**
+   (a) *Static:* find the global that holds the battle-`work` pointer (disassemble
+       a handler that reads `work+0xa94`), read it from the in-battle dump, then
+       dump `work..work+0xB00` during a move and read u32 @ `work+0xa94`.
+   (b) *In-process hook (robust):* add a PC-breakpoint dump to the Citra patch —
+       when PC hits the sequence-dispatch site (`table[seqId]` call, or the
+       `sub_86e48` push), snapshot `r0/r1` (effectId) and `work+0xa94` (seqId).
+       This sidesteps the frame-freeze race entirely.
+4. Repeat for a handful of moves with distinct effectIds → the (effectId→seqId)
+   pairs that reverse the PIC remap.
+
+Toward (a): a scan of Battle.cro `.text` finds **48 `[reg,#0xa94]` accessors**;
+the pair at `0x459c` (`ldr r0,[r4,#0xa94]`) / `0x45d0` (`str r5,[r4,#0xa94]`) is
+inside `sub_458c` (the documented 6-state effect handler), confirming the
+handlers receive **`work` in `r4`** and `work+0xa94` is the step/seq field. The
+`work` base itself is set up by the dispatcher's caller — trace the global that
+loads `r4` before the `table[seqId]` call to name the battle-`work` pointer.
+
+### Gotchas nailed this run (fold into any capture script)
+- Default `/tmp/dump_va` window (`00100000 00F00000`, 16 MB) reaches text+rodata
+  but **NOT** data/bss (`~0x814xxxx`). Dump those explicitly, e.g.
+  `echo "08140000 00020000" > /tmp/dump_va`.
+- Battle.cro is **unloaded on the overworld** — resolve its base *inside* the
+  battle (idle at the command menu is fine; `work` and the seg table are live there).
+- First boot after installing the save formats the SaveData archive and starts a
+  NEW game; kill, re-copy `usum_route4_grass_main.sav` over `main`, reboot → the
+  Continue slot loads straight into the Route 4 grass (per saves/README.md).

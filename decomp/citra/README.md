@@ -96,24 +96,41 @@ wild battle is an overworld navigation grind (exit building → route grass →
 walk until an RNG encounter → FIGHT + pick a move), done via the see→act loop
 with save-state checkpoints between steps.
 
-## NEXT: capture the mid-battle RAM image
+## LIVE RUN DONE — Battle.cro map resolved; the queue read is a dead end ✅/⚠️
 
-The infrastructure is done and verified (boot+save+input+FCRAM dump). Remaining,
-via the **memory route** (sidesteps the black-frame issue entirely):
-1. **Battle detection from memory** — poll FCRAM (dump on a cadence, or add a
-   lighter in-process probe) for the in-battle signature: Battle.cro's dispatch
-   tables live + the battle event-queue / battlemon objects present (out-of-
-   battle they are not). Resolve Battle.cro's relocated base first.
-2. **Blind-ish navigation** — script: skip title (tap A), the save auto-continues
-   to where it was saved, then hold a walk direction (arrows) to trigger a wild
-   encounter; on the battle menu, tap A to FIGHT + pick a move so the effect
-   object is live. Correlate against the memory probe to know when each phase
-   lands (no visuals needed).
-3. **Dump + solve** — on in-battle detection, `touch /tmp/dump_now`, then feed
-   `/tmp/fcram.bin` to `tools/usum_effect_remap.py` (seed the real effect-object /
-   event-queue global `bss+0x394`, read the sequence id off the `rodata+0x45a0`
-   watch per move → the effect→sequence remap) and read the battle-pokemon
-   struct scalars directly → the `BattlePokemon.h` field names.
+A full live capture was driven this session: prebuilt Citra + the committed Route 4
+grass save → boot → tap A → Continue → walk the grass → wild encounter → FIGHT →
+Steam Eruption, with `/tmp/dump_va` snapshots and `/tmp/shot` screenshots
+throughout. Findings (details + tool in `decomp/battle_effects/EFFECT_DISPATCH.md`
+and `tools/usum_battle_resolve.py`):
+
+- **Battle.cro runtime map resolved from an in-battle VA dump** (all seg sizes
+  match disk): text `0x6dd180`, rodata `0x7da000` (**seq table @ `0x7de5a0`**),
+  data `0x8145c90`, bss `0x8146af8`. Base is **deterministic across battles**;
+  Battle.cro is **unloaded on the overworld** (resolve inside a battle).
+- **Queue base CONFIRMED live:** `sub_8790c` @ runtime `0x764a8c`; its
+  reloc-filled literal → `0x8146e8c == bss+0x394`.
+- **The tag-0x1f event never appears in the queue** across 25 frozen bursts + 2
+  free-run single dumps over full move executions — it is a **sub-frame
+  transient** (pushed by `sub_86e48`, drained same frame). A file-triggered dump
+  freezes ~1 frame and always misses it. **Do not chase the queue.**
+
+### What's actually left (redirected)
+The (effectId→seqId) pair does not come from the queue. **effectId is known from
+the chosen move** (`usum_moves.json`); the **seqId persists at `work+0xa94`** for
+the whole move. Finish via either:
+1. **Static:** find the global holding the battle-`work` pointer (in Battle.cro
+   `data`/`bss`, `~0x814xxxx`), read it in-battle, dump `work..work+0xB00` during a
+   move, read u32 @ `work+0xa94`.
+2. **In-process hook (robust, recommended):** extend the patch with a
+   PC-breakpoint dump at the sequence-dispatch site (`table[seqId]` call or the
+   `sub_86e48` push) that snapshots the effectId register + `work+0xa94` — no
+   frame-freeze race.
+
+Gotchas nailed: default `/tmp/dump_va` window (16 MB) misses data/bss — dump with
+an explicit base (`echo "08140000 00020000" > /tmp/dump_va`); first boot after
+save install formats the archive & starts a new game — kill, re-copy the save
+over `main`, reboot → Continue loads into the grass.
 
 ## Original MEMORY-CAPTURE / trace notes
 
