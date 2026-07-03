@@ -131,6 +131,22 @@ DNSPort 127.0.0.1:${TOR_DNS_PORT}
 EOF
 fi
 
+# ---- gateway IP: the VPN's 10.10.10.1 must exist locally so dnsmasq can bind
+echo "==> Creating VPN gateway IP ${VPN_DNS} (dummy interface, persistent)..."
+cat > /etc/systemd/system/onion-gw-ip.service <<EOF
+[Unit]
+Description=Onion VPN gateway dummy IP
+After=network.target
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/bash -c 'ip link add onion0 type dummy 2>/dev/null; ip addr add ${VPN_DNS}/24 dev onion0 2>/dev/null; ip link set onion0 up'
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload
+systemctl enable --now onion-gw-ip.service
+
 # ---- dnsmasq: .onion -> Tor, everything else -> normal resolver ------------
 echo "==> Configuring dnsmasq split DNS..."
 # stop systemd-resolved squatting on port 53 if present
@@ -142,7 +158,7 @@ fi
 cat > /etc/dnsmasq.d/onion.conf <<EOF
 # listen only where the VPN clients reach us
 listen-address=127.0.0.1,${VPN_DNS}
-bind-interfaces
+bind-dynamic
 no-resolv
 # .onion queries go to Tor's DNSPort (returns a ${ONION_NET} virtual IP)
 server=/onion/127.0.0.1#${TOR_DNS_PORT}
