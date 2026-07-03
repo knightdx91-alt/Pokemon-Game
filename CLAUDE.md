@@ -294,10 +294,33 @@ Real CSS `transform: rotate()` on `<body>` — same approach as EmulatorJS fulls
 - ✅ Kanto maps navigable from PalletTown; Hoenn/Johto/Sinnoh/HeartGold/Platinum map data present
 - ✅ Achievement definitions (bronze/silver/gold/platinum), faction standing system
 
-### Pokémon Crater clone (`crater.html` + `src/crater/`) — DONE ✅
-A standalone click-to-battle remake of the classic Pokémon Crater browser game,
-launched from the index card "Pokémon Crater". Entirely built from data already
-in the repo — no new assets:
+### Pokémon Crater clone (`crater.html` + `src/crater/`) — v1 SHIPPED ⚠ REDO AS WALKABLE OVERWORLD
+**▶ NEXT SESSION PRIORITY — the user rejected v1's world model.** v1 shows a
+static "zone screen" with clickable spawn sprites; the user wants REAL Pokémon
+Crater: you walk around the ACTUAL maps (the same walkable overworld as
+`game.html` — the Pokémon RPG card) and wild Pokémon stand ON the map as
+visible sprites you walk up to and battle. Port plan (most v1 code is
+reusable — battle/mon/variants/catch/save/gyms are engine-agnostic DOM
+modules):
+1. Host it in the RPG engine (`GameMap`/`GameRenderer`/`GameInput`;
+   `game.html?map=X&region=Y` already loads all 4 regions) — either a crater
+   mode flag on game.html or a thin new page reusing those engine files.
+2. Spawn layer: on map load pick ~6 walkable tiles (prefer tall-grass
+   behavior tiles from tileset metadata), draw front sprites there as a
+   renderer overlay pass; respawn on map change / "search again".
+3. Battle trigger: stepping onto / pressing A facing a spawn opens the
+   existing `CraterBattle` DOM overlay (same pattern as the RPG's
+   #battle-overlay).
+4. Encounter pools: re-key `src/crater/zones_gen.js` zones to the RPG's map
+   names (identical source data — FireRed/HnS/Emerald/Platinum), so each real
+   map gets its authentic pool + rare legendaries. Extend
+   `tools/build_crater_zones.py` to emit the zone↔map-name mapping.
+5. Keep the crater progression save (party/box/dex/mart/gyms/variants) as-is;
+   crater.html v1 stays as the fallback until the overworld version lands.
+
+**v1 (what exists now):** a standalone click-to-battle remake launched from
+the index card "Pokémon Crater". Entirely built from data already in the
+repo — no new assets:
 - **Data sources:** `data/pokemon/usum_*.json` (stats/moves/learnsets/evolutions,
   fetched at runtime), `decomp/data/type_chart.json` + `nature_table.json`
   (the verified USUM decomp tables), `data/sprites/pokemon/{front,back,icons}`
