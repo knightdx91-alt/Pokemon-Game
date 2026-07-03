@@ -2,876 +2,258 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Pokémon Crater</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>🔴</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0e0e12">
+<title>Pokémon Crater — RetroPlay</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='7' fill='%23e62829'/><rect y='7' width='16' height='2' fill='%23111'/><circle cx='8' cy='8' r='2.6' fill='%23fff' stroke='%23111'/></svg>">
 <style>
-  :root{
-    --bg:#0d1020; --panel:#161a2e; --panel2:#1e2340; --accent:#ef5350; --accent2:#42a5f5;
-    --text:#e8ecff; --muted:#8b93b8; --gold:#ffd54f; --green:#66bb6a;
-  }
-  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;height:100%;}
-  body{
-    background:radial-gradient(circle at 30% 10%,#1a1f3a,#0d1020 60%);
-    color:var(--text); font-family:'Segoe UI',system-ui,sans-serif;
-    display:flex; flex-direction:column; align-items:center; min-height:100%;
-    overflow-x:hidden; user-select:none;
-  }
-  #wrap{width:100%;max-width:520px;padding:8px;display:flex;flex-direction:column;gap:8px;}
-  header{display:flex;align-items:center;gap:10px;padding:4px 6px;}
-  header .logo{font-size:20px;font-weight:800;letter-spacing:.5px;}
-  header .logo b{color:var(--accent);}
-  header .logo i{color:var(--accent2);font-style:normal;}
-  header a.back{margin-left:auto;color:var(--muted);text-decoration:none;font-size:13px;
-    border:1px solid #2a2f4d;border-radius:8px;padding:5px 10px;}
-  #stage{position:relative;width:100%;aspect-ratio:15/11;background:#000;border-radius:12px;
-    overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.5),0 0 0 3px #23284a;}
-  canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;display:block;}
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    :root {
+        --bg: #0e0e12; --surface: #17171d; --surface2: #1f1f28;
+        --border: #2a2a35; --text: #e8e8ef; --muted: #8b8b98;
+        --accent: #7c6af7; --accent2: #4ecdc4; --gold: #f8d030;
+    }
+    html, body { height: 100%; }
+    body {
+        background: var(--bg); color: var(--text);
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        display: flex; flex-direction: column;
+    }
+    img { image-rendering: pixelated; }
+    button {
+        font-family: inherit; color: var(--text); background: var(--surface2);
+        border: 1px solid var(--border); border-radius: 10px; cursor: pointer;
+    }
+    button:disabled { opacity: 0.45; cursor: default; }
+    h2 { font-size: 1.05rem; margin: 10px 2px 8px; }
+    small { color: var(--muted); }
+    .muted { color: var(--muted); font-size: 0.85rem; padding: 6px 2px; }
 
-  /* HUD banner */
-  #banner{position:absolute;top:6px;left:6px;background:rgba(10,12,26,.78);
-    border:1px solid #2a2f4d;border-radius:8px;padding:4px 9px;font-size:11px;
-    display:flex;gap:10px;align-items:center;pointer-events:none;}
-  #banner .money{color:var(--gold);}
+    /* ---------- topbar ---------- */
+    #topbar {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+        padding: 8px 10px; background: var(--surface);
+        border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50;
+    }
+    #tb-brand { font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2));
+        -webkit-background-clip: text; background-clip: text; color: transparent; margin-right: 4px; }
+    #topbar .tb-stat { font-size: 0.8rem; color: var(--muted); margin-right: 6px; white-space: nowrap; }
+    #topbar nav { display: flex; gap: 5px; flex-wrap: wrap; margin-left: auto; }
+    #topbar nav button { padding: 6px 9px; font-size: 0.8rem; }
+    #topbar nav button:active { background: var(--accent); }
 
-  /* Controls */
-  #controls{display:flex;justify-content:space-between;align-items:center;padding:4px 4px 12px;}
-  .dpad{display:grid;grid-template-columns:repeat(3,46px);grid-template-rows:repeat(3,46px);gap:2px;}
-  .dpad button{background:var(--panel2);border:1px solid #2a2f4d;border-radius:9px;color:var(--text);
-    font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;}
-  .dpad button:active{background:var(--accent);}
-  .dpad .sp{visibility:hidden;}
-  .abtns{display:flex;flex-direction:column;gap:12px;align-items:flex-end;}
-  .abtn{width:58px;height:58px;border-radius:50%;border:none;font-weight:800;font-size:15px;color:#fff;
-    box-shadow:0 4px 0 rgba(0,0,0,.35);}
-  .abtn.a{background:linear-gradient(#66bb6a,#43a047);}
-  .abtn.b{background:linear-gradient(#ef5350,#c62828);width:48px;height:48px;font-size:13px;}
-  .abtn:active{transform:translateY(3px);box-shadow:none;}
-  .menu-row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;}
-  .mbtn{background:var(--panel);border:1px solid #2a2f4d;color:var(--text);border-radius:9px;
-    padding:8px 12px;font-size:13px;font-weight:600;flex:1;min-width:70px;text-align:center;}
-  .mbtn:active{background:var(--panel2);}
+    #screen { flex: 1; padding: 10px; max-width: 860px; width: 100%; margin: 0 auto; }
+    #boot-msg { padding: 40px 20px; text-align: center; color: var(--muted); }
 
-  /* Generic overlay panels */
-  .overlay{position:absolute;inset:0;background:rgba(6,8,18,.92);z-index:20;display:none;
-    flex-direction:column;padding:14px;overflow-y:auto;}
-  .overlay.show{display:flex;}
-  .overlay h2{margin:0 0 10px;font-size:16px;}
-  .row{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid #2a2f4d;
-    border-radius:10px;padding:8px 10px;margin-bottom:7px;}
-  .row img{width:48px;height:48px;image-rendering:pixelated;}
-  .row .info{flex:1;min-width:0;}
-  .row .nm{font-weight:700;font-size:13px;}
-  .row .sub{font-size:11px;color:var(--muted);}
-  .hpbar{height:6px;border-radius:4px;background:#333;overflow:hidden;margin-top:3px;}
-  .hpbar i{display:block;height:100%;background:var(--green);transition:width .3s;}
-  .btn{background:var(--accent2);color:#fff;border:none;border-radius:9px;padding:9px 14px;
-    font-weight:700;font-size:13px;}
-  .btn.grey{background:var(--panel2);}
-  .close-x{position:absolute;top:10px;right:12px;font-size:22px;color:var(--muted);background:none;border:none;}
+    /* ---------- title ---------- */
+    .title-screen { text-align: center; padding-top: 8vh; }
+    .title-logo { font-size: 2.6rem; font-weight: 900; letter-spacing: -1px; }
+    .title-logo span { display: block; font-size: 3.4rem; background: linear-gradient(135deg, var(--gold), #f85040);
+        -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .title-sub { color: var(--muted); margin: 10px 0 30px; font-size: 0.9rem; }
+    .title-btns { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+    .big-btn { padding: 14px 30px; font-size: 1.05rem; min-width: 260px; }
+    .big-btn small { display: block; font-size: 0.75rem; }
+    .big-btn.primary { background: var(--accent); border-color: var(--accent); }
+    .title-credit { color: var(--muted); font-size: 0.72rem; margin-top: 40px; padding: 0 20px; }
 
-  /* Dialogue */
-  #dialogue{position:absolute;left:8px;right:8px;bottom:8px;background:rgba(10,12,26,.96);
-    border:2px solid var(--accent2);border-radius:10px;padding:10px 12px;font-size:14px;z-index:15;
-    display:none;min-height:46px;box-shadow:0 4px 16px rgba(0,0,0,.5);}
-  #dialogue.show{display:block;}
-  #dialogue .more{position:absolute;right:10px;bottom:6px;color:var(--accent2);animation:blink 1s infinite;}
-  @keyframes blink{50%{opacity:.2}}
+    /* ---------- starter ---------- */
+    .starter-screen { text-align: center; }
+    .name-row { margin: 8px 0 14px; }
+    .name-input { padding: 10px 14px; font-size: 1rem; background: var(--surface2); color: var(--text);
+        border: 1px solid var(--border); border-radius: 10px; width: min(320px, 90%); text-align: center; }
+    .starter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 8px; }
+    .starter-card { padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .starter-card img { width: 80px; height: 80px; }
+    .starter-card:active { border-color: var(--accent); background: var(--surface); }
+    .type-chip { font-size: 0.62rem; color: #fff; padding: 1px 6px; border-radius: 8px; margin: 0 1px;
+        text-shadow: 0 1px 1px rgba(0,0,0,0.6); display: inline-block; }
 
-  /* Battle */
-  #battle{position:absolute;inset:0;z-index:25;display:none;flex-direction:column;
-    background:linear-gradient(#7ec0ee,#aee1c9 60%,#8fd18f);}
-  #battle.show{display:flex;}
-  #battle .field{position:relative;flex:1;overflow:hidden;}
-  .mon{position:absolute;display:flex;flex-direction:column;align-items:center;}
-  .mon img{width:96px;height:96px;image-rendering:pixelated;filter:drop-shadow(0 3px 2px rgba(0,0,0,.3));}
-  .foe{top:8%;right:6%;}
-  .ally{bottom:2%;left:6%;}
-  .statusbox{background:rgba(255,255,255,.92);border:2px solid #333;border-radius:8px;padding:5px 9px;
-    min-width:135px;color:#111;font-size:11px;box-shadow:2px 2px 0 rgba(0,0,0,.2);}
-  .foe .statusbox{position:absolute;top:10px;left:10px;}
-  .ally .statusbox{position:absolute;bottom:14px;right:10px;text-align:right;}
-  .statusbox .bn{font-weight:800;display:flex;justify-content:space-between;gap:8px;}
-  .statusbox .bar{height:7px;border-radius:4px;background:#555;overflow:hidden;margin-top:3px;}
-  .statusbox .bar i{display:block;height:100%;background:var(--green);transition:width .4s;}
-  .statusbox .xp{height:3px;background:#555;border-radius:2px;overflow:hidden;margin-top:2px;}
-  .statusbox .xp i{display:block;height:100%;background:var(--accent2);}
-  #battle .ui{background:#161a2e;border-top:3px solid #23284a;padding:8px;min-height:118px;}
-  #btxt{font-size:14px;min-height:40px;padding:4px 6px;line-height:1.35;}
-  #bmenu{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-  #bmenu button{background:var(--panel2);border:1px solid #2a2f4d;color:var(--text);border-radius:8px;
-    padding:11px;font-weight:700;font-size:13px;}
-  #bmenu button:active{background:var(--accent);}
-  #bmenu button small{display:block;font-weight:500;color:var(--muted);font-size:10px;margin-top:2px;}
-  .throw{position:absolute;width:26px;height:26px;z-index:5;}
+    /* ---------- map ---------- */
+    .region-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+    .region-tab { flex: 1; padding: 9px 0; font-weight: 700; }
+    .region-tab.active { background: var(--accent); border-color: var(--accent); }
+    .zone-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+    .zone-card { position: relative; padding: 10px; text-align: left; display: flex; flex-direction: column; gap: 2px;
+        border-left: 4px solid var(--border); overflow: hidden; }
+    .zone-card b { font-size: 0.85rem; }
+    .zone-card small { font-size: 0.72rem; }
+    .zone-card .z-ico { position: absolute; right: 8px; top: 8px; font-size: 1.1rem; opacity: 0.8; }
+    .zone-card:active { background: var(--surface); }
+    .zone-card.special { border-left-color: var(--gold); box-shadow: inset 0 0 18px rgba(248, 208, 48, 0.08); }
+    .zone-card.locked { opacity: 0.55; }
+    .zone-card .lock { font-size: 0.68rem; color: var(--gold); }
+    .rare-hint { color: var(--gold); font-style: normal; }
+    .env-grass { border-left-color: #3fa129; }
+    .env-forest { border-left-color: #1d7a3a; }
+    .env-cave { border-left-color: #8a6d4b; }
+    .env-water { border-left-color: #2980ef; }
+    .env-ice { border-left-color: #6fd8ff; }
+    .env-volcano { border-left-color: #e05020; }
+    .env-building { border-left-color: #9a8fd0; }
+    .env-sand { border-left-color: #d8b048; }
 
-  /* Title */
-  #title{position:absolute;inset:0;z-index:40;background:radial-gradient(circle at 50% 30%,#2a3566,#0d1020);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px;text-align:center;}
-  #title h1{font-size:34px;margin:0;font-weight:900;text-shadow:0 3px 0 #000;}
-  #title h1 b{color:var(--accent);} #title h1 i{color:var(--accent2);font-style:normal;}
-  #title p{color:var(--muted);margin:0;font-size:13px;max-width:300px;}
-  .starter{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
-  .starter .pick{background:var(--panel);border:2px solid #2a2f4d;border-radius:12px;padding:8px;width:96px;}
-  .starter .pick img{width:74px;height:74px;image-rendering:pixelated;}
-  .starter .pick.sel{border-color:var(--gold);background:var(--panel2);}
-  .starter .pick .n{font-size:12px;font-weight:700;}
-  .toast{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;
-    background:rgba(10,12,26,.95);border:1px solid var(--gold);border-radius:10px;padding:14px 18px;
-    font-size:14px;display:none;text-align:center;max-width:80%;}
-  .flex{display:flex;gap:8px;}
-  .grow{flex:1;}
-  .center{text-align:center;}
-  .small{font-size:11px;color:var(--muted);}
+    /* ---------- zone field ---------- */
+    .zone-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+    .zone-title { font-size: 1rem; }
+    .zone-btns { display: flex; gap: 6px; }
+    .sm-btn { padding: 7px 11px; font-size: 0.82rem; }
+    .sm-btn.primary { background: var(--accent); border-color: var(--accent); }
+    .zone-field { position: relative; height: 340px; border-radius: 14px; border: 1px solid var(--border); overflow: hidden; }
+    div.zone-field.env-grass { background: linear-gradient(180deg, #2c5e1e 0%, #38761f 55%, #2c5e1e 100%); }
+    div.zone-field.env-forest { background: linear-gradient(180deg, #14351c 0%, #1d5029 60%, #143a1e 100%); }
+    div.zone-field.env-cave { background: linear-gradient(180deg, #2a2118 0%, #4a3a28 60%, #2e2418 100%); }
+    div.zone-field.env-water { background: linear-gradient(180deg, #123a6e 0%, #1c5eb0 60%, #123a6e 100%); }
+    div.zone-field.env-ice { background: linear-gradient(180deg, #1e3d50 0%, #3d7ea0 60%, #24485c 100%); }
+    div.zone-field.env-volcano { background: linear-gradient(180deg, #3a1410 0%, #7a2c14 60%, #401410 100%); }
+    div.zone-field.env-building { background: linear-gradient(180deg, #1e1c2e 0%, #363050 60%, #232038 100%); }
+    div.zone-field.env-sand { background: linear-gradient(180deg, #6e5a28 0%, #a8863c 60%, #6e5a28 100%); }
+    .wild-spawn { position: absolute; background: none; border: none; display: flex; flex-direction: column;
+        align-items: center; z-index: 2; }
+    .wild-spawn img { width: 72px; height: 72px; filter: drop-shadow(0 3px 2px rgba(0,0,0,0.45)); }
+    .wild-spawn:active img { transform: scale(1.1); }
+    .wild-spawn .w-label { font-size: 0.62rem; background: rgba(0,0,0,0.55); padding: 1px 6px; border-radius: 8px;
+        white-space: nowrap; margin-top: -6px; }
+    .wild-spawn.rare .w-label { background: rgba(160, 120, 0, 0.8); }
+    .wild-spawn.v-shiny .w-label { color: var(--gold); }
+    .field-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); }
+    .zone-tip { color: var(--muted); font-size: 0.74rem; margin-top: 8px; }
+    .var-tag { font-size: 0.68em; font-weight: 800; padding: 0 4px; border-radius: 6px; background: #444; }
+    .var-shiny { background: #a08000; } .var-dark { background: #222; }
+    .var-mystic { background: #206090; } .var-metallic { background: #667; } .var-shadow { background: #4a2070; }
+
+    /* ---------- battle ---------- */
+    .battle { display: flex; flex-direction: column; gap: 8px; }
+    .bt-arena { position: relative; height: 300px; border-radius: 14px; border: 1px solid var(--border);
+        overflow: hidden; padding: 10px; }
+    .bt-arena.env-grass { background: linear-gradient(180deg, #7ec0ff 0%, #b8dcff 42%, #38761f 42%, #2c5e1e 100%); }
+    .bt-arena.env-forest { background: linear-gradient(180deg, #9db87a 0%, #c8d8a8 42%, #1d5029 42%, #143a1e 100%); }
+    .bt-arena.env-cave { background: linear-gradient(180deg, #241c14 0%, #40342a 42%, #4a3a28 42%, #2e2418 100%); }
+    .bt-arena.env-water { background: linear-gradient(180deg, #7ec0ff 0%, #b8dcff 42%, #1c5eb0 42%, #123a6e 100%); }
+    .bt-arena.env-ice { background: linear-gradient(180deg, #b8e8ff 0%, #e8f8ff 42%, #3d7ea0 42%, #24485c 100%); }
+    .bt-arena.env-volcano { background: linear-gradient(180deg, #58281c 0%, #904028 42%, #7a2c14 42%, #401410 100%); }
+    .bt-arena.env-building { background: linear-gradient(180deg, #2c2840 0%, #443c60 42%, #363050 42%, #232038 100%); }
+    .bt-arena.env-sand { background: linear-gradient(180deg, #a0d0f0 0%, #d0e8f8 42%, #a8863c 42%, #6e5a28 100%); }
+    .bt-enemy { position: absolute; top: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; align-items: flex-start; }
+    .bt-player { position: absolute; bottom: 6px; left: 10px; right: 10px; display: flex; justify-content: space-between; align-items: flex-end; }
+    .bt-sprite { width: 140px; height: 140px; transition: opacity 0.3s, transform 0.15s; }
+    .bt-sprite.back { width: 150px; height: 150px; }
+    .bt-sprite.gone { opacity: 0; transform: translateY(40px); }
+    .bt-sprite.atk-p { animation: atkP 0.3s; }
+    .bt-sprite.atk-e { animation: atkE 0.3s; }
+    .bt-sprite.hit { animation: hitFlash 0.35s; }
+    @keyframes atkP { 40% { transform: translate(26px, -14px); } }
+    @keyframes atkE { 40% { transform: translate(-26px, 14px); } }
+    @keyframes hitFlash { 0%, 40%, 80% { opacity: 1; } 20%, 60% { opacity: 0.15; } }
+    .bt-box { background: rgba(10, 10, 16, 0.82); border: 1px solid var(--border); border-radius: 10px;
+        padding: 7px 10px; min-width: 170px; max-width: 230px; }
+    .bt-nm { font-size: 0.8rem; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .g-M { color: #6fa8ff; font-style: normal; } .g-F { color: #ff8fb0; font-style: normal; }
+    .hp-outer { height: 8px; background: #202028; border-radius: 5px; margin-top: 4px; overflow: hidden; }
+    .hp-inner { height: 100%; border-radius: 5px; transition: width 0.4s; }
+    .hp-num { font-size: 0.7rem; color: var(--muted); margin-top: 2px; text-align: right; }
+    .exp-outer { height: 4px; background: #202028; border-radius: 3px; margin-top: 3px; overflow: hidden; }
+    .exp-inner { height: 100%; background: #4090f0; transition: width 0.4s; }
+    .status-tag { font-size: 0.6rem; font-weight: 800; color: #fff; padding: 0 4px; border-radius: 4px; }
+    .bt-log { min-height: 40px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+        padding: 9px 12px; font-size: 0.88rem; }
+    .bt-moves { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .bt-move { padding: 8px 10px; text-align: left; border-width: 2px; }
+    .bt-move b { font-size: 0.85rem; display: block; }
+    .bt-move span { font-size: 0.7rem; color: var(--muted); display: flex; gap: 5px; align-items: center; }
+    .bt-move em { font-style: normal; }
+    .bt-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px; }
+    .bt-cmd { padding: 9px 0; font-size: 0.82rem; }
+
+    /* ---------- modal ---------- */
+    #modal-layer { position: fixed; inset: 0; z-index: 100; pointer-events: none; }
+    .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex;
+        align-items: center; justify-content: center; pointer-events: auto; padding: 16px; }
+    .modal-win { background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+        width: min(420px, 100%); max-height: 82vh; overflow-y: auto; padding: 14px; display: flex;
+        flex-direction: column; gap: 7px; }
+    .modal-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+    .modal-opt { padding: 10px 12px; text-align: left; display: flex; align-items: center; gap: 9px; }
+    .modal-opt b { font-size: 0.9rem; }
+    .modal-opt small { display: block; color: var(--muted); font-size: 0.74rem; }
+    .modal-opt.disabled { opacity: 0.45; }
+    .modal-opt:active { border-color: var(--accent); }
+    .opt-icon { width: 36px; height: 36px; }
+    .modal-cancel { padding: 9px; color: var(--muted); }
+    .detail-head { display: flex; gap: 10px; align-items: center; }
+    .detail-head img { width: 90px; height: 90px; }
+    .detail-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .detail-stats span { background: var(--surface2); border-radius: 8px; padding: 6px; text-align: center;
+        font-weight: 700; display: flex; flex-direction: column; }
+    .detail-stats em { font-style: normal; font-size: 0.65rem; color: var(--muted); }
+    .detail-stats small { font-size: 0.62rem; font-weight: 400; }
+    .detail-moves div { display: flex; align-items: center; gap: 6px; padding: 5px 2px; font-size: 0.82rem; }
+    .detail-moves span { color: var(--muted); font-size: 0.72rem; margin-left: auto; }
+
+    /* ---------- party / box ---------- */
+    .party-row { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border);
+        border-radius: 12px; padding: 8px 10px; margin-bottom: 7px; }
+    .party-row > img { width: 44px; height: 44px; }
+    .pr-mid { flex: 1; min-width: 0; font-size: 0.88rem; }
+    .pr-btns { display: flex; gap: 5px; }
+    .box-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; margin-top: 6px; }
+    .box-cell { padding: 7px 3px; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.7rem; }
+    .box-cell img { width: 36px; height: 36px; }
+
+    /* ---------- dex ---------- */
+    .dex-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 5px; }
+    .dex-cell { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 6px 2px;
+        display: flex; flex-direction: column; align-items: center; font-size: 0.64rem; color: var(--muted); }
+    .dex-cell img { width: 34px; height: 34px; }
+    .dex-cell b { font-size: 0.66rem; color: var(--text); font-weight: 600; text-align: center; }
+    .dex-cell.unseen img { filter: brightness(0) opacity(0.35); }
+    .dex-cell.unseen b { color: var(--muted); }
+
+    /* ---------- mart / gyms ---------- */
+    .mart-row, .gym-row { display: flex; align-items: center; gap: 10px; background: var(--surface);
+        border: 1px solid var(--border); border-radius: 12px; padding: 9px 11px; margin-bottom: 7px; }
+    .mr-mid, .gym-mid { flex: 1; min-width: 0; font-size: 0.9rem; }
+    .mr-mid small, .gym-mid small { display: block; font-size: 0.74rem; }
+    .gym-team { display: flex; gap: 4px; margin: 4px 0; flex-wrap: wrap; }
+    .gym-mon { position: relative; }
+    .gym-mon img { width: 32px; height: 32px; }
+    .gym-mon i { position: absolute; bottom: -3px; right: -3px; font-size: 0.58rem; font-style: normal;
+        background: var(--surface2); border-radius: 5px; padding: 0 3px; }
+    .gym-row.beaten { border-color: #2f6f3f; }
+    .gym-row.locked { opacity: 0.55; }
 </style>
 </head>
 <body>
-<div id="wrap">
-  <header>
-    <div class="logo"><b>POKéMON</b> <i>CRATER</i></div>
-    <a class="back" href="index.html">‹ Hub</a>
-  </header>
 
-  <div id="stage">
-    <canvas id="cv" width="480" height="352"></canvas>
-    <div id="banner"><span id="loc">Crater Town</span><span class="money">₽<span id="money">3000</span></span></div>
+<header id="topbar" style="display:none">
+    <span id="tb-brand">Crater</span>
+    <span class="tb-stat" id="tb-name"></span>
+    <span class="tb-stat" id="tb-money"></span>
+    <span class="tb-stat" id="tb-badges"></span>
+    <span class="tb-stat" id="tb-dex"></span>
+    <nav>
+        <button id="nav-map">🗺 Map</button>
+        <button id="nav-party">👥 Party</button>
+        <button id="nav-dex">📕 Dex</button>
+        <button id="nav-mart">🏪 Mart</button>
+        <button id="nav-gyms">🏅 Gyms</button>
+        <button id="nav-heal">❤ Heal</button>
+        <button id="nav-title">⏻</button>
+    </nav>
+</header>
 
-    <div id="dialogue"><span id="dtext"></span><span class="more">▾</span></div>
+<main id="screen">
+    <div id="boot-msg">Loading Pokémon data…</div>
+</main>
+<div id="modal-layer"></div>
 
-    <!-- Battle screen -->
-    <div id="battle">
-      <div class="field">
-        <div class="mon foe" id="foeMon">
-          <div class="statusbox">
-            <div class="bn"><span id="foeName">—</span><span id="foeLv">L5</span></div>
-            <div class="bar"><i id="foeHp" style="width:100%"></i></div>
-          </div>
-          <img id="foeImg" alt="">
-        </div>
-        <div class="mon ally" id="allyMon">
-          <img id="allyImg" alt="">
-          <div class="statusbox">
-            <div class="bn"><span id="allyName">—</span><span id="allyLv">L5</span></div>
-            <div class="bar"><i id="allyHp" style="width:100%"></i></div>
-            <div class="xp"><i id="allyXp" style="width:0%"></i></div>
-            <div style="text-align:right;font-weight:700" id="allyHpTxt">20/20</div>
-          </div>
-        </div>
-      </div>
-      <div class="ui">
-        <div id="btxt">A wild Pokémon appeared!</div>
-        <div id="bmenu"></div>
-      </div>
-    </div>
-
-    <!-- Party overlay -->
-    <div class="overlay" id="party">
-      <button class="close-x" data-close="party">×</button>
-      <h2>🎒 Party</h2>
-      <div id="partyList"></div>
-    </div>
-
-    <!-- Bag overlay -->
-    <div class="overlay" id="bag">
-      <button class="close-x" data-close="bag">×</button>
-      <h2>👜 Bag</h2>
-      <div id="bagList"></div>
-    </div>
-
-    <!-- Pokédex overlay -->
-    <div class="overlay" id="dex">
-      <button class="close-x" data-close="dex">×</button>
-      <h2>📕 Pokédex <span class="small" id="dexCount"></span></h2>
-      <div id="dexList" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"></div>
-    </div>
-
-    <!-- Title / new game -->
-    <div id="title">
-      <h1><b>POKéMON</b> <i>CRATER</i></h1>
-      <p>A meteor carved a crater teeming with wild Pokémon. Explore, battle, and catch them all — right in your browser.</p>
-      <div id="titleBody"></div>
-    </div>
-
-    <div class="toast" id="toast"></div>
-  </div>
-
-  <div id="controls">
-    <div class="dpad">
-      <button class="sp"></button><button data-dir="up">▲</button><button class="sp"></button>
-      <button data-dir="left">◀</button><button class="sp"></button><button data-dir="right">▶</button>
-      <button class="sp"></button><button data-dir="down">▼</button><button class="sp"></button>
-    </div>
-    <div class="abtns">
-      <button class="abtn a" id="btnA">A</button>
-      <button class="abtn b" id="btnB">B</button>
-    </div>
-  </div>
-  <div class="menu-row">
-    <button class="mbtn" data-open="party">🎒 Party</button>
-    <button class="mbtn" data-open="bag">👜 Bag</button>
-    <button class="mbtn" data-open="dex">📕 Dex</button>
-    <button class="mbtn" id="saveBtn">💾 Save</button>
-  </div>
-</div>
-
-<script>
-'use strict';
-//=================================================================================
-//  Pokémon Crater — self-contained browser clone
-//  Uses this repo's data (base_stats, moves, learnsets, pokedex) + PokeAPI sprites
-//=================================================================================
-const TILE=32, VIEW_W=15, VIEW_H=11;
-const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
-ctx.imageSmoothingEnabled=false;
-const $=id=>document.getElementById(id);
-
-//---------------------------------------------------------------- data loading
-let DEX={}, STATS={}, MOVES={}, LEARN={}, NAME2NUM={}, SPRITE={};
-async function loadData(){
-  const base='data/pokemon/';
-  const [dex,stats,moves,learn]=await Promise.all([
-    fetch(base+'pokedex.json').then(r=>r.json()),
-    fetch(base+'base_stats.json').then(r=>r.json()),
-    fetch(base+'moves.json').then(r=>r.json()),
-    fetch(base+'learnsets.json').then(r=>r.json()),
-  ]);
-  DEX=dex; STATS=stats; MOVES=moves; LEARN=learn;
-  for(const k in dex){ if(dex[k].num>0) NAME2NUM[k]=dex[k].num; }
-}
-function num(sp){ return NAME2NUM[sp.toLowerCase()]||0; }
-function spriteURL(sp,back){
-  const n=num(sp); if(!n) return '';
-  const b=back?'back/':'';
-  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${b}${n}.png`;
-}
-
-//---------------------------------------------------------------- type chart
-const TYPES=['Normal','Fire','Water','Electric','Grass','Ice','Fighting','Poison','Ground','Flying','Psychic','Bug','Rock','Ghost','Dragon','Dark','Steel','Fairy'];
-// effectiveness of attacker(row) vs defender(col): 0=immune,0.5,1,2
-const TC={
- Normal:{Rock:.5,Ghost:0,Steel:.5},
- Fire:{Fire:.5,Water:.5,Grass:2,Ice:2,Bug:2,Rock:.5,Dragon:.5,Steel:2},
- Water:{Fire:2,Water:.5,Grass:.5,Ground:2,Rock:2,Dragon:.5},
- Electric:{Water:2,Electric:.5,Grass:.5,Ground:0,Flying:2,Dragon:.5},
- Grass:{Fire:.5,Water:2,Grass:.5,Poison:.5,Ground:2,Flying:.5,Bug:.5,Rock:2,Dragon:.5,Steel:.5},
- Ice:{Fire:.5,Water:.5,Grass:2,Ice:.5,Ground:2,Flying:2,Dragon:2,Steel:.5},
- Fighting:{Normal:2,Ice:2,Poison:.5,Flying:.5,Psychic:.5,Bug:.5,Rock:2,Ghost:0,Dark:2,Steel:2,Fairy:.5},
- Poison:{Grass:2,Poison:.5,Ground:.5,Rock:.5,Ghost:.5,Steel:0,Fairy:2},
- Ground:{Fire:2,Electric:2,Grass:.5,Poison:2,Flying:0,Bug:.5,Rock:2,Steel:2},
- Flying:{Electric:.5,Grass:2,Fighting:2,Bug:2,Rock:.5,Steel:.5},
- Psychic:{Fighting:2,Poison:2,Psychic:.5,Dark:0,Steel:.5},
- Bug:{Fire:.5,Grass:2,Fighting:.5,Poison:.5,Flying:.5,Psychic:2,Ghost:.5,Dark:2,Steel:.5,Fairy:.5},
- Rock:{Fire:2,Ice:2,Fighting:.5,Ground:.5,Flying:2,Bug:2,Steel:.5},
- Ghost:{Normal:0,Psychic:2,Ghost:2,Dark:.5},
- Dragon:{Dragon:2,Steel:.5,Fairy:0},
- Dark:{Fighting:.5,Psychic:2,Ghost:2,Dark:.5,Fairy:.5},
- Steel:{Fire:.5,Water:.5,Electric:.5,Ice:2,Rock:2,Steel:.5,Fairy:2},
- Fairy:{Fire:.5,Fighting:2,Poison:.5,Dragon:2,Dark:2,Steel:.5},
-};
-function eff(atkType,defTypes){
-  let m=1; for(const d of defTypes){ const r=TC[atkType]; if(r&&d in r) m*=r[d]; } return m;
-}
-
-//---------------------------------------------------------------- world map
-// generated procedurally; codes: 0 grass, 1 tall grass, 2 tree, 3 water, 4 path, 5 sand, 6 center(heal), 7 shop, 8 flower
-const MAP_W=48, MAP_H=40;
-let world=[];
-function rng(seed){ return function(){ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x7fffffff; }; }
-function genWorld(){
-  const r=rng(1337);
-  world=[];
-  for(let y=0;y<MAP_H;y++){ const row=[]; for(let x=0;x<MAP_W;x++){
-    let t=0;
-    if(x===0||y===0||x===MAP_W-1||y===MAP_H-1) t=2; // border trees
-    else if(r()<0.03) t=8; // flowers
-    row.push(t);
-  } world.push(row); }
-  // helper
-  const set=(x,y,t)=>{ if(x>0&&y>0&&x<MAP_W-1&&y<MAP_H-1) world[y][x]=t; };
-  const blob=(cx,cy,rad,t)=>{ for(let y=cy-rad;y<=cy+rad;y++)for(let x=cx-rad;x<=cx+rad;x++){
-    if((x-cx)**2+(y-cy)**2<=rad*rad+r()*3) set(x,y,t); } };
-  // tall-grass patches
-  const patches=[[10,8,3],[34,10,4],[20,26,4],[40,30,3],[8,32,3],[28,6,3],[16,18,3],[38,20,3]];
-  for(const[px,py,pr] of patches) blob(px,py,pr,1);
-  // water lake
-  blob(40,8,4,3); blob(6,22,3,3);
-  // tree clusters (obstacles)
-  for(let i=0;i<40;i++){ const x=2+Math.floor(r()*(MAP_W-4)), y=2+Math.floor(r()*(MAP_H-4));
-    if(world[y][x]===0) blob(x,y,1+Math.floor(r()*2),2); }
-  // Town in the center-left
-  for(let y=14;y<=20;y++)for(let x=20;x<=28;x++) set(x,y,4); // plaza path
-  set(23,15,6); // Pokémon Center
-  set(25,15,7); // Shop
-  // paths radiating out
-  for(let x=1;x<24;x++) set(x,17,4);
-  for(let x=24;x<MAP_W-1;x++) set(x,17,4);
-  for(let y=1;y<15;y++) set(24,y,4);
-  for(let y=20;y<MAP_H-1;y++) set(24,y,4);
-  // clear spawn
-  set(24,18,4);
-}
-// tile passability
-function blocked(x,y){
-  if(x<0||y<0||x>=MAP_W||y>=MAP_H) return true;
-  const t=world[y][x];
-  return t===2||t===3;
-}
-function isTallGrass(x,y){ return world[y]&&world[y][x]===1; }
-
-//---------------------------------------------------------------- game state
-let G=null;
-function newGame(starter){
-  G={
-    x:24,y:18,dir:'down',
-    money:3000,
-    party:[ makeMon(starter,5) ],
-    box:[],
-    bag:{'Poké Ball':5,'Potion':3,'Great Ball':0,'Super Potion':0,'Revive':0},
-    seen:{}, caught:{},
-    steps:0,
-  };
-  G.seen[starter]=1; G.caught[starter]=1;
-  save();
-}
-function makeMon(species,level){
-  const s=STATS[species]; if(!s) return null;
-  const iv=()=>Math.floor(Math.random()*16);
-  const ivs={hp:iv(),atk:iv(),def:iv(),spa:iv(),spd:iv(),spe:iv()};
-  const m={species,level,exp:expForLevel(level),ivs,moves:pickMoves(species,level),status:null};
-  const st=calcStats(m); m.maxhp=st.hp; m.hp=st.hp;
-  return m;
-}
-function calcStats(m){
-  const s=STATS[m.species], L=m.level;
-  const f=(base,iv)=>Math.floor(((2*base+iv)*L)/100)+5;
-  return {
-    hp:Math.floor(((2*s.base_hp+m.ivs.hp)*L)/100)+L+10,
-    atk:f(s.base_attack,m.ivs.atk), def:f(s.base_defense,m.ivs.def),
-    spa:f(s.base_sp_attack,m.ivs.spa), spd:f(s.base_sp_defense,m.ivs.spd),
-    spe:f(s.base_speed,m.ivs.spe),
-  };
-}
-function pickMoves(species,level){
-  const ls=LEARN[species.toLowerCase()]||[];
-  const learned=ls.filter(e=>e[0]<=level).map(e=>e[1]).filter(mv=>MOVES[mv]);
-  const uniq=[...new Set(learned)];
-  let mv=uniq.slice(-4);
-  if(mv.length===0) mv=['tackle'].filter(x=>MOVES[x]);
-  if(mv.length===0) mv=[Object.keys(MOVES)[0]];
-  return mv.map(id=>({id,pp:MOVES[id].pp,maxpp:MOVES[id].pp}));
-}
-// exp: medium-fast n^3
-function expForLevel(l){ return l*l*l; }
-function levelForExp(e){ let l=1; while(expForLevel(l+1)<=e && l<100) l++; return l; }
-
-//---------------------------------------------------------------- save/load
-const SKEY='crater_save_v1';
-function save(){ try{ localStorage.setItem(SKEY,JSON.stringify(G)); flash('Saved!'); }catch(e){} }
-function load(){ try{ const s=localStorage.getItem(SKEY); if(s){ G=JSON.parse(s); return true; } }catch(e){} return false; }
-
-//---------------------------------------------------------------- rendering
-const spriteCache={};
-function ovSprite(url){ if(!url) return null; if(spriteCache[url]) return spriteCache[url];
-  const img=new Image(); img.crossOrigin='anonymous'; img.src=url; spriteCache[url]=img; return img; }
-
-const COL={0:'#4caf50',1:'#2e7d32',2:'#1b5e20',3:'#4fa3e0',4:'#c9b58a',5:'#e0d19a',8:'#4caf50'};
-function drawTile(t,px,py){
-  ctx.fillStyle=COL[t]||'#4caf50';
-  ctx.fillRect(px,py,TILE,TILE);
-  if(t===1){ // tall grass texture
-    ctx.fillStyle='#1b5e20';
-    for(let i=0;i<5;i++){ const gx=px+3+i*6; ctx.fillRect(gx,py+20,2,10); ctx.fillRect(gx+2,py+16,2,14);}
-  } else if(t===2){ // tree
-    ctx.fillStyle='#4caf50'; ctx.fillRect(px,py,TILE,TILE);
-    ctx.fillStyle='#2e7d32'; ctx.beginPath(); ctx.arc(px+16,py+13,13,0,7); ctx.fill();
-    ctx.fillStyle='#1b5e20'; ctx.beginPath(); ctx.arc(px+16,py+11,10,0,7); ctx.fill();
-    ctx.fillStyle='#6d4c41'; ctx.fillRect(px+13,py+22,6,8);
-  } else if(t===3){ // water shimmer
-    ctx.fillStyle='#3d8fd0'; const o=(Date.now()/400)%TILE;
-    ctx.fillRect(px,py+((o|0)%TILE),TILE,3);
-  } else if(t===8){ // flowers
-    ctx.fillStyle='#4caf50'; ctx.fillRect(px,py,TILE,TILE);
-    const cs=['#ffeb3b','#e91e63','#fff'];
-    for(let i=0;i<3;i++){ ctx.fillStyle=cs[i]; ctx.beginPath(); ctx.arc(px+8+i*9,py+10+((i*7)%14),3,0,7); ctx.fill();}
-  } else if(t===6){ // center
-    ctx.fillStyle='#e57373'; ctx.fillRect(px+2,py+6,TILE-4,TILE-8);
-    ctx.fillStyle='#fff'; ctx.fillRect(px+13,py+2,6,10);
-    ctx.fillStyle='#e53935'; ctx.fillRect(px+13,py+3,6,3);
-  } else if(t===7){ // shop
-    ctx.fillStyle='#5c6bc0'; ctx.fillRect(px+2,py+6,TILE-4,TILE-8);
-    ctx.fillStyle='#fff'; ctx.font='bold 10px sans-serif'; ctx.fillText('🛒',px+8,py+22);
-  }
-}
-function drawPlayer(px,py){
-  // simple trainer: red cap, skin, body
-  ctx.fillStyle='#d32f2f'; ctx.fillRect(px+9,py+3,14,7);       // cap
-  ctx.fillStyle='#ffcc80'; ctx.fillRect(px+10,py+9,12,7);      // face
-  ctx.fillStyle='#1565c0'; ctx.fillRect(px+9,py+15,14,11);     // body
-  ctx.fillStyle='#333'; ctx.fillRect(px+10,py+25,5,5); ctx.fillRect(px+17,py+25,5,5); // legs
-  // facing eyes
-  ctx.fillStyle='#000';
-  if(G.dir==='down'){ctx.fillRect(px+12,py+12,2,2);ctx.fillRect(px+18,py+12,2,2);}
-  else if(G.dir==='up'){ctx.fillStyle='#8d3b1a';ctx.fillRect(px+10,py+9,12,4);}
-  else if(G.dir==='left'){ctx.fillRect(px+11,py+12,2,2);}
-  else{ctx.fillRect(px+19,py+12,2,2);}
-}
-let animT=0;
-function render(){
-  animT++;
-  const camX=Math.max(0,Math.min(MAP_W-VIEW_W, G.x-(VIEW_W>>1)));
-  const camY=Math.max(0,Math.min(MAP_H-VIEW_H, G.y-(VIEW_H>>1)));
-  for(let vy=0;vy<VIEW_H;vy++)for(let vx=0;vx<VIEW_W;vx++){
-    const mx=camX+vx, my=camY+vy;
-    const t=(mx>=0&&my>=0&&mx<MAP_W&&my<MAP_H)?world[my][mx]:2;
-    drawTile(t,vx*TILE,vy*TILE);
-  }
-  drawPlayer((G.x-camX)*TILE,(G.y-camY)*TILE);
-}
-
-//---------------------------------------------------------------- movement
-let moving=false, busy=false;
-function tryMove(dir){
-  if(busy||moving||battle.active) return;
-  G.dir=dir;
-  const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[dir];
-  const nx=G.x+d[0], ny=G.y+d[1];
-  if(blocked(nx,ny)){ render(); return; }
-  G.x=nx; G.y=ny; G.steps++;
-  render();
-  updateLoc();
-  if(isTallGrass(nx,ny) && Math.random()<0.14) startWildBattle();
-  else if(G.steps%25===0) save();
-}
-function updateLoc(){
-  let name='Crater Wilds';
-  if(G.x>=20&&G.x<=28&&G.y>=14&&G.y<=20) name='Crater Town';
-  else if(world[G.y][G.x]===1) name='Tall Grass';
-  else if(G.y<12) name='North Ridge';
-  else if(G.y>26) name='South Basin';
-  $('loc').textContent=name;
-  $('money').textContent=G.money;
-}
-function interact(){
-  if(busy) return;
-  const d={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[G.dir];
-  const tx=G.x+d[0], ty=G.y+d[1];
-  const t=world[ty]&&world[ty][tx];
-  if(t===6){ healParty(); dialogue("Welcome to the Pokémon Center! Your team is fully healed. ♥"); }
-  else if(t===7){ openShop(); }
-  else dialogue(["The crater stretches on...","Wild Pokémon hide in the tall grass.","A cool breeze blows across the basin.","You see meteor fragments glittering."][Math.floor(Math.random()*4)]);
-}
-function healParty(){ for(const m of G.party){ m.hp=m.maxhp; m.status=null; for(const mv of m.moves) mv.pp=mv.maxpp; } renderParty(); }
-
-//---------------------------------------------------------------- dialogue
-let dq=[];
-function dialogue(text){ dq=Array.isArray(text)?text.slice():[text]; showNextD(); }
-function showNextD(){
-  if(dq.length===0){ $('dialogue').classList.remove('show'); busy=false; return; }
-  busy=true; $('dtext').textContent=dq.shift(); $('dialogue').classList.add('show');
-}
-
-//---------------------------------------------------------------- flash toast
-let toastT;
-function flash(msg,ms=1100){ const el=$('toast'); el.textContent=msg; el.style.display='block';
-  clearTimeout(toastT); toastT=setTimeout(()=>el.style.display='none',ms); }
-
-//================================================================ BATTLE ENGINE
-const battle={active:false,foe:null,ally:null,phase:null,xpGain:0,canCatch:true};
-function encounterPool(){
-  // choose species by region (player y) present in dex with a sprite num
-  const kanto=[]; for(const k in STATS){ const n=num(k); if(n>0&&n<=386) kanto.push(k); }
-  return kanto;
-}
-function pickWild(){
-  const pool=encounterPool();
-  // weight toward earlier dex numbers (commoner)
-  let sp, tries=0;
-  do{ sp=pool[Math.floor(Math.random()*pool.length)]; tries++; }
-  while(num(sp)>250 && Math.random()<0.7 && tries<8);
-  let lvl=3+Math.floor(Math.random()*6);
-  if(G.y<12) lvl+=4; if(G.y>28) lvl+=8;
-  lvl=Math.min(60,lvl);
-  return makeMon(sp,lvl);
-}
-function firstHealthy(){ return G.party.find(m=>m.hp>0); }
-function startWildBattle(foe){
-  foe=foe||pickWild(); if(!foe) return;
-  const ally=firstHealthy(); if(!ally){ return; }
-  battle.active=true; battle.foe=foe; battle.ally=ally; battle.canCatch=true;
-  G.seen[foe.species]=1;
-  $('battle').classList.add('show');
-  setMonUI('foe',foe); setMonUI('ally',ally);
-  $('allyXp').style.width=xpPct(ally)+'%';
-  bText(`A wild ${DEX[foe.species.toLowerCase()]?.name||foe.species} appeared!`);
-  setTimeout(()=>mainMenu(),700);
-}
-function setMonUI(side,m){
-  const nm=DEX[m.species.toLowerCase()]?.name||m.species;
-  $(side+'Name').textContent=cap(nm);
-  $(side+'Lv').textContent='L'+m.level;
-  $(side+'Hp').style.width=(100*m.hp/m.maxhp)+'%';
-  $(side+'Hp').style.background=hpColor(m.hp/m.maxhp);
-  $(side+'Img').src=spriteURL(m.species,side==='ally');
-  if(side==='ally') $('allyHpTxt').textContent=`${m.hp}/${m.maxhp}`;
-}
-function hpColor(f){ return f>.5?'#66bb6a':f>.2?'#ffca28':'#ef5350'; }
-function xpPct(m){ const cur=expForLevel(m.level), nxt=expForLevel(m.level+1);
-  return Math.max(0,Math.min(100,100*(m.exp-cur)/(nxt-cur))); }
-function bText(t){ $('btxt').textContent=t; }
-function bMenu(items){ const el=$('bmenu'); el.innerHTML='';
-  for(const it of items){ const b=document.createElement('button');
-    b.innerHTML=it.label+(it.sub?`<small>${it.sub}</small>`:'');
-    b.onclick=it.fn; el.appendChild(b); } }
-
-function mainMenu(){
-  bText(`What will ${cap(DEX[battle.ally.species.toLowerCase()]?.name||battle.ally.species)} do?`);
-  bMenu([
-    {label:'⚔ Fight',fn:moveMenu},
-    {label:'🎒 Bag',fn:bagMenu},
-    {label:'🔄 Party',fn:switchMenu},
-    {label:'🏃 Run',fn:tryRun},
-  ]);
-}
-function moveMenu(){
-  const m=battle.ally;
-  bMenu(m.moves.map(mv=>{ const md=MOVES[mv.id];
-    return {label:cap(md.name),sub:`${md.type} · ${mv.pp}/${mv.maxpp}`,
-      fn:()=>{ if(mv.pp<=0){flash('No PP left!');return;} playerTurn(mv); }}; })
-    .concat([{label:'‹ Back',fn:mainMenu}]));
-}
-function bagMenu(){
-  const items=Object.keys(G.bag).filter(k=>G.bag[k]>0);
-  if(!items.length){ flash('Bag is empty!'); return; }
-  bMenu(items.map(it=>({label:it,sub:'×'+G.bag[it],fn:()=>useItemBattle(it)}))
-    .concat([{label:'‹ Back',fn:mainMenu}]));
-}
-function switchMenu(){
-  bMenu(G.party.map((m,i)=>({label:cap(DEX[m.species.toLowerCase()]?.name||m.species),
-    sub:m.hp>0?`L${m.level} ${m.hp}/${m.maxhp}`:'Fainted',
-    fn:()=>{ if(m.hp<=0){flash('Fainted!');return;} if(m===battle.ally){flash('Already out!');return;}
-      battle.ally=m; setMonUI('ally',m); $('allyXp').style.width=xpPct(m)+'%';
-      bText('Go, '+cap(DEX[m.species.toLowerCase()]?.name||m.species)+'!'); enemyTurnThen(mainMenu); }}))
-    .concat([{label:'‹ Back',fn:mainMenu}]));
-}
-
-function damage(att,def,mv){
-  const md=MOVES[mv.id]; if(!md.power) return {dmg:0,e:1,crit:false};
-  const as=calcStats(att), ds=calcStats(def);
-  const phys=md.category==='physical';
-  const A=phys?as.atk:as.spa, D=phys?ds.def:ds.spd;
-  const stab=STATS[att.species].types.includes(md.type)?1.5:1;
-  const e=eff(md.type,STATS[def.species].types);
-  const crit=Math.random()<0.0625?1.5:1;
-  const rand=0.85+Math.random()*0.15;
-  let dmg=Math.floor((((2*att.level/5+2)*md.power*A/D)/50+2)*stab*e*crit*rand);
-  return {dmg:Math.max(e===0?0:1,dmg),e,crit:crit>1};
-}
-function accHit(mv){ const a=MOVES[mv.id].accuracy; return a==null||a>=100?true:Math.random()*100<a; }
-
-function playerTurn(mv){
-  bMenu([]); mv.pp--;
-  const first= calcStats(battle.ally).spe >= calcStats(battle.foe).spe;
-  const seq=first?[['ally',mv],['foe',null]]:[['foe',null],['ally',mv]];
-  runSeq(seq,0);
-}
-function enemyTurnThen(after){ // enemy attacks once (after switch/failed catch)
-  doAttack('foe',null,()=>{ if(!checkFaint(after)) after&&after(); });
-}
-function runSeq(seq,i){
-  if(i>=seq.length){ if(battle.active) mainMenu(); return; }
-  const [side,mv]=seq[i];
-  const attacker=side==='ally'?battle.ally:battle.foe;
-  if(attacker.hp<=0){ runSeq(seq,i+1); return; }
-  doAttack(side,mv,()=>{ if(checkFaint(()=>runSeq(seq,i+1))) return; runSeq(seq,i+1); });
-}
-function doAttack(side,mv,done){
-  const att=side==='ally'?battle.ally:battle.foe;
-  const def=side==='ally'?battle.foe:battle.ally;
-  if(!mv){ // AI pick a move
-    const usable=att.moves.filter(x=>x.pp>0); mv=usable.length?usable[Math.floor(Math.random()*usable.length)]:att.moves[0]; }
-  if(mv.pp>0 && side==='foe') mv.pp--;
-  const md=MOVES[mv.id];
-  const attName=cap(DEX[att.species.toLowerCase()]?.name||att.species);
-  bText(`${attName} used ${cap(md.name)}!`);
-  if(!accHit(mv)){ setTimeout(()=>{ bText(`${attName}'s attack missed!`); setTimeout(done,700); },600); return; }
-  const res=damage(att,def,mv);
-  animShake(side==='ally'?'foe':'ally');
-  def.hp=Math.max(0,def.hp-res.dmg);
-  setTimeout(()=>{
-    setMonUI(side==='ally'?'foe':'ally',def);
-    let msg='';
-    if(res.dmg>0){ if(res.e>1)msg='It\'s super effective! '; else if(res.e===0)msg='It had no effect...'; else if(res.e<1)msg='It\'s not very effective... '; if(res.crit)msg+='A critical hit! '; }
-    else if(md.power) msg='It had no effect...';
-    else msg='';
-    if(msg) bText(bTextEl().textContent+' '+msg);
-    setTimeout(done,700);
-  },500);
-}
-function bTextEl(){ return $('btxt'); }
-function checkFaint(cont){
-  if(battle.foe.hp<=0){ onFoeFaint(); return true; }
-  if(battle.ally.hp<=0){ onAllyFaint(cont); return true; }
-  return false;
-}
-function onFoeFaint(){
-  const foeName=cap(DEX[battle.foe.species.toLowerCase()]?.name||battle.foe.species);
-  bText(`Wild ${foeName} fainted!`); bMenu([]);
-  animFaint('foe');
-  // exp
-  const s=STATS[battle.foe.species];
-  const gain=Math.floor((s.exp_yield? s.exp_yield/50 : (s.base_hp||50))* battle.foe.level/7)+battle.foe.level;
-  setTimeout(()=>gainExp(battle.ally,gain,()=>endBattle()),900);
-}
-function gainExp(m,amount,done){
-  if(m.hp<=0||m.level>=100){ done&&done(); return; }
-  const before=m.level; m.exp+=amount;
-  bText(`${cap(DEX[m.species.toLowerCase()]?.name||m.species)} gained ${amount} EXP!`);
-  const target=levelForExp(m.exp);
-  $('allyXp').style.width=xpPct(m)+'%';
-  if(target>before){
-    m.level=Math.min(100,target);
-    const oldMax=m.maxhp; const st=calcStats(m); m.maxhp=st.hp; m.hp+=m.maxhp-oldMax;
-    setMonUI('ally',m);
-    setTimeout(()=>{ bText(`${cap(DEX[m.species.toLowerCase()]?.name||m.species)} grew to Lv.${m.level}!`);
-      learnCheck(m,before,()=>{ done&&done(); }); },900);
-  } else setTimeout(()=>done&&done(),900);
-}
-function learnCheck(m,fromLvl,done){
-  const ls=LEARN[m.species.toLowerCase()]||[];
-  const newMoves=ls.filter(e=>e[0]>fromLvl&&e[0]<=m.level&&MOVES[e[1]]).map(e=>e[1]);
-  let idx=0;
-  (function next(){
-    if(idx>=newMoves.length){ done(); return; }
-    const mvId=newMoves[idx++];
-    if(m.moves.find(x=>x.id===mvId)){ next(); return; }
-    if(m.moves.length<4){ m.moves.push({id:mvId,pp:MOVES[mvId].pp,maxpp:MOVES[mvId].pp});
-      bText(`${cap(m.species)} learned ${cap(MOVES[mvId].name)}!`); setTimeout(next,900); }
-    else { // replace weakest for simplicity
-      m.moves.shift(); m.moves.push({id:mvId,pp:MOVES[mvId].pp,maxpp:MOVES[mvId].pp});
-      bText(`${cap(m.species)} learned ${cap(MOVES[mvId].name)}!`); setTimeout(next,900); }
-  })();
-}
-function onAllyFaint(cont){
-  bText(`${cap(DEX[battle.ally.species.toLowerCase()]?.name||battle.ally.species)} fainted!`); bMenu([]);
-  animFaint('ally');
-  setTimeout(()=>{
-    const next=firstHealthy();
-    if(next){ battle.ally=next; setMonUI('ally',next); $('allyXp').style.width=xpPct(next)+'%';
-      bText('Go, '+cap(DEX[next.species.toLowerCase()]?.name||next.species)+'!'); setTimeout(mainMenu,700); }
-    else { bText('You have no Pokémon left! You scurry back to town...'); setTimeout(()=>{ healParty(); G.x=24;G.y=18; endBattle(); },1400); }
-  },1000);
-}
-function tryRun(){
-  bMenu([]);
-  if(Math.random()<0.75){ bText('Got away safely!'); setTimeout(endBattle,700); }
-  else { bText('Couldn\'t escape!'); setTimeout(()=>doAttack('foe',null,()=>{ if(!checkFaint(mainMenu)) mainMenu(); }),800); }
-}
-function endBattle(){
-  battle.active=false; $('battle').classList.remove('show');
-  save(); renderParty(); renderDex(); render();
-}
-
-//---------- catching
-function useItemBattle(item){
-  if(/Ball/.test(item)){ throwBall(item); return; }
-  if(/Potion/.test(item)){
-    const heal=item==='Super Potion'?60:20;
-    const m=battle.ally; if(m.hp>=m.maxhp){flash('HP is full!');return;}
-    G.bag[item]--; m.hp=Math.min(m.maxhp,m.hp+heal); setMonUI('ally',m);
-    bText(`Used ${item}. Restored HP!`); bMenu([]); enemyTurnThen(mainMenu); return;
-  }
-  if(item==='Revive'){ flash('Use it from the Party menu.'); return; }
-  flash('Nothing happened.');
-}
-function throwBall(ball){
-  G.bag[ball]--; bMenu([]);
-  bText(`You threw a ${ball}!`);
-  const foe=battle.foe, s=STATS[foe.species];
-  const rate=s.catch_rate||45;
-  const ballMod=ball==='Great Ball'?1.5:ball==='Ultra Ball'?2:1;
-  const hpFactor=(3*foe.maxhp-2*foe.hp)/(3*foe.maxhp);
-  const a=hpFactor*rate*ballMod;
-  const shakeP=Math.min(1,a/255);
-  animThrow(()=>{
-    let shakes=0; for(let i=0;i<4;i++){ if(Math.random()<Math.pow(shakeP,0.75)) shakes++; else break; }
-    const caught = shakes>=4 || (a>=255);
-    animShakeBall(shakes,()=>{
-      if(caught){ bText(`Gotcha! ${cap(DEX[foe.species.toLowerCase()]?.name||foe.species)} was caught!`);
-        catchMon(foe); setTimeout(endBattle,1400); }
-      else { const msgs=['Oh no! It broke free!','Aww! So close!','Argh! Almost had it!','It escaped the ball!'];
-        bText(msgs[shakes]||msgs[0]); setTimeout(()=>doAttack('foe',null,()=>{ if(!checkFaint(mainMenu)) mainMenu(); }),1000); }
-    });
-  });
-}
-function catchMon(foe){
-  G.caught[foe.species]=1; G.seen[foe.species]=1;
-  if(G.party.length<6) G.party.push(foe); else G.box.push(foe);
-  renderParty(); renderDex();
-}
-
-//---------------------------------------------------------------- battle anims
-function animShake(side){ const el=$(side+'Mon'); el.animate(
-  [{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:250}); }
-function animFaint(side){ $(side+'Img').animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(24px)'}],{duration:600,fill:'forwards'});
-  setTimeout(()=>{$(side+'Img').style.opacity=1;$(side+'Img').style.transform='';},700); }
-function animThrow(done){
-  const ball=document.createElement('div'); ball.className='throw'; ball.textContent='⚪';
-  ball.style.left='40px'; ball.style.bottom='90px'; ball.style.fontSize='24px';
-  $('battle').querySelector('.field').appendChild(ball);
-  ball.animate([{left:'40px',bottom:'90px'},{left:'70%',bottom:'60%'}],{duration:500,fill:'forwards'});
-  setTimeout(()=>{ ball.remove(); done(); },520);
-}
-function animShakeBall(n,done){
-  const foeImg=$('foeImg'); foeImg.animate([{opacity:1},{opacity:0}],{duration:200,fill:'forwards'});
-  const ball=document.createElement('div'); ball.className='throw'; ball.textContent='🔴';
-  ball.style.right='16%'; ball.style.top='20%'; ball.style.fontSize='24px';
-  $('battle').querySelector('.field').appendChild(ball);
-  let i=0; (function sh(){ if(i>=n){ setTimeout(()=>{ if(n<4){ ball.remove(); foeImg.style.opacity=1; } done(); },400); return; }
-    i++; ball.animate([{transform:'rotate(0)'},{transform:'rotate(-25deg)'},{transform:'rotate(25deg)'},{transform:'rotate(0)'}],{duration:450});
-    setTimeout(sh,550); })();
-}
-
-//================================================================ overlays UI
-function cap(s){ return s? s.charAt(0).toUpperCase()+s.slice(1).toLowerCase():s; }
-function renderParty(){
-  const el=$('partyList'); el.innerHTML='';
-  if(!G.party.length){ el.innerHTML='<p class="small">No Pokémon.</p>'; return; }
-  G.party.forEach((m,i)=>{
-    const nm=cap(DEX[m.species.toLowerCase()]?.name||m.species);
-    const d=document.createElement('div'); d.className='row';
-    d.innerHTML=`<img src="${spriteURL(m.species)}" alt="">
-      <div class="info"><div class="nm">${nm} <span class="small">L${m.level}</span></div>
-      <div class="sub">${STATS[m.species].types.join(' / ')} · ${m.hp}/${m.maxhp} HP</div>
-      <div class="hpbar"><i style="width:${100*m.hp/m.maxhp}%;background:${hpColor(m.hp/m.maxhp)}"></i></div></div>`;
-    // heal/revive button
-    if(G.bag['Revive']>0 && m.hp<=0){ const b=document.createElement('button'); b.className='btn'; b.textContent='Revive';
-      b.onclick=()=>{ G.bag['Revive']--; m.hp=Math.floor(m.maxhp/2); renderParty(); renderBag(); }; d.appendChild(b); }
-    el.appendChild(d);
-  });
-}
-function renderBag(){
-  const el=$('bagList'); el.innerHTML='';
-  const items=Object.keys(G.bag).filter(k=>G.bag[k]>0);
-  if(!items.length){ el.innerHTML='<p class="small">Bag is empty.</p>'; return; }
-  for(const it of items){ const d=document.createElement('div'); d.className='row';
-    const icon=/Ball/.test(it)?'🔴':/Potion/.test(it)?'🧪':it==='Revive'?'✨':'📦';
-    d.innerHTML=`<div style="font-size:30px">${icon}</div><div class="info"><div class="nm">${it}</div>
-      <div class="sub">Quantity: ${G.bag[it]}</div></div>`;
-    el.appendChild(d); }
-}
-function renderDex(){
-  const el=$('dexList'); el.innerHTML='';
-  const all=Object.keys(STATS).filter(k=>num(k)>0).sort((a,b)=>num(a)-num(b));
-  let seen=0,caught=0;
-  for(const k of all){
-    const s=G.seen[k], c=G.caught[k]; if(s)seen++; if(c)caught++;
-    if(!s) continue;
-    const d=document.createElement('div'); d.className='row'; d.style.margin=0;
-    d.innerHTML=`<img src="${spriteURL(k)}" style="width:40px;height:40px;${c?'':'filter:brightness(0) opacity(.6)'}">
-      <div class="info"><div class="nm" style="font-size:12px">#${String(num(k)).padStart(3,'0')} ${cap(DEX[k.toLowerCase()]?.name||k)}</div>
-      <div class="sub">${c?'✓ Caught':'Seen'}</div></div>`;
-    el.appendChild(d);
-  }
-  $('dexCount').textContent=`— ${caught} caught / ${seen} seen`;
-}
-function openShop(){
-  const catalog=[['Poké Ball',200],['Great Ball',600],['Potion',300],['Super Potion',700],['Revive',1500]];
-  dialogue('Welcome to the Crater Mart!');
-  const el=$('bagList'); // reuse bag overlay as shop
-  openOverlay('bag'); $('#bag h2')&&0;
-  document.querySelector('#bag h2').textContent='🛒 Crater Mart  (₽'+G.money+')';
-  el.innerHTML='';
-  for(const [it,price] of catalog){ const d=document.createElement('div'); d.className='row';
-    d.innerHTML=`<div style="font-size:28px">${/Ball/.test(it)?'🔴':/Potion/.test(it)?'🧪':'✨'}</div>
-      <div class="info"><div class="nm">${it}</div><div class="sub">₽${price}</div></div>`;
-    const b=document.createElement('button'); b.className='btn'; b.textContent='Buy';
-    b.onclick=()=>{ if(G.money>=price){ G.money-=price; G.bag[it]=(G.bag[it]||0)+1; updateLoc();
-        document.querySelector('#bag h2').textContent='🛒 Crater Mart  (₽'+G.money+')'; flash('Bought '+it); }
-      else flash('Not enough money!'); };
-    d.appendChild(b); el.appendChild(d); }
-  // restore bag title on close handled in closeOverlay
-}
-function openOverlay(id){
-  if(id==='party') renderParty();
-  if(id==='bag'){ renderBag(); document.querySelector('#bag h2').textContent='👜 Bag'; }
-  if(id==='dex') renderDex();
-  $(id).classList.add('show');
-}
-function closeOverlay(id){ $(id).classList.remove('show'); if(id==='bag') renderBag(); }
-
-//================================================================ input
-const keymap={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right'};
-let held=null,moveTimer=null;
-function startHold(dir){ tryMove(dir); clearInterval(moveTimer); held=dir;
-  moveTimer=setInterval(()=>{ if(held) tryMove(held); },160); }
-function stopHold(){ held=null; clearInterval(moveTimer); }
-document.addEventListener('keydown',e=>{
-  if(battle.active) return;
-  if($('dialogue').classList.contains('show')){ if(e.key===' '||e.key==='Enter'||e.key==='z'){ showNextD(); } return; }
-  const dir=keymap[e.key];
-  if(dir){ e.preventDefault(); if(held!==dir) startHold(dir); }
-  else if(e.key==='z'||e.key===' '||e.key==='Enter') interact();
-});
-document.addEventListener('keyup',e=>{ if(keymap[e.key]) stopHold(); });
-document.querySelectorAll('.dpad button[data-dir]').forEach(b=>{
-  const dir=b.dataset.dir;
-  b.addEventListener('touchstart',e=>{e.preventDefault();startHold(dir);},{passive:false});
-  b.addEventListener('mousedown',e=>{e.preventDefault();startHold(dir);});
-  b.addEventListener('touchend',e=>{e.preventDefault();stopHold();});
-  b.addEventListener('mouseup',stopHold); b.addEventListener('mouseleave',stopHold);
-});
-$('btnA').onclick=()=>{ if($('dialogue').classList.contains('show')) showNextD(); else interact(); };
-$('btnB').onclick=()=>{ if($('dialogue').classList.contains('show')) showNextD(); };
-document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openOverlay(b.dataset.open));
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>closeOverlay(b.dataset.close));
-$('saveBtn').onclick=save;
-
-//================================================================ boot / title
-const STARTERS=['BULBASAUR','CHARMANDER','SQUIRTLE','PIKACHU','CHIKORITA','CYNDAQUIL','TOTODILE','TREECKO','TORCHIC','MUDKIP'];
-function showTitle(){
-  const hasSave=localStorage.getItem(SKEY);
-  const body=$('titleBody');
-  if(hasSave){
-    body.innerHTML=`<button class="btn" id="continueBtn" style="font-size:16px;padding:12px 30px">▶ Continue</button>
-      <div style="height:8px"></div><button class="btn grey" id="newBtn">✦ New Game</button>`;
-    $('continueBtn').onclick=()=>{ load(); startGame(); };
-    $('newBtn').onclick=chooseStarter;
-  } else chooseStarter();
-}
-let selStarter=null;
-function chooseStarter(){
-  const body=$('titleBody');
-  body.innerHTML=`<p style="color:var(--gold);font-weight:700;margin:0 0 6px">Choose your first partner!</p>
-    <div class="starter" id="starterPick"></div>
-    <div style="height:12px"></div><button class="btn" id="startBtn" style="opacity:.5;pointer-events:none;font-size:16px;padding:11px 26px">Start Adventure</button>`;
-  const wrap=$('starterPick');
-  STARTERS.forEach(sp=>{ if(!STATS[sp]) return;
-    const d=document.createElement('div'); d.className='pick';
-    d.innerHTML=`<img src="${spriteURL(sp)}"><div class="n">${cap(sp)}</div>
-      <div class="small">${STATS[sp].types.join('/')}</div>`;
-    d.onclick=()=>{ selStarter=sp; document.querySelectorAll('.pick').forEach(p=>p.classList.remove('sel'));
-      d.classList.add('sel'); const b=$('startBtn'); b.style.opacity=1; b.style.pointerEvents='auto'; };
-    wrap.appendChild(d);
-  });
-  $('startBtn').onclick=()=>{ if(!selStarter)return; newGame(selStarter); startGame(); };
-}
-function startGame(){
-  $('title').style.display='none';
-  updateLoc(); render(); renderParty(); renderBag(); renderDex();
-  dialogue([`You wake up at the edge of Crater Town.`,`Wild Pokémon roam the tall grass all around.`,`Use the D-pad to walk, A to interact. Good luck, Trainer!`]);
-}
-
-//---- render loop (for water/anim)
-function loop(){ if(G && !battle.active && $('title').style.display==='none') render(); requestAnimationFrame(loop); }
-
-(async function(){
-  genWorld();
-  try{ await loadData(); }
-  catch(e){ $('titleBody').innerHTML='<p style="color:#ef5350">Failed to load game data. Serve over http (GitHub Pages), not file://.</p>'; return; }
-  showTitle();
-  requestAnimationFrame(loop);
-})();
-</script>
+<script src="src/crater/zones_gen.js?v=__CACHE_BUST__"></script>
+<script src="src/crater/sprites.js?v=__CACHE_BUST__"></script>
+<script src="src/crater/data.js?v=__CACHE_BUST__"></script>
+<script src="src/crater/pokemon.js?v=__CACHE_BUST__"></script>
+<script src="src/crater/battle.js?v=__CACHE_BUST__"></script>
+<script src="src/crater/game.js?v=__CACHE_BUST__"></script>
+<script src="src/crater/ui.js?v=__CACHE_BUST__"></script>
+<script src="src/crater/main.js?v=__CACHE_BUST__"></script>
 </body>
 </html>

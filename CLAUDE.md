@@ -294,6 +294,36 @@ Real CSS `transform: rotate()` on `<body>` — same approach as EmulatorJS fulls
 - ✅ Kanto maps navigable from PalletTown; Hoenn/Johto/Sinnoh/HeartGold/Platinum map data present
 - ✅ Achievement definitions (bronze/silver/gold/platinum), faction standing system
 
+### Pokémon Crater clone (`crater.html` + `src/crater/`) — DONE ✅
+A standalone click-to-battle remake of the classic Pokémon Crater browser game,
+launched from the index card "Pokémon Crater". Entirely built from data already
+in the repo — no new assets:
+- **Data sources:** `data/pokemon/usum_*.json` (stats/moves/learnsets/evolutions,
+  fetched at runtime), `decomp/data/type_chart.json` + `nature_table.json`
+  (the verified USUM decomp tables), `data/sprites/pokemon/{front,back,icons}`
+  (Gen 1–4, 493 species — hence `CraterData.MAX_DEX = 493`).
+- **Zones:** `tools/build_crater_zones.py` compiles `data/encounters/{kanto,
+  johto,hoenn,sinnoh}.json` (four different formats: pret FR/LG + Emerald,
+  HnS time-of-day, pokeplatinum) into `src/crater/zones_gen.js` — 251 zones,
+  weighted spawn pools, multi-floor maps merged, legendary rare-spawns injected
+  (Mewtwo in Cerulean Cave etc.) + synthetic special zones (Faraway Island,
+  Spear Pillar, …) that unlock at 8 badges. Re-run the tool after touching
+  encounter data.
+- **Files** (plain globals, load order in crater.html): `zones_gen.js` →
+  `sprites.js` (chroma-keys the opaque GBA index-0 sprite backgrounds at
+  runtime via MutationObserver — same convention as `_stripBg` in
+  `src/engine/battle.js`) → `data.js` → `pokemon.js` → `battle.js` → `game.js`
+  → `ui.js` → `main.js`.
+- **Features:** 14 starters, Crater variants (Shiny/Dark/Mystic/Metallic/Shadow
+  via CSS filters + stat boosts), full turn-based battles (Gen-3/4 damage math,
+  status, stat stages, multi-hit, AI), catching (Gen-3/4 formula), exp/levels
+  (all 6 growth curves), level-up move learning + evolutions (stone/trade
+  mapped to preset levels), party + PC box, Pokédex, Poké Mart, 8 Kanto gyms +
+  Elite Four + Champion in strict order, money/blackout, localStorage save
+  (`crater_save_v1`).
+- **Testing:** headless-Chromium smoke test drives new-game → battle → catch →
+  gym → blackout → save-reload; keep it passing after changes.
+
 ### ROM decomp & data pipeline (`tools/`) — see full docs in the Tooling section
 - ✅ `nds_decomp.py` — any `.nds` → pret-style tree (NitroFS + NARC unpack + LZ);
   **verified on the user's real Pokémon Black (IRBO: 54,054 files) and
