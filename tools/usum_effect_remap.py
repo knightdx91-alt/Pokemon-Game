@@ -19,19 +19,27 @@ This is a discovery sweep, not a finished decode: it prints the functions whose
 0x45a0 index depends on the input effect id, which pins the remap site for a
 focused follow-up (and often yields the mapping directly).
 
-OUTCOME (this session): the blind sweep finds NO function that exposes an
-effect-id-dependent 0x45a0 index — under both a scalar-r0 and a filled-buffer
-fixture (arg pages set to the effect id at every offset). The one zero-fixture
-hit, sub_8c80, is a step-state handler (7-way jump on [r1]), not the remap.
-Interpretation: the dispatcher reads the effect id through a *structured pointer
-walk* (a relocated global, or a multi-level deref into the live effect-object),
-so a blind fixture doesn't route the id to where the index is computed. Cracking
-it needs the effect-object layout reconstructed first — which realistically
-wants a live-battle RAM dump (same blocker as the battle-pokemon scalar names).
-This tool is the reusable harness for that follow-up: give `probe()` a correctly
-shaped effect-object and it will read the sequence id straight off the watch.
+OUTCOME (this session): blind emulation CANNOT recover the remap, and the reason
+is now proven, not guessed:
+  * Fixtures tried: effect id in r0, in filled arg buffers (id at every offset),
+    and seeded into the real event-queue global (bss+0x394, {tag 0x1f, payload}).
+  * CRITICAL SOUNDNESS BUG that produced false hits: reusing ONE emulator across
+    thousands of probes leaves memory dirty (lazy-mapped pages + prior writes
+    persist), so a later function can read leftover data and appear
+    "input-dependent". With a FRESH emulator per probe, every candidate
+    (incl. sub_8c80) reads the 0x45a0 table zero times — the sweep hits were
+    pure stale-state noise. ALWAYS instantiate a fresh emu per probe.
+  * Conclusion: the dispatcher's index depends on real battle state that the
+    game builds at runtime (effect-object graph reached from the live battle
+    system), which a synthetic fixture can't stand up without effectively
+    emulating the whole title. This needs a real memory image — a live-battle
+    RAM dump / Citra savestate — not more static/blind work.
 
-Usage: python3 tools/usum_effect_remap.py [--probe 0xADDR]
+This tool remains the correct harness for THAT input: hand `probe_queue()` /
+`probe()` a real captured battle memory image and the sequence id falls straight
+off the 0x45a0 watch. Instantiate a fresh emu per call (see fresh_probe()).
+
+Usage: python3 tools/usum_effect_remap.py --probe 0xADDR   (fresh emu per id)
 """
 import sys, os, struct
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -76,6 +84,37 @@ class FaultTolerantEmu(CroEmu):
         if TABLE <= address < TABLE_END:
             self.hits.append((address - TABLE) // 8)
 
+    # event-queue global (bss seg3 + 0x394), resolved from sub_8790c's literal.
+    QUEUE = SEG_BASE[3] + 0x394
+
+    def seed_queue(self, eff):
+        """Reproduce one sub_8790c push of {tag 0x1f, payload=eff} at slot 0."""
+        q = self.QUEUE
+        # zero a generous window first
+        self.uc.mem_write(q, b"\0" * 0x600)
+        self.uc.mem_write(q + 0x00, struct.pack("<I", 1))        # count/index = 1
+        self.uc.mem_write(q + 0x04, struct.pack("<H", 0x1f))     # tag[0]
+        self.uc.mem_write(q + 0xc4, struct.pack("<I", eff))      # payload[0]
+        self.uc.mem_write(q + 0x244, struct.pack("<I", eff))     # mirror payloads
+        self.uc.mem_write(q + 0x3c4, struct.pack("<I", eff))
+        self.uc.mem_write(q + 0x544, b"\x01")                    # valid flag[0]
+
+    def probe_queue(self, off, eff, insns=20000):
+        self.hits = []
+        self.seed_queue(eff)
+        from cro_emu import STACK_BASE, STACK_SIZE, RET_MAGIC
+        for r, v in ((UC_ARM_REG_R0, self._scratch1), (UC_ARM_REG_R1, self._scratch2),
+                     (UC_ARM_REG_R2, self._scratch2), (UC_ARM_REG_R3, 0)):
+            self.uc.reg_write(r, v & 0xFFFFFFFF)
+        self.uc.mem_write(self._scratch1, b"\0" * 0x400)
+        self.uc.reg_write(UC_ARM_REG_SP, STACK_BASE + STACK_SIZE - 0x400)
+        self.uc.reg_write(UC_ARM_REG_LR, RET_MAGIC)
+        try:
+            self.uc.emu_start(SEG_BASE[0] + off, RET_MAGIC, count=insns)
+        except UcError:
+            pass
+        return list(self.hits)
+
     def probe(self, off, eff, insns=20000, ptr_mode=True):
         self.hits = []
         # Fill both scratch buffers with the effect id (u32 repeated), so a
@@ -100,6 +139,14 @@ class FaultTolerantEmu(CroEmu):
         return list(self.hits)
 
 
+def fresh_probe(kind, off, eff):
+    """SOUND probe: a brand-new emulator per call (no dirty-state leakage)."""
+    emu = FaultTolerantEmu("Battle")
+    if kind == "queue":
+        return emu.probe_queue(off, eff)
+    return emu.probe(off, eff, ptr_mode=(kind == "ptr"))
+
+
 def main():
     import json, bisect
     emu = FaultTolerantEmu("Battle")
@@ -110,39 +157,18 @@ def main():
     if "--probe" in sys.argv:
         off = int(sys.argv[sys.argv.index("--probe") + 1], 0)
         for e in (0, 4, 32, 48, 67, 103, 200, 400):
-            p = emu.probe(off, e, ptr_mode=True)
-            s = emu.probe(off, e, ptr_mode=False)
-            print(f"  effId {e:3d}: ptr={p} scalar={s}")
+            print(f"  effId {e:3d}: queue={fresh_probe('queue', off, e)} "
+                  f"scalar={fresh_probe('scalar', off, e)}")   # fresh emu per id (sound)
         return
 
-    # discovery sweep: functions whose 0x45a0 index depends on the effect id.
-    # Streams hits to stdout immediately (flush) so partial runs are useful.
-    probes = [4, 32, 67, 200]
-    outf = open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                             "decomp/battle_effects/remap_sweep.txt"), "w")
-    def emit(s):
-        print(s, flush=True)
-        outf.write(s + "\n"); outf.flush()
-    emit(f"sweeping {len(funcs)} functions, budget 6000 insns...")
-    n = 0
-    for f in funcs:
-        if f["size"] > 4000:
-            continue
-        n += 1
-        if n % 400 == 0:
-            emit(f"... {n} scanned")
-        for mode in (True, False):
-            seqs = {}
-            for e in probes:
-                h = emu.probe(f["addr"], e, insns=6000, ptr_mode=mode)
-                if h:
-                    seqs[e] = tuple(h)
-            if len(set(seqs.values())) > 1:
-                emit(f"HIT {f['name']} @0x{f['addr']:x} ({'ptr' if mode else 'scalar'}): "
-                     + "; ".join(f"e{e}->{list(s)}" for e, s in seqs.items()))
-                break
-    emit("sweep done")
-    outf.close()
+    # No default blind sweep: it is UNSOUND (see the module docstring — reused
+    # emulator state produces false input-dependent hits; a fresh emu per probe
+    # reads the 0x45a0 table zero times). The harness is meant to be driven with
+    # a REAL captured battle memory image loaded before `fresh_probe(...)`.
+    print(__doc__)
+    print("Ready. `--probe 0xADDR` runs a sound (fresh-emu) probe; feed a real "
+          "battle memory image for a meaningful 0x45a0 index. Loaded "
+          f"{len(funcs)} functions; {emu.relocs_applied} relocs applied.")
 
 
 if __name__ == "__main__":

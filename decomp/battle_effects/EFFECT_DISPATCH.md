@@ -76,12 +76,19 @@ id being dispatched. It sweeps every function, calling each with the effect id
 in r0 and in filled argument buffers (the id repeated at every offset), and
 reports any function whose watched index depends on the effect id.
 
-RESULT: **no function exposes an effect-id-dependent 0x45a0 index** under either
-fixture. (The one zero-fixture hit, `sub_8c80`, is a 7-way step-state handler
-keyed on `[r1]`, not the remap.) The watch *does* fire when state happens to line
-up, so the harness works — but the dispatcher reads the effect id through a
-**structured pointer walk** (a relocated global or a multi-level deref into the
-live effect-object), which a blind fixture doesn't route correctly.
+RESULT: **no function exposes an effect-id-dependent 0x45a0 index** under any
+fixture — including seeding the *real* event-queue global (bss+0x394, resolved
+from `sub_8790c`'s literal) with `{tag 0x1f, payload=effectId}`. A blind sweep
+first *appeared* to find `sub_8c80`, but that was a **soundness bug**: reusing one
+emulator across thousands of probes leaves memory dirty, so a later function
+reads leftover data and looks input-dependent. With a **fresh emulator per
+probe**, every candidate (incl. `sub_8c80`, a 7-way step-state handler on `[r1]`)
+reads the table zero times. The false hit was pure stale-state noise.
+
+Conclusion: the dispatch index depends on real battle state the game builds at
+runtime (the effect-object graph reached from the live battle system); a
+synthetic fixture can't stand that up without effectively emulating the whole
+title. This is a **memory-capture** problem, not a static/blind-emulation one.
 
 ## Next step
 Reconstruct the **effect-object layout** the dispatcher walks (step byte @+0xa94
