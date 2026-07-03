@@ -44,22 +44,194 @@
         if (window.CraterOverworld && CraterOverworld.onScreenClosed) CraterOverworld.onScreenClosed();
     };
 
-    /** Overworld mode: START-button menu. */
+    // ------------------------------------------------ Emerald START menu ----
+    // The real pokeemerald pause menu: a white window in the top-right corner
+    // over the world, with the authentic entries + description box.
+    const START_MENU = [
+        { label: 'POKéDEX', desc: 'A device that records POKéMON secrets upon meeting or catching them.', go: () => UI.showDex() },
+        { label: 'POKéMON', desc: 'Check and organize POKéMON that are traveling with you in your party.', go: () => UI.showParty() },
+        { label: 'BAG', desc: 'Equipped with pockets for storing items you bought, received, or found.', go: () => UI.showBag() },
+        { label: 'POKéNAV', desc: 'A device for navigating the region: GYM battles and the POKéMART.', go: () => UI.showPokenav() },
+        { label: null, desc: 'Check your money and other game data.', go: () => UI.showTrainerCard() },  // player name
+        { label: 'SAVE', desc: 'Save your game with a complete record of your progress to take a break.', go: () => UI.doSave() },
+        { label: 'OPTION', desc: 'Adjust various game settings.', go: () => UI.showOptions() },
+        { label: 'EXIT', desc: 'Close this MENU window.', go: null },
+    ];
+
     UI.showMenu = function () {
-        choose('MENU', [
-            { label: 'POKéMON', sub: 'Party & PC box' },
-            { label: 'POKéDEX' },
-            { label: 'POKéMART' },
-            { label: 'GYMS & LEAGUE' },
-            { label: 'HEAL TEAM', sub: 'Free — like a Pokémon Center' },
-        ], true).then(idx => {
-            if (idx === 0) UI.showParty();
-            else if (idx === 1) UI.showDex();
-            else if (idx === 2) UI.showMart();
-            else if (idx === 3) UI.showGyms();
-            else if (idx === 4) { G.healTeam(); G.save(); alertModal('Your team was fully healed!'); }
+        const layer = $('#modal-layer');
+        // START toggles the menu closed if it is already open (like the game).
+        const open = layer.querySelector('.esm-overlay');
+        if (open) { open.remove(); return; }
+        const overlay = el('div', 'esm-overlay');
+        const win = el('div', 'esm-win');
+        const desc = el('div', 'esm-desc');
+        function close() { overlay.remove(); }
+        overlay.onclick = e => { if (e.target === overlay) close(); };
+        START_MENU.forEach((item, i) => {
+            const label = item.label || G.state.name.toUpperCase();
+            const row = el('div', 'esm-row' + (i === 0 ? ' sel' : ''), esc(label));
+            const select = () => {
+                win.querySelectorAll('.esm-row').forEach(r => r.classList.remove('sel'));
+                row.classList.add('sel');
+                desc.textContent = item.desc;
+            };
+            row.onmouseenter = select;
+            row.onclick = () => {
+                select();
+                close();
+                if (item.go) item.go();
+            };
+            win.appendChild(row);
+        });
+        desc.textContent = START_MENU[0].desc;
+        overlay.appendChild(win);
+        overlay.appendChild(desc);
+        layer.appendChild(overlay);
+    };
+
+    // ---------------------------------------------------------------- SAVE --
+    UI.doSave = function () {
+        choose('Would you like to save the game?', [{ label: 'YES' }, { label: 'NO' }], false).then(idx => {
+            if (idx === 0) {
+                G.save();
+                alertModal(G.state.name.toUpperCase() + ' saved the game.');
+            }
         });
     };
+
+    // ------------------------------------------------------------- POKéNAV --
+    UI.showPokenav = function () {
+        choose('POKéNAV', [
+            { label: 'MATCH CALL', sub: 'GYM leaders & the POKéMON LEAGUE' },
+            { label: 'MART DELIVERY', sub: 'Buy items anywhere' },
+            { label: 'HEAL TEAM', sub: 'Free — like a POKéMON CENTER' },
+        ], true).then(idx => {
+            if (idx === 0) UI.showGyms();
+            else if (idx === 1) UI.showMart();
+            else if (idx === 2) { G.healTeam(); G.save(); alertModal('Your team was fully healed!'); }
+        });
+    };
+
+    // ------------------------------------------------------------ OPTIONS ---
+    // Real Emerald options that actually do something: TEXT SPEED drives the
+    // battle message pacing, BATTLE SCENE toggles attack animations.
+    UI.opts = function () {
+        if (!G.state.options) G.state.options = { textSpeed: 'MID', battleScene: true };
+        return G.state.options;
+    };
+    UI.textDelay = function (ms) {
+        const sp = UI.opts().textSpeed;
+        return Math.round(ms * (sp === 'SLOW' ? 1.5 : sp === 'FAST' ? 0.55 : 1));
+    };
+
+    UI.showOptions = function () {
+        const o = UI.opts();
+        const s = screen();
+        s.appendChild(el('h2', '', 'OPTION'));
+        const win = el('div', 'ew opt-win');
+        function row(label, valueHtml, onclick) {
+            const r = el('div', 'opt-row', '<span>' + label + '</span><b>' + valueHtml + '</b>');
+            if (onclick) r.onclick = onclick;
+            return r;
+        }
+        function rebuild() {
+            win.innerHTML = '';
+            win.appendChild(row('TEXT SPEED',
+                ['SLOW', 'MID', 'FAST'].map(v => v === o.textSpeed ? '<i class="opt-on">' + v + '</i>' : v).join(' '),
+                () => { o.textSpeed = o.textSpeed === 'SLOW' ? 'MID' : o.textSpeed === 'MID' ? 'FAST' : 'SLOW'; G.save(); rebuild(); }));
+            win.appendChild(row('BATTLE SCENE',
+                ['ON', 'OFF'].map(v => (o.battleScene ? 'ON' : 'OFF') === v ? '<i class="opt-on">' + v + '</i>' : v).join(' '),
+                () => { o.battleScene = !o.battleScene; G.save(); rebuild(); }));
+        }
+        rebuild();
+        s.appendChild(win);
+        s.appendChild(el('div', 'muted', 'Tap a row to change its setting.'));
+    };
+
+    // ------------------------------------------------------- TRAINER CARD ---
+    UI.showTrainerCard = function () {
+        const s = screen();
+        const dc = G.dexCounts();
+        const mins = Math.floor((Date.now() - (G.state.started || Date.now())) / 60000);
+        const time = Math.floor(mins / 60) + ':' + String(mins % 60).padStart(2, '0');
+        const card = el('div', 'ew tcard');
+        card.innerHTML =
+            '<div class="tc-title">TRAINER CARD</div>' +
+            '<div class="tc-name">NAME: <b>' + esc(G.state.name.toUpperCase()) + '</b></div>' +
+            '<div class="tc-row"><span>MONEY</span><b>$' + G.state.money.toLocaleString() + '</b></div>' +
+            '<div class="tc-row"><span>POKéDEX</span><b>' + dc.caught + '</b></div>' +
+            '<div class="tc-row"><span>TIME</span><b>' + time + '</b></div>' +
+            '<div class="tc-row"><span>BATTLES</span><b>' + G.state.wins + ' won · ' + G.state.losses + ' lost</b></div>' +
+            '<div class="tc-badges">BADGES<div>' +
+            D.GYMS.filter(g => g.badge).map(g =>
+                '<span class="tc-badge' + (G.state.gymsBeaten[g.id] ? ' got' : '') + '" title="' + esc(g.badge) + '"></span>').join('') +
+            '</div></div>';
+        s.appendChild(card);
+    };
+
+    // ---------------------------------------------------------------- BAG ---
+    // Emerald bag pockets. Items usable on the party outside battle.
+    const POCKETS = [
+        ['ITEMS', id => D.ITEMS[id].kind !== 'ball'],
+        ['POKé BALLS', id => D.ITEMS[id].kind === 'ball'],
+    ];
+    let curPocket = 0;
+    UI.showBag = function () {
+        const s = screen();
+        s.appendChild(el('h2', '', 'BAG'));
+        const tabs = el('div', 'bag-tabs');
+        POCKETS.forEach(([name], i) => {
+            const t = el('button', 'bag-tab' + (i === curPocket ? ' active' : ''), esc(name));
+            t.onclick = () => { curPocket = i; UI.showBag(); };
+            tabs.appendChild(t);
+        });
+        s.appendChild(tabs);
+        const list = el('div', 'ew bag-list');
+        const ids = Object.keys(D.ITEMS).filter(id => (G.state.items[id] || 0) > 0 && POCKETS[curPocket][1](id));
+        if (!ids.length) list.appendChild(el('div', 'bag-empty', 'There are no items.'));
+        ids.forEach(id => {
+            const it = D.ITEMS[id];
+            const row = el('div', 'bag-row', '<span>' + esc(it.name.toUpperCase()) + '</span><b>×' + G.state.items[id] + '</b>');
+            row.onclick = () => bagItemActions(id);
+            list.appendChild(row);
+        });
+        s.appendChild(list);
+        s.appendChild(el('div', 'muted', 'CANCEL: use the CLOSE button above.'));
+    };
+
+    async function bagItemActions(id) {
+        const it = D.ITEMS[id];
+        const idx = await choose(it.name.toUpperCase() + ' is selected.', [{ label: 'USE' }, { label: 'CANCEL' }], false);
+        if (idx !== 0) return;
+        if (it.kind === 'ball') { await alertModal('OAK: This isn\'t the time to use that!'); return; }
+        const targets = G.state.party.map((m, i) => ({ mon: m, i: i })).filter(x =>
+            it.kind === 'revive' ? x.mon.hp <= 0 : true);
+        if (!targets.length) { await alertModal('It won\'t have any effect.'); return; }
+        const t = await choose('Use on which POKéMON?', targets.map(x => ({
+            label: M.displayName(x.mon) + ' Lv' + x.mon.level,
+            sub: x.mon.hp + '/' + M.stats(x.mon).hp + ' HP' + (x.mon.status ? ' · ' + x.mon.status : ''),
+            img: D.sprite(x.mon.slug, 'icons'),
+        })));
+        if (t === null) return;
+        const mon = targets[t].mon;
+        const max = M.stats(mon).hp;
+        let msg = null;
+        if (it.kind === 'heal') {
+            if (mon.hp <= 0 || mon.hp >= max) msg = 'It won\'t have any effect.';
+            else { const before = mon.hp; mon.hp = Math.min(max, mon.hp + it.heal); msg = M.displayName(mon) + '\'s HP was restored by ' + (mon.hp - before) + ' points.'; }
+        } else if (it.kind === 'cure') {
+            if (!mon.status) msg = 'It won\'t have any effect.';
+            else { mon.status = null; msg = M.displayName(mon) + ' became healthy!'; }
+        } else if (it.kind === 'revive') {
+            mon.hp = Math.max(1, Math.floor(max / 2));
+            msg = M.displayName(mon) + ' was revived!';
+        }
+        if (msg && msg !== 'It won\'t have any effect.') G.useItem(id);
+        G.save();
+        await alertModal(msg || 'Nothing happened.');
+        UI.showBag();
+    }
 
     const TYPE_COLORS = {
         Normal: '#9fa19f', Fighting: '#ff8000', Flying: '#81b9ef', Poison: '#9141cb',
@@ -313,7 +485,7 @@
     async function playIntro(text) {
         UI.busy = true;
         setLog(text);
-        await sleep(700);
+        await sleep(UI.textDelay(700));
         UI.busy = false;
         renderActions();
     }
@@ -543,19 +715,19 @@
             switch (ev.t) {
                 case 'msg':
                     setLog(ev.text);
-                    await sleep(650);
+                    await sleep(UI.textDelay(650));
                     break;
                 case 'hp':
                     refreshBoxes();
-                    await sleep(350);
+                    await sleep(UI.textDelay(350));
                     break;
                 case 'switch':
                     refreshSprites(); refreshBoxes();
-                    await sleep(400);
+                    await sleep(UI.textDelay(400));
                     break;
                 case 'shake':
                     setLog('...' + '❋'.repeat(ev.n));
-                    await sleep(500);
+                    await sleep(UI.textDelay(500));
                     break;
                 case 'faint': {
                     const spr = ev.side === 'e' ? $('#bt-esprite') : $('#bt-psprite');
@@ -579,6 +751,7 @@
     }
 
     function playAnim(anim) {
+        if (!UI.opts().battleScene) return;   // OPTION: BATTLE SCENE off
         if (anim.kind === 'attack') {
             const spr = anim.side === 'p' ? $('#bt-psprite') : $('#bt-esprite');
             if (spr) { spr.classList.remove('atk-p', 'atk-e'); void spr.offsetWidth; spr.classList.add(anim.side === 'p' ? 'atk-p' : 'atk-e'); }
@@ -592,19 +765,19 @@
         const bt = UI.battle;
         const mon = bt.party[bt.partyIdx];
         const exp = M.expGain(foe, bt.isTrainer);
-        setLog(M.displayName(mon) + ' gained ' + exp + ' EXP!');
+        setLog(M.displayName(mon) + ' gained ' + exp + ' EXP. Points!');
         if (!bt.isTrainer) {
             const prize = G.wildPrize(foe);
             G.state.money += prize;
             UI.updateTopbar();
         }
-        await sleep(600);
+        await sleep(UI.textDelay(600));
         const events = M.gainExp(mon, exp);
         for (const e of events) {
             if (e.type === 'level') {
                 refreshBoxes();
-                setLog(M.displayName(mon) + ' grew to level ' + e.level + '!');
-                await sleep(650);
+                setLog(M.displayName(mon) + ' grew to LV. ' + e.level + '!');
+                await sleep(UI.textDelay(650));
             } else if (e.type === 'learn') {
                 await promptLearn(mon, e.move);
             } else if (e.type === 'evolve') {

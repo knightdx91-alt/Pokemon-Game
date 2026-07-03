@@ -181,7 +181,7 @@
     OW.blocksInput = function () {
         const scr = document.getElementById('screen');
         const overlayOpen = scr && scr.childElementCount > 0;
-        const modalOpen = document.querySelector('#modal-layer .modal-overlay');
+        const modalOpen = document.querySelector('#modal-layer .modal-overlay, #modal-layer .esm-overlay');
         return !!(overlayOpen || modalOpen);
     };
 
