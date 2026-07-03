@@ -423,7 +423,40 @@ big open Phase-1 link). PROGRESS THIS SESSION (`decomp/battle_effects/EFFECT_DIS
   blocker as the battle-pokemon scalar names), then feed `probe()` a real object.
   See `battle_effects/EFFECT_DISPATCH.md`.
 
-### ⏩⏩ MEMORY-CAPTURE ROUTE — Citra pipeline BUILT & VERIFIED ✅ (see decomp/citra/)
+### ⏩⏩ MEMORY-CAPTURE ROUTE — LIVE CAPTURE DONE ✅ battlemon scalars CONFIRMED
+Both open items were gated on a **live-battle 3DS RAM image**. That capture is
+now DONE and one of the two items is SOLVED:
+
+- **✅ Live FCRAM captured.** A 256 MB N3DS FCRAM dump was taken at the move-select
+  menu of a real wild battle on **Route 4** (OT Lylliana's Volcanion Lv85 vs a
+  wild Grubbin Lv13). The two live battlemon structs are carved into
+  `decomp/verify/fixtures/battlemon_{volcanion,grubbin}.bin` (0x240B each).
+- **✅ Battle-pokemon scalar field names CONFIRMED** (was "hypotheses").
+  `verify/verify_battlemon_live.py` PASSes: species@0xc, maxHp@0xe, curHp@0x10,
+  ability@0x16 (11 Water Absorb / 68 Swarm — independent check), level@0x18,
+  stat-stages@0x1ea..0x1f0 (all 6=neutral at battle start), and the 4×0xe
+  move-record array @0x1fc (id + PP verified vs the in-battle move menu).
+  **Disproved** the old 0x1a/0x1b type1/type2 guess (live values aren't type ids).
+  `decomp/src/pml/battle/BattlePokemon.h` updated with a `MoveSlot` struct.
+- **⏳ Effect→sequence remap — still open**, needs a *mid-move-execution* capture
+  (the effect object is only live while a move resolves). Manual `dump_now`
+  timing can't reliably hit that ~2-4s window (a wild Lv13 mon also just flees
+  from Lv85). NEXT: add an auto-dump trigger to the emulator keyed to the move
+  executing (e.g. dump when the opponent's curHp@0x10 first drops, or when the
+  event-queue tag-0x1f slot fills), then feed the mid-exec image to
+  `tools/usum_effect_remap.py` `probe_queue()`.
+
+**Pipeline is now FAST to resume (no 20-min rebuild, no navigation):**
+- **Prebuilt binary committed** — `decomp/citra/prebuilt/citra` (+ `run_citra.sh`,
+  installs SDL2/xvfb/mesa). Skips the ~10-min from-source build.
+- **Route 4 grass save committed** — `decomp/citra/saves/usum_route4_grass_main.sav`;
+  boot + tap A → Continue lands one step from a wild encounter (no overworld grind).
+- **Live control channel added** to the frontend (in `citra1_build_fixes.patch`):
+  `/tmp/ap_key` = "<down> <scancode>" applied per frame; `touch /tmp/shot` →
+  `/tmp/frames/live.ppm` on demand. Enables frame-by-frame see→act driving.
+  `tools/usum_battle_capture.py` locates Battle.cro base + battlemon objects in a dump.
+
+--- original plan (superseded above) ---
 Both open items (the effect→sequence remap AND the battle-pokemon *scalar* field
 names) are gated on the same thing: a **live-battle 3DS RAM image**. The save
 files only carry CoreParam, not in-battle objects. Static + blind emulation are
