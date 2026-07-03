@@ -26,7 +26,7 @@
         // every non-battle screen a way back to it.
         if (UI.worldMode && window.CraterOverworld && CraterOverworld.entered && !UI.battle) {
             const bar = el('div', 'world-back-bar');
-            const btn = el('button', 'world-back-btn', '✕ Back to world');
+            const btn = el('button', 'world-back-btn', 'CLOSE');
             btn.onclick = () => UI.closeToWorld();
             bar.appendChild(btn);
             s.appendChild(bar);
@@ -46,12 +46,12 @@
 
     /** Overworld mode: START-button menu. */
     UI.showMenu = function () {
-        choose('Menu', [
-            { label: '🎒 Party & Box' },
-            { label: '📕 Pokédex' },
-            { label: '🛒 Poké Mart' },
-            { label: '🏆 Gyms & League' },
-            { label: '❤ Heal team', sub: 'Free — like a Pokémon Center' },
+        choose('MENU', [
+            { label: 'POKéMON', sub: 'Party & PC box' },
+            { label: 'POKéDEX' },
+            { label: 'POKéMART' },
+            { label: 'GYMS & LEAGUE' },
+            { label: 'HEAL TEAM', sub: 'Free — like a Pokémon Center' },
         ], true).then(idx => {
             if (idx === 0) UI.showParty();
             else if (idx === 1) UI.showDex();
@@ -88,9 +88,9 @@
         }
         const dc = G.dexCounts();
         $('#tb-name').textContent = G.state.name;
-        $('#tb-money').textContent = '₽' + G.state.money.toLocaleString();
-        $('#tb-badges').textContent = '🏅' + G.badgeCount();
-        $('#tb-dex').textContent = '📕' + dc.caught + '/' + D.MAX_DEX;
+        $('#tb-money').textContent = '$' + G.state.money.toLocaleString();
+        $('#tb-badges').textContent = 'BADGES ' + G.badgeCount();
+        $('#tb-dex').textContent = 'DEX ' + dc.caught + '/' + D.MAX_DEX;
     };
 
     // --------------------------------------------------------------- modal --
@@ -139,7 +139,8 @@
 
     // ---------------------------------------------------------- mon helpers -
     function hpPct(mon) { return Math.max(0, Math.min(100, 100 * mon.hp / M.stats(mon).hp)); }
-    function hpColor(pct) { return pct > 50 ? '#3fd85f' : pct > 20 ? '#f8d030' : '#f04040'; }
+    // Authentic hpbar_anim.pal fill colours (green / yellow / red).
+    function hpColor(pct) { return pct > 50 ? '#5ad583' : pct > 20 ? '#cdac08' : '#ff5a39'; }
     function statusTag(mon) {
         if (!mon.status) return '';
         const map = { paralysis: ['PAR', '#c8a000'], burn: ['BRN', '#e05020'], poison: ['PSN', '#a040a0'], sleep: ['SLP', '#8090a0'], freeze: ['FRZ', '#40a0d0'] };
@@ -255,7 +256,7 @@
         const btns = el('div', 'zone-btns');
         const back = el('button', 'sm-btn', '← Map');
         back.onclick = UI.showMap;
-        const again = el('button', 'sm-btn primary', '🔎 Search again');
+        const again = el('button', 'sm-btn primary', 'SEARCH AGAIN');
         again.onclick = () => UI.showZone(zoneId);
         btns.appendChild(back); btns.appendChild(again);
         head.appendChild(btns);
@@ -317,53 +318,64 @@
         renderActions();
     }
 
+    // ---- pret-pokeemerald battle stage: 240×160 GBA px, scaled to fit ----
+    function fitStage() {
+        const wrap = $('.eb-stage-wrap');
+        if (!wrap) return;
+        const w = wrap.clientWidth;
+        wrap.style.height = Math.round(w / 1.5) + 'px';
+        const stage = wrap.querySelector('.eb-stage');
+        if (stage) stage.style.transform = 'scale(' + (w / 240) + ')';
+    }
+    window.addEventListener('resize', fitStage);
+
     function renderBattle() {
         const s = screen();
         const bt = UI.battle;
-        const wrap = el('div', 'battle');
-        const arena = el('div', 'bt-arena env-' + (bt._zoneEnv || 'grass'));
-        arena.id = 'bt-arena';
-
-        // enemy
         const e = bt.enemies[bt.enemyIdx];
-        const eSide = el('div', 'bt-enemy');
-        eSide.innerHTML =
-            '<div class="bt-box" id="bt-ebox">' + infoBox(e, false) + '</div>' +
-            '<img id="bt-esprite" class="bt-sprite" src="' + D.sprite(e.slug, 'front') + '"' +
-            (variantFilter(e) ? ' style="filter:' + variantFilter(e) + '"' : '') + '>';
-        arena.appendChild(eSide);
-
-        // player
         const p = bt.party[bt.partyIdx];
-        const pSide = el('div', 'bt-player');
-        pSide.innerHTML =
-            '<img id="bt-psprite" class="bt-sprite back" src="' + D.sprite(p.slug, 'back') + '"' +
+        const wrap = el('div', 'battle');
+        wrap.innerHTML =
+            '<div class="eb-outer"><div class="eb-stage-wrap">' +
+            '<div class="eb-stage env-' + (bt._zoneEnv || 'grass') + '" id="bt-arena">' +
+            '<div class="eb-field"><div class="eb-base enemy"></div><div class="eb-base player"></div></div>' +
+            '<img id="bt-esprite" class="eb-esprite" src="' + D.sprite(e.slug, 'front') + '"' +
+            (variantFilter(e) ? ' style="filter:' + variantFilter(e) + '"' : '') + '>' +
+            '<img id="bt-psprite" class="eb-psprite" src="' + D.sprite(p.slug, 'back') + '"' +
             (variantFilter(p) ? ' style="filter:' + variantFilter(p) + '"' : '') + '>' +
-            '<div class="bt-box" id="bt-pbox">' + infoBox(p, true) + '</div>';
-        arena.appendChild(pSide);
-        wrap.appendChild(arena);
-
-        wrap.appendChild(el('div', 'bt-log', ''));
-        const acts = el('div', 'bt-actions');
-        acts.id = 'bt-actions';
-        wrap.appendChild(acts);
+            '<div class="eb-ebox" id="bt-ebox">' + infoBox(e, false) + '</div>' +
+            '<div class="eb-pbox" id="bt-pbox">' + infoBox(p, true) + '</div>' +
+            '<div class="eb-bottom" id="bt-panel"></div>' +
+            '</div></div></div>';
         s.appendChild(wrap);
+        fitStage();
         renderActions();
     }
 
+    /** Inner HTML of an Emerald healthbox (name / Lv / HP track / status,
+        plus HP numbers + EXP fill on the player box). */
     function infoBox(mon, isPlayer) {
         const st = M.stats(mon);
         const pct = hpPct(mon);
         const sp = D.species[mon.dex];
-        let html = '<div class="bt-nm">' + monLabel(mon) + (mon.gender ? '<i class="g-' + mon.gender + '">' + (mon.gender === 'M' ? '♂' : '♀') + '</i>' : '') +
-            ' <b>Lv' + mon.level + '</b> ' + statusTag(mon) + '</div>' +
-            '<div class="hp-outer"><div class="hp-inner" style="width:' + pct + '%;background:' + hpColor(pct) + '"></div></div>';
+        const hpCls = pct > 50 ? '' : pct > 20 ? ' hp-yellow' : ' hp-red';
+        let html = '<div class="eb-name">' + monLabel(mon) +
+            (mon.gender ? '<i class="g-' + mon.gender + '">' + (mon.gender === 'M' ? '♂' : '♀') + '</i>' : '') + '</div>' +
+            '<div class="eb-lv">Lv' + mon.level + '</div>' +
+            '<div class="eb-hp"><img src="src/assets/emerald_ui/hp_label.png" alt="HP">' +
+            '<div class="eb-track"><div class="eb-fill' + hpCls + '" style="width:' + pct + '%"></div></div></div>';
+        if (mon.status) {
+            const cls = { poison: 'st-psn', paralysis: 'st-par', sleep: 'st-slp', freeze: 'st-frz', burn: 'st-brn' }[mon.status];
+            html += '<div class="eb-status ' + cls + '"></div>';
+        }
         if (isPlayer) {
-            html += '<div class="hp-num">' + mon.hp + ' / ' + st.hp + '</div>';
+            html += '<div class="eb-hpnum">' + mon.hp + '/' + st.hp + '</div>';
             const cur = D.expForLevel(sp.growthRate, mon.level);
             const next = D.expForLevel(sp.growthRate, mon.level + 1);
-            const ep = mon.level >= 100 ? 100 : Math.min(100, 100 * (mon.exp - cur) / Math.max(1, next - cur));
-            html += '<div class="exp-outer"><div class="exp-inner" style="width:' + ep + '%"></div></div>';
+            const ep = mon.level >= 100 ? 0 : Math.min(100, 100 * (mon.exp - cur) / Math.max(1, next - cur));
+            html += '<div class="eb-exp"><div style="width:' + ep + '%"></div></div>';
+        } else if (G.state && G.state.dex.caught[mon.slug]) {
+            html += '<div class="eb-caught"></div>';
         }
         return html;
     }
@@ -382,67 +394,94 @@
         if (ps) { ps.src = D.sprite(p.slug, 'back'); ps.style.filter = variantFilter(p); ps.classList.remove('gone'); }
     }
     function setLog(text) {
-        const log = $('.bt-log');
-        if (log) log.textContent = text;
+        const bottom = $('#bt-panel');
+        if (!bottom) return;
+        bottom.innerHTML = '<div class="eb-msg" id="bt-msg"></div>';
+        $('#bt-msg').textContent = text;
     }
 
+    /** Emerald command phase: "What will X do?" + FIGHT/BAG/POKéMON/RUN. */
     function renderActions() {
-        const acts = $('#bt-actions');
-        if (!acts) return;
-        acts.innerHTML = '';
+        const bottom = $('#bt-panel');
+        if (!bottom) return;
         const bt = UI.battle;
         if (!bt || bt.over) return;
+        if (UI.busy) return;   // a message is playing; leave the textbox alone
         const p = bt.party[bt.partyIdx];
-
-        const moves = el('div', 'bt-moves');
-        p.moves.forEach((m, i) => {
-            const mv = D.moves[m.id];
-            const b = el('button', 'bt-move', '<b>' + esc(mv.name) + '</b>' +
-                '<span>' + typeChip(mv.type) + ' <em>' + (mv.power || '—') + '</em> PP ' + m.pp + '/' + m.maxPp + '</span>');
-            b.style.borderColor = TYPE_COLORS[mv.type] || '#666';
-            b.disabled = m.pp <= 0 || UI.busy;
-            b.onclick = () => doTurn({ type: 'move', idx: i });
-            moves.appendChild(b);
-        });
-        acts.appendChild(moves);
-
-        const row = el('div', 'bt-row');
-        const bag = el('button', 'bt-cmd', '🎒 Bag');
-        bag.onclick = openBag;
-        const balls = el('button', 'bt-cmd', '◓ Ball');
-        balls.onclick = openBalls;
-        const party = el('button', 'bt-cmd', '🔁 Switch');
-        party.onclick = () => openSwitch(false);
-        const run = el('button', 'bt-cmd', '🏃 Run');
-        run.onclick = () => doTurn({ type: 'run' });
-        if (bt.isTrainer) balls.disabled = true;
-        [bag, balls, party, run].forEach(b => { b.disabled = b.disabled || UI.busy; row.appendChild(b); });
-        acts.appendChild(row);
+        bottom.innerHTML = '<div class="eb-msg half" id="bt-msg">What will<br>' +
+            esc(M.displayName(p).toUpperCase()) + ' do?</div>';
+        const cmd = el('div', 'eb-cmd');
+        const mk = (label, fn, dis) => {
+            const b = el('button', '', esc(label));
+            b.disabled = !!dis;
+            b.onclick = fn;
+            cmd.appendChild(b);
+            return b;
+        };
+        mk('FIGHT', renderMoves);
+        mk('BAG', openBag);
+        mk('POKéMON', () => openSwitch(false));
+        mk('RUN', () => doTurn({ type: 'run' }));
+        bottom.appendChild(cmd);
     }
 
-    async function openBalls() {
-        if (UI.busy) return;
-        const ballIds = ['poke_ball', 'great_ball', 'ultra_ball', 'master_ball'].filter(id => (G.state.items[id] || 0) > 0);
-        if (!ballIds.length) { alertModal('No Poké Balls! Buy some at the Mart.'); return; }
-        const idx = await choose('Throw which ball?', ballIds.map(id => ({
-            label: D.ITEMS[id].name + ' ×' + G.state.items[id],
-        })));
-        if (idx === null) return;
-        const id = ballIds[idx];
-        G.useItem(id);
-        doTurn({ type: 'ball', item: id });
+    /** Emerald move-select phase: 2×2 move grid + PP/TYPE box. */
+    function renderMoves() {
+        const bottom = $('#bt-panel');
+        if (!bottom) return;
+        const bt = UI.battle;
+        const p = bt.party[bt.partyIdx];
+        bottom.innerHTML = '';
+        const grid = el('div', 'eb-moves');
+        const pp = el('div', 'eb-ppbox');
+        function showPP(m) {
+            const mv = D.moves[m.id];
+            pp.innerHTML = 'PP <span class="pp-num">' + m.pp + '/' + m.maxPp + '</span><br>' +
+                'TYPE/' + esc(mv.type.toUpperCase()) + '<br><span class="pp-back">CANCEL</span>';
+            pp.querySelector('.pp-back').onclick = renderActions;
+        }
+        for (let i = 0; i < 4; i++) {
+            const m = p.moves[i];
+            if (!m) { grid.appendChild(el('button', '', '-')); continue; }
+            const mv = D.moves[m.id];
+            const b = el('button', '', esc(mv.name.toUpperCase()));
+            b.disabled = m.pp <= 0;
+            b.onmouseenter = () => showPP(m);
+            b.onclick = () => { showPP(m); doTurn({ type: 'move', idx: i }); };
+            grid.appendChild(b);
+        }
+        bottom.appendChild(grid);
+        bottom.appendChild(pp);
+        showPP(p.moves[0]);
     }
 
     async function openBag() {
         if (UI.busy) return;
-        const ids = Object.keys(D.ITEMS).filter(id => D.ITEMS[id].kind !== 'ball' && (G.state.items[id] || 0) > 0);
-        if (!ids.length) { alertModal('No usable items! Buy some at the Mart.'); return; }
-        const idx = await choose('Use which item?', ids.map(id => ({
-            label: D.ITEMS[id].name + ' ×' + G.state.items[id],
-            sub: D.ITEMS[id].kind === 'heal' ? 'Restores ' + D.ITEMS[id].heal + ' HP' : D.ITEMS[id].kind === 'cure' ? 'Cures status' : 'Revives a fainted Pokémon',
-        })));
-        if (idx === null) return;
-        const id = ids[idx];
+        // Emerald keeps Poké Balls in the Bag — list balls first, then items.
+        const ballIds = ['poke_ball', 'great_ball', 'ultra_ball', 'master_ball']
+            .filter(id => (G.state.items[id] || 0) > 0 && !UI.battle.isTrainer);
+        const ids = ballIds.concat(
+            Object.keys(D.ITEMS).filter(id => D.ITEMS[id].kind !== 'ball' && (G.state.items[id] || 0) > 0));
+        if (!ids.length) { alertModal('The BAG is empty! Buy items at the POKéMART.'); return; }
+        {
+            const idx = await choose('BAG', ids.map(id => ({
+                label: D.ITEMS[id].name + ' ×' + G.state.items[id],
+                sub: D.ITEMS[id].kind === 'ball' ? 'Throw at the wild Pokémon'
+                    : D.ITEMS[id].kind === 'heal' ? 'Restores ' + D.ITEMS[id].heal + ' HP'
+                    : D.ITEMS[id].kind === 'cure' ? 'Cures status' : 'Revives a fainted Pokémon',
+            })));
+            if (idx === null) return;
+            const id = ids[idx];
+            if (D.ITEMS[id].kind === 'ball') {
+                G.useItem(id);
+                doTurn({ type: 'ball', item: id });
+                return;
+            }
+            return useHealItem(id);
+        }
+    }
+
+    async function useHealItem(id) {
         const item = D.ITEMS[id];
         const bt = UI.battle;
         const targets = bt.party.map((m, i) => ({ mon: m, i: i })).filter(x =>
@@ -688,11 +727,11 @@
             '<div class="hp-outer"><div class="hp-inner" style="width:' + pct + '%;background:' + hpColor(pct) + '"></div></div>' +
             '<small>' + mon.hp + '/' + st.hp + ' HP</small></div>';
         const btns = el('div', 'pr-btns');
-        const info = el('button', 'sm-btn', 'ℹ️');
+        const info = el('button', 'sm-btn', 'INFO');
         info.onclick = () => monDetails(mon);
         btns.appendChild(info);
         if (i > 0) {
-            const up = el('button', 'sm-btn', '⬆️');
+            const up = el('button', 'sm-btn', 'UP');
             up.title = 'Make leader';
             up.onclick = () => {
                 G.state.party.splice(i, 1);
@@ -702,7 +741,7 @@
             btns.appendChild(up);
         }
         if (G.state.party.length > 1) {
-            const box = el('button', 'sm-btn', '📦');
+            const box = el('button', 'sm-btn', 'BOX');
             box.title = 'Send to box';
             box.onclick = () => {
                 G.state.party.splice(i, 1);
@@ -784,7 +823,7 @@
     UI.showMart = function () {
         UI.updateTopbar();
         const s = screen();
-        s.appendChild(el('h2', '', '🏪 Poké Mart'));
+        s.appendChild(el('h2', '', 'POKéMART'));
         const list = el('div', 'mart-list');
         for (const id in D.ITEMS) {
             const it = D.ITEMS[id];
@@ -808,7 +847,7 @@
     UI.showGyms = function () {
         UI.updateTopbar();
         const s = screen();
-        s.appendChild(el('h2', '', '🏅 Gym Leaders & Elite Four'));
+        s.appendChild(el('h2', '', 'GYM LEADERS & ELITE FOUR'));
         const list = el('div', 'gym-list');
         D.GYMS.forEach((gym, idx) => {
             const beaten = !!G.state.gymsBeaten[gym.id];
@@ -820,9 +859,9 @@
                 (gym.type ? ' · ' + typeChip(gym.type) : '') + '</small>' +
                 '<div class="gym-team">' + teamHtml + '</div>' +
                 '<small>' + (gym.badge ? '🏅 ' + gym.badge + ' · ' : '') + '₽' + gym.reward.toLocaleString() + (beaten ? ' · ✔ DEFEATED' : '') + '</small></div>';
-            const b = el('button', 'sm-btn primary', beaten ? 'Rematch' : 'Challenge');
+            const b = el('button', 'sm-btn primary', beaten ? 'REMATCH' : 'BATTLE');
             b.disabled = !unlocked;
-            if (!unlocked) b.textContent = '🔒';
+            if (!unlocked) b.textContent = 'LOCKED';
             b.onclick = () => UI.startGymBattle(gym);
             row.appendChild(b);
             list.appendChild(row);
