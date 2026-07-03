@@ -32,6 +32,7 @@
     UI.closeToWorld = function () {
         const s = $('#screen');
         if (s) s.innerHTML = '';
+        navReset();   // release the menu cursor so the D-pad moves the player again
         UI.updateTopbar();
         if (window.CraterOverworld && CraterOverworld.onScreenClosed) CraterOverworld.onScreenClosed();
     };
@@ -54,7 +55,7 @@
     function navSet(items, opts) {
         opts = opts || {};
         navMark(-1);
-        Nav.items = (items || []).filter(it => it && it.isConnected !== false);
+        Nav.items = (items || []).filter(Boolean);
         Nav.cols = opts.cols || 1;
         Nav.onBack = opts.onBack || null;
         if (Nav.items.length) navMark(opts.idx || 0);
@@ -91,7 +92,8 @@
             case 'b': {
                 if (Nav.onBack) { const f = Nav.onBack; f(); return true; }
                 const scr = $('#screen');
-                if (scr && scr.childElementCount > 0 && !UI.battle) { UI.closeToWorld(); return true; }
+                if (scr && scr.childElementCount > 0 && !UI.battle &&
+                    window.CraterOverworld && CraterOverworld.entered) { UI.closeToWorld(); return true; }
                 return false;
             }
             case 'start': {
@@ -110,8 +112,12 @@
         if (!btn) return;
         btn.addEventListener('pointerdown', ev => {
             const k = GP_KEYS[id];
+            const scr = $('#screen');
+            const screenOpen = scr && scr.childElementCount > 0;
             if (k === 'start') {
                 if (!$('#modal-layer .esm-overlay')) return;   // let the engine open the menu
+            } else if (k === 'b') {
+                if (!uiNavActive() && !screenOpen) return;     // world mode: engine input
             } else if (!uiNavActive()) return;                 // world mode: engine input
             ev.preventDefault(); ev.stopPropagation();
             navKey(k);
@@ -224,6 +230,7 @@
             return r;
         }
         function rebuild() {
+            const keep = Nav.idx;
             win.innerHTML = '';
             win.appendChild(row('TEXT SPEED',
                 ['SLOW', 'MID', 'FAST'].map(v => v === o.textSpeed ? '<i class="opt-on">' + v + '</i>' : v).join(' '),
@@ -231,6 +238,7 @@
             win.appendChild(row('BATTLE SCENE',
                 ['ON', 'OFF'].map(v => (o.battleScene ? 'ON' : 'OFF') === v ? '<i class="opt-on">' + v + '</i>' : v).join(' '),
                 () => { o.battleScene = !o.battleScene; G.save(); rebuild(); }));
+            navSet([...win.children], { idx: keep >= 0 ? keep : 0, onBack: () => UI.closeToWorld() });
         }
         rebuild();
         s.appendChild(win);
@@ -255,7 +263,9 @@
             D.GYMS.filter(g => g.badge).map(g =>
                 '<span class="tc-badge' + (G.state.gymsBeaten[g.id] ? ' got' : '') + '" title="' + esc(g.badge) + '"></span>').join('') +
             '</div></div>';
+        card.onclick = () => UI.closeToWorld();
         s.appendChild(card);
+        navSet([card], { onBack: () => UI.closeToWorld() });
     };
 
     const TYPE_COLORS = {
