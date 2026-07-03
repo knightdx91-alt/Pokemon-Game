@@ -63,12 +63,16 @@ active, verified body of work in THIS repo. Go work on it. Details:**
   `citra1_build_fixes.patch` and adds its missing `scope_acquire_context.h`).
   Arm via `/tmp/hook_arm` = "lo hi" over the seq table (VA `0x7de5a0`,len `0x4c8`);
   every guest read there is logged to `/tmp/hook_out` → `seqId=(vaddr-0x7de5a0)/8`
-  (analyzer `tools/citra_gdb/hookcap.py`). A move runs a **script** of handlers;
-  Steam Eruption(eff4)=`[6,11,5,4,62,65,22,23,58,28,16,133,143,…]`,
-  Hydro Pump(eff0)=`[6,11,5,4,62,65,22,23,58,28]` (traces in
-  `decomp/battle_effects/seq_dispatch_traces.json`). **Remaining:** non-KO captures
-  across several effectIds (the Lv85 lead one-shots wild mons before the
-  secondary-effect step) to line up the tails and pin each effectId→seqId.
+  (analyzer `tools/citra_gdb/hookcap.py`). **RESOLVED ✅ via non-KO captures**
+  (poke the lead's battlemon move-records to 0-power 100%-effect status moves with
+  `/tmp/poke` so the target survives and the effect always applies): the dispatch
+  is by effect **CATEGORY**, keyed in the `0x45a0` table — seqId **80** = inflict
+  status (burn/sleep/confuse), **71** = stat-change on target, **70** = stat-change
+  on self. There is **no 400-entry effectId→seqId table**; the per-effect
+  specifics are data-driven from `usum_moves.json` (already extracted), so the
+  effect layer is complete. Table + 6 traces:
+  `decomp/battle_effects/EFFECT_DISPATCH.md` / `seq_dispatch_traces.json`
+  (`category_dispatch_DECISIVE`) / `seq_traces/`.
 
 **Bottom line: the user has spent many sessions on this. When they say "work on
 the moon decomp," the correct first action is to run the bootstrap above and
