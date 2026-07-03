@@ -33,7 +33,7 @@ window.GameMap = (function () {
     let tilesetBehaviors = null;   // behavior byte per metatile index from tileset JSON
     let mapWidth         = DEFAULT_SIZE;
     let mapHeight        = DEFAULT_SIZE;
-    let _nameIndex       = null;   // MAP_CONST -> filename, loaded from kanto_index.json
+    let _nameIndex       = null;   // MAP_CONST -> filename for the CURRENT region
     let _region          = 'kanto';
 
     // Seamless-overworld matrix: maps in a matrix share one global tile grid, so
@@ -56,17 +56,75 @@ window.GameMap = (function () {
         custom:    'data/maps/custom_index.json',
     };
 
+    // Per-region index cache — needed because connections may cross regions
+    // (e.g. Johto Route 26 → Kanto Route 22), so several indexes can be live.
+    const _indexes = {};           // region -> {MAP_CONST: filename}
+    const _indexPromises = {};     // region -> in-flight Promise
+
+    function _getIndex(region) {
+        region = region || 'kanto';
+        if (_indexes[region]) return Promise.resolve(_indexes[region]);
+        if (_indexPromises[region]) return _indexPromises[region];
+        const indexFile = INDEX_FILES[region] || INDEX_FILES.kanto;
+        _indexPromises[region] = fetch(indexFile)
+            .then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
+            .then(idx => {
+                _indexes[region] = idx;
+                console.log(`[Map] Loaded index (${region}): ${Object.keys(idx).length} entries`);
+                return idx;
+            })
+            .catch(e => {
+                console.error(`[Map] Failed to load index for ${region}:`, e);
+                _indexes[region] = {};
+                return _indexes[region];
+            });
+        return _indexPromises[region];
+    }
+
     async function init(region) {
-        const indexFile = INDEX_FILES[region || 'kanto'] || INDEX_FILES.kanto;
-        try {
-            const resp = await fetch(indexFile);
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            _nameIndex = await resp.json();
-            console.log(`[Map] Loaded index (${region}): ${Object.keys(_nameIndex).length} entries`);
-        } catch (e) {
-            console.error(`[Map] Failed to load index for ${region}:`, e);
-            _nameIndex = {};
+        _nameIndex = await _getIndex(region || 'kanto');
+    }
+
+    // ---------------------------------------------------------------
+    // Fetch/bundle cache — every map/layout/tileset JSON is fetched once and
+    // kept, so crossing back and forth between maps never re-loads anything.
+    // ---------------------------------------------------------------
+    const _jsonCache = {};   // url -> Promise<json|null>
+    function _fetchJson(url) {
+        if (!(url in _jsonCache)) {
+            _jsonCache[url] = fetch(url)
+                .then(r => r.ok ? r.json() : null)
+                .catch(() => null);
         }
+        return _jsonCache[url];
+    }
+
+    // Fully-resolved map bundles (map JSON + layout + tileset behaviors),
+    // synchronously available once loaded: "region/MapName" -> bundle
+    const _bundles = {};
+
+    async function _fetchMapBundle(mapName, region) {
+        const key = `${region}/${mapName}`;
+        if (_bundles[key]) return _bundles[key];
+        const mapData = await _fetchJson(`data/maps/${region}/${mapName}.json`);
+        if (!mapData) return null;
+        let layout = null, behaviors = null;
+        if (mapData.layout) {
+            const paths = (region && region !== 'kanto')
+                ? [`data/layouts/${region}/${mapData.layout}.json`, `data/layouts/${mapData.layout}.json`]
+                : [`data/layouts/${mapData.layout}.json`];
+            for (const p of paths) {
+                layout = await _fetchJson(p);
+                if (layout) break;
+            }
+        }
+        if (layout && layout.tileset) {
+            const tj = await _fetchJson(`data/tilesets/${layout.tileset}.json`);
+            behaviors = tj ? (tj.behaviors || null) : null;
+        }
+        const bundle = { name: mapName, region, mapData, layout, behaviors };
+        _bundles[key] = bundle;
+        return bundle;
     }
 
     // ---------------------------------------------------------------
@@ -82,51 +140,41 @@ window.GameMap = (function () {
         mapHeight = Math.max(DEFAULT_SIZE, maxY + 4);
     }
 
-    async function _loadLayout(data) {
-        const layoutId = data.layout;
-        tilesetBehaviors = null;
-        if (!layoutId) {
-            layoutData = null;
-            _fallbackSize(data);
-            return;
+    /** Apply a loaded bundle as the current map (synchronous). */
+    function _applyBundle(bundle) {
+        current          = bundle.mapData;
+        layoutData       = bundle.layout;
+        tilesetBehaviors = bundle.behaviors;
+        _region          = bundle.region;
+        if (_indexes[bundle.region]) _nameIndex = _indexes[bundle.region];
+        if (layoutData) {
+            mapWidth  = layoutData.width;
+            mapHeight = layoutData.height;
+            window._dbgTileset = (layoutData.tileset || 'no-tileset') + ':' +
+                (tilesetBehaviors ? tilesetBehaviors.length : 'null');
+        } else {
+            _fallbackSize(current);
         }
-        // Layouts live in region subdirectories for non-Kanto regions.
-        // Try region subdir first, fall back to flat root for Kanto.
-        const layoutPaths = _region && _region !== 'kanto'
-            ? [`data/layouts/${_region}/${layoutId}.json`, `data/layouts/${layoutId}.json`]
-            : [`data/layouts/${layoutId}.json`];
-        try {
-            let lresp = null;
-            for (const path of layoutPaths) {
-                lresp = await fetch(path);
-                if (lresp.ok) break;
-            }
-            if (!lresp || !lresp.ok) throw new Error(`HTTP ${lresp ? lresp.status : 'none'}`);
-            layoutData = await lresp.json();
-            mapWidth   = layoutData.width;
-            mapHeight  = layoutData.height;
+        _encounterData = null; _encounterMapId = null; _encounterPromise = null;
 
-            // Load tileset behavior data so isWalkable can block water tiles
-            const tilesetName = layoutData.tileset;
-            if (tilesetName) {
-                try {
-                    const tresp = await fetch(`data/tilesets/${tilesetName}.json`);
-                    if (tresp.ok) {
-                        const tj = await tresp.json();
-                        tilesetBehaviors = tj.behaviors || null;
-                        window._dbgTileset = tilesetName + ':' + (tilesetBehaviors ? tilesetBehaviors.length : 'null');
-                    } else {
-                        window._dbgTileset = tilesetName + ':HTTP' + tresp.status;
-                    }
-                } catch (e) { window._dbgTileset = tilesetName + ':ERR'; }
+        // Matrix (DS seamless grid): synchronous when cached, async otherwise.
+        _matrix = null;
+        _neighbors = [];
+        _matrixOrigin = (current && current.matrix_origin) || [0, 0];
+        const matrixId = current && current.matrix;
+        if (matrixId) {
+            const mkey = `${_region}/${matrixId}`;
+            if (_matrixCache[mkey] !== undefined) {
+                _matrix = _matrixCache[mkey];
+                _computeMatrixNeighbors();
             } else {
-                window._dbgTileset = 'no-tileset';
+                _loadMatrix(current, _region);
             }
-        } catch (e) {
-            console.warn(`[Map] Layout not found: ${layoutId}`, e);
-            layoutData = null;
-            _fallbackSize(data);
         }
+
+        // Connected neighbours (GBA-style) — prefetch so edge crossings are
+        // instant and the renderer can draw the adjacent maps.
+        _loadConnNeighbors();
     }
 
     // ---------------------------------------------------------------
@@ -136,24 +184,21 @@ window.GameMap = (function () {
     /** Load by filename (e.g. "PalletTown"). Region defaults to 'kanto'. */
     async function load(mapName, region) {
         region = region || 'kanto';
-        // Reload index when region changes
-        if (region !== _region || !_nameIndex) await init(region);
+        _nameIndex = await _getIndex(region);
         _region = region;
-        _encounterData = null; _encounterMapId = null; _encounterPromise = null;
-        const url = `data/maps/${region}/${mapName}.json`;
-        try {
-            const resp = await fetch(url);
-            if (!resp.ok) throw new Error(`HTTP ${resp.status} loading ${url}`);
-            current = await resp.json();
-            await _loadLayout(current);
-            await _loadMatrix(current, region);
+        const bundle = await _fetchMapBundle(mapName, region);
+        if (bundle) {
+            _applyBundle(bundle);
             console.log(`[Map] Loaded ${mapName} (${mapWidth}x${mapHeight}) tileset=${getTilesetName() || 'none'}`);
-        } catch (err) {
-            console.error('[Map] Failed to load map:', err);
+        } else {
+            console.error('[Map] Failed to load map:', `${region}/${mapName}`);
             current = { id: mapName, name: mapName, npcs: [], warps: [], signs: [], connections: [], triggers: [] };
             layoutData = null;
+            tilesetBehaviors = null;
             mapWidth   = DEFAULT_SIZE;
             mapHeight  = DEFAULT_SIZE;
+            _connNeighbors = [];
+            _encounterData = null; _encounterMapId = null; _encounterPromise = null;
         }
         return current;
     }
@@ -162,13 +207,14 @@ window.GameMap = (function () {
     async function loadById(mapId, region) {
         // Skip special/invalid constants
         if (!mapId || mapId === 'MAP_DYNAMIC' || mapId === 'MAP_NONE') return null;
-        if (!_nameIndex) await init(region || _region);
-        const mapName = _nameIndex[mapId];
+        region = region || _region;
+        const idx = await _getIndex(region);
+        const mapName = idx[mapId];
         if (!mapName) {
             console.warn(`[Map] Unknown map id: ${mapId}`);
             return null;
         }
-        return load(mapName, region || _region);
+        return load(mapName, region);
     }
 
     // ---------------------------------------------------------------
@@ -196,6 +242,17 @@ window.GameMap = (function () {
     // Connection resolution
     // ---------------------------------------------------------------
 
+    function _connDir(conn) {
+        const dir = conn.direction || conn.dir;
+        if (!dir) return null;
+        const d = dir.toLowerCase();
+        if (d === 'north' || d === 'up')    return 'north';
+        if (d === 'south' || d === 'down')  return 'south';
+        if (d === 'west'  || d === 'left')  return 'west';
+        if (d === 'east'  || d === 'right') return 'east';
+        return null;
+    }
+
     /**
      * Check if (x, y) is at a map edge that has a connection.
      * Returns { connection, entryX, entryY } or null.
@@ -204,19 +261,12 @@ window.GameMap = (function () {
     function getConnectionAt(x, y) {
         if (!current || !current.connections) return null;
         for (const conn of current.connections) {
-            const dir = conn.direction || conn.dir;
-            if (!dir) continue;
-            // Normalise direction names (some jsons use "up"/"down", spec uses "north"/"south")
-            const d = dir.toLowerCase();
-            const north = d === 'north' || d === 'up';
-            const south = d === 'south' || d === 'down';
-            const west  = d === 'west'  || d === 'left';
-            const east  = d === 'east'  || d === 'right';
-
-            if (north && y < 0)          return _connectionEntry(conn, 'north', x, y);
-            if (south && y >= mapHeight) return _connectionEntry(conn, 'south', x, y);
-            if (west  && x < 0)          return _connectionEntry(conn, 'west',  x, y);
-            if (east  && x >= mapWidth)  return _connectionEntry(conn, 'east',  x, y);
+            const d = _connDir(conn);
+            if (!d) continue;
+            if (d === 'north' && y < 0)          return _connectionEntry(conn, 'north', x, y);
+            if (d === 'south' && y >= mapHeight) return _connectionEntry(conn, 'south', x, y);
+            if (d === 'west'  && x < 0)          return _connectionEntry(conn, 'west',  x, y);
+            if (d === 'east'  && x >= mapWidth)  return _connectionEntry(conn, 'east',  x, y);
         }
         return null;
     }
@@ -228,7 +278,124 @@ window.GameMap = (function () {
         const offset    = conn.offset || 0;
         // We don't know destHeight/destWidth yet — caller must fill in after load
         // Return a descriptor; entryX/Y will be finalised by the caller
-        return { connection: { ...conn, dest_map: destMapId }, dir, exitX, exitY, offset };
+        return { connection: { ...conn, dest_map: destMapId }, dir, exitX, exitY, offset,
+                 region: conn.region || _region };
+    }
+
+    // ---------------------------------------------------------------
+    // Seamless connected neighbours (GBA connections, incl. cross-region)
+    // ---------------------------------------------------------------
+    // Each entry: { dir, name, region, mapData, layout, behaviors,
+    //               ox, oy, w, h, tileset, background }
+    // (ox, oy) = neighbour's top-left tile in the CURRENT map's coordinates.
+    let _connNeighbors = [];
+    let _connToken     = 0;    // guards stale async completions
+
+    async function _loadConnNeighbors() {
+        const token = ++_connToken;
+        _connNeighbors = [];
+        if (!current || !current.connections || !current.connections.length) return;
+        const w = mapWidth, h = mapHeight, reg = _region;
+        const jobs = current.connections.map(async (conn) => {
+            const d = _connDir(conn);
+            if (!d) return null;
+            const destId = conn.dest_map || conn.map;
+            if (!destId || destId === 'MAP_DYNAMIC' || destId === 'MAP_NONE') return null;
+            const nregion = conn.region || reg;
+            const idx = await _getIndex(nregion);
+            const name = idx[destId];
+            if (!name) return null;
+            const b = await _fetchMapBundle(name, nregion);
+            if (!b || !b.layout) return null;
+            const nw = b.layout.width, nh = b.layout.height;
+            const off = conn.offset || 0;
+            let ox, oy;
+            if      (d === 'north') { ox = off; oy = -nh; }
+            else if (d === 'south') { ox = off; oy = h;   }
+            else if (d === 'west')  { ox = -nw; oy = off; }
+            else                    { ox = w;   oy = off; }
+            return {
+                dir: d, name, region: nregion,
+                mapData: b.mapData, layout: b.layout, behaviors: b.behaviors,
+                ox, oy, w: nw, h: nh,
+                tileset: b.layout.tileset || null,
+                background: b.layout.background || null,
+            };
+        });
+        const res = (await Promise.all(jobs)).filter(Boolean);
+        if (token === _connToken) _connNeighbors = res;
+    }
+
+    /** Loaded connected-neighbour descriptors (for rendering + walking). */
+    function getConnNeighbors() { return _connNeighbors; }
+
+    /** Walkability check inside a neighbour bundle's local coordinates. */
+    function _nbWalkable(nb, x, y) {
+        if (x < 0 || y < 0 || x >= nb.w || y >= nb.h) return false;
+        const md = nb.mapData;
+        if (md && md.npcs) {
+            for (const n of md.npcs) if (n.x === x && n.y === y) return false;
+        }
+        if (md && md.warps) {
+            for (const wp of md.warps) if (wp.x === x && wp.y === y) return true;
+        }
+        const lay = nb.layout;
+        if (lay && lay.collision) {
+            if (nb.behaviors && lay.metatiles) {
+                const mi = lay.metatiles[y * nb.w + x];
+                const b = mi !== undefined ? nb.behaviors[mi] : 0;
+                if (GRASS_BEHAVIORS.has(b) || CAVE_BEHAVIORS.has(b)) return true;
+                if (WATER_BEHAVIORS.has(b)) return false;
+            }
+            if (lay.collision[y * nb.w + x] !== 0) return false;
+        }
+        return true;
+    }
+
+    /**
+     * For an out-of-bounds tile in current-map coords, resolve which loaded
+     * connected neighbour owns it. Returns
+     * { neighbor, localX, localY, walkable } or null if no neighbour is
+     * loaded there (caller may fall back to getConnectionAt()).
+     */
+    function getConnectionWalk(x, y) {
+        for (const nb of _connNeighbors) {
+            const lx = x - nb.ox, ly = y - nb.oy;
+            if (lx < 0 || ly < 0 || lx >= nb.w || ly >= nb.h) continue;
+            return { neighbor: nb, localX: lx, localY: ly, walkable: _nbWalkable(nb, lx, ly) };
+        }
+        return null;
+    }
+
+    /**
+     * Instantly make a loaded neighbour the current map (no fetch, no pause).
+     * Returns {ox, oy} — the neighbour's old offset, so the caller can shift
+     * player coordinates into the new local frame (new = old - offset).
+     */
+    function switchToNeighbor(nb) {
+        const key = `${nb.region}/${nb.name}`;
+        const bundle = _bundles[key] || { name: nb.name, region: nb.region, mapData: nb.mapData, layout: nb.layout, behaviors: nb.behaviors };
+        _applyBundle(bundle);
+        return { ox: nb.ox, oy: nb.oy };
+    }
+
+    /**
+     * Synchronously switch to any already-fetched map bundle (used for matrix
+     * walks where the neighbour was prefetched). Returns true on success.
+     */
+    function switchToMap(mapName, region) {
+        const bundle = _bundles[`${region}/${mapName}`];
+        if (!bundle || (!bundle.layout && !bundle.mapData)) return false;
+        _applyBundle(bundle);
+        return true;
+    }
+
+    /** True if the current map is part of a continuous world (camera should
+     *  stay centred on the player instead of clamping at edges). */
+    function hasWorldNeighbors() {
+        if (_matrix && _neighbors.length) return true;
+        if (current && current.connections && current.connections.length) return true;
+        return false;
     }
 
     // ---------------------------------------------------------------
@@ -250,6 +417,8 @@ window.GameMap = (function () {
                 _matrixCache[key] = null;
             }
         }
+        // Guard: if another map finished loading while we were fetching, bail.
+        if (current !== data) return;
         _matrix = _matrixCache[key];
         _computeMatrixNeighbors();
     }
@@ -309,6 +478,8 @@ window.GameMap = (function () {
                 w: (nMaxC - nMinC + 1) * ts,
                 h: (nMaxR - nMinR + 1) * ts,
             });
+            // Prefetch the neighbour's bundle so crossing into it is instant.
+            _fetchMapBundle(name, _region);
         });
     }
 
@@ -454,9 +625,8 @@ window.GameMap = (function () {
         _encounterMapId = mapId;
         _encounterPromise = (async () => {
         try {
-            const resp = await fetch(`data/encounters/${region}.json`);
-            if (!resp.ok) return;
-            const blob = await resp.json();
+            const blob = await _fetchJson(`data/encounters/${region}.json`);
+            if (!blob) return;
             // Flatten across wild_encounter_groups
             const groups = blob.wild_encounter_groups || [];
             for (const grp of groups) {
@@ -496,6 +666,11 @@ window.GameMap = (function () {
         loadById,
         resolveWarp,
         getConnectionAt,
+        getConnectionWalk,
+        getConnNeighbors,
+        switchToNeighbor,
+        switchToMap,
+        hasWorldNeighbors,
         getMatrixWalk,
         getMatrixNeighbors,
         get matrixOrigin() { return _matrixOrigin; },

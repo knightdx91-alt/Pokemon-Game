@@ -30,6 +30,8 @@
     };
 
     let currentRegion = 'kanto';
+    // Expose the player for the HUD, presence layer (multiplayer), and tests.
+    window._player = player;
     let _transitioning   = false;
     let _warpCooldownUntil = 0;
     let lastMoveTime       = 0;
@@ -169,8 +171,56 @@
         }
     }
 
-    // Seamless overworld: walk straight from one matrix map into the adjacent
-    // one, keeping the player's global tile position continuous.
+    // ---------------------------------------------------------------
+    // Seamless edge crossing — the neighbour map is already loaded and
+    // rendered in place, so crossing is just a normal walk step with the
+    // player's coordinates re-anchored into the new map's frame. No pause,
+    // no fade, no cut: exactly like the real games.
+    // ---------------------------------------------------------------
+    function _afterSeamlessSwitch(timestamp) {
+        currentRegion = GameMap.region;
+        window._mapName = (GameMap.current && (GameMap.current.name || GameMap.current.id)) || window._mapName;
+        window._currentMapType = (GameMap.current && GameMap.current.map_type) || '';
+        if (window.GameSave) GameSave.markDirty();
+        GameMap.loadEncounterData(currentRegion);
+        lastMoveTime = timestamp;
+    }
+
+    /** Step across a GBA-style connection into a preloaded neighbour map. */
+    function seamlessConnectionStep(cw, timestamp) {
+        const { ox, oy } = GameMap.switchToNeighbor(cw.neighbor);
+        // Shift both current and previous position into the new local frame so
+        // the walk interpolation continues without any visual jump.
+        player.prevX = player.x - ox;
+        player.prevY = player.y - oy;
+        player.x = cw.localX;
+        player.y = cw.localY;
+        player.moveStartTime = timestamp;
+        player.moveDuration  = MOVE_COOLDOWN_MS;
+        player.walkFrame = player.walkFrame === 0 ? 1 : player.walkFrame === 1 ? 2 : 1;
+        _afterSeamlessSwitch(timestamp);
+        _checkEncounter();
+    }
+
+    /** Step across a matrix seam when the neighbour bundle is preloaded. */
+    function seamlessMatrixStep(mw, timestamp) {
+        const o1 = GameMap.matrixOrigin || [0, 0];
+        if (!GameMap.switchToMap(mw.mapName, currentRegion)) return false;
+        const o2 = GameMap.matrixOrigin || [0, 0];
+        const dx = o1[0] - o2[0], dy = o1[1] - o2[1];
+        player.prevX = player.x + dx;
+        player.prevY = player.y + dy;
+        player.x = mw.globalX - o2[0];
+        player.y = mw.globalY - o2[1];
+        player.moveStartTime = timestamp;
+        player.moveDuration  = MOVE_COOLDOWN_MS;
+        player.walkFrame = player.walkFrame === 0 ? 1 : player.walkFrame === 1 ? 2 : 1;
+        _afterSeamlessSwitch(timestamp);
+        return true;
+    }
+
+    // Fallback (first frames after load, before neighbours finish prefetching):
+    // walk straight from one matrix map into the adjacent one asynchronously.
     async function transitionToMatrix(mw) {
         if (_transitioning) return;
         _transitioning = true;
@@ -203,9 +253,11 @@
             const destMapId = connection.dest_map || connection.map;
             if (!destMapId || destMapId === 'MAP_DYNAMIC' || destMapId === 'MAP_NONE') return;
 
-            console.log(`[Connection] ${dir} -> ${destMapId}`);
-            const result = await GameMap.loadById(destMapId, currentRegion);
+            const destRegion = connInfo.region || connection.region || currentRegion;
+            console.log(`[Connection] ${dir} -> ${destMapId} (${destRegion})`);
+            const result = await GameMap.loadById(destMapId, destRegion);
             if (!result) return;
+            currentRegion = GameMap.region;
             window._mapName = destMapId; window._mapLoaded = true; window._currentMapType = (GameMap.current && GameMap.current.map_type) || "";
 
             const destW = GameMap.width;
@@ -374,14 +426,25 @@
                     const oob = nx < 0 || nx >= GameMap.width || ny < 0 || ny >= GameMap.height;
 
                     if (oob) {
-                        // Prefer a seamless matrix walk (Platinum overworld);
-                        // fall back to explicit GBA-style edge connections.
-                        const mw = GameMap.getMatrixWalk ? GameMap.getMatrixWalk(nx, ny) : null;
-                        if (mw) {
-                            transitionToMatrix(mw);
+                        // Seamless crossing: the neighbour map is preloaded, so
+                        // stepping over the edge is just a walk step in the new
+                        // map's frame — no pause, no cut.
+                        const cw = GameMap.getConnectionWalk ? GameMap.getConnectionWalk(nx, ny) : null;
+                        if (cw) {
+                            // Neighbour loaded: only step if the target tile is
+                            // actually walkable over there (blocked edges stay
+                            // blocked, exactly like inside a map).
+                            if (cw.walkable) seamlessConnectionStep(cw, timestamp);
                         } else {
-                            const connInfo = GameMap.getConnectionAt(nx, ny);
-                            if (connInfo) transitionToConnection(connInfo);
+                            const mw = GameMap.getMatrixWalk ? GameMap.getMatrixWalk(nx, ny) : null;
+                            if (mw) {
+                                if (!seamlessMatrixStep(mw, timestamp)) transitionToMatrix(mw);
+                            } else {
+                                // Neighbour not prefetched yet (first frames after
+                                // a load) — fall back to the async transition.
+                                const connInfo = GameMap.getConnectionAt(nx, ny);
+                                if (connInfo) transitionToConnection(connInfo);
+                            }
                         }
                     } else if (GameMap.isWalkable(nx, ny)) {
                         player.prevX = player.x;

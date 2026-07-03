@@ -10,11 +10,39 @@ window.GameRenderer = (function () {
     let _camera = null;
     let _player = null;
 
-    // Tileset state
-    let _tilesetName        = null;   // name of the CURRENTLY DISPLAYED tileset
-    let _tilesetLoadingName = null;   // name being fetched (prevents duplicate loads)
-    let _tilesetImg         = null;   // spritesheet for _tilesetName
-    let _tilesetMeta        = null;
+    // Tileset cache — several tilesets can be live at once (current map +
+    // connected neighbour maps, possibly from other regions).
+    // name -> {img, meta} | 'loading' | 'error'
+    const _tsCache = new Map();
+    let _tsFallback = null;   // last ready tileset — shown while a new one loads
+
+    function _getTileset(name) {
+        if (!name) return null;
+        const v = _tsCache.get(name);
+        if (v && v !== 'loading' && v !== 'error') return v;
+        if (v === 'loading') return null;
+        if (v === 'error') return null;
+        _tsCache.set(name, 'loading');
+        fetch(`data/tilesets/${name}.json`)
+            .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
+            .then(meta => {
+                const img = new Image();
+                img.onload = () => { _tsCache.set(name, { img, meta }); };
+                img.onerror = () => {
+                    console.warn(`[Renderer] Failed to load tileset image: ${name}`);
+                    _tsCache.set(name, 'error');
+                };
+                // Cache-bust the PNG using metatile count so browsers reload
+                // when tilesets are regenerated (JSON is always fetched fresh).
+                const v2 = (meta.total_metatiles || 0) + '_' + (meta.primary_count || 0);
+                img.src = `data/tilesets/${name}.png?v=${v2}`;
+            })
+            .catch(e => {
+                console.warn(`[Renderer] Failed to load tileset JSON for ${name}:`, e);
+                _tsCache.set(name, 'error');
+            });
+        return null;
+    }
 
     // NPC sprite state
     let _npcIndex          = null;
@@ -87,54 +115,6 @@ window.GameRenderer = (function () {
         if (canvas.height !== 208) canvas.height = 208;
     }
 
-    // Load a new tileset spritesheet. Keeps the old image visible until the new
-    // one successfully loads (no green-box flash during transition). If loading
-    // fails the name is cleared so the next render will retry.
-    function loadTileset(name) {
-        if (!name) return;
-        if (name === _tilesetName) return;        // already displayed
-        if (name === _tilesetLoadingName) return; // already in-flight
-
-        _tilesetLoadingName = name;
-
-        fetch(`data/tilesets/${name}.json`)
-            .then(r => r.ok ? r.json() : Promise.reject(`HTTP ${r.status}`))
-            .then(meta => {
-                const img = new Image();
-                img.onload = () => {
-                    // Atomic swap: only update displayed tileset once fully ready
-                    _tilesetImg         = img;
-                    _tilesetMeta        = meta;
-                    _tilesetName        = name;
-                    _tilesetLoadingName = null;
-                };
-                img.onerror = () => {
-                    console.warn(`[Renderer] Failed to load tileset image: ${name}`);
-                    _tilesetLoadingName = null; // allow retry next render
-                };
-                // Cache-bust the PNG using metatile count so browsers reload
-                // when tilesets are regenerated (JSON is always fetched fresh).
-                const v = (meta.total_metatiles || 0) + '_' + (meta.primary_count || 0);
-                img.src = `data/tilesets/${name}.png?v=${v}`;
-            })
-            .catch(e => {
-                console.warn(`[Renderer] Failed to load tileset JSON for ${name}:`, e);
-                _tilesetLoadingName = null; // allow retry next render
-            });
-    }
-
-    function drawMetatile(metatileIdx, sx, sy) {
-        if (!_tilesetImg) return false;
-        const col = metatileIdx % METATILES_PER_ROW;
-        const row = Math.floor(metatileIdx / METATILES_PER_ROW);
-        ctx.drawImage(
-            _tilesetImg,
-            col * TILE_PX, row * TILE_PX, TILE_PX, TILE_PX,
-            sx, sy, TILE_PX, TILE_PX
-        );
-        return true;
-    }
-
     function _getVisualPos() {
         if (!_player) return { vx: 0, vy: 0 };
         const elapsed = performance.now() - (_player.moveStartTime || 0);
@@ -148,6 +128,70 @@ window.GameRenderer = (function () {
         };
     }
 
+    /** Draw one metatile from a tileset entry at pixel (sx, sy). */
+    function _drawMeta(tsEntry, metatileIdx, sx, sy) {
+        const col = metatileIdx % METATILES_PER_ROW;
+        const row = Math.floor(metatileIdx / METATILES_PER_ROW);
+        ctx.drawImage(
+            tsEntry.img,
+            col * TILE_PX, row * TILE_PX, TILE_PX, TILE_PX,
+            sx, sy, TILE_PX, TILE_PX
+        );
+    }
+
+    /**
+     * Draw the connected/matrix neighbour maps at their world offsets so the
+     * overworld is continuous — walking toward an edge shows the next map
+     * already in place, exactly like the GBA games.
+     */
+    function _drawNeighbors(pxCamX, pxCamY) {
+        const cw = canvas.width, ch = canvas.height;
+
+        // GBA-style connected neighbours (metatile maps or DS-textured maps)
+        const conns = _map.getConnNeighbors ? _map.getConnNeighbors() : [];
+        for (const nb of conns) {
+            const px = nb.ox * TILE_PX - pxCamX;
+            const py = nb.oy * TILE_PX - pxCamY;
+            const pw = nb.w * TILE_PX, ph = nb.h * TILE_PX;
+            if (px > cw || py > ch || px + pw < 0 || py + ph < 0) continue;
+
+            if (nb.background) {
+                // Pre-rendered textured neighbour (Sinnoh/Unova)
+                const img = _getNeighborImg(nb.background);
+                if (img) ctx.drawImage(img, px, py, img.naturalWidth, img.naturalHeight);
+                continue;
+            }
+            const ts = _getTileset(nb.tileset);
+            if (!ts || !nb.layout || !nb.layout.metatiles) continue;
+            // Visible tile range of this neighbour
+            const x0 = Math.max(0, Math.floor((pxCamX - nb.ox * TILE_PX) / TILE_PX));
+            const y0 = Math.max(0, Math.floor((pxCamY - nb.oy * TILE_PX) / TILE_PX));
+            const x1 = Math.min(nb.w - 1, Math.floor((pxCamX + cw - nb.ox * TILE_PX) / TILE_PX) + 1);
+            const y1 = Math.min(nb.h - 1, Math.floor((pxCamY + ch - nb.oy * TILE_PX) / TILE_PX) + 1);
+            const mts = nb.layout.metatiles;
+            for (let ty = y0; ty <= y1; ty++) {
+                const rowBase = ty * nb.w;
+                const sy = (nb.oy + ty) * TILE_PX - pxCamY;
+                for (let tx = x0; tx <= x1; tx++) {
+                    const mi = mts[rowBase + tx];
+                    if (mi === undefined || mi === null) continue;
+                    _drawMeta(ts, mi, (nb.ox + tx) * TILE_PX - pxCamX, sy);
+                }
+            }
+        }
+
+        // Matrix neighbours (Sinnoh/DS seamless overworld, pre-rendered PNGs)
+        const mns = _map.getMatrixNeighbors ? _map.getMatrixNeighbors() : [];
+        for (const nb of mns) {
+            const img = _getNeighborImg(nb.background);
+            if (!img) continue;
+            const px = nb.ox * TILE_PX - pxCamX;
+            const py = nb.oy * TILE_PX - pxCamY;
+            if (px > cw || py > ch || px + img.naturalWidth < 0 || py + img.naturalHeight < 0) continue;
+            ctx.drawImage(img, px, py, img.naturalWidth, img.naturalHeight);
+        }
+    }
+
     function render() {
         if (!canvas || !ctx || !_map || !_camera || !_player) return;
 
@@ -158,23 +202,30 @@ window.GameRenderer = (function () {
 
         const { vx, vy } = _getVisualPos();
 
+        // Camera: centred on the player. On maps that are part of a continuous
+        // world (connections / matrix), never clamp — the neighbour maps fill
+        // the space beyond the edges, exactly like the GBA games. Interior maps
+        // (no neighbours) keep the old clamping behaviour.
         let vcamX = vx - Math.floor(vw / 2);
         let vcamY = vy - Math.floor(vh / 2);
-        if (_map.width  > vw) vcamX = Math.max(0, Math.min(vcamX, _map.width  - vw));
-        else vcamX = 0;
-        if (_map.height > vh) vcamY = Math.max(0, Math.min(vcamY, _map.height - vh));
-        else vcamY = 0;
-
-        const tileStartX = Math.floor(vcamX);
-        const tileStartY = Math.floor(vcamY);
-        const subX = -(vcamX - tileStartX) * TILE_PX;
-        const subY = -(vcamY - tileStartY) * TILE_PX;
-
-        // Kick off tileset load if needed (non-blocking; keeps old image until ready)
-        const wantedTileset = _map.getTilesetName ? _map.getTilesetName() : null;
-        if (wantedTileset && wantedTileset !== _tilesetName && wantedTileset !== _tilesetLoadingName) {
-            loadTileset(wantedTileset);
+        const continuous = _map.hasWorldNeighbors && _map.hasWorldNeighbors();
+        if (!continuous) {
+            if (_map.width  > vw) vcamX = Math.max(0, Math.min(vcamX, _map.width  - vw));
+            else vcamX = 0;
+            if (_map.height > vh) vcamY = Math.max(0, Math.min(vcamY, _map.height - vh));
+            else vcamY = 0;
         }
+
+        // Pixel-quantised camera origin — every draw is at integer pixels so
+        // tiles from different maps butt together without seams.
+        const pxCamX = Math.round(vcamX * TILE_PX);
+        const pxCamY = Math.round(vcamY * TILE_PX);
+
+        // Kick off tileset load if needed (non-blocking; cache keeps all)
+        const wantedTileset = _map.getTilesetName ? _map.getTilesetName() : null;
+        let curTs = _getTileset(wantedTileset);
+        if (curTs) _tsFallback = curTs;
+        else if (_tsFallback) curTs = _tsFallback;   // show last tileset while loading
 
         // Kick off textured-background load if the map has one (DS maps)
         const wantedBg = _map.getBackground ? _map.getBackground() : null;
@@ -182,30 +233,17 @@ window.GameRenderer = (function () {
 
         ctx.fillStyle = COLORS.bg;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.imageSmoothingEnabled = false;
+
+        // Neighbour maps first — the current map draws over them.
+        _drawNeighbors(pxCamX, pxCamY);
 
         // Fast path: draw the pre-rendered textured map (16 px/tile, grid-aligned).
-        // For seamless overworlds, adjacent maps are drawn first at their global
-        // offsets so the world is continuous (no hard transition, Emerald-style);
-        // the current map is drawn on top, its transparent edges letting the
-        // neighbours show through.
         const useBg = _bgImg && wantedBg;
         if (useBg) {
-            ctx.imageSmoothingEnabled = false;
-            const neighbors = _map.getMatrixNeighbors ? _map.getMatrixNeighbors() : null;
-            if (neighbors) {
-                for (const nb of neighbors) {
-                    const img = _getNeighborImg(nb.background);
-                    if (!img) continue;
-                    const dx = (nb.ox - vcamX) * TILE_PX;
-                    const dy = (nb.oy - vcamY) * TILE_PX;
-                    const dw = img.naturalWidth, dh = img.naturalHeight;
-                    if (dx > canvas.width || dy > canvas.height || dx + dw < 0 || dy + dh < 0) continue;
-                    ctx.drawImage(img, dx, dy, dw, dh);
-                }
-            }
             ctx.drawImage(
                 _bgImg,
-                -vcamX * TILE_PX, -vcamY * TILE_PX,
+                -pxCamX, -pxCamY,
                 _bgImg.naturalWidth, _bgImg.naturalHeight
             );
         }
@@ -217,22 +255,29 @@ window.GameRenderer = (function () {
             if (_map.current.signs) _map.current.signs.forEach(s => signSet.add(`${s.x},${s.y}`));
         }
 
-        if (!useBg) for (let ty = -1; ty <= vh; ty++) {
-            for (let tx = -1; tx <= vw; tx++) {
+        const tileStartX = Math.floor(pxCamX / TILE_PX);
+        const tileStartY = Math.floor(pxCamY / TILE_PX);
+
+        if (!useBg) for (let ty = -1; ty <= vh + 1; ty++) {
+            for (let tx = -1; tx <= vw + 1; tx++) {
                 const worldX = tileStartX + tx;
                 const worldY = tileStartY + ty;
-                const sx = tx * TILE_PX + subX;
-                const sy = ty * TILE_PX + subY;
+                const sx = worldX * TILE_PX - pxCamX;
+                const sy = worldY * TILE_PX - pxCamY;
 
                 const metatileIdx = _map.getTile(worldX, worldY);
+                const inBounds = worldX >= 0 && worldY >= 0 && worldX < _map.width && worldY < _map.height;
                 let drawn = false;
-                if (metatileIdx !== null && metatileIdx !== undefined && _tilesetImg) {
-                    drawn = drawMetatile(metatileIdx, sx, sy);
+                if (metatileIdx !== null && metatileIdx !== undefined && curTs) {
+                    _drawMeta(curTs, metatileIdx, sx, sy);
+                    drawn = true;
                 }
-                if (!drawn) {
+                if (!drawn && inBounds) {
                     ctx.fillStyle = _map.isWalkable(worldX, worldY) ? COLORS.walkable : COLORS.impassable;
                     ctx.fillRect(sx, sy, TILE_PX, TILE_PX);
                 }
+                // Out-of-bounds tiles: leave whatever the neighbour pass drew
+                // (or the void colour) — never paint over neighbours.
 
                 if (warpSet.has(`${worldX},${worldY}`)) {
                     ctx.fillStyle = 'rgba(249,168,37,0.45)';
@@ -249,8 +294,8 @@ window.GameRenderer = (function () {
             for (const npc of _map.current.npcs) {
                 if (npc.x < tileStartX - 1 || npc.x > tileStartX + vw + 1) continue;
                 if (npc.y < tileStartY - 1 || npc.y > tileStartY + vh + 1) continue;
-                const sx = (npc.x - tileStartX) * TILE_PX + subX;
-                const sy = (npc.y - tileStartY) * TILE_PX + subY;
+                const sx = npc.x * TILE_PX - pxCamX;
+                const sy = npc.y * TILE_PX - pxCamY;
                 const stem = _gfxToStem(npc.graphics_id);
                 const img  = stem ? _getNpcImg(stem) : null;
                 if (img) {
@@ -267,9 +312,14 @@ window.GameRenderer = (function () {
             }
         }
 
+        // Other players (multiplayer presence layer) — drawn under the local player
+        if (window.GamePresence && GamePresence.drawPlayers) {
+            try { GamePresence.drawPlayers(ctx, pxCamX, pxCamY, TILE_PX); } catch (_) {}
+        }
+
         // Player
-        const playerSX = (vx - vcamX) * TILE_PX;
-        const playerSY = (vy - vcamY) * TILE_PX;
+        const playerSX = Math.round(vx * TILE_PX) - pxCamX;
+        const playerSY = Math.round(vy * TILE_PX) - pxCamY;
         if (_playerImg) {
             const dir = _player.direction || 'down';
             const wf  = _player.walkFrame || 0;
@@ -358,6 +408,9 @@ window.GameRenderer = (function () {
         img.src = 'data/sprites/player.png';
     }
 
+    /** The player sprite sheet (16x32 frames) — shared with the presence layer. */
+    function getPlayerImg() { return _playerImg; }
+
     function init(canvasEl) {
         canvas = canvasEl;
         ctx    = canvas.getContext('2d');
@@ -378,5 +431,5 @@ window.GameRenderer = (function () {
         if (rafId) cancelAnimationFrame(rafId);
     }
 
-    return { init, setScene, stop, render };
+    return { init, setScene, stop, render, getPlayerImg, WALK_FRAMES };
 })();
