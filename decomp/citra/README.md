@@ -115,17 +115,32 @@ and `tools/usum_battle_resolve.py`):
   transient** (pushed by `sub_86e48`, drained same frame). A file-triggered dump
   freezes ~1 frame and always misses it. **Do not chase the queue.**
 
+### GDBSTUB ROUTE TESTED — memory-read only; BP/WP/registers are dead ⚠️
+A follow-up session attached to the prebuilt Citra's RSP gdbstub
+(`--gdbport 24689`, client in `tools/citra_gdb/`) to try catching the dispatch by
+breakpoint/watchpoint. Battle.cro's base was re-confirmed live first (the
+queue-base literal at VA `0x764b54` read back `0x8146e8c` exactly), so addresses
+were correct — yet:
+- **memory read** and **halt-on-interrupt**: work.
+- **register read** (`g`): returns **all zeros** even when halted.
+- **exec breakpoint `Z0`** (`sub_8790c`) and **read-watch `Z3`** (seq table
+  `0x7de5a0`): accepted `OK` but **never fire**.
+
+So you cannot break on the push site, watch the seq-table, or read `r4`(=`work`)
+with this binary. See `tools/citra_gdb/README.md` for the full matrix.
+
 ### What's actually left (redirected)
 The (effectId→seqId) pair does not come from the queue. **effectId is known from
 the chosen move** (`usum_moves.json`); the **seqId persists at `work+0xa94`** for
-the whole move. Finish via either:
-1. **Static:** find the global holding the battle-`work` pointer (in Battle.cro
-   `data`/`bss`, `~0x814xxxx`), read it in-battle, dump `work..work+0xB00` during a
-   move, read u32 @ `work+0xa94`.
-2. **In-process hook (robust, recommended):** extend the patch with a
-   PC-breakpoint dump at the sequence-dispatch site (`table[seqId]` call or the
-   `sub_86e48` push) that snapshots the effectId register + `work+0xa94` — no
-   frame-freeze race.
+the whole move. Two viable finishes (both avoid the dead gdbstub control path):
+1. **Static + halt/memread:** find the global holding the battle-`work` pointer
+   (in Battle.cro `data`/`bss`, `~0x814xxxx`), then launch a move, **interrupt
+   mid-move** (multi-frame — easy to catch, unlike the sub-frame event), read
+   `[work_global]`, deref `+0xa94` = seqId. Uses only the WORKING gdb primitives.
+2. **In-process hook (robust, recommended):** rebuild Citra with a dump at the
+   sequence-dispatch site (`table[seqId]` call or the `sub_86e48` push) that
+   snapshots the effectId register + `work+0xa94` — no frame-freeze race, no
+   reliance on the broken gdbstub control.
 
 Gotchas nailed: default `/tmp/dump_va` window (16 MB) misses data/bss — dump with
 an explicit base (`echo "08140000 00020000" > /tmp/dump_va`); first boot after
