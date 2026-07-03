@@ -29,8 +29,9 @@ EXPECT = {
     16: ("Savedata::PlayTime",         0x8),
     18: ("Savedata::Fashion",          0x1a08),
     21: ("Savedata::JoinFestaDataSave",0x3998),
+    26: ("Savedata::PokeFinderSave",   0xb60),
     27: ("Savedata::MysteryGiftSave",  0x3f50),
-    29: ("Savedata::PokeFinderSave",   0x728),
+    29: ("Savedata::ValidationSave",   0x728),
     37: ("Savedata::BattleFesSave",    0x39c),
 }
 
