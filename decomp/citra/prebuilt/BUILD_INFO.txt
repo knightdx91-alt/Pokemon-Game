@@ -2,3 +2,10 @@ citra SDL frontend, StonedEdge/citra-1 + citra1_build_fixes.patch + live-control
 source commit: a1a511026e713d2de3f55efa0f11447a79afc394
   GNU                  0x00000014	NT_GNU_BUILD_ID (unique build ID bitstring)
     Build ID: 68ad58b28f07ca2ce708f8a226e1f27bbfd1e049
+
+NOTE: this prebuilt binary does NOT include the effect->sequence JIT read-watch
+hook. It has boot + save + input + screenshot + FCRAM/VA dump, and is fine for
+navigation and memory dumps. For the effect->sequence dispatch capture you must
+rebuild from source with decomp/citra/effect_seq_hook.patch (adds the JIT
+read-watch + full-callback mode + the missing scope_acquire_context.h); see
+decomp/citra/README.md. The hook build is ~a few x slower (full-callback JIT).

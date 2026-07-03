@@ -40,7 +40,7 @@ active, verified body of work in THIS repo. Go work on it. Details:**
 - **Resume point + full pipeline:** jump to the **"▶ Pokémon Ultra Moon TRUE
   DECOMP — IN PROGRESS ⏳ (start here to continue)"** section below. It has the
   exact session bootstrap, the `tools/cro_*.py` RE pipeline, and the current
-  open problems (effect→sequence remap, PIC index labelling via Citra trace).
+  open problem (finish reversing effectId→seqId from live traces — see below).
 - **Citra capture pipeline is BUILT, VERIFIED & FAST TO RESUME** — see
   **`decomp/citra/README.md`**. A **prebuilt stripped binary** is committed at
   `decomp/citra/prebuilt/citra` (+ `run_citra.sh` installs SDL2/xvfb/mesa) — **no
@@ -53,10 +53,22 @@ active, verified body of work in THIS repo. Go work on it. Details:**
   route to read Battle.cro `.bss`).
   **LIVE CAPTURE DONE ✅:** captured a real wild battle, carved the two battlemon
   structs, and **CONFIRMED the `BattlePokemon.h` scalar fields** (species/HP/level/
-  ability/moves/stat-stages) — `verify/verify_battlemon_live.py` PASS. That closes
-  one of the two live-gated open items. **Remaining: the effect→sequence remap** —
-  needs a genuine mid-move-execution `/tmp/dump_va` (recipe + resolved Battle.cro/
-  static.crs VA map in `decomp/citra/README.md`).
+  ability/moves/stat-stages) — `verify/verify_battlemon_live.py` PASS.
+- **EFFECT→SEQUENCE DISPATCH — now CAPTURED LIVE ✅ (the last big open item).**
+  The gdbstub route is a dead end (Z0/Z3 watchpoints no-op, registers read zero —
+  matrix in `tools/citra_gdb/README.md`). Instead Citra was **rebuilt with a
+  software read-watchpoint in the JIT read callback** (`config.page_table=nullptr`
+  full-callback mode + a range check in `MemoryRead32`), patch
+  **`decomp/citra/effect_seq_hook.patch`** (standalone — supersedes
+  `citra1_build_fixes.patch` and adds its missing `scope_acquire_context.h`).
+  Arm via `/tmp/hook_arm` = "lo hi" over the seq table (VA `0x7de5a0`,len `0x4c8`);
+  every guest read there is logged to `/tmp/hook_out` → `seqId=(vaddr-0x7de5a0)/8`
+  (analyzer `tools/citra_gdb/hookcap.py`). A move runs a **script** of handlers;
+  Steam Eruption(eff4)=`[6,11,5,4,62,65,22,23,58,28,16,133,143,…]`,
+  Hydro Pump(eff0)=`[6,11,5,4,62,65,22,23,58,28]` (traces in
+  `decomp/battle_effects/seq_dispatch_traces.json`). **Remaining:** non-KO captures
+  across several effectIds (the Lv85 lead one-shots wild mons before the
+  secondary-effect step) to line up the tails and pin each effectId→seqId.
 
 **Bottom line: the user has spent many sessions on this. When they say "work on
 the moon decomp," the correct first action is to run the bootstrap above and
@@ -905,11 +917,19 @@ rodata pointer tables are zero on disk, filled at load (recovered by
 `cro_dataflow.py` (the tool that cracked damage & catch).
 
 ### Rules for the decomp work
-- **▶ RESUME POINT (updated): the Citra capture pipeline is BUILT & VERIFIED —
-  see `decomp/citra/README.md`.** The two remaining open items (the move
-  effect→sequence remap, and the battle-pokemon *scalar* field names) are BOTH
-  gated on a **live-battle RAM image**. That capture path is now working end to
-  end:
+- **▶ RESUME POINT (updated): BOTH live-gated items are now DONE.** The
+  battle-pokemon scalar fields are confirmed (`verify_battlemon_live.py` PASS),
+  and the **effect→sequence dispatch is captured live** via an in-process JIT
+  read-watch hook (see the "EFFECT→SEQUENCE DISPATCH" bullet in the 🌙 header
+  block above, `decomp/battle_effects/EFFECT_DISPATCH.md`, and
+  `decomp/citra/effect_seq_hook.patch`). The gdbstub route was abandoned as a
+  dead end (memory-read only; Z0/Z3/registers non-functional — matrix in
+  `tools/citra_gdb/README.md`). **Only refinement left:** non-KO captures across
+  effectIds to line up the per-move seqId scripts and pin each effectId→seqId
+  (the Lv85 lead one-shots wild mons before the secondary-effect step runs).
+  The historical FCRAM/`usum_effect_remap.py` route below is SUPERSEDED by the
+  hook, but kept for context. The Citra pipeline itself is BUILT & VERIFIED —
+  see `decomp/citra/README.md`:
   - **Citra builds & boots USUM.** `StonedEdge/citra-1` was never actually
     compile-validated ("buildable" = submodules resolve); it needs **5 fork-skew
     fixes** now frozen in **`decomp/citra/citra1_build_fixes.patch`** (GCC-13
@@ -927,14 +947,13 @@ rodata pointer tables are zero on disk, filled at load (recovered by
     cluster). Framebuffer PPM dump is currently **black** (sync-render
     reconciliation renders on the shared core context, not a readable window FBO)
     — not needed; battle state is detectable from memory.
-  - **NEXT (the actual remaining work): the memory-route battle capture.** From
-    the loaded overworld, walk into grass to trigger an encounter, detect
-    "in-battle" from a battle-only FCRAM signature (Battle.cro event-queue /
-    battlemon objects; resolve Battle.cro's relocated base per boot), dump, then
-    feed `/tmp/fcram.bin` to `tools/usum_effect_remap.py` for the
-    effect→sequence remap + battlemon scalar names. Iterative (no visuals — RNG
-    encounters, save-dependent start position). Full plan + key map + save path:
-    `decomp/citra/README.md`.
+  - **NEXT (superseded — done via the hook, not FCRAM):** the effect→sequence
+    dispatch is now read live by the `effect_seq_hook.patch` JIT read-watch (arm
+    `/tmp/hook_arm`, read `/tmp/hook_out`, analyze with `hookcap.py`), and the
+    battlemon scalars were confirmed from a live capture. The only remaining
+    effect→seq work is non-KO captures across effectIds. Full plan + key map +
+    save path + the gdbstub dead-end matrix: `decomp/citra/README.md` and
+    `tools/citra_gdb/README.md`.
   - **Re-run each session:** the Citra tree (`/tmp/citra2`) and the ROM
     extraction are BOTH ephemeral/gitignored — reproduce via clone → `git apply`
     the committed patch → `ninja` (~20 min); the fixes are never re-derived.
@@ -953,10 +972,10 @@ rodata pointer tables are zero on disk, filled at load (recovered by
   runtime-only). **CPU-EMULATION HARNESS: `tools/cro_emu.py`** (Unicorn ARM) —
   loads a `.cro`, replays internal relocations so PIC switch/handler tables
   resolve, stubs imports, runs functions (`emu.call(off,[args])`); `--selftest`
-  PASS; it caught the switch-table off-by-one. Immediate next task: the **move
-  effect-id → sequence-handler dispatch** using `cro_emu.py` (candidate tables
-  rodata+0x7e24/0x98ac; full recipe + the two dispatch approaches are in the
-  `⏩ CHECKPOINT` block of `decomp/README.md`).
+  PASS; it caught the switch-table off-by-one. (NOTE: the **effect-id → sequence
+  handler dispatch** that `cro_emu.py`/blind emulation could not crack is now
+  captured live by `effect_seq_hook.patch` — see the EFFECT→SEQUENCE bullet in
+  the 🌙 header. cro_emu.py remains useful for other PIC dispatch RE.)
 - **Never commit ROM bytes.** `source/3ds/ultramoon/` is gitignored. Only
   commit derived analysis (symbol maps, disasm-derived C++, verified data).
 - **Verify before committing.** Every decompiled formula/table must be checked

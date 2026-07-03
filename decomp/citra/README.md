@@ -2,8 +2,16 @@
 
 The effect→sequence remap and the battle-pokemon *scalar* field names both need a
 **live-battle 3DS RAM image** (static + blind emulation are exhausted). Plan:
-build a 3DS emulator here, run USUM to a battle, dump RAM, feed it to
-`tools/usum_effect_remap.py`.
+build a 3DS emulator here, run USUM to a battle, dump RAM / hook the JIT.
+
+> **▶ CURRENT STATE (both items resolved):** the battlemon scalars are confirmed,
+> and the **effect→sequence dispatch is captured live by an in-process JIT
+> read-watch hook** — build with **`effect_seq_hook.patch`** (below), not the
+> older `citra1_build_fixes.patch`. That standalone patch = the 5 build fixes +
+> the missing `scope_acquire_context.h` (fix #2, which was described but absent
+> from `citra1_build_fixes.patch`) + the hook. See `decomp/battle_effects/
+> EFFECT_DISPATCH.md` for the capture and `tools/citra_gdb/README.md` for why the
+> gdbstub route (Z0/Z3/registers) does NOT work and had to be replaced.
 
 ## STATUS: the build WORKS and boots USUM ✅
 
@@ -24,8 +32,11 @@ Program ID `00040000001B5100` (Ultra Moon USA) and parses the ExHeader. The
 git clone --depth 1 https://github.com/StonedEdge/citra-1 /tmp/citra2
 cd /tmp/citra2 && git submodule update --init --recursive   # 22 submodules incl. dynarmic
 
-# 2. Apply the build fixes (see "What the patch fixes" below)
-git apply /home/user/Pokemon-Game/decomp/citra/citra1_build_fixes.patch
+# 2. Apply the hook patch (standalone: build fixes + scope_acquire_context.h + the
+#    effect→sequence JIT read-watch hook). Use THIS, not citra1_build_fixes.patch.
+git apply /home/user/Pokemon-Game/decomp/citra/effect_seq_hook.patch
+#    (the older citra1_build_fixes.patch is kept for reference but is INCOMPLETE —
+#     it omits the src/core/frontend/scope_acquire_context.h it claims to add.)
 
 # 3. Build deps + configure SDL-only + build
 apt-get update && apt-get install -y build-essential cmake ninja-build pkg-config libsdl2-dev
@@ -129,17 +140,37 @@ were correct — yet:
 So you cannot break on the push site, watch the seq-table, or read `r4`(=`work`)
 with this binary. See `tools/citra_gdb/README.md` for the full matrix.
 
-### What's actually left (redirected)
-The (effectId→seqId) pair does not come from the queue. **effectId is known from
-the chosen move** (`usum_moves.json`); the **seqId persists at `work+0xa94`** for
-the whole move. Two viable finishes (both avoid the dead gdbstub control path):
-1. **Static + halt/memread:** find the global holding the battle-`work` pointer
-   (in Battle.cro `data`/`bss`, `~0x814xxxx`), then launch a move, **interrupt
-   mid-move** (multi-frame — easy to catch, unlike the sub-frame event), read
-   `[work_global]`, deref `+0xa94` = seqId. Uses only the WORKING gdb primitives.
-2. **In-process hook (robust, recommended):** rebuild Citra with a dump at the
-   sequence-dispatch site (`table[seqId]` call or the `sub_86e48` push) that
-   snapshots the effectId register + `work+0xa94` — no frame-freeze race, no
+### RESOLVED — in-process JIT read-watch hook ✅ (`effect_seq_hook.patch`)
+The chosen fix (option 2 below) is BUILT and WORKING. The hook builds the A32 JIT
+with `config.page_table = nullptr` (full-callback mode) and, in `MemoryRead32`,
+records every guest read landing in an armed VA range — set it to the seq-handler
+table and each read gives the dispatched seqId directly. No gdbstub, no frame
+race.
+
+**Usage (in a live battle, at the move menu):**
+```
+# 1. confirm this boot's Battle.cro base / seq-table VA:
+echo "00100000 00F00000" > /tmp/dump_va   # then:
+python3 tools/usum_battle_resolve.py      # -> seq table @ 0x7de5a0 (base 0x6dd180)
+# 2. arm the read-watch over the seq table [0x7de5a0, +0x4c8):
+rm -f /tmp/hook_out; echo "7de5a0 7dea68" > /tmp/hook_arm   # waits -> /tmp/hook_armed
+# 3. execute the move (hold A ~500 ms; emulation is slower in full-callback mode)
+# 4. disarm + analyze:
+: > /tmp/hook_disarm
+python3 tools/citra_gdb/hookcap.py 0x7de5a0    # seqId = (vaddr-0x7de5a0)/8
+```
+Each `/tmp/hook_out` line is `<vaddr> <r0..r15>` (hex). A move runs a *script* of
+handlers; the shared prologue is `[6,11,5,4,62,65,22,23,58,28]` and the
+effect-specific handlers diverge in the tail. Captured traces:
+`decomp/battle_effects/seq_dispatch_traces.json`. **Remaining:** non-KO captures
+across effectIds (the Lv85 lead one-shots wild mons before the secondary-effect
+step) to pin each effectId→seqId.
+
+The two finishes originally considered (kept for the record):
+1. **Static + halt/memread:** find the battle-`work` global, launch a move,
+   interrupt mid-move, deref `[work_global]+0xa94` = seqId. Uses only the working
+   gdb primitives. (Not needed — the hook reads seqId directly from the table.)
+2. **In-process hook (chosen):** the read-watch above — no frame-freeze race, no
    reliance on the broken gdbstub control.
 
 Gotchas nailed: default `/tmp/dump_va` window (16 MB) misses data/bss — dump with

@@ -90,6 +90,17 @@ namespaces, classes, and method signatures — not anonymous `sub_1A2B3C`s.
      at `decomp/battle_effects/move_effect_ids.json`. NOTE: this 0..419 enum is
      NOT a direct index into the ~150 rodata handler table — an intermediate
      effect-enum→sequence-handler mapping is the remaining Phase-1 link.
+     **UPDATE — the live seqId dispatch is now CAPTURED** (see
+     `decomp/battle_effects/EFFECT_DISPATCH.md`): after the gdbstub proved
+     memory-read-only (Z0/Z3 no-ops, registers zero), Citra was rebuilt with a
+     software read-watchpoint in the JIT read callback
+     (`decomp/citra/effect_seq_hook.patch`) that records every guest read of the
+     seq table (VA 0x7de5a0) → `seqId = (vaddr-0x7de5a0)/8`. A move runs a
+     *script* of sequence handlers; e.g. Steam Eruption (effectId 4) =
+     `[6,11,5,4,62,65,22,23,58,28,16,133,143,…]`, Hydro Pump (effectId 0) =
+     `[6,11,5,4,62,65,22,23,58,28]` — shared prologue, effect-specific tail.
+     Traces in `seq_dispatch_traces.json`. Fully reversing effectId→seqId now
+     just needs non-KO captures across effectIds to line up the tails.
      **Move-effect DATA extracted & verified:** inflicted status (byte 8:
      1=par 2=slp 3=frz 4=brn 5=psn 6=confuse) and stat-stage changes (target
      @byte20, stat @21+i, signed stage @24+i, up to 3) now in
@@ -406,6 +417,9 @@ big open Phase-1 link). PROGRESS THIS SESSION (`decomp/battle_effects/EFFECT_DIS
   0x98ac: 272/21; 0x67b8: 100/20; 0x45a0: 84/11). If the index were the effect
   id both counts would be 0 → there is an **intermediate effect-enum → sequence
   index remap** between the event payload and these tables — the open link.
+  *(This remap is now read directly at runtime by the JIT read-watch hook, which
+  logs the live seqId dispatched off the `0x45a0` table per move — see the
+  Effect→sequence status above and `EFFECT_DISPATCH.md`.)*
 - **Remap is a code lookup, not data (two more exhaustive disproofs,
   `usum_effect_dispatch.py --scan`).** No move-record u16 field indexes any
   handler table cleanly; no contiguous byte/u16 array indexed by effectId maps
@@ -442,13 +456,18 @@ now DONE and one of the two items is SOLVED:
   move-record array @0x1fc (id + PP verified vs the in-battle move menu).
   **Disproved** the old 0x1a/0x1b type1/type2 guess (live values aren't type ids).
   `decomp/src/pml/battle/BattlePokemon.h` updated with a `MoveSlot` struct.
-- **⏳ Effect→sequence remap — still open**, needs a *mid-move-execution* capture
-  (the effect object is only live while a move resolves). Manual `dump_now`
-  timing can't reliably hit that ~2-4s window (a wild Lv13 mon also just flees
-  from Lv85). NEXT: add an auto-dump trigger to the emulator keyed to the move
-  executing (e.g. dump when the opponent's curHp@0x10 first drops, or when the
-  event-queue tag-0x1f slot fills), then feed the mid-exec image to
-  `tools/usum_effect_remap.py` `probe_queue()`.
+- **✅ Effect→sequence dispatch — CAPTURED LIVE** (was the "mid-move-execution"
+  problem; the manual `dump_now`/FCRAM route below is superseded). The event-queue
+  tag-0x1f payload turned out to be a **sub-frame transient** external dumps can't
+  catch, so Citra was rebuilt with an **in-process JIT read-watch** on the seq
+  table (`decomp/citra/effect_seq_hook.patch`; arm `/tmp/hook_arm`, read
+  `/tmp/hook_out`, analyze `tools/citra_gdb/hookcap.py`). It reads the dispatched
+  `seqId=(vaddr-0x7de5a0)/8` per frame during a real move. Traces:
+  `decomp/battle_effects/seq_dispatch_traces.json` (Steam Eruption eff4 vs Hydro
+  Pump eff0 — shared prologue `[6,11,5,4,62,65,22,23,58,28]`, effect-specific
+  tail). Remaining: non-KO captures across effectIds to pin each effectId→seqId.
+  (Superseded plan, for the record: auto-dump keyed to the move executing → feed
+  `tools/usum_effect_remap.py` `probe_queue()`.)
 
 **Pipeline is now FAST to resume (no 20-min rebuild, no navigation):**
 - **Prebuilt binary committed** — `decomp/citra/prebuilt/citra` (+ `run_citra.sh`,
@@ -530,29 +549,29 @@ and read the battle-pokemon struct scalars directly from the image → the field
 names in `BattlePokemon.h`. FASTEST alternative to the whole build: user supplies
 a mid-battle `.cst` savestate.
 
-**BETTER for the remap — a targeted (filtered) execution trace.** A full "trace
-everything" is a firehose (billions of insns/battle) and useless; instead patch
-Citra's dynarmic memory callbacks (`src/core/arm/dynarmic/arm_dynarmic.cpp`,
-`MemoryRead*/Write*`) to log ONLY accesses inside a few known watch ranges, then
-correlate the log. FIRST resolve `Battle.cro`'s runtime load base (CROs are
-relocated by the loader — not our emulator's SEG_BASE; get it from the CRO
-manager or by scanning FCRAM for the known 0x45a0 handler-pointer pattern) and
-express every watch address relative to it. No-rebuild alt: GDB stub + `rwatch`
-with a scripted `commands` block.
+**✅ DONE — this is exactly the route that worked.** Rather than a full trace
+firehose, Citra's dynarmic read callback (`src/core/arm/dynarmic/arm_dynarmic.cpp`,
+`MemoryRead32`) now logs ONLY reads inside an armed watch range
+(`decomp/citra/effect_seq_hook.patch`, `config.page_table=nullptr` full-callback
+mode). `Battle.cro`'s runtime base is resolved per boot by
+`tools/usum_battle_resolve.py` (deterministic 0x6dd180 → seq table 0x7de5a0). The
+GDB-stub `rwatch` alternative was tried and **does not work** in this fork
+(watchpoints/breakpoints/registers are no-ops — `tools/citra_gdb/README.md`).
 
-What a filtered trace actually resolves (in priority order):
-1. **Effect→sequence remap (THE open link).** Watch WRITES to the event-queue
-   global `bss+0x394` (tag u16 @+0x04 == 0x1f, payload u32 @+0xc4 = effectId) and
-   READS of the 153-seq table `rodata+0x45a0`; correlate per move → the exact
-   effectId→sequenceId map. Run a battery of moves covering many effect ids.
+What the filtered trace resolves (priority order):
+1. **✅ Effect→sequence dispatch (was THE open link).** The read-watch on the
+   153-seq table `rodata+0x45a0` (VA 0x7de5a0) logs the dispatched seqId per frame
+   during a move → `seqId=(vaddr-0x7de5a0)/8`. (The event-queue tag-0x1f payload is
+   a sub-frame transient and is NOT the read path — effectId is known from the
+   chosen move instead.) Traces captured; **remaining: run more moves covering
+   distinct effectIds with a non-KO setup** to pin each effectId→seqId.
 2. **The 427/444 tables' true index key.** Same technique on `rodata+0x7e24` /
    `+0x98ac` reads reveals what those `{handler,aux}` tables are indexed by
    (still unknown — not effectId).
-3. **Battle-pokemon scalar field NAMES (A remainder).** Watch READ/WRITE on the
-   battle-pokemon object (base = the struct whose +0x0 holds the CoreParam*, per
-   `sub_6188c`); name fields by *when* they change — e.g. the byte written on a
-   stat drop = a stat-stage slot (0x1ea..0x1f0), the u16 written on damage = curHp
-   (0x10), etc. Complements the static init-map already in `BattlePokemon.h`.
+3. **✅ Battle-pokemon scalar field NAMES — DONE.** Confirmed from a live wild-
+   battle capture (`verify/verify_battlemon_live.py` PASS): species/HP/level/
+   ability/moves/stat-stages carved from the two live battlemon structs. See
+   `BattlePokemon.h`.
 4. **Sequence-handler bodies / step-state flow (Phase-1 deep remainder).** Trace
    the step byte `@effectObj+0xa94` transitions per handler to confirm each
    effect's state machine behaviorally.

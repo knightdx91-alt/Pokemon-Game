@@ -1,10 +1,22 @@
-# Citra gdbstub client (for the USUM live-capture route)
+# Citra gdbstub client + seq-dispatch hook analyzer (USUM live-capture route)
+
+> **TL;DR — for the effect→sequence dispatch, DON'T use the gdbstub.** It is
+> memory-read-only in this fork (breakpoints/watchpoints/registers are dead — see
+> the matrix below). The working solution is the **in-process JIT read-watch
+> hook** (`decomp/citra/effect_seq_hook.patch`): arm `/tmp/hook_arm`, read
+> `/tmp/hook_out`, analyze with **`hookcap.py`** (in this dir). Usage +
+> captured traces: `decomp/citra/README.md` / `decomp/battle_effects/
+> EFFECT_DISPATCH.md`. The gdbstub client below is kept because its **memory
+> read + halt** primitives still work and are useful for one-off inspection.
 
 The prebuilt Citra (`decomp/citra/prebuilt/citra`) accepts `--gdbport <n>` and
-exposes the classic Citra RSP gdbstub. These three files are a tiny,
-dependency-free client for driving it from Python, because the stub only accepts
-**one** TCP connection for its whole lifetime (reconnecting fails), so a single
-long-lived owner process is required.
+exposes the classic Citra RSP gdbstub. These files are a tiny, dependency-free
+client for driving it from Python, because the stub only accepts **one** TCP
+connection for its whole lifetime (reconnecting fails), so a single long-lived
+owner process is required.
+
+- `hookcap.py` — analyzer for the JIT read-watch hook's `/tmp/hook_out` (NOT
+  gdb): parses `<vaddr> <r0..r15>` lines into `seqId=(vaddr-seqtbl)/8` traces.
 
 - `rsp.py` — minimal RSP protocol (packets, `m` read, `M`, `g` regs, `Z0/z0`
   breakpoints, `Z2/3/4` watchpoints, Ctrl-C interrupt, continue). `cmd()` drains
