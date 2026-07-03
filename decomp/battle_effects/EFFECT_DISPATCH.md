@@ -20,14 +20,45 @@ a move executes as a **script of sequence handlers**, e.g.
     Hydro Pump     (effectId 0, none): [6,11,5,4,62,65,22,23,58,28]   (KO'd early)
 
 The **common prologue `[6,11,5,4,62,65,22,23,58,28]`** is shared (PP/accuracy/
-damage-calc framework); the effect-specific handling is in the divergent tail
-(Steam Eruption's burn adds the `16,133,143,…` run). Traces in
-`seq_dispatch_traces.json`; analyzer `tools/citra_gdb/hookcap.py`. seqId 6's
-handler = Battle.cro `sub_4b40` (0x6e1cc0).
+damage-calc framework). Traces in `seq_dispatch_traces.json`; analyzer
+`tools/citra_gdb/hookcap.py`. seqId 6's handler = Battle.cro `sub_4b40` (0x6e1cc0).
 
-**Remaining to fully reverse the effectId→seqId remap:** clean, comparable
-captures across several effectIds. The Lv85 lead one-shots wild mons, so
-no-secondary-effect moves end at the faint before the effect step runs — a
+## REFINEMENT (follow-up captures) — 0x45a0 is the MOVE-FLOW, not the effect table
+A later session captured **non-KO** moves (weakened the lead to Lv1 via the new
+file-poke `/tmp/poke`; see `effect_seq_hook.patch`) and **widened the watch to a
+broad rodata span `[0x7de000,0x7e4800)`** covering all four EFFECT_DISPATCH
+candidate tables (`0x45a0`/`0x67b8`/`0x7e24`/`0x98ac`). Result (in
+`seq_dispatch_traces.json` → `broad_table_watch`):
+
+- **`0x45a0` is the shared MOVE-FLOW sequencer, NOT indexed by effectId.** Its
+  core `[6,11,5,4,62,65,22,23,58,28]` runs for *every* damaging move; the earlier
+  "burn adds 16,133,143,…" tail was actually the **faint/exp/level-up** flow (it
+  appears on any KO and vanishes when the target survives), not the burn effect.
+  Only tiny move-to-move variation remains (Steam eff4 → 15,16; Hydro eff0 →
+  18,19) — unattributed to the effect.
+- **The larger tables are touched only SPARSELY and inconsistently:** Steam eff4
+  read `0x7e24[339]` once; Hydro eff0 read `0x67b8[399]` once — different tables,
+  single reads, large indices unrelated to the effectId (4/0). No clean
+  effectId→index mapping (matches the earlier static disproof).
+
+**Conclusion:** the `effectId→seqId` "remap" is very likely **not a clean
+single-table lookup at all.** The move effect appears to be applied **data-driven
+inside the shared move-flow handlers**, consuming the move-effect DATA that is
+**already fully extracted** (`data/pokemon/usum_moves.json`:
+effectId/status/statChanges/flags/weather). If so, the effect layer is already
+complete and the "remap" was chasing a mechanism that does not exist as posited.
+
+**To make this airtight** would need a controlled harness the headless emulator
+made impractical here (reliable scripted input, a **guaranteed-proc** effect move
+— Steam Eruption's burn is only 30% — and a survivor), to confirm no distinct
+effect-handler is dispatched. Practical blockers hit: input taps intermittently
+fail to confirm the move; poked wild HP is restored to canonical each turn (poke
+the *attacker's* Lv instead); moves auto-fire on the reopened move menu.
+
+---
+(Historical note — the pre-refinement text below treated the KO tail as the
+effect; it is superseded by the finding above.) The Lv85 lead one-shots wild
+mons, so no-secondary-effect moves end at the faint before the effect step —  a
 non-KO setup (weak move / edited weak lead / tanky target) is needed to line up
 the tails and isolate each effect's dedicated seqId. The capture rig is proven.
 

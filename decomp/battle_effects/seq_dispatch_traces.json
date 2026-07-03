@@ -64,5 +64,59 @@
     23,
     58,
     28
-  ]
+  ],
+  "broad_table_watch": {
+    "_note": "Watched a broad rodata span [0x7de000,0x7e4800) covering all four EFFECT_DISPATCH candidate tables (0x45a0/0x67b8/0x7e24/0x98ac) during move execution. FINDING: 0x45a0 is the shared MOVE-FLOW sequencer (core [6,11,5,4,62,65,22,23,58,28] runs for every damaging move, minor move-specific variation), NOT indexed by effectId. The larger tables (0x67b8/0x7e24/0x98ac) are touched only SPARSELY (single reads) at inconsistent large indices that differ by move/state (Steam eff4 -> 0x7e24[339]; Hydro eff0 -> 0x67b8[399]) -- NO clean effectId->index mapping. Consistent with the earlier static disproof. Conclusion: the effectId->seqId 'remap' is NOT a clean single-table lookup; the move effect is applied data-driven within the shared move-flow handlers, consuming the already-extracted move-effect DATA (usum_moves.json status/statChanges/flags/effectId).",
+    "steam_eruption_eff4": {
+      "reads": 418,
+      "other_rodata_reads": 373,
+      "0x45a0": [
+        4,
+        5,
+        6,
+        11,
+        15,
+        16,
+        21,
+        22,
+        23,
+        27,
+        28,
+        57,
+        58,
+        62,
+        65
+      ],
+      "0x7e24": [
+        339
+      ]
+    },
+    "hydro_pump_eff0": {
+      "reads": 449,
+      "other_rodata_reads": 398,
+      "0x45a0": [
+        4,
+        5,
+        6,
+        11,
+        18,
+        19,
+        21,
+        22,
+        23,
+        27,
+        28,
+        57,
+        58,
+        62,
+        65,
+        132,
+        133,
+        143
+      ],
+      "0x67b8": [
+        399
+      ]
+    }
+  }
 }

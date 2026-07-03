@@ -20,10 +20,10 @@ index a9b0b3e..b55d79c 100644
      Core::Movie::GetInstance().Shutdown();
      if (system.VideoDumper().IsDumping()) {
 diff --git a/src/citra/emu_window/emu_window_sdl2.cpp b/src/citra/emu_window/emu_window_sdl2.cpp
-index ef53b3d..c85c8f2 100644
+index ef53b3d..f27ccfa 100644
 --- a/src/citra/emu_window/emu_window_sdl2.cpp
 +++ b/src/citra/emu_window/emu_window_sdl2.cpp
-@@ -3,8 +3,12 @@
+@@ -3,8 +3,13 @@
  // Refer to the license.txt file included.
  
  #include <algorithm>
@@ -31,12 +31,13 @@ index ef53b3d..c85c8f2 100644
 +#include <cstdio>
  #include <cstdlib>
 +#include <fstream>
++#include <sstream>
  #include <string>
 +#include <vector>
  #define SDL_MAIN_HANDLED
  #include <SDL.h>
  #include <fmt/format.h>
-@@ -14,6 +18,9 @@
+@@ -14,6 +19,9 @@
  #include "common/scm_rev.h"
  #include "core/3ds.h"
  #include "core/core.h"
@@ -46,7 +47,7 @@ index ef53b3d..c85c8f2 100644
  #include "core/settings.h"
  #include "input_common/keyboard.h"
  #include "input_common/main.h"
-@@ -222,14 +229,270 @@ std::unique_ptr<Frontend::GraphicsContext> EmuWindow_SDL2::CreateSharedContext()
+@@ -222,14 +230,316 @@ std::unique_ptr<Frontend::GraphicsContext> EmuWindow_SDL2::CreateSharedContext()
      return std::make_unique<SharedContext_SDL2>();
  }
  
@@ -83,7 +84,8 @@ index ef53b3d..c85c8f2 100644
 +    int dn, sc;
 +    while (in >> fr >> dn >> sc) {
 +        ap_events.push_back({fr, dn, sc});
-+    }
+     }
+-    SDL_GL_MakeCurrent(render_window, nullptr);
 +}
 +
 +void ApTick(long frame) {
@@ -169,6 +171,51 @@ index ef53b3d..c85c8f2 100644
 +    }
 +}
 +
++// decomp research: file-based guest-memory poke (write). /tmp/poke holds one or
++// more lines "<hexaddr> <hexval> <size>" (size = 1/2/4 bytes; default 2). Applied
++// once then the file is removed; writes /tmp/poke.done. Used to weaken the lead
++// (battlemon level @+0x18 = 1) so wild mons survive a hit and the secondary-effect
++// sequence actually runs for the effect->seq capture.
++void ApMaybePoke() {
++    std::ifstream trig("/tmp/poke");
++    if (!trig) {
++        return;
++    }
++    std::string all((std::istreambuf_iterator<char>(trig)), std::istreambuf_iterator<char>());
++    trig.close();
++    std::remove("/tmp/poke");
++    auto& sys = Core::System::GetInstance();
++    if (!sys.IsPoweredOn()) {
++        return;
++    }
++    auto proc = sys.Kernel().GetCurrentProcess();
++    if (!proc) {
++        return;
++    }
++    std::istringstream in(all);
++    std::string line;
++    int n = 0;
++    while (std::getline(in, line)) {
++        unsigned long addr = 0, val = 0, size = 2;
++        if (std::sscanf(line.c_str(), "%lx %lx %lx", &addr, &val, &size) < 2) {
++            continue;
++        }
++        auto& mem = sys.Memory();
++        if (size == 1) {
++            mem.Write8(static_cast<u32>(addr), static_cast<u8>(val));
++        } else if (size == 4) {
++            mem.Write32(static_cast<u32>(addr), static_cast<u32>(val));
++        } else {
++            mem.Write16(static_cast<u32>(addr), static_cast<u16>(val));
++        }
++        ++n;
++    }
++    if (std::FILE* d = std::fopen("/tmp/poke.done", "wb")) {
++        std::fprintf(d, "%d\n", n);
++        std::fclose(d);
++    }
++}
++
 +// decomp research: arm/disarm the JIT read-watch (see arm_dynarmic.cpp).
 +// /tmp/hook_arm contains "lo hi" (hex VA range); /tmp/hook_disarm clears it.
 +void ApMaybeHook() {
@@ -191,8 +238,7 @@ index ef53b3d..c85c8f2 100644
 +        std::remove("/tmp/hook_disarm");
 +        g_hook_lo.store(0);
 +        g_hook_hi.store(0);
-     }
--    SDL_GL_MakeCurrent(render_window, nullptr);
++    }
 +}
 +
 +// Save/load Citra save states via trigger files, so a driver can checkpoint
@@ -313,6 +359,7 @@ index ef53b3d..c85c8f2 100644
 +        ApLiveInput();
 +        ApLiveShot(render_window);
 +        ApMaybeHook();
++        ApMaybePoke();
 +        ApMaybeState();
 +        ApMaybeDumpFcram();
 +        ApMaybeDumpVa();
@@ -324,7 +371,7 @@ index ef53b3d..c85c8f2 100644
  }
  
  void EmuWindow_SDL2::PollEvents() {
-@@ -309,11 +572,16 @@ bool EmuWindow_SDL2::NeedsClearing() const {
+@@ -309,11 +619,16 @@ bool EmuWindow_SDL2::NeedsClearing() const {
  void EmuWindow_SDL2::SetupFramebuffer() {}
  
  void EmuWindow_SDL2::MakeCurrent() {
