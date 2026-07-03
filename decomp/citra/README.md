@@ -75,16 +75,26 @@ gated by env `CITRA_AUTOPILOT=1` (no effect otherwise):
   `gfl2`/`Field` module strings (e.g. Battle.cro CRO0 header ~`0x73a4080` in one
   run; **CROs are relocated, so resolve the base per-boot, don't hardcode**).
 - **Framebuffer PPM** — `/tmp/frames/f*.ppm` every `CITRA_SHOT_EVERY` frames.
-  KNOWN LIMITATION: currently dumps **black** — the sync-render reconciliation
-  (fix #4) renders on the shared *core* context (hidden `dummy_window`) and no
-  longer blits to a framebuffer `glReadPixels` can read. Fixing needs either a
-  proper blit-to-`render_window`, or reading the renderer's screen textures
-  directly. **Not needed for the RAM route** — battle state is detectable from
-  memory (below).
+  WORKS (fix #6): the earlier black frames were because `EmuWindow_SDL2::MakeCurrent`
+  bound the 0×0 hidden shared `core_context`, so the renderer's final
+  `DrawScreens` (renderer_opengl.cpp ~L263) composed to a 0×0 FBO. Fix #6 makes
+  `MakeCurrent` bind the real `window_context` (400×480 `render_window`); the
+  frame now lands where `glReadPixels` reads it. VERIFIED: the USUM title screen
+  and the loaded save's overworld render correctly. This gives a full see→act
+  navigation loop (drive input, screenshot, read state, repeat).
+- **Save states** (fix: `ApMaybeState`) — `/tmp/save_state` → `SaveState(1)`,
+  `/tmp/load_state` → `LoadState(1)` (`~/.local/share/citra-emu/states/
+  00040000001B5100.01.cst`). Lets a driver checkpoint after the slow boot+load
+  (~80s) and cheaply branch navigation (~24s resume). VERIFIED: save at the
+  Pokémon-Center PC, resume returns to the exact spot.
 
 Save install: the user's decrypted USUM `main` save (0x6CC00 = 445440 bytes)
 goes at `~/.local/share/citra-emu/sdmc/Nintendo 3DS/<0*32>/<0*32>/title/00040000/001b5100/data/00000001/main`.
-Citra boots it with NO keys (decrypted-exheader → force no crypto).
+Citra boots it with NO keys (decrypted-exheader → force no crypto). The loaded
+save (OT "Lylliana") starts standing at a **Pokémon-Center PC** — reaching a
+wild battle is an overworld navigation grind (exit building → route grass →
+walk until an RNG encounter → FIGHT + pick a move), done via the see→act loop
+with save-state checkpoints between steps.
 
 ## NEXT: capture the mid-battle RAM image
 

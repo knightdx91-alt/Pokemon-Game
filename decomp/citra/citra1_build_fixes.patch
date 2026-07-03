@@ -20,7 +20,7 @@ index a9b0b3e..b55d79c 100644
      Core::Movie::GetInstance().Shutdown();
      if (system.VideoDumper().IsDumping()) {
 diff --git a/src/citra/emu_window/emu_window_sdl2.cpp b/src/citra/emu_window/emu_window_sdl2.cpp
-index ef53b3d..64af572 100644
+index ef53b3d..8d80e89 100644
 --- a/src/citra/emu_window/emu_window_sdl2.cpp
 +++ b/src/citra/emu_window/emu_window_sdl2.cpp
 @@ -3,8 +3,11 @@
@@ -43,7 +43,7 @@ index ef53b3d..64af572 100644
  #include "core/settings.h"
  #include "input_common/keyboard.h"
  #include "input_common/main.h"
-@@ -222,14 +226,118 @@ std::unique_ptr<Frontend::GraphicsContext> EmuWindow_SDL2::CreateSharedContext()
+@@ -222,14 +226,145 @@ std::unique_ptr<Frontend::GraphicsContext> EmuWindow_SDL2::CreateSharedContext()
      return std::make_unique<SharedContext_SDL2>();
  }
  
@@ -119,6 +119,33 @@ index ef53b3d..64af572 100644
 +    std::FILE* done = std::fopen("/tmp/fcram.done", "wb");
 +    if (done) {
 +        std::fclose(done);
+     }
+-    SDL_GL_MakeCurrent(render_window, nullptr);
++}
++
++// Save/load Citra save states via trigger files, so a driver can checkpoint
++// after the slow boot+load and cheaply branch navigation attempts.
++// /tmp/save_state -> SaveState(1); /tmp/load_state -> LoadState(1). Runs on the
++// emu thread (synchronous renderer), i.e. between frames.
++void ApMaybeState() {
++    if (!Core::System::GetInstance().IsPoweredOn()) {
++        return;
++    }
++    if (std::FILE* t = std::fopen("/tmp/save_state", "rb")) {
++        std::fclose(t);
++        std::remove("/tmp/save_state");
++        Core::System::GetInstance().SaveState(1);
++        if (std::FILE* d = std::fopen("/tmp/save_state.done", "wb")) {
++            std::fclose(d);
++        }
++    }
++    if (std::FILE* t = std::fopen("/tmp/load_state", "rb")) {
++        std::fclose(t);
++        std::remove("/tmp/load_state");
++        Core::System::GetInstance().LoadState(1);
++        if (std::FILE* d = std::fopen("/tmp/load_state.done", "wb")) {
++            std::fclose(d);
++        }
 +    }
 +}
 +
@@ -159,16 +186,35 @@ index ef53b3d..64af572 100644
 +        }();
 +        ++ap_frame;
 +        ApTick(ap_frame);
++        ApMaybeState();
 +        ApMaybeDumpFcram();
 +        if (ap_frame % shot_every == 0) {
 +            ApDumpFrame(render_window, ap_frame);
 +        }
-     }
--    SDL_GL_MakeCurrent(render_window, nullptr);
++    }
 +    SDL_GL_SwapWindow(render_window);
  }
  
  void EmuWindow_SDL2::PollEvents() {
+@@ -309,11 +444,16 @@ bool EmuWindow_SDL2::NeedsClearing() const {
+ void EmuWindow_SDL2::SetupFramebuffer() {}
+ 
+ void EmuWindow_SDL2::MakeCurrent() {
+-    core_context->MakeCurrent();
++    // Bind the REAL window context (render_window, 400x480), not the 0x0 hidden
++    // shared context. The synchronous renderer composes the screens to FBO 0 of
++    // the current context (renderer_opengl DrawScreens), so this is what makes the
++    // frame land in a framebuffer glReadPixels can capture (headless screenshots).
++    // window_context and core_context are shared, so GL objects stay valid.
++    SDL_GL_MakeCurrent(render_window, window_context);
+ }
+ 
+ void EmuWindow_SDL2::DoneCurrent() {
+-    core_context->DoneCurrent();
++    SDL_GL_MakeCurrent(render_window, nullptr);
+ }
+ 
+ void EmuWindow_SDL2::OnMinimalClientAreaChangeRequest(std::pair<u32, u32> minimal_size) {
 diff --git a/src/citra/emu_window/emu_window_sdl2.h b/src/citra/emu_window/emu_window_sdl2.h
 index b276311..8ad01fc 100644
 --- a/src/citra/emu_window/emu_window_sdl2.h
