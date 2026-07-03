@@ -1,12 +1,17 @@
 # Open-World Multiplayer Pokémon — Game Plan
 
-**Vision:** An "Old School RuneScape, but Pokémon" — a persistent, seamless,
-multiplayer top-down world spanning all 7 regions. Click/tap-to-walk movement
-(RS-style) with the current on-screen controls kept as an option. See other
-players in real time. Walk region-to-region with no map transitions. Gyms and
-Elite 4 in every region that players can *hold* as positions. Trading. Browser
-first, Android/APK later. Visual + UI language of Pokémon Platinum (DS dual-screen
-feel) over a 2D top-down world.
+**Vision:** An "Old School RuneScape, but Pokémon" — a seamless top-down world
+spanning all 7 regions, with **every graphic faithful to Pokémon Platinum** (DS
+dual-screen, all menus, all battles). Click/tap-to-walk movement (RS-style) with
+the current on-screen controls kept as an option. Walk region-to-region with no map
+transitions. Gyms and Elite 4 in every region that players can *hold* as positions.
+Trading. Browser first, Android/APK later.
+
+**Build order (per the user):** get the **single-player game working exactly the
+way I want it first** — seamless world, Platinum-faithful UI, battles, the full
+game loop. **Multiplayer (seeing other players, trading, gym-holding) comes LAST**,
+after everything else works. The server sections below are real and necessary, but
+they are the FINAL phase, not the first.
 
 **Status of assets:** Regions 1–4 (Kanto, Hoenn, Johto, Sinnoh) have map data in
 the repo today. Regions 5–7 (Unova, Kalos, Alola) come later — Unova is partially
@@ -14,12 +19,15 @@ reverse-engineered (see CLAUDE.md), Kalos/Alola need 3DS extraction.
 
 ---
 
-## The one decision everything hangs on: the server
+## The multiplayer server (LAST phase — documented here, built last)
 
-The repo today is **100% client-side** (localStorage saves, no backend). Every
-headline feature you want — seeing other players, trading, holding a gym,
-"screenshotted" static opponents — is **impossible without an authoritative
-server + database.** So the architecture, not the art, is the real Phase 1.
+The repo today is **100% client-side** (localStorage saves, no backend). The
+multiplayer features — seeing other players, trading, holding a gym,
+"screenshotted" static opponents — are **impossible without an authoritative
+server + database.** Per the build order, this is deferred to the final phase; it's
+documented here so the earlier single-player architecture doesn't paint us into a
+corner (e.g. keep movement tile-locked and state serializable so it ports cleanly
+to server authority later).
 
 **Authoritative-server model (the OSRS model, and the right one here):**
 - The server owns truth: player positions, world state, gym holders, trades.
@@ -107,65 +115,161 @@ Server-side persistent world roles. Design as you described:
 
 ---
 
-## UI direction (per your call): menus = RPG card, everything else = Platinum
-- **Menus:** match the **Pokémon RPG card** look (the EE dark-theme GBA window
-  system already built in `src/ui/startmenu.js` + sub-menus). Keep that — it's the
-  menu style you want.
-- **Battle scenes, battle backgrounds, healthboxes, dialogue, HUD framing:**
-  **Pokémon Platinum.** Re-skin `src/engine/battle.js` (DOM battle UI) and the
-  battle overlay to Platinum's DS look — dual-screen framing, Platinum healthboxes,
-  Platinum battle backdrops/terrain, Platinum message window. Art source:
-  `source/pokeplatinum` (pret) + the Sinnoh textured renders already in the repo.
-- "Both screens": emulate Platinum's dual-screen layout (main view + bottom
-  status/menu screen) as the frame around the 2D top-down world and battles.
-- True DS **3D overworld** rendering for all regions stays a **stretch goal** —
-  regions 1–3 are 2D-native with no 3D models. The 2D top-down world wears a
-  Platinum *skin*, it isn't re-rendered in 3D.
+## UI direction: EVERY graphic is Pokémon Platinum
+
+**Hard rule: ALL graphics — every menu, every screen, every window frame, the HUD,
+battles, dialogue — match Pokémon Platinum.** The current RPG-card / EE menu style
+is replaced, not kept. "Both screens" = emulate Platinum's DS dual-screen layout
+(top view + bottom touch screen) as the frame around the 2D world and every menu.
+
+- **Art source:** `source/pokeplatinum` (pret decomp) graphics/palettes/tilemaps +
+  the Sinnoh textured renders already in the repo.
+- True DS **3D overworld** rendering stays a **stretch goal** — regions 1–3 are
+  2D-native with no 3D models. The 2D top-down world wears a Platinum *skin*; the
+  UI/menus/battles are pixel-faithful Platinum.
+
+### Verification: headless DS pass (deferred — needs ROM + emulator)
+Every screen below must be **visually matched against the real game**. That
+requires a session with (a) a Platinum ROM or a built pokeplatinum ROM, and (b) a
+DS emulator (melonDS/DeSmuME headless). **Neither is available in the current
+session** — egress is repo-scoped (`codeload.github.com` 403 on pret), no ROM
+(only `pokemon-black.nds`), no emulator installed. Bootstrap for a capable session:
+1. Get the source: `curl -L codeload.github.com/pret/pokeplatinum/tar.gz/main`
+   (when egress allows) → build the ROM, OR use a user-supplied Platinum `.nds`.
+2. Install melonDS (headless/SDL) or DeSmuME-cli.
+3. Script inputs + save states to navigate to each screen; screenshot each;
+   diff against the reimplementation.
+
+### FULL Platinum screen/menu inventory (the "ALL PLATINUM" checklist)
+
+**System frame & HUD**
+- DS dual-screen frame (top render screen + bottom touch screen)
+- Overworld HUD; Pokétch always-on bottom-screen app frame
+- Window/message frame styles (Options "Frame" 1–20)
+
+**Start (X) menu**
+- Pokédex · Pokémon (party) · Bag · Trainer Card ([PLAYER]) · Save · Options
+
+**Pokédex**
+- National/Regional list view · detail (info/area map/cry/size) · form switch ·
+  search & sort (A–Z, heaviest, tallest, type…)
+
+**Party (Pokémon) menu**
+- Party list · per-mon action menu (Summary / Switch / Item Give-Take-Check /
+  field move) · field-move (HM) menu
+
+**Summary (all pages)**
+- Info / Trainer Memo · Skills+Stats (6 stats, ability, held item) · Moves list
+  (PP) · Move detail (power/acc/desc) · Ribbons · Contest condition (Cool/Beauty/
+  Cute/Smart/Tough + sheen) · Markings editor
+
+**Bag (all pockets)**
+- Items · Medicine · Poké Balls · TMs & HMs · Berries · Mail · Battle Items ·
+  Key Items · use/give/toss · quantity selector · registration
+
+**Battle UI (full)**
+- Command menu (Fight/Bag/Pokémon/Run) · move select (type + PP box) · target
+  select (doubles) · both healthboxes + EXP bar + status · in-battle party switch ·
+  in-battle bag · catch/throw sequence · level-up stat window · learn/forget move ·
+  message + Yes/No box
+
+**PC / Pokémon Storage System (Bill's PC)**
+- Box grid (30) · box list · wallpaper picker · box naming · Move mode · Item mode ·
+  Deposit / Withdraw · summary-from-box · release confirm
+
+**Trainer Card** — front (name/ID/money/dex/time/badges) · back (signature/records)
+
+**Options** — Text Speed · Battle Scene · Battle Style · Sound (mono/stereo) ·
+Button Mode · Frame
+
+**Save** — save prompt · overwrite-existing prompt · saving animation
+
+**Text-entry (keyboard)** — player name · Pokémon nickname · box name
+
+**Shops & services** — Poké Mart buy/sell + quantity + confirm · Poké Center nurse/
+heal · PC access menu
+
+**Dialogue & choice boxes** — overworld message window · Yes/No · multi-choice
+list · price/quantity spinner
+
+**Pokétch (25 apps)** — Digital Watch, Calculator, Memo Pad, Pedometer, Pokémon
+List, Dowsing Machine, Berry Searcher, Day-Care Checker, Pokémon History, Counter,
+Analog Watch, Marking Map, Link Searcher, Coin Toss, Move Tester, Calendar, Dot
+Artist, Roulette, Trainer Counter, Kitchen Timer, Color Changer, Matchup Checker,
+Stopwatch, Alarm Clock
+
+**Town Map / Fly** — region map · Fly destination select
+
+**Sinnoh Underground** — dig view · Secret Base editor · goods menu · flag/capture-
+the-flag UI
+
+**Super Contests** — entry · Visual · Dance · Acting (move appeal) · Poffin case /
+Poffin cooking
+
+**Link / online (later, with multiplayer)** — Union Room · trade screen · GTS ·
+Wi-Fi Club · Voice Chat frame
+
+**Misc field UI** — Poké Radar · VS Seeker · Honey tree · Berry planting/growth ·
+Amity Square · Day-Care · Battle Tower/Frontier menus
+
+> Each entry is a build-and-verify unit: reimplement in the engine, then match it
+> against the headless-DS screenshot in the deferred verification pass.
 
 ---
 
 # PHASES
 
-### Phase 0 — Foundation & prototype (client-only, no server yet)
-- A* pathfinding + tap-to-walk on the current engine, D-pad kept as option.
+Single-player first, fully the way you want it. Multiplayer is the **last** phase.
+
+### Phase 0 — Movement & world foundation (client-only)
+- A* pathfinding + tap-to-walk on the current engine (RS feel); D-pad kept as option.
 - **Seamless movement is already built** (`seamlessConnectionStep` /
   `seamlessMatrixStep`) — extend prefetch from single-neighbor to a ring so fast
   movement can't outrun it; verify no black screens across a whole region.
 - Player sprite rendering on canvas (currently a placeholder).
-- Reuse the **Crater overlay pattern** (`overworld.js drawOverlay`) as the render
-  hook that other players will later plug into.
-- **Exit criteria:** walk seamlessly across a whole region, tap-to-move, no black
-  screens.
+- Keep movement tile-locked + state serializable (so multiplayer ports cleanly later).
+- **Exit:** walk seamlessly across a whole region, tap-to-move, no black screens.
 
-### Phase 1 — Server & real-time multiplayer (the big one)
-- Stand up authoritative server (Colyseus recommended) + DB + accounts.
-- Move position/facing to server; render other players in the same zone in real
-  time with interpolation.
-- Server-side chunk/interest management (only send nearby players).
-- **Exit criteria:** two devices see each other walking around one region live.
+### Phase 1 — Platinum UI conversion (the big art/UI phase)
+- Build the **DS dual-screen frame** (top + bottom touch screen).
+- Reskin/reimplement **every screen in the inventory above** to pixel-faithful
+  Platinum: Start menu, Bag, Party, Summary (all pages), Pokédex, Trainer Card,
+  Options, Save, PC/Box, dialogue/choice boxes, text-entry keyboard, shops.
+- **Deferred headless-DS verification pass:** with a ROM + emulator, screenshot
+  each real Platinum screen and diff against the reimplementation.
+- **Exit:** every menu matches Platinum, verified against the real game.
 
-### Phase 2 — Persistence & core loop
-- Server-side saves: party, box, inventory, dex, position, money.
-- Wild encounters, PvE battles (wild + NPC) using existing battle logic.
-- **Exit criteria:** log in on any device, resume your persistent character.
+### Phase 2 — Core single-player game loop
+- Player party/party menu wired to real data; wild encounters on grass/cave tiles.
+- **Battle system, fully Platinum** — reskin `src/engine/battle.js`: command menu,
+  move select, healthboxes + EXP bar, catch sequence, level-up/learn-move,
+  in-battle bag/switch. Reuse the verified damage/type/catch/AI logic (`decomp/`).
+- NPCs + dialogue (Platinum message window), trainer battles.
+- Server-independent saves stay in localStorage for now (structured to port later).
+- **Exit:** start → catch → battle → gyms, a complete single-player loop.
 
-### Phase 3 — PvP, trading, gym/E4 holder system
-- Server-authoritative PvP battles.
-- Two-phase trading.
-- Gym/E4/Champion slots with team snapshotting, challenge, replace, relinquish.
-- **Exit criteria:** hold a gym, get challenged/replaced while offline; trade.
-
-### Phase 4 — Full world & Platinum UI polish
+### Phase 3 — Full world & content
 - All available regions (1–4) streamed into one seamless world + inter-region
-  land/sea bridges.
-- Platinum-style dual-screen HUD, menus, battle framing.
-- Audio, NPCs/dialogue, region-spanning progression.
+  land/sea bridges. Gyms + Elite 4 as single-player content in every region.
+- Pokétch apps, Town Map/Fly, Underground, Super Contests as scope allows.
+- Audio (Platinum-style), region-spanning progression.
+- **Exit:** the full single-player game, all four regions, working the way you want.
 
-### Phase 5 — Scale & port
-- Zone sharding / multiple server processes as population grows.
-- Android: wrap the optimized PWA in Capacitor/TWA for an APK (works because it's
-  already mobile-web-optimized). Keep the web build as source of truth.
+### Phase 4 — Android/port
+- Wrap the optimized PWA in Capacitor/TWA for an APK (already mobile-web-optimized).
+  Keep the web build as source of truth.
 - Add regions 5–7 as their assets land (Unova RE, Kalos/Alola 3DS extraction).
+
+### Phase 5 — Multiplayer (LAST — only after everything above works)
+- Stand up authoritative server (Colyseus recommended) + DB + accounts; migrate
+  saves server-side.
+- Render other players in the same zone in real time (reuse the Crater
+  `drawOverlay` hook); server-side interest management.
+- Server-authoritative PvP battles; two-phase trading.
+- **Gym/E4/Champion holder system:** slots with team snapshotting ("screenshot"),
+  challenge, replace (displaced holder → "taking a break"), walk-to-relinquish.
+- Scale: zone sharding as population grows.
+- **Exit:** see other players live, trade, hold/lose a gym.
 
 ---
 
