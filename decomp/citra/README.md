@@ -131,3 +131,39 @@ Then per README "MEMORY-CAPTURE ROUTE": correlate writes to event-queue global
 effect→sequence remap; read the battle-pokemon struct scalars directly → the
 `BattlePokemon.h` field names. **First resolve `Battle.cro`'s runtime load base**
 (CROs are relocated) and express every watch address relative to it.
+
+## VA-space dump (added) — the correct route for the effect→sequence remap
+
+A physical FCRAM dump (`/tmp/dump_now`) is scattered by the MMU: you can find a
+CRO's `.text` by matching code bytes, but `.bss` (zero-init, where the effect
+event-queue at `bss+0x394` lives) can't be located by offset. So the patch adds a
+**virtual-address dump**:
+
+- **Trigger:** write `"<hexbase> <hexsize>"` to **`/tmp/dump_va`** (default
+  `100000 f00000`). The frontend reads that VA range from the running app process
+  (`Kernel().GetCurrentProcess()` + `Memory().ReadBlock`) → **`/tmp/va.bin`**
+  (VA-contiguous, VA = base + offset) + `/tmp/va.meta` + `/tmp/va.done`.
+- It's small/fast (~15 MB, ~0.2 s) so it can be fired repeatedly — BUT each dump
+  blocks a SwapBuffers frame, so a tight burst **freezes the game**. To catch a
+  move mid-execution: confirm the move, let it run ~0.4 s (dispatch happens early),
+  THEN take a single dump (or a short burst that freezes it mid-animation).
+
+**What's resolved in a VA dump (in-battle):**
+- `|static|` (static.crs) header CRO0 @ **VA 0x8b2000**; segs: text@0x100000
+  (0x4b99f8), rodata@0x5ba000, data@0x667000, bss@0x6d4000(size 0).
+- **Battle.cro** loads right after static.crs — its `.text` sits at **VA ~0x6de000**
+  (found by matching `source/3ds/ultramoon/romfs/Battle.cro` disk seg0 bytes; its
+  own CRO0 magic is consumed by the loader, so locate it by content, then its
+  header is `text_va - 0x180`, seg table at `header+0xC8`). rodata (holds the
+  `0x45a0` 153-seq table) and bss (event queue `+0x394`, work/step-state `+0xa94`)
+  are read at their runtime VAs straight out of `va.bin` (offset = VA - 0x100000).
+
+**REMAINING to finish the remap (next session, all infra now in place):**
+1. Genuinely execute a move (confirm on the move menu — verify with a screenshot
+   that it's animating; wild Lv1x mon can't act first vs Lv85 so ours always goes).
+2. ~0.4 s in, take ONE `/tmp/dump_va` → `va.bin` has the live dispatch.
+3. Read Battle.cro's seg table (via `text_va-0x180`) → rodata_va, bss_va. Read the
+   active **sequence id** from the step-state work field (`work+0xa94`) and the
+   queued **effectId** from the event queue (`bss+0x394`, tag 0x1f). That pair is
+   one (effectId→seqId) remap entry; repeat for a few moves to fill the table, or
+   seed `tools/usum_effect_remap.py probe_queue()` with the live bss image.

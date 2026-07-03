@@ -20,7 +20,7 @@ index a9b0b3e..b55d79c 100644
      Core::Movie::GetInstance().Shutdown();
      if (system.VideoDumper().IsDumping()) {
 diff --git a/src/citra/emu_window/emu_window_sdl2.cpp b/src/citra/emu_window/emu_window_sdl2.cpp
-index ef53b3d..e8c25fd 100644
+index ef53b3d..25cabe7 100644
 --- a/src/citra/emu_window/emu_window_sdl2.cpp
 +++ b/src/citra/emu_window/emu_window_sdl2.cpp
 @@ -3,8 +3,11 @@
@@ -35,15 +35,17 @@ index ef53b3d..e8c25fd 100644
  #define SDL_MAIN_HANDLED
  #include <SDL.h>
  #include <fmt/format.h>
-@@ -14,6 +17,7 @@
+@@ -14,6 +17,9 @@
  #include "common/scm_rev.h"
  #include "core/3ds.h"
  #include "core/core.h"
++#include "core/hle/kernel/kernel.h"
++#include "core/hle/kernel/process.h"
 +#include "core/memory.h"
  #include "core/settings.h"
  #include "input_common/keyboard.h"
  #include "input_common/main.h"
-@@ -222,14 +226,199 @@ std::unique_ptr<Frontend::GraphicsContext> EmuWindow_SDL2::CreateSharedContext()
+@@ -222,14 +228,240 @@ std::unique_ptr<Frontend::GraphicsContext> EmuWindow_SDL2::CreateSharedContext()
      return std::make_unique<SharedContext_SDL2>();
  }
  
@@ -76,8 +78,7 @@ index ef53b3d..e8c25fd 100644
 +    int dn, sc;
 +    while (in >> fr >> dn >> sc) {
 +        ap_events.push_back({fr, dn, sc});
-     }
--    SDL_GL_MakeCurrent(render_window, nullptr);
++    }
 +}
 +
 +void ApTick(long frame) {
@@ -91,7 +92,8 @@ index ef53b3d..e8c25fd 100644
 +        } else {
 +            InputCommon::GetKeyboard()->ReleaseKey(e.scancode);
 +        }
-+    }
+     }
+-    SDL_GL_MakeCurrent(render_window, nullptr);
 +}
 +
 +// Dump the emulated New-3DS FCRAM (256 MB physical RAM) to a file. Triggered
@@ -120,6 +122,46 @@ index ef53b3d..e8c25fd 100644
 +    std::FILE* done = std::fopen("/tmp/fcram.done", "wb");
 +    if (done) {
 +        std::fclose(done);
++    }
++}
++
++// Dump a slice of the running app's VIRTUAL address space (VA-contiguous), so the
++// CRO cluster (static.crs + all .cro modules incl. Battle.cro) can be read at its
++// real VAs — a physical FCRAM dump is scattered by the MMU and can't locate .bss.
++// Trigger: /tmp/dump_va (optional "hexbase hexsize"; default 0x00100000 0x00F00000).
++void ApMaybeDumpVa() {
++    std::ifstream trig("/tmp/dump_va");
++    if (!trig) {
++        return;
++    }
++    unsigned long base = 0x00100000UL, size = 0x00F00000UL;
++    {
++        std::string s((std::istreambuf_iterator<char>(trig)), std::istreambuf_iterator<char>());
++        std::sscanf(s.c_str(), "%lx %lx", &base, &size);
++    }
++    trig.close();
++    std::remove("/tmp/dump_va");
++    auto& sys = Core::System::GetInstance();
++    if (!sys.IsPoweredOn()) {
++        return;
++    }
++    auto proc = sys.Kernel().GetCurrentProcess();
++    if (!proc) {
++        return;
++    }
++    std::vector<u8> buf(size, 0);
++    sys.Memory().ReadBlock(*proc, static_cast<u32>(base), buf.data(), size);
++    if (std::FILE* f = std::fopen("/tmp/va.bin", "wb")) {
++        std::fwrite(buf.data(), 1, size, f);
++        std::fclose(f);
++    }
++    // record the base so the reader knows the VA origin
++    if (std::FILE* m = std::fopen("/tmp/va.meta", "wb")) {
++        std::fprintf(m, "%lx %lx\n", base, size);
++        std::fclose(m);
++    }
++    if (std::FILE* d = std::fopen("/tmp/va.done", "wb")) {
++        std::fclose(d);
 +    }
 +}
 +
@@ -242,6 +284,7 @@ index ef53b3d..e8c25fd 100644
 +        ApLiveShot(render_window);
 +        ApMaybeState();
 +        ApMaybeDumpFcram();
++        ApMaybeDumpVa();
 +        if (ap_frame % shot_every == 0) {
 +            ApDumpFrame(render_window, ap_frame);
 +        }
@@ -250,7 +293,7 @@ index ef53b3d..e8c25fd 100644
  }
  
  void EmuWindow_SDL2::PollEvents() {
-@@ -309,11 +498,16 @@ bool EmuWindow_SDL2::NeedsClearing() const {
+@@ -309,11 +541,16 @@ bool EmuWindow_SDL2::NeedsClearing() const {
  void EmuWindow_SDL2::SetupFramebuffer() {}
  
  void EmuWindow_SDL2::MakeCurrent() {

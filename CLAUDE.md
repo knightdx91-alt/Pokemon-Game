@@ -41,13 +41,22 @@ active, verified body of work in THIS repo. Go work on it. Details:**
   DECOMP — IN PROGRESS ⏳ (start here to continue)"** section below. It has the
   exact session bootstrap, the `tools/cro_*.py` RE pipeline, and the current
   open problems (effect→sequence remap, PIC index labelling via Citra trace).
-- **Citra capture pipeline is BUILT & VERIFIED** — see **`decomp/citra/README.md`**.
-  The emulator builds (5 fork fixes frozen in `citra1_build_fixes.patch`), boots
-  USUM with no AES keys, loads the user's save (OT "Lylliana" seen in RAM), and
-  the headless autopilot injects scripted input + dumps 256 MB FCRAM on demand.
-  The Citra tree + ROM extraction are ephemeral (clone→`git apply` patch→build
-  each session, ~20 min; fixes never re-derived). Remaining: memory-route
-  battle capture → `tools/usum_effect_remap.py`.
+- **Citra capture pipeline is BUILT, VERIFIED & FAST TO RESUME** — see
+  **`decomp/citra/README.md`**. A **prebuilt stripped binary** is committed at
+  `decomp/citra/prebuilt/citra` (+ `run_citra.sh` installs SDL2/xvfb/mesa) — **no
+  20-min rebuild**; and the user's save re-saved **standing in Route 4 tall grass**
+  is at `decomp/citra/saves/usum_route4_grass_main.sav` — boot + tap A → Continue
+  lands one step from a wild encounter (**no overworld navigation**). The frontend
+  patch adds: scripted input (`/tmp/autopilot.txt`), live per-frame control
+  (`/tmp/ap_key`, `/tmp/shot`), a 256 MB physical FCRAM dump (`/tmp/dump_now`), and
+  a **VA-space dump** (`/tmp/dump_va` → `/tmp/va.bin`, VA-contiguous — the correct
+  route to read Battle.cro `.bss`).
+  **LIVE CAPTURE DONE ✅:** captured a real wild battle, carved the two battlemon
+  structs, and **CONFIRMED the `BattlePokemon.h` scalar fields** (species/HP/level/
+  ability/moves/stat-stages) — `verify/verify_battlemon_live.py` PASS. That closes
+  one of the two live-gated open items. **Remaining: the effect→sequence remap** —
+  needs a genuine mid-move-execution `/tmp/dump_va` (recipe + resolved Battle.cro/
+  static.crs VA map in `decomp/citra/README.md`).
 
 **Bottom line: the user has spent many sessions on this. When they say "work on
 the moon decomp," the correct first action is to run the bootstrap above and
