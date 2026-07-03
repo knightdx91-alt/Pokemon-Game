@@ -53,21 +53,33 @@ echo "iptables-persistent iptables-persistent/autosave_v6 boolean true" | debcon
 apt-get install -y strongswan strongswan-pki libcharon-extra-plugins \
                    libstrongswan-extra-plugins tor dnsmasq iptables-persistent curl
 
+# ---- disable strongSwan's TPM plugin (fails to load libtss2 on many VPS) ----
+mkdir -p /etc/strongswan.d/charon
+printf 'tpm {\n    load = no\n}\n' > /etc/strongswan.d/charon/tpm.conf
+
 # ---- certificates (server auth = cert, phone auth = username/password) ------
+# Generated with OpenSSL (not `ipsec pki`) to avoid strongSwan plugin issues.
 echo "==> Generating CA + server certificate (SAN = ${PUBLIC_IP})..."
 mkdir -p /etc/ipsec.d/{cacerts,certs,private}
 cd /etc/ipsec.d
 
-ipsec pki --gen --type rsa --size 4096 --outform pem > private/ca-key.pem
-ipsec pki --self --ca --lifetime 3650 --in private/ca-key.pem --type rsa \
-    --dn "CN=Onion VPN CA" --outform pem > cacerts/ca-cert.pem
+# CA
+openssl req -x509 -new -nodes -sha256 -days 3650 \
+    -newkey rsa:4096 -keyout private/ca-key.pem \
+    -subj "/CN=Onion VPN CA" -out cacerts/ca-cert.pem
 
-ipsec pki --gen --type rsa --size 4096 --outform pem > private/server-key.pem
-ipsec pki --pub --in private/server-key.pem --type rsa \
-  | ipsec pki --issue --lifetime 3650 \
-      --cacert cacerts/ca-cert.pem --cakey private/ca-key.pem \
-      --dn "CN=${PUBLIC_IP}" --san "${PUBLIC_IP}" \
-      --flag serverAuth --flag ikeIntermediate --outform pem > certs/server-cert.pem
+# Server key + CSR
+openssl req -new -nodes -sha256 \
+    -newkey rsa:4096 -keyout private/server-key.pem \
+    -subj "/CN=${PUBLIC_IP}" -out /tmp/server.csr
+
+# Sign server cert with SAN = the VPS IP + serverAuth EKU
+openssl x509 -req -sha256 -days 3650 \
+    -in /tmp/server.csr \
+    -CA cacerts/ca-cert.pem -CAkey private/ca-key.pem -CAcreateserial \
+    -out certs/server-cert.pem \
+    -extfile <(printf "subjectAltName=IP:%s\nextendedKeyUsage=serverAuth\nbasicConstraints=CA:FALSE\n" "${PUBLIC_IP}")
+rm -f /tmp/server.csr
 chmod 600 private/*.pem
 
 # ---- strongSwan config -----------------------------------------------------
@@ -107,6 +119,7 @@ chmod 600 /etc/ipsec.secrets
 
 # ---- Tor: transparent proxy + onion DNS ------------------------------------
 echo "==> Configuring Tor transparent proxy..."
+if ! grep -q "onion VPN gateway" /etc/tor/torrc; then
 cat >> /etc/tor/torrc <<EOF
 
 ## --- onion VPN gateway (added by vps-onion-vpn-setup.sh) ---
@@ -116,6 +129,7 @@ AutomapHostsSuffixes .onion,.exit
 TransPort 127.0.0.1:${TOR_TRANS_PORT}
 DNSPort 127.0.0.1:${TOR_DNS_PORT}
 EOF
+fi
 
 # ---- dnsmasq: .onion -> Tor, everything else -> normal resolver ------------
 echo "==> Configuring dnsmasq split DNS..."
