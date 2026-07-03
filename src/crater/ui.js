@@ -19,7 +19,47 @@
     }
     function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-    function screen() { const s = $('#screen'); s.innerHTML = ''; return s; }
+    function screen() {
+        const s = $('#screen');
+        s.innerHTML = '';
+        // Overworld mode: menu screens float over the walkable world, so give
+        // every non-battle screen a way back to it.
+        if (UI.worldMode && window.CraterOverworld && CraterOverworld.entered && !UI.battle) {
+            const bar = el('div', 'world-back-bar');
+            const btn = el('button', 'world-back-btn', '✕ Back to world');
+            btn.onclick = () => UI.closeToWorld();
+            bar.appendChild(btn);
+            s.appendChild(bar);
+        }
+        // Re-sync topbar visibility once the caller has filled the screen in.
+        setTimeout(() => UI.updateTopbar(), 0);
+        return s;
+    }
+
+    /** Overworld mode: clear the overlay and hand control back to the map. */
+    UI.closeToWorld = function () {
+        const s = $('#screen');
+        if (s) s.innerHTML = '';
+        UI.updateTopbar();
+        if (window.CraterOverworld && CraterOverworld.onScreenClosed) CraterOverworld.onScreenClosed();
+    };
+
+    /** Overworld mode: START-button menu. */
+    UI.showMenu = function () {
+        choose('Menu', [
+            { label: '🎒 Party & Box' },
+            { label: '📕 Pokédex' },
+            { label: '🛒 Poké Mart' },
+            { label: '🏆 Gyms & League' },
+            { label: '❤ Heal team', sub: 'Free — like a Pokémon Center' },
+        ], true).then(idx => {
+            if (idx === 0) UI.showParty();
+            else if (idx === 1) UI.showDex();
+            else if (idx === 2) UI.showMart();
+            else if (idx === 3) UI.showGyms();
+            else if (idx === 4) { G.healTeam(); G.save(); alertModal('Your team was fully healed!'); }
+        });
+    };
 
     const TYPE_COLORS = {
         Normal: '#9fa19f', Fighting: '#ff8000', Flying: '#81b9ef', Poison: '#9141cb',
@@ -36,8 +76,16 @@
     // -------------------------------------------------------------- topbar --
     UI.updateTopbar = function () {
         const bar = $('#topbar');
+        if (!bar) return;
         if (!G.state) { bar.style.display = 'none'; return; }
-        bar.style.display = '';
+        // Overworld mode: the topbar belongs to the crater screens, not the
+        // walkable world — hide it whenever the overlay is closed.
+        if (UI.worldMode) {
+            const scr = $('#screen');
+            bar.style.display = (scr && scr.childElementCount > 0) ? '' : 'none';
+        } else {
+            bar.style.display = '';
+        }
         const dc = G.dexCounts();
         $('#tb-name').textContent = G.state.name;
         $('#tb-money').textContent = '₽' + G.state.money.toLocaleString();
@@ -115,7 +163,10 @@
         if (G.load()) {
             const cont = el('button', 'big-btn primary', 'Continue — ' + esc(G.state.name) +
                 ' <small>' + G.state.party.length + ' Pokémon · 🏅' + G.badgeCount() + '</small>');
-            cont.onclick = () => { UI.updateTopbar(); UI.showMap(); };
+            cont.onclick = () => {
+                UI.updateTopbar();
+                if (UI.worldMode) CraterOverworld.enterWorld(); else UI.showMap();
+            };
             btns.appendChild(cont);
         }
         const nw = el('button', 'big-btn', 'New Game');
@@ -152,7 +203,9 @@
                 G.clearSave();
                 G.newGame(name, slug);
                 UI.updateTopbar();
-                alertModal('You received ' + sp.name + '! Your adventure begins!').then(UI.showMap);
+                alertModal('You received ' + sp.name + '! Your adventure begins!').then(() => {
+                    if (UI.worldMode) CraterOverworld.enterWorld(); else UI.showMap();
+                });
             };
             grid.appendChild(card);
         });
@@ -237,7 +290,9 @@
         if (!alive) { alertModal('All your Pokémon have fainted! Heal your team first (❤ button).'); return; }
         UI.battle = B.begin(G.state.party, [enemy], { isTrainer: false });
         UI.battle._spawnIdx = spawnIdx;
-        UI.battle._zoneEnv = D.zones.zones[UI.zoneId].env;
+        UI.battle._zoneEnv = UI.worldMode
+            ? (UI.battleEnv || 'grass')
+            : D.zones.zones[UI.zoneId].env;
         renderBattle();
         playIntro('A wild ' + M.displayName(enemy) + ' appeared!');
     };
@@ -590,8 +645,14 @@
         }
         UI.updateTopbar();
         UI.battle = null;
-        if (bt._gym) UI.showGyms();
-        else UI.showZone(UI.zoneId, true);
+        if (UI.worldMode) {
+            if (bt._gym) UI.showGyms();
+            else UI.closeToWorld();
+        } else if (bt._gym) {
+            UI.showGyms();
+        } else {
+            UI.showZone(UI.zoneId, true);
+        }
     }
 
     // ================================================================ PARTY ==

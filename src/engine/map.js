@@ -35,6 +35,7 @@ window.GameMap = (function () {
     let mapHeight        = DEFAULT_SIZE;
     let _nameIndex       = null;   // MAP_CONST -> filename for the CURRENT region
     let _region          = 'kanto';
+    let _currentFile     = null;   // filename of the current map (e.g. "PalletTown")
 
     // Seamless-overworld matrix: maps in a matrix share one global tile grid, so
     // the player can walk from one map straight into the adjacent one.
@@ -142,6 +143,7 @@ window.GameMap = (function () {
 
     /** Apply a loaded bundle as the current map (synchronous). */
     function _applyBundle(bundle) {
+        _currentFile     = bundle.name;
         current          = bundle.mapData;
         layoutData       = bundle.layout;
         tilesetBehaviors = bundle.behaviors;
@@ -660,6 +662,7 @@ window.GameMap = (function () {
         get width()    { return mapWidth; },
         get height()   { return mapHeight; },
         get region()   { return _region; },
+        get currentFile() { return _currentFile; },
         REGIONS,
         init,
         load,

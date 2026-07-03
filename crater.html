@@ -6,34 +6,39 @@
 <meta name="theme-color" content="#0e0e12">
 <title>Pokémon Crater — RetroPlay</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='7' fill='%23e62829'/><rect y='7' width='16' height='2' fill='%23111'/><circle cx='8' cy='8' r='2.6' fill='%23fff' stroke='%23111'/></svg>">
+<link rel="stylesheet" href="styles.css?v=__CACHE_BUST__">
 <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    /* =====================================================================
+       Pokémon Crater v2 — walkable overworld.
+       The RPG engine renders the world (styles.css); the crater game UI
+       (title / battle / party / dex / mart / gyms) floats above it in the
+       #screen overlay + #modal-layer, styled with the v1 dark theme below.
+       ===================================================================== */
     :root {
         --bg: #0e0e12; --surface: #17171d; --surface2: #1f1f28;
         --border: #2a2a35; --text: #e8e8ef; --muted: #8b8b98;
         --accent: #7c6af7; --accent2: #4ecdc4; --gold: #f8d030;
     }
-    html, body { height: 100%; }
-    body {
-        background: var(--bg); color: var(--text);
+    #screen, #modal-layer, #topbar {
         font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-        display: flex; flex-direction: column;
+        font-size: 16px; color: var(--text); user-select: none;
     }
-    img { image-rendering: pixelated; }
-    button {
+    #screen img, #modal-layer img { image-rendering: pixelated; }
+    #screen button, #modal-layer button, #topbar button {
         font-family: inherit; color: var(--text); background: var(--surface2);
         border: 1px solid var(--border); border-radius: 10px; cursor: pointer;
     }
-    button:disabled { opacity: 0.45; cursor: default; }
-    h2 { font-size: 1.05rem; margin: 10px 2px 8px; }
-    small { color: var(--muted); }
+    #screen button:disabled, #modal-layer button:disabled { opacity: 0.45; cursor: default; }
+    #screen h2 { font-size: 1.05rem; margin: 10px 2px 8px; }
+    #screen small, #modal-layer small { color: var(--muted); }
     .muted { color: var(--muted); font-size: 0.85rem; padding: 6px 2px; }
 
-    /* ---------- topbar ---------- */
+    /* ---------- topbar (only over crater screens, not the world) ---------- */
     #topbar {
+        position: fixed; top: 0; left: 0; right: 0; z-index: 260;
         display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
         padding: 8px 10px; background: var(--surface);
-        border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50;
+        border-bottom: 1px solid var(--border);
     }
     #tb-brand { font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2));
         -webkit-background-clip: text; background-clip: text; color: transparent; margin-right: 4px; }
@@ -42,8 +47,17 @@
     #topbar nav button { padding: 6px 9px; font-size: 0.8rem; }
     #topbar nav button:active { background: var(--accent); }
 
-    #screen { flex: 1; padding: 10px; max-width: 860px; width: 100%; margin: 0 auto; }
+    /* ---------- crater overlay screen ---------- */
+    /* Above the on-screen gamepad (z 200) — crater screens own the display */
+    #screen {
+        position: fixed; inset: 0; z-index: 250; overflow-y: auto;
+        background: var(--bg); padding: 54px 10px 16px;
+    }
+    #screen:empty { display: none; }
+    #screen > * { max-width: 860px; margin-left: auto; margin-right: auto; }
     #boot-msg { padding: 40px 20px; text-align: center; color: var(--muted); }
+    .world-back-bar { display: flex; justify-content: flex-end; margin-bottom: 6px; }
+    .world-back-btn { padding: 8px 14px; font-size: 0.85rem; background: var(--accent); border-color: var(--accent); }
 
     /* ---------- title ---------- */
     .title-screen { text-align: center; padding-top: 8vh; }
@@ -68,59 +82,10 @@
     .starter-card:active { border-color: var(--accent); background: var(--surface); }
     .type-chip { font-size: 0.62rem; color: #fff; padding: 1px 6px; border-radius: 8px; margin: 0 1px;
         text-shadow: 0 1px 1px rgba(0,0,0,0.6); display: inline-block; }
-
-    /* ---------- map ---------- */
-    .region-tabs { display: flex; gap: 6px; margin-bottom: 10px; }
-    .region-tab { flex: 1; padding: 9px 0; font-weight: 700; }
-    .region-tab.active { background: var(--accent); border-color: var(--accent); }
-    .zone-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
-    .zone-card { position: relative; padding: 10px; text-align: left; display: flex; flex-direction: column; gap: 2px;
-        border-left: 4px solid var(--border); overflow: hidden; }
-    .zone-card b { font-size: 0.85rem; }
-    .zone-card small { font-size: 0.72rem; }
-    .zone-card .z-ico { position: absolute; right: 8px; top: 8px; font-size: 1.1rem; opacity: 0.8; }
-    .zone-card:active { background: var(--surface); }
-    .zone-card.special { border-left-color: var(--gold); box-shadow: inset 0 0 18px rgba(248, 208, 48, 0.08); }
-    .zone-card.locked { opacity: 0.55; }
-    .zone-card .lock { font-size: 0.68rem; color: var(--gold); }
-    .rare-hint { color: var(--gold); font-style: normal; }
-    .env-grass { border-left-color: #3fa129; }
-    .env-forest { border-left-color: #1d7a3a; }
-    .env-cave { border-left-color: #8a6d4b; }
-    .env-water { border-left-color: #2980ef; }
-    .env-ice { border-left-color: #6fd8ff; }
-    .env-volcano { border-left-color: #e05020; }
-    .env-building { border-left-color: #9a8fd0; }
-    .env-sand { border-left-color: #d8b048; }
-
-    /* ---------- zone field ---------- */
-    .zone-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
-    .zone-title { font-size: 1rem; }
-    .zone-btns { display: flex; gap: 6px; }
-    .sm-btn { padding: 7px 11px; font-size: 0.82rem; }
-    .sm-btn.primary { background: var(--accent); border-color: var(--accent); }
-    .zone-field { position: relative; height: 340px; border-radius: 14px; border: 1px solid var(--border); overflow: hidden; }
-    div.zone-field.env-grass { background: linear-gradient(180deg, #2c5e1e 0%, #38761f 55%, #2c5e1e 100%); }
-    div.zone-field.env-forest { background: linear-gradient(180deg, #14351c 0%, #1d5029 60%, #143a1e 100%); }
-    div.zone-field.env-cave { background: linear-gradient(180deg, #2a2118 0%, #4a3a28 60%, #2e2418 100%); }
-    div.zone-field.env-water { background: linear-gradient(180deg, #123a6e 0%, #1c5eb0 60%, #123a6e 100%); }
-    div.zone-field.env-ice { background: linear-gradient(180deg, #1e3d50 0%, #3d7ea0 60%, #24485c 100%); }
-    div.zone-field.env-volcano { background: linear-gradient(180deg, #3a1410 0%, #7a2c14 60%, #401410 100%); }
-    div.zone-field.env-building { background: linear-gradient(180deg, #1e1c2e 0%, #363050 60%, #232038 100%); }
-    div.zone-field.env-sand { background: linear-gradient(180deg, #6e5a28 0%, #a8863c 60%, #6e5a28 100%); }
-    .wild-spawn { position: absolute; background: none; border: none; display: flex; flex-direction: column;
-        align-items: center; z-index: 2; }
-    .wild-spawn img { width: 72px; height: 72px; filter: drop-shadow(0 3px 2px rgba(0,0,0,0.45)); }
-    .wild-spawn:active img { transform: scale(1.1); }
-    .wild-spawn .w-label { font-size: 0.62rem; background: rgba(0,0,0,0.55); padding: 1px 6px; border-radius: 8px;
-        white-space: nowrap; margin-top: -6px; }
-    .wild-spawn.rare .w-label { background: rgba(160, 120, 0, 0.8); }
-    .wild-spawn.v-shiny .w-label { color: var(--gold); }
-    .field-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.7); }
-    .zone-tip { color: var(--muted); font-size: 0.74rem; margin-top: 8px; }
     .var-tag { font-size: 0.68em; font-weight: 800; padding: 0 4px; border-radius: 6px; background: #444; }
     .var-shiny { background: #a08000; } .var-dark { background: #222; }
     .var-mystic { background: #206090; } .var-metallic { background: #667; } .var-shadow { background: #4a2070; }
+    .rare-hint { color: var(--gold); font-style: normal; }
 
     /* ---------- battle ---------- */
     .battle { display: flex; flex-direction: column; gap: 8px; }
@@ -166,7 +131,7 @@
     .bt-cmd { padding: 9px 0; font-size: 0.82rem; }
 
     /* ---------- modal ---------- */
-    #modal-layer { position: fixed; inset: 0; z-index: 100; pointer-events: none; }
+    #modal-layer { position: fixed; inset: 0; z-index: 320; pointer-events: none; }
     .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex;
         align-items: center; justify-content: center; pointer-events: auto; padding: 16px; }
     .modal-win { background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
@@ -196,6 +161,8 @@
     .party-row > img { width: 44px; height: 44px; }
     .pr-mid { flex: 1; min-width: 0; font-size: 0.88rem; }
     .pr-btns { display: flex; gap: 5px; }
+    .sm-btn { padding: 7px 11px; font-size: 0.82rem; }
+    .sm-btn.primary { background: var(--accent); border-color: var(--accent); }
     .box-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; margin-top: 6px; }
     .box-cell { padding: 7px 3px; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.7rem; }
     .box-cell img { width: 36px; height: 36px; }
@@ -225,35 +192,133 @@
 </head>
 <body>
 
-<header id="topbar" style="display:none">
-    <span id="tb-brand">Crater</span>
-    <span class="tb-stat" id="tb-name"></span>
-    <span class="tb-stat" id="tb-money"></span>
-    <span class="tb-stat" id="tb-badges"></span>
-    <span class="tb-stat" id="tb-dex"></span>
-    <nav>
-        <button id="nav-map">🗺 Map</button>
-        <button id="nav-party">👥 Party</button>
-        <button id="nav-dex">📕 Dex</button>
-        <button id="nav-mart">🏪 Mart</button>
-        <button id="nav-gyms">🏅 Gyms</button>
-        <button id="nav-heal">❤ Heal</button>
-        <button id="nav-title">⏻</button>
-    </nav>
-</header>
+    <!-- Crater topbar — shown only over crater screens (menus/battle), never the world -->
+    <header id="topbar" style="display:none">
+        <span id="tb-brand">Crater</span>
+        <span class="tb-stat" id="tb-name"></span>
+        <span class="tb-stat" id="tb-money"></span>
+        <span class="tb-stat" id="tb-badges"></span>
+        <span class="tb-stat" id="tb-dex"></span>
+        <nav>
+            <button id="nav-world">🌍 World</button>
+            <button id="nav-party">👥 Party</button>
+            <button id="nav-dex">📕 Dex</button>
+            <button id="nav-mart">🏪 Mart</button>
+            <button id="nav-gyms">🏅 Gyms</button>
+            <button id="nav-heal">❤ Heal</button>
+            <button id="nav-title">⏻</button>
+        </nav>
+    </header>
 
-<main id="screen">
-    <div id="boot-msg">Loading Pokémon data…</div>
-</main>
-<div id="modal-layer"></div>
+    <div id="game-wrapper">
+        <!-- Primary game screen -->
+        <div id="screen-primary">
+            <div class="drag-handle" aria-label="Drag screen">&#9776;</div>
+            <canvas id="canvas-primary"></canvas>
+        </div>
+        <!-- Secondary screen — unused here, kept for layout.js compatibility -->
+        <div id="screen-secondary" class="hidden">
+            <div class="drag-handle" aria-label="Drag secondary screen">&#9776;</div>
+            <canvas id="canvas-secondary"></canvas>
+        </div>
+    </div><!-- #game-wrapper -->
 
-<script src="src/crater/zones_gen.js?v=__CACHE_BUST__"></script>
-<script src="src/crater/sprites.js?v=__CACHE_BUST__"></script>
-<script src="src/crater/data.js?v=__CACHE_BUST__"></script>
-<script src="src/crater/pokemon.js?v=__CACHE_BUST__"></script>
-<script src="src/crater/battle.js?v=__CACHE_BUST__"></script>
-<script src="src/crater/game.js?v=__CACHE_BUST__"></script>
-<script src="src/crater/ui.js?v=__CACHE_BUST__"></script>
-<script src="src/crater/main.js?v=__CACHE_BUST__"></script>
+    <!-- On-screen controls — static HTML, wired by controls.js -->
+    <div id="controls-layer">
+        <div id="gp-dpad">
+            <button id="gp-up"    class="gp-btn" aria-label="Up">▲</button>
+            <div id="gp-middle">
+                <button id="gp-left"  class="gp-btn" aria-label="Left">◄</button>
+                <div    id="gp-center-dot"></div>
+                <button id="gp-right" class="gp-btn" aria-label="Right">►</button>
+            </div>
+            <button id="gp-down"  class="gp-btn" aria-label="Down">▼</button>
+        </div>
+        <button id="gp-a" class="gp-btn" aria-label="A">A</button>
+        <button id="gp-b" class="gp-btn" aria-label="B">B</button>
+        <button id="gp-l" class="gp-btn" aria-label="L">L</button>
+        <button id="gp-r" class="gp-btn" aria-label="R">R</button>
+        <button id="gp-start"  class="gp-btn" aria-label="Start">START</button>
+        <button id="gp-select" class="gp-btn" aria-label="Select">SEL</button>
+    </div>
+
+    <!-- HUD overlay (map name, position, settings button) -->
+    <div id="ui-overlay"></div>
+
+    <!-- Settings panel (hidden by default) -->
+    <div id="settings-panel" class="hidden" role="dialog" aria-label="Settings">
+        <div class="settings-header">
+            <span>Settings</span>
+            <button id="settings-close" aria-label="Close settings">&times;</button>
+        </div>
+        <div class="settings-body">
+            <div class="setting-row">
+                <label>Controls</label>
+                <div class="toggle-group">
+                    <button class="toggle-btn active" id="toggle-dpad" data-mode="dpad">D-pad</button>
+                    <button class="toggle-btn" id="toggle-joystick" data-mode="joystick">Joystick</button>
+                </div>
+            </div>
+            <div class="setting-row">
+                <label for="btn-size-slider">Button Size</label>
+                <input type="range" id="btn-size-slider" min="0.6" max="1.8" step="0.1" value="1.0">
+                <span id="btn-size-value">1.0&times;</span>
+            </div>
+            <div class="setting-row">
+                <label>Orientation</label>
+                <div class="toggle-group orient-group">
+                    <button class="toggle-btn orient-btn active" data-orient="auto">Auto</button>
+                    <button class="toggle-btn orient-btn" data-orient="portrait">Portrait</button>
+                    <button class="toggle-btn orient-btn" data-orient="reverse-portrait">Rev. Portrait</button>
+                    <button class="toggle-btn orient-btn" data-orient="landscape">Landscape</button>
+                    <button class="toggle-btn orient-btn" data-orient="reverse-landscape">Rev. Landscape</button>
+                </div>
+            </div>
+            <div class="setting-row" id="controls-opacity-row" style="display:none">
+                <label for="controls-opacity-slider">Controls Opacity</label>
+                <input type="range" id="controls-opacity-slider" min="0.1" max="1.0" step="0.05" value="0.65">
+                <span id="controls-opacity-value">65%</span>
+            </div>
+            <div class="setting-row">
+                <button id="customize-layout-btn" class="action-btn">Customize Buttons</button>
+                <button id="reset-layout-btn" class="action-btn">Reset Layout</button>
+            </div>
+        </div>
+    </div><!-- #settings-panel -->
+
+    <!-- Crater overlay: title / starter / battle / party / dex / mart / gyms.
+         Hidden automatically when empty (the world is playable underneath). -->
+    <main id="screen">
+        <div id="boot-msg">Loading Pokémon data…</div>
+    </main>
+    <div id="modal-layer"></div>
+
+    <!-- Engine (shared with the Pokémon RPG card) -->
+    <script src="src/engine/input.js?v=__CACHE_BUST__"></script>
+    <script src="src/engine/camera.js?v=__CACHE_BUST__"></script>
+    <script src="src/engine/map.js?v=__CACHE_BUST__"></script>
+    <script src="src/engine/renderer.js?v=__CACHE_BUST__"></script>
+    <script src="src/engine/script.js?v=__CACHE_BUST__"></script>
+    <script src="src/ui/font.js?v=__CACHE_BUST__"></script>
+    <script src="src/ui/layout.js?v=__CACHE_BUST__"></script>
+    <script src="src/ui/controls.js?v=__CACHE_BUST__"></script>
+    <script src="src/ui/hud.js?v=__CACHE_BUST__"></script>
+    <script src="src/ui/system.js?v=__CACHE_BUST__"></script>
+    <script src="src/ui/dialogue.js?v=__CACHE_BUST__"></script>
+
+    <!-- Crater game systems -->
+    <script src="src/crater/zones_gen.js?v=__CACHE_BUST__"></script>
+    <script src="src/crater/sprites.js?v=__CACHE_BUST__"></script>
+    <script src="src/crater/data.js?v=__CACHE_BUST__"></script>
+    <script src="src/crater/pokemon.js?v=__CACHE_BUST__"></script>
+    <script src="src/crater/battle.js?v=__CACHE_BUST__"></script>
+    <script src="src/crater/game.js?v=__CACHE_BUST__"></script>
+    <script src="src/crater/ui.js?v=__CACHE_BUST__"></script>
+    <script src="src/crater/overworld.js?v=__CACHE_BUST__"></script>
+
+    <!-- Engine game loop (must come after overworld.js so GameMode is set) -->
+    <script src="src/main.js?v=__CACHE_BUST__"></script>
+    <!-- Crater boot: waits for data, wires topbar, shows title -->
+    <script src="src/crater/main.js?v=__CACHE_BUST__"></script>
 </body>
 </html>

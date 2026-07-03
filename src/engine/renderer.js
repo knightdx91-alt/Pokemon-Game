@@ -317,6 +317,11 @@ window.GameRenderer = (function () {
             try { GamePresence.drawPlayers(ctx, pxCamX, pxCamY, TILE_PX); } catch (_) {}
         }
 
+        // Game-mode overlay (e.g. crater wild-spawn sprites standing on the map)
+        if (window.GameMode && GameMode.drawOverlay) {
+            try { GameMode.drawOverlay(ctx, pxCamX, pxCamY, TILE_PX); } catch (_) {}
+        }
+
         // Player
         const playerSX = Math.round(vx * TILE_PX) - pxCamX;
         const playerSY = Math.round(vy * TILE_PX) - pxCamY;

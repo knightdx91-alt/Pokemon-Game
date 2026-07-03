@@ -87,6 +87,7 @@
     // ---------------------------------------------------------------
     async function _checkEncounter() {
         window._encDbg = 'A';
+        if (window.GameMode && GameMode.suppressEncounters) return;
         if (!window.GameBattle || GameBattle.isActive()) { window._encDbg='B'; return; }
         const mapType = GameMap.current && GameMap.current.map_type;
         const isWild = mapType === 'MAP_TYPE_ROUTE' || mapType === 'MAP_TYPE_UNDERGROUND';
@@ -166,6 +167,7 @@
             if (window.GameSave) GameSave.markDirty();
             _warpCooldownUntil = performance.now() + WARP_COOLDOWN_MS;
             GameMap.loadEncounterData(currentRegion);
+            _notifyMapChanged();
         } finally {
             _transitioning = false;
         }
@@ -184,6 +186,17 @@
         if (window.GameSave) GameSave.markDirty();
         GameMap.loadEncounterData(currentRegion);
         lastMoveTime = timestamp;
+        _notifyMapChanged();
+    }
+
+    // Game-mode hook (e.g. Pokémon Crater overworld mode). A mode object on
+    // window.GameMode may implement: onMapChanged(), onStepInto(x,y)->bool,
+    // onInteract(tile)->bool, onStart()->bool, blocksInput()->bool,
+    // suppressEncounters, drawOverlay(ctx,camX,camY,tile).
+    function _notifyMapChanged() {
+        if (window.GameMode && GameMode.onMapChanged) {
+            try { GameMode.onMapChanged(); } catch (e) { console.warn('[Mode] onMapChanged failed:', e); }
+        }
     }
 
     /** Step across a GBA-style connection into a preloaded neighbour map. */
@@ -240,6 +253,7 @@
             if (window.GameSave) GameSave.markDirty();
             _warpCooldownUntil = performance.now() + WARP_COOLDOWN_MS;
             GameMap.loadEncounterData(currentRegion);
+            _notifyMapChanged();
         } finally {
             _transitioning = false;
         }
@@ -281,6 +295,7 @@
             if (window.GameSave) GameSave.markDirty();
             _warpCooldownUntil = performance.now() + WARP_COOLDOWN_MS;
             GameMap.loadEncounterData(currentRegion);
+            _notifyMapChanged();
         } finally {
             _transitioning = false;
         }
@@ -311,10 +326,18 @@
             if (window.GameSave) GameSave.markDirty();
             _warpCooldownUntil = performance.now() + WARP_COOLDOWN_MS;
             GameMap.loadEncounterData(currentRegion);
+            _notifyMapChanged();
         } finally {
             _transitioning = false;
         }
     }
+
+    // World control surface for game modes (crater) and other modules.
+    window.GameWorld = {
+        flyTo,
+        get player() { return player; },
+        get region() { return currentRegion; },
+    };
 
     // ---------------------------------------------------------------
     // Game loop
@@ -390,9 +413,20 @@
             return;
         }
 
-        // Start menu toggle
+        // Game-mode overlay (crater menus/battle/title) owns all input while open
+        if (window.GameMode && GameMode.blocksInput && GameMode.blocksInput()) {
+            GameInput.consumeJustPressed();
+            requestAnimationFrame(gameLoop);
+            return;
+        }
+
+        // Start menu toggle (a game mode may take over the START button)
         if (jp.start) {
-            if (window.GameStartMenu) GameStartMenu.toggle();
+            if (window.GameMode && GameMode.onStart && GameMode.onStart()) {
+                // handled by mode
+            } else if (window.GameStartMenu) {
+                GameStartMenu.toggle();
+            }
         }
 
         // Select: open fly menu
@@ -400,9 +434,11 @@
             FlyMenu.open(function (dest) { flyTo(dest); });
         }
 
-        // A button: interact
+        // A button: interact (mode gets first chance — e.g. battling a wild spawn)
         if (jp.a) {
-            _interact();
+            if (!(window.GameMode && GameMode.onInteract && GameMode.onInteract(_facingTile()))) {
+                _interact();
+            }
         }
 
         // Movement
@@ -446,6 +482,8 @@
                                 if (connInfo) transitionToConnection(connInfo);
                             }
                         }
+                    } else if (window.GameMode && GameMode.onStepInto && GameMode.onStepInto(nx, ny)) {
+                        // Mode handled the step (e.g. wild spawn battle) — don't move.
                     } else if (GameMap.isWalkable(nx, ny)) {
                         player.prevX = player.x;
                         player.prevY = player.y;
@@ -507,9 +545,11 @@
             // drop straight into any map (e.g. one built in the map editor).
             const _params   = new URLSearchParams(window.location.search);
             // Default start location: Twinleaf Town (Sinnoh). Overridable via
-            // ?map=…&region=… (e.g. a map built in the editor).
-            const _startMap = _params.get('map') || 'twinleaf_town';
-            const _startReg = _params.get('region') || 'sinnoh';
+            // ?map=…&region=… (e.g. a map built in the editor) or by a game
+            // mode (crater boots at the saved position / Pallet Town).
+            const _modeStart = (window.GameMode && GameMode.startOverride) || null;
+            const _startMap = _params.get('map') || (_modeStart && _modeStart.map) || 'twinleaf_town';
+            const _startReg = _params.get('region') || (_modeStart && _modeStart.region) || 'sinnoh';
             currentRegion = _startReg;
             await GameMap.load(_startMap, _startReg);
             window._mapName   = (GameMap.current && GameMap.current.name) || _startMap;
