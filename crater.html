@@ -244,6 +244,99 @@
     .eb-ppbox .pp-num { float: right; }
     .eb-ppbox .pp-back { color: var(--em-red); cursor: pointer; }
 
+    /* ---------- gamepad stays visible & usable over every crater screen ---- */
+    #gp-dpad, #gp-a, #gp-b, #gp-l, #gp-r, #gp-start, #gp-select { z-index: 340 !important; }
+    /* Emerald has no web topbar — everything goes through the START menu. */
+    #topbar { display: none !important; }
+
+    /* ---------- shared: nav cursor + screen headers ---------- */
+    .em-screen-head { font-size: 16px; color: #f8f8f8; text-shadow: 1px 1px 0 #305048; margin: 8px 2px 6px; }
+    #screen .eb-cmd button.nav-sel::before, #screen .eb-moves button.nav-sel::before { color: #303030; }
+    .modal-opt.nav-sel::before, .modal-cancel.nav-sel::before {
+        content: '▶'; color: var(--em-red); text-shadow: none; margin-right: 5px; font-size: 12px; }
+    .esm-row.nav-sel::before { content: '▶'; color: #303030; text-shadow: none;
+        position: absolute; left: 2px; top: 4px; font-size: 16px; }
+    .bag-row.nav-sel::before, .dx-row.nav-sel::before {
+        content: '▶'; color: var(--em-red); text-shadow: none;
+        position: absolute; left: 0; top: 5px; font-size: 16px; }
+    .pt-slot.nav-sel, .pt-cancel.nav-sel { box-shadow: 0 0 0 2px #f8e848, 0 0 0 3px #a08018; }
+    .sm-btn.nav-sel, .bag-tab.nav-sel, .sum-tab.nav-sel { color: var(--em-red); }
+
+    /* ---------- PARTY (Emerald party menu) ---------- */
+    .em-party { padding: 4px; background: linear-gradient(180deg, #30b088 0%, #1d8868 100%);
+        border: 2px solid #0e5844; border-radius: 4px; }
+    .pt-grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
+    @media (min-width: 520px) { .pt-grid { grid-template-columns: 1fr 1fr; } .pt-slot.big { grid-row: span 2; } }
+    .pt-slot { display: flex; align-items: center; gap: 8px; cursor: pointer;
+        background: linear-gradient(180deg, #5878b8 0%, #40589a 100%);
+        border: 2px solid #202850; border-radius: 6px; padding: 6px 10px;
+        color: #f8f8f8; text-shadow: 1px 1px 0 #303860; }
+    .pt-slot.fnt { background: linear-gradient(180deg, #a85858 0%, #884040 100%); border-color: #502020; }
+    .pt-slot > img { width: 40px; height: 40px; }
+    .pt-mid { flex: 1; min-width: 0; }
+    .pt-name { font-size: 16px; }
+    .pt-lv { margin-left: 6px; }
+    .pt-bar { display: flex; align-items: center; gap: 4px; margin-top: 3px; }
+    .pt-bar em { font-style: normal; font-size: 12px; color: #f8d848; text-shadow: 1px 1px 0 #604810; }
+    .pt-bar .hp-outer { flex: 1; max-width: 140px; margin-top: 0; }
+    .pt-hp { font-size: 16px; text-align: right; }
+    .pt-cancel { margin-top: 6px; text-align: center; cursor: pointer; padding: 6px;
+        background: linear-gradient(180deg, #5878b8 0%, #40589a 100%);
+        border: 2px solid #202850; border-radius: 6px; color: #f8f8f8; text-shadow: 1px 1px 0 #303860; font-size: 16px; }
+
+    /* ---------- SUMMARY (Emerald summary screens) ---------- */
+    .em-sum { padding: 6px; background: linear-gradient(160deg, #28a080 0%, #187860 100%);
+        border: 2px solid #0e5844; border-radius: 4px; }
+    .sum-head { display: flex; align-items: center; gap: 10px; padding: 4px; }
+    .sum-sprite { width: 96px; height: 96px; }
+    .sum-id { color: #f8f8f8; text-shadow: 1px 1px 0 #305048; font-size: 16px; line-height: 20px; }
+    .sum-id b { font-weight: normal; text-transform: uppercase; }
+    .sum-tabs { display: flex; gap: 4px; margin: 4px 0; }
+    .sum-tab { padding: 3px 12px; font-size: 16px; cursor: pointer; border-radius: 4px 4px 0 0;
+        background: #1d7058; color: #b8d8c8; text-shadow: 1px 1px 0 #0e4838; }
+    .sum-tab.active { background: #fff; color: var(--em-text); text-shadow: 1px 1px 0 var(--em-shadow); }
+    .sum-body { padding: 8px 10px; min-height: 150px; }
+    .sum-row { display: flex; justify-content: space-between; font-size: 16px; padding: 3px 2px; }
+    .sum-row b { font-weight: normal; }
+    .sum-move { display: flex; align-items: center; gap: 6px; padding: 4px 2px; font-size: 16px; flex-wrap: wrap; }
+    .sum-move b { font-weight: normal; }
+    .sum-move span { margin-left: auto; }
+    .sum-move small { width: 100%; font-size: 12px; padding-left: 4px; }
+
+    /* ---------- POKéDEX (Emerald dex list) ---------- */
+    .em-dex { background: #101828; border: 2px solid #303c58; border-radius: 4px; padding: 6px;
+        color: #e8e8e8; text-shadow: 1px 1px 0 #000; }
+    .dx-head { font-size: 16px; padding: 4px 6px; color: #f8d848; display: flex; justify-content: space-between; }
+    .dx-head span { color: #b8c8d8; }
+    .dx-list { max-height: 60vh; overflow-y: auto; }
+    .dx-row { display: flex; align-items: center; gap: 8px; padding: 3px 4px 3px 14px;
+        font-size: 16px; cursor: pointer; position: relative; }
+    .dx-row.unseen { cursor: default; color: #58687a; }
+    .dx-row img { width: 28px; height: 28px; }
+    .dx-row b { font-weight: normal; }
+    .dx-no { color: #88a0b8; }
+    .dx-blank { width: 28px; height: 28px; }
+    .dx-ball { width: 12px !important; height: 12px !important; margin-left: auto; }
+    .dx-cancel { color: #f8d848; padding: 6px 4px 6px 14px; }
+    .dx-entry { padding: 8px; }
+    .dx-etop { display: flex; align-items: center; gap: 12px; font-size: 16px; }
+    .dx-etop img { width: 96px; height: 96px; }
+    .dx-etop b { font-weight: normal; font-size: 16px; }
+    .dx-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin: 10px 0; }
+    .dx-stats span { background: #1c2840; padding: 4px; text-align: center; font-size: 16px; display: flex; flex-direction: column; }
+    .dx-stats em { font-style: normal; font-size: 12px; color: #88a0b8; }
+    .dx-note { font-size: 16px; color: #b8c8d8; padding: 4px 2px; }
+
+    /* ---------- BAG / MART shared desc box ---------- */
+    .em-bag, .em-mart { padding: 4px; }
+    .bag-desc { margin-top: 6px; min-height: 44px; padding: 6px 8px;
+        background: linear-gradient(180deg, #38506a, #2a3c52); border: 2px solid #182430; border-radius: 4px;
+        color: #f8f8f8; text-shadow: 1px 1px 0 #182430; font-size: 16px; line-height: 16px; }
+    .mart-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+    .mart-hello { padding: 6px 10px; font-size: 16px; flex: 1; }
+    .mart-money { padding: 4px 10px; font-size: 16px; text-align: right; white-space: nowrap; }
+    .mart-money b { font-weight: normal; }
+
     /* ---------- Emerald START menu (top-right window + desc box) ---------- */
     .esm-overlay { position: absolute; inset: 0; pointer-events: auto; }
     .esm-win { position: absolute; top: 10px; right: 10px; width: 176px;

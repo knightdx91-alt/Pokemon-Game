@@ -22,15 +22,7 @@
     function screen() {
         const s = $('#screen');
         s.innerHTML = '';
-        // Overworld mode: menu screens float over the walkable world, so give
-        // every non-battle screen a way back to it.
-        if (UI.worldMode && window.CraterOverworld && CraterOverworld.entered && !UI.battle) {
-            const bar = el('div', 'world-back-bar');
-            const btn = el('button', 'world-back-btn', 'CLOSE');
-            btn.onclick = () => UI.closeToWorld();
-            bar.appendChild(btn);
-            s.appendChild(bar);
-        }
+        navReset();
         // Re-sync topbar visibility once the caller has filled the screen in.
         setTimeout(() => UI.updateTopbar(), 0);
         return s;
@@ -43,6 +35,97 @@
         UI.updateTopbar();
         if (window.CraterOverworld && CraterOverworld.onScreenClosed) CraterOverworld.onScreenClosed();
     };
+
+    // ---------------------------------------------------------- navigation --
+    // Gamepad (D-pad/A/B/START) + keyboard control for every menu, exactly
+    // like the GBA: a cursor moves over the current window's entries.
+    const Nav = { items: [], idx: -1, cols: 1, onBack: null, stack: [] };
+    function navReset() { navMark(-1); Nav.items = []; Nav.onBack = null; Nav.stack = []; }
+    function navPush() {
+        Nav.stack.push({ items: Nav.items, idx: Nav.idx, cols: Nav.cols, onBack: Nav.onBack });
+        Nav.items = []; Nav.idx = -1; Nav.onBack = null;
+    }
+    function navPop() {
+        const st = Nav.stack.pop();
+        navMark(-1);
+        if (st) { Nav.items = st.items; Nav.cols = st.cols; Nav.onBack = st.onBack; navMark(st.idx); }
+        else { Nav.items = []; Nav.onBack = null; }
+    }
+    function navSet(items, opts) {
+        opts = opts || {};
+        navMark(-1);
+        Nav.items = (items || []).filter(it => it && it.isConnected !== false);
+        Nav.cols = opts.cols || 1;
+        Nav.onBack = opts.onBack || null;
+        if (Nav.items.length) navMark(opts.idx || 0);
+    }
+    function navMark(idx) {
+        Nav.items.forEach(it => it.classList && it.classList.remove('nav-sel'));
+        Nav.idx = idx;
+        const it = Nav.items[idx];
+        if (it) {
+            it.classList.add('nav-sel');
+            if (it.scrollIntoView) it.scrollIntoView({ block: 'nearest' });
+            it.dispatchEvent(new Event('mouseenter'));   // sync PP box / desc boxes
+        }
+    }
+    function navMove(dx, dy) {
+        const n = Nav.items.length;
+        if (!n) return false;
+        let idx = (Nav.idx < 0 ? 0 : Nav.idx) + dx + dy * Nav.cols;
+        idx = ((idx % n) + n) % n;
+        navMark(idx);
+        return true;
+    }
+    function navKey(k) {
+        switch (k) {
+            case 'up': return navMove(0, -1);
+            case 'down': return navMove(0, 1);
+            case 'left': return navMove(-1, 0);
+            case 'right': return navMove(1, 0);
+            case 'a': {
+                const it = Nav.items[Nav.idx];
+                if (it) { it.click(); return true; }
+                return false;
+            }
+            case 'b': {
+                if (Nav.onBack) { const f = Nav.onBack; f(); return true; }
+                const scr = $('#screen');
+                if (scr && scr.childElementCount > 0 && !UI.battle) { UI.closeToWorld(); return true; }
+                return false;
+            }
+            case 'start': {
+                const esm = $('#modal-layer .esm-overlay');
+                if (esm) { esm.remove(); navPop(); return true; }
+                return false;
+            }
+        }
+        return false;
+    }
+    function uiNavActive() { return Nav.items.length > 0; }
+    // On-screen gamepad: intercept before the engine when a menu is open.
+    const GP_KEYS = { 'gp-up': 'up', 'gp-down': 'down', 'gp-left': 'left', 'gp-right': 'right', 'gp-a': 'a', 'gp-b': 'b', 'gp-start': 'start' };
+    Object.keys(GP_KEYS).forEach(id => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        btn.addEventListener('pointerdown', ev => {
+            const k = GP_KEYS[id];
+            if (k === 'start') {
+                if (!$('#modal-layer .esm-overlay')) return;   // let the engine open the menu
+            } else if (!uiNavActive()) return;                 // world mode: engine input
+            ev.preventDefault(); ev.stopPropagation();
+            navKey(k);
+        }, { capture: true });
+    });
+    document.addEventListener('keydown', e => {
+        if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
+        const map = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right',
+                      Enter: 'a', z: 'a', Z: 'a', x: 'b', X: 'b', Escape: 'b', Backspace: 'b' };
+        const k = map[e.key];
+        if (!k) return;
+        if (!uiNavActive() && k !== 'b') return;
+        if (navKey(k)) e.preventDefault();
+    });
 
     // ------------------------------------------------ Emerald START menu ----
     // The real pokeemerald pause menu: a white window in the top-right corner
@@ -66,8 +149,12 @@
         const overlay = el('div', 'esm-overlay');
         const win = el('div', 'esm-win');
         const desc = el('div', 'esm-desc');
-        function close() { overlay.remove(); }
-        overlay.onclick = e => { if (e.target === overlay) close(); };
+        navPush();
+        function close() { overlay.remove(); navPop(); }
+        // Guard against the same tap that opened the menu (START button sits
+        // under the new overlay, so its pointerup lands here and closed it).
+        const openedAt = Date.now();
+        overlay.onclick = e => { if (Date.now() - openedAt > 400 && e.target === overlay) close(); };
         START_MENU.forEach((item, i) => {
             const label = item.label || G.state.name.toUpperCase();
             const row = el('div', 'esm-row' + (i === 0 ? ' sel' : ''), esc(label));
@@ -88,6 +175,7 @@
         overlay.appendChild(win);
         overlay.appendChild(desc);
         layer.appendChild(overlay);
+        navSet([...win.children], { onBack: close });
     };
 
     // ---------------------------------------------------------------- SAVE --
@@ -170,69 +258,6 @@
         s.appendChild(card);
     };
 
-    // ---------------------------------------------------------------- BAG ---
-    // Emerald bag pockets. Items usable on the party outside battle.
-    const POCKETS = [
-        ['ITEMS', id => D.ITEMS[id].kind !== 'ball'],
-        ['POKé BALLS', id => D.ITEMS[id].kind === 'ball'],
-    ];
-    let curPocket = 0;
-    UI.showBag = function () {
-        const s = screen();
-        s.appendChild(el('h2', '', 'BAG'));
-        const tabs = el('div', 'bag-tabs');
-        POCKETS.forEach(([name], i) => {
-            const t = el('button', 'bag-tab' + (i === curPocket ? ' active' : ''), esc(name));
-            t.onclick = () => { curPocket = i; UI.showBag(); };
-            tabs.appendChild(t);
-        });
-        s.appendChild(tabs);
-        const list = el('div', 'ew bag-list');
-        const ids = Object.keys(D.ITEMS).filter(id => (G.state.items[id] || 0) > 0 && POCKETS[curPocket][1](id));
-        if (!ids.length) list.appendChild(el('div', 'bag-empty', 'There are no items.'));
-        ids.forEach(id => {
-            const it = D.ITEMS[id];
-            const row = el('div', 'bag-row', '<span>' + esc(it.name.toUpperCase()) + '</span><b>×' + G.state.items[id] + '</b>');
-            row.onclick = () => bagItemActions(id);
-            list.appendChild(row);
-        });
-        s.appendChild(list);
-        s.appendChild(el('div', 'muted', 'CANCEL: use the CLOSE button above.'));
-    };
-
-    async function bagItemActions(id) {
-        const it = D.ITEMS[id];
-        const idx = await choose(it.name.toUpperCase() + ' is selected.', [{ label: 'USE' }, { label: 'CANCEL' }], false);
-        if (idx !== 0) return;
-        if (it.kind === 'ball') { await alertModal('OAK: This isn\'t the time to use that!'); return; }
-        const targets = G.state.party.map((m, i) => ({ mon: m, i: i })).filter(x =>
-            it.kind === 'revive' ? x.mon.hp <= 0 : true);
-        if (!targets.length) { await alertModal('It won\'t have any effect.'); return; }
-        const t = await choose('Use on which POKéMON?', targets.map(x => ({
-            label: M.displayName(x.mon) + ' Lv' + x.mon.level,
-            sub: x.mon.hp + '/' + M.stats(x.mon).hp + ' HP' + (x.mon.status ? ' · ' + x.mon.status : ''),
-            img: D.sprite(x.mon.slug, 'icons'),
-        })));
-        if (t === null) return;
-        const mon = targets[t].mon;
-        const max = M.stats(mon).hp;
-        let msg = null;
-        if (it.kind === 'heal') {
-            if (mon.hp <= 0 || mon.hp >= max) msg = 'It won\'t have any effect.';
-            else { const before = mon.hp; mon.hp = Math.min(max, mon.hp + it.heal); msg = M.displayName(mon) + '\'s HP was restored by ' + (mon.hp - before) + ' points.'; }
-        } else if (it.kind === 'cure') {
-            if (!mon.status) msg = 'It won\'t have any effect.';
-            else { mon.status = null; msg = M.displayName(mon) + ' became healthy!'; }
-        } else if (it.kind === 'revive') {
-            mon.hp = Math.max(1, Math.floor(max / 2));
-            msg = M.displayName(mon) + ' was revived!';
-        }
-        if (msg && msg !== 'It won\'t have any effect.') G.useItem(id);
-        G.save();
-        await alertModal(msg || 'Nothing happened.');
-        UI.showBag();
-    }
-
     const TYPE_COLORS = {
         Normal: '#9fa19f', Fighting: '#ff8000', Flying: '#81b9ef', Poison: '#9141cb',
         Ground: '#915121', Rock: '#afa981', Bug: '#91a119', Ghost: '#704170',
@@ -273,7 +298,8 @@
             const win = el('div', 'modal-win');
             overlay.appendChild(win);
             layer.appendChild(overlay);
-            build(win, val => { overlay.remove(); resolve(val); });
+            navPush();
+            build(win, val => { overlay.remove(); navPop(); resolve(val); });
         });
     }
     // options: [{label, sub, disabled, img, filter}] -> resolves index or null
@@ -294,10 +320,12 @@
                 win.appendChild(row);
             });
             if (allowCancel !== false) {
-                const c = el('button', 'modal-cancel', 'Cancel');
+                const c = el('button', 'modal-cancel', 'CANCEL');
                 c.onclick = () => done(null);
                 win.appendChild(c);
             }
+            navSet([...win.querySelectorAll('.modal-opt:not(.disabled), .modal-cancel')],
+                { onBack: allowCancel !== false ? () => done(null) : null });
         });
     }
     function alertModal(text) {
@@ -306,6 +334,7 @@
             const ok = el('button', 'modal-opt', '<b>OK</b>');
             ok.onclick = () => done(true);
             win.appendChild(ok);
+            navSet([ok], { onBack: () => done(true) });
         });
     }
 
@@ -566,6 +595,7 @@
         if (ps) { ps.src = D.sprite(p.slug, 'back'); ps.style.filter = variantFilter(p); ps.classList.remove('gone'); }
     }
     function setLog(text) {
+        navSet([]);   // no cursor while a message plays
         const bottom = $('#bt-panel');
         if (!bottom) return;
         bottom.innerHTML = '<div class="eb-msg" id="bt-msg"></div>';
@@ -595,6 +625,7 @@
         mk('POKéMON', () => openSwitch(false));
         mk('RUN', () => doTurn({ type: 'run' }));
         bottom.appendChild(cmd);
+        navSet([...cmd.children], { cols: 2 });
     }
 
     /** Emerald move-select phase: 2×2 move grid + PP/TYPE box. */
@@ -625,6 +656,8 @@
         bottom.appendChild(grid);
         bottom.appendChild(pp);
         showPP(p.moves[0]);
+        navSet([...grid.children].filter(b => !b.disabled && b.textContent !== '-'),
+            { cols: 2, onBack: renderActions });
     }
 
     async function openBag() {
@@ -868,15 +901,27 @@
     }
 
     // ================================================================ PARTY ==
+    // Emerald party menu: teal background, big lead slot + list slots, CANCEL.
     UI.showParty = function () {
         UI.updateTopbar();
         const s = screen();
-        const wrap = el('div', 'party-screen');
-        wrap.appendChild(el('h2', '', 'Party (' + G.state.party.length + '/6)'));
+        const wrap = el('div', 'em-party');
+        wrap.appendChild(el('div', 'em-screen-head', 'Choose a POKéMON.'));
+        const grid = el('div', 'pt-grid');
+        const navRows = [];
         G.state.party.forEach((mon, i) => {
-            wrap.appendChild(partyRow(mon, i, false));
+            const slot = partySlot(mon, i === 0);
+            slot.onclick = () => partyActions(mon, i);
+            navRows.push(slot);
+            grid.appendChild(slot);
         });
-        wrap.appendChild(el('h2', '', 'PC Box (' + G.state.box.length + ')'));
+        wrap.appendChild(grid);
+        const cancel = el('div', 'pt-cancel', 'CANCEL');
+        cancel.onclick = () => UI.closeToWorld();
+        wrap.appendChild(cancel);
+        navRows.push(cancel);
+
+        wrap.appendChild(el('div', 'em-screen-head', 'PC BOX (' + G.state.box.length + ')'));
         if (!G.state.box.length) wrap.appendChild(el('div', 'muted', 'Nothing stored. Catches overflow here when your party is full.'));
         const boxGrid = el('div', 'box-grid');
         G.state.box.forEach((mon, i) => {
@@ -888,133 +933,325 @@
         });
         wrap.appendChild(boxGrid);
         s.appendChild(wrap);
+        navSet(navRows, { onBack: () => UI.closeToWorld() });
     };
 
-    function partyRow(mon, i) {
+    function partySlot(mon, big) {
         const st = M.stats(mon);
         const pct = hpPct(mon);
-        const row = el('div', 'party-row');
+        const slot = el('div', 'pt-slot' + (big ? ' big' : '') + (mon.hp <= 0 ? ' fnt' : ''));
         const vf = variantFilter(mon);
-        row.innerHTML = '<img src="' + D.sprite(mon.slug, 'icons') + '"' + (vf ? ' style="filter:' + vf + '"' : '') + '>' +
-            '<div class="pr-mid"><b>' + monLabel(mon) + (mon.gender ? ' <i class="g-' + mon.gender + '">' + (mon.gender === 'M' ? '♂' : '♀') + '</i>' : '') + '</b> Lv' + mon.level + ' ' + statusTag(mon) +
-            '<div class="hp-outer"><div class="hp-inner" style="width:' + pct + '%;background:' + hpColor(pct) + '"></div></div>' +
-            '<small>' + mon.hp + '/' + st.hp + ' HP</small></div>';
-        const btns = el('div', 'pr-btns');
-        const info = el('button', 'sm-btn', 'INFO');
-        info.onclick = () => monDetails(mon);
-        btns.appendChild(info);
-        if (i > 0) {
-            const up = el('button', 'sm-btn', 'UP');
-            up.title = 'Make leader';
-            up.onclick = () => {
-                G.state.party.splice(i, 1);
-                G.state.party.unshift(mon);
-                G.save(); UI.showParty();
-            };
-            btns.appendChild(up);
+        slot.innerHTML =
+            '<img src="' + D.sprite(mon.slug, 'icons') + '"' + (vf ? ' style="filter:' + vf + '"' : '') + '>' +
+            '<div class="pt-mid">' +
+            '<div class="pt-name">' + monLabel(mon) +
+            (mon.gender ? ' <i class="g-' + mon.gender + '">' + (mon.gender === 'M' ? '♂' : '♀') + '</i>' : '') +
+            ' <span class="pt-lv">Lv' + mon.level + '</span> ' + statusTag(mon) + '</div>' +
+            '<div class="pt-bar"><em>HP</em><div class="hp-outer"><div class="hp-inner" style="width:' + pct + '%;background:' + hpColor(pct) + '"></div></div></div>' +
+            '<div class="pt-hp">' + mon.hp + '/' + st.hp + '</div>' +
+            '</div>';
+        return slot;
+    }
+
+    async function partyActions(mon, i) {
+        const opts = [{ label: 'SUMMARY' }];
+        if (i > 0) opts.push({ label: 'SWITCH', sub: 'Move to the front of the party' });
+        if (G.state.party.length > 1) opts.push({ label: 'SEND TO BOX' });
+        opts.push({ label: 'CANCEL' });
+        const idx = await choose('Do what with ' + M.displayName(mon) + '?', opts, false);
+        const lab = idx !== null && opts[idx] ? opts[idx].label : 'CANCEL';
+        if (lab === 'SUMMARY') UI.showSummary(mon);
+        else if (lab === 'SWITCH') {
+            G.state.party.splice(i, 1);
+            G.state.party.unshift(mon);
+            G.save(); UI.showParty();
+        } else if (lab === 'SEND TO BOX') {
+            G.state.party.splice(i, 1);
+            G.state.box.push(mon);
+            G.save(); UI.showParty();
         }
-        if (G.state.party.length > 1) {
-            const box = el('button', 'sm-btn', 'BOX');
-            box.title = 'Send to box';
-            box.onclick = () => {
-                G.state.party.splice(i, 1);
-                G.state.box.push(mon);
-                G.save(); UI.showParty();
-            };
-            btns.appendChild(box);
-        }
-        row.appendChild(btns);
-        return row;
     }
 
     async function boxActions(mon, i) {
         const idx = await choose(M.displayName(mon) + ' Lv' + mon.level, [
-            { label: 'Add to party', disabled: G.state.party.length >= 6, sub: G.state.party.length >= 6 ? 'Party is full' : '' },
-            { label: 'Details' },
-            { label: 'Release', sub: 'Goodbye forever!' },
+            { label: 'ADD TO PARTY', disabled: G.state.party.length >= 6, sub: G.state.party.length >= 6 ? 'Party is full' : '' },
+            { label: 'SUMMARY' },
+            { label: 'RELEASE', sub: 'Goodbye forever!' },
         ]);
         if (idx === 0) {
             G.state.box.splice(i, 1);
             G.state.party.push(mon);
             G.save(); UI.showParty();
-        } else if (idx === 1) monDetails(mon);
+        } else if (idx === 1) UI.showSummary(mon);
         else if (idx === 2) {
             G.state.box.splice(i, 1);
             G.save(); UI.showParty();
         }
     }
 
-    function monDetails(mon) {
+    // ============================================================== SUMMARY ==
+    // Emerald Pokémon summary: INFO / SKILLS / MOVES pages.
+    let sumPage = 0;
+    UI.showSummary = function (mon) {
+        const s = screen();
         const sp = D.species[mon.dex];
         const st = M.stats(mon);
-        modal((win, done) => {
-            const vf = variantFilter(mon);
-            win.appendChild(el('div', 'detail-head',
-                '<img src="' + D.sprite(mon.slug, 'front') + '"' + (vf ? ' style="filter:' + vf + '"' : '') + '>' +
-                '<div><b>' + monLabel(mon) + '</b> Lv' + mon.level +
-                (mon.gender ? ' <i class="g-' + mon.gender + '">' + (mon.gender === 'M' ? '♂' : '♀') + '</i>' : '') +
-                '<br>' + sp.types.map(typeChip).join('') +
-                '<br><small>Nature: ' + D.natures[mon.natureIdx].name + ' · #' + mon.dex + '</small></div>'));
-            const stats = el('div', 'detail-stats');
-            stats.innerHTML = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].map(k =>
-                '<span><em>' + k.toUpperCase() + '</em>' + st[k] + '<small>iv ' + mon.ivs[k] + '</small></span>').join('');
-            win.appendChild(stats);
-            const mv = el('div', 'detail-moves');
+        const vf = variantFilter(mon);
+        const wrap = el('div', 'em-sum');
+
+        const head = el('div', 'sum-head');
+        head.innerHTML =
+            '<img class="sum-sprite" src="' + D.sprite(mon.slug, 'front') + '"' + (vf ? ' style="filter:' + vf + '"' : '') + '>' +
+            '<div class="sum-id"><b>' + monLabel(mon) + '</b>' +
+            (mon.gender ? ' <i class="g-' + mon.gender + '">' + (mon.gender === 'M' ? '♂' : '♀') + '</i>' : '') +
+            '<br>Lv' + mon.level + ' ' + statusTag(mon) +
+            '<br>' + sp.types.map(typeChip).join('') + '</div>';
+        wrap.appendChild(head);
+
+        const tabs = el('div', 'sum-tabs');
+        const pages = ['INFO', 'SKILLS', 'MOVES'];
+        const tabEls = pages.map((name, i) => {
+            const t = el('div', 'sum-tab' + (i === sumPage ? ' active' : ''), name);
+            t.onclick = () => { sumPage = i; UI.showSummary(mon); };
+            tabs.appendChild(t);
+            return t;
+        });
+        wrap.appendChild(tabs);
+
+        const body = el('div', 'ew sum-body');
+        if (sumPage === 0) {
+            const cur = D.expForLevel(sp.growthRate, mon.level);
+            const next = D.expForLevel(sp.growthRate, mon.level + 1);
+            body.innerHTML =
+                srow('POKéDEX No.', String(mon.dex)) +
+                srow('NAME', esc(sp.name.toUpperCase())) +
+                srow('TYPE', sp.types.map(typeChip).join('')) +
+                srow('NATURE', esc(D.natures[mon.natureIdx].name)) +
+                srow('EXP. POINTS', String(mon.exp)) +
+                srow('NEXT LV.', mon.level >= 100 ? '—' : String(Math.max(0, next - mon.exp))) +
+                (mon.variant !== 'normal' ? srow('VARIANT', esc(M.VARIANTS[mon.variant].label)) : '');
+        } else if (sumPage === 1) {
+            body.innerHTML =
+                srow('HP', mon.hp + '/' + st.hp) +
+                srow('ATTACK', String(st.atk)) +
+                srow('DEFENSE', String(st.def)) +
+                srow('SP. ATK', String(st.spa)) +
+                srow('SP. DEF', String(st.spd)) +
+                srow('SPEED', String(st.spe));
+        } else {
             mon.moves.forEach(m => {
                 const mm = D.moves[m.id];
-                mv.innerHTML += '<div>' + typeChip(mm.type) + ' <b>' + esc(mm.name) + '</b> <span>' + (mm.power || '—') + ' pow · ' + (mm.accuracy > 100 ? '—' : mm.accuracy) + '% · ' + m.pp + '/' + m.maxPp + ' PP</span></div>';
+                body.innerHTML += '<div class="sum-move">' + typeChip(mm.type) + ' <b>' + esc(mm.name.toUpperCase()) + '</b>' +
+                    '<span>PP ' + m.pp + '/' + m.maxPp + '</span>' +
+                    '<small>POWER ' + (mm.power || '—') + ' · ACC. ' + (mm.accuracy > 100 ? '—' : mm.accuracy) + '</small></div>';
             });
-            win.appendChild(mv);
-            const ok = el('button', 'modal-cancel', 'Close');
-            ok.onclick = () => done(null);
-            win.appendChild(ok);
-        });
-    }
+        }
+        wrap.appendChild(body);
+        s.appendChild(wrap);
+        navSet(tabEls, { cols: 3, idx: sumPage, onBack: () => UI.showParty() });
+    };
+    function srow(k, v) { return '<div class="sum-row"><span>' + k + '</span><b>' + v + '</b></div>'; }
 
     // ================================================================== DEX ==
+    // Emerald Pokédex: dark list — No. / name / caught ball. Entries open a
+    // dex page with the sprite, types and base stats.
     UI.showDex = function () {
         UI.updateTopbar();
         const s = screen();
         const dc = G.dexCounts();
-        s.appendChild(el('h2', 'dex-head', 'Pokédex — seen ' + dc.seen + ' · caught ' + dc.caught + ' / ' + D.MAX_DEX));
-        const grid = el('div', 'dex-grid');
+        const wrap = el('div', 'em-dex');
+        wrap.appendChild(el('div', 'dx-head', 'POKéDEX <span>SEEN ' + dc.seen + ' · OWNED ' + dc.caught + '</span>'));
+        const list = el('div', 'dx-list');
+        const navRows = [];
         for (let dex = 1; dex <= D.MAX_DEX; dex++) {
             const sp = D.species[dex];
             if (!sp) continue;
             const seen = G.state.dex.seen[sp.slug];
             const caught = G.state.dex.caught[sp.slug];
-            const cell = el('div', 'dex-cell' + (seen ? '' : ' unseen'));
-            cell.innerHTML = '<img loading="lazy" src="' + D.sprite(sp.slug, 'icons') + '">' +
-                '<span>#' + dex + (caught ? ' ◓' : '') + '</span>' +
-                (seen ? '<b>' + esc(sp.name) + '</b>' : '<b>???</b>');
-            grid.appendChild(cell);
+            const row = el('div', 'dx-row' + (seen ? '' : ' unseen'));
+            row.innerHTML = '<span class="dx-no">No.' + String(dex).padStart(3, '0') + '</span>' +
+                (seen ? '<img loading="lazy" src="' + D.sprite(sp.slug, 'icons') + '"><b>' + esc(sp.name.toUpperCase()) + '</b>' : '<i class="dx-blank"></i><b>——————</b>') +
+                (caught ? '<img class="dx-ball" src="src/assets/emerald_ui/ball_caught.png">' : '');
+            if (seen) {
+                row.onclick = () => showDexEntry(dex);
+                navRows.push(row);
+            }
+            list.appendChild(row);
         }
-        s.appendChild(grid);
+        wrap.appendChild(list);
+        const cancel = el('div', 'dx-row dx-cancel', 'CANCEL');
+        cancel.onclick = () => UI.closeToWorld();
+        wrap.appendChild(cancel);
+        navRows.push(cancel);
+        s.appendChild(wrap);
+        navSet(navRows, { onBack: () => UI.closeToWorld() });
     };
 
+    function showDexEntry(dex) {
+        const sp = D.species[dex];
+        const s = screen();
+        const wrap = el('div', 'em-dex');
+        const caught = G.state.dex.caught[sp.slug];
+        const e = el('div', 'dx-entry');
+        e.innerHTML =
+            '<div class="dx-etop"><img src="' + D.sprite(sp.slug, 'front') + '">' +
+            '<div><span class="dx-no">No.' + String(dex).padStart(3, '0') + '</span><br><b>' + esc(sp.name.toUpperCase()) + '</b>' +
+            (caught ? ' <img class="dx-ball" src="src/assets/emerald_ui/ball_caught.png">' : '') +
+            '<br>' + sp.types.map(typeChip).join('') + '</div></div>' +
+            (sp.stats ? '<div class="dx-stats">' + ['hp', 'atk', 'def', 'spa', 'spd', 'spe'].map(k =>
+                '<span><em>' + k.toUpperCase() + '</em>' + sp.stats[k] + '</span>').join('') + '</div>' : '') +
+            '<div class="dx-note">' + (caught ? 'This POKéMON has been caught.' : 'This POKéMON has been seen, but not yet caught.') + '</div>';
+        wrap.appendChild(e);
+        const back = el('div', 'dx-row dx-cancel', 'BACK');
+        back.onclick = () => UI.showDex();
+        wrap.appendChild(back);
+        s.appendChild(wrap);
+        navSet([back], { onBack: () => UI.showDex() });
+    }
+
+    // ================================================================== BAG ==
+    // Emerald bag: pocket tabs, item list with cursor, description box.
+    const POCKETS = [
+        ['ITEMS', id => D.ITEMS[id].kind !== 'ball'],
+        ['POKé BALLS', id => D.ITEMS[id].kind === 'ball'],
+    ];
+    let curPocket = 0;
+    function itemDesc(id) {
+        const it = D.ITEMS[id];
+        if (it.kind === 'ball') return it.name === 'Master Ball' ?
+            'The best BALL. It catches a wild POKéMON without fail.' :
+            'A device for catching wild POKéMON. It is thrown like a ball.';
+        if (it.kind === 'heal') return it.heal >= 9999 ?
+            'Fully restores the HP of a POKéMON.' :
+            'Restores the HP of a POKéMON by ' + it.heal + ' points.';
+        if (it.kind === 'cure') return 'Heals all the status problems of one POKéMON.';
+        if (it.kind === 'revive') return 'Revives a fainted POKéMON with half its maximum HP.';
+        return '';
+    }
+
+    UI.showBag = function () {
+        UI.updateTopbar();
+        const s = screen();
+        const wrap = el('div', 'em-bag');
+        const tabs = el('div', 'bag-tabs');
+        POCKETS.forEach(([name], i) => {
+            const t = el('button', 'bag-tab' + (i === curPocket ? ' active' : ''), esc(name));
+            t.onclick = () => { curPocket = i; UI.showBag(); };
+            tabs.appendChild(t);
+        });
+        wrap.appendChild(tabs);
+        const list = el('div', 'ew bag-list');
+        const desc = el('div', 'bag-desc');
+        const navRows = [];
+        const ids = Object.keys(D.ITEMS).filter(id => (G.state.items[id] || 0) > 0 && POCKETS[curPocket][1](id));
+        if (!ids.length) list.appendChild(el('div', 'bag-empty', 'There are no items.'));
+        ids.forEach(id => {
+            const it = D.ITEMS[id];
+            const row = el('div', 'bag-row', '<span>' + esc(it.name.toUpperCase()) + '</span><b>×' + G.state.items[id] + '</b>');
+            row.onmouseenter = () => { desc.textContent = itemDesc(id); };
+            row.onclick = () => bagItemActions(id);
+            navRows.push(row);
+            list.appendChild(row);
+        });
+        const close = el('div', 'bag-row', '<span>CLOSE BAG</span>');
+        close.onmouseenter = () => { desc.textContent = 'Return to the field.'; };
+        close.onclick = () => UI.closeToWorld();
+        navRows.push(close);
+        list.appendChild(close);
+        wrap.appendChild(list);
+        desc.textContent = ids.length ? itemDesc(ids[0]) : 'There are no items.';
+        wrap.appendChild(desc);
+        s.appendChild(wrap);
+        navSet(navRows, { onBack: () => UI.closeToWorld() });
+    };
+
+    async function bagItemActions(id) {
+        const it = D.ITEMS[id];
+        const idx = await choose(it.name.toUpperCase() + ' is selected.', [{ label: 'USE' }, { label: 'TOSS' }, { label: 'CANCEL' }], false);
+        if (idx === 1) {
+            const c = await choose('Throw away one ' + it.name.toUpperCase() + '?', [{ label: 'YES' }, { label: 'NO' }], false);
+            if (c === 0) { G.useItem(id); G.save(); await alertModal('Threw away one ' + it.name.toUpperCase() + '.'); }
+            UI.showBag();
+            return;
+        }
+        if (idx !== 0) return;
+        if (it.kind === 'ball') { await alertModal("OAK: This isn't the time to use that!"); return; }
+        const targets = G.state.party.map((m, i) => ({ mon: m, i: i })).filter(x =>
+            it.kind === 'revive' ? x.mon.hp <= 0 : true);
+        if (!targets.length) { await alertModal("It won't have any effect."); return; }
+        const t = await choose('Use on which POKéMON?', targets.map(x => ({
+            label: M.displayName(x.mon) + ' Lv' + x.mon.level,
+            sub: x.mon.hp + '/' + M.stats(x.mon).hp + ' HP' + (x.mon.status ? ' · ' + x.mon.status : ''),
+            img: D.sprite(x.mon.slug, 'icons'),
+        })));
+        if (t === null) return;
+        const mon = targets[t].mon;
+        const max = M.stats(mon).hp;
+        let msg = null, used = false;
+        if (it.kind === 'heal') {
+            if (mon.hp <= 0 || mon.hp >= max) msg = "It won't have any effect.";
+            else { const before = mon.hp; mon.hp = Math.min(max, mon.hp + it.heal); used = true; msg = M.displayName(mon) + "'s HP was restored by " + (mon.hp - before) + ' points.'; }
+        } else if (it.kind === 'cure') {
+            if (!mon.status) msg = "It won't have any effect.";
+            else { mon.status = null; used = true; msg = M.displayName(mon) + ' became healthy!'; }
+        } else if (it.kind === 'revive') {
+            mon.hp = Math.max(1, Math.floor(max / 2));
+            used = true; msg = M.displayName(mon) + ' was revived!';
+        }
+        if (used) G.useItem(id);
+        G.save();
+        await alertModal(msg || 'Nothing happened.');
+        UI.showBag();
+    }
+
     // ================================================================= MART ==
+    // Emerald shop: money window, wares with prices, description box.
     UI.showMart = function () {
         UI.updateTopbar();
         const s = screen();
-        s.appendChild(el('h2', '', 'POKéMART'));
-        const list = el('div', 'mart-list');
+        const wrap = el('div', 'em-mart');
+        const top = el('div', 'mart-top');
+        top.innerHTML = '<div class="ew mart-hello">May I help you?</div>' +
+            '<div class="ew mart-money">MONEY<br><b>$' + G.state.money.toLocaleString() + '</b></div>';
+        wrap.appendChild(top);
+        const list = el('div', 'ew bag-list');
+        const desc = el('div', 'bag-desc');
+        const navRows = [];
         for (const id in D.ITEMS) {
             const it = D.ITEMS[id];
-            const row = el('div', 'mart-row');
-            row.innerHTML = '<div class="mr-mid"><b>' + it.icon + ' ' + esc(it.name) + '</b>' +
-                '<small>₽' + it.price.toLocaleString() + ' · owned ×' + (G.state.items[id] || 0) + '</small></div>';
-            const btns = el('div', 'pr-btns');
-            [[1, 'Buy 1'], [10, 'Buy 10']].forEach(([q, label]) => {
-                const b = el('button', 'sm-btn primary', label);
-                b.disabled = !G.canAfford(id, q);
-                b.onclick = () => { G.buy(id, q); UI.showMart(); };
-                btns.appendChild(b);
-            });
-            row.appendChild(btns);
+            const row = el('div', 'bag-row',
+                '<span>' + esc(it.name.toUpperCase()) + '</span><b>$' + it.price.toLocaleString() + '</b>');
+            row.onmouseenter = () => { desc.textContent = itemDesc(id) + ' (Owned: ' + (G.state.items[id] || 0) + ')'; };
+            row.onclick = () => martBuy(id);
+            navRows.push(row);
             list.appendChild(row);
         }
-        s.appendChild(list);
+        const bye = el('div', 'bag-row', '<span>CANCEL</span>');
+        bye.onmouseenter = () => { desc.textContent = 'Leave the shop.'; };
+        bye.onclick = () => UI.closeToWorld();
+        navRows.push(bye);
+        list.appendChild(bye);
+        wrap.appendChild(list);
+        desc.textContent = 'May I help you?';
+        wrap.appendChild(desc);
+        s.appendChild(wrap);
+        navSet(navRows, { onBack: () => UI.closeToWorld() });
     };
+
+    async function martBuy(id) {
+        const it = D.ITEMS[id];
+        const opts = [
+            { label: '×1 — $' + it.price.toLocaleString(), disabled: !G.canAfford(id, 1) },
+            { label: '×10 — $' + (it.price * 10).toLocaleString(), disabled: !G.canAfford(id, 10) },
+        ];
+        const idx = await choose(it.name.toUpperCase() + '? Certainly. How many would you like?', opts, true);
+        if (idx === null) return;
+        const qty = idx === 0 ? 1 : 10;
+        G.buy(id, qty);
+        UI.updateTopbar();
+        await alertModal('Here you are! Thank you!');
+        UI.showMart();
+    }
 
     // ================================================================= GYMS ==
     UI.showGyms = function () {
@@ -1022,6 +1259,7 @@
         const s = screen();
         s.appendChild(el('h2', '', 'GYM LEADERS & ELITE FOUR'));
         const list = el('div', 'gym-list');
+        const navRows = [];
         D.GYMS.forEach((gym, idx) => {
             const beaten = !!G.state.gymsBeaten[gym.id];
             const unlocked = G.gymUnlocked(idx);
@@ -1031,14 +1269,16 @@
             row.innerHTML = '<div class="gym-mid"><b>' + esc(gym.name) + '</b> <small>' + esc(gym.title) +
                 (gym.type ? ' · ' + typeChip(gym.type) : '') + '</small>' +
                 '<div class="gym-team">' + teamHtml + '</div>' +
-                '<small>' + (gym.badge ? '🏅 ' + gym.badge + ' · ' : '') + '₽' + gym.reward.toLocaleString() + (beaten ? ' · ✔ DEFEATED' : '') + '</small></div>';
+                '<small>' + (gym.badge ? gym.badge + ' · ' : '') + '$' + gym.reward.toLocaleString() + (beaten ? ' · DEFEATED' : '') + '</small></div>';
             const b = el('button', 'sm-btn primary', beaten ? 'REMATCH' : 'BATTLE');
             b.disabled = !unlocked;
             if (!unlocked) b.textContent = 'LOCKED';
             b.onclick = () => UI.startGymBattle(gym);
+            if (unlocked) navRows.push(b);
             row.appendChild(b);
             list.appendChild(row);
         });
         s.appendChild(list);
+        navSet(navRows, { onBack: () => UI.closeToWorld() });
     };
 })();
