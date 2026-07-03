@@ -259,9 +259,10 @@
         (function () {
             var card = document.getElementById('card-neko');
             var KEY = 'neko_url';
+            var DEFAULT_URL = 'https://neko.postpeleos.com';
             var sub = card.querySelector('.card-sub');
 
-            function saved() { return (localStorage.getItem(KEY) || '').trim(); }
+            function saved() { return (localStorage.getItem(KEY) || DEFAULT_URL).trim(); }
             function refresh() {
                 var u = saved();
                 if (u) sub.textContent = u.replace(/^https?:\/\//, '') + ' · long-press to change';
