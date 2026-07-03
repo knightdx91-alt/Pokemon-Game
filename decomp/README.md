@@ -475,6 +475,38 @@ and read the battle-pokemon struct scalars directly from the image → the field
 names in `BattlePokemon.h`. FASTEST alternative to the whole build: user supplies
 a mid-battle `.cst` savestate.
 
+**BETTER for the remap — a targeted (filtered) execution trace.** A full "trace
+everything" is a firehose (billions of insns/battle) and useless; instead patch
+Citra's dynarmic memory callbacks (`src/core/arm/dynarmic/arm_dynarmic.cpp`,
+`MemoryRead*/Write*`) to log ONLY accesses inside a few known watch ranges, then
+correlate the log. FIRST resolve `Battle.cro`'s runtime load base (CROs are
+relocated by the loader — not our emulator's SEG_BASE; get it from the CRO
+manager or by scanning FCRAM for the known 0x45a0 handler-pointer pattern) and
+express every watch address relative to it. No-rebuild alt: GDB stub + `rwatch`
+with a scripted `commands` block.
+
+What a filtered trace actually resolves (in priority order):
+1. **Effect→sequence remap (THE open link).** Watch WRITES to the event-queue
+   global `bss+0x394` (tag u16 @+0x04 == 0x1f, payload u32 @+0xc4 = effectId) and
+   READS of the 153-seq table `rodata+0x45a0`; correlate per move → the exact
+   effectId→sequenceId map. Run a battery of moves covering many effect ids.
+2. **The 427/444 tables' true index key.** Same technique on `rodata+0x7e24` /
+   `+0x98ac` reads reveals what those `{handler,aux}` tables are indexed by
+   (still unknown — not effectId).
+3. **Battle-pokemon scalar field NAMES (A remainder).** Watch READ/WRITE on the
+   battle-pokemon object (base = the struct whose +0x0 holds the CoreParam*, per
+   `sub_6188c`); name fields by *when* they change — e.g. the byte written on a
+   stat drop = a stat-stage slot (0x1ea..0x1f0), the u16 written on damage = curHp
+   (0x10), etc. Complements the static init-map already in `BattlePokemon.h`.
+4. **Sequence-handler bodies / step-state flow (Phase-1 deep remainder).** Trace
+   the step byte `@effectObj+0xa94` transitions per handler to confirm each
+   effect's state machine behaviorally.
+5. **Live cross-check of the finished servers** (damage/type/AI/catch): optional
+   confidence pass — trace the inputs/outputs of `sub_18504`/`sub_2d568` etc.
+   against the decompiled formulas.
+Items that DON'T need a trace: a plain RAM snapshot suffices for #3's raw offsets;
+wild encounters (C) and all move/species DATA are pure ROM (no runtime needed).
+
 **Phase-3 struct naming — battle-pokemon init fields NAMED (verified).** The
 runtime battle-pokemon struct is built from a CoreParam by `sub_6188c`, a
 straight-line copy (`bl CoreParam::GetX → str [this+off]`). `tools/usum_battlemon_init.py`
