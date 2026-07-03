@@ -244,6 +244,15 @@
             <span class="card-arrow">›</span>
         </a>
 
+        <a class="launch-card" href="#" id="card-onion">
+            <div class="card-icon">🧅</div>
+            <div class="card-text">
+                <div class="card-title">Onion Reader</div>
+                <div class="card-sub">Paste an .onion link · fetched via Tor · long-press to set server</div>
+            </div>
+            <span class="card-arrow">›</span>
+        </a>
+
     </div>
 
     <script src="drive-to-github.js?v=__CACHE_BUST__"></script>
@@ -289,6 +298,43 @@
             card.addEventListener('touchstart', function () { t = setTimeout(promptUrl, 600); }, { passive: true });
             card.addEventListener('touchend', function () { clearTimeout(t); });
             card.addEventListener('touchmove', function () { clearTimeout(t); });
+        })();
+
+        // Onion Reader card. Opens the personal onion gateway running on the
+        // user's VPS (onion-gateway/gateway.py on port 8888). The gateway fetches
+        // .onion pages through Tor. URL stored in localStorage so it isn't fixed.
+        (function () {
+            var card = document.getElementById('card-onion');
+            var KEY = 'onion_gateway_url';
+            var DEFAULT_URL = 'http://144.126.132.69:8888';
+            var sub = card.querySelector('.card-sub');
+
+            function saved() { return (localStorage.getItem(KEY) || DEFAULT_URL).trim(); }
+            function refresh() {
+                var u = saved();
+                if (u) sub.textContent = u.replace(/^https?:\/\//, '') + ' · long-press to change';
+            }
+            function promptUrl() {
+                var u = prompt('Onion gateway URL (e.g. http://YOUR_VPS_IP:8888):', saved());
+                if (u === null) return null;
+                u = u.trim();
+                if (u && !/^https?:\/\//.test(u)) u = 'http://' + u;
+                localStorage.setItem(KEY, u);
+                refresh();
+                return u;
+            }
+            refresh();
+
+            card.addEventListener('click', function (e) {
+                e.preventDefault();
+                var u = saved() || promptUrl();
+                if (u) window.open(u, '_blank', 'noopener');
+            });
+            card.addEventListener('contextmenu', function (e) { e.preventDefault(); promptUrl(); });
+            var t2;
+            card.addEventListener('touchstart', function () { t2 = setTimeout(promptUrl, 600); }, { passive: true });
+            card.addEventListener('touchend', function () { clearTimeout(t2); });
+            card.addEventListener('touchmove', function () { clearTimeout(t2); });
         })();
     </script>
 
