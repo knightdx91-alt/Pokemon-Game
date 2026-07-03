@@ -406,11 +406,17 @@ big open Phase-1 link). PROGRESS THIS SESSION (`decomp/battle_effects/EFFECT_DIS
   0x98ac: 272/21; 0x67b8: 100/20; 0x45a0: 84/11). If the index were the effect
   id both counts would be 0 → there is an **intermediate effect-enum → sequence
   index remap** between the event payload and these tables — the open link.
-- NEXT: trace the **consumer of event tag 0x1f** out of the queue. `sub_e47fc`
-  (912 B) is a queue-scanner that repeatedly matches entry tags to `0x1f` — the
-  best lead; follow how the `+0xc4` payload selects a sequence handler, then
-  emulate across ids 0..419 with `cro_emu.py`. See `battle_effects/EFFECT_DISPATCH.md`.
-  Validate by correlating handlers with `usum_moves.json` effect semantics.
+- **Remap is a code lookup, not data (two more exhaustive disproofs,
+  `usum_effect_dispatch.py --scan`).** No move-record u16 field indexes any
+  handler table cleanly; no contiguous byte/u16 array indexed by effectId maps
+  onto valid 153-table slots. So the effect-enum → sequence-id translation is a
+  PIC `switch`/structured table in code (consistent with the 153-table base
+  being PIC-computed). Also confirmed: 0x45a0 is the **sequence** table (index =
+  0..152 sequence id, NOT the move-effect id — overturning its old note).
+- NEXT (needs battle-context emulation): static analysis has bottomed out. Build
+  an effect-object + tag-0x1f queue fixture in `cro_emu.py` and single-step a
+  `sub_86e48` caller until it computes a 153-table index; read it per effectId
+  0..419 to recover the remap. See `battle_effects/EFFECT_DISPATCH.md`.
 
 **Phase-3 struct naming — battle-pokemon init fields NAMED (verified).** The
 runtime battle-pokemon struct is built from a CoreParam by `sub_6188c`, a

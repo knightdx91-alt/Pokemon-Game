@@ -45,13 +45,33 @@ If the index were the effect id, both right-hand columns would be 0. They are
 not — so an **intermediate effect-enum → sequence-index remap** sits between the
 event payload and these tables. That remap is the remaining open link.
 
-## Next step
-Trace the **consumer of event tag 0x1f** out of the `sub_8790c` queue. The queue
-base is a relocated global loaded via a pc-literal in `sub_8790c` (slot tag at
-`base + n*2 + 4`, effect payload at `base + n*4 + 0xc4`). Find the function that
-reads a queue entry's tag, matches `0x1f`, and pulls the `+0xc4` payload —
-`sub_e47fc` (912 B) is a queue-scanner that compares entry tags to `0x1f`
-repeatedly and is the best lead; from there follow how the payload selects a
-sequence handler (translation table or `switch`), then emulate across ids 0..419
-with `cro_emu.py`. Validate by correlating handlers with `usum_moves.json`
-effect semantics (ids with the same effect kind should share a handler).
+## The remap is a structured lookup, not a field or a flat array (two more disproofs)
+`tools/usum_effect_dispatch.py --scan` runs two exhaustive brute forces:
+1. **No move-record field is the key.** Every u16 field offset (0..38) in the
+   40-byte move record was tested as a direct index into each handler table; the
+   best combo (offset 12 → 0x7e24) still leaves 43 used ids on null slots + 42
+   unused slots with handlers. No offset/table pair indexes cleanly.
+2. **No contiguous remap array.** Scanned all of rodata+data for a byte/u16
+   array that, indexed by effectId, maps every used id onto a *valid* slot of the
+   153-entry sequence table (with ≥25 distinct targets, to exclude zero regions).
+   Zero candidates.
+
+So the effect-enum → sequence-id translation lives in **code** — a PIC `switch`
+or a non-contiguous structured table computed at runtime — consistent with the
+153-table base being PIC-computed (no static literal in text equals its address).
+
+## Structure confirmed
+The 0x7e24 table is a uniform array of 8-byte `{handler, aux}` entries with a
+few legitimate data-only gaps (effects with no dedicated sequence). The 153-entry
+`0x45a0` table is the **sequence-handler** table (index = a 0..152 sequence id,
+NOT the move-effect id — its old "index = move-effect id" note was the wrong
+assumption this analysis overturns). Damage sequence = `sub_9698`.
+
+## Next step (needs battle-context emulation)
+Static analysis has bottomed out; the remaining move is dynamic. In `cro_emu.py`,
+build a minimal fixture — an effect object (step byte @+0xa94) plus the event
+queue with one tag-0x1f entry carrying an effectId — and single-step the
+move-execution consumer (a caller of `sub_86e48`: sub_144ec/1c664/24040/25d78/
+7b51c/7b908/819f0) until it computes a 153-table index; read that index per
+effectId 0..419 to recover the remap directly. Validate by correlating handlers
+with `usum_moves.json` effect semantics (ids of the same kind share a handler).

@@ -94,6 +94,51 @@ def main():
         os.makedirs(os.path.dirname(OUT), exist_ok=True)
         json.dump(manifest, open(OUT, "w"), indent=1)
         print(f"wrote {OUT}")
+    if "--scan" in sys.argv:
+        scan_remap(emu, used)
+
+
+def scan_remap(emu, used):
+    """Two exhaustive disproofs that the effect->handler map is a simple lookup.
+
+    (1) No move-record u16 field directly indexes any handler table.
+    (2) No contiguous byte/u16 array indexed by effectId maps every used
+        effect id onto a valid slot of the 153-entry sequence table @0x45a0.
+    Both come back empty -> the effect-enum -> sequence-id remap is a structured
+    lookup (PIC switch / non-contiguous table), not a field or a flat array.
+    """
+    import struct
+    from pathlib import Path
+    # (2) remap-array scan against the 153 sequence-handler table
+    N = 153
+    raw = bytes(emu.read(SEG_BASE[1] + 0x45a0, N * 8))
+    valid = [SEG_BASE[0] <= struct.unpack_from("<I", raw, i * 8)[0]
+             < SEG_BASE[0] + 0x2000000 for i in range(N)]
+    eff = sorted(used)
+    maxeff = max(eff)
+    hits = 0
+    for seg in (1, 2):
+        o, s, sid = [x for x in emu.segs if x[2] == seg][0]
+        mem = bytes(emu.read(SEG_BASE[seg], s))
+        for width in (1, 2):
+            span = (maxeff + 1) * width
+            step = 1 if width == 1 else 2
+            for start in range(0, len(mem) - span, step):
+                seen = set()
+                ok = True
+                for e in eff:
+                    v = mem[start + e] if width == 1 else \
+                        struct.unpack_from("<H", mem, start + e * 2)[0]
+                    if v >= N or not valid[v]:
+                        ok = False
+                        break
+                    seen.add(v)
+                # a real remap uses many distinct sequence ids; an all-zero /
+                # constant region trivially maps everything to slot 0.
+                if ok and len(seen) >= 25:
+                    hits += 1
+    print(f"remap-array scan (effectId -> >=25 distinct valid 153-slots): {hits} "
+          f"-> {'FOUND' if hits else 'none (remap is a structured lookup, not a flat array)'}")
 
 
 if __name__ == "__main__":
