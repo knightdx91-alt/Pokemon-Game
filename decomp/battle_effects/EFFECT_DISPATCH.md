@@ -1,5 +1,39 @@
-# Move-effect → sequence-handler dispatch (status: live VA map + queue base CONFIRMED; remap reduced to reading seqId @ work+0xa94)
+# Move-effect → sequence-handler dispatch (status: LIVE seqId DISPATCH CAPTURED via in-process JIT hook ✅)
 
+## BREAKTHROUGH — the in-process hook reads the live sequence dispatch
+The gdbstub route was a dead end (Z0/Z3 no-ops, registers zero). Instead, Citra
+was **rebuilt with a software read-watchpoint in the JIT read callback**
+(`decomp/citra/effect_seq_hook.patch`): the A32 JIT is built with
+`config.page_table = nullptr` (full-callback mode) and `MemoryRead32` records
+every guest read landing in the seq-handler table `[rodata+0x45a0 .. +153*8)`
+(VA `0x7de5a0`), appending the faulting vaddr + all 16 guest regs to
+`/tmp/hook_out`. Armed from the SDL frontend via `/tmp/hook_arm` ("lo hi" hex).
+**seqId = (faulting_vaddr − 0x7de5a0) / 8.** This directly reads which sequence
+handler the battle engine dispatches, per frame, during a real move — the exact
+thing that was unreachable by static analysis and blind emulation.
+
+VERIFIED live (Route 4 wild battles, base re-confirmed 0x6dd180 this boot):
+a move executes as a **script of sequence handlers**, e.g.
+
+    Steam Eruption (effectId 4, burn): [6,11,5,4,62,65,22,23,58,28,
+                                        16,133,143,19,34,131,118,122,13,95,97,137,16,137,16,106,104]
+    Hydro Pump     (effectId 0, none): [6,11,5,4,62,65,22,23,58,28]   (KO'd early)
+
+The **common prologue `[6,11,5,4,62,65,22,23,58,28]`** is shared (PP/accuracy/
+damage-calc framework); the effect-specific handling is in the divergent tail
+(Steam Eruption's burn adds the `16,133,143,…` run). Traces in
+`seq_dispatch_traces.json`; analyzer `tools/citra_gdb/hookcap.py`. seqId 6's
+handler = Battle.cro `sub_4b40` (0x6e1cc0).
+
+**Remaining to fully reverse the effectId→seqId remap:** clean, comparable
+captures across several effectIds. The Lv85 lead one-shots wild mons, so
+no-secondary-effect moves end at the faint before the effect step runs — a
+non-KO setup (weak move / edited weak lead / tanky target) is needed to line up
+the tails and isolate each effect's dedicated seqId. The capture rig is proven.
+
+---
+
+## (earlier analysis) The battle engine runs a per-move "sequence handler"
 The battle engine runs a per-move "sequence handler" chosen from the move's
 Gen-7 move-effect id. This note records what is now proven about that path.
 

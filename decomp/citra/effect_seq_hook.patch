@@ -1,0 +1,549 @@
+diff --git a/src/citra/citra.cpp b/src/citra/citra.cpp
+index a9b0b3e..b55d79c 100644
+--- a/src/citra/citra.cpp
++++ b/src/citra/citra.cpp
+@@ -427,8 +427,6 @@ int main(int argc, char** argv) {
+         system.VideoDumper().StartDumping(dump_video, layout);
+     }
+ 
+-    std::thread render_thread([&emu_window] { emu_window->Present(); });
+-
+     std::atomic_bool stop_run;
+     Core::System::GetInstance().Renderer().Rasterizer()->LoadDiskResources(
+         stop_run, [](VideoCore::LoadCallbackStage stage, std::size_t value, std::size_t total) {
+@@ -439,7 +437,6 @@ int main(int argc, char** argv) {
+     while (emu_window->IsOpen()) {
+         system.RunLoop();
+     }
+-    render_thread.join();
+ 
+     Core::Movie::GetInstance().Shutdown();
+     if (system.VideoDumper().IsDumping()) {
+diff --git a/src/citra/emu_window/emu_window_sdl2.cpp b/src/citra/emu_window/emu_window_sdl2.cpp
+index ef53b3d..c85c8f2 100644
+--- a/src/citra/emu_window/emu_window_sdl2.cpp
++++ b/src/citra/emu_window/emu_window_sdl2.cpp
+@@ -3,8 +3,12 @@
+ // Refer to the license.txt file included.
+ 
+ #include <algorithm>
++#include <atomic>
++#include <cstdio>
+ #include <cstdlib>
++#include <fstream>
+ #include <string>
++#include <vector>
+ #define SDL_MAIN_HANDLED
+ #include <SDL.h>
+ #include <fmt/format.h>
+@@ -14,6 +18,9 @@
+ #include "common/scm_rev.h"
+ #include "core/3ds.h"
+ #include "core/core.h"
++#include "core/hle/kernel/kernel.h"
++#include "core/hle/kernel/process.h"
++#include "core/memory.h"
+ #include "core/settings.h"
+ #include "input_common/keyboard.h"
+ #include "input_common/main.h"
+@@ -222,14 +229,270 @@ std::unique_ptr<Frontend::GraphicsContext> EmuWindow_SDL2::CreateSharedContext()
+     return std::make_unique<SharedContext_SDL2>();
+ }
+ 
+-void EmuWindow_SDL2::Present() {
+-    SDL_GL_MakeCurrent(render_window, window_context);
+-    SDL_GL_SetSwapInterval(1);
+-    while (IsOpen()) {
+-        VideoCore::g_renderer->Present();
+-        SDL_GL_SwapWindow(render_window);
++// decomp research: JIT read-watch range, defined in arm_dynarmic.cpp (global scope).
++extern std::atomic<u32> g_hook_lo;
++extern std::atomic<u32> g_hook_hi;
++
++namespace {
++// ---- Headless autopilot (enabled by env CITRA_AUTOPILOT) --------------------
++// Injects a scripted keyboard sequence and dumps the window framebuffer to
++// /tmp/frames/*.ppm so a driver can observe game state and script inputs.
++// Script file /tmp/autopilot.txt: whitespace-separated "<frame> <down> <scancode>"
++// per line (down: 1=press, 0=release; scancode = SDL scancode; frame = SwapBuffers
++// tick at which to fire). Purely a decomp-research navigation aid.
++struct ApEvent {
++    long frame;
++    int down;
++    int scancode;
++};
++std::vector<ApEvent> ap_events;
++std::size_t ap_idx = 0;
++bool ap_loaded = false;
++
++void ApLoad() {
++    ap_loaded = true;
++    std::ifstream in("/tmp/autopilot.txt");
++    long fr;
++    int dn, sc;
++    while (in >> fr >> dn >> sc) {
++        ap_events.push_back({fr, dn, sc});
++    }
++}
++
++void ApTick(long frame) {
++    if (!ap_loaded) {
++        ApLoad();
++    }
++    while (ap_idx < ap_events.size() && ap_events[ap_idx].frame <= frame) {
++        const ApEvent& e = ap_events[ap_idx++];
++        if (e.down) {
++            InputCommon::GetKeyboard()->PressKey(e.scancode);
++        } else {
++            InputCommon::GetKeyboard()->ReleaseKey(e.scancode);
++        }
++    }
++}
++
++// Dump the emulated New-3DS FCRAM (256 MB physical RAM) to a file. Triggered
++// when /tmp/dump_now exists; the file is consumed. Used to capture a mid-battle
++// memory image for the decomp's effect->sequence remap + battlemon scalars.
++void ApMaybeDumpFcram() {
++    std::FILE* trig = std::fopen("/tmp/dump_now", "rb");
++    if (!trig) {
++        return;
++    }
++    std::fclose(trig);
++    std::remove("/tmp/dump_now");
++    if (!Core::System::GetInstance().IsPoweredOn()) {
++        return;
++    }
++    const u8* fcram = Core::System::GetInstance().Memory().GetFCRAMPointer(0);
++    if (!fcram) {
++        return;
++    }
++    std::FILE* f = std::fopen("/tmp/fcram.bin", "wb");
++    if (!f) {
++        return;
++    }
++    std::fwrite(fcram, 1, Memory::FCRAM_N3DS_SIZE, f);
++    std::fclose(f);
++    std::FILE* done = std::fopen("/tmp/fcram.done", "wb");
++    if (done) {
++        std::fclose(done);
++    }
++}
++
++// Dump a slice of the running app's VIRTUAL address space (VA-contiguous), so the
++// CRO cluster (static.crs + all .cro modules incl. Battle.cro) can be read at its
++// real VAs — a physical FCRAM dump is scattered by the MMU and can't locate .bss.
++// Trigger: /tmp/dump_va (optional "hexbase hexsize"; default 0x00100000 0x00F00000).
++void ApMaybeDumpVa() {
++    std::ifstream trig("/tmp/dump_va");
++    if (!trig) {
++        return;
++    }
++    unsigned long base = 0x00100000UL, size = 0x00F00000UL;
++    {
++        std::string s((std::istreambuf_iterator<char>(trig)), std::istreambuf_iterator<char>());
++        std::sscanf(s.c_str(), "%lx %lx", &base, &size);
++    }
++    trig.close();
++    std::remove("/tmp/dump_va");
++    auto& sys = Core::System::GetInstance();
++    if (!sys.IsPoweredOn()) {
++        return;
++    }
++    auto proc = sys.Kernel().GetCurrentProcess();
++    if (!proc) {
++        return;
++    }
++    std::vector<u8> buf(size, 0);
++    sys.Memory().ReadBlock(*proc, static_cast<u32>(base), buf.data(), size);
++    if (std::FILE* f = std::fopen("/tmp/va.bin", "wb")) {
++        std::fwrite(buf.data(), 1, size, f);
++        std::fclose(f);
++    }
++    // record the base so the reader knows the VA origin
++    if (std::FILE* m = std::fopen("/tmp/va.meta", "wb")) {
++        std::fprintf(m, "%lx %lx\n", base, size);
++        std::fclose(m);
++    }
++    if (std::FILE* d = std::fopen("/tmp/va.done", "wb")) {
++        std::fclose(d);
++    }
++}
++
++// decomp research: arm/disarm the JIT read-watch (see arm_dynarmic.cpp).
++// /tmp/hook_arm contains "lo hi" (hex VA range); /tmp/hook_disarm clears it.
++void ApMaybeHook() {
++    if (std::ifstream trig{"/tmp/hook_arm"}) {
++        unsigned long lo = 0, hi = 0;
++        std::string s((std::istreambuf_iterator<char>(trig)), std::istreambuf_iterator<char>());
++        trig.close();
++        std::remove("/tmp/hook_arm");
++        if (std::sscanf(s.c_str(), "%lx %lx", &lo, &hi) == 2) {
++            g_hook_lo.store(static_cast<u32>(lo));
++            g_hook_hi.store(static_cast<u32>(hi));
++            if (std::FILE* d = std::fopen("/tmp/hook_armed", "wb")) {
++                std::fprintf(d, "%lx %lx\n", lo, hi);
++                std::fclose(d);
++            }
++        }
++    }
++    if (std::FILE* t = std::fopen("/tmp/hook_disarm", "rb")) {
++        std::fclose(t);
++        std::remove("/tmp/hook_disarm");
++        g_hook_lo.store(0);
++        g_hook_hi.store(0);
+     }
+-    SDL_GL_MakeCurrent(render_window, nullptr);
++}
++
++// Save/load Citra save states via trigger files, so a driver can checkpoint
++// after the slow boot+load and cheaply branch navigation attempts.
++// /tmp/save_state -> SaveState(1); /tmp/load_state -> LoadState(1). Runs on the
++// emu thread (synchronous renderer), i.e. between frames.
++void ApMaybeState() {
++    if (!Core::System::GetInstance().IsPoweredOn()) {
++        return;
++    }
++    if (std::FILE* t = std::fopen("/tmp/save_state", "rb")) {
++        std::fclose(t);
++        std::remove("/tmp/save_state");
++        Core::System::GetInstance().SaveState(1);
++        if (std::FILE* d = std::fopen("/tmp/save_state.done", "wb")) {
++            std::fclose(d);
++        }
++    }
++    if (std::FILE* t = std::fopen("/tmp/load_state", "rb")) {
++        std::fclose(t);
++        std::remove("/tmp/load_state");
++        Core::System::GetInstance().LoadState(1);
++        if (std::FILE* d = std::fopen("/tmp/load_state.done", "wb")) {
++            std::fclose(d);
++        }
++    }
++}
++
++void ApDumpFrame(SDL_Window* win, long frame) {
++    int w = 0, h = 0;
++    SDL_GetWindowSize(win, &w, &h);
++    if (w <= 0 || h <= 0) {
++        return;
++    }
++    std::vector<unsigned char> buf(static_cast<std::size_t>(w) * h * 3);
++    glPixelStorei(GL_PACK_ALIGNMENT, 1);
++    glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buf.data());
++    char path[256];
++    std::snprintf(path, sizeof(path), "/tmp/frames/f%06ld.ppm", frame);
++    std::FILE* f = std::fopen(path, "wb");
++    if (!f) {
++        return;
++    }
++    std::fprintf(f, "P6\n%d %d\n255\n", w, h);
++    for (int y = h - 1; y >= 0; --y) { // GL origin is bottom-left; flip vertically
++        std::fwrite(&buf[static_cast<std::size_t>(y) * w * 3], 1, static_cast<std::size_t>(w) * 3, f);
++    }
++    std::fclose(f);
++}
++
++// ---- Live interactive control (frame-by-frame see->act driving) -------------
++// /tmp/ap_key: lines "<down> <scancode>" applied immediately then file removed.
++// /tmp/shot   : dump the current framebuffer to /tmp/frames/live.ppm now.
++void ApLiveInput() {
++    std::ifstream in("/tmp/ap_key");
++    if (!in) {
++        return;
++    }
++    int dn, sc;
++    while (in >> dn >> sc) {
++        if (dn) {
++            InputCommon::GetKeyboard()->PressKey(sc);
++        } else {
++            InputCommon::GetKeyboard()->ReleaseKey(sc);
++        }
++    }
++    in.close();
++    std::remove("/tmp/ap_key");
++    std::FILE* d = std::fopen("/tmp/ap_key.done", "wb");
++    if (d) {
++        std::fclose(d);
++    }
++}
++
++void ApLiveShot(SDL_Window* win) {
++    if (!std::fopen("/tmp/shot", "rb")) {
++        return;
++    }
++    std::remove("/tmp/shot");
++    int w = 0, h = 0;
++    SDL_GetWindowSize(win, &w, &h);
++    if (w <= 0 || h <= 0) {
++        return;
++    }
++    std::vector<unsigned char> buf(static_cast<std::size_t>(w) * h * 3);
++    glPixelStorei(GL_PACK_ALIGNMENT, 1);
++    glReadPixels(0, 0, w, h, GL_RGB, GL_UNSIGNED_BYTE, buf.data());
++    std::FILE* f = std::fopen("/tmp/frames/live.ppm", "wb");
++    if (f) {
++        std::fprintf(f, "P6\n%d %d\n255\n", w, h);
++        for (int y = h - 1; y >= 0; --y) {
++            std::fwrite(&buf[static_cast<std::size_t>(y) * w * 3], 1,
++                        static_cast<std::size_t>(w) * 3, f);
++        }
++        std::fclose(f);
++    }
++    std::FILE* d = std::fopen("/tmp/shot.done", "wb");
++    if (d) {
++        std::fclose(d);
++    }
++}
++} // namespace
++
++void EmuWindow_SDL2::SwapBuffers() {
++    // Synchronous-renderer model: the GPU emulation thread drives frame
++    // composition via g_renderer->SwapBuffers(), which calls this to present
++    // the finished frame. (This fork's video_core has no threaded Present.)
++    static const bool ap_enabled = std::getenv("CITRA_AUTOPILOT") != nullptr;
++    if (ap_enabled) {
++        static long ap_frame = -1;
++        static const long shot_every = [] {
++            const char* s = std::getenv("CITRA_SHOT_EVERY");
++            const long v = s ? std::atol(s) : 30;
++            return v > 0 ? v : 30;
++        }();
++        ++ap_frame;
++        ApTick(ap_frame);
++        ApLiveInput();
++        ApLiveShot(render_window);
++        ApMaybeHook();
++        ApMaybeState();
++        ApMaybeDumpFcram();
++        ApMaybeDumpVa();
++        if (ap_frame % shot_every == 0) {
++            ApDumpFrame(render_window, ap_frame);
++        }
++    }
++    SDL_GL_SwapWindow(render_window);
+ }
+ 
+ void EmuWindow_SDL2::PollEvents() {
+@@ -309,11 +572,16 @@ bool EmuWindow_SDL2::NeedsClearing() const {
+ void EmuWindow_SDL2::SetupFramebuffer() {}
+ 
+ void EmuWindow_SDL2::MakeCurrent() {
+-    core_context->MakeCurrent();
++    // Bind the REAL window context (render_window, 400x480), not the 0x0 hidden
++    // shared context. The synchronous renderer composes the screens to FBO 0 of
++    // the current context (renderer_opengl DrawScreens), so this is what makes the
++    // frame land in a framebuffer glReadPixels can capture (headless screenshots).
++    // window_context and core_context are shared, so GL objects stay valid.
++    SDL_GL_MakeCurrent(render_window, window_context);
+ }
+ 
+ void EmuWindow_SDL2::DoneCurrent() {
+-    core_context->DoneCurrent();
++    SDL_GL_MakeCurrent(render_window, nullptr);
+ }
+ 
+ void EmuWindow_SDL2::OnMinimalClientAreaChangeRequest(std::pair<u32, u32> minimal_size) {
+diff --git a/src/citra/emu_window/emu_window_sdl2.h b/src/citra/emu_window/emu_window_sdl2.h
+index b276311..8ad01fc 100644
+--- a/src/citra/emu_window/emu_window_sdl2.h
++++ b/src/citra/emu_window/emu_window_sdl2.h
+@@ -32,7 +32,8 @@ public:
+     explicit EmuWindow_SDL2(bool fullscreen);
+     ~EmuWindow_SDL2();
+ 
+-    void Present();
++    /// Presents the finished frame to the window (base EmuWindow::SwapBuffers)
++    void SwapBuffers() override;
+ 
+     /// Polls window events
+     void PollEvents() override;
+diff --git a/src/core/arm/dynarmic/arm_dynarmic.cpp b/src/core/arm/dynarmic/arm_dynarmic.cpp
+index 3bfd27b..f06058b 100644
+--- a/src/core/arm/dynarmic/arm_dynarmic.cpp
++++ b/src/core/arm/dynarmic/arm_dynarmic.cpp
+@@ -15,6 +15,29 @@
+ #include "core/hle/kernel/svc.h"
+ #include "core/memory.h"
+ 
++// ---- decomp research: software read-watch on a VA range (effect->seq remap) ----
++// The fork's gdbstub Z3 watchpoints are no-ops, so implement one in the JIT read
++// callback. Armed by the SDL frontend from /tmp/hook_arm ("lo hi" hex); every
++// 32-bit guest read whose vaddr lands in [lo,hi) appends a record (vaddr + all
++// guest regs) to /tmp/hook_out. To make the callback actually fire, the JIT is
++// built with config.page_table = nullptr (full-callback mode; correctness is
++// unchanged because MemorySystem::Read keeps its own fast page table).
++#include <atomic>
++#include <cstdio>
++std::atomic<u32> g_hook_lo{0};
++std::atomic<u32> g_hook_hi{0};
++std::atomic<u32> g_hook_count{0};
++static void HookRecordWatch(u32 vaddr, const u32* regs) {
++    if (std::FILE* f = std::fopen("/tmp/hook_out", "a")) {
++        std::fprintf(f, "%08x", vaddr);
++        for (int i = 0; i < 16; ++i)
++            std::fprintf(f, " %08x", regs[i]);
++        std::fprintf(f, "\n");
++        std::fclose(f);
++    }
++    g_hook_count.fetch_add(1);
++}
++
+ class DynarmicThreadContext final : public ARM_Interface::ThreadContext {
+ public:
+     DynarmicThreadContext() {
+@@ -81,6 +104,14 @@ public:
+         return memory.Read16(vaddr);
+     }
+     std::uint32_t MemoryRead32(VAddr vaddr) override {
++        const u32 lo = g_hook_lo.load(std::memory_order_relaxed);
++        if (lo != g_hook_hi.load(std::memory_order_relaxed) && vaddr >= lo &&
++            vaddr < g_hook_hi.load(std::memory_order_relaxed)) {
++            u32 regs[16];
++            for (int i = 0; i < 16; ++i)
++                regs[i] = parent.GetReg(i);
++            HookRecordWatch(vaddr, regs);
++        }
+         return memory.Read32(vaddr);
+     }
+     std::uint64_t MemoryRead64(VAddr vaddr) override {
+@@ -325,7 +356,9 @@ void ARM_Dynarmic::ServeBreak() {
+ std::unique_ptr<Dynarmic::A32::Jit> ARM_Dynarmic::MakeJit() {
+     Dynarmic::A32::UserConfig config;
+     config.callbacks = cb.get();
+-    config.page_table = &current_page_table->GetPointerArray();
++    // decomp research: full-callback mode so MemoryRead32 (our read-watch) fires
++    // on every guest read. Correctness is unchanged; ~a few x slower.
++    config.page_table = nullptr;
+     config.coprocessors[15] = std::make_shared<DynarmicCP15>(cp15_state);
+     config.define_unpredictable_behaviour = true;
+     return std::make_unique<Dynarmic::A32::Jit>(config);
+diff --git a/src/core/frontend/emu_window.h b/src/core/frontend/emu_window.h
+index 218fadf..4623d93 100644
+--- a/src/core/frontend/emu_window.h
++++ b/src/core/frontend/emu_window.h
+@@ -30,7 +30,19 @@ namespace Frontend {
+  * - DO NOT TREAT THIS CLASS AS A GUI TOOLKIT ABSTRACTION LAYER. That's not what it is. Please
+  *   re-read the upper points again and think about it if you don't see this.
+  */
+-class EmuWindow {
++/// Represents a graphics context that can be current on the calling thread.
++class GraphicsContext {
++public:
++    virtual ~GraphicsContext() = default;
++
++    /// Makes the graphics context current for the caller thread
++    virtual void MakeCurrent() = 0;
++
++    /// Releases the graphics context from the caller thread
++    virtual void DoneCurrent() = 0;
++};
++
++class EmuWindow : public GraphicsContext {
+ public:
+     /// Data structure to store emuwindow configuration
+     struct WindowConfig {
+@@ -46,12 +58,6 @@ public:
+     /// Polls window events
+     virtual void PollEvents() = 0;
+ 
+-    /// Makes the graphics context current for the caller thread
+-    virtual void MakeCurrent() = 0;
+-
+-    /// Releases (dunno if this is the "right" word) the GLFW context from the caller thread
+-    virtual void DoneCurrent() = 0;
+-
+     /**
+      * Signal that a touch pressed event has occurred (e.g. mouse click pressed)
+      * @param framebuffer_x Framebuffer x-coordinate that was pressed
+@@ -108,8 +114,11 @@ public:
+      */
+     virtual void SetupFramebuffer() = 0;
+ 
++    /// Creates a new context that is shared with this window's rendering context
++    virtual std::unique_ptr<GraphicsContext> CreateSharedContext() const = 0;
++
+     /// Flags that the Emulation Window is not ready to support a hardware context yet.
+-    virtual bool ShouldDeferRendererInit() = 0;
++    virtual bool ShouldDeferRendererInit() const = 0;
+ 
+     /// Flags that the framebuffer should be cleared.
+     virtual bool NeedsClearing() const = 0;
+diff --git a/src/core/frontend/mic.h b/src/core/frontend/mic.h
+index 28738df..4ad4828 100644
+--- a/src/core/frontend/mic.h
++++ b/src/core/frontend/mic.h
+@@ -5,6 +5,7 @@
+ #pragma once
+ 
+ #include <memory>
++#include <string>
+ #include <vector>
+ #include "common/swap.h"
+ #include "common/threadsafe_queue.h"
+diff --git a/src/core/frontend/scope_acquire_context.h b/src/core/frontend/scope_acquire_context.h
+new file mode 100644
+index 0000000..bd35f67
+--- /dev/null
++++ b/src/core/frontend/scope_acquire_context.h
+@@ -0,0 +1,33 @@
++// Copyright 2019 Citra Emulator Project
++// Licensed under GPLv2 or any later version
++// Refer to the license.txt file included.
++//
++// Recreated for the StonedEdge/citra-1 build (fix #2): the frontends reference
++// this header but it is missing from the tree. Small RAII wrapper that makes a
++// graphics context current for the object's lifetime. EmuWindow derives from
++// GraphicsContext (fix #3), so `ScopeAcquireContext scope(*emu_window);` binds
++// to the GraphicsContext& overload.
++
++#pragma once
++
++#include "core/frontend/emu_window.h"
++
++namespace Frontend {
++
++class ScopeAcquireContext {
++public:
++    explicit ScopeAcquireContext(GraphicsContext& context) : context{context} {
++        context.MakeCurrent();
++    }
++    ~ScopeAcquireContext() {
++        context.DoneCurrent();
++    }
++
++    ScopeAcquireContext(const ScopeAcquireContext&) = delete;
++    ScopeAcquireContext& operator=(const ScopeAcquireContext&) = delete;
++
++private:
++    GraphicsContext& context;
++};
++
++} // namespace Frontend
+diff --git a/src/core/hle/service/cfg/cfg.cpp b/src/core/hle/service/cfg/cfg.cpp
+index 92bdd3c..f9627fd 100644
+--- a/src/core/hle/service/cfg/cfg.cpp
++++ b/src/core/hle/service/cfg/cfg.cpp
+@@ -27,7 +27,9 @@
+ #include "core/hle/service/cfg/cfg_s.h"
+ #include "core/hle/service/cfg/cfg_u.h"
+ #include "core/settings.h"
++#ifdef ENABLE_LIBRETRO
+ #include "citra_libretro/core_settings.h"
++#endif
+ 
+ SERIALIZE_EXPORT_IMPL(Service::CFG::Module)
+ 
+@@ -650,8 +652,12 @@ static std::tuple<u32 /*region*/, SystemLanguage> AdjustLanguageInfoBlock(
+ }
+ 
+ void Module::SetPreferredRegionCodes(const std::vector<u32>& region_codes) {
+-    // Apply language set in core options first
++    // Apply language set in core options first (LibRetro frontend only; this
++    // global is not defined in other frontends, so guard it to keep core
++    // buildable without the libretro integration).
++#ifdef ENABLE_LIBRETRO
+     SetSystemLanguage(LibRetro::settings.language_value);
++#endif
+ 
+     const SystemLanguage current_language = GetSystemLanguage();
+     auto [region, adjusted_language] = AdjustLanguageInfoBlock(region_codes, current_language);
