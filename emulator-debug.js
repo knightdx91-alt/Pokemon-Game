@@ -352,6 +352,12 @@
   }
   function stopAutoCap(statusEl) { if (autoCap) { autoCap(); autoCap = null; } if (statusEl) statusEl.textContent = 'auto-capture off'; }
 
+  // Registered state watches for the recorder's behind-the-scenes trace.
+  // Each = { name, addr (heap offset), size (1|2|4) }. Persisted like REGIONS.
+  var TRACE = (function () { try { return JSON.parse(localStorage.getItem('dbg_trace') || '[]'); } catch (e) { return []; } })();
+  function saveTrace() { try { localStorage.setItem('dbg_trace', JSON.stringify(TRACE)); } catch (e) {} }
+  function addTrace(name, addr, size) { TRACE = TRACE.filter(function (w) { return w.name !== name; }); TRACE.push({ name: name, addr: addr, size: size }); saveTrace(); }
+
   // ---- continuous recorder -------------------------------------------------
   // Ground-truth footage for the "always verify, never assume" rule: record what
   // the REAL game draws so a reconstruction can be pixel-diffed against it.
@@ -390,9 +396,39 @@
         }
       } catch (e) { blocked = true; }
       vsync++;
+      // If the core won't hand back lossless pixels, auto-fall back to video so
+      // a recording still happens (lossy, but better than nothing).
+      if (blocked && !frames.length && vsync >= 3) {
+        if (statusEl) statusEl.textContent = 'PNG capture blocked by the core — switching to video…';
+        sampleTrace(true);                       // flush any trace so far into the video sidecar
+        startVideo(statusEl, traceLog);
+        recStop = function () { if (vidStop) vidStop(); recStop = null; };
+        return;                                  // stop the PNG loop
+      }
+      sampleTrace(false);
       if (statusEl) statusEl.textContent = '● REC  ' + frames.length + ' unique / ' + vsync +
-        ' vsync  ' + ((performance.now() - t0) / 1000).toFixed(1) + 's' + (blocked ? '  (toDataURL BLOCKED — use Video)' : '');
+        ' vsync  ' + ((performance.now() - t0) / 1000).toFixed(1) + 's' +
+        (TRACE.length ? '  +' + traceLog.length + ' state chgs' : '') + (blocked ? '  (PNG blocked)' : '');
       raf = requestAnimationFrame(tick);
+    }
+    // ---- behind-the-scenes state trace (synced to the recording) -----------
+    // We can't hook function calls or file loads (desmume2015 in EmulatorJS
+    // exposes no symbols/debugger), but the game's OWN RAM holds which
+    // screen/app/menu/map is active. Each registered TRACE watch is polled per
+    // frame; every value CHANGE is logged with its frame index + timestamp, so
+    // the recording carries a timeline like "vsync 480 (8.0s) appState 2 -> 5".
+    // The numbers are translated to names offline using the pokeplatinum decomp.
+    var traceLog = [], traceLast = {};
+    function sampleTrace(force) {
+      if (!TRACE.length) return;
+      var mem = memView(); if (!mem) return;
+      for (var i = 0; i < TRACE.length; i++) {
+        var w = TRACE[i], v = readVal(mem, w.addr, w.size);
+        if (force || traceLast[w.name] !== v) {
+          traceLog.push({ vsync: vsync, tMs: (performance.now() - t0) | 0, name: w.name, addr: w.addr, value: v, hex: '0x' + (v >>> 0).toString(16) });
+          traceLast[w.name] = v;
+        }
+      }
     }
     function begin(canvas) { cv = canvas; started = true; t0 = performance.now(); raf = requestAnimationFrame(tick); }
     var immediate = _canvasEl();
@@ -416,6 +452,11 @@
         uniqueFrames: frames.length, totalVsync: vsync,
         note: 'native-resolution lossless PNG frames; holdVsync = vsync frames each image persisted', frames: manifest
       }, null, 1));
+      // Behind-the-scenes state timeline (empty unless TRACE watches were set).
+      if (TRACE.length) files['trace.json'] = new TextEncoder().encode(JSON.stringify({
+        note: 'timeline of watched RAM state changes, synced to the frames by vsync/tMs',
+        watches: TRACE, transitions: traceLog
+      }, null, 1));
       if (statusEl) statusEl.textContent = 'zipping ' + frames.length + ' frames…';
       var zip = window.fflate.zipSync(files, { level: 6 });
       var fname = game() + '_record_' + stamp() + '.zip';
@@ -429,7 +470,7 @@
   }
 
   var vidStop = null;   // stop-fn while a video recording is active
-  function startVideo(statusEl) {
+  function startVideo(statusEl, traceLog) {
     var cv = _canvasEl();
     if (!cv) { if (statusEl) statusEl.textContent = 'no canvas'; return; }
     if (!cv.captureStream || typeof MediaRecorder === 'undefined') { if (statusEl) statusEl.textContent = 'MediaRecorder/captureStream unsupported here'; return; }
@@ -444,6 +485,11 @@
         var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
         if (statusEl) statusEl.textContent = 'saved webm locally (' + (blob.size / 1048576).toFixed(1) + ' MB)';
       });
+      // Companion state trace (video can't embed it, so upload it beside the webm).
+      if (traceLog && traceLog.length) {
+        var t = new TextEncoder().encode(JSON.stringify({ note: 'state trace for ' + name, watches: TRACE, transitions: traceLog }, null, 1));
+        uploadBlobToDrive(new Blob([t], { type: 'application/json' }), name.replace('.webm', '_trace.json'), null);
+      }
     };
     mr.start(); vidStop = function () { vidStop = null; mr.stop(); };
     if (statusEl) statusEl.textContent = '● REC (video) — play, then Stop to save WebM';
@@ -551,6 +597,22 @@
     });
     rec.appendChild(recBtn); rec.appendChild(recDlBtn); rec.appendChild(vidBtn);
     panel.appendChild(rec);
+
+    // behind-the-scenes state trace: name a RAM value (appState/mapId/menu/…) and
+    // every recording logs when it changes, synced to the frames (-> trace.json).
+    var tinS = 'width:58px;background:#1a1a24;border:1px solid #33354a;color:#cfe;border-radius:4px;padding:3px;';
+    var tr = line('Trace');
+    var tN = el('input', tinS); tN.placeholder = 'name';
+    var tA = el('input', tinS); tA.placeholder = '0xADDR';
+    var tSz = el('select', 'background:#1a1a24;color:#cfe;border:1px solid #33354a;border-radius:4px;'); tSz.innerHTML = '<option value=1>u8</option><option value=2 selected>u16</option><option value=4>u32</option>';
+    tr.appendChild(tN); tr.appendChild(tA); tr.appendChild(tSz);
+    tr.appendChild(btn('Add', function () {
+      var a = parseInt(tA.value, 16); if (isNaN(a)) { status.textContent = 'need a hex address (Find/Watch a value first)'; return; }
+      addTrace(tN.value || ('w' + TRACE.length), a, +tSz.value);
+      status.textContent = 'tracing: ' + TRACE.map(function (w) { return w.name + '@0x' + w.addr.toString(16) + '/' + w.size; }).join('  ');
+    }));
+    tr.appendChild(btn('Clear', function () { TRACE = []; saveTrace(); status.textContent = 'trace watches cleared'; }));
+    panel.appendChild(tr);
 
     // ---- DS memory regions (locate once -> auto-dumped with every capture) --
     var inpS = 'width:64px;background:#1a1a24;border:1px solid #33354a;color:#cfe;border-radius:4px;padding:3px;';
