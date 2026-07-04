@@ -23,12 +23,12 @@
 
   // ---- demo party (placeholder mons until wired to the save/engine) --------
   const PARTY = [
-    { name: 'INFERNAPE', lv: 42, hp: 118, max: 132, color: '#e86838', g: 'm' },
-    { name: 'STARAPTOR', lv: 40, hp: 96, max: 128, color: '#8a7060', g: 'm' },
-    { name: 'LUXRAY', lv: 41, hp: 121, max: 121, color: '#2848a0', g: 'm' },
-    { name: 'ROSERADE', lv: 39, hp: 74, max: 110, color: '#40a060', g: 'f' },
-    { name: 'FLOATZEL', lv: 40, hp: 30, max: 124, color: '#48a0d0', g: 'f' },
-    { name: 'BRONZONG', lv: 38, hp: 108, max: 118, color: '#3a6a70', g: '' },
+    { name: 'INFERNAPE', lv: 42, hp: 118, max: 132, color: '#e86838', g: 'm', icon: 'infernape' },
+    { name: 'STARAPTOR', lv: 40, hp: 96, max: 128, color: '#8a7060', g: 'm', icon: 'staraptor' },
+    { name: 'LUXRAY', lv: 41, hp: 121, max: 121, color: '#2848a0', g: 'm', icon: 'luxray' },
+    { name: 'ROSERADE', lv: 39, hp: 74, max: 110, color: '#40a060', g: 'f', icon: 'roserade' },
+    { name: 'FLOATZEL', lv: 40, hp: 30, max: 124, color: '#48a0d0', g: 'f', icon: 'floatzel' },
+    { name: 'BRONZONG', lv: 38, hp: 108, max: 118, color: '#3a6a70', g: '', icon: 'bronzong' },
   ];
 
   // ---- Start (X) menu -------------------------------------------------------
@@ -84,8 +84,10 @@
     const base = 'data/unleashed/platinum_ui/party/';
     const files = ['top_bg', 'bot_bg', 'panel_round', 'panel_rect', 'panel_sel_round',
       'panel_sel_rect', 'hp_2', 'mk_0'];
-    let left = files.length;
-    files.forEach(f => { const im = new Image(); im.onload = () => { if (--left === 0) { PA.ready = true; if (page === 'party') drawPartyTop(); } }; im.src = base + f + '.png'; PA.imgs[f] = im; });
+    const icons = PARTY.map(m => 'icons/' + m.icon);
+    const all = files.concat(icons);
+    let left = all.length;
+    all.forEach(f => { const im = new Image(); im.onload = () => { if (--left === 0) { PA.ready = true; if (page === 'party') drawPartyTop(); } }; im.src = base + f + '.png'; PA.imgs[f] = im; });
   })();
 
   // slot pixel coords on the 256x192 top screen (2 cols x 3 rows of 128x48)
@@ -98,8 +100,9 @@
       const [x, y] = SLOT[i]; const round = (i % 2 === 0);
       const key = (i === psel ? 'panel_sel_' : 'panel_') + (round ? 'round' : 'rect');
       c.drawImage(PA.imgs[key], x, y);
-      // mon icon placeholder (poketool icons are a follow-up extraction)
-      c.fillStyle = mon.color; c.beginPath(); c.arc(x + 22, y + 22, 13, 0, 7); c.fill();
+      // real Pokémon menu icon (32x32) tucked into the panel's left ball area
+      const icon = PA.imgs['icons/' + mon.icon];
+      if (icon && icon.complete) c.drawImage(icon, x + 4, y + 8, 32, 32);
       // HP bar sprite + fill
       const bx = x + 44, by = y + 30;
       const pct = mon.hp / mon.max, col = pct > .5 ? '#68d048' : pct > .2 ? '#f0c020' : '#f04040';
