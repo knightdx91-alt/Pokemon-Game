@@ -192,6 +192,43 @@
     pushBytes(mem.slice(r.base, end), 'regions/' + r.name + '/' + game() + suffix + '_' + stamp() + '.bin', statusEl);
   }
 
+  // ---- self-calibration: pin palette RAM from the on-screen colors ---------
+  // The colors visible in the captured frame ARE the palette, sitting in memory
+  // as BGR555. One heap pass tallies target-color hits per 512-byte block; the
+  // densest block is palette RAM. Runs once (offsets are fixed for the session).
+  function _cvEl() { var g = document.getElementById('game'); return g && g.querySelector('canvas'); }
+  function frameColorsBGR555() {
+    var cv = _cvEl(); if (!cv) return [];
+    var s = document.createElement('canvas'); s.width = 128; s.height = 192;
+    var c = s.getContext('2d', { willReadFrequently: true });
+    try { c.drawImage(cv, 0, 0, 128, 192); } catch (e) { return []; }
+    var d = c.getImageData(0, 0, 128, 192).data, seen = {}, out = [];
+    for (var i = 0; i < d.length; i += 4) {
+      if (d[i + 3] < 128) continue;
+      var v = (d[i] >> 3) | ((d[i + 1] >> 3) << 5) | ((d[i + 2] >> 3) << 10);
+      if (!seen[v]) { seen[v] = 1; out.push(v); }
+    }
+    return out;
+  }
+  function calibratePalette(statusEl) {
+    var mem = memView(); if (!mem) { if (statusEl) statusEl.textContent = 'no memory'; return false; }
+    var targets = frameColorsBGR555();
+    if (targets.length < 6) { if (statusEl) statusEl.textContent = 'need a colorful screen to calibrate'; return false; }
+    var flag = new Uint8Array(65536); targets.forEach(function (v) { flag[v] = 1; });
+    var best = -1, bestN = 0, blocks = {};
+    for (var i = 0; i + 1 < mem.length; i += 2) {
+      var v = mem[i] | (mem[i + 1] << 8);
+      if (flag[v]) { var b = i >> 9, n = (blocks[b] = (blocks[b] || 0) + 1); if (n > bestN) { bestN = n; best = b; } }
+    }
+    if (best < 0 || bestN < 4) { if (statusEl) statusEl.textContent = 'palette not located (' + targets.length + ' colors)'; return false; }
+    var base = best << 9;
+    addRegion('palette', base, 512);
+    if (statusEl) statusEl.textContent = 'palette @0x' + base.toString(16) + ' (' + bestN + ' hits) registered';
+    // push a diagnostic slice so the full OAM/VRAM/main-RAM map can be derived
+    pushBytes(mem.slice(base, Math.min(base + 4096, mem.length)), 'regions/_calib/' + game() + '_pal_' + stamp() + '.bin', statusEl);
+    return true;
+  }
+
   // ---- auto-capture on screen change ---------------------------------------
   // Watch the framebuffer; when it materially changes (a window/menu opens) and
   // then settles, push the final composited frame to traces/frames/auto/ AND
@@ -218,6 +255,8 @@
           var n = ('000' + seq).slice(-3);
           try { pushDataUrl(cv.toDataURL('image/png'), 'frames/auto/' + game() + '_' + n + '_' + stamp() + '.png', statusEl); }
           catch (e) { if (statusEl) statusEl.textContent = 'auto: toDataURL blocked'; }
+          // self-calibrate on the first window (palette offset is fixed after)
+          if (!REGIONS.some(function (r) { return r.name === 'palette'; })) calibratePalette(statusEl);
           // pair each captured state with its machine-level composition data
           REGIONS.forEach(function (r) { dumpRegion(r, seq, statusEl); });
         }, 450);
@@ -330,6 +369,7 @@
     rg2.appendChild(btn('Dump all→repo', function () { if (!REGIONS.length) { status.textContent = 'no regions yet'; return; } REGIONS.forEach(function (r) { dumpRegion(r, null, status); }); }));
     rg2.appendChild(btn('List', function () { status.textContent = REGIONS.length ? REGIONS.map(function (r) { return r.name + ' @0x' + r.base.toString(16) + ' len ' + r.len; }).join('\n') : 'none'; }));
     rg2.appendChild(btn('Clear', function () { REGIONS = []; saveRegions(); status.textContent = 'regions cleared'; }));
+    rg2.appendChild(btn('Calibrate', function () { status.textContent = 'scanning heap…'; setTimeout(function () { calibratePalette(status); }, 30); }));
     panel.appendChild(rg2);
     // palette color-anchor: paste BGR555 hex (comma-sep) from a captured frame
     var rg3 = line('Pal find');
