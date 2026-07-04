@@ -146,6 +146,28 @@
     var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
   }
+  // Upload the full heap to Google Drive (resumable — handles the 100+MB dump
+  // that GitHub's file cap can't). Reuses emulator.html's Drive write token.
+  // Claude then pulls it from Drive and maps ALL regions offline in one pass.
+  function uploadHeapToDrive(statusEl) {
+    var mem = memView(); if (!mem) { if (statusEl) statusEl.textContent = 'no memory'; return; }
+    if (!window.getDriveWriteToken) { statusEl.textContent = 'Drive auth unavailable (open a ROM via Drive first)'; return; }
+    var blob = new Blob([mem], { type: 'application/octet-stream' });   // snapshot copy
+    var name = game() + '_heap_' + stamp() + '.bin';
+    statusEl.textContent = 'authorizing Drive…';
+    window.getDriveWriteToken().then(function (token) {
+      statusEl.textContent = 'uploading ' + (blob.size / 1048576 | 0) + 'MB to Drive…';
+      return fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id,name', {
+        method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name })
+      }).then(function (r) {
+        var loc = r.headers.get('Location'); if (!loc) throw new Error('no upload session');
+        return fetch(loc, { method: 'PUT', headers: { 'Content-Type': 'application/octet-stream' }, body: blob });
+      }).then(function (r) { return r.json(); }).then(function (d) {
+        statusEl.textContent = d.id ? ('✓ Drive: ' + name) : ('✗ ' + ((d.error && d.error.message) || 'upload failed'));
+      });
+    }).catch(function (e) { statusEl.textContent = '✗ ' + e.message; });
+  }
 
   // ---- value search / watch ------------------------------------------------
   var candidates = null;   // array of addresses still matching
@@ -332,6 +354,7 @@
     var dl = line(memSource() === 'core SYSTEM_RAM' ? 'Main RAM' : 'Emu heap');
     dl.appendChild(btn('Download', function () { var rv = memView(); if (!rv) return status.textContent = 'no memory (' + capabilities() + ')'; download(rv.slice(), game() + '_' + stamp() + '.bin'); status.textContent = 'downloaded ' + rv.length + ' bytes from ' + memSource(); }));
     dl.appendChild(btn('☁ Repo', function () { var rv = memView(); if (!rv) return status.textContent = 'no memory'; pushBytes(rv.slice(), 'ram/' + game() + '_' + stamp() + '.bin', status); }));
+    dl.appendChild(btn('⛁ Drive', function () { uploadHeapToDrive(status); }));
     panel.appendChild(dl);
 
     // value search
