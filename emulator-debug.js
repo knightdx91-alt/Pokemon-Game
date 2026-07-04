@@ -59,6 +59,46 @@
     return lines.join('\n');
   }
 
+  // Dump the desmume2015 core's option list + the wrapped core functions, so we
+  // can see how the pointer/touch device is (or isn't) configured.
+  function coreOptionsDump() {
+    var g = gm();
+    if (!g) return 'no gameManager';
+    var out = [];
+    try {
+      var fns = g.functions ? Object.keys(g.functions) : [];
+      out.push('gm.functions: ' + (fns.join(', ') || 'none'));
+    } catch (e) { out.push('functions: ' + e.message); }
+    try {
+      var opts = g.functions && g.functions.getCoreOptions ? g.functions.getCoreOptions() : (g.getCoreOptions && g.getCoreOptions());
+      out.push('--- core options ---');
+      out.push(opts ? String(opts) : '(getCoreOptions returned nothing)');
+    } catch (e) { out.push('getCoreOptions error: ' + e.message); }
+    return out.join('\n');
+  }
+
+  // Dump RetroArch's live config file from the emulated FS — it lists the input
+  // bindings, including anything pointer/mouse/touch related.
+  function pokeTest() {
+    var g = gm();
+    if (!g || !g.FS) return 'no FS';
+    var paths = [
+      '/home/web_user/.config/retroarch/retroarch.cfg',
+      '/home/web_user/retroarch/userdata/retroarch.cfg'
+    ];
+    for (var i = 0; i < paths.length; i++) {
+      try {
+        var txt = g.FS.readFile(paths[i], { encoding: 'utf8' });
+        if (txt) {
+          // Keep only input/pointer/mouse/touch lines — the cfg is huge.
+          var keep = txt.split('\n').filter(function (l) { return /input|pointer|mouse|touch|analog|device/i.test(l); });
+          return paths[i] + '\n--- input-related cfg lines ---\n' + keep.join('\n');
+        }
+      } catch (e) { /* try next */ }
+    }
+    return 'retroarch.cfg not found on FS';
+  }
+
   // ---- repo push -----------------------------------------------------------
   function ghHeaders() { return { Authorization: 'token ' + TOKEN, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' }; }
   function bytesToB64(u8) {
@@ -144,6 +184,10 @@
     var capLine = line(''); capLine.appendChild(btn('Check core', function () { status.textContent = capabilities(); }));
     capLine.appendChild(btn('Touch test', function () { startTouchTest(status); }));
     panel.appendChild(capLine);
+
+    var optLine = line(''); optLine.appendChild(btn('Core opts', function () { status.textContent = coreOptionsDump(); }));
+    optLine.appendChild(btn('RA cfg', function () { status.textContent = pokeTest(); }));
+    panel.appendChild(optLine);
 
     var brLine = line('DS touch→stylus');
     brLine.appendChild(btn('Toggle', function () { toggleTouchBridge(status); }));
