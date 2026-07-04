@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Pokémon Unleashed — 3D Test</title>
+<style>
+  html,body{margin:0;height:100%;background:#0b0e17;color:#dfe7f2;
+    font-family:"Segoe UI",system-ui,sans-serif;overflow:hidden;
+    -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;}
+  #bar{position:fixed;top:0;left:0;right:0;height:44px;display:flex;align-items:center;
+    gap:10px;padding:0 12px;background:linear-gradient(180deg,#14203a,#0c1424);
+    box-shadow:0 2px 10px #0008;z-index:10;}
+  #bar b{font-size:15px;color:#8fd0ff;letter-spacing:.3px;}
+  #bar .sub{font-size:11px;color:#6c7a92;}
+  .toggle{margin-left:auto;display:flex;border:1px solid #2b3a5a;border-radius:8px;overflow:hidden;}
+  .toggle button{background:#111a2e;color:#9fb0cc;border:0;padding:7px 16px;font-size:13px;font-weight:600;}
+  .toggle button.on{background:#2563c9;color:#fff;}
+  #view{position:fixed;inset:44px 0 0 0;}
+  #gl{display:block;width:100%;height:100%;}
+  #twod{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:#101826;}
+  #twod img{max-width:100%;max-height:100%;image-rendering:pixelated;}
+  #hud{position:fixed;left:10px;bottom:10px;font-size:12px;color:#7fe0a0;
+    background:#0009;padding:6px 10px;border-radius:6px;font-variant-numeric:tabular-nums;z-index:10;}
+  #hint{position:fixed;right:10px;bottom:10px;font-size:11px;color:#6c7a92;
+    background:#0009;padding:6px 10px;border-radius:6px;z-index:10;text-align:right;}
+  #err{position:fixed;inset:44px 12px auto 12px;color:#ff9a9a;font-size:13px;white-space:pre-wrap;}
+</style>
+</head>
+<body>
+<div id="bar">
+  <b>Pokémon Unleashed</b>
+  <span class="sub">New Bark (3D test) · real HeartGold geometry</span>
+  <div class="toggle">
+    <button id="b3d" class="on">3D</button>
+    <button id="b2d">2D</button>
+  </div>
+</div>
+<div id="view">
+  <canvas id="gl"></canvas>
+  <div id="twod"><img id="twodimg" src="data/unleashed/newbark_area_2d.png" alt="top-down"></div>
+</div>
+<div id="hud">— fps · — tris</div>
+<div id="hint">drag / pinch to orbit · zoom</div>
+<div id="err"></div>
+
+<script src="src/vendor/three.min.js"></script>
+<script src="src/vendor/OrbitControls.js"></script>
+<script>
+const errEl = document.getElementById('err');
+function fail(m){ errEl.textContent = 'Error: ' + m; }
+window.addEventListener('error', e => fail(e.message));
+
+let renderer, scene, camera, controls, triCount = 0;
+
+function init(map){
+  const canvas = document.getElementById('gl');
+  renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x8ec7e6); // DS sky blue
+
+  const b = map.bounds;
+  const cx = (b.minx+b.maxx)/2, cy=(b.miny+b.maxy)/2, cz=(b.minz+b.maxz)/2;
+  const span = Math.max(b.maxx-b.minx, b.maxz-b.minz);
+
+  const loader = new THREE.TextureLoader();
+  const group = new THREE.Group();
+  for(const m of map.meshes){
+    const geo = new THREE.BufferGeometry();
+    // recenter so the map sits at the origin
+    const pos = Float32Array.from(m.positions);
+    for(let i=0;i<pos.length;i+=3){ pos[i]-=cx; pos[i+1]-=cy; pos[i+2]-=cz; }
+    geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+    geo.setAttribute('uv', new THREE.BufferAttribute(Float32Array.from(m.uvs),2));
+    geo.computeVertexNormals();
+    let mat;
+    if(m.texture){
+      const tex = loader.load(m.texture);
+      tex.magFilter = THREE.NearestFilter;
+      tex.minFilter = THREE.NearestFilter;
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      if('encoding' in tex) tex.encoding = THREE.sRGBEncoding;
+      mat = new THREE.MeshBasicMaterial({map:tex, side:THREE.DoubleSide, alphaTest:0.5});
+    } else {
+      const c = m.color;
+      mat = new THREE.MeshBasicMaterial({color:(c[0]<<16)|(c[1]<<8)|c[2], side:THREE.DoubleSide});
+    }
+    group.add(new THREE.Mesh(geo, mat));
+    triCount += m.positions.length/9;
+  }
+  scene.add(group);
+
+  camera = new THREE.PerspectiveCamera(45, 1, 1, 20000);
+  // DS-style tilted view: above and to the south, looking down ~50°
+  camera.position.set(0, span*0.85, span*0.75);
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.target.set(0,0,0);
+  controls.enableDamping = true; controls.dampingFactor = 0.08;
+  controls.maxPolarAngle = Math.PI*0.49; // don't go under the ground
+  controls.minDistance = span*0.15; controls.maxDistance = span*2.2;
+
+  resize(); window.addEventListener('resize', resize);
+  animate();
+}
+
+function resize(){
+  const w = window.innerWidth, h = window.innerHeight-44;
+  renderer.setSize(w,h,false); camera.aspect = w/h; camera.updateProjectionMatrix();
+}
+
+let last=performance.now(), frames=0, fps=0;
+function animate(){
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene,camera);
+  frames++; const now=performance.now();
+  if(now-last>=500){ fps=Math.round(frames*1000/(now-last)); frames=0; last=now;
+    document.getElementById('hud').textContent = fps+' fps · '+triCount+' tris'; }
+}
+
+// 2D / 3D toggle
+const b3d=document.getElementById('b3d'), b2d=document.getElementById('b2d');
+const gl=document.getElementById('gl'), twod=document.getElementById('twod');
+b3d.onclick=()=>{b3d.classList.add('on');b2d.classList.remove('on');gl.style.display='block';twod.style.display='none';};
+b2d.onclick=()=>{b2d.classList.add('on');b3d.classList.remove('on');gl.style.display='none';twod.style.display='flex';};
+
+fetch('data/unleashed/newbark_area.json')
+  .then(r=>{ if(!r.ok) throw new Error('map json '+r.status); return r.json(); })
+  .then(init).catch(e=>fail(e.message));
+</script>
+</body>
+</html>
