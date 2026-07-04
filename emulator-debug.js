@@ -208,18 +208,25 @@
     if (touchTestOff) { touchTestOff(); touchTestOff = null; if (statusEl) statusEl.textContent = 'touch test OFF'; return; }
     var g = document.getElementById('game');
     if (!g) { if (statusEl) statusEl.textContent = 'no #game'; return; }
+    var alerted = 0;
     function report(e) {
       var pt = e.touches && e.touches[0] ? e.touches[0] : e;
       var cvs = g.querySelector('canvas');
       var r = cvs ? cvs.getBoundingClientRect() : g.getBoundingClientRect();
       var relX = pt.clientX - r.left, relY = pt.clientY - r.top;
       var half = relY > r.height / 2 ? 'BOTTOM (stylus)' : 'top (no stylus)';
-      var onCanvas = cvs && document.elementFromPoint(pt.clientX, pt.clientY) === cvs;
-      var msg = e.type + ' @canvas ' + (relX | 0) + ',' + (relY | 0) +
-        ' / ' + (r.width | 0) + '×' + (r.height | 0) + ' → ' + half +
-        ' | topmost el = ' + (onCanvas ? 'canvas ✓' : (document.elementFromPoint(pt.clientX, pt.clientY) || {}).tagName + '#' + ((document.elementFromPoint(pt.clientX, pt.clientY) || {}).id || ''));
+      var top = document.elementFromPoint(pt.clientX, pt.clientY) || {};
+      var onCanvas = cvs && top === cvs;
+      var msg = e.type + '\n' +
+        'topmost el = ' + (onCanvas ? 'CANVAS ✓' : (top.tagName || '?') + '#' + (top.id || '') + '.' + (top.className || '')) + '\n' +
+        'tap on canvas = ' + (relX | 0) + ',' + (relY | 0) + ' of ' + (r.width | 0) + '×' + (r.height | 0) + '\n' +
+        'region = ' + half + '\n' +
+        'canvas backing = ' + (cvs ? cvs.width + '×' + cvs.height : 'none');
       if (statusEl) statusEl.textContent = msg;
       console.log('[touchtest]', msg);
+      // Only the physical touchstart gets alerted (once), so it's readable on
+      // mobile without a console and doesn't spam on synthetic/mouse events.
+      if (e.type === 'touchstart' && alerted < 1) { alerted++; try { alert(msg); } catch (x) {} }
     }
     var evs = ['touchstart', 'mousedown', 'pointerdown'];
     evs.forEach(function (ev) { g.addEventListener(ev, report, true); });
