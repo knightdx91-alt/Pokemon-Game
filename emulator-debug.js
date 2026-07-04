@@ -273,8 +273,27 @@
     // so one region captures BOTH screens' full palette.
     var base = (best << 9) & ~0x7FF;
     addRegion('palette', base, 2048);
-    if (statusEl) statusEl.textContent = 'palette @0x' + base.toString(16) + ' (' + bestN + ' hits) registered';
-    // push a diagnostic slice so the full OAM/VRAM/main-RAM map can be derived
+    // ---- derive VRAM + OAM from the palette anchor (SOLVED offline) ----------
+    // desmume2015's DS memories are contiguous fields of one global MMU_struct:
+    //   ARM9_VMEM(palette,0x800) | ARM9_LCD(VRAM,0xA4000) | blank(0x20000) |
+    //   ARM9_OAM(0x800)
+    // so VRAM and OAM sit at FIXED deltas from palette RAM regardless of where the
+    // struct lands in the Emscripten heap this session. Confirmed against a full
+    // 184MB heap dump: palette@0x02609800 (4 populated engine banks) → VRAM at
+    // +0x800 ending exactly at the 128KB zero blank → OAM at +0xC4800 (105/110
+    // enabled sprites, valid Y coords). These three ARE the full composition of
+    // any DS screen: palette (colors) + VRAM (BG tilemaps + tile/char gfx) + OAM
+    // (sprite cells). Registering them means auto-capture dumps how every window
+    // is baked, paired with the frame PNG.
+    var D_VRAM = 0x800, VRAM_LEN = 0xA4000, D_OAM = 0x800 + 0xA4000 + 0x20000;
+    if (base + D_OAM + 0x800 <= mem.length) {
+      addRegion('vram', base + D_VRAM, VRAM_LEN);
+      addRegion('oam',  base + D_OAM,  2048);
+    }
+    if (statusEl) statusEl.textContent = 'palette @0x' + base.toString(16) +
+      ' (' + bestN + ' hits) + vram@0x' + (base + D_VRAM).toString(16) +
+      ' + oam@0x' + (base + D_OAM).toString(16) + ' registered';
+    // push a diagnostic slice so the map stays verifiable session-to-session
     pushBytes(mem.slice(base, Math.min(base + 4096, mem.length)), 'regions/_calib/' + game() + '_pal_' + stamp() + '.bin', statusEl);
     return true;
   }
