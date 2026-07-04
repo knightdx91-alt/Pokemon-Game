@@ -108,8 +108,11 @@
   }
   function game() { return (window.EJS_gameName || window.CLOUD_SAVE_GAME || 'game').replace(/[^a-z0-9_.-]/gi, '_'); }
   function stamp() { return new Date().toISOString().replace(/[:.]/g, '-'); }
-  function pushRepo(path, b64, done) {
-    // create-or-update on the traces branch
+  // Each push is a separate commit on the traces branch, so concurrent pushes
+  // race and collide (GitHub "is at X but expected Y"). Serialize them: one
+  // commit finishes before the next starts.
+  var _pq = [], _pbusy = false;
+  function _pushNow(path, b64, done) {
     fetch('https://api.github.com/repos/' + REPO + '/contents/' + path + '?ref=' + BRANCH, { headers: ghHeaders() })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {
@@ -121,6 +124,12 @@
       .then(function (d) { done(!d.message || !!d.content, d.message || 'ok'); })
       .catch(function (e) { done(false, e.message); });
   }
+  function _drain() {
+    if (_pbusy || !_pq.length) return;
+    _pbusy = true; var job = _pq.shift();
+    _pushNow(job.path, job.b64, function (ok, msg) { _pbusy = false; job.done(ok, msg); setTimeout(_drain, 120); });
+  }
+  function pushRepo(path, b64, done) { _pq.push({ path: path, b64: b64, done: done || function () {} }); _drain(); }
   function pushBytes(u8, path, statusEl) {
     if (statusEl) statusEl.textContent = 'pushing ' + path + ' (' + (u8.length / 1024 | 0) + ' KB)…';
     pushRepo(path, bytesToB64(u8), function (ok, msg) {
@@ -214,13 +223,25 @@
     var mem = memView(); if (!mem) { if (statusEl) statusEl.textContent = 'no memory'; return false; }
     var targets = frameColorsBGR555();
     if (targets.length < 6) { if (statusEl) statusEl.textContent = 'need a colorful screen to calibrate'; return false; }
-    var flag = new Uint8Array(65536); targets.forEach(function (v) { flag[v] = 1; });
-    var best = -1, bestN = 0, blocks = {};
+    // drop black/white/near-grays — they flood memory as padding and cause
+    // false anchors; score blocks by DISTINCT colors (a real palette is diverse,
+    // a padding block is one value repeated).
+    var flag = new Uint8Array(65536), nt = 0;
+    targets.forEach(function (v) {
+      var r = v & 31, g = (v >> 5) & 31, b = (v >> 10) & 31;
+      if ((r < 2 && g < 2 && b < 2) || (r > 29 && g > 29 && b > 29)) return;
+      if (!flag[v]) { flag[v] = 1; nt++; }
+    });
+    if (nt < 6) { if (statusEl) statusEl.textContent = 'not enough distinctive colors'; return false; }
+    var seen = {}, best = -1, bestN = 0;
     for (var i = 0; i + 1 < mem.length; i += 2) {
       var v = mem[i] | (mem[i + 1] << 8);
-      if (flag[v]) { var b = i >> 9, n = (blocks[b] = (blocks[b] || 0) + 1); if (n > bestN) { bestN = n; best = b; } }
+      if (flag[v]) {
+        var b = i >> 9, s = seen[b] || (seen[b] = { c: {}, n: 0 });
+        if (!s.c[v]) { s.c[v] = 1; if (++s.n > bestN) { bestN = s.n; best = b; } }
+      }
     }
-    if (best < 0 || bestN < 4) { if (statusEl) statusEl.textContent = 'palette not located (' + targets.length + ' colors)'; return false; }
+    if (best < 0 || bestN < 6) { if (statusEl) statusEl.textContent = 'palette not located (best ' + bestN + ' distinct of ' + nt + ')'; return false; }
     var base = best << 9;
     addRegion('palette', base, 512);
     if (statusEl) statusEl.textContent = 'palette @0x' + base.toString(16) + ' (' + bestN + ' hits) registered';
