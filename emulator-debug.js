@@ -16,6 +16,9 @@
     var g = gm();
     return (g && g.Module) || (window.EJS_emulator && window.EJS_emulator.Module) || window.Module || null;
   }
+  // Preferred: the libretro core's own SYSTEM_RAM (contiguous, small — best for
+  // DS main RAM). EmulatorJS's RetroArch build does NOT export this, so this is
+  // usually null and we fall back to the whole emulator heap below.
   function ramView() {
     var M = coreModule();
     if (!M) return null;
@@ -28,12 +31,32 @@
       return M.HEAPU8.subarray(ptr, ptr + size);
     } catch (e) { console.warn('[dbg] ram:', e); return null; }
   }
+  // Fallback: the entire Emscripten heap. DS main RAM lives somewhere inside it;
+  // value-search/watch still work against the whole heap even without a symbol.
+  function heapView() {
+    var M = coreModule();
+    return (M && M.HEAPU8) || null;
+  }
+  // The view every feature actually uses: core SYSTEM_RAM if present, else heap.
+  function memView() { return ramView() || heapView(); }
+  function memSource() { return ramView() ? 'core SYSTEM_RAM' : (heapView() ? 'full emu heap' : 'none'); }
+
   function capabilities() {
-    var M = coreModule(); if (!M) return 'core Module not found yet';
-    var fns = Object.keys(M).filter(function (k) { return /retro|memory/i.test(k); });
-    var rv = ramView();
-    return 'Module: yes | retro/memory keys: ' + (fns.join(', ') || 'none') +
-      ' | SYSTEM_RAM: ' + (rv ? rv.length + ' bytes' : 'unavailable');
+    var g = gm(), M = coreModule();
+    var lines = [];
+    lines.push('EJS_emulator: ' + (window.EJS_emulator ? 'yes' : 'NO'));
+    lines.push('gameManager: ' + (g ? 'yes' : 'NO'));
+    lines.push('core Module: ' + (M ? 'yes' : 'NO — game not started yet'));
+    if (M) {
+      var heap = M.HEAPU8 ? (M.HEAPU8.length / 1048576).toFixed(1) + ' MB heap' : 'no HEAPU8';
+      lines.push('libretro getter: ' + (M._retro_get_memory_data ? 'yes' : 'NO (expected — RetroArch build)'));
+      lines.push('memory source: ' + memSource() + ' (' + heap + ')');
+      var fns = Object.keys(M).filter(function (k) { return /retro|memory|mem_/i.test(k); });
+      lines.push('mem-ish keys: ' + (fns.slice(0, 12).join(', ') || 'none'));
+    }
+    var cvs = document.querySelector('#game canvas');
+    lines.push('canvas: ' + (cvs ? cvs.width + '×' + cvs.height + ' (css ' + cvs.clientWidth + '×' + cvs.clientHeight + ')' : 'none'));
+    return lines.join('\n');
   }
 
   // ---- repo push -----------------------------------------------------------
@@ -83,7 +106,7 @@
     return (rv[addr] | (rv[addr + 1] << 8) | (rv[addr + 2] << 16) | (rv[addr + 3] << 24)) >>> 0;
   }
   function search(value, sz) {
-    var rv = ramView(); if (!rv) return -1;
+    var rv = memView(); if (!rv) return -1;
     if (candidates === null) {
       candidates = [];
       for (var a = 0; a + sz <= rv.length; a++) if (readVal(rv, a, sz) === value) candidates.push(a);
@@ -113,13 +136,14 @@
     panel.appendChild(h);
 
     // capabilities
-    var capLine = line(''); capLine.appendChild(btn('Check core', function () { status.textContent = capabilities(); }));
+    var capLine = line(''); capLine.appendChild(btn('Check core', function () { var rep = capabilities(); status.textContent = rep; try { alert(rep); } catch (e) {} }));
+    capLine.appendChild(btn('Touch test', function () { startTouchTest(status); }));
     panel.appendChild(capLine);
 
-    // dump RAM
-    var dl = line('Main RAM');
-    dl.appendChild(btn('Download', function () { var rv = ramView(); if (!rv) return status.textContent = 'no RAM (' + capabilities() + ')'; download(rv.slice(), game() + '_' + stamp() + '.bin'); status.textContent = 'downloaded ' + rv.length + ' bytes'; }));
-    dl.appendChild(btn('☁ Repo', function () { var rv = ramView(); if (!rv) return status.textContent = 'no RAM'; pushBytes(rv.slice(), 'ram/' + game() + '_' + stamp() + '.bin', status); }));
+    // dump RAM / heap
+    var dl = line(memSource() === 'core SYSTEM_RAM' ? 'Main RAM' : 'Emu heap');
+    dl.appendChild(btn('Download', function () { var rv = memView(); if (!rv) return status.textContent = 'no memory (' + capabilities() + ')'; download(rv.slice(), game() + '_' + stamp() + '.bin'); status.textContent = 'downloaded ' + rv.length + ' bytes from ' + memSource(); }));
+    dl.appendChild(btn('☁ Repo', function () { var rv = memView(); if (!rv) return status.textContent = 'no memory'; pushBytes(rv.slice(), 'ram/' + game() + '_' + stamp() + '.bin', status); }));
     panel.appendChild(dl);
 
     // value search
@@ -138,16 +162,16 @@
       var addr = parseInt(win.value, 16); var sz = +szsel.value;
       if (isNaN(addr) && candidates && candidates.length) addr = candidates[0];
       if (isNaN(addr)) return status.textContent = 'set an address or Find first';
-      watchTimer = loop(function () { var rv = ramView(); if (rv) status.textContent = '0x' + addr.toString(16) + ' = ' + readVal(rv, addr, sz); }, 10);
+      watchTimer = loop(function () { var rv = memView(); if (rv) status.textContent = '0x' + addr.toString(16) + ' = ' + readVal(rv, addr, sz); }, 10);
     }));
     wl.appendChild(btn('Stop', function () { if (watchTimer) { watchTimer(); watchTimer = null; status.textContent = 'watch stopped'; } }));
     panel.appendChild(wl);
 
     // frame diff trace
     var df = line('Diff');
-    df.appendChild(btn('Baseline', function () { var rv = ramView(); if (!rv) return status.textContent = 'no RAM'; baseline = rv.slice(); status.textContent = 'baseline set (' + baseline.length + ')'; }));
+    df.appendChild(btn('Baseline', function () { var rv = memView(); if (!rv) return status.textContent = 'no RAM'; baseline = rv.slice(); status.textContent = 'baseline set (' + baseline.length + ')'; }));
     df.appendChild(btn('Changed→Repo', function () {
-      var rv = ramView(); if (!rv || !baseline) return status.textContent = 'set baseline first';
+      var rv = memView(); if (!rv || !baseline) return status.textContent = 'set baseline first';
       var out = []; for (var a = 0; a < rv.length && a < baseline.length; a++) if (rv[a] !== baseline[a]) out.push(a + ',' + baseline[a] + ',' + rv[a]);
       var txt = 'addr,old,new\n' + out.join('\n'); var u8 = new TextEncoder().encode(txt);
       status.textContent = out.length + ' bytes changed';
@@ -167,6 +191,38 @@
     status.textContent = capabilities();
   }
 
+  // ---- touch / stylus diagnostic ------------------------------------------
+  // The DS bottom-screen "tap does nothing" bug: EmulatorJS itself does NOT map
+  // touches to the DS stylus — that's done inside RetroArch's own listeners on
+  // the <canvas>. This probe listens (capture phase) on #game and reports, for
+  // each tap, the coordinates relative to the canvas and whether the tap is
+  // reaching the canvas element at all. If taps register here but the stylus
+  // doesn't move, the tap is landing outside the core's touch region (bottom
+  // half) — the geometry, not event delivery, is the problem.
+  var touchTestOff = null;
+  function startTouchTest(statusEl) {
+    if (touchTestOff) { touchTestOff(); touchTestOff = null; if (statusEl) statusEl.textContent = 'touch test OFF'; return; }
+    var g = document.getElementById('game');
+    if (!g) { if (statusEl) statusEl.textContent = 'no #game'; return; }
+    function report(e) {
+      var pt = e.touches && e.touches[0] ? e.touches[0] : e;
+      var cvs = g.querySelector('canvas');
+      var r = cvs ? cvs.getBoundingClientRect() : g.getBoundingClientRect();
+      var relX = pt.clientX - r.left, relY = pt.clientY - r.top;
+      var half = relY > r.height / 2 ? 'BOTTOM (stylus)' : 'top (no stylus)';
+      var onCanvas = cvs && document.elementFromPoint(pt.clientX, pt.clientY) === cvs;
+      var msg = e.type + ' @canvas ' + (relX | 0) + ',' + (relY | 0) +
+        ' / ' + (r.width | 0) + '×' + (r.height | 0) + ' → ' + half +
+        ' | topmost el = ' + (onCanvas ? 'canvas ✓' : (document.elementFromPoint(pt.clientX, pt.clientY) || {}).tagName + '#' + ((document.elementFromPoint(pt.clientX, pt.clientY) || {}).id || ''));
+      if (statusEl) statusEl.textContent = msg;
+      console.log('[touchtest]', msg);
+    }
+    var evs = ['touchstart', 'mousedown', 'pointerdown'];
+    evs.forEach(function (ev) { g.addEventListener(ev, report, true); });
+    touchTestOff = function () { evs.forEach(function (ev) { g.removeEventListener(ev, report, true); }); };
+    if (statusEl) statusEl.textContent = 'touch test ON — tap the bottom screen';
+  }
+
   // launcher button in the emulator top bar (falls back to a floating button)
   function addButton() {
     if (document.getElementById('dbg-btn')) return;
@@ -174,10 +230,10 @@
     b.title = 'RAM trace / capture';
     b.style.cssText = 'background:#12121a;border:1px solid #2a2a34;border-radius:8px;color:#cfe;padding:4px 8px;font-size:14px;cursor:pointer;';
     b.onclick = build;
-    var bar = document.getElementById('top-bar') || document.getElementById('emu-topbar');
+    var bar = document.getElementById('top-bar') || document.querySelector('.emu-topbar') || document.getElementById('emu-topbar');
     if (bar) bar.appendChild(b);
     else { b.style.cssText += 'position:fixed;right:8px;top:8px;z-index:99999;'; document.body.appendChild(b); }
   }
-  window.EmuDebug = { build: build, ramView: ramView, capabilities: capabilities };
+  window.EmuDebug = { build: build, ramView: ramView, memView: memView, capabilities: capabilities, startTouchTest: startTouchTest };
   if (document.readyState !== 'loading') addButton(); else document.addEventListener('DOMContentLoaded', addButton);
 })();
