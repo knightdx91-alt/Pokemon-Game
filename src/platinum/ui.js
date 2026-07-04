@@ -7,6 +7,10 @@
   'use strict';
   const $ = s => document.querySelector(s);
   const el = (t, c, h) => { const e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; };
+  // real Platinum font (falls back to a styled span until the atlas loads)
+  const PF = () => window.PlatFont && PlatFont.ready;
+  const ftext = (str, color, scale) => PF() ? PlatFont.toCanvas(str, color || '#38460f', scale || 1.5)
+    : el('span', 'pf-fallback', str);
 
   // integer-scale both 256x192 screens to fit the viewport
   function scale() {
@@ -47,7 +51,7 @@
       const row = el('div', 'smi' + (i === mi ? ' sel' : ''));
       const icon = el('img', 'ic'); icon.src = it.img; icon.alt = '';
       row.appendChild(icon);
-      row.appendChild(el('span', null, it.label));
+      row.appendChild(ftext(it.label, i === mi ? '#a02010' : '#384050'));
       row.onclick = () => { mi = i; renderMenu(); choose(); };
       m.appendChild(row);
     });
@@ -227,8 +231,9 @@
         c.fillStyle = PK.dots[y * 24 + x] ? G.on : G.lcdD; c.fillRect(40 + x * 7, 30 + y * 6, 6, 5);
       }
     }
-    // app name footer
-    c.fillStyle = G.on; c.font = '9px Verdana'; c.textAlign = 'center'; c.fillText(app, 128, 158);
+    // app name footer (real Platinum font when loaded)
+    if (PF()) { const wpx = PlatFont.measure(app, 1); PlatFont.draw(c, app, 128 - wpx / 2, 150, G.on, 1); }
+    else { c.fillStyle = G.on; c.font = '9px Verdana'; c.textAlign = 'center'; c.fillText(app, 128, 158); }
   }
   function cyclePoketch(dir) { PK.app = (PK.app + PK.apps.length + (dir || 1)) % PK.apps.length; drawBottom(); }
 
@@ -273,4 +278,10 @@
 
   scale(); renderMenu(); drawBottom();
   setInterval(drawBottom, 1000);
+  // once the ROM font atlas loads, redraw everything with real glyphs
+  if (window.PlatFont) PlatFont.onReady(() => {
+    renderMenu();
+    if (page === 'party') showParty(); else if (page === 'summary') showSummary();
+    drawBottom();
+  });
 })();

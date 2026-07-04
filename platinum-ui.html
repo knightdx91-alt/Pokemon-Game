@@ -46,6 +46,8 @@ html,body{height:100%;background:#0a0d16;overflow:hidden;
   background:linear-gradient(#ffffff,#e4ebf6);border:2px solid #9fb0cc;
   box-shadow:0 1px 0 #fff inset, 0 1px 2px #0003;color:#384050;font-size:11px;font-weight:700;}
 .smi .ic{width:18px;height:18px;flex:0 0 auto;image-rendering:pixelated;object-fit:contain;}
+.smi canvas,.pn canvas,.pl canvas,.hptxt canvas{image-rendering:pixelated;vertical-align:middle;display:inline-block;}
+.pf-fallback{font-size:11px;}
 .smi.sel{background:linear-gradient(#fff0c0,#ffcf78);border-color:var(--sel);
   box-shadow:0 0 0 2px var(--sel-l), 0 1px 3px #0004;color:#a02010;}
 .ic-dex{background:#e04038;} .ic-party{background:#f0b030;} .ic-bag{background:#c08040;}
@@ -142,6 +144,7 @@ html,body{height:100%;background:#0a0d16;overflow:hidden;
     <button class="cbtn" data-k="b">B</button><button class="cbtn" data-k="a">A</button>
   </div>
 </div>
+<script src="src/platinum/font.js"></script>
 <script src="src/platinum/ui.js"></script>
 </body>
 </html>

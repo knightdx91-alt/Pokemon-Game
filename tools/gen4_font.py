@@ -45,6 +45,7 @@ def decode(path):
                     v = (byte >> (k * 2)) & 3
                     pix = i * 4 + k
                     cell[ty + pix // 8][tx + pix % 8] = v
+        cell = [row[::-1] for row in cell]   # stored horizontally mirrored
         glyphs.append(cell)
     widths = list(d[off + n * gbytes: off + n * gbytes + n])
     return glyphs, widths, w, h
