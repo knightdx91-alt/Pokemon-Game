@@ -33,6 +33,19 @@ jobs:
       - name: Inject cache-bust version
         run: sed -i "s/__CACHE_BUST__/${{ github.sha }}/g" index.html game.html emulator.html emerald.html crater.html
 
+      # Trim build/analysis-only trees from the deployed site so GitHub Pages'
+      # file-sync doesn't choke (was intermittently failing with "Deployment
+      # failed, try again later" on the ~121MB / 11k-file site). Nothing removed
+      # here is fetched by the browser at runtime — verified by grep. Kept:
+      # data/ (maps/tilesets/sprites), src/, decomp/data/ (type_chart +
+      # nature_table are fetched by the crater at runtime).
+      - name: Slim site for Pages
+        run: |
+          rm -rf RPG_MAKER source tools docs
+          find decomp -mindepth 1 -maxdepth 1 ! -name data -exec rm -rf {} +
+          echo "Deployed tree size:"; du -sh . 2>/dev/null | cut -f1
+          echo "File count:"; find . -type f | wc -l
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
