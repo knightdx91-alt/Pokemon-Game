@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Pokémon Unleashed — Platinum UI</title>
+<style>
+/* ---- Authentic Platinum DS UI. Two 256x192 screens, integer-scaled. ---- */
+:root{
+  --plat-blue:#4870d0; --plat-blue-d:#2848a0; --plat-navy:#204068;
+  --win:#f8f8f8; --win-sh:#d0d8e8; --ink:#404850; --ink-sh:#b0b8c8;
+  --sel:#f85030; --sel-l:#ffd0c0;
+  --botA:#58c8b0; --botB:#38a088;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:#0a0d16;overflow:hidden;
+  font-family:"Verdana",system-ui,sans-serif;-webkit-user-select:none;user-select:none;
+  -webkit-tap-highlight-color:transparent;touch-action:none;}
+#stage{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:10px;padding:8px;}
+.screen{position:relative;background:#000;image-rendering:pixelated;
+  box-shadow:0 4px 18px #000a, inset 0 0 0 2px #000;border-radius:3px;overflow:hidden;}
+#top{background:linear-gradient(#8fd0f0,#bfe8c0);}
+#bot{background:linear-gradient(160deg,var(--botA),var(--botB));}
+.hint{color:#5a6a86;font-size:11px;letter-spacing:.3px;}
+
+/* overworld stub on the top screen */
+#owgrass{position:absolute;inset:0;background:
+  repeating-linear-gradient(0deg,#7cc47a,#7cc47a 15px,#74bc72 15px,#74bc72 30px);}
+#owpath{position:absolute;left:38%;top:0;bottom:0;width:24%;background:#d8c088;
+  box-shadow:inset 3px 0 #c0a870,inset -3px 0 #c0a870;}
+#player{position:absolute;left:calc(50% - 8px);top:calc(50% - 12px);width:16px;height:24px;
+  background:#d84038;border:2px solid #402018;border-radius:4px 4px 2px 2px;}
+
+/* ---- generic Platinum window (real frame art 9-slice) ---- */
+.win{border-style:solid;border-width:8px;
+  border-image:url('data/unleashed/platinum_ui/frame_01.png') 8 8 8 8 repeat;
+  background:var(--win);color:var(--ink);
+  image-rendering:pixelated;}
+
+/* ---- Start (X) menu: right-side vertical pills, Platinum style ---- */
+#startmenu{position:absolute;top:6px;right:6px;width:96px;display:none;flex-direction:column;gap:5px;}
+#startmenu.open{display:flex;}
+.smi{display:flex;align-items:center;gap:6px;height:26px;padding:0 6px;border-radius:13px;
+  background:linear-gradient(#ffffff,#e4ebf6);border:2px solid #9fb0cc;
+  box-shadow:0 1px 0 #fff inset, 0 1px 2px #0003;color:#384050;font-size:11px;font-weight:700;}
+.smi .ic{width:16px;height:16px;border-radius:4px;flex:0 0 auto;box-shadow:0 0 0 1px #0002 inset;}
+.smi.sel{background:linear-gradient(#fff0c0,#ffcf78);border-color:var(--sel);
+  box-shadow:0 0 0 2px var(--sel-l), 0 1px 3px #0004;color:#a02010;}
+.ic-dex{background:#e04038;} .ic-party{background:#f0b030;} .ic-bag{background:#c08040;}
+.ic-card{background:#3070d0;} .ic-save{background:#40b060;} .ic-opt{background:#8060c0;}
+.ic-exit{background:#909090;}
+
+/* ---- fullscreen menu pages (party / summary) render into #page ---- */
+#page{position:absolute;inset:0;display:none;}
+#page.on{display:block;}
+.pg-head{position:absolute;top:0;left:0;right:0;height:22px;background:var(--plat-navy);
+  color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;padding:0 8px;
+  letter-spacing:.4px;box-shadow:0 2px 0 #0004;}
+
+/* party layout: slot 1 large left, 2-6 stacked right (Platinum) */
+#party{position:absolute;inset:22px 0 0 0;background:linear-gradient(160deg,#5878c0,#3a5aa0);padding:6px;}
+.pslot{position:absolute;display:flex;align-items:center;gap:6px;height:40px;padding:4px 8px;
+  border-radius:20px 8px 8px 20px;background:linear-gradient(#f4f7fc,#dbe4f2);
+  border:2px solid #b8c4dc;box-shadow:0 2px 3px #0003;color:#303840;}
+.pslot.sel{border-color:var(--sel);box-shadow:0 0 0 2px var(--sel-l),0 2px 4px #0004;}
+.pslot .picon{width:30px;height:30px;border-radius:50%;background:#c8d4e8;flex:0 0 auto;
+  box-shadow:inset 0 0 0 2px #fff;}
+.pslot .pinfo{flex:1 1 auto;min-width:0;}
+.pslot .pn{font-size:11px;font-weight:800;} .pslot .pl{font-size:10px;color:#586074;}
+.hpbar{height:5px;border-radius:3px;background:#485068;overflow:hidden;margin-top:3px;}
+.hpfill{height:100%;background:#68d048;} .hptxt{font-size:9px;color:#586074;}
+/* positions */
+#s0{left:6px;top:6px;width:118px;height:64px;border-radius:12px;flex-direction:column;align-items:flex-start;}
+#s0 .picon{width:44px;height:44px;}
+#s1{right:6px;top:6px;width:118px;} #s2{right:6px;top:52px;width:118px;}
+#s3{right:6px;top:98px;width:118px;} #s4{left:6px;top:78px;width:118px;} #s5{left:6px;top:124px;width:118px;}
+#p-cancel{position:absolute;right:6px;bottom:6px;width:96px;height:22px;border-radius:11px;
+  background:#e85838;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;
+  border:2px solid #a03018;}
+
+/* summary */
+#summary{position:absolute;inset:22px 0 0 0;background:linear-gradient(160deg,#6884c8,#48609c);}
+.sm-tabs{position:absolute;top:4px;left:6px;right:6px;display:flex;gap:4px;}
+.sm-tab{flex:1;height:18px;border-radius:9px 9px 0 0;background:#c0cbe0;color:#48506a;
+  font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.sm-tab.on{background:var(--win);color:#a02010;}
+.sm-body{position:absolute;top:24px;left:6px;right:6px;bottom:6px;
+  background:var(--win);border-radius:4px;box-shadow:0 2px 4px #0004;padding:8px;color:#303840;font-size:11px;}
+.sm-row{display:flex;justify-content:space-between;padding:2px 2px;border-bottom:1px solid #eef1f6;}
+.sm-row b{color:#2a5090;}
+
+/* bottom screen: Pokétch */
+#poketch{position:absolute;inset:10px;border-radius:12px;background:#0e2a24;
+  border:3px solid #0a1c18;box-shadow:inset 0 0 0 3px #2a5a4c;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;color:#b8ffe4;}
+#pk-time{font-size:34px;font-weight:800;font-family:"Courier New",monospace;letter-spacing:2px;text-shadow:0 0 8px #4affc880;}
+#pk-lbl{font-size:10px;opacity:.7;margin-top:4px;}
+#bot-menu{position:absolute;left:6px;right:6px;bottom:4px;display:flex;gap:4px;}
+.bm{flex:1;height:16px;border-radius:8px;background:#0e2a24aa;color:#cffff0;font-size:9px;
+  display:flex;align-items:center;justify-content:center;border:1px solid #2a5a4c;}
+
+/* on-screen controls */
+#ctrls{position:fixed;left:0;right:0;bottom:6px;display:flex;justify-content:space-between;padding:0 14px;pointer-events:none;}
+#ctrls .grp{pointer-events:auto;display:flex;gap:6px;}
+.cbtn{width:38px;height:38px;border-radius:50%;background:#2a3550;color:#cfe;border:2px solid #4a5a80;
+  font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+.cbtn:active{background:#3a5da0;}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="hint">Pokémon Unleashed · Platinum UI — press <b>X</b> menu · arrows/A/B · (screenshot target)</div>
+  <div class="screen" id="top">
+    <div id="owgrass"></div><div id="owpath"></div><div id="player"></div>
+    <div id="startmenu"></div>
+    <div id="page"></div>
+  </div>
+  <div class="screen" id="bot">
+    <div id="poketch"><div id="pk-time">10:24</div><div id="pk-lbl">DIGITAL WATCH</div></div>
+    <div id="bot-menu"><div class="bm">◀ APP</div><div class="bm">POKéTCH</div><div class="bm">APP ▶</div></div>
+  </div>
+</div>
+<div id="ctrls">
+  <div class="grp">
+    <button class="cbtn" data-k="left">◀</button>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <button class="cbtn" data-k="up">▲</button><button class="cbtn" data-k="down">▼</button></div>
+    <button class="cbtn" data-k="right">▶</button>
+  </div>
+  <div class="grp">
+    <button class="cbtn" data-k="x">X</button>
+    <button class="cbtn" data-k="b">B</button><button class="cbtn" data-k="a">A</button>
+  </div>
+</div>
+<script src="src/platinum/ui.js"></script>
+</body>
+</html>
