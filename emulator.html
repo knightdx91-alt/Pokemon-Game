@@ -268,21 +268,6 @@
            coordinate mapping (desmume2015 maps touch from canvas geometry),
            which stopped bottom-screen touches from registering. */
         #game canvas { transform: none; }
-        /* DS stylus fix: EmulatorJS forces `canvas{width:100%;height:100%}`,
-           stretching the 256×384 (2:3) DS image to whatever shape the container
-           is. RetroArch normalizes the stylus against the canvas ELEMENT rect,
-           so a stretched image means every tap maps to the wrong spot. For NDS
-           we pin the canvas to its native 2:3 aspect (letterbox lives OUTSIDE
-           the element, in #game) so the element rect == the drawn image and the
-           pointer mapping is 1:1. Only applied when a DS ROM is running. */
-        #game.ds-screen .ejs_canvas_parent {
-            display: flex; align-items: center; justify-content: center;
-        }
-        #game.ds-screen canvas, #game.ds-screen .ejs_canvas {
-            width: auto !important; height: auto !important;
-            max-width: 100% !important; max-height: 100% !important;
-            object-fit: fill; margin: auto;
-        }
         .emu-nudge {
             background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
             color: var(--text); cursor: pointer; font-family: inherit; font-size: 0.9rem;
@@ -1158,6 +1143,51 @@
         applyShiftY();
     }
 
+    /* ---- DS touch → stylus shim ----
+       EmulatorJS/RetroArch drive the DS touch screen from MOUSE events on the
+       canvas (emscripten's mouse callbacks). On desktop that works; on a phone
+       the browser fires TOUCH events that RetroArch never sees, so tapping the
+       bottom screen does nothing. This forwards each touch to a synthetic mouse
+       event at the same page coordinates, on whatever canvas is under the
+       finger, so the core's own mouse→stylus mapping handles it (no coordinate
+       math of our own — RetroArch already maps mouse correctly). NDS only. */
+    var _dsShimInstalled = false;
+    function installDsTouchShim() {
+        if (_dsShimInstalled) return;
+        _dsShimInstalled = true;
+        var g = document.getElementById('game');
+        if (!g) return;
+        function fire(type, t) {
+            // Aim the synthetic mouse event at the canvas actually under the
+            // finger (the DS renders one canvas; elementFromPoint finds it).
+            var target = document.elementFromPoint(t.clientX, t.clientY);
+            if (!target || target.tagName !== 'CANVAS') target = g.querySelector('canvas');
+            if (!target) return;
+            target.dispatchEvent(new MouseEvent(type, {
+                bubbles: true, cancelable: true, view: window,
+                clientX: t.clientX, clientY: t.clientY,
+                button: 0, buttons: (type === 'mouseup') ? 0 : 1
+            }));
+        }
+        function active() { return g.classList.contains('ds-screen'); }
+        g.addEventListener('touchstart', function (e) {
+            if (!active() || !e.touches[0]) return;
+            fire('mousedown', e.touches[0]); e.preventDefault();
+        }, { passive: false });
+        g.addEventListener('touchmove', function (e) {
+            if (!active() || !e.touches[0]) return;
+            fire('mousemove', e.touches[0]); e.preventDefault();
+        }, { passive: false });
+        function endHandler(e) {
+            if (!active()) return;
+            var t = e.changedTouches && e.changedTouches[0];
+            if (t) fire('mouseup', t);
+            e.preventDefault();
+        }
+        g.addEventListener('touchend', endHandler, { passive: false });
+        g.addEventListener('touchcancel', endHandler, { passive: false });
+    }
+
     function _gm() { return window.EJS_emulator && window.EJS_emulator.gameManager; }
 
     /* Force the core's current battery save (SRAM/flash — incl. RTC for
@@ -1379,9 +1409,10 @@
         if (sys.id === 'nds') {
             window.EJS_biosUrl = _ndsBiosDataUrl;
         }
-        /* Pin the canvas to the DS 2:3 aspect so stylus mapping is 1:1 (see CSS). */
+        /* Mark DS ROMs so the touch→stylus shim only runs for them. */
         var _gameEl = document.getElementById('game');
         if (_gameEl) _gameEl.classList.toggle('ds-screen', sys.id === 'nds');
+        installDsTouchShim();
 
         window.EJS_onGameStart        = function () {
             clearInterval(_timer); _observer.disconnect();
