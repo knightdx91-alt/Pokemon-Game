@@ -140,6 +140,10 @@
     capLine.appendChild(btn('Touch test', function () { startTouchTest(status); }));
     panel.appendChild(capLine);
 
+    var brLine = line('DS touch→stylus');
+    brLine.appendChild(btn('Toggle', function () { toggleTouchBridge(status); }));
+    panel.appendChild(brLine);
+
     // dump RAM / heap
     var dl = line(memSource() === 'core SYSTEM_RAM' ? 'Main RAM' : 'Emu heap');
     dl.appendChild(btn('Download', function () { var rv = memView(); if (!rv) return status.textContent = 'no memory (' + capabilities() + ')'; download(rv.slice(), game() + '_' + stamp() + '.bin'); status.textContent = 'downloaded ' + rv.length + ' bytes from ' + memSource(); }));
@@ -221,6 +225,41 @@
     evs.forEach(function (ev) { g.addEventListener(ev, report, true); });
     touchTestOff = function () { evs.forEach(function (ev) { g.removeEventListener(ev, report, true); }); };
     if (statusEl) statusEl.textContent = 'touch test ON — tap the bottom screen';
+  }
+
+  // ---- opt-in DS touch → stylus bridge ------------------------------------
+  // RetroArch drives the DS stylus from MOUSE events on the <canvas>; mobile
+  // browsers fire TOUCH events the core never sees, so bottom-screen taps do
+  // nothing. This forwards each touch to a synthetic mouse event at the same
+  // page coords, but ONLY while the finger is over the emulator canvas — so it
+  // can never swallow taps on the 'Start Game' button or menus. It's a panel
+  // toggle (not wired into page load) so it can never block the game loading.
+  var bridgeOff = null;
+  function toggleTouchBridge(statusEl) {
+    if (bridgeOff) { bridgeOff(); bridgeOff = null; if (statusEl) statusEl.textContent = 'touch→stylus OFF'; return; }
+    var g = document.getElementById('game');
+    if (!g) { if (statusEl) statusEl.textContent = 'no #game'; return; }
+    function fire(type, t) {
+      var target = document.elementFromPoint(t.clientX, t.clientY);
+      if (!target || target.tagName !== 'CANVAS') return false;
+      target.dispatchEvent(new MouseEvent(type, {
+        bubbles: true, cancelable: true, view: window,
+        clientX: t.clientX, clientY: t.clientY, button: 0, buttons: type === 'mouseup' ? 0 : 1
+      }));
+      return true;
+    }
+    function onStart(e) { if (e.touches[0] && fire('mousedown', e.touches[0])) e.preventDefault(); }
+    function onMove(e) { if (e.touches[0] && fire('mousemove', e.touches[0])) e.preventDefault(); }
+    function onEnd(e) { var t = e.changedTouches && e.changedTouches[0]; if (t && fire('mouseup', t)) e.preventDefault(); }
+    g.addEventListener('touchstart', onStart, { passive: false });
+    g.addEventListener('touchmove', onMove, { passive: false });
+    g.addEventListener('touchend', onEnd, { passive: false });
+    g.addEventListener('touchcancel', onEnd, { passive: false });
+    bridgeOff = function () {
+      g.removeEventListener('touchstart', onStart); g.removeEventListener('touchmove', onMove);
+      g.removeEventListener('touchend', onEnd); g.removeEventListener('touchcancel', onEnd);
+    };
+    if (statusEl) statusEl.textContent = 'touch→stylus ON — now tap the bottom screen';
   }
 
   // launcher button in the emulator top bar (falls back to a floating button)

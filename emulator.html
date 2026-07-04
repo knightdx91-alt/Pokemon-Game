@@ -1143,53 +1143,6 @@
         applyShiftY();
     }
 
-    /* ---- DS touch → stylus shim ----
-       EmulatorJS/RetroArch drive the DS touch screen from MOUSE events on the
-       canvas (emscripten's mouse callbacks). On desktop that works; on a phone
-       the browser fires TOUCH events that RetroArch never sees, so tapping the
-       bottom screen does nothing. This forwards each touch to a synthetic mouse
-       event at the same page coordinates, on whatever canvas is under the
-       finger, so the core's own mouse→stylus mapping handles it (no coordinate
-       math of our own — RetroArch already maps mouse correctly). NDS only. */
-    var _dsShimInstalled = false;
-    function installDsTouchShim() {
-        if (_dsShimInstalled) return;
-        _dsShimInstalled = true;
-        var g = document.getElementById('game');
-        if (!g) return;
-        // Fire a synthetic mouse event ONLY if the finger is over the emulator
-        // canvas. Returns true if it fired. Critically, if the finger is over
-        // anything else (e.g. EmulatorJS's "Start Game" button before boot, or
-        // its menu bar), we do NOT act and do NOT preventDefault — otherwise we
-        // would swallow the tap that starts the game.
-        function fire(type, t) {
-            var target = document.elementFromPoint(t.clientX, t.clientY);
-            if (!target || target.tagName !== 'CANVAS') return false;
-            target.dispatchEvent(new MouseEvent(type, {
-                bubbles: true, cancelable: true, view: window,
-                clientX: t.clientX, clientY: t.clientY,
-                button: 0, buttons: (type === 'mouseup') ? 0 : 1
-            }));
-            return true;
-        }
-        function active() { return g.classList.contains('ds-screen'); }
-        g.addEventListener('touchstart', function (e) {
-            if (!active() || !e.touches[0]) return;
-            if (fire('mousedown', e.touches[0])) e.preventDefault();
-        }, { passive: false });
-        g.addEventListener('touchmove', function (e) {
-            if (!active() || !e.touches[0]) return;
-            if (fire('mousemove', e.touches[0])) e.preventDefault();
-        }, { passive: false });
-        function endHandler(e) {
-            if (!active()) return;
-            var t = e.changedTouches && e.changedTouches[0];
-            if (t && fire('mouseup', t)) e.preventDefault();
-        }
-        g.addEventListener('touchend', endHandler, { passive: false });
-        g.addEventListener('touchcancel', endHandler, { passive: false });
-    }
-
     function _gm() { return window.EJS_emulator && window.EJS_emulator.gameManager; }
 
     /* Force the core's current battery save (SRAM/flash — incl. RTC for
@@ -1411,10 +1364,6 @@
         if (sys.id === 'nds') {
             window.EJS_biosUrl = _ndsBiosDataUrl;
         }
-        /* Mark DS ROMs so the touch→stylus shim only runs for them. */
-        var _gameEl = document.getElementById('game');
-        if (_gameEl) _gameEl.classList.toggle('ds-screen', sys.id === 'nds');
-        installDsTouchShim();
 
         window.EJS_onGameStart        = function () {
             clearInterval(_timer); _observer.disconnect();
