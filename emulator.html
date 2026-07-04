@@ -1157,32 +1157,34 @@
         _dsShimInstalled = true;
         var g = document.getElementById('game');
         if (!g) return;
+        // Fire a synthetic mouse event ONLY if the finger is over the emulator
+        // canvas. Returns true if it fired. Critically, if the finger is over
+        // anything else (e.g. EmulatorJS's "Start Game" button before boot, or
+        // its menu bar), we do NOT act and do NOT preventDefault — otherwise we
+        // would swallow the tap that starts the game.
         function fire(type, t) {
-            // Aim the synthetic mouse event at the canvas actually under the
-            // finger (the DS renders one canvas; elementFromPoint finds it).
             var target = document.elementFromPoint(t.clientX, t.clientY);
-            if (!target || target.tagName !== 'CANVAS') target = g.querySelector('canvas');
-            if (!target) return;
+            if (!target || target.tagName !== 'CANVAS') return false;
             target.dispatchEvent(new MouseEvent(type, {
                 bubbles: true, cancelable: true, view: window,
                 clientX: t.clientX, clientY: t.clientY,
                 button: 0, buttons: (type === 'mouseup') ? 0 : 1
             }));
+            return true;
         }
         function active() { return g.classList.contains('ds-screen'); }
         g.addEventListener('touchstart', function (e) {
             if (!active() || !e.touches[0]) return;
-            fire('mousedown', e.touches[0]); e.preventDefault();
+            if (fire('mousedown', e.touches[0])) e.preventDefault();
         }, { passive: false });
         g.addEventListener('touchmove', function (e) {
             if (!active() || !e.touches[0]) return;
-            fire('mousemove', e.touches[0]); e.preventDefault();
+            if (fire('mousemove', e.touches[0])) e.preventDefault();
         }, { passive: false });
         function endHandler(e) {
             if (!active()) return;
             var t = e.changedTouches && e.changedTouches[0];
-            if (t) fire('mouseup', t);
-            e.preventDefault();
+            if (t && fire('mouseup', t)) e.preventDefault();
         }
         g.addEventListener('touchend', endHandler, { passive: false });
         g.addEventListener('touchcancel', endHandler, { passive: false });
