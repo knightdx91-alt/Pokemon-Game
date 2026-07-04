@@ -358,6 +358,32 @@
   function saveTrace() { try { localStorage.setItem('dbg_trace', JSON.stringify(TRACE)); } catch (e) {} }
   function addTrace(name, addr, size) { TRACE = TRACE.filter(function (w) { return w.name !== name; }); TRACE.push({ name: name, addr: addr, size: size }); saveTrace(); }
 
+  // ---- floating REC pill ---------------------------------------------------
+  // Recording runs in a requestAnimationFrame loop that is INDEPENDENT of the
+  // debug panel, so you can close the panel (it covers the bottom screen) and
+  // keep recording while you play. This tiny draggable pill is the persistent
+  // indicator + stop control that stays on screen after the panel is closed.
+  function showRecPill(getStop) {
+    hideRecPill();
+    var pill = document.createElement('div');
+    pill.style.cssText = 'position:fixed;left:6px;top:6px;z-index:2147483647;background:#c0142aee;color:#fff;' +
+      'font:bold 12px system-ui;padding:5px 10px;border-radius:14px;cursor:pointer;touch-action:none;' +
+      '-webkit-user-select:none;user-select:none;box-shadow:0 1px 5px #0009;';
+    pill.id = 'dbg-rec-pill'; pill.textContent = '● REC ⏹';
+    var moved = false, sx = 0, sy = 0, ox = 0, oy = 0;
+    function pt(e) { return e.touches && e.touches[0] ? e.touches[0] : e; }
+    function down(e) { moved = false; var t = pt(e); sx = t.clientX; sy = t.clientY; var r = pill.getBoundingClientRect(); ox = r.left; oy = r.top;
+      document.addEventListener('mousemove', move, true); document.addEventListener('touchmove', move, { passive: false, capture: true });
+      document.addEventListener('mouseup', up, true); document.addEventListener('touchend', up, true); if (e.cancelable) e.preventDefault(); }
+    function move(e) { var t = pt(e), dx = t.clientX - sx, dy = t.clientY - sy; if (Math.abs(dx) + Math.abs(dy) > 6) moved = true; pill.style.left = (ox + dx) + 'px'; pill.style.top = (oy + dy) + 'px'; if (e.cancelable) e.preventDefault(); }
+    function up() { document.removeEventListener('mousemove', move, true); document.removeEventListener('touchmove', move, true); document.removeEventListener('mouseup', up, true); document.removeEventListener('touchend', up, true);
+      if (!moved) { var s = getStop && getStop(); if (s) s(); } }
+    pill.addEventListener('mousedown', down, true); pill.addEventListener('touchstart', down, { passive: false, capture: true });
+    document.body.appendChild(pill);
+  }
+  function updateRecPill(txt) { var p = document.getElementById('dbg-rec-pill'); if (p) p.textContent = txt; }
+  function hideRecPill() { var p = document.getElementById('dbg-rec-pill'); if (p) p.remove(); }
+
   // ---- continuous recorder -------------------------------------------------
   // Ground-truth footage for the "always verify, never assume" rule: record what
   // the REAL game draws so a reconstruction can be pixel-diffed against it.
@@ -402,13 +428,14 @@
         if (statusEl) statusEl.textContent = 'PNG capture blocked by the core — switching to video…';
         sampleTrace(true);                       // flush any trace so far into the video sidecar
         startVideo(statusEl, traceLog);
-        recStop = function () { if (vidStop) vidStop(); recStop = null; };
-        return;                                  // stop the PNG loop
+        recStop = function () { hideRecPill(); if (vidStop) vidStop(); recStop = null; };
+        return;                                  // stop the PNG loop (pill stays; now stops the video)
       }
       sampleTrace(false);
-      if (statusEl) statusEl.textContent = '● REC  ' + frames.length + ' unique / ' + vsync +
-        ' vsync  ' + ((performance.now() - t0) / 1000).toFixed(1) + 's' +
+      var msg = '● REC  ' + frames.length + ' / ' + vsync + ' vsync  ' + ((performance.now() - t0) / 1000).toFixed(1) + 's' +
         (TRACE.length ? '  +' + traceLog.length + ' state chgs' : '') + (blocked ? '  (PNG blocked)' : '');
+      if (statusEl) statusEl.textContent = msg;
+      updateRecPill('● ' + frames.length + 'f ⏹');   // keeps the on-screen pill live even with the panel closed
       raf = requestAnimationFrame(tick);
     }
     // ---- behind-the-scenes state trace (synced to the recording) -----------
@@ -438,7 +465,7 @@
       (function waitForCanvas() { var c = _canvasEl(); if (c) begin(c); else raf = requestAnimationFrame(waitForCanvas); })();
     }
     recStop = function () {
-      cancelAnimationFrame(raf); recStop = null;
+      cancelAnimationFrame(raf); recStop = null; hideRecPill();
       if (!started) { if (statusEl) statusEl.textContent = 'recording cancelled — canvas never appeared'; return; }
       if (!frames.length) { if (statusEl) statusEl.textContent = 'nothing captured' + (blocked ? ' — toDataURL blocked, use REC Video' : ''); return; }
       var files = {}, manifest = [];
@@ -467,6 +494,9 @@
     // Only announce "recording" once we're actually capturing; if we're waiting
     // for the canvas, leave the "ARMED — waiting" message up.
     if (started && statusEl) statusEl.textContent = '● REC (PNG→' + (sink === 'drive' ? 'Drive' : 'download') + ') — play, then Stop';
+    // Persistent on-screen pill so you can CLOSE the panel and keep recording;
+    // tap it (or the panel Stop button) to finish.
+    showRecPill(function () { return recStop; });
   }
 
   var vidStop = null;   // stop-fn while a video recording is active
@@ -491,8 +521,9 @@
         uploadBlobToDrive(new Blob([t], { type: 'application/json' }), name.replace('.webm', '_trace.json'), null);
       }
     };
-    mr.start(); vidStop = function () { vidStop = null; mr.stop(); };
+    mr.start(); vidStop = function () { vidStop = null; hideRecPill(); mr.stop(); };
     if (statusEl) statusEl.textContent = '● REC (video) — play, then Stop to save WebM';
+    if (!document.getElementById('dbg-rec-pill')) showRecPill(function () { return vidStop; });
   }
 
   // ---- UI ------------------------------------------------------------------
@@ -583,15 +614,17 @@
     // continuous recorder — lossless native-res PNG frames (zip) or WebM video,
     // saved straight to Google Drive (⇩ = local-download fallback).
     var rec = line('Record→Drive');
-    var recBtn = btn('⏺ Rec', function () {
+    // Reflect any already-running recording, so reopening the panel shows Stop
+    // (not a second Rec) — recording keeps running while the panel is closed.
+    var recBtn = btn(recStop ? '⏹ Stop' : '⏺ Rec', function () {
       if (recStop) { recStop(); recBtn.textContent = '⏺ Rec'; }
       else { startRecord(status, 'drive'); recBtn.textContent = '⏹ Stop'; }
     });
-    var recDlBtn = btn('⏺ Rec⇩', function () {
+    var recDlBtn = btn(recStop ? '⏹ Stop' : '⏺ Rec⇩', function () {
       if (recStop) { recStop(); recDlBtn.textContent = '⏺ Rec⇩'; }
       else { startRecord(status, 'download'); recDlBtn.textContent = '⏹ Stop'; }
     });
-    var vidBtn = btn('🎞 Video', function () {
+    var vidBtn = btn(vidStop ? '⏹ Stop' : '🎞 Video', function () {
       if (vidStop) { vidStop(); vidBtn.textContent = '🎞 Video'; }
       else { startVideo(status); vidBtn.textContent = '⏹ Stop'; }
     });
