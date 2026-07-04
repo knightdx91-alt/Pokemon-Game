@@ -155,6 +155,127 @@ using this repo's already-bundled FireRed font (`src/assets/fonts/pokefirered.tt
 
 ---
 
+## ▶ DS EMULATOR (`emulator.html`) — touch FIXED ✅, debug tooling, and the exact-UI extraction project
+
+### DS bottom-screen touch — SOLVED ✅ (was "taps do nothing")
+**Symptom:** In `emulator.html` with the **desmume2015** NDS core, tapping the DS
+bottom screen never moved the stylus — menus/PC/Poketch were unusable on mobile.
+**Root cause (proven, not guessed — via the 🔬 panel's `RA cfg`/`Core opts`
+dumps):**
+- `input_driver = "emulatorjs"` — RetroArch does **NOT** read DOM mouse/touch
+  events at all; it polls EmulatorJS's own input driver. So NOTHING done at the
+  DOM level (real touch, synthetic mouse, a touch→mouse shim) can drive the
+  stylus. The emulatorjs driver feeds an **absolute pointer** from canvas taps.
+- BUT desmume2015 defaulted to `desmume_pointer_type = "mouse"` (a **relative**
+  mouse device), so it ignored the absolute pointer entirely → taps reached the
+  canvas (confirmed: Touch test showed `topmost el = CANVAS ✓`, `region = BOTTOM`)
+  but the stylus never moved.
+**Fix (build 55, `emulator.html`):** for `sys.id === 'nds'` set
+`window.EJS_defaultOptions = { 'desmume_pointer_type': 'touch',
+'desmume_pointer_mouse': 'enabled' }` (and clear it for other systems).
+`EJS_defaultOptions` → EmulatorJS `config.defaultOptions`, written as core-option
+defaults. Switching desmume to the **absolute touch pointer** made the driver's
+pointer actually drive the stylus. **Confirmed working by the user.**
+- Gotcha: `defaultOptions` is **skipped if the option is already saved** in
+  EmulatorJS's stored settings. If touch regresses for someone, clear the
+  emulator's saved settings or set Pointer Type = touch in the in-emu menu.
+- Dead ends ruled out (do NOT re-try): removing a CSS transform; pinning the
+  canvas to 2:3 aspect (made the screen tiny, didn't help — RetroArch's
+  emulatorjs driver maps the pointer itself, canvas element shape is irrelevant);
+  a DOM touch→mouse shim wired into the page (it also swallowed the "Start Game"
+  tap on heavy cores and broke loading — see below).
+- EmulatorJS **stable 4.2.3 AND nightly** both only bind `click`/`resize` on the
+  canvas and have **no absolute-pointer feed in JS** — DS touch is entirely on the
+  compiled emulatorjs driver + core option. Upgrading EmulatorJS does not help.
+
+### Emulator debug panel — `emulator-debug.js` (🔬 button) — the diagnosis tool
+A separate script (loaded by `emulator.html`) that adds a floating **🔬** button
+(attaches to `.emu-topbar`, falls back to a fixed button) opening a debug panel.
+**All output goes into a selectable `<textarea>` with a `📋 Copy` button** — this
+is the standard format for emulator debugging with this user (mobile, no console,
+can't upload files; they copy-paste the box back into chat). Features:
+- **Check core** — EJS_emulator/gameManager/Module/canvas state + memory source.
+- **Touch test** — capture-phase listener on `#game`; on the first physical
+  `touchstart` it writes the topmost element under the finger, tap coords vs
+  canvas size, BOTTOM/top region, and canvas backing size. This is what proved
+  taps reach the canvas.
+- **Core opts** — `gm.functions` list + desmume2015 `getCoreOptions()` (this is
+  how the `desmume_pointer_type=mouse` default was found).
+- **RA cfg** — dumps the input/pointer/mouse/touch lines from the live
+  `retroarch.cfg` on the emulated FS (`gm.FS.readFile`). Showed
+  `input_driver=emulatorjs`.
+- **DS touch→stylus Toggle** — an OPT-IN DOM touch→synthetic-mouse bridge. Kept
+  only as a diagnostic; it does NOT fix the stylus (RetroArch ignores DOM mouse)
+  and must never be wired into page load.
+- RAM/heap: desmume2015 under EmulatorJS is a RetroArch build that exports **no**
+  `retro_get_memory_data`; value search/watch/dump fall back to the whole
+  Emscripten heap (`Module.HEAPU8`).
+- Pushes captures (RAM/diff/frames) to the **`traces`** branch (token embedded,
+  reversed) since the user can't upload.
+
+### Cache-busting for emulator JS — IMPORTANT
+CI only substitutes `__CACHE_BUST__` in **`index.html`**, NOT `emulator.html`. So
+`emulator-debug.js?v=__CACHE_BUST__` was a **constant URL** and the SW's
+cache-first asset path served the first-cached copy forever (new builds never
+arrived). **Fix:** `emulator-debug.js?v=<N>` with a real integer bumped every
+build. **When you change `emulator-debug.js` you MUST bump this `?v=` number** (in
+`emulator.html`) or the user keeps the stale script.
+
+### Build tag (so the user can verify a fresh load)
+`emulator.html` shows a visible build number: `build N` by the setup-screen
+tagline and `bN` by the RetroPlay logo in the emu top bar (`.emu-build` span).
+**Bump `build N` / `bN` / the `?v=N` on every emulator change** and tell the user
+the number — it's their only way to confirm the SW served fresh code. Current: 55.
+(This is separate from the RPG's `GAME_VERSION` in `src/ui/hud.js`, which is still
+bumped per the global rule.)
+
+### ▶ NEXT: EXACT Platinum UI extraction (the active goal — START HERE)
+**User's goal, stated firmly:** recreate the DS **Pokémon Platinum** UI/menus
+(main menu, **Poketch**, **PC boxes**, Bag, party screen, summary, message boxes,
+fonts, etc.) so they are **pixel-identical to the real game — NOT an
+approximation.** They are right to demand this: these screens are real graphics
+assets in the ROM, so exactness is achievable by compositing the ROM's own
+layers, not by hand-drawing.
+
+**Why the earlier party-screen attempt failed (be honest about this):** the old
+`src/assets/party/*` + `tools/gen_party_assets.py` decoded **`source/pokefirered`
+(GBA FireRed)** — the WRONG game — cropped individual element PNGs, and a human
+**hand-placed** them via `party_meta.json` with **no ground-truth image to
+verify against**. Three independent sources of drift.
+
+**Why it can be exact NOW (the real differentiators):**
+1. **Ground truth exists at last** — DS touch works, so the user can open the real
+   Platinum screen and the 🔬 **Frame → Shot→Repo** button captures the actual
+   bottom-screen PNG to the `traces` branch. Before there was no reference.
+2. **Use the game's own layout, not hand-placement** — the exact screen is an
+   **NSCR** BG tilemap + **NCER** sprite cells (with real coords) + **NCLR**
+   palette + **NCGR** tiles inside the ROM's NARCs. Composite those directly.
+3. **`source/pokeplatinum`** (pret decomp) names the exact asset files AND has the
+   C layout code for each screen — so we don't guess which file is which.
+4. **Verification loop:** reconstruct → pixel-diff against the captured real frame
+   → fix → repeat until diff == 0. "Approximation" only happens when the gap
+   isn't measured.
+
+**What's needed to run this (session bootstrap — both are ephemeral/gitignored):**
+- **`source/pokeplatinum`** is an **unfetched submodule** (empty this session).
+  Re-fetch via the codeload tarball method (test egress first with a
+  `curl -o /dev/null -w '%{http_code}'` — see the egress note above):
+  `curl -L "https://codeload.github.com/pret/pokeplatinum/tar.gz/refs/heads/main" -o /tmp/pp.tar.gz && mkdir -p source/pokeplatinum && tar xzf /tmp/pp.tar.gz -C source/pokeplatinum --strip-components=1`
+- **The Platinum ROM** (`.nds`): the user has been **playing it in `emulator.html`,
+  so it's in their Google Drive** — find it via the Google Drive MCP tools
+  ("Pokemon Platinum ... .nds"), download to `/tmp`, then
+  `python3 tools/nds_decomp.py /tmp/<platinum>.nds -o source/nds/<code>` to unpack
+  every NARC (NCGR/NCLR/NSCR/NCER decoded). The decomp source gives file NAMES;
+  the ROM gives the actual PIXELS (pret does not commit copyrighted art).
+- `pip install ndspy pillow` for DS graphics decoding (ndspy not preinstalled).
+- **First deliverable:** prove the pipeline on ONE screen the user picks
+  (candidates: main menu / Poketch / PC box / party). Extract → composite →
+  pixel-diff vs the user's captured frame → show it's identical, THEN repeat the
+  pattern for every menu. Engine integration mirrors Sinnoh maps: pre-rendered
+  PNGs the DOM/canvas draws.
+
+---
+
 ## What this game is
 A browser-based Pokémon RPG covering Kanto, Johto, Hoenn, and Sinnoh. Deployed to GitHub Pages.  
 Visual and UI style is based on **Pokémon Emerald Enhanced (EE)** — a GBA ROM hack. The game screen is designed to look and feel like a GBA (240×160px logical resolution).
