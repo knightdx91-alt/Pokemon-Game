@@ -78,31 +78,52 @@
     page = 'stub';
   }
 
-  // ---- Party menu -----------------------------------------------------------
+  // ---- Party menu — EXACT canvas composite of real ROM assets --------------
+  const PA = { imgs: {}, ready: false };
+  (function loadParty() {
+    const base = 'data/unleashed/platinum_ui/party/';
+    const files = ['top_bg', 'bot_bg', 'panel_round', 'panel_rect', 'panel_sel_round',
+      'panel_sel_rect', 'hp_2', 'mk_0'];
+    let left = files.length;
+    files.forEach(f => { const im = new Image(); im.onload = () => { if (--left === 0) { PA.ready = true; if (page === 'party') drawPartyTop(); } }; im.src = base + f + '.png'; PA.imgs[f] = im; });
+  })();
+
+  // slot pixel coords on the 256x192 top screen (2 cols x 3 rows of 128x48)
+  const SLOT = [[0, 2], [128, 2], [0, 50], [128, 50], [0, 98], [128, 98]];
+  function drawPartyTop() {
+    const cv = $('#partytop'); if (!cv || !PA.ready) return;
+    const c = cv.getContext('2d'); c.imageSmoothingEnabled = false;
+    c.drawImage(PA.imgs.top_bg, 0, 0);
+    PARTY.forEach((mon, i) => {
+      const [x, y] = SLOT[i]; const round = (i % 2 === 0);
+      const key = (i === psel ? 'panel_sel_' : 'panel_') + (round ? 'round' : 'rect');
+      c.drawImage(PA.imgs[key], x, y);
+      // mon icon placeholder (poketool icons are a follow-up extraction)
+      c.fillStyle = mon.color; c.beginPath(); c.arc(x + 22, y + 22, 13, 0, 7); c.fill();
+      // HP bar sprite + fill
+      const bx = x + 44, by = y + 30;
+      const pct = mon.hp / mon.max, col = pct > .5 ? '#68d048' : pct > .2 ? '#f0c020' : '#f04040';
+      c.fillStyle = '#204028'; c.fillRect(bx + 14, by, 44, 4);
+      c.fillStyle = col; c.fillRect(bx + 14, by, Math.round(44 * pct), 4);
+      c.drawImage(PA.imgs.hp_2, bx, by - 6);   // "HP" tag + bar frame
+      // text (real Platinum font)
+      if (PF()) {
+        PlatFont.draw(c, mon.name, x + 40, y + 4, '#303840', 1);
+        const g = mon.g === 'm' ? '#' : mon.g === 'f' ? '$' : '';   // placeholder gender until symbol glyph mapped
+        PlatFont.draw(c, 'Lv' + mon.lv, x + 6, y + 32, '#404850', 1);
+        PlatFont.draw(c, mon.hp + '/' + mon.max, x + 78, y + 38, '#404850', 1);
+      }
+    });
+  }
+
   function showParty() {
     closeMenu();
     const p = $('#page'); p.classList.add('on'); p.innerHTML = '';
-    p.appendChild(el('div', 'pg-head', 'POKéMON'));
-    const wrap = el('div'); wrap.id = 'party';
-    PARTY.forEach((mon, i) => {
-      const slot = el('div', 'pslot' + (i === psel ? ' sel' : '')); slot.id = 's' + i;
-      const ball = el('div', 'pball');            // Poké Ball marker
-      const ic = el('div', 'picon'); ic.style.background = mon.color;
-      const pct = Math.round(mon.hp / mon.max * 100);
-      const col = pct > 50 ? '#68d048' : pct > 20 ? '#f8c030' : '#f04040';
-      const gsym = mon.g === 'm' ? '<span class="gm">♂</span>' : mon.g === 'f' ? '<span class="gf">♀</span>' : '';
-      const info = el('div', 'pinfo', `<div class="pn">${mon.name}${gsym}</div><div class="pl">Lv${mon.lv}</div>
-        <div class="hprow"><span class="hptag">HP</span><div class="hpbar"><div class="hpfill" style="width:${pct}%;background:${col}"></div></div></div>
-        <div class="hptxt">${mon.hp}/${mon.max}</div>`);
-      slot.appendChild(ball); slot.appendChild(ic); slot.appendChild(info);
-      slot.onclick = () => { psel = i; showParty(); showSummary(); };
-      wrap.appendChild(slot);
-    });
-    const cancel = el('div', null, 'CANCEL'); cancel.id = 'p-cancel';
-    cancel.onclick = () => backToWorld();
-    wrap.appendChild(cancel);
-    p.appendChild(wrap);
+    const cv = el('canvas'); cv.id = 'partytop'; cv.width = 256; cv.height = 192;
+    cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;';
+    p.appendChild(cv);
     page = 'party';
+    drawPartyTop();
   }
 
   // ---- Summary --------------------------------------------------------------
@@ -142,8 +163,10 @@
       return;
     }
     if (page === 'party') {
-      if (k === 'up') { psel = (psel + 5) % 6; showParty(); }
-      else if (k === 'down') { psel = (psel + 1) % 6; showParty(); }
+      if (k === 'up') { psel = (psel + 5) % 6; drawPartyTop(); }
+      else if (k === 'down') { psel = (psel + 1) % 6; drawPartyTop(); }
+      else if (k === 'left') { psel = (psel % 2 === 1) ? psel - 1 : psel; drawPartyTop(); }
+      else if (k === 'right') { psel = (psel % 2 === 0 && psel + 1 < PARTY.length) ? psel + 1 : psel; drawPartyTop(); }
       else if (k === 'a') { showSummary(); }
       else if (k === 'b') { backToWorld(); }
       return;
@@ -245,26 +268,17 @@
   function drawPartyBottom() {
     const cv = $('#poketch'); if (!cv) return; const c = cv.getContext('2d');
     c.imageSmoothingEnabled = false;
-    // blue striped background
-    c.fillStyle = '#5b7bb0'; c.fillRect(0, 0, 256, 192);
-    c.fillStyle = '#5273a8'; for (let y = 0; y < 192; y += 4) c.fillRect(0, y, 256, 2);
-    // central big translucent Poké Ball watermark
-    const cx = 128, cy = 96, r = 52;
-    c.fillStyle = '#6f8fc4'; c.beginPath(); c.arc(cx, cy, r, 0, 7); c.fill();
-    c.fillStyle = '#8aa6d4'; c.beginPath(); c.arc(cx, cy, r, 0, Math.PI, true); c.fill();
-    c.strokeStyle = '#4a6a9c'; c.lineWidth = 4; c.beginPath(); c.moveTo(cx - r, cy); c.lineTo(cx + r, cy); c.stroke();
-    c.fillStyle = '#7f9fce'; c.beginPath(); c.arc(cx, cy, 15, 0, 7); c.fill();
-    c.strokeStyle = '#4a6a9c'; c.lineWidth = 3; c.beginPath(); c.arc(cx, cy, 15, 0, 7); c.stroke();
-    // 6 Poké Ball touch buttons (3 left, 3 right) — filled = has a mon
+    if (PA.ready) c.drawImage(PA.imgs.bot_bg, 0, 0);
+    else { c.fillStyle = '#5b7bb0'; c.fillRect(0, 0, 256, 192); }
+    // 6 Poké Ball touch markers over the real background
     const pos = [[52, 52], [52, 96], [52, 140], [204, 52], [204, 96], [204, 140]];
     pos.forEach((p, i) => {
-      const has = i < PARTY.length; const rr = 18;
-      c.fillStyle = has ? '#e24030' : '#6f8fc4'; c.beginPath(); c.arc(p[0], p[1], rr, 0, Math.PI, true); c.fill();
-      c.fillStyle = has ? '#f4f4f4' : '#8aa6d4'; c.beginPath(); c.arc(p[0], p[1], rr, 0, Math.PI); c.fill();
-      c.strokeStyle = '#33456a'; c.lineWidth = 2; c.beginPath(); c.arc(p[0], p[1], rr, 0, 7); c.stroke();
+      if (i >= PARTY.length) return; const rr = 16;
+      c.fillStyle = '#e24030'; c.beginPath(); c.arc(p[0], p[1], rr, Math.PI, 0); c.fill();
+      c.fillStyle = '#f4f4f4'; c.beginPath(); c.arc(p[0], p[1], rr, 0, Math.PI); c.fill();
+      c.strokeStyle = '#20304a'; c.lineWidth = 2; c.beginPath(); c.arc(p[0], p[1], rr, 0, 7); c.stroke();
       c.beginPath(); c.moveTo(p[0] - rr, p[1]); c.lineTo(p[0] + rr, p[1]); c.stroke();
-      c.fillStyle = '#f4f4f4'; c.beginPath(); c.arc(p[0], p[1], 5, 0, 7); c.fill();
-      c.strokeStyle = '#33456a'; c.beginPath(); c.arc(p[0], p[1], 5, 0, 7); c.stroke();
+      c.fillStyle = '#f4f4f4'; c.beginPath(); c.arc(p[0], p[1], 4, 0, 7); c.fill(); c.stroke();
     });
   }
 
