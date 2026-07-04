@@ -60,6 +60,36 @@ def model_meshes(model, texset, up, transform, texcache):
     return out
 
 
+WATER = ("pond", "swave", "sea", "river")
+BLOCK_MAT = WATER + ("fence", "tree")
+
+
+def terrain_collision(terr, minx, minz, tile, up, perm):
+    """Per-tile blocked flag derived from terrain geometry (water/tree/fence)
+    plus the 0x8000 building-pad permission. Guaranteed to align with what is
+    drawn, sidestepping the fiddly DS permission table."""
+    def matclass(nm):
+        n = nm.lower()
+        return "block" if any(k in n for k in BLOCK_MAT) else "walk"
+    kind = {i: matclass(nm) for i, nm in enumerate(terr.mat_names)}
+    tally = [{"walk": 0, "block": 0} for _ in range(1024)]
+    for mat, tris in terr.triangles():
+        k = kind.get(mat, "walk")
+        for t in tris:
+            cx = sum(v.x for v in t)/3*up; cz = sum(v.z for v in t)/3*up
+            c = int((cx-minx)/tile); r = int((cz-minz)/tile)
+            if 0 <= c < 32 and 0 <= r < 32:
+                tally[r*32+c][k] += 1
+    coll = []
+    for i in range(1024):
+        w, b = tally[i]["walk"], tally[i]["block"]
+        blocked = (b > w) or (w == 0 and b == 0)          # water/tree tile, or empty (border)
+        if perm[i] == 0x8000:                              # building pad
+            blocked = True
+        coll.append(1 if blocked else 0)
+    return coll
+
+
 def export(code, name, texset_idx):
     cell = H.find_map_cell(code)
     _, col, row, land_id, hid = cell
@@ -70,30 +100,30 @@ def export(code, name, texset_idx):
     texcache = {}
 
     meshes = []
-    # terrain (raw verts * up_scale = world units, Y up)
     meshes += model_meshes(terr, texset, up, lambda x, y, z: (x*up, y*up, z*up), texcache)
+    n_terrain = len(meshes)
 
-    # bounds from terrain
     allx = [p for m in meshes for p in m["positions"][0::3]]
-    ally = [p for m in meshes for p in m["positions"][1::3]]
     allz = [p for m in meshes for p in m["positions"][2::3]]
     minx, maxx, minz, maxz = min(allx), max(allx), min(allz), max(allz)
+    tile = (maxx - minx) / 32.0
 
-    # buildings: bm_field model, own embedded texture, scaled + translated
     for b in land["buildings"]:
         bd = H.rip(f"{BM}/{b['model']:04d}.nsbmd")
         bm = g.find_model(bd, 0); btex = g.find_tex0(bd)
         bup = bm.up_scale or 1.0
         def tf(x, y, z, b=b, bup=bup):
             return (x*bup*b["sx"] + b["x"], y*bup*b["sy"] + b["y"], z*bup*b["sz"] + b["z"])
-        meshes += model_meshes(bm, btex, bup, tf, texcache)
+        for msh in model_meshes(bm, btex, bup, tf, texcache):
+            msh["building"] = True
+            meshes.append(msh)
 
-    tile = (maxx - minx) / 32.0
+    coll = terrain_collision(terr, minx, minz, tile, up, land["perm_values"])
     out = {
         "name": name, "code": code, "header": hid,
         "bounds": {"minx": minx, "maxx": maxx, "minz": minz, "maxz": maxz},
         "tile": tile,
-        "collision": land["collision"],          # 32x32, 1 = blocked (col-major row*32+col)
+        "collision": coll,          # 32x32, 1 = blocked (row*32+col)
         "meshes": meshes,
     }
     os.makedirs("data/unleashed", exist_ok=True)
@@ -104,50 +134,45 @@ def export(code, name, texset_idx):
     return out, land
 
 
-def verify_png(out, land, name):
-    """Top-down render of terrain+buildings with collision overlay."""
-    b = out["bounds"]; S = 448
+def bake_2d(code, name, texset_idx, out):
+    """Textured top-down bake (terrain + placed buildings) -> the 2.5D image,
+    plus a /tmp collision-overlay for verification."""
+    cell = H.find_map_cell(code); land = H.load_land(cell[3])
+    terr = g.find_model(land["raw"], land["model_off"]); up = terr.up_scale
+    texset = g.find_tex0(H.rip(f"unpacked/a/0/4/4/{texset_idx:04d}.nsbtx"))
+    b = out["bounds"]; S = 512
     span = max(b["maxx"]-b["minx"], b["maxz"]-b["minz"]); sc = (S-8)/span
-    cx, cz = (b["minx"]+b["maxx"])/2, (b["minz"]+b["maxz"])/2
+    ox = S/2 - R.HALF_UNITS - (b["minx"]+b["maxx"])/2*sc
+    oy = S/2 - R.HALF_UNITS - (b["minz"]+b["maxz"])/2*sc
     fb = np.zeros((S, S, 4), np.uint8); yb = np.full((S, S), -1e9, np.float32)
-    for m in out["meshes"]:
-        P = m["positions"]; tex = None
-        col = tuple(m["color"])
-        for i in range(0, len(P), 9):
-            xs = [P[i], P[i+3], P[i+6]]; ys = [P[i+1], P[i+4], P[i+7]]; zs = [P[i+2], P[i+5], P[i+8]]
-            sx = [int((x-cx)*sc + S/2) for x in xs]; sy = [int((z-cz)*sc + S/2) for z in zs]
-            d = ys[0]+ys[1]+ys[2]
-            _tri(fb, yb, sx, sy, d, col)
+    R._draw_model_triangles(fb, yb, terr, texset, sc*up, ox, oy)
+    for bd in land["buildings"]:
+        d = H.rip(f"{BM}/{bd['model']:04d}.nsbmd")
+        bm = g.find_model(d, 0); btex = g.find_tex0(d); bup = bm.up_scale or 1.0
+        def tf(tri, bd=bd, bup=bup):
+            out2 = []
+            for v in tri:
+                out2.append(g.Vertex(v.x*bup*bd["sx"]+bd["x"], v.y*bup*bd["sy"]+bd["y"],
+                                     v.z*bup*bd["sz"]+bd["z"], v.s, v.t))
+            return out2
+        R._draw_model_triangles(fb, yb, bm, btex, sc, ox, oy, transform=tf)
+    Image.fromarray(fb, "RGBA").save(f"data/unleashed/{name}_2d.png")
+    # collision overlay
     im = Image.fromarray(fb, "RGBA").convert("RGB")
-    from PIL import ImageDraw
-    dr = ImageDraw.Draw(im, "RGBA")
-    tw = span/32*sc
+    dr = ImageDraw.Draw(im, "RGBA"); tw = out["tile"]*sc
     for r in range(32):
         for c in range(32):
-            if land["collision"][r*32+c]:
-                px = (b["minx"]+(c+0.5)*out["tile"]-cx)*sc + S/2
-                py = (b["minz"]+(r+0.5)*out["tile"]-cz)*sc + S/2
-                dr.rectangle([px-tw/2, py-tw/2, px+tw/2, py+tw/2], fill=(255, 0, 0, 70))
+            if out["collision"][r*32+c]:
+                px = (b["minx"]+(c+0.5)*out["tile"])*sc + R.HALF_UNITS + ox
+                py = (b["minz"]+(r+0.5)*out["tile"])*sc + R.HALF_UNITS + oy
+                dr.rectangle([px-tw/2, py-tw/2, px+tw/2, py+tw/2], fill=(255, 0, 0, 80))
     im.save(f"/tmp/verify_{name}.png")
-    print(f"verify /tmp/verify_{name}.png")
+    print(f"baked data/unleashed/{name}_2d.png ; overlay /tmp/verify_{name}.png "
+          f"({sum(out['collision'])} blocked)")
 
 
-def _tri(fb, yb, sx, sy, depth, col):
-    minx = max(min(sx), 0); maxx = min(max(sx), fb.shape[1]-1)
-    miny = max(min(sy), 0); maxy = min(max(sy), fb.shape[0]-1)
-    for y in range(miny, maxy+1):
-        for x in range(minx, maxx+1):
-            d = (sy[1]-sy[2])*(sx[0]-sx[2])+(sx[2]-sx[1])*(sy[0]-sy[2])
-            if d == 0: continue
-            a = ((sy[1]-sy[2])*(x-sx[2])+(sx[2]-sx[1])*(y-sy[2]))/d
-            bb = ((sy[2]-sy[0])*(x-sx[2])+(sx[0]-sx[2])*(y-sy[2]))/d
-            cc = 1-a-bb
-            if a >= -.02 and bb >= -.02 and cc >= -.02:
-                if depth >= yb[y, x]:
-                    yb[y, x] = depth; fb[y, x] = (col[0], col[1], col[2], 255)
-
-
+from PIL import ImageDraw
 if __name__ == "__main__":
     code, name, tset = sys.argv[1], sys.argv[2], int(sys.argv[3])
     out, land = export(code, name, tset)
-    verify_png(out, land, name)
+    bake_2d(code, name, tset, out)
