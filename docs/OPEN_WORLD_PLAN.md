@@ -128,17 +128,28 @@ is replaced, not kept. "Both screens" = emulate Platinum's DS dual-screen layout
   2D-native with no 3D models. The 2D top-down world wears a Platinum *skin*; the
   UI/menus/battles are pixel-faithful Platinum.
 
-### Verification: headless DS pass (deferred — needs ROM + emulator)
-Every screen below must be **visually matched against the real game**. That
-requires a session with (a) a Platinum ROM or a built pokeplatinum ROM, and (b) a
-DS emulator (melonDS/DeSmuME headless). **Neither is available in the current
-session** — egress is repo-scoped (`codeload.github.com` 403 on pret), no ROM
-(only `pokemon-black.nds`), no emulator installed. Bootstrap for a capable session:
-1. Get the source: `curl -L codeload.github.com/pret/pokeplatinum/tar.gz/main`
-   (when egress allows) → build the ROM, OR use a user-supplied Platinum `.nds`.
-2. Install melonDS (headless/SDL) or DeSmuME-cli.
-3. Script inputs + save states to navigate to each screen; screenshot each;
-   diff against the reimplementation.
+### Verification: headless DS pass — ROM SECURED ✅ (emulator still needed)
+Every screen below must be **visually matched against the real game**.
+
+**ROM ✅** — the US Platinum ROM (`POKEMON PL` / gamecode **CPUE**, 128 MB) is in
+the user's Drive, link-shared (anyone-reader). Pull command (verified working;
+ROM is gitignored/ephemeral, re-pull each session):
+```
+curl -sSL "https://drive.usercontent.google.com/download?id=1dYedqyolx558pnkJ5NA5ywpm6MoRkVuD&export=download&confirm=t" -o /tmp/pokemon-platinum.nds
+# verify: header bytes 12-16 == "CPUE", size == 134217728
+```
+GitHub egress is 403 this session, so the pret decomp *source* can't be fetched —
+but the ROM is all the verification pass needs.
+
+**Two ways to get authoritative Platinum menu art (complementary, do both):**
+1. **Extract raw UI graphics from the ROM** (no emulator needed):
+   `python3 tools/nds_decomp.py /tmp/pokemon-platinum.nds -o source/nds/CPUE` →
+   the menu palettes/tiles/tilemaps (`.nclr/.ncgr/.nscr`) are the exact source
+   art to rebuild each window frame/HUD/healthbox from.
+2. **Headless-DS screenshots** (still to set up — no emulator installed):
+   install melonDS (headless/SDL) or DeSmuME-cli; script inputs + save states to
+   navigate to each screen in the inventory; screenshot each; diff against the
+   reimplementation.
 
 ### FULL Platinum screen/menu inventory (the "ALL PLATINUM" checklist)
 
