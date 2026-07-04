@@ -160,10 +160,43 @@
   var baseline = null, watchTimer = null;
   function loop(fn, hz) { var iv = setInterval(fn, 1000 / (hz || 30)); return function () { clearInterval(iv); }; }
 
+  // ---- DS memory regions (located once in the heap, then dumped on demand) --
+  // desmume2015 exposes no clean memory API, so we read the raw Emscripten heap
+  // and dump only the small DS regions (OAM/palette/VRAM/main-RAM) once their
+  // heap offsets are pinned. Persisted in localStorage so a located layout
+  // survives reloads. Each entry: {name, base, len}.
+  var REGIONS = [];
+  try { REGIONS = JSON.parse(localStorage.getItem('dbg_regions') || '[]'); } catch (e) { REGIONS = []; }
+  function saveRegions() { try { localStorage.setItem('dbg_regions', JSON.stringify(REGIONS)); } catch (e) {} }
+  function addRegion(name, base, len) {
+    REGIONS = REGIONS.filter(function (r) { return r.name !== name; });
+    REGIONS.push({ name: name, base: base, len: len }); saveRegions();
+  }
+  // scan the heap for a contiguous u16-LE sequence (e.g. a run of BGR555 colors
+  // from a captured frame) -> anchors palette RAM; returns byte offset or -1.
+  function findU16Seq(mem, seq) {
+    var n = seq.length, first = seq[0];
+    for (var i = 0; i + 2 * n <= mem.length; i += 2) {
+      if ((mem[i] | (mem[i + 1] << 8)) !== first) continue;
+      var ok = true;
+      for (var j = 1; j < n; j++) { if ((mem[i + 2 * j] | (mem[i + 2 * j + 1] << 8)) !== seq[j]) { ok = false; break; } }
+      if (ok) return i;
+    }
+    return -1;
+  }
+  function dumpRegion(r, seq, statusEl) {
+    var mem = memView(); if (!mem) { if (statusEl) statusEl.textContent = 'no memory'; return; }
+    if (r.base < 0 || r.base >= mem.length) { if (statusEl) statusEl.textContent = 'region ' + r.name + ' out of range'; return; }
+    var end = Math.min(r.base + r.len, mem.length);
+    var suffix = (seq != null) ? ('_' + ('000' + seq).slice(-3)) : '';
+    pushBytes(mem.slice(r.base, end), 'regions/' + r.name + '/' + game() + suffix + '_' + stamp() + '.bin', statusEl);
+  }
+
   // ---- auto-capture on screen change ---------------------------------------
   // Watch the framebuffer; when it materially changes (a window/menu opens) and
-  // then settles, push the final composited frame to traces/frames/auto/. Lets
-  // the user just PLAY and have every window captured for exact reconstruction.
+  // then settles, push the final composited frame to traces/frames/auto/ AND
+  // dump every registered DS region (OAM/palette/VRAM/...) with the same seq #.
+  // Lets the user just PLAY and have every window captured for exact recon.
   var autoCap = null;   // stop-fn while active, else null
   function _canvasEl() { var g = document.getElementById('game'); return g && g.querySelector('canvas'); }
   function startAutoCap(statusEl) {
@@ -185,6 +218,8 @@
           var n = ('000' + seq).slice(-3);
           try { pushDataUrl(cv.toDataURL('image/png'), 'frames/auto/' + game() + '_' + n + '_' + stamp() + '.png', statusEl); }
           catch (e) { if (statusEl) statusEl.textContent = 'auto: toDataURL blocked'; }
+          // pair each captured state with its machine-level composition data
+          REGIONS.forEach(function (r) { dumpRegion(r, seq, statusEl); });
         }, 450);
       }
     }, 120);
@@ -276,6 +311,39 @@
     });
     fb.appendChild(autoBtn);
     panel.appendChild(fb);
+
+    // ---- DS memory regions (locate once -> auto-dumped with every capture) --
+    var inpS = 'width:64px;background:#1a1a24;border:1px solid #33354a;color:#cfe;border-radius:4px;padding:3px;';
+    var rg = line('Region');
+    var rName = el('input', inpS); rName.placeholder = 'name';
+    var rBase = el('input', inpS); rBase.placeholder = '0xBASE';
+    var rLen = el('input', inpS); rLen.placeholder = 'len';
+    rg.appendChild(rName); rg.appendChild(rBase); rg.appendChild(rLen);
+    rg.appendChild(btn('Add', function () {
+      var b = parseInt(rBase.value, 16), l = parseInt(rLen.value, 10);
+      if (isNaN(b) || isNaN(l)) { status.textContent = 'need hex base + decimal len'; return; }
+      addRegion(rName.value || ('r' + REGIONS.length), b, l);
+      status.textContent = 'registered: ' + REGIONS.map(function (r) { return r.name + '@0x' + r.base.toString(16) + '/' + r.len; }).join('  ');
+    }));
+    panel.appendChild(rg);
+    var rg2 = line('');
+    rg2.appendChild(btn('Dump all→repo', function () { if (!REGIONS.length) { status.textContent = 'no regions yet'; return; } REGIONS.forEach(function (r) { dumpRegion(r, null, status); }); }));
+    rg2.appendChild(btn('List', function () { status.textContent = REGIONS.length ? REGIONS.map(function (r) { return r.name + ' @0x' + r.base.toString(16) + ' len ' + r.len; }).join('\n') : 'none'; }));
+    rg2.appendChild(btn('Clear', function () { REGIONS = []; saveRegions(); status.textContent = 'regions cleared'; }));
+    panel.appendChild(rg2);
+    // palette color-anchor: paste BGR555 hex (comma-sep) from a captured frame
+    var rg3 = line('Pal find');
+    var rCol = el('input', 'flex:1;' + inpS.replace('width:64px;', ''));
+    rCol.placeholder = 'BGR555 hex,comma';
+    rg3.appendChild(rCol);
+    rg3.appendChild(btn('Scan', function () {
+      var cols = rCol.value.split(',').map(function (x) { return parseInt(x.trim(), 16); }).filter(function (x) { return !isNaN(x); });
+      if (cols.length < 3) { status.textContent = 'paste >=3 BGR555 colors'; return; }
+      var mem = memView(); if (!mem) { status.textContent = 'no memory'; return; }
+      status.textContent = 'scanning ' + (mem.length / 1048576 | 0) + 'MB...';
+      setTimeout(function () { var off = findU16Seq(mem, cols); status.textContent = off >= 0 ? ('palette run @0x' + off.toString(16) + ' — register it as a region') : 'color run not found'; }, 30);
+    }));
+    panel.appendChild(rg3);
 
     // Output box + Copy button (all readouts are selectable text here).
     var outLine = line(''); outLine.appendChild(el('span', 'flex:1;color:#9fb0cc;', 'Output (copy me)'));
