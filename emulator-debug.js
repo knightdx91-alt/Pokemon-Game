@@ -127,7 +127,12 @@
     var bar = 'background:#12121a;border:1px solid #2a2a34;border-radius:8px;color:#cfe;font:12px system-ui;padding:4px 8px;cursor:pointer;';
     var panel = el('div', 'position:fixed;right:8px;bottom:8px;width:300px;max-height:70vh;overflow:auto;z-index:99999;background:#0d0d12ee;border:1px solid #33354a;border-radius:10px;padding:12px;color:#dfe7f2;font:12px system-ui;');
     panel.id = 'dbg-panel';
-    var status = el('div', 'font-size:11px;color:#8fd0ff;margin:8px 0;min-height:2em;word-break:break-all;', 'idle');
+    // Copy-pasteable output box: all debug readouts land here as selectable
+    // text so you can copy them straight into a chat (no console needed).
+    var logEl = el('textarea', 'width:100%;box-sizing:border-box;height:130px;margin:8px 0;background:#07070c;color:#bfe;border:1px solid #33354a;border-radius:6px;padding:6px;font:11px ui-monospace,Menlo,Consolas,monospace;white-space:pre;resize:vertical;-webkit-user-select:text;user-select:text;');
+    logEl.readOnly = true; logEl.value = 'idle';
+    // Proxy so all existing `status.textContent = ...` calls write into the box.
+    var status = { get textContent() { return logEl.value; }, set textContent(v) { logEl.value = String(v); logEl.scrollTop = 0; } };
     function line(label) { var d = el('div', 'display:flex;gap:6px;align-items:center;margin:5px 0;'); if (label) d.appendChild(el('span', 'flex:1;color:#9fb0cc;', label)); return d; }
     function btn(txt, fn) { var b = el('button', bar, txt); b.onclick = fn; return b; }
 
@@ -136,7 +141,7 @@
     panel.appendChild(h);
 
     // capabilities
-    var capLine = line(''); capLine.appendChild(btn('Check core', function () { var rep = capabilities(); status.textContent = rep; try { alert(rep); } catch (e) {} }));
+    var capLine = line(''); capLine.appendChild(btn('Check core', function () { status.textContent = capabilities(); }));
     capLine.appendChild(btn('Touch test', function () { startTouchTest(status); }));
     panel.appendChild(capLine);
 
@@ -190,7 +195,19 @@
     fb.appendChild(btn('Download', function () { var c = canvas(); if (!c) return; var a = document.createElement('a'); a.href = c.toDataURL('image/png'); a.download = game() + '_' + stamp() + '.png'; a.click(); }));
     panel.appendChild(fb);
 
-    panel.appendChild(status);
+    // Output box + Copy button (all readouts are selectable text here).
+    var outLine = line(''); outLine.appendChild(el('span', 'flex:1;color:#9fb0cc;', 'Output (copy me)'));
+    var copyBtn = btn('📋 Copy', function () {
+      var text = logEl.value;
+      function done() { copyBtn.textContent = '✓ Copied'; setTimeout(function () { copyBtn.textContent = '📋 Copy'; }, 1200); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { logEl.focus(); logEl.select(); try { document.execCommand('copy'); done(); } catch (e) {} });
+      } else { logEl.focus(); logEl.select(); try { document.execCommand('copy'); done(); } catch (e) {} }
+    });
+    outLine.appendChild(copyBtn);
+    panel.appendChild(outLine);
+    panel.appendChild(logEl);
+
     document.body.appendChild(panel);
     status.textContent = capabilities();
   }
@@ -208,7 +225,6 @@
     if (touchTestOff) { touchTestOff(); touchTestOff = null; if (statusEl) statusEl.textContent = 'touch test OFF'; return; }
     var g = document.getElementById('game');
     if (!g) { if (statusEl) statusEl.textContent = 'no #game'; return; }
-    var alerted = 0;
     function report(e) {
       var pt = e.touches && e.touches[0] ? e.touches[0] : e;
       var cvs = g.querySelector('canvas');
@@ -222,11 +238,11 @@
         'tap on canvas = ' + (relX | 0) + ',' + (relY | 0) + ' of ' + (r.width | 0) + '×' + (r.height | 0) + '\n' +
         'region = ' + half + '\n' +
         'canvas backing = ' + (cvs ? cvs.width + '×' + cvs.height : 'none');
-      if (statusEl) statusEl.textContent = msg;
       console.log('[touchtest]', msg);
-      // Only the physical touchstart gets alerted (once), so it's readable on
-      // mobile without a console and doesn't spam on synthetic/mouse events.
-      if (e.type === 'touchstart' && alerted < 1) { alerted++; try { alert(msg); } catch (x) {} }
+      // Let the physical touchstart own the visible box (it's the useful event);
+      // the synthetic/compat mouse + pointer events only go to the console so
+      // they don't overwrite the readout you're about to copy.
+      if (statusEl && e.type === 'touchstart') statusEl.textContent = msg;
     }
     var evs = ['touchstart', 'mousedown', 'pointerdown'];
     evs.forEach(function (ev) { g.addEventListener(ev, report, true); });
