@@ -139,6 +139,7 @@ using this repo's already-bundled FireRed font (`src/assets/fonts/pokefirered.tt
 
 ## CRITICAL RULES — READ FIRST
 - **NEVER use the Agent tool. Handle ALL tasks directly. Do not spawn subagents for any reason — they waste usage and fail silently. Do everything yourself with the available tools (Read, Edit, Write, Bash, Grep, Glob).**
+- **DO NOT use `curl` or `wget` inside the container to fetch remote URLs.** To get the text contents of a URL (e.g. a decomp source file on `raw.githubusercontent.com`, docs, an API listing), use the **WebFetch** tool and write the result to a file. This is the required way to pull decomp sources like `pret/pokeplatinum` (container egress is often scoped to only this repo and 403s codeload tarballs anyway). WebFetch answers a prompt against the page — to capture code verbatim, prompt it to "return the exact raw file contents, unmodified." Binary assets (the ROM) still come from the user's Drive, but source text = WebFetch → file.
 - **ALL work goes on `main` branch ONLY. Never create feature branches. Never open PRs. Push directly to `main`.**
 - **The EE submodule lives at `source/emerald-enhanced/` — use it as the reference for any UI/visual work.**
 - **No build system. Plain HTML/CSS/JS, all globals (`window.GameXxx`). No npm, no bundler.**
