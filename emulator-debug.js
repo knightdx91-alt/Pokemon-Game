@@ -146,17 +146,15 @@
     var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
   }
-  // Upload the full heap to Google Drive (resumable — handles the 100+MB dump
-  // that GitHub's file cap can't). Reuses emulator.html's Drive write token.
-  // Claude then pulls it from Drive and maps ALL regions offline in one pass.
-  function uploadHeapToDrive(statusEl) {
-    var mem = memView(); if (!mem) { if (statusEl) statusEl.textContent = 'no memory'; return; }
-    if (!window.getDriveWriteToken) { statusEl.textContent = 'Drive auth unavailable (open a ROM via Drive first)'; return; }
-    var blob = new Blob([mem], { type: 'application/octet-stream' });   // snapshot copy
-    var name = game() + '_heap_' + stamp() + '.bin';
-    statusEl.textContent = 'authorizing Drive…';
-    window.getDriveWriteToken().then(function (token) {
-      statusEl.textContent = 'uploading ' + (blob.size / 1048576 | 0) + 'MB to Drive…';
+  // Upload any Blob to Google Drive (resumable — handles the 100+MB dumps that
+  // GitHub's file cap can't). Reuses emulator.html's Drive write token, the same
+  // path the in-game saves use, so recordings land straight in the user's Drive
+  // with no file upload from their (mobile, FRP-locked) device.
+  function uploadBlobToDrive(blob, name, statusEl) {
+    if (!window.getDriveWriteToken) { if (statusEl) statusEl.textContent = 'Drive auth unavailable (open a ROM via Drive first)'; return Promise.reject(new Error('no Drive token')); }
+    if (statusEl) statusEl.textContent = 'authorizing Drive…';
+    return window.getDriveWriteToken().then(function (token) {
+      if (statusEl) statusEl.textContent = 'uploading ' + (blob.size / 1048576 | 0) + 'MB to Drive…';
       return fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id,name', {
         method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name })
@@ -164,9 +162,15 @@
         var loc = r.headers.get('Location'); if (!loc) throw new Error('no upload session');
         return fetch(loc, { method: 'PUT', headers: { 'Content-Type': 'application/octet-stream' }, body: blob });
       }).then(function (r) { return r.json(); }).then(function (d) {
-        statusEl.textContent = d.id ? ('✓ Drive: ' + name) : ('✗ ' + ((d.error && d.error.message) || 'upload failed'));
+        if (statusEl) statusEl.textContent = d.id ? ('✓ Drive: ' + name) : ('✗ ' + ((d.error && d.error.message) || 'upload failed'));
+        return d;
       });
-    }).catch(function (e) { statusEl.textContent = '✗ ' + e.message; });
+    }).catch(function (e) { if (statusEl) statusEl.textContent = '✗ ' + e.message; throw e; });
+  }
+  // Claude then pulls the heap from Drive and maps ALL regions offline in one pass.
+  function uploadHeapToDrive(statusEl) {
+    var mem = memView(); if (!mem) { if (statusEl) statusEl.textContent = 'no memory'; return; }
+    uploadBlobToDrive(new Blob([mem], { type: 'application/octet-stream' }), game() + '_heap_' + stamp() + '.bin', statusEl);
   }
 
   // ---- value search / watch ------------------------------------------------
@@ -336,6 +340,90 @@
   }
   function stopAutoCap(statusEl) { if (autoCap) { autoCap(); autoCap = null; } if (statusEl) statusEl.textContent = 'auto-capture off'; }
 
+  // ---- continuous recorder -------------------------------------------------
+  // Ground-truth footage for the "always verify, never assume" rule: record what
+  // the REAL game draws so a reconstruction can be pixel-diffed against it.
+  //
+  // REC captures the emulator canvas EVERY animation frame at its NATIVE
+  // backbuffer resolution as a LOSSLESS PNG (cv.width×cv.height is already the DS
+  // framebuffer, so toDataURL is 1:1 — no resampling). Consecutive identical
+  // frames are collapsed and their vsync hold-count kept in manifest.json, so a
+  // long boot/intro stays small. On Stop, fflate zips every unique PNG +
+  // manifest.json and saves it STRAIGHT TO GOOGLE DRIVE via the same
+  // getDriveWriteToken path the in-game saves use (no file upload from the
+  // mobile device); a local download is the fallback sink.
+  //
+  // REC Video uses MediaRecorder over canvas.captureStream(): always works even
+  // when toDataURL is blocked, but WebM is lossy — reference only, not for
+  // pixel-exact verification.
+  var recStop = null;   // stop-fn while a PNG recording is active
+  function startRecord(statusEl, sink) {   // sink: 'drive' | 'download'
+    var cv = _canvasEl();
+    if (!cv) { if (statusEl) statusEl.textContent = 'no canvas'; return; }
+    if (!window.fflate) { if (statusEl) statusEl.textContent = 'fflate not loaded (needed to zip frames)'; return; }
+    var frames = [], lastUrl = null, raf = 0, t0 = performance.now(), vsync = 0, blocked = false;
+    function tick() {
+      try {
+        var url = cv.toDataURL('image/png');
+        if (url === lastUrl) { if (frames.length) frames[frames.length - 1].hold++; }
+        else {
+          lastUrl = url;
+          var bin = atob(url.slice(url.indexOf(',') + 1)), u8 = new Uint8Array(bin.length);
+          for (var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+          frames.push({ bytes: u8, hold: 1 });
+        }
+      } catch (e) { blocked = true; }
+      vsync++;
+      if (statusEl) statusEl.textContent = '● REC  ' + frames.length + ' unique / ' + vsync +
+        ' vsync  ' + ((performance.now() - t0) / 1000).toFixed(1) + 's' + (blocked ? '  (toDataURL BLOCKED — use Video)' : '');
+      raf = requestAnimationFrame(tick);
+    }
+    raf = requestAnimationFrame(tick);
+    recStop = function () {
+      cancelAnimationFrame(raf); recStop = null;
+      if (!frames.length) { if (statusEl) statusEl.textContent = 'nothing captured' + (blocked ? ' — toDataURL blocked, use REC Video' : ''); return; }
+      var files = {}, manifest = [];
+      frames.forEach(function (f, i) {
+        var name = 'frames/frame_' + ('00000' + i).slice(-5) + '.png';
+        files[name] = f.bytes;
+        manifest.push({ file: name, index: i, holdVsync: f.hold });
+      });
+      files['manifest.json'] = new TextEncoder().encode(JSON.stringify({
+        game: game(), capturedAt: new Date().toISOString(), canvas: { w: cv.width, h: cv.height },
+        uniqueFrames: frames.length, totalVsync: vsync,
+        note: 'native-resolution lossless PNG frames; holdVsync = vsync frames each image persisted', frames: manifest
+      }, null, 1));
+      if (statusEl) statusEl.textContent = 'zipping ' + frames.length + ' frames…';
+      var zip = window.fflate.zipSync(files, { level: 6 });
+      var fname = game() + '_record_' + stamp() + '.zip';
+      if (sink === 'drive') uploadBlobToDrive(new Blob([zip], { type: 'application/zip' }), fname, statusEl)
+        .catch(function () { download(zip, fname); });   // fall back to a local download if Drive fails
+      else { download(zip, fname); if (statusEl) statusEl.textContent = 'saved ' + frames.length + ' frames (' + (zip.length / 1048576).toFixed(1) + ' MB zip)'; }
+    };
+    if (statusEl) statusEl.textContent = '● REC (PNG→' + (sink === 'drive' ? 'Drive' : 'download') + ') — play, then Stop';
+  }
+
+  var vidStop = null;   // stop-fn while a video recording is active
+  function startVideo(statusEl) {
+    var cv = _canvasEl();
+    if (!cv) { if (statusEl) statusEl.textContent = 'no canvas'; return; }
+    if (!cv.captureStream || typeof MediaRecorder === 'undefined') { if (statusEl) statusEl.textContent = 'MediaRecorder/captureStream unsupported here'; return; }
+    var chunks = [], type = ['video/webm;codecs=vp9', 'video/webm;codecs=vp8', 'video/webm'].filter(function (t) { return MediaRecorder.isTypeSupported(t); })[0] || 'video/webm';
+    var mr = new MediaRecorder(cv.captureStream(60), { mimeType: type, videoBitsPerSecond: 12000000 });
+    mr.ondataavailable = function (e) { if (e.data && e.data.size) chunks.push(e.data); };
+    mr.onstop = function () {
+      var blob = new Blob(chunks, { type: type });
+      var name = game() + '_record_' + stamp() + '.webm';
+      // Save straight to Google Drive; fall back to a local download if Drive fails.
+      uploadBlobToDrive(blob, name, statusEl).catch(function () {
+        var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+        if (statusEl) statusEl.textContent = 'saved webm locally (' + (blob.size / 1048576).toFixed(1) + ' MB)';
+      });
+    };
+    mr.start(); vidStop = function () { vidStop = null; mr.stop(); };
+    if (statusEl) statusEl.textContent = '● REC (video) — play, then Stop to save WebM';
+  }
+
   // ---- UI ------------------------------------------------------------------
   function el(t, s, h) { var e = document.createElement(t); if (s) e.style.cssText = s; if (h != null) e.innerHTML = h; return e; }
   function build() {
@@ -420,6 +508,24 @@
     });
     fb.appendChild(autoBtn);
     panel.appendChild(fb);
+
+    // continuous recorder — lossless native-res PNG frames (zip) or WebM video,
+    // saved straight to Google Drive (⇩ = local-download fallback).
+    var rec = line('Record→Drive');
+    var recBtn = btn('⏺ Rec', function () {
+      if (recStop) { recStop(); recBtn.textContent = '⏺ Rec'; }
+      else { startRecord(status, 'drive'); recBtn.textContent = '⏹ Stop'; }
+    });
+    var recDlBtn = btn('⏺ Rec⇩', function () {
+      if (recStop) { recStop(); recDlBtn.textContent = '⏺ Rec⇩'; }
+      else { startRecord(status, 'download'); recDlBtn.textContent = '⏹ Stop'; }
+    });
+    var vidBtn = btn('🎞 Video', function () {
+      if (vidStop) { vidStop(); vidBtn.textContent = '🎞 Video'; }
+      else { startVideo(status); vidBtn.textContent = '⏹ Stop'; }
+    });
+    rec.appendChild(recBtn); rec.appendChild(recDlBtn); rec.appendChild(vidBtn);
+    panel.appendChild(rec);
 
     // ---- DS memory regions (locate once -> auto-dumped with every capture) --
     var inpS = 'width:64px;background:#1a1a24;border:1px solid #33354a;color:#cfe;border-radius:4px;padding:3px;';
