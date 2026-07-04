@@ -136,6 +136,69 @@ def compose_scrn(nscr, ncgr, nclr, out):
     print(f"wrote {out} ({w}x{h})")
 
 
+OBJ_SIZE = {  # (shape,size) -> (w,h) in 8px tiles
+    (0, 0): (1, 1), (0, 1): (2, 2), (0, 2): (4, 4), (0, 3): (8, 8),
+    (1, 0): (2, 1), (1, 1): (4, 1), (1, 2): (4, 2), (1, 3): (8, 4),
+    (2, 0): (1, 2), (2, 1): (1, 4), (2, 2): (2, 4), (2, 3): (4, 8),
+}
+
+
+def read_ncer(path):
+    """Return list of cells; each cell = list of OAM dicts (x,y,w,h,tile,pal,flipH,flipV)."""
+    data = open(path, "rb").read()
+    body = next(b for m, b in _blocks(data) if m in (b"KBEC", b"CEBK"))
+    nBanks, bankType = struct.unpack_from("<HH", body, 0)
+    bankDataOff = struct.unpack_from("<I", body, 4)[0]
+    cell_sz = 16 if bankType == 1 else 8
+    cells = []
+    oam_base = 8 + bankDataOff  # OAM offsets are relative to end of the KBEC sub-header
+    for i in range(nBanks):
+        nOAM, _attr, oamOff = struct.unpack_from("<HHI", body, 8 + i * cell_sz)
+        oams = []
+        for j in range(nOAM):
+            o = 8 + bankDataOff + oamOff + j * 6
+            a0, a1, a2 = struct.unpack_from("<HHH", body, o)
+            y = a0 & 0xFF; y = y - 256 if y >= 128 else y
+            shape = (a0 >> 14) & 3
+            x = a1 & 0x1FF; x = x - 512 if x >= 256 else x
+            flipH = (a1 >> 12) & 1; flipV = (a1 >> 13) & 1; size = (a1 >> 14) & 3
+            tile = a2 & 0x3FF; pal = (a2 >> 12) & 0xF
+            w, h = OBJ_SIZE.get((shape, size), (1, 1))
+            oams.append(dict(x=x, y=y, w=w, h=h, tile=tile, pal=pal, flipH=flipH, flipV=flipV))
+        cells.append(oams)
+    return cells
+
+
+def build_cell(oams, tiles, pals, forced_pal=None):
+    """Composite one NCER cell (OAM list) into an RGBA image."""
+    xs = [o["x"] for o in oams] + [o["x"] + o["w"] * 8 for o in oams]
+    ys = [o["y"] for o in oams] + [o["y"] + o["h"] * 8 for o in oams]
+    minx, miny = min(xs), min(ys)
+    im = Image.new("RGBA", (max(xs) - minx, max(ys) - miny), (0, 0, 0, 0))
+    px = im.load()
+    for o in oams:
+        pal = pals[forced_pal if forced_pal is not None else o["pal"]]
+        t = o["tile"]
+        for ty in range(o["h"]):
+            for tx in range(o["w"]):
+                grid = tiles[t] if t < len(tiles) else None; t += 1
+                if grid is None:
+                    continue
+                for yy in range(8):
+                    for xx in range(8):
+                        sx = 7 - xx if o["flipH"] else xx
+                        sy = 7 - yy if o["flipV"] else yy
+                        idx = grid[sy][sx]
+                        if idx == 0:
+                            continue
+                        c = pal[idx] if idx < len(pal) else (255, 0, 255)
+                        ox = o["x"] - minx + (o["w"] - 1 - tx if o["flipH"] else tx) * 8 + xx
+                        oy = o["y"] - miny + (o["h"] - 1 - ty if o["flipV"] else ty) * 8 + yy
+                        if 0 <= ox < im.width and 0 <= oy < im.height:
+                            px[ox, oy] = (c[0], c[1], c[2], 255)
+    return im
+
+
 def main():
     a = sys.argv
     if a[1] == "pal":
