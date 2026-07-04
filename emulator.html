@@ -264,8 +264,10 @@
             -webkit-touch-callout: none; -webkit-user-select: none;
             user-select: none; touch-action: manipulation;
         }
-        /* Manual vertical pan so a clipped top/bottom can be brought into view. */
-        #game canvas { transform: translateY(var(--game-shift-y, 0px)); }
+        /* Pan removed: a CSS transform on the canvas desyncs the DS stylus
+           coordinate mapping (desmume2015 maps touch from canvas geometry),
+           which stopped bottom-screen touches from registering. */
+        #game canvas { transform: none; }
         .emu-nudge {
             background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
             color: var(--text); cursor: pointer; font-family: inherit; font-size: 0.9rem;
@@ -2248,6 +2250,7 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
 <script src="cloud-saves.js?v=__CACHE_BUST__"></script>
+<script src="emulator-debug.js?v=__CACHE_BUST__"></script>
 <script>
 /* Register the offline service worker so the page, the EmulatorJS engine,
    and the per-system cores can be served with no connection. Your cached
