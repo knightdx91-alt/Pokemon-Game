@@ -162,8 +162,20 @@
         var loc = r.headers.get('Location'); if (!loc) throw new Error('no upload session');
         return fetch(loc, { method: 'PUT', headers: { 'Content-Type': 'application/octet-stream' }, body: blob });
       }).then(function (r) { return r.json(); }).then(function (d) {
-        if (statusEl) statusEl.textContent = d.id ? ('✓ Drive: ' + name) : ('✗ ' + ((d.error && d.error.message) || 'upload failed'));
-        return d;
+        if (!d.id) { if (statusEl) statusEl.textContent = '✗ ' + ((d.error && d.error.message) || 'upload failed'); return d; }
+        // Auto-share as "anyone with the link can read" so the file can be pulled
+        // WITHOUT the user manually changing its sharing every time. drive.file
+        // scope permits managing permissions on files this app created.
+        return fetch('https://www.googleapis.com/drive/v3/files/' + d.id + '/permissions?fields=id', {
+          method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ role: 'reader', type: 'anyone' })
+        }).then(function () {
+          if (statusEl) statusEl.textContent = '✓ Drive (link-shared): ' + name + '\nid=' + d.id;
+          d.shared = true; return d;
+        }, function () {
+          if (statusEl) statusEl.textContent = '✓ Drive: ' + name + '\n(auto-share failed — share manually)  id=' + d.id;
+          return d;
+        });
       });
     }).catch(function (e) { if (statusEl) statusEl.textContent = '✗ ' + e.message; throw e; });
   }
@@ -358,11 +370,15 @@
   // pixel-exact verification.
   var recStop = null;   // stop-fn while a PNG recording is active
   function startRecord(statusEl, sink) {   // sink: 'drive' | 'download'
-    var cv = _canvasEl();
-    if (!cv) { if (statusEl) statusEl.textContent = 'no canvas'; return; }
     if (!window.fflate) { if (statusEl) statusEl.textContent = 'fflate not loaded (needed to zip frames)'; return; }
-    var frames = [], lastUrl = null, raf = 0, t0 = performance.now(), vsync = 0, blocked = false;
+    // The recording can be armed BEFORE the game loads — it waits for the
+    // emulator canvas to appear and starts capturing from its very first frame,
+    // so the boot/GAME FREAK/copyright/title sequence is caught in full.
+    var cv = null, frames = [], lastUrl = null, raf = 0, t0 = 0, vsync = 0, blocked = false, started = false;
     function tick() {
+      // EmulatorJS may swap the canvas element during load; re-acquire if ours
+      // got detached so we keep capturing the live one.
+      if (!cv.isConnected) { var live = _canvasEl(); if (live) { cv = live; lastUrl = null; } }
       try {
         var url = cv.toDataURL('image/png');
         if (url === lastUrl) { if (frames.length) frames[frames.length - 1].hold++; }
@@ -378,9 +394,16 @@
         ' vsync  ' + ((performance.now() - t0) / 1000).toFixed(1) + 's' + (blocked ? '  (toDataURL BLOCKED — use Video)' : '');
       raf = requestAnimationFrame(tick);
     }
-    raf = requestAnimationFrame(tick);
+    function begin(canvas) { cv = canvas; started = true; t0 = performance.now(); raf = requestAnimationFrame(tick); }
+    var immediate = _canvasEl();
+    if (immediate) begin(immediate);
+    else {
+      if (statusEl) statusEl.textContent = '● REC ARMED — waiting for the game to load…';
+      (function waitForCanvas() { var c = _canvasEl(); if (c) begin(c); else raf = requestAnimationFrame(waitForCanvas); })();
+    }
     recStop = function () {
       cancelAnimationFrame(raf); recStop = null;
+      if (!started) { if (statusEl) statusEl.textContent = 'recording cancelled — canvas never appeared'; return; }
       if (!frames.length) { if (statusEl) statusEl.textContent = 'nothing captured' + (blocked ? ' — toDataURL blocked, use REC Video' : ''); return; }
       var files = {}, manifest = [];
       frames.forEach(function (f, i) {
@@ -400,7 +423,9 @@
         .catch(function () { download(zip, fname); });   // fall back to a local download if Drive fails
       else { download(zip, fname); if (statusEl) statusEl.textContent = 'saved ' + frames.length + ' frames (' + (zip.length / 1048576).toFixed(1) + ' MB zip)'; }
     };
-    if (statusEl) statusEl.textContent = '● REC (PNG→' + (sink === 'drive' ? 'Drive' : 'download') + ') — play, then Stop';
+    // Only announce "recording" once we're actually capturing; if we're waiting
+    // for the canvas, leave the "ARMED — waiting" message up.
+    if (started && statusEl) statusEl.textContent = '● REC (PNG→' + (sink === 'drive' ? 'Drive' : 'download') + ') — play, then Stop';
   }
 
   var vidStop = null;   // stop-fn while a video recording is active
