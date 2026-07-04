@@ -148,15 +148,15 @@ def read_ncer(path):
     data = open(path, "rb").read()
     body = next(b for m, b in _blocks(data) if m in (b"KBEC", b"CEBK"))
     nBanks, bankType = struct.unpack_from("<HH", body, 0)
-    bankDataOff = struct.unpack_from("<I", body, 4)[0]
+    cellDataOff = struct.unpack_from("<I", body, 4)[0]  # start of cell records (=0x18)
     cell_sz = 16 if bankType == 1 else 8
     cells = []
-    oam_base = 8 + bankDataOff  # OAM offsets are relative to end of the KBEC sub-header
+    oam_base = cellDataOff + nBanks * cell_sz  # OAM data follows all cell records
     for i in range(nBanks):
-        nOAM, _attr, oamOff = struct.unpack_from("<HHI", body, 8 + i * cell_sz)
+        nOAM, _attr, oamOff = struct.unpack_from("<HHI", body, cellDataOff + i * cell_sz)
         oams = []
         for j in range(nOAM):
-            o = 8 + bankDataOff + oamOff + j * 6
+            o = oam_base + oamOff + j * 6
             a0, a1, a2 = struct.unpack_from("<HHH", body, o)
             y = a0 & 0xFF; y = y - 256 if y >= 128 else y
             shape = (a0 >> 14) & 3

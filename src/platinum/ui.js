@@ -28,14 +28,16 @@
   ];
 
   // ---- Start (X) menu -------------------------------------------------------
+  // icons decoded from the ROM (menu_gra.narc) via tools/nds_gfx.py
+  const IC = 'data/unleashed/platinum_ui/icons/';
   const MENU = [
-    { key: 'dex', label: 'Pokédex', ic: 'ic-dex' },
-    { key: 'party', label: 'Pokémon', ic: 'ic-party' },
-    { key: 'bag', label: 'Bag', ic: 'ic-bag' },
-    { key: 'card', label: 'Lucas', ic: 'ic-card' },   // [player name]
-    { key: 'save', label: 'Save', ic: 'ic-save' },
-    { key: 'opt', label: 'Options', ic: 'ic-opt' },
-    { key: 'exit', label: 'Exit', ic: 'ic-exit' },
+    { key: 'dex', label: 'Pokédex', img: IC + 'icon_0.png' },   // red dex book
+    { key: 'party', label: 'Pokémon', img: IC + 'icon_1.png' }, // poké ball
+    { key: 'bag', label: 'Bag', img: IC + 'icon2_3.png' },      // pouch
+    { key: 'card', label: 'Lucas', img: IC + 'icon_3.png' },    // trainer card
+    { key: 'save', label: 'Save', img: IC + 'icon2_6.png' },    // save arrow
+    { key: 'opt', label: 'Options', img: IC + 'icon_5.png' },   // DS console
+    { key: 'exit', label: 'Exit', img: IC + 'icon2_5.png' },    // exit arrow
   ];
   let menuOpen = false, mi = 0, page = null, psel = 0, smtab = 0;
 
@@ -43,7 +45,8 @@
     const m = $('#startmenu'); m.innerHTML = '';
     MENU.forEach((it, i) => {
       const row = el('div', 'smi' + (i === mi ? ' sel' : ''));
-      row.appendChild(el('span', 'ic ' + it.ic));
+      const icon = el('img', 'ic'); icon.src = it.img; icon.alt = '';
+      row.appendChild(icon);
       row.appendChild(el('span', null, it.label));
       row.onclick = () => { mi = i; renderMenu(); choose(); };
       m.appendChild(row);
