@@ -296,13 +296,19 @@
         .loading-prog-fill { height: 100%; width: 0%; background: var(--accent); transition: width 0.08s linear; border-radius: 2px; }
         .loading-pct { color: var(--accent); font-size: 0.78rem; font-variant-numeric: tabular-nums; }
         .url-hint { font-size: 0.72rem; color: #555; line-height: 1.5; }
+        .emu-build {
+            display: inline-block; font-size: 0.7rem; font-weight: 700;
+            color: var(--accent2, #7c6af7); background: rgba(124,106,247,0.14);
+            border-radius: 6px; padding: 1px 6px; margin-left: 4px;
+            font-variant-numeric: tabular-nums; vertical-align: middle;
+        }
     </style>
 </head>
 <body>
 
 <div id="setup-screen">
     <div class="logo">RetroPlay</div>
-    <p class="tagline">Your ROMs, every system, one page.</p>
+    <p class="tagline">Your ROMs, every system, one page. <span class="emu-build">build 49</span></p>
     <div class="systems-card">
         <div class="systems-card-header">
             <h2>&#127918; Pick a system</h2>
@@ -365,7 +371,7 @@
 
 <div id="emu-screen">
     <div class="emu-topbar">
-        <span class="logo-small">RetroPlay</span>
+        <span class="logo-small">RetroPlay <span class="emu-build">b49</span></span>
         <div class="emu-info">
             <div class="emu-game-name" id="emu-game-label">&mdash;</div>
             <div class="emu-sys-name"  id="emu-sys-label">&mdash;</div>
