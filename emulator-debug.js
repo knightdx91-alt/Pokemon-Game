@@ -208,16 +208,20 @@
   function _cvEl() { var g = document.getElementById('game'); return g && g.querySelector('canvas'); }
   function frameColorsBGR555() {
     var cv = _cvEl(); if (!cv) return [];
-    var s = document.createElement('canvas'); s.width = 128; s.height = 192;
-    var c = s.getContext('2d', { willReadFrequently: true });
-    try { c.drawImage(cv, 0, 0, 128, 192); } catch (e) { return []; }
-    var d = c.getImageData(0, 0, 128, 192).data, seen = {}, out = [];
+    // sample at native size, smoothing OFF, so we get TRUE palette colors (an
+    // interpolated downsample invents blended colors that aren't in the palette).
+    var w = cv.width, h = cv.height;
+    var s = document.createElement('canvas'); s.width = w; s.height = h;
+    var c = s.getContext('2d', { willReadFrequently: true }); c.imageSmoothingEnabled = false;
+    try { c.drawImage(cv, 0, 0); } catch (e) { return []; }
+    var d = c.getImageData(0, 0, w, h).data, cnt = {};
     for (var i = 0; i < d.length; i += 4) {
       if (d[i + 3] < 128) continue;
       var v = (d[i] >> 3) | ((d[i + 1] >> 3) << 5) | ((d[i + 2] >> 3) << 10);
-      if (!seen[v]) { seen[v] = 1; out.push(v); }
+      cnt[v] = (cnt[v] || 0) + 1;
     }
-    return out;
+    // most-frequent colors first (flat UI areas == real palette entries)
+    return Object.keys(cnt).map(Number).sort(function (a, b) { return cnt[b] - cnt[a]; });
   }
   function calibratePalette(statusEl) {
     var mem = memView(); if (!mem) { if (statusEl) statusEl.textContent = 'no memory'; return false; }
@@ -390,7 +394,7 @@
     rg2.appendChild(btn('Dump all→repo', function () { if (!REGIONS.length) { status.textContent = 'no regions yet'; return; } REGIONS.forEach(function (r) { dumpRegion(r, null, status); }); }));
     rg2.appendChild(btn('List', function () { status.textContent = REGIONS.length ? REGIONS.map(function (r) { return r.name + ' @0x' + r.base.toString(16) + ' len ' + r.len; }).join('\n') : 'none'; }));
     rg2.appendChild(btn('Clear', function () { REGIONS = []; saveRegions(); status.textContent = 'regions cleared'; }));
-    rg2.appendChild(btn('Calibrate', function () { status.textContent = 'scanning heap…'; setTimeout(function () { calibratePalette(status); }, 30); }));
+    rg2.appendChild(btn('Calibrate', function () { REGIONS = REGIONS.filter(function (r) { return r.name !== 'palette'; }); saveRegions(); status.textContent = 'scanning heap…'; setTimeout(function () { calibratePalette(status); }, 30); }));
     panel.appendChild(rg2);
     // palette color-anchor: paste BGR555 hex (comma-sep) from a captured frame
     var rg3 = line('Pal find');
