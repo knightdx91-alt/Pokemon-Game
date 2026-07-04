@@ -19,12 +19,12 @@
 
   // ---- demo party (placeholder mons until wired to the save/engine) --------
   const PARTY = [
-    { name: 'INFERNAPE', lv: 42, hp: 118, max: 132, color: '#e86838' },
-    { name: 'STARAPTOR', lv: 40, hp: 96, max: 128, color: '#8a7060' },
-    { name: 'LUXRAY', lv: 41, hp: 121, max: 121, color: '#2848a0' },
-    { name: 'ROSERADE', lv: 39, hp: 74, max: 110, color: '#40a060' },
-    { name: 'FLOATZEL', lv: 40, hp: 30, max: 124, color: '#48a0d0' },
-    { name: 'BRONZONG', lv: 38, hp: 108, max: 118, color: '#3a6a70' },
+    { name: 'INFERNAPE', lv: 42, hp: 118, max: 132, color: '#e86838', g: 'm' },
+    { name: 'STARAPTOR', lv: 40, hp: 96, max: 128, color: '#8a7060', g: 'm' },
+    { name: 'LUXRAY', lv: 41, hp: 121, max: 121, color: '#2848a0', g: 'm' },
+    { name: 'ROSERADE', lv: 39, hp: 74, max: 110, color: '#40a060', g: 'f' },
+    { name: 'FLOATZEL', lv: 40, hp: 30, max: 124, color: '#48a0d0', g: 'f' },
+    { name: 'BRONZONG', lv: 38, hp: 108, max: 118, color: '#3a6a70', g: '' },
   ];
 
   // ---- Start (X) menu -------------------------------------------------------
@@ -82,13 +82,15 @@
     const wrap = el('div'); wrap.id = 'party';
     PARTY.forEach((mon, i) => {
       const slot = el('div', 'pslot' + (i === psel ? ' sel' : '')); slot.id = 's' + i;
+      const ball = el('div', 'pball');            // Poké Ball marker
       const ic = el('div', 'picon'); ic.style.background = mon.color;
       const pct = Math.round(mon.hp / mon.max * 100);
       const col = pct > 50 ? '#68d048' : pct > 20 ? '#f8c030' : '#f04040';
-      const info = el('div', 'pinfo', `<div class="pn">${mon.name}</div><div class="pl">Lv${mon.lv}</div>
-        <div class="hpbar"><div class="hpfill" style="width:${pct}%;background:${col}"></div></div>
+      const gsym = mon.g === 'm' ? '<span class="gm">♂</span>' : mon.g === 'f' ? '<span class="gf">♀</span>' : '';
+      const info = el('div', 'pinfo', `<div class="pn">${mon.name}${gsym}</div><div class="pl">Lv${mon.lv}</div>
+        <div class="hprow"><span class="hptag">HP</span><div class="hpbar"><div class="hpfill" style="width:${pct}%;background:${col}"></div></div></div>
         <div class="hptxt">${mon.hp}/${mon.max}</div>`);
-      slot.appendChild(ic); slot.appendChild(info);
+      slot.appendChild(ball); slot.appendChild(ic); slot.appendChild(info);
       slot.onclick = () => { psel = i; showParty(); showSummary(); };
       wrap.appendChild(slot);
     });
@@ -228,10 +230,47 @@
     // app name footer
     c.fillStyle = G.on; c.font = '9px Verdana'; c.textAlign = 'center'; c.fillText(app, 128, 158);
   }
-  function cyclePoketch(dir) { PK.app = (PK.app + PK.apps.length + (dir || 1)) % PK.apps.length; drawPoketch(); }
-  // red button / bottom-screen tap cycles apps
-  $('#poketch').addEventListener('pointerdown', () => cyclePoketch(1));
+  function cyclePoketch(dir) { PK.app = (PK.app + PK.apps.length + (dir || 1)) % PK.apps.length; drawBottom(); }
 
-  scale(); renderMenu(); drawPoketch();
-  setInterval(drawPoketch, 1000);
+  // ---- bottom-screen router: Pokétch in world/menu, ball grid in party -----
+  let botMode = 'poketch';   // 'poketch' | 'party'
+  function setBottom(m) { botMode = m; drawBottom(); }
+  function drawBottom() { if (botMode === 'party') drawPartyBottom(); else drawPoketch(); }
+
+  function drawPartyBottom() {
+    const cv = $('#poketch'); if (!cv) return; const c = cv.getContext('2d');
+    c.imageSmoothingEnabled = false;
+    // blue striped background
+    c.fillStyle = '#5b7bb0'; c.fillRect(0, 0, 256, 192);
+    c.fillStyle = '#5273a8'; for (let y = 0; y < 192; y += 4) c.fillRect(0, y, 256, 2);
+    // central big translucent Poké Ball watermark
+    const cx = 128, cy = 96, r = 52;
+    c.fillStyle = '#6f8fc4'; c.beginPath(); c.arc(cx, cy, r, 0, 7); c.fill();
+    c.fillStyle = '#8aa6d4'; c.beginPath(); c.arc(cx, cy, r, 0, Math.PI, true); c.fill();
+    c.strokeStyle = '#4a6a9c'; c.lineWidth = 4; c.beginPath(); c.moveTo(cx - r, cy); c.lineTo(cx + r, cy); c.stroke();
+    c.fillStyle = '#7f9fce'; c.beginPath(); c.arc(cx, cy, 15, 0, 7); c.fill();
+    c.strokeStyle = '#4a6a9c'; c.lineWidth = 3; c.beginPath(); c.arc(cx, cy, 15, 0, 7); c.stroke();
+    // 6 Poké Ball touch buttons (3 left, 3 right) — filled = has a mon
+    const pos = [[52, 52], [52, 96], [52, 140], [204, 52], [204, 96], [204, 140]];
+    pos.forEach((p, i) => {
+      const has = i < PARTY.length; const rr = 18;
+      c.fillStyle = has ? '#e24030' : '#6f8fc4'; c.beginPath(); c.arc(p[0], p[1], rr, 0, Math.PI, true); c.fill();
+      c.fillStyle = has ? '#f4f4f4' : '#8aa6d4'; c.beginPath(); c.arc(p[0], p[1], rr, 0, Math.PI); c.fill();
+      c.strokeStyle = '#33456a'; c.lineWidth = 2; c.beginPath(); c.arc(p[0], p[1], rr, 0, 7); c.stroke();
+      c.beginPath(); c.moveTo(p[0] - rr, p[1]); c.lineTo(p[0] + rr, p[1]); c.stroke();
+      c.fillStyle = '#f4f4f4'; c.beginPath(); c.arc(p[0], p[1], 5, 0, 7); c.fill();
+      c.strokeStyle = '#33456a'; c.beginPath(); c.arc(p[0], p[1], 5, 0, 7); c.stroke();
+    });
+  }
+
+  // red button / bottom-screen tap: cycles Pokétch apps only in world/menu
+  $('#poketch').addEventListener('pointerdown', () => { if (botMode === 'poketch') cyclePoketch(1); });
+
+  // hook screen transitions to the bottom screen
+  const _showParty = showParty, _backToWorld = backToWorld;
+  showParty = function () { _showParty(); setBottom('party'); };
+  backToWorld = function () { _backToWorld(); setBottom('poketch'); };
+
+  scale(); renderMenu(); drawBottom();
+  setInterval(drawBottom, 1000);
 })();
