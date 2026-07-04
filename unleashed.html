@@ -61,7 +61,7 @@ function init(map){
   scene.background = new THREE.Color(0x8ec7e6); // DS sky blue
 
   const b = map.bounds;
-  const cx = (b.minx+b.maxx)/2, cy=(b.miny+b.maxy)/2, cz=(b.minz+b.maxz)/2;
+  const cx = (b.minx+b.maxx)/2, cy=((b.miny||0)+(b.maxy||0))/2, cz=(b.minz+b.maxz)/2;
   const span = Math.max(b.maxx-b.minx, b.maxz-b.minz);
 
   const loader = new THREE.TextureLoader();
@@ -125,7 +125,7 @@ const gl=document.getElementById('gl'), twod=document.getElementById('twod');
 b3d.onclick=()=>{b3d.classList.add('on');b2d.classList.remove('on');gl.style.display='block';twod.style.display='none';};
 b2d.onclick=()=>{b2d.classList.add('on');b3d.classList.remove('on');gl.style.display='none';twod.style.display='flex';};
 
-fetch('data/unleashed/newbark_area.json')
+fetch('data/unleashed/newbark.json')
   .then(r=>{ if(!r.ok) throw new Error('map json '+r.status); return r.json(); })
   .then(init).catch(e=>fail(e.message));
 </script>
