@@ -160,6 +160,39 @@
   var baseline = null, watchTimer = null;
   function loop(fn, hz) { var iv = setInterval(fn, 1000 / (hz || 30)); return function () { clearInterval(iv); }; }
 
+  // ---- auto-capture on screen change ---------------------------------------
+  // Watch the framebuffer; when it materially changes (a window/menu opens) and
+  // then settles, push the final composited frame to traces/frames/auto/. Lets
+  // the user just PLAY and have every window captured for exact reconstruction.
+  var autoCap = null;   // stop-fn while active, else null
+  function _canvasEl() { var g = document.getElementById('game'); return g && g.querySelector('canvas'); }
+  function startAutoCap(statusEl) {
+    var cv = _canvasEl();
+    if (!cv) { if (statusEl) statusEl.textContent = 'no canvas'; return; }
+    var small = document.createElement('canvas'); small.width = 48; small.height = 32;
+    var sctx = small.getContext('2d', { willReadFrequently: true });
+    var prev = null, lastPushed = null, seq = 0, settleT = null;
+    function sig() { try { sctx.drawImage(cv, 0, 0, 48, 32); return sctx.getImageData(0, 0, 48, 32).data; } catch (e) { return null; } }
+    function amt(a, b) { if (!a || !b) return 1e9; var s = 0; for (var i = 0; i < a.length; i += 4) s += Math.abs(a[i] - b[i]) + Math.abs(a[i + 1] - b[i + 1]) + Math.abs(a[i + 2] - b[i + 2]); return s; }
+    var iv = setInterval(function () {
+      var s = sig(); if (!s) return;
+      var d = amt(s, prev); prev = s;
+      if (d > 6000) {                                   // material change -> (re)arm settle timer
+        if (settleT) clearTimeout(settleT);
+        settleT = setTimeout(function () {              // screen settled after the change
+          if (amt(sig(), lastPushed) < 2500) return;    // same as last capture -> skip dup
+          lastPushed = sig(); seq++;
+          var n = ('000' + seq).slice(-3);
+          try { pushDataUrl(cv.toDataURL('image/png'), 'frames/auto/' + game() + '_' + n + '_' + stamp() + '.png', statusEl); }
+          catch (e) { if (statusEl) statusEl.textContent = 'auto: toDataURL blocked'; }
+        }, 450);
+      }
+    }, 120);
+    autoCap = function () { clearInterval(iv); if (settleT) clearTimeout(settleT); };
+    if (statusEl) statusEl.textContent = 'auto-capture ON - play; each new window -> traces/frames/auto/';
+  }
+  function stopAutoCap(statusEl) { if (autoCap) { autoCap(); autoCap = null; } if (statusEl) statusEl.textContent = 'auto-capture off'; }
+
   // ---- UI ------------------------------------------------------------------
   function el(t, s, h) { var e = document.createElement(t); if (s) e.style.cssText = s; if (h != null) e.innerHTML = h; return e; }
   function build() {
@@ -237,6 +270,11 @@
     function canvas() { var g = document.getElementById('game'); return g && g.querySelector('canvas'); }
     fb.appendChild(btn('Shot→Repo', function () { var c = canvas(); if (!c) return status.textContent = 'no canvas'; try { pushDataUrl(c.toDataURL('image/png'), 'frames/' + game() + '_' + stamp() + '.png', status); } catch (e) { status.textContent = 'toDataURL blocked: ' + e.message; } }));
     fb.appendChild(btn('Download', function () { var c = canvas(); if (!c) return; var a = document.createElement('a'); a.href = c.toDataURL('image/png'); a.download = game() + '_' + stamp() + '.png'; a.click(); }));
+    var autoBtn = btn('Auto ⏺', function () {
+      if (autoCap) { stopAutoCap(status); autoBtn.textContent = 'Auto ⏺'; }
+      else { startAutoCap(status); autoBtn.textContent = 'Auto ⏹'; }
+    });
+    fb.appendChild(autoBtn);
     panel.appendChild(fb);
 
     // Output box + Copy button (all readouts are selectable text here).
