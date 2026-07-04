@@ -160,7 +160,78 @@
     b.addEventListener('pointerdown', e => { e.preventDefault(); press(k); });
   });
 
-  scale(); renderMenu();
-  // live Pokétch clock
-  setInterval(() => { const d = new Date(); $('#pk-time').textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }, 1000);
+  // -------------------------------------------------------- Pokétch --------
+  // Bottom-screen device: olive-green LCD, cycling apps (red button / Y / tap).
+  const PK = { apps: ['Digital Watch', 'Analog Watch', 'Pedometer', 'Dot Artist'], app: 0, steps: 1287, dots: null };
+  const G = {
+    body: '#b8b0a0', bodyD: '#8f8676', screenF: '#6c7a3e', lcd: '#8fa35a',
+    lcdD: '#7c9048', on: '#39471f', dim: '#66783c', red: '#d0402c', redD: '#8a2418',
+  };
+  function seg7(ctx, x, y, w, h, digit) {
+    // 7-segment digit; digit is '0'-'9' or ':' handled by caller
+    const S = { 0: 'abcdef', 1: 'bc', 2: 'abged', 3: 'abgcd', 4: 'fgbc', 5: 'afgcd',
+                6: 'afgcde', 7: 'abc', 8: 'abcdefg', 9: 'abcfgd' }[digit] || '';
+    const t = Math.max(2, w * 0.16);
+    const segs = {
+      a: [x, y, w, t], g: [x, y + h / 2 - t / 2, w, t], d: [x, y + h - t, w, t],
+      f: [x, y, t, h / 2], b: [x + w - t, y, t, h / 2],
+      e: [x, y + h / 2, t, h / 2], c: [x + w - t, y + h / 2, t, h / 2],
+    };
+    for (const k in segs) {
+      ctx.fillStyle = S.includes(k) ? G.on : G.dim;
+      const s = segs[k]; ctx.fillRect(s[0], s[1], s[2], s[3]);
+    }
+  }
+  function drawPoketch() {
+    const cv = $('#poketch'); if (!cv) return; const c = cv.getContext('2d');
+    c.imageSmoothingEnabled = false;
+    // device body
+    c.fillStyle = G.body; c.fillRect(0, 0, 256, 192);
+    c.fillStyle = G.bodyD; c.fillRect(0, 176, 256, 16);
+    // green screen frame
+    c.fillStyle = G.screenF; c.fillRect(10, 12, 236, 156);
+    c.fillStyle = G.lcd; c.fillRect(16, 18, 224, 144);
+    // subtle LCD scanline tint
+    c.fillStyle = G.lcdD; for (let y = 18; y < 162; y += 3) c.fillRect(16, y, 224, 1);
+    // START / SELECT labels (top center)
+    c.fillStyle = G.on; c.font = '9px Verdana'; c.textAlign = 'center';
+    c.fillText('START', 96, 34); c.fillText('SELECT', 160, 34);
+    // side L / R
+    c.textAlign = 'left'; c.fillText('L', 22, 96); c.textAlign = 'right'; c.fillText('R', 234, 96);
+    // red app button (right)
+    c.fillStyle = G.redD; c.fillRect(198, 74, 40, 44);
+    c.fillStyle = G.red; c.fillRect(200, 76, 36, 40);
+    const app = PK.apps[PK.app];
+    if (app === 'Digital Watch') {
+      const d = new Date();
+      const hh = String(d.getHours()).padStart(2, '0'), mm = String(d.getMinutes()).padStart(2, '0');
+      const dig = hh + mm; let dx = 40;
+      for (let i = 0; i < 4; i++) { seg7(c, dx, 74, 26, 44, dig[i]); dx += 34; if (i === 1) { c.fillStyle = G.on; c.fillRect(dx - 6, 84, 5, 5); c.fillRect(dx - 6, 104, 5, 5); dx += 6; } }
+      // mon silhouette bottom-left
+      c.fillStyle = G.dim; c.beginPath(); c.ellipse(48, 148, 20, 10, 0, 0, 7); c.fill();
+    } else if (app === 'Analog Watch') {
+      const d = new Date(), cx = 128, cy = 90, r = 46;
+      c.strokeStyle = G.on; c.lineWidth = 2; c.beginPath(); c.arc(cx, cy, r, 0, 7); c.stroke();
+      for (let i = 0; i < 12; i++) { const a = i / 12 * 7 - Math.PI / 2; c.fillStyle = G.on; c.fillRect(cx + Math.cos(a) * (r - 5) - 1, cy + Math.sin(a) * (r - 5) - 1, 3, 3); }
+      const hand = (ang, len) => { c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx + Math.cos(ang - Math.PI / 2) * len, cy + Math.sin(ang - Math.PI / 2) * len); c.stroke(); };
+      hand((d.getHours() % 12) / 12 * 7, 26); hand(d.getMinutes() / 60 * 7, 38);
+    } else if (app === 'Pedometer') {
+      c.fillStyle = G.on; c.font = '11px Verdana'; c.textAlign = 'center';
+      c.fillText('STEPS', 128, 78); c.font = 'bold 30px Verdana';
+      c.fillText(String(PK.steps).padStart(5, '0'), 128, 116);
+    } else if (app === 'Dot Artist') {
+      if (!PK.dots) PK.dots = Array.from({ length: 24 * 20 }, () => Math.random() < 0.12 ? 1 : 0);
+      for (let y = 0; y < 20; y++) for (let x = 0; x < 24; x++) {
+        c.fillStyle = PK.dots[y * 24 + x] ? G.on : G.lcdD; c.fillRect(40 + x * 7, 30 + y * 6, 6, 5);
+      }
+    }
+    // app name footer
+    c.fillStyle = G.on; c.font = '9px Verdana'; c.textAlign = 'center'; c.fillText(app, 128, 158);
+  }
+  function cyclePoketch(dir) { PK.app = (PK.app + PK.apps.length + (dir || 1)) % PK.apps.length; drawPoketch(); }
+  // red button / bottom-screen tap cycles apps
+  $('#poketch').addEventListener('pointerdown', () => cyclePoketch(1));
+
+  scale(); renderMenu(); drawPoketch();
+  setInterval(drawPoketch, 1000);
 })();

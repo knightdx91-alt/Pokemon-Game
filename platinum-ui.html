@@ -21,7 +21,8 @@ html,body{height:100%;background:#0a0d16;overflow:hidden;
 .screen{position:relative;background:#000;image-rendering:pixelated;
   box-shadow:0 4px 18px #000a, inset 0 0 0 2px #000;border-radius:3px;overflow:hidden;}
 #top{background:linear-gradient(#8fd0f0,#bfe8c0);}
-#bot{background:linear-gradient(160deg,var(--botA),var(--botB));}
+#bot{background:#c8c0b0;}
+#poketch{display:block;width:100%;height:100%;image-rendering:pixelated;}
 .hint{color:#5a6a86;font-size:11px;letter-spacing:.3px;}
 
 /* overworld stub on the top screen */
@@ -117,8 +118,7 @@ html,body{height:100%;background:#0a0d16;overflow:hidden;
     <div id="page"></div>
   </div>
   <div class="screen" id="bot">
-    <div id="poketch"><div id="pk-time">10:24</div><div id="pk-lbl">DIGITAL WATCH</div></div>
-    <div id="bot-menu"><div class="bm">◀ APP</div><div class="bm">POKéTCH</div><div class="bm">APP ▶</div></div>
+    <canvas id="poketch" width="256" height="192"></canvas>
   </div>
 </div>
 <div id="ctrls">
