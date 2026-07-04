@@ -268,6 +268,21 @@
            coordinate mapping (desmume2015 maps touch from canvas geometry),
            which stopped bottom-screen touches from registering. */
         #game canvas { transform: none; }
+        /* DS stylus fix: EmulatorJS forces `canvas{width:100%;height:100%}`,
+           stretching the 256×384 (2:3) DS image to whatever shape the container
+           is. RetroArch normalizes the stylus against the canvas ELEMENT rect,
+           so a stretched image means every tap maps to the wrong spot. For NDS
+           we pin the canvas to its native 2:3 aspect (letterbox lives OUTSIDE
+           the element, in #game) so the element rect == the drawn image and the
+           pointer mapping is 1:1. Only applied when a DS ROM is running. */
+        #game.ds-screen .ejs_canvas_parent {
+            display: flex; align-items: center; justify-content: center;
+        }
+        #game.ds-screen canvas, #game.ds-screen .ejs_canvas {
+            width: auto !important; height: auto !important;
+            max-width: 100% !important; max-height: 100% !important;
+            object-fit: fill; margin: auto;
+        }
         .emu-nudge {
             background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
             color: var(--text); cursor: pointer; font-family: inherit; font-size: 0.9rem;
@@ -1364,6 +1379,9 @@
         if (sys.id === 'nds') {
             window.EJS_biosUrl = _ndsBiosDataUrl;
         }
+        /* Pin the canvas to the DS 2:3 aspect so stylus mapping is 1:1 (see CSS). */
+        var _gameEl = document.getElementById('game');
+        if (_gameEl) _gameEl.classList.toggle('ds-screen', sys.id === 'nds');
 
         window.EJS_onGameStart        = function () {
             clearInterval(_timer); _observer.disconnect();
