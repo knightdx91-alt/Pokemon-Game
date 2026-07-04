@@ -3,130 +3,236 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Pokémon Unleashed — 3D Test</title>
+<title>Pokémon Unleashed — New Bark</title>
 <style>
   html,body{margin:0;height:100%;background:#0b0e17;color:#dfe7f2;
     font-family:"Segoe UI",system-ui,sans-serif;overflow:hidden;
-    -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;}
-  #bar{position:fixed;top:0;left:0;right:0;height:44px;display:flex;align-items:center;
-    gap:10px;padding:0 12px;background:linear-gradient(180deg,#14203a,#0c1424);
-    box-shadow:0 2px 10px #0008;z-index:10;}
-  #bar b{font-size:15px;color:#8fd0ff;letter-spacing:.3px;}
-  #bar .sub{font-size:11px;color:#6c7a92;}
+    -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;}
+  #bar{position:fixed;top:0;left:0;right:0;height:40px;display:flex;align-items:center;
+    gap:8px;padding:0 10px;background:linear-gradient(180deg,#14203a,#0c1424);
+    box-shadow:0 2px 10px #0008;z-index:20;}
+  #bar b{font-size:14px;color:#8fd0ff;}
+  #bar .sub{font-size:10px;color:#6c7a92;}
   .toggle{margin-left:auto;display:flex;border:1px solid #2b3a5a;border-radius:8px;overflow:hidden;}
-  .toggle button{background:#111a2e;color:#9fb0cc;border:0;padding:7px 16px;font-size:13px;font-weight:600;}
+  .toggle button{background:#111a2e;color:#9fb0cc;border:0;padding:6px 13px;font-size:12px;font-weight:600;}
   .toggle button.on{background:#2563c9;color:#fff;}
-  #view{position:fixed;inset:44px 0 0 0;}
+  #view{position:fixed;inset:40px 0 0 0;}
   #gl{display:block;width:100%;height:100%;}
-  #twod{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:#101826;}
-  #twod img{max-width:100%;max-height:100%;image-rendering:pixelated;}
-  #hud{position:fixed;left:10px;bottom:10px;font-size:12px;color:#7fe0a0;
-    background:#0009;padding:6px 10px;border-radius:6px;font-variant-numeric:tabular-nums;z-index:10;}
-  #hint{position:fixed;right:10px;bottom:10px;font-size:11px;color:#6c7a92;
-    background:#0009;padding:6px 10px;border-radius:6px;z-index:10;text-align:right;}
-  #err{position:fixed;inset:44px 12px auto 12px;color:#ff9a9a;font-size:13px;white-space:pre-wrap;}
+  #twod{position:absolute;inset:0;display:none;background:#101826;}
+  #twod canvas{width:100%;height:100%;image-rendering:pixelated;object-fit:contain;}
+  #hud{position:fixed;left:8px;bottom:8px;font-size:11px;color:#7fe0a0;
+    background:#0009;padding:5px 8px;border-radius:6px;font-variant-numeric:tabular-nums;z-index:20;}
+  #err{position:fixed;inset:44px 12px auto 12px;color:#ff9a9a;font-size:13px;white-space:pre-wrap;z-index:30;}
+  /* on-screen controls */
+  #pad{position:fixed;left:14px;bottom:60px;width:132px;height:132px;z-index:20;touch-action:none;}
+  #pad .stick{position:absolute;inset:0;border-radius:50%;background:#1a2740aa;border:2px solid #2b3a5a;}
+  #pad .knob{position:absolute;width:52px;height:52px;left:40px;top:40px;border-radius:50%;
+    background:#3a5488;border:2px solid #6c8fd0;}
+  #btnA{position:fixed;right:26px;bottom:80px;width:64px;height:64px;border-radius:50%;
+    background:#d64550;border:3px solid #ff8a92;color:#fff;font-weight:800;font-size:20px;z-index:20;}
 </style>
 </head>
 <body>
 <div id="bar">
   <b>Pokémon Unleashed</b>
-  <span class="sub">New Bark (3D test) · real HeartGold geometry</span>
+  <span class="sub">New Bark Town</span>
   <div class="toggle">
     <button id="b3d" class="on">3D</button>
-    <button id="b2d">2D</button>
+    <button id="b2d">2.5D</button>
   </div>
 </div>
 <div id="view">
   <canvas id="gl"></canvas>
-  <div id="twod"><img id="twodimg" src="data/unleashed/newbark_area_2d.png" alt="top-down"></div>
+  <div id="twod"><canvas id="twodc"></canvas></div>
 </div>
-<div id="hud">— fps · — tris</div>
-<div id="hint">drag / pinch to orbit · zoom</div>
+<div id="hud">loading…</div>
 <div id="err"></div>
+<div id="pad"><div class="stick"></div><div class="knob" id="knob"></div></div>
+<button id="btnA">A</button>
 
 <script src="src/vendor/three.min.js"></script>
-<script src="src/vendor/OrbitControls.js"></script>
 <script>
-const errEl = document.getElementById('err');
-function fail(m){ errEl.textContent = 'Error: ' + m; }
-window.addEventListener('error', e => fail(e.message));
+const errEl=document.getElementById('err');
+const fail=m=>{errEl.textContent='Error: '+m;console.error(m);};
+window.addEventListener('error',e=>fail(e.message));
 
-let renderer, scene, camera, controls, triCount = 0;
+const GRID=32;                 // 32x32 collision grid
+let map, renderer, scene, camera, group;
+let player={col:16,row:22,dir:'down',px:0,pz:0,moving:false,mt:0};
+let world={minx:0,minz:0,tile:16};
+let held={up:0,down:0,left:0,right:0};
 
-function init(map){
-  const canvas = document.getElementById('gl');
-  renderer = new THREE.WebGLRenderer({canvas, antialias:true});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x8ec7e6); // DS sky blue
+// ---- world<->grid helpers ----
+const tileWorldX=c=>world.minx+(c+0.5)*world.tile;
+const tileWorldZ=r=>world.minz+(r+0.5)*world.tile;
+const blocked=(c,r)=>c<0||r<0||c>=GRID||r>=GRID||map.collision[r*GRID+c]===1;
 
-  const b = map.bounds;
-  const cx = (b.minx+b.maxx)/2, cy=((b.miny||0)+(b.maxy||0))/2, cz=(b.minz+b.maxz)/2;
-  const span = Math.max(b.maxx-b.minx, b.maxz-b.minz);
+function init(m){
+  map=m;
+  world.minx=m.bounds.minx; world.minz=m.bounds.minz; world.tile=m.tile;
+  // spawn: nearest walkable to south-centre
+  outer: for(let rad=0;rad<20;rad++)
+    for(let r=22+rad;r>=22-rad;r--) for(let c=16-rad;c<=16+rad;c++)
+      if(!blocked(c,r)){player.col=c;player.row=r;break outer;}
+  player.px=tileWorldX(player.col); player.pz=tileWorldZ(player.row);
 
-  const loader = new THREE.TextureLoader();
-  const group = new THREE.Group();
-  for(const m of map.meshes){
-    const geo = new THREE.BufferGeometry();
-    // recenter so the map sits at the origin
-    const pos = Float32Array.from(m.positions);
-    for(let i=0;i<pos.length;i+=3){ pos[i]-=cx; pos[i+1]-=cy; pos[i+2]-=cz; }
-    geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
-    geo.setAttribute('uv', new THREE.BufferAttribute(Float32Array.from(m.uvs),2));
-    geo.computeVertexNormals();
+  const canvas=document.getElementById('gl');
+  renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  scene=new THREE.Scene(); scene.background=new THREE.Color(0x9bd4ee);
+
+  const loader=new THREE.TextureLoader();
+  group=new THREE.Group();
+  let tris=0;
+  for(const mesh of m.meshes){
+    const geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.BufferAttribute(Float32Array.from(mesh.positions),3));
+    geo.setAttribute('uv',new THREE.BufferAttribute(Float32Array.from(mesh.uvs),2));
     let mat;
-    if(m.texture){
-      const tex = loader.load(m.texture);
-      tex.magFilter = THREE.NearestFilter;
-      tex.minFilter = THREE.NearestFilter;
-      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-      if('encoding' in tex) tex.encoding = THREE.sRGBEncoding;
-      mat = new THREE.MeshBasicMaterial({map:tex, side:THREE.DoubleSide, alphaTest:0.5});
-    } else {
-      const c = m.color;
-      mat = new THREE.MeshBasicMaterial({color:(c[0]<<16)|(c[1]<<8)|c[2], side:THREE.DoubleSide});
-    }
-    group.add(new THREE.Mesh(geo, mat));
-    triCount += m.positions.length/9;
+    if(mesh.texture){
+      const tex=loader.load(mesh.texture);
+      tex.magFilter=THREE.NearestFilter; tex.minFilter=THREE.NearestFilter;
+      tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
+      if('encoding' in tex) tex.encoding=THREE.sRGBEncoding;
+      mat=new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide,alphaTest:0.5});
+    } else mat=new THREE.MeshBasicMaterial({color:(mesh.color[0]<<16)|(mesh.color[1]<<8)|mesh.color[2],side:THREE.DoubleSide});
+    group.add(new THREE.Mesh(geo,mat)); tris+=mesh.positions.length/9;
   }
   scene.add(group);
 
-  camera = new THREE.PerspectiveCamera(45, 1, 1, 20000);
-  // DS-style tilted view: above and to the south, looking down ~50°
-  camera.position.set(0, span*0.85, span*0.75);
-  controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.target.set(0,0,0);
-  controls.enableDamping = true; controls.dampingFactor = 0.08;
-  controls.maxPolarAngle = Math.PI*0.49; // don't go under the ground
-  controls.minDistance = span*0.15; controls.maxDistance = span*2.2;
+  // player billboard
+  buildPlayer();
+  scene.add(playerSprite);
 
-  resize(); window.addEventListener('resize', resize);
-  animate();
+  camera=new THREE.PerspectiveCamera(38,1,1,20000);
+  build2D();
+  resize(); window.addEventListener('resize',resize);
+  window._tris=tris;
+  last=performance.now(); animate();
+}
+
+// ---- player sprite (placeholder trainer billboard) ----
+let playerSprite;
+function buildPlayer(){
+  const cv=document.createElement('canvas'); cv.width=cv.height=64; const x=cv.getContext('2d');
+  // simple trainer: red cap, skin, blue body
+  x.clearRect(0,0,64,64);
+  x.fillStyle='#222';x.fillRect(20,54,24,8);                 // shadow-ish base
+  x.fillStyle='#2b6cff';x.fillRect(22,34,20,22);             // body
+  x.fillStyle='#ffd7a0';x.fillRect(24,22,16,12);             // face
+  x.fillStyle='#e23';x.fillRect(22,14,20,10);                // cap
+  x.fillStyle='#e23';x.fillRect(38,18,8,4);                  // brim
+  const tex=new THREE.CanvasTexture(cv); tex.magFilter=THREE.NearestFilter; tex.minFilter=THREE.NearestFilter;
+  const mat=new THREE.MeshBasicMaterial({map:tex,transparent:true,alphaTest:0.4,side:THREE.DoubleSide,depthWrite:false});
+  const h=world.tile*2.3;
+  playerSprite=new THREE.Mesh(new THREE.PlaneGeometry(h*0.72,h),mat);
+  playerSprite.position.set(player.px,h*0.5,player.pz);
+  // camera is always at player+Z looking -Z, so a plane facing +Z always faces it.
+}
+
+// ---- fixed DS-style follow camera (locked angle -> billboard trees stay upright) ----
+const CAM={dist:250,height:250,look:26};
+function updateCamera(){
+  const tx=playerSprite.position.x, tz=playerSprite.position.z;
+  camera.position.set(tx, CAM.height, tz+CAM.dist);
+  camera.lookAt(tx, CAM.look, tz);
 }
 
 function resize(){
-  const w = window.innerWidth, h = window.innerHeight-44;
-  renderer.setSize(w,h,false); camera.aspect = w/h; camera.updateProjectionMatrix();
+  const w=window.innerWidth,h=window.innerHeight-40;
+  renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();
+  document.getElementById('twodc').width=w; document.getElementById('twodc').height=h;
 }
 
-let last=performance.now(), frames=0, fps=0;
+// ---- movement (grid-locked, collision) ----
+const STEP_MS=180;
+function tryStep(){
+  if(player.moving) return;
+  let dc=0,dr=0,dir=player.dir;
+  if(held.up){dr=-1;dir='up';} else if(held.down){dr=1;dir='down';}
+  else if(held.left){dc=-1;dir='left';} else if(held.right){dc=1;dir='right';}
+  if(dc===0&&dr===0) return;
+  player.dir=dir;
+  const nc=player.col+dc, nr=player.row+dr;
+  if(blocked(nc,nr)) return;                  // face the wall but don't move
+  player.fromX=player.px; player.fromZ=player.pz;
+  player.col=nc; player.row=nr;
+  player.toX=tileWorldX(nc); player.toZ=tileWorldZ(nr);
+  player.moving=true; player.mt=0;
+}
+function stepAnim(dt){
+  if(!player.moving) return;
+  player.mt+=dt; let t=Math.min(1,player.mt/STEP_MS);
+  player.px=player.fromX+(player.toX-player.fromX)*t;
+  player.pz=player.fromZ+(player.toZ-player.fromZ)*t;
+  if(t>=1){player.moving=false; tryStep();}
+}
+
+let last=0,frames=0,fps=0,facc=0;
 function animate(){
   requestAnimationFrame(animate);
-  controls.update();
+  const now=performance.now(), dt=now-last; last=now;
+  if(!player.moving) tryStep();
+  stepAnim(dt);
+  playerSprite.position.set(player.px, playerSprite.geometry.parameters.height*0.5, player.pz);
+  updateCamera();
   renderer.render(scene,camera);
-  frames++; const now=performance.now();
-  if(now-last>=500){ fps=Math.round(frames*1000/(now-last)); frames=0; last=now;
-    document.getElementById('hud').textContent = fps+' fps · '+triCount+' tris'; }
+  if(twodOn) draw2D();
+  frames++; facc+=dt;
+  if(facc>=500){fps=Math.round(frames*1000/facc);frames=0;facc=0;
+    document.getElementById('hud').textContent=`${fps} fps · ${window._tris} tris · (${player.col},${player.row})`;}
 }
 
-// 2D / 3D toggle
-const b3d=document.getElementById('b3d'), b2d=document.getElementById('b2d');
-const gl=document.getElementById('gl'), twod=document.getElementById('twod');
-b3d.onclick=()=>{b3d.classList.add('on');b2d.classList.remove('on');gl.style.display='block';twod.style.display='none';};
-b2d.onclick=()=>{b2d.classList.add('on');b3d.classList.remove('on');gl.style.display='none';twod.style.display='flex';};
+// ---- 2.5D top-down mode (shares player + collision) ----
+let twodOn=false, tdImg=new Image(); tdImg.src='data/unleashed/newbark_2d.png';
+function build2D(){}
+function draw2D(){
+  const cv=document.getElementById('twodc'), g=cv.getContext('2d');
+  const W=cv.width,H=cv.height; g.fillStyle='#101826'; g.fillRect(0,0,W,H);
+  // fit the baked top-down image
+  const side=Math.min(W,H); const ox=(W-side)/2, oy=(H-side)/2;
+  if(tdImg.complete&&tdImg.width) g.drawImage(tdImg,ox,oy,side,side);
+  // player dot at grid position
+  const gx=ox+(player.col+0.5)/GRID*side, gy=oy+(player.row+0.5)/GRID*side;
+  g.fillStyle='#fff'; g.beginPath(); g.arc(gx,gy,side/GRID*0.4,0,7); g.fill();
+  g.fillStyle='#e23'; g.beginPath(); g.arc(gx,gy,side/GRID*0.28,0,7); g.fill();
+}
 
-fetch('data/unleashed/newbark.json')
-  .then(r=>{ if(!r.ok) throw new Error('map json '+r.status); return r.json(); })
+// ---- input: keyboard ----
+const KEY={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',
+  w:'up',s:'down',a:'left',d:'right'};
+addEventListener('keydown',e=>{const k=KEY[e.key];if(k){held[k]=1;e.preventDefault();}});
+addEventListener('keyup',e=>{const k=KEY[e.key];if(k)held[k]=0;});
+
+// ---- input: virtual joystick ----
+(function(){
+  const pad=document.getElementById('pad'), knob=document.getElementById('knob');
+  let active=false, cxp=0, cyp=0;
+  const set=(dx,dy)=>{
+    const m=Math.hypot(dx,dy)||1, nx=dx/Math.max(m,40), ny=dy/Math.max(m,40);
+    knob.style.left=(40+Math.max(-40,Math.min(40,dx)))+'px';
+    knob.style.top=(40+Math.max(-40,Math.min(40,dy)))+'px';
+    const th=18;
+    held.left=dx<-th?1:0; held.right=dx>th?1:0; held.up=dy<-th?1:0; held.down=dy>th?1:0;
+    // 8-way -> prefer dominant axis for grid
+    if(Math.abs(dx)>Math.abs(dy)){held.up=held.down=0;} else {held.left=held.right=0;}
+  };
+  const start=e=>{active=true; const r=pad.getBoundingClientRect(); cxp=r.left+66; cyp=r.top+66; move(e);};
+  const move=e=>{if(!active)return; const t=e.touches?e.touches[0]:e; set(t.clientX-cxp,t.clientY-cyp); e.preventDefault();};
+  const end=()=>{active=false; knob.style.left='40px';knob.style.top='40px'; held.up=held.down=held.left=held.right=0;};
+  pad.addEventListener('touchstart',start,{passive:false}); pad.addEventListener('touchmove',move,{passive:false});
+  pad.addEventListener('touchend',end); pad.addEventListener('mousedown',start);
+  addEventListener('mousemove',move); addEventListener('mouseup',end);
+})();
+document.getElementById('btnA').addEventListener('touchstart',e=>{e.preventDefault();/*interact later*/});
+
+// ---- 2D/3D toggle ----
+const b3d=document.getElementById('b3d'),b2d=document.getElementById('b2d');
+const gl=document.getElementById('gl'),twod=document.getElementById('twod');
+b3d.onclick=()=>{twodOn=false;b3d.classList.add('on');b2d.classList.remove('on');gl.style.display='block';twod.style.display='none';};
+b2d.onclick=()=>{twodOn=true;b2d.classList.add('on');b3d.classList.remove('on');gl.style.display='none';twod.style.display='block';};
+
+fetch('data/unleashed/newbark.json').then(r=>{if(!r.ok)throw new Error('map '+r.status);return r.json();})
   .then(init).catch(e=>fail(e.message));
 </script>
 </body>
