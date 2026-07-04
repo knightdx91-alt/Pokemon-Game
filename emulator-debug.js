@@ -203,6 +203,44 @@
     return candidates.length;
   }
 
+  // ---- live unknown-value scanner (Cheat-Engine style) ---------------------
+  // Finds a state byte (appState / mapId / menu) WITHOUT knowing its value, and
+  // without any uploads: Snapshot, change the screen on the device, tap Changed
+  // (keep bytes that differ) or Same (keep bytes that stayed), repeat. A value
+  // that flips on every screen change survives while random noise is filtered
+  // out — converges to the exact address in a handful of taps. Candidates are a
+  // bitmask over the whole heap (16 MB for a 128 MB heap), so no giant arrays.
+  var scanSnap = null, scanMask = null, scanCount = 0;
+  function scanReset(statusEl) {
+    var m = memView(); if (!m) { if (statusEl) statusEl.textContent = 'no memory'; return; }
+    scanSnap = m.slice();
+    scanMask = new Uint8Array((scanSnap.length + 7) >> 3); scanMask.fill(0xff);
+    scanCount = scanSnap.length;
+    if (statusEl) statusEl.textContent = 'scan armed: ' + scanCount + ' candidates.\nChange the screen on the device, then tap Changed (or Same).';
+  }
+  function scanStep(keepChanged, statusEl) {
+    var m = memView(); if (!m || !scanSnap) { if (statusEl) statusEl.textContent = 'tap Snapshot first'; return; }
+    var len = Math.min(m.length, scanSnap.length), kept = 0;
+    for (var byteI = 0; byteI < scanMask.length; byteI++) {
+      var mm = scanMask[byteI]; if (!mm) continue;
+      for (var b = 0; b < 8; b++) {
+        if (!(mm & (1 << b))) continue;
+        var i = (byteI << 3) + b;
+        if (i >= len) { mm &= ~(1 << b); continue; }
+        if ((m[i] !== scanSnap[i]) === keepChanged) kept++; else mm &= ~(1 << b);
+      }
+      scanMask[byteI] = mm;
+    }
+    scanSnap.set(m.subarray(0, len));   // rebaseline for the next round
+    scanCount = kept;
+    var addrs = [];
+    for (var j = 0; j < scanMask.length && addrs.length < 40; j++) {
+      var mv = scanMask[j]; if (!mv) continue;
+      for (var bb = 0; bb < 8; bb++) if (mv & (1 << bb)) { addrs.push('0x' + (((j << 3) + bb)).toString(16)); if (addrs.length >= 40) break; }
+    }
+    if (statusEl) statusEl.textContent = kept + ' candidates' + (kept <= 40 ? ':\n' + addrs.join(' ') : '\n(change screen again + Changed to narrow)');
+  }
+
   // ---- per-frame diff trace ------------------------------------------------
   var baseline = null, watchTimer = null;
   function loop(fn, hz) { var iv = setInterval(fn, 1000 / (hz || 30)); return function () { clearInterval(iv); }; }
@@ -573,6 +611,13 @@
     sv.appendChild(btn('Find', function () { var n = search(parseInt(vin.value, 10) || 0, +szsel.value); status.textContent = candidates ? candidates.length + ' matches' + (candidates.length <= 6 ? ': ' + candidates.map(function (a) { return '0x' + a.toString(16); }).join(',') : '') : 'no RAM'; }));
     sv.appendChild(btn('Reset', function () { candidates = null; status.textContent = 'search reset'; }));
     panel.appendChild(sv);
+
+    // live unknown-value scanner: Snapshot -> change screen -> Changed/Same, repeat
+    var scn = line('Scan');
+    scn.appendChild(btn('Snapshot', function () { scanReset(status); }));
+    scn.appendChild(btn('Changed', function () { scanStep(true, status); }));
+    scn.appendChild(btn('Same', function () { scanStep(false, status); }));
+    panel.appendChild(scn);
 
     // watch (poll first candidate or an address)
     var wl = line('Watch'); var win = el('input', 'width:90px;background:#1a1a24;border:1px solid #33354a;color:#cfe;border-radius:4px;padding:3px;'); win.placeholder = '0xADDR';
