@@ -246,8 +246,11 @@
       }
     }
     if (best < 0 || bestN < 6) { if (statusEl) statusEl.textContent = 'palette not located (best ' + bestN + ' distinct of ' + nt + ')'; return false; }
-    var base = best << 9;
-    addRegion('palette', base, 512);
+    // the anchor lands on the densest 512B block (usually main BG pal); back up
+    // to the start of the 2KB palette RAM (main BG+OBJ, sub BG+OBJ contiguous)
+    // so one region captures BOTH screens' full palette.
+    var base = (best << 9) & ~0x7FF;
+    addRegion('palette', base, 2048);
     if (statusEl) statusEl.textContent = 'palette @0x' + base.toString(16) + ' (' + bestN + ' hits) registered';
     // push a diagnostic slice so the full OAM/VRAM/main-RAM map can be derived
     pushBytes(mem.slice(base, Math.min(base + 4096, mem.length)), 'regions/_calib/' + game() + '_pal_' + stamp() + '.bin', statusEl);
