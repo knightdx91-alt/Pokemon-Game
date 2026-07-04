@@ -308,7 +308,7 @@
 
 <div id="setup-screen">
     <div class="logo">RetroPlay</div>
-    <p class="tagline">Your ROMs, every system, one page. <span class="emu-build">build 54</span></p>
+    <p class="tagline">Your ROMs, every system, one page. <span class="emu-build">build 55</span></p>
     <div class="systems-card">
         <div class="systems-card-header">
             <h2>&#127918; Pick a system</h2>
@@ -371,7 +371,7 @@
 
 <div id="emu-screen">
     <div class="emu-topbar">
-        <span class="logo-small">RetroPlay <span class="emu-build">b54</span></span>
+        <span class="logo-small">RetroPlay <span class="emu-build">b55</span></span>
         <div class="emu-info">
             <div class="emu-game-name" id="emu-game-label">&mdash;</div>
             <div class="emu-sys-name"  id="emu-sys-label">&mdash;</div>
@@ -1369,6 +1369,18 @@
         /* Supply stub BIOS directly so desmume2015 never fetches from CDN */
         if (sys.id === 'nds') {
             window.EJS_biosUrl = _ndsBiosDataUrl;
+            /* DS touch fix: EmulatorJS's "emulatorjs" input driver feeds an
+               ABSOLUTE pointer (from canvas taps), but desmume2015 defaults to
+               desmume_pointer_type=mouse (RELATIVE) — so taps reach the canvas
+               yet never move the stylus. Force the core to the absolute touch
+               pointer and make sure mouse-pointer input is enabled. Confirmed
+               via the 🔬 'RA cfg'/'Core opts' dumps that the default was mouse. */
+            window.EJS_defaultOptions = {
+                'desmume_pointer_type': 'touch',
+                'desmume_pointer_mouse': 'enabled'
+            };
+        } else {
+            window.EJS_defaultOptions = undefined;
         }
 
         window.EJS_onGameStart        = function () {
@@ -2256,7 +2268,7 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
 <script src="cloud-saves.js?v=__CACHE_BUST__"></script>
-<script src="emulator-debug.js?v=54"></script>
+<script src="emulator-debug.js?v=55"></script>
 <script>
 /* Register the offline service worker so the page, the EmulatorJS engine,
    and the per-system cores can be served with no connection. Your cached
