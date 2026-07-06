@@ -657,6 +657,95 @@ Johto is now a **fully converted, wired, playable region** sourced from HnS.
   `LAYOUT_ROUTE7` (unused Kanto route) reference metatiles beyond what their
   tileset defines — unfinished HnS content, not a converter bug; render harmlessly.
 
+### ▶ 3D map-asset collection (`assets_3d/`) — Kanto + Johto + Sinnoh DONE ✅
+**User goal:** gather every region's real **3D** field-map assets into one
+self-contained folder per region — *binaries and all* — with attribution
+(Nintendo cleared them for use with credit). "This is how we do every game."
+Order requested: **Kanto → Johto → Sinnoh** (Hoenn/Omega Ruby later). Working
+branch: `claude/session-kkc2g3` (NOT main — per the session task instructions).
+
+- **Tool: `tools/collect_region_3d.py <kanto|johto>`** — resolves each map from
+  the **pokeheartgold decomp** header table and copies the ROM's own asset
+  members verbatim into `assets_3d/<region>/{land,textures,buildings,rooms}` +
+  `MANIFEST.json` + `ATTRIBUTION.md`. Source ROM = **HeartGold (IPKE)**; its
+  overworld is ONE shared Johto/Kanto world (matrix 0), so both regions come
+  from the same ROM. Needs `source/nds/IPKE` (from `nds_decomp.py`, gitignored)
+  and the `pokeheartgold` clone at `/home/user/pokeheartgold`.
+- **The resolved chain (all from the decomp's `src/data/map_headers.h`):**
+  map header (`regionNo` == KANTO/JOHTO) → `matrixId` (`a/0/4/1`) → land-cell
+  ids → `areaDataBank` (`a/0/4/2`) → texture-set id → building placements. On
+  the shared overworld (matrix 0) a map's own cells are those whose per-cell
+  header id == that map's numeric id (from `include/constants/maps.h`).
+- **KEY FORMAT FACTS (hard-won — do not re-derive):**
+  - **Matrix** (`a/0/4/1`, from `src/map_matrix.c`): `u8 w, u8 h, u8 hasHeaders,
+    u8 hasAltitudes, u8 nameLen, name[nameLen]`, then optional `w*h u16` header
+    layer, optional `w*h u8` altitude layer, then the ALWAYS-present `w*h u16`
+    **models** layer = land-cell ids into `a/0/6/5`. (`hgss_map.load_matrix`'s
+    fixed-offset parse is overworld-only; the collector uses the real variable
+    layout.) All 676 land cells (overworld + interiors + dungeons) live in
+    `a/0/6/5`.
+  - **Texset** (`a/0/4/2`, 106×8-byte records): the texture set = the record's
+    **2nd u16** (== the area index) into `a/0/4/4`. The **1st u16 is a partial
+    set** that omits the shared road/grass/flower textures — using it leaves map
+    ground rendering GREY. Each map needs the FULL set (New Bark = area 2 →
+    texset 2, covering all 18 of its material textures).
+  - **Building placements** (land-cell build section): 48-byte record slots
+    `u32 modelId, fx32 x/y/z, ..., fx32 scale`. Empty slots are filled with
+    markers (`0x8006`/`0x0015`/`0x8000`), and **the real records start at a
+    per-cell alignment offset** (New Bark aligns at slot 0, Pallet at slot+4).
+    Parser (`cell_buildings` + `hgss_map.parse_buildings`): scan all 48-byte
+    alignments, keep the one yielding the most valid records (`0 < modelId <
+    340` + plausible fx32 pos). Iterate while only **model+pos (16 bytes)** fit —
+    the section length can truncate the final record's trailing scale/padding
+    (this was dropping Pallet's 2nd house). modelId 0 is a non-building marker.
+- **Result (committed):** `assets_3d/kanto/` (199 maps, 246 land, 41 texsets,
+  102 buildings, 93 rooms) and `assets_3d/johto/` (341 maps, 413 land, 70
+  texsets, 129 buildings, 152 rooms). **Verified by rendering every town in both
+  regions** (`tools/hgss_export_town.py <Tcode> <name> <texset>` → the
+  `data/unleashed` scene + a top-down `_2d.png`) — terrain, textures and placed
+  buildings correct; e.g. Pallet shows both houses + Oak's lab. Verification
+  renders kept in `assets_3d/<region>/renders/`.
+  - Internal town codes: **Kanto = T01–T19, Johto = T20–T31** (Pallet=T01, New
+    Bark=T20).
+  - **Multi-cell towns (`--full`):** `hgss_export_town.py <code> <name> <texset>
+    --full [--out=path]` renders a WHOLE town by stitching ALL its matrix-0 cells
+    at a fixed scale — each cell is a 32-tile/512-unit footprint centred on its
+    local origin, placed into its 512px grid slot, sharing one depth buffer, so
+    cells tile seamlessly and border geometry overlaps naturally. Handles any
+    cell count (Celadon 2x2, Goldenrod 3x2, single-cell towns 1x1). **Every
+    committed `renders/` image uses `--full`**, so multi-cell cities show
+    complete (the old single-cell `bake_2d` remains the default when `--full` is
+    omitted). Sinnoh's Platinum pipeline already stitches full footprints, so it
+    never had this issue.
+- **Sinnoh DONE ✅ (`tools/collect_sinnoh_3d.py`):** from the **pokeplatinum
+  decomp** (`/home/user/pokeplatinum`), which ships the decoded assets in
+  `res/field/` — **no ROM needed**. Chain resolved by `platinum_common.py`
+  (`build_catalog`): map header → matrix → land-cell indices
+  (`res/field/maps/data/map_data_NNN.bin` = terrain + embedded BMD0 geometry +
+  prop placements); `area_data.mapTextureSet` → `map_texture_set_MMM.nsbtx`;
+  prop record `model_id` → global `map_prop_models.order` →
+  `res/field/props/models/*.nsbmd`; `area_data.mapPropSet` → `prop_texture_set`.
+  Reuses `render_platinum_maps.py`'s resolvers (override its module path
+  constants to point at the clone — see the tool's `__main__`). Result:
+  `assets_3d/sinnoh/` = 533 maps, 580 land cells, 138 texture sets (69 map + 69
+  prop), 358 prop models. Verified by rendering Twinleaf/Jubilife/Hearthome/etc.
+  via `render_platinum_maps.render_map` — the Platinum rasterizer stitches
+  multi-cell cities at full size (no single-cell limitation). NB the Platinum
+  land cells self-contain interior geometry, so there's no separate `rooms/`.
+- **Hoenn IN PROGRESS ⏳ (Omega Ruby, 3DS):** unlike the DS regions, ORAS maps
+  are 3DS-format models — the DS `nitro_g3d.py` does NOT apply. Reconnaissance
+  DONE (full findings in `assets_3d/hoenn/RECON.md`): ROM = CTR-P-ECRA (extract
+  via `3ds_decomp.py` → `source/3ds/omegaruby`, gitignored). Map pipeline located:
+  `a/0/1/3` = ZONE header table (`ZO` magic, 538 zones); **`a/0/3/9` = map
+  terrain models** (`GR` container, 857 members, 416 map codes like `c102r0101`,
+  `chip_*` textures + `collPw` collision); `a/0/3/1` = CGFX prop models;
+  `a/1/6/0` = candidate collision grids. **The `GR` container is a thin
+  offset-table wrapper embedding a standard `BCH` model at offset[0]** — so the
+  geometry is documented-format BCH (PICA200), decodable with a from-spec parser
+  (`tools/bch.py`, being built — reference SPICA/Ohana3DS). Build order: BCH mesh
+  → GR walk → zone table → rasterize (reuse `render_platinum_maps`) →
+  `assets_3d/hoenn/`.
+
 ### Sinnoh via pokeplatinum — DONE ✅ (the DS path)
 - **`source/pokeplatinum`** (pret) was the Sinnoh source (fetched via the
   tarball method — codeload.github.com — in a past session; NOT present in
@@ -939,11 +1028,51 @@ projection can never show. Key facts learned:
 #### Region coverage — the user's ROM library ⇒ 3D models of ~every region
 DS ROMs work with THIS session's proven pipeline (nds_decomp → NARC →
 NSBMD/nitro_g3d): **Black = Unova (proven)**, **Platinum = Sinnoh (decomp in
-repo)**, **HGSS = Johto + Kanto (user backing up ROM)**. 3DS ROMs contain
+repo)**, **HGSS = Johto + Kanto (ROM in Drive; 3D assets COLLECTED into
+`assets_3d/` — see the "3D map-asset collection" section)**. 3DS ROMs contain
 full 3D worlds but need a NEW extractor (GARC/BCH formats, community-
 documented): **Omega Ruby = Hoenn (user backing up)**, **Pokémon X = Kalos
 (already in user's Drive as zip)**, **Ultra Moon = Alola (already in
 Drive)**. Black 2 `.nds` is also in Drive (Unova 2 maps).
+
+#### ▶ 3D map-asset collection (`assets_3d/`) — the per-region 3D pipeline
+**START HERE for any 3D-maps work → `3D_MAPS_HANDOFF.md` (repo root)** — the
+master handoff: ROM Drive ids, per-region status, tool inventory, and the exact
+next-session bootstrap + resume point. The summary below mirrors it.
+
+The active 3D-maps effort now lives under **`assets_3d/<region>/`** (one
+self-contained folder per region: `land/ textures/ buildings/ rooms/ renders/
+MANIFEST.json`). Full status table + regen commands in `assets_3d/README.md`.
+- **DONE ✅ (DS Nitro G3D, via `tools/collect_region_3d.py` / `collect_sinnoh_3d.py`):**
+  **Kanto** (199 maps) + **Johto** (341) from HeartGold, **Sinnoh** (533) from
+  Platinum. All terrain/textures/buildings verified by rendering every town.
+- **Hoenn (Omega Ruby, 3DS) — BCH parser IN PROGRESS ⏳.** Omega Ruby is 3DS,
+  so its maps are **BCH (PICA200)** models in GARC `a/0/3/9` (`GR`-wrapped),
+  NOT DS Nitro G3D — `nitro_g3d.py` does not apply. New decoder: **`tools/bch.py`**.
+  Full byte-level format + resume point: **`assets_3d/hoenn/RECON.md`**.
+  **What's decoded & validated on the real ROM (do NOT re-derive):**
+  - GR sub-resources: `0x1a00`=BCH model · `coll` block · `KAGE` shadow.
+  - BCH header/sections parse; **relocation flag 0** (majority) byte-exact
+    (word@`main_off+pos*4`, `+= main_off`); Models dict → `0x110`.
+  - Names are **string-table-relative offsets** (not relocated pointers).
+  - Model descriptor: `+0x00` 4×3 world matrix, `+0x34` mesh-table ptr+count,
+    `+0xb0` name offset.
+  - Per-mesh **PICA200 VAO/draw** (reg 0x200 base, 0x201 fmt, 0x205 stride,
+    0x227 index-buf, 0x228 count, 0x22f draw). **Vertex format CONFIRMED**:
+    `[pos f3, normal f3, uv f2, color ub4]`, **36 B/vtx** — real vertices read
+    back sane (v0 pos (123.68,0.65,-126.88) uv (3.09,0.34) on map `c09r1002`).
+  - Real map members: `0389`/`0818`/`0301`/… ; member 0 = empty "test00".
+  - **Remaining:** per-sub-mesh iteration → index→tris → `TXOB` (ETC1/RGBA)
+    texture decode → feed `render_platinum_maps` rasterizer → bake
+    `assets_3d/hoenn/`; then zone table `a/0/1/3` → matrix/placement + names.
+- **Kalos (Pokémon X) + Alola (USUM), 3DS — NOT started.** They **reuse the
+  ORAS BCH parser unchanged** once it's finished; only the GARC map-archive
+  indices differ (locate per game like the ORAS recon did).
+- **Unova (BW1/2), DS — NOT collected into `assets_3d/` yet** (the blind-RE
+  work in the Unova section above targets `data/maps/unova*`, a separate track).
+- **Priority order (user's):** Hoenn (finish BCH) → BW1/2 → Pokémon X → USUM.
+- **Branch note:** this work is consolidated on the maps branch alongside
+  `main`'s latest; the collected `assets_3d/` regions came from `session-kkc2g3`.
 
 **Key facts to not re-derive** (all in `tools/bw_common.py` docstring too):
 `a/0/0/8`=649 land-cells (WB container, 32×32×8-byte tile grid, embedded
@@ -1278,6 +1407,30 @@ rodata pointer tables are zero on disk, filled at load (recovered by
   tilesets, layouts, map metadata, and `johto_index.json`. See the "Johto via
   HnS — DONE" section above. Reuses (and depends on the fixes in)
   `extract_tilesets_emerald.py`.
+- `collect_region_3d.py <kanto|johto>` — **the 3D map-asset collector** (see the
+  "3D map-asset collection" section above). Resolves each map via the
+  pokeheartgold decomp header table and copies the HeartGold (IPKE) ROM's own
+  terrain/texture/building binaries into `assets_3d/<region>/`. Depends on
+  `source/nds/IPKE` and `/home/user/pokeheartgold`.
+- `collect_sinnoh_3d.py` — the Sinnoh collector (Platinum). Reads the
+  pokeplatinum decomp `res/field/` tree (no ROM) → `assets_3d/sinnoh/`. Reuses
+  `platinum_common.py` + `render_platinum_maps.py` resolvers.
+- `hgss_map.py` — HeartGold (IPKE) field-map parser: `map_names()`,
+  `load_matrix()` (overworld), `load_land()` (permissions/collision + building
+  placements), `parse_buildings()` (alignment-scanning 48-byte record parser,
+  shared with the collector). `hgss_export_town.py <Tcode> <name> <texset>` /
+  `hgss_export_map.py` — render a town/cell (terrain + placed buildings) to a
+  WebGL scene JSON + a top-down verification `_2d.png`; used to verify the
+  collected assets. `nitro_g3d.py` decodes the NSBMD/BMD0 + NSBTX;
+  `render_platinum_maps.py`'s rasterizer is reused for the top-down bake.
+- `bch.py` — **3DS BCH (PICA200) model parser** (the Gen-6/7 counterpart to
+  `nitro_g3d.py`; Omega Ruby / X / USUM maps are BCH, not Nitro G3D). IN
+  PROGRESS: `BCH(data, base)` parses header/sections, applies relocation
+  (flag 0 byte-exact), and `strings()` extracts model/material/texture names —
+  all validated on real ORAS `a/0/3/9` bytes. Targets the same duck-typed model
+  API `render_platinum_maps._draw_model_triangles` consumes. Remaining: PICA200
+  VAO/index decode → triangles + `TXOB` texture codec. Full format map + resume
+  point: **`assets_3d/hoenn/RECON.md`**.
 - Full workflow doc: **`docs/MAP_EDITING.md`**.
 
 ---
