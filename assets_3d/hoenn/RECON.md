@@ -190,15 +190,36 @@ Implemented in `tools/bch.py`: `BCH.pica_textures()` + `decode_etc1()`.
 So all three layers now decode independently: **geometry** (`map_triangles`),
 **textures** (`pica_textures`+`decode_etc1`), and the **material→texture names**.
 
+## ✅ Model → texture-BCH matching (deterministic, by texture-name overlap)
+Map models (`a/0/3/9`) don't embed textures (verified: `pica_textures()`==0 on
+0818/0389/0301/0100/0500/0700) — all reference the shared `a/1/5/2` archive.
+Match a model to its texture BCH by **texture-name-set overlap** (not a guess):
+`a/0/3/9/0210` ↔ `a/1/5/2/0890.bch` (map r131) share `gake_sea_a1`,
+`gake_sea_b1`, `sea_b1` (0.75 coverage, unique best). The `a/1/5/2` BCH names
+its textures `mapr131_<base>`; the model's material texture is the bare `<base>`.
+
+## Textures dict — located (final blocker for the bake)
+The 3 texture units in the GPU section are only a default/combiner setup — the
+**full per-map texture list is in the Textures content-dict**, not the GPU
+stream. In `a/1/5/2/0890.bch`: content header pair0=Models/1, and a texture
+**name+pointer table sits at the end of the data section** (~0x6d56c): repeating
+`(u32 name_str_rel, u32 packed_ptr)` where packed_ptr has a `0x02`/`0x04` flag
+byte in the top (relocation-encoded data pointer to the H3DTexture / image).
+Names resolve straight (str-relative), e.g. `mapr131_gake_sea_a1`,
+`…-silhouette` variants.
+
 ## ⚠ Precise next step — assemble the first textured bake
-1. **Match model → texture BCH**: map each `a/0/3/9` map to its `a/1/5/2`
-   texture BCH (name prefix `mapr131_*` / the zone table `a/0/1/3`), and build a
-   name→decoded-image table from `pica_textures()` (+ ETC1A4/RGBA formats
-   besides 0xC as they appear).
-2. **Bind + rasterize**: per mesh, resolve material→texture name→image; feed
-   `map_triangles()` positions+UVs and the image to `render_platinum_maps`'s
-   rasterizer (model-agnostic) → bake `assets_3d/hoenn/renders/<map>.png`.
-   (Also finish per-mesh restart robustness so no stray long triangles.)
+1. **Parse the Textures dict** in the `a/1/5/2` BCH → `{name: (w,h,fmt,
+   data_off)}` from the name+pointer table (~end of data section) + the
+   H3DTexture struct each pointer targets (dimensions/format/image offset).
+   `decode_etc1()` already handles fmt 0xC; add ETC1A4 (0xD) / RGBA as they
+   appear. Build `{base_name: image}`.
+2. **Bind + rasterize**: track material index per draw in `map_triangles()`
+   (mesh table @desc+0x34 → material → texture name), resolve name→image, feed
+   positions+UVs+image to `render_platinum_maps`'s rasterizer (model-agnostic)
+   → bake `assets_3d/hoenn/renders/<map>.png`. Validate on 0210↔0890 (map r131).
+3. Per-mesh restart robustness (kill stray long triangles); then batch via the
+   zone table `a/0/1/3` (538 `ZO\5` containers) for placement + real names.
 2. **Per-mesh robustness**: a few meshes emit spurious long triangles (0xFFFF
    primitive-restart, or a mismatched VAO on big array-draws). Handle restart /
    tighten VAO→draw pairing so every triangle is in-mesh.
