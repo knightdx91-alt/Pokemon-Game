@@ -208,7 +208,21 @@ byte in the top (relocation-encoded data pointer to the H3DTexture / image).
 Names resolve straight (str-relative), e.g. `mapr131_gake_sea_a1`,
 `…-silhouette` variants.
 
-## ⚠ Precise next step — assemble the first textured bake
+## ✅ FIRST TEXTURED RENDER — pipeline complete end-to-end
+`tools/render_oras_maps.py <model_mem> [tex_mem]` bakes a top-down textured PNG:
+loads the map model + its matched `a/1/5/2` texture BCH, decodes the ETC1
+textures, and rasterizes `map_triangles()` with affine UV sampling. Run on map
+0210 ↔ 0890 (`python3 tools/render_oras_maps.py 0210 0890`) it produces a
+recognizable Hoenn map — cliff/rock meshes texture correctly, proving
+geometry + UV + ETC1 sampling all work together.
+
+**Remaining defect (why it's a preview, not the final asset):** meshes are
+paired to textures by **draw order** (`di % len(imgs)`), not the true
+material→texture name — so some meshes get the wrong texture (visible striping).
+The output dir `assets_3d/hoenn/renders/` is **gitignored** until the binding is
+exact. The tool is committed; the preview PNG is not.
+
+## ⚠ Precise next step — make the binding exact, then bake for real
 1. **Parse the Textures dict** in the `a/1/5/2` BCH → `{name: (w,h,fmt,
    data_off)}` from the name+pointer table (~end of data section) + the
    H3DTexture struct each pointer targets (dimensions/format/image offset).
