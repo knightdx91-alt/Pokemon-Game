@@ -1035,6 +1035,41 @@ documented): **Omega Ruby = Hoenn (user backing up)**, **Pokémon X = Kalos
 (already in user's Drive as zip)**, **Ultra Moon = Alola (already in
 Drive)**. Black 2 `.nds` is also in Drive (Unova 2 maps).
 
+#### ▶ 3D map-asset collection (`assets_3d/`) — the per-region 3D pipeline
+The active 3D-maps effort now lives under **`assets_3d/<region>/`** (one
+self-contained folder per region: `land/ textures/ buildings/ rooms/ renders/
+MANIFEST.json`). Full status table + regen commands in `assets_3d/README.md`.
+- **DONE ✅ (DS Nitro G3D, via `tools/collect_region_3d.py` / `collect_sinnoh_3d.py`):**
+  **Kanto** (199 maps) + **Johto** (341) from HeartGold, **Sinnoh** (533) from
+  Platinum. All terrain/textures/buildings verified by rendering every town.
+- **Hoenn (Omega Ruby, 3DS) — BCH parser IN PROGRESS ⏳.** Omega Ruby is 3DS,
+  so its maps are **BCH (PICA200)** models in GARC `a/0/3/9` (`GR`-wrapped),
+  NOT DS Nitro G3D — `nitro_g3d.py` does not apply. New decoder: **`tools/bch.py`**.
+  Full byte-level format + resume point: **`assets_3d/hoenn/RECON.md`**.
+  **What's decoded & validated on the real ROM (do NOT re-derive):**
+  - GR sub-resources: `0x1a00`=BCH model · `coll` block · `KAGE` shadow.
+  - BCH header/sections parse; **relocation flag 0** (majority) byte-exact
+    (word@`main_off+pos*4`, `+= main_off`); Models dict → `0x110`.
+  - Names are **string-table-relative offsets** (not relocated pointers).
+  - Model descriptor: `+0x00` 4×3 world matrix, `+0x34` mesh-table ptr+count,
+    `+0xb0` name offset.
+  - Per-mesh **PICA200 VAO/draw** (reg 0x200 base, 0x201 fmt, 0x205 stride,
+    0x227 index-buf, 0x228 count, 0x22f draw). **Vertex format CONFIRMED**:
+    `[pos f3, normal f3, uv f2, color ub4]`, **36 B/vtx** — real vertices read
+    back sane (v0 pos (123.68,0.65,-126.88) uv (3.09,0.34) on map `c09r1002`).
+  - Real map members: `0389`/`0818`/`0301`/… ; member 0 = empty "test00".
+  - **Remaining:** per-sub-mesh iteration → index→tris → `TXOB` (ETC1/RGBA)
+    texture decode → feed `render_platinum_maps` rasterizer → bake
+    `assets_3d/hoenn/`; then zone table `a/0/1/3` → matrix/placement + names.
+- **Kalos (Pokémon X) + Alola (USUM), 3DS — NOT started.** They **reuse the
+  ORAS BCH parser unchanged** once it's finished; only the GARC map-archive
+  indices differ (locate per game like the ORAS recon did).
+- **Unova (BW1/2), DS — NOT collected into `assets_3d/` yet** (the blind-RE
+  work in the Unova section above targets `data/maps/unova*`, a separate track).
+- **Priority order (user's):** Hoenn (finish BCH) → BW1/2 → Pokémon X → USUM.
+- **Branch note:** this work is consolidated on the maps branch alongside
+  `main`'s latest; the collected `assets_3d/` regions came from `session-kkc2g3`.
+
 **Key facts to not re-derive** (all in `tools/bw_common.py` docstring too):
 `a/0/0/8`=649 land-cells (WB container, 32×32×8-byte tile grid, embedded
 geometry-only BMD0); `a/0/0/9`=255 matrices (matrix 0 = the real contiguous
@@ -1384,6 +1419,14 @@ rodata pointer tables are zero on disk, filled at load (recovered by
   WebGL scene JSON + a top-down verification `_2d.png`; used to verify the
   collected assets. `nitro_g3d.py` decodes the NSBMD/BMD0 + NSBTX;
   `render_platinum_maps.py`'s rasterizer is reused for the top-down bake.
+- `bch.py` — **3DS BCH (PICA200) model parser** (the Gen-6/7 counterpart to
+  `nitro_g3d.py`; Omega Ruby / X / USUM maps are BCH, not Nitro G3D). IN
+  PROGRESS: `BCH(data, base)` parses header/sections, applies relocation
+  (flag 0 byte-exact), and `strings()` extracts model/material/texture names —
+  all validated on real ORAS `a/0/3/9` bytes. Targets the same duck-typed model
+  API `render_platinum_maps._draw_model_triangles` consumes. Remaining: PICA200
+  VAO/index decode → triangles + `TXOB` texture codec. Full format map + resume
+  point: **`assets_3d/hoenn/RECON.md`**.
 - Full workflow doc: **`docs/MAP_EDITING.md`**.
 
 ---
