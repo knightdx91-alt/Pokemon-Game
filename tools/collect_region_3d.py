@@ -106,20 +106,36 @@ class Rom:
         d = self.read("a/0/4/2", area)
         return struct.unpack_from("<H", d, 2)[0]
 
-    def cell_buildings(self, cell_id):
-        """Parse building-placement model ids from a land cell (a/0/6/5)."""
+    def cell_buildings(self, cell_id, max_model=340):
+        """Parse building placements from a land cell (a/0/6/5) build section.
+
+        Records are 48-byte slots: u32 modelId, fx32 x, fx32 y, fx32 z, ...
+        Empty slots are filled with markers (0x8006 / 0x0015 / 0x8000 ...), and
+        the real records begin at a per-cell alignment offset (New Bark aligns at
+        slot 0, Pallet at slot+4). We scan all 48 alignments and keep the one that
+        yields the most valid records (small modelId + plausible fx32 position)."""
         d = self.read("a/0/6/5", cell_id)
         sizes = struct.unpack_from("<4I", d, 0)
         build = d[16 + sizes[0]:16 + sizes[0] + sizes[1]]
-        i = 0
-        while build[i:i + 2] == b"\x06\x80":
-            i += 2
-        body = build[i:]
-        ids = []
-        for k in range(len(body) // 48):
-            mid = struct.unpack_from("<I", body, k * 48)[0]
-            ids.append(mid)
-        return ids
+
+        def extract(start):
+            out = []
+            k = start
+            while k + 48 <= len(build):
+                mid = struct.unpack_from("<I", build, k)[0]
+                x, y, z = (struct.unpack_from("<i", build, k + o)[0] / 4096.0
+                           for o in (4, 8, 12))
+                if 0 < mid < max_model and abs(x) < 2000 and abs(z) < 2000 and abs(y) < 400:
+                    out.append({"model": mid, "x": x, "y": y, "z": z})
+                k += 48
+            return out
+
+        best = []
+        for start in range(0, 48, 4):
+            recs = extract(start)
+            if len(recs) > len(best):
+                best = recs
+        return [r["model"] for r in best]
 
 
 def collect(region, rom, decomp, out_root):

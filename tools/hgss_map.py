@@ -73,21 +73,30 @@ def find_map_cell(name):
 
 
 def parse_buildings(sec):
-    i = 0
-    while sec[i:i+2] == b"\x06\x80":
-        i += 2
-    body = sec[i:]
-    out = []
-    for k in range(len(body)//48):
-        e = body[k*48:(k+1)*48]
-        mid = struct.unpack_from("<I", e, 0)[0]
-        x, y, z = (struct.unpack_from("<i", e, o)[0] / 4096.0 for o in (4, 8, 12))
-        sx, sy, sz = (struct.unpack_from("<i", e, o)[0] / 4096.0 for o in (24, 28, 32))
-        if mid >= 340:
-            continue
-        out.append({"model": mid, "x": x, "y": y, "z": z,
-                    "sx": sx or 1.0, "sy": sy or 1.0, "sz": sz or 1.0})
-    return out
+    """Building placements are 48-byte slots (u32 modelId, fx32 x/y/z, ...,
+    fx32 scale x/y/z). Empty slots hold markers (0x8006/0x0015/0x8000) and the
+    real records start at a per-cell alignment; scan all 48-byte alignments and
+    keep the one yielding the most valid records (0 < modelId < 340, plausible
+    position). See tools/collect_region_3d.py for the same logic."""
+    def extract(start):
+        out = []
+        k = start
+        while k + 48 <= len(sec):
+            mid = struct.unpack_from("<I", sec, k)[0]
+            x, y, z = (struct.unpack_from("<i", sec, k + o)[0] / 4096.0 for o in (4, 8, 12))
+            sx, sy, sz = (struct.unpack_from("<i", sec, k + o)[0] / 4096.0 for o in (24, 28, 32))
+            if 0 < mid < 340 and abs(x) < 2000 and abs(z) < 2000 and abs(y) < 400:
+                out.append({"model": mid, "x": x, "y": y, "z": z,
+                            "sx": sx or 1.0, "sy": sy or 1.0, "sz": sz or 1.0})
+            k += 48
+        return out
+
+    best = []
+    for start in range(0, 48, 4):
+        recs = extract(start)
+        if len(recs) > len(best):
+            best = recs
+    return best
 
 
 def load_land(land_id, sub="a/0/6/5"):
