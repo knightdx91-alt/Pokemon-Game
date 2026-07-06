@@ -657,7 +657,7 @@ Johto is now a **fully converted, wired, playable region** sourced from HnS.
   `LAYOUT_ROUTE7` (unused Kanto route) reference metatiles beyond what their
   tileset defines — unfinished HnS content, not a converter bug; render harmlessly.
 
-### ▶ 3D map-asset collection (`assets_3d/`) — Kanto + Johto DONE ✅ (HeartGold)
+### ▶ 3D map-asset collection (`assets_3d/`) — Kanto + Johto + Sinnoh DONE ✅
 **User goal:** gather every region's real **3D** field-map assets into one
 self-contained folder per region — *binaries and all* — with attribution
 (Nintendo cleared them for use with credit). "This is how we do every game."
@@ -712,9 +712,23 @@ branch: `claude/session-kkc2g3` (NOT main — per the session task instructions)
     Blackthorn) preview with black gaps — the *collected assets* contain every
     cell (manifest lists them); only the preview renderer doesn't stitch
     neighbors yet. A multi-cell stitch is a straightforward renderer add.
-- **Next:** Sinnoh via the existing Platinum pipeline (`render_platinum_maps.py`,
-  ROM CPUE) into `assets_3d/sinnoh/`; then Hoenn (Omega Ruby, 3DS — needs a new
-  **BCH** model extractor, not built).
+- **Sinnoh DONE ✅ (`tools/collect_sinnoh_3d.py`):** from the **pokeplatinum
+  decomp** (`/home/user/pokeplatinum`), which ships the decoded assets in
+  `res/field/` — **no ROM needed**. Chain resolved by `platinum_common.py`
+  (`build_catalog`): map header → matrix → land-cell indices
+  (`res/field/maps/data/map_data_NNN.bin` = terrain + embedded BMD0 geometry +
+  prop placements); `area_data.mapTextureSet` → `map_texture_set_MMM.nsbtx`;
+  prop record `model_id` → global `map_prop_models.order` →
+  `res/field/props/models/*.nsbmd`; `area_data.mapPropSet` → `prop_texture_set`.
+  Reuses `render_platinum_maps.py`'s resolvers (override its module path
+  constants to point at the clone — see the tool's `__main__`). Result:
+  `assets_3d/sinnoh/` = 533 maps, 580 land cells, 138 texture sets (69 map + 69
+  prop), 358 prop models. Verified by rendering Twinleaf/Jubilife/Hearthome/etc.
+  via `render_platinum_maps.render_map` — the Platinum rasterizer stitches
+  multi-cell cities at full size (no single-cell limitation). NB the Platinum
+  land cells self-contain interior geometry, so there's no separate `rooms/`.
+- **Next:** Hoenn (Omega Ruby, 3DS — needs a new **BCH** model extractor, not
+  built) into `assets_3d/hoenn/`.
 
 ### Sinnoh via pokeplatinum — DONE ✅ (the DS path)
 - **`source/pokeplatinum`** (pret) was the Sinnoh source (fetched via the
@@ -1343,6 +1357,9 @@ rodata pointer tables are zero on disk, filled at load (recovered by
   pokeheartgold decomp header table and copies the HeartGold (IPKE) ROM's own
   terrain/texture/building binaries into `assets_3d/<region>/`. Depends on
   `source/nds/IPKE` and `/home/user/pokeheartgold`.
+- `collect_sinnoh_3d.py` — the Sinnoh collector (Platinum). Reads the
+  pokeplatinum decomp `res/field/` tree (no ROM) → `assets_3d/sinnoh/`. Reuses
+  `platinum_common.py` + `render_platinum_maps.py` resolvers.
 - `hgss_map.py` — HeartGold (IPKE) field-map parser: `map_names()`,
   `load_matrix()` (overworld), `load_land()` (permissions/collision + building
   placements), `parse_buildings()` (alignment-scanning 48-byte record parser,

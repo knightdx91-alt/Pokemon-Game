@@ -17,7 +17,7 @@ by `tools/collect_region_3d.py` and is fully self-contained:
 |--------|-----------|--------|-----:|-----:|--------:|----------:|------:|
 | Kanto  | Pokémon HeartGold (IPKE) | ✅ collected | 199 | 246 | 41 | 102 | 93 |
 | Johto  | Pokémon HeartGold (IPKE) | ✅ collected | 341 | 413 | 70 | 129 | 152 |
-| Sinnoh | Pokémon Platinum (CPUE)  | ⏳ pending (Platinum pipeline) | — | — | — | — | — |
+| Sinnoh | Pokémon Platinum (CPUE)  | ✅ collected | 533 | 580 | 138 | 358 | — |
 | Hoenn  | Pokémon Omega Ruby (3DS) | ⏳ pending (needs BCH extractor) | — | — | — | — | — |
 
 Kanto + Johto both come out of the single HeartGold ROM (its overworld is one
@@ -35,6 +35,11 @@ pip install pillow numpy
 # 3. Collect (writes assets_3d/<region>/):
 python3 tools/collect_region_3d.py kanto
 python3 tools/collect_region_3d.py johto
+```
+Sinnoh needs no ROM — the pokeplatinum decomp ships the decoded assets. With the
+`pokeplatinum` clone at `/home/user/pokeplatinum`:
+```
+python3 tools/collect_sinnoh_3d.py
 ```
 
 ## Ownership
