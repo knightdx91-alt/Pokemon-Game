@@ -30,7 +30,9 @@ echo "==> Installing Python deps..."
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
 # python3-socks provides PySocks (SOCKS support for requests)
-apt-get install -y python3-flask python3-requests python3-bs4 python3-socks python3-waitress curl unar
+apt-get install -y python3-flask python3-requests python3-bs4 python3-socks python3-waitress python3-pip curl unar
+# yt-dlp powers the multi-host downloader (~1800 sites); pip has fresher builds than apt
+pip3 install -U --break-system-packages yt-dlp 2>/dev/null || pip3 install -U yt-dlp || python3 -m pip install -U yt-dlp || true
 
 echo "==> Writing gateway app to ${APP_DIR}/gateway.py ..."
 mkdir -p "${APP_DIR}"
@@ -54,6 +56,7 @@ import json
 import mimetypes
 import os
 import re
+import sys
 import shutil
 import subprocess
 import tempfile
@@ -75,7 +78,7 @@ EXTRACT_ROOT = "/tmp/onion-extract"       # where archives are unpacked
 MAX_ARCHIVE_BYTES = 2 * 1024 * 1024 * 1024  # 2 GB download cap
 EXTRACT_TTL = 3600                          # delete extractions older than 1 h
 
-GATEWAY_VERSION = "v5"  # bump on every gateway change so a fresh deploy is visible
+GATEWAY_VERSION = "v6"  # bump on every gateway change so a fresh deploy is visible
 
 # User-added file hosts persist here (survives restarts). The service runs as
 # root from /opt/onion-gateway, so this is writable; override with ONION_HOSTS_FILE.
@@ -451,6 +454,73 @@ def _fetch_direct(url, referer):
                        headers={"Referer": referer} if referer else {})
 
 
+# ---- yt-dlp engine: covers ~1800 community-maintained sites for free ---------
+
+_YTDLP_OK = None
+
+
+def ytdlp_available():
+    global _YTDLP_OK
+    if _YTDLP_OK is None:
+        try:
+            p = subprocess.run([sys.executable, "-m", "yt_dlp", "--version"],
+                               capture_output=True, text=True, timeout=30)
+            _YTDLP_OK = (p.returncode == 0)
+        except Exception:
+            _YTDLP_OK = False
+    return _YTDLP_OK
+
+
+def serve_ytdlp(url):
+    """Download <url> with yt-dlp, then run it through the extractor / file list.
+
+    Returns a Response, or None if yt-dlp can't handle the URL (so the caller
+    falls back to the generic scanner). onion URLs go via Tor; clearnet goes
+    direct from the VPS (many lockers block Tor exits).
+    """
+    if not ytdlp_available():
+        return None
+    purge_old()
+    token = uuid.uuid4().hex
+    d = os.path.join(EXTRACT_ROOT, token)
+    out = os.path.join(d, "out")
+    os.makedirs(out, exist_ok=True)
+    host = urlsplit(url).netloc.lower()
+    cmd = [sys.executable, "-m", "yt_dlp"]
+    if ".onion" in host:
+        cmd += ["--proxy", "socks5h://127.0.0.1:9050"]
+    cmd += ["--no-playlist", "--no-part", "--no-warnings", "-q", "--no-progress",
+            "--max-filesize", str(MAX_ARCHIVE_BYTES),
+            "-o", os.path.join(out, "%(title).120s.%(ext)s"), url]
+    try:
+        subprocess.run(cmd, stdin=subprocess.DEVNULL, capture_output=True,
+                       text=True, timeout=900)
+    except Exception:
+        shutil.rmtree(d, ignore_errors=True)
+        return None
+    files = [os.path.join(rt, n) for rt, _, ns in os.walk(out) for n in ns]
+    if not files:
+        shutil.rmtree(d, ignore_errors=True)
+        return None
+    # A single downloaded archive -> feed it to the extractor.
+    if len(files) == 1:
+        try:
+            with open(files[0], "rb") as fh:
+                magic = fh.read(8)
+        except Exception:
+            magic = b""
+        if archive_kind(magic):
+            arch = os.path.join(d, "archive.bin")
+            shutil.move(files[0], arch)
+            ok, needpw, _ = do_extract(arch, d, None)
+            if ok:
+                return _extract_result(token)
+            if needpw:
+                return password_form(token, None)
+            shutil.move(arch, os.path.join(out, os.path.basename(files[0])))
+    return _extract_result(token)
+
+
 def try_resolve_filehost(r):
     """If this HTML page is a known file host, resolve the real file and stream
     it through the extractor. Returns a Response, or None to show the page."""
@@ -474,9 +544,13 @@ def try_resolve_filehost(r):
                 "couldn't be read — the host may have changed. Tell me and I'll "
                 "update it.")
 
-    # User-registered hosts: run the generic HTML link detector on this domain.
+    # User-registered hosts: try the yt-dlp engine first (knows ~1800 sites),
+    # then the generic HTML link detector.
     for uh in load_user_hosts():
         if uh and uh in host:
+            resp = serve_ytdlp(r.url)
+            if resp is not None:
+                return resp
             try:
                 direct = resolve_generic(r.content, r.url)
             except Exception:
@@ -484,11 +558,12 @@ def try_resolve_filehost(r):
             if direct:
                 return serve_stream(_fetch_direct(direct, r.url))
             return _msg_page(
-                "No download link found on " + host,
-                host + " is in your host list, but I couldn't spot a direct file "
-                "link in this page. Simple hosts work automatically; JS/token "
-                "hosts (GoFile, Mega, etc.) need a custom resolver — tell me the "
-                "host and I'll add one.")
+                "No download found on " + host,
+                host + " is in your host list, but neither yt-dlp nor the page "
+                "scanner could pull a file from it. Simple hosts and yt-dlp's "
+                "~1800 known sites work automatically; a JS/token host it doesn't "
+                "know (some lockers) needs a custom resolver — tell me the host "
+                "and I'll add one.")
     return None
 
 
@@ -839,7 +914,41 @@ def hosts_page():
         "<form action='/add-host' method='post' style='margin-top:18px'>"
         "<p><input name='url' placeholder='domain or download-page link' "
         "autocapitalize='off' spellcheck='false'></p>"
-        "<button type='submit'>Add host</button></form>")
+        "<button type='submit'>Add host</button></form>"
+        "<p class=sz style='margin-top:16px'>Registered hosts are downloaded via "
+        "<b>yt-dlp</b> (knows ~1800 sites) with a page-scan fallback. "
+        "<a href='/supported'>see yt-dlp's site list</a></p>")
+
+
+_EXTRACTORS = None
+
+
+@app.route("/supported")
+def supported():
+    """Browse/search the sites yt-dlp knows — the 'host list' it maintains."""
+    global _EXTRACTORS
+    if _EXTRACTORS is None:
+        try:
+            p = subprocess.run([sys.executable, "-m", "yt_dlp", "--list-extractors"],
+                               capture_output=True, text=True, timeout=60)
+            _EXTRACTORS = [ln.strip() for ln in p.stdout.splitlines() if ln.strip()]
+        except Exception:
+            _EXTRACTORS = []
+    q = (request.args.get("q") or "").strip().lower()
+    items = [e for e in _EXTRACTORS if q in e.lower()] if q else _EXTRACTORS
+    shown = items[:800]
+    rows = "".join("<div class=f>" + escape(e) + "</div>" for e in shown)
+    more = ("<p class=sz>…and %d more — search to narrow.</p>" %
+            (len(items) - len(shown))) if len(items) > len(shown) else ""
+    return _page(
+        "&#127760; Sites yt-dlp knows",
+        "<form><input name=q value='" + escape(q) + "' placeholder='search sites' "
+        "autocapitalize='off' spellcheck='false'><button>Search</button></form>"
+        "<p class=sz>" + str(len(items)) + " match" +
+        ("" if len(items) == 1 else "es") +
+        (" of " + str(len(_EXTRACTORS)) if not q else "") + ". If your host is "
+        "here, add it on the <a href='/hosts'>hosts page</a> and it'll use "
+        "yt-dlp automatically.</p>" + rows + more)
 
 
 @app.errorhandler(Exception)
