@@ -87,44 +87,41 @@ class BCH:
         self.reloc_len = u32(d, p); p += 4
         self._apply_relocations()
 
-    def _section_base(self, flag):
-        # Relocation entry flag (high nibble of the entry's top byte) selects
-        # which section base to add. Mapping per SPICA BCH relocation decode.
+    def _value_base(self, flag):
+        """Section base ADDED to the pointer word's stored value.
+
+        VERIFIED (flag 0): the word at main_off+pos*4 stores a main-relative
+        offset; adding main_off yields the absolute target. Proven on real ORAS
+        member 0 — word@0x44 = 0xcc, +main(0x44) = 0x110 = the Models dict.
+
+        HYPOTHESES (flags 1-3, rarer): 1 → string table (name pointers),
+        2 → data section (vertex/texture buffers), 3 → gpu command section.
+        These still need per-flag byte-exact confirmation (see RECON.md); the
+        rare high-flag entries (0x26/0x28/0x2e) are not yet mapped."""
         return {
-            0x00: self.main_off,   # pointers inside main header -> main
-            0x01: self.str_off,
-            0x02: self.gpu_off,
-            0x03: self.data_off,
-            0x04: self.data_off,
-            0x05: self.dataext_off,
-            0x06: self.dataext_off,
+            0: self.main_off,
+            1: self.str_off,
+            2: self.data_off,
+            3: self.gpu_off,
         }.get(flag, self.main_off)
 
     def _apply_relocations(self):
-        """Walk the relocation table; each 4-byte entry has a 25-bit word index
-        (into the pointed section) and a flag selecting base + target section.
-        We add the appropriate section base to the referenced pointer word so
-        that afterwards every pointer we read is an absolute offset."""
+        """Walk the relocation table. Each 4-byte entry: low 25 bits = pointer
+        word index (relative to main header), high 7 bits = flag selecting the
+        base to add to the stored value. Afterwards, flag-0 pointers are exact
+        absolute offsets; flags 1-3 are best-effort (see _value_base)."""
         d = self.data
         o = self.reloc_off
         end = self.reloc_off + self.reloc_len
         while o < end:
             entry = u32(d, o); o += 4
-            # low 25 bits = pointer position (in words) within a section;
-            # bits 25..31 = flags (which section the pointer lives in + which
-            # base to add). This split matches SPICA's PatchOffset decode.
             pos = (entry & 0x1FFFFFF) * 4
             flag = (entry >> 25) & 0x7F
-            # Section the *pointer word itself* lives in (even flags → main-ish
-            # tables, odd → data). SPICA distinguishes by flag value; here we
-            # take the common convention: flags 0..1 → main header, others →
-            # relative to the section chosen by _section_base.
-            ptr_section = self.main_off if flag <= 1 else self.data_off
-            addr = ptr_section + pos
+            addr = self.main_off + pos          # pointer word lives in main region
             if addr + 4 > len(d):
                 continue
             val = u32(d, addr)
-            struct.pack_into("<I", d, addr, (val + self._section_base(flag)) & 0xFFFFFFFF)
+            struct.pack_into("<I", d, addr, (val + self._value_base(flag)) & 0xFFFFFFFF)
 
     # ---- string table -------------------------------------------------
     def strings(self):
