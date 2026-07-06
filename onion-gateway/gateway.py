@@ -37,7 +37,7 @@ EXTRACT_ROOT = "/tmp/onion-extract"       # where archives are unpacked
 MAX_ARCHIVE_BYTES = 2 * 1024 * 1024 * 1024  # 2 GB download cap
 EXTRACT_TTL = 3600                          # delete extractions older than 1 h
 
-GATEWAY_VERSION = "v2"  # bump on every gateway change so a fresh deploy is visible
+GATEWAY_VERSION = "v3"  # bump on every gateway change so a fresh deploy is visible
 
 app = Flask(__name__)
 session = requests.Session()
@@ -183,6 +183,92 @@ if(document.documentElement)st();else document.addEventListener('DOMContentLoade
 """
 
 
+def serve_stream(r):
+    """Stream a non-HTML response through; auto-extract if it's a zip/rar/7z.
+
+    Shared by the direct-download path and the resolved-file-host path so any
+    archive (onion dump OR clearnet host) flows through the same extractor.
+    """
+    ctype = r.headers.get("Content-Type", "")
+    it = r.iter_content(chunk_size=65536)
+    try:
+        first = next(it)
+    except StopIteration:
+        first = b""
+
+    if archive_kind(first[:8]):
+        purge_old()
+        token = uuid.uuid4().hex
+        d = os.path.join(EXTRACT_ROOT, token)
+        os.makedirs(d, exist_ok=True)
+        archive_path = os.path.join(d, "archive.bin")
+        total = 0
+        with open(archive_path, "wb") as f:
+            f.write(first); total = len(first)
+            for chunk in it:
+                f.write(chunk); total += len(chunk)
+                if total > MAX_ARCHIVE_BYTES:
+                    shutil.rmtree(d, ignore_errors=True)
+                    return _msg_page("Archive too large",
+                                     "That file is over the %d GB limit." %
+                                     (MAX_ARCHIVE_BYTES // (1024**3)))
+        with open(os.path.join(d, "name.txt"), "w") as nf:
+            nf.write(os.path.basename(r.url.split("?")[0]) or "archive")
+        ok, needpw, _ = do_extract(archive_path, d, None)
+        if ok:
+            return _extract_result(token)
+        if needpw:
+            return password_form(token, None)
+        shutil.rmtree(d, ignore_errors=True)
+        return _msg_page("Couldn't open that archive",
+                         "It may be corrupt or an unsupported format.")
+
+    # Not an archive: stream it through with download headers intact.
+    guessed = ctype or mimetypes.guess_type(r.url)[0] or "application/octet-stream"
+    headers = {}
+    for hk in ("Content-Disposition", "Content-Length", "Accept-Ranges", "Last-Modified"):
+        if hk in r.headers:
+            headers[hk] = r.headers[hk]
+
+    def gen(prefix, iterator):
+        yield prefix
+        for c in iterator:
+            yield c
+    return Response(gen(first, it), mimetype=guessed, headers=headers)
+
+
+def resolve_mediafire(html_bytes, page_url):
+    """MediaFire serves an HTML landing page — dig out the real file URL.
+
+    The download button is `<a id="downloadButton" href="https://download…">`;
+    newer pages scramble it into `data-scrambled-url` (base64). Return the direct
+    URL, or None if this doesn't look like a resolvable MediaFire page.
+    """
+    try:
+        s = BeautifulSoup(html_bytes, "html.parser")
+    except Exception:
+        return None
+    a = s.find(id="downloadButton") or s.find("a", class_="input")
+    if a:
+        href = (a.get("href") or "").strip()
+        if href.startswith(("http://", "https://")):
+            return href
+        scr = a.get("data-scrambled-url")
+        if scr:
+            try:
+                import base64
+                dec = base64.b64decode(scr).decode("utf-8", "ignore").strip()
+                if dec.startswith(("http://", "https://")):
+                    return dec
+            except Exception:
+                pass
+    for a in s.find_all("a", href=True):
+        h = a["href"]
+        if "download" in h and "mediafire.com" in h and h.startswith("http"):
+            return h
+    return None
+
+
 def top_bar(current):
     return (
         '<div style="position:sticky;top:0;z-index:2147483647;display:flex;gap:6px;'
@@ -239,55 +325,22 @@ def browse():
     if "text/css" in low_ct or ext == "css":
         return Response(rewrite_css(r.text, r.url), mimetype="text/css")
 
+    # File hosts serve an HTML landing page, not the file. Resolve the real
+    # download URL server-side and run it through the same archive pipeline, so
+    # pasting a MediaFire link (clearnet OR onion) actually downloads/extracts.
+    if "mediafire.com" in r.url.lower() and "text/html" in low_ct:
+        direct = resolve_mediafire(r.content, r.url)
+        if direct:
+            try:
+                r2 = session.get(direct, timeout=180, allow_redirects=True,
+                                 stream=True, headers={"Referer": r.url})
+                return serve_stream(r2)
+            except Exception as e:
+                return _msg_page("Couldn't fetch that file",
+                                 "Found the download link but couldn't pull it: " + str(e))
+
     if "text/html" not in low_ct:
-        # Peek the first chunk to sniff whether this is an archive.
-        it = r.iter_content(chunk_size=65536)
-        try:
-            first = next(it)
-        except StopIteration:
-            first = b""
-
-        if archive_kind(first[:8]):
-            # It's a zip/rar/7z — catch it, save it, and auto-extract.
-            purge_old()
-            token = uuid.uuid4().hex
-            d = os.path.join(EXTRACT_ROOT, token)
-            os.makedirs(d, exist_ok=True)
-            archive_path = os.path.join(d, "archive.bin")
-            total = 0
-            with open(archive_path, "wb") as f:
-                f.write(first); total = len(first)
-                for chunk in it:
-                    f.write(chunk); total += len(chunk)
-                    if total > MAX_ARCHIVE_BYTES:
-                        shutil.rmtree(d, ignore_errors=True)
-                        return _msg_page("Archive too large",
-                                         "That file is over the %d GB limit." %
-                                         (MAX_ARCHIVE_BYTES // (1024**3)))
-            # remember the source name for nicer display
-            with open(os.path.join(d, "name.txt"), "w") as nf:
-                nf.write(os.path.basename(r.url.split("?")[0]) or "archive")
-            ok, needpw, _ = do_extract(archive_path, d, None)
-            if ok:
-                return _extract_result(token)
-            if needpw:
-                return password_form(token, None)
-            shutil.rmtree(d, ignore_errors=True)
-            return _msg_page("Couldn't open that archive",
-                             "It may be corrupt or an unsupported format.")
-
-        # Not an archive: stream it through with download headers intact.
-        guessed = ctype or mimetypes.guess_type(r.url)[0] or "application/octet-stream"
-        headers = {}
-        for hk in ("Content-Disposition", "Content-Length", "Accept-Ranges", "Last-Modified"):
-            if hk in r.headers:
-                headers[hk] = r.headers[hk]
-
-        def gen(prefix, iterator):
-            yield prefix
-            for c in iterator:
-                yield c
-        return Response(gen(first, it), mimetype=guessed, headers=headers)
+        return serve_stream(r)
 
     soup = BeautifulSoup(r.content, "html.parser")
 
@@ -516,6 +569,17 @@ def download_extracted(token, subpath):
         return _msg_page("Not found", "That file is no longer available.")
     return send_file(full, as_attachment=True,
                      download_name=os.path.basename(full))
+
+
+@app.errorhandler(Exception)
+def _on_error(e):
+    """Never bounce silently to the home page — show what went wrong."""
+    from werkzeug.exceptions import HTTPException
+    if isinstance(e, HTTPException):
+        return e
+    return _msg_page("Something went wrong",
+                     "The gateway hit an error on that link (it may be a heavy or "
+                     "JS-driven page). Try again, or try a different link."), 500
 
 
 if __name__ == "__main__":
