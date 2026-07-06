@@ -732,8 +732,19 @@ branch: `claude/session-kkc2g3` (NOT main — per the session task instructions)
   via `render_platinum_maps.render_map` — the Platinum rasterizer stitches
   multi-cell cities at full size (no single-cell limitation). NB the Platinum
   land cells self-contain interior geometry, so there's no separate `rooms/`.
-- **Next:** Hoenn (Omega Ruby, 3DS — needs a new **BCH** model extractor, not
-  built) into `assets_3d/hoenn/`.
+- **Hoenn IN PROGRESS ⏳ (Omega Ruby, 3DS):** unlike the DS regions, ORAS maps
+  are 3DS-format models — the DS `nitro_g3d.py` does NOT apply. Reconnaissance
+  DONE (full findings in `assets_3d/hoenn/RECON.md`): ROM = CTR-P-ECRA (extract
+  via `3ds_decomp.py` → `source/3ds/omegaruby`, gitignored). Map pipeline located:
+  `a/0/1/3` = ZONE header table (`ZO` magic, 538 zones); **`a/0/3/9` = map
+  terrain models** (`GR` container, 857 members, 416 map codes like `c102r0101`,
+  `chip_*` textures + `collPw` collision); `a/0/3/1` = CGFX prop models;
+  `a/1/6/0` = candidate collision grids. **The `GR` container is a thin
+  offset-table wrapper embedding a standard `BCH` model at offset[0]** — so the
+  geometry is documented-format BCH (PICA200), decodable with a from-spec parser
+  (`tools/bch.py`, being built — reference SPICA/Ohana3DS). Build order: BCH mesh
+  → GR walk → zone table → rasterize (reuse `render_platinum_maps`) →
+  `assets_3d/hoenn/`.
 
 ### Sinnoh via pokeplatinum — DONE ✅ (the DS path)
 - **`source/pokeplatinum`** (pret) was the Sinnoh source (fetched via the

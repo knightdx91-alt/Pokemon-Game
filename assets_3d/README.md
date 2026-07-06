@@ -18,7 +18,7 @@ by `tools/collect_region_3d.py` and is fully self-contained:
 | Kanto  | Pokémon HeartGold (IPKE) | ✅ collected | 199 | 246 | 41 | 102 | 93 |
 | Johto  | Pokémon HeartGold (IPKE) | ✅ collected | 341 | 413 | 70 | 129 | 152 |
 | Sinnoh | Pokémon Platinum (CPUE)  | ✅ collected | 533 | 580 | 138 | 358 | — |
-| Hoenn  | Pokémon Omega Ruby (3DS) | ⏳ pending (needs BCH extractor) | — | — | — | — | — |
+| Hoenn  | Pokémon Omega Ruby (3DS) | ⏳ building — BCH parser (see `hoenn/RECON.md`) | 416* | — | — | — | — |
 
 Kanto + Johto both come out of the single HeartGold ROM (its overworld is one
 shared Johto/Kanto world). Verified by rendering every town in both regions —
