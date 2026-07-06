@@ -50,6 +50,75 @@ def cstr(d, o):
 
 
 # --------------------------------------------------------------------------
+# ETC1 texture decode (PICA format 0xC) — 3DS variant
+# --------------------------------------------------------------------------
+_ETC1_MOD = [[2, 8, -2, -8], [5, 17, -5, -17], [9, 29, -9, -29],
+             [13, 42, -13, -42], [18, 60, -18, -60], [24, 80, -24, -80],
+             [33, 106, -33, -106], [47, 183, -47, -183]]
+
+
+def _clamp8(v):
+    return 0 if v < 0 else 255 if v > 255 else v
+
+
+def _etc1_block(bs):
+    """Decode one 8-byte ETC1 block (bytes already in big-endian/spec order) to
+    16 (r,g,b) tuples, column-major (pixel p -> x=p//4, y=p%4)."""
+    b0, b1, b2, b3, b4, b5, b6, b7 = bs
+    diff = (b3 >> 1) & 1
+    flip = b3 & 1
+
+    def sd(base5, d3):
+        return base5 + (d3 - 8 if d3 >= 4 else d3)
+
+    if diff:
+        r1 = (b0 >> 3) & 0x1F; g1 = (b1 >> 3) & 0x1F; bl1 = (b2 >> 3) & 0x1F
+        r2 = sd(r1, b0 & 7); g2 = sd(g1, b1 & 7); bl2 = sd(bl1, b2 & 7)
+        c1 = ((r1 << 3) | (r1 >> 2), (g1 << 3) | (g1 >> 2), (bl1 << 3) | (bl1 >> 2))
+        c2 = ((r2 << 3) | (r2 >> 2), (g2 << 3) | (g2 >> 2), (bl2 << 3) | (bl2 >> 2))
+    else:
+        c1 = (((b0 >> 4) & 0xF) * 17, ((b1 >> 4) & 0xF) * 17, ((b2 >> 4) & 0xF) * 17)
+        c2 = ((b0 & 0xF) * 17, (b1 & 0xF) * 17, (b2 & 0xF) * 17)
+    t1 = (b3 >> 5) & 7; t2 = (b3 >> 2) & 7
+    idx = (b4 << 24) | (b5 << 16) | (b6 << 8) | b7
+    out = [None] * 16
+    for p in range(16):
+        x, y = p // 4, p % 4
+        sub = 0 if ((not flip and x < 2) or (flip and y < 2)) else 1
+        base = c1 if sub == 0 else c2
+        tbl = t1 if sub == 0 else t2
+        m = _ETC1_MOD[tbl][(((idx >> (p + 16)) & 1) << 1) | ((idx >> p) & 1)]
+        out[p] = (_clamp8(base[0] + m), _clamp8(base[1] + m), _clamp8(base[2] + m))
+    return out
+
+
+def decode_etc1(data, off, w, h):
+    """Decode a 3DS ETC1 texture (PICA format 0xC) at `data[off:]` of size w x h
+    into a flat RGB bytes buffer (w*h*3). 3DS stores the texture 8x8-tiled with
+    4x4 ETC1 blocks in Morton order per tile, and each 8-byte block byte-REVERSED
+    vs the ETC1 spec. VERIFIED on ORAS a/1/5/2/0890.bch (map r131 'gake_sea':
+    the sea-cliff texture decodes to recognizable rock-over-sea pixels)."""
+    buf = bytearray(w * h * 3)
+    bi = 0
+    order = ((0, 0), (1, 0), (0, 1), (1, 1))   # 4x4-block Morton order in a tile
+    for ty in range(0, h, 8):
+        for tx in range(0, w, 8):
+            for bx, by in order:
+                blk = data[off + bi * 8: off + bi * 8 + 8][::-1]
+                bi += 1
+                if len(blk) < 8:
+                    continue
+                cols = _etc1_block(blk)
+                for p in range(16):
+                    X = tx + bx * 4 + (p // 4)
+                    Y = ty + by * 4 + (p % 4)
+                    if X < w and Y < h:
+                        j = (Y * w + X) * 3
+                        buf[j], buf[j + 1], buf[j + 2] = cols[p]
+    return bytes(buf)
+
+
+# --------------------------------------------------------------------------
 # BCH header + relocation
 # --------------------------------------------------------------------------
 class BCH:
@@ -301,6 +370,34 @@ class BCH:
                 if len(tri) == 3:
                     yield tri
                     tri = []
+
+    # ---- PICA200 texture units (for a/1/5/2 map-texture BCHs) ----------
+    def pica_textures(self):
+        """Scan the GPU section for texture-unit setups and return a list of
+        {addr, width, height, fmt} (addr is BCH-data-relative). PICA regs:
+        0x082 = tex0 size ((h<<16)|w), 0x085 = tex0 address, 0x08e = tex0 format
+        (0xC = ETC1). VERIFIED on ORAS a/1/5/2/0890.bch: 128x128 ETC1 units at
+        data-relative 0x2000, 0x4000, … (each 128x128 ETC1 = 0x2000 bytes)."""
+        d = self.data
+        g0, g1 = self.gpu_off, self.gpu_off + self.gpu_len
+        size = addr = fmt = None
+        out = []
+        o = g0
+        while o + 8 <= g1:
+            reg = u32(d, o + 4) & 0xFFFF
+            v = u32(d, o)
+            if reg == 0x082:
+                size = v
+            elif reg == 0x085:
+                addr = v
+            elif reg == 0x08E:
+                fmt = v & 0xF
+                if size and addr:
+                    out.append({"addr": addr, "width": size & 0xFFFF,
+                                "height": (size >> 16) & 0xFFFF, "fmt": fmt})
+                    size = addr = None
+            o += 4
+        return out
 
 
 if __name__ == "__main__":

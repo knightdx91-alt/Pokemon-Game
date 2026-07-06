@@ -177,13 +177,28 @@ Tree-grep for the material texture name `gake_sea_a1` → **`a/1/5/2/0890.bch`**
 content-dict entry inside the matching `a/1/5/2` BCH (no literal `TXOB` magic —
 BCH textures are H3DTexture resources with image data in the data section).
 
-## ⚠ Precise next step
-1. **Decode `a/1/5/2` textures + match to maps.** Parse the Textures content
-   dict of the `a/1/5/2` BCH (name → width/height/format/data offset), decode
-   the PICA image (ETC1/ETC1A4/RGBA5551/RGBA8), and match each `a/0/3/9` map to
-   its `a/1/5/2` texture BCH (by name prefix `mapr131_*` / the zone table).
-   Then feed `map_triangles()` UVs + texture to `render_platinum_maps`'s
-   rasterizer (model-agnostic) → bake `assets_3d/hoenn/`.
+## ✅ ETC1 TEXTURE DECODE — WORKING (verified on a/1/5/2/0890.bch)
+Implemented in `tools/bch.py`: `BCH.pica_textures()` + `decode_etc1()`.
+- Texture units are read from the GPU section: `reg 0x082` = size ((h<<16)|w),
+  `reg 0x085` = data-relative address, `reg 0x08e` = format (**0xC = ETC1**).
+  0890.bch → three 128x128 / 256x128 ETC1 units at data-rel 0x2000/0x4000/0x6000.
+- `decode_etc1()` handles the **3DS variant**: 8x8-tiled, 4x4 ETC1 blocks in
+  Morton order, and each 8-byte block **byte-reversed** vs the ETC1 spec.
+- VERIFIED: the `gake_sea` unit decodes to a recognizable sea-cliff texture
+  (rock over green over blue sea), 1363 unique colors.
+
+So all three layers now decode independently: **geometry** (`map_triangles`),
+**textures** (`pica_textures`+`decode_etc1`), and the **material→texture names**.
+
+## ⚠ Precise next step — assemble the first textured bake
+1. **Match model → texture BCH**: map each `a/0/3/9` map to its `a/1/5/2`
+   texture BCH (name prefix `mapr131_*` / the zone table `a/0/1/3`), and build a
+   name→decoded-image table from `pica_textures()` (+ ETC1A4/RGBA formats
+   besides 0xC as they appear).
+2. **Bind + rasterize**: per mesh, resolve material→texture name→image; feed
+   `map_triangles()` positions+UVs and the image to `render_platinum_maps`'s
+   rasterizer (model-agnostic) → bake `assets_3d/hoenn/renders/<map>.png`.
+   (Also finish per-mesh restart robustness so no stray long triangles.)
 2. **Per-mesh robustness**: a few meshes emit spurious long triangles (0xFFFF
    primitive-restart, or a mismatched VAO on big array-draws). Handle restart /
    tighten VAO→draw pairing so every triangle is in-mesh.
