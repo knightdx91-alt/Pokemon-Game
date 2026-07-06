@@ -89,17 +89,34 @@ Real map members (by geometry size): `0389`(cliff/sea, 1.3 MB), `0818`
 (`c09r1002`), `0301`, `0264`, … — use these to validate, NOT member 0
 (`c102r0101` = an empty "test00" map: only a `coll` block, no render mesh).
 
-## ⚠ Precise next step (the remaining build)
-Everything above is mapped. What's left is the mechanical decode:
-1. Parse SOBJ → its per-mesh PICA command buffer (offset/len from the mesh
-   struct — the buffers are the reg-0x2xx blocks located above).
-2. **PICA200 VAO interpreter**: reg 0x200 base + per-attribute
-   (0x203+3k: offset/format/stride) → deinterleave positions (float3 or scaled
-   short3) + UVs from the data-section vertex buffer; reg 0x227/0x228 → index
-   buffer → triangles. Apply the descriptor's world matrix.
+## VERTEX FORMAT — CONFIRMED by reading real vertices (member 0818 `c09r1002`)
+The per-mesh VAO block (reg 0x200 consecutive-write @~0x9e60) decodes to:
+- `reg 0x201` VtxAttrFmt0 = `0xd7bb` → attribute list (4 bits each, low→high:
+  bits[1:0]=type 0/1/2/3=byte/ubyte/short/float, bits[3:2]=components-1):
+  **attr0 = POSITION float3 (0xb), attr1 = NORMAL float3 (0xb),
+  attr2 = UV float2 (0x7), attr3 = COLOR ubyte4 (0xd).**
+- `reg 0x205` buf0 config-high → **bytesPerVertex = 0x24 = 36** = 12+12+8+4 ✓.
+- `reg 0x200`=0 base, `reg 0x203`=0 buf offset → vertex buffer starts at the
+  BCH **data section base (`data_off`)**. `reg 0x227` = index-buffer offset
+  (data-relative), `reg 0x228` = count (per sub-mesh, e.g. 0x4b0), `reg 0x22f`
+  = draw-elements.
+
+**PROVEN:** reading float3+float2 at stride 36 from `data_off` yields real map
+geometry — v0 = pos (123.68, 0.65, -126.88) uv (3.09, 0.34); a coherent textured
+terrain cluster (UVs >1 ⇒ texture tiling). So position/UV extraction WORKS; the
+format is no longer a hypothesis.
+
+## ⚠ Precise next step (the remaining build — format now proven)
+1. **Iterate sub-meshes**: each SOBJ face/sub-mesh has its OWN 0x200-block +
+   0x227/0x228 draw (count is per-sub-mesh — a single 1200 over-read walks past
+   the first buffer). Enumerate them from the SOBJ face list.
+2. **Index buffer → triangles**: read `reg 0x228` indices at `data_off +
+   reg 0x227` (u8/u16 per the 0x227 fmt bits); assemble tris from the 36-byte
+   vertex buffer. Apply the descriptor's world matrix.
 3. **Textures**: BCH `TXOB` (ETC1/ETC1A4/RGBA) decode by material name
    (`chip_grass`, `chip_gake*`, …) → the rasterizer's texture interface.
-4. Feed triangles+texture to `render_platinum_maps` rasterizer → bake PNG.
+4. Feed tris+texture to `render_platinum_maps` rasterizer → bake
+   `assets_3d/hoenn/`. Then zone table `a/0/1/3` → matrix placement + names.
 
 ## Remaining work (the real build — multi-session)
 1. **BCH model parser** (the big one): fix relocation (above), then PICA200
