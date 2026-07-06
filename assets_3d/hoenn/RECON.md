@@ -222,6 +222,43 @@ material→texture name — so some meshes get the wrong texture (visible stripi
 The output dir `assets_3d/hoenn/renders/` is **gitignored** until the binding is
 exact. The tool is committed; the preview PNG is not.
 
+## Relocation flag analysis (the key to exact binding + clean dicts)
+The exact material→texture binding (and every content dict) is gated by the BCH
+relocation, which `bch.py` currently applies for flag 0 only (assuming the
+pointer word is always in `main`). Full flag map, measured on `a/1/5/2/0890.bch`
+(reloc 0x6d180/0x9d4; sections main=0x44/len0x1ebc, str=0x1f00, gpu=0x2300/
+len0x1880, data=0x3b80):
+
+    flag  n     pos*4 range        meaning (hypothesis from range vs section lens)
+    0    235   [0, 0x1da4]         ptr word in MAIN, value += main_off   (DONE)
+    1    319   [0x320, 0x7ae0]     value += str_off; ptr word NOT all in main
+    2     40   [0x324, 0x1eac]     value += data_off
+    3      5   [0x644, 0x16a4]     value += gpu_off
+    0x25  15   [0x15c0,0x1860]     rare high flags — patch words deeper in header
+    0x26   5 · 0x27  3 · 0x28  2 · 0x2e  5   (same cluster)
+
+**CRACKED (empirically, by testing which section base makes each entry resolve
+to a valid target):**
+- **flag 0**: pointer word in `main`, value += `main_off` — 235/235 land in
+  main. (already in `bch.py`)
+- **flag 2**: pointer word in `main`, value += `data_off` — **40/40** land in
+  data. ✓
+- **flag 3**: pointer word in `main`, value += `gpu_off` — **5/5** land in gpu. ✓
+  So flags 0/2/3 all have the pointer word in `main`; `bch.py`'s
+  `main_off+pos` write is correct for them, and `_value_base` already adds the
+  right base. **These are done.**
+
+**STILL OPEN — flag 1** (319 entries, the majority = string-name pointers):
+value += `str_off` does NOT cleanly resolve from any single section (best 101/
+319), and pos*4 (up to 0x7ae0) exceeds `main_len` — so flag 1 is encoded
+differently (likely delta/cumulative position, or a per-section sub-table with
+its own header inside the reloc block). Reproduce SPICA's exact flag-1 handling
+→ then string-name pointers resolve, `content_dict()` works, and the Materials/
+Textures patricia dicts give material→texture-name and texture-name→image
+directly (no more draw-order guess) → exact binding. The rare high flags
+(0x25-0x2e) patch deeper header words and aren't needed for the geometry/texture
+walk.
+
 ## ⚠ Precise next step — make the binding exact, then bake for real
 1. **Parse the Textures dict** in the `a/1/5/2` BCH → `{name: (w,h,fmt,
    data_off)}` from the name+pointer table (~end of data section) + the
