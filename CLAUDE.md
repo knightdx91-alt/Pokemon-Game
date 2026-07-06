@@ -707,11 +707,16 @@ branch: `claude/session-kkc2g3` (NOT main — per the session task instructions)
   renders kept in `assets_3d/<region>/renders/`.
   - Internal town codes: **Kanto = T01–T19, Johto = T20–T31** (Pallet=T01, New
     Bark=T20).
-  - **Known limitation:** `hgss_export_town` renders ONE representative land cell
-    per town, so multi-cell cities (Goldenrod, Cianwood, Cinnabar, Indigo,
-    Blackthorn) preview with black gaps — the *collected assets* contain every
-    cell (manifest lists them); only the preview renderer doesn't stitch
-    neighbors yet. A multi-cell stitch is a straightforward renderer add.
+  - **Multi-cell towns (`--full`):** `hgss_export_town.py <code> <name> <texset>
+    --full [--out=path]` renders a WHOLE town by stitching ALL its matrix-0 cells
+    at a fixed scale — each cell is a 32-tile/512-unit footprint centred on its
+    local origin, placed into its 512px grid slot, sharing one depth buffer, so
+    cells tile seamlessly and border geometry overlaps naturally. Handles any
+    cell count (Celadon 2x2, Goldenrod 3x2, single-cell towns 1x1). **Every
+    committed `renders/` image uses `--full`**, so multi-cell cities show
+    complete (the old single-cell `bake_2d` remains the default when `--full` is
+    omitted). Sinnoh's Platinum pipeline already stitches full footprints, so it
+    never had this issue.
 - **Sinnoh DONE ✅ (`tools/collect_sinnoh_3d.py`):** from the **pokeplatinum
   decomp** (`/home/user/pokeplatinum`), which ships the decoded assets in
   `res/field/` — **no ROM needed**. Chain resolved by `platinum_common.py`

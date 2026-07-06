@@ -171,8 +171,68 @@ def bake_2d(code, name, texset_idx, out):
           f"({sum(out['collision'])} blocked)")
 
 
+def all_cells_for_code(code):
+    """Every matrix-0 cell (col, row, land_id) that belongs to this map code.
+    Overworld towns can span several cells (e.g. Celadon 2x2, Goldenrod 3x2)."""
+    names = H.map_names()
+    hid = names.index(code)
+    m = H.load_matrix(0)
+    cells = [(i % m["w"], i // m["w"], m["land"][i])
+             for i, h in enumerate(m["headers"]) if h == hid]
+    return cells, hid
+
+
+def bake_full(code, name, texset_idx, out_path=None, S=512):
+    """Render a whole town by stitching ALL its matrix cells at fixed scale, so
+    multi-cell cities render complete (not just their first cell). Each cell is a
+    32-tile / 512-unit footprint centred on its local origin; we place cell
+    (col,row) into its S-px grid slot and share one depth buffer, so cells tile
+    seamlessly and border geometry overlaps naturally."""
+    cells, _ = all_cells_for_code(code)
+    if not cells:
+        c = H.find_map_cell(code)
+        cells = [(c[1], c[2], c[3])]
+    texset = g.find_tex0(H.rip(f"unpacked/a/0/4/4/{texset_idx:04d}.nsbtx"))
+    mincol = min(c[0] for c in cells); minrow = min(c[1] for c in cells)
+    ncol = max(c[0] for c in cells) - mincol + 1
+    nrow = max(c[1] for c in cells) - minrow + 1
+    fb = np.zeros((nrow * S, ncol * S, 4), np.uint8)
+    yb = np.full((nrow * S, ncol * S), -1e9, np.float32)
+    for col, row, land in cells:
+        L = H.load_land(land)
+        terr = g.find_model(L["raw"], L["model_off"]); up = terr.up_scale
+        ox = ((col - mincol) + 0.5) * S - R.HALF_UNITS
+        oy = ((row - minrow) + 0.5) * S - R.HALF_UNITS
+        R._draw_model_triangles(fb, yb, terr, texset, up, ox, oy)
+        for bd in L["buildings"]:
+            d = H.rip(f"{BM}/{bd['model']:04d}.nsbmd")
+            bm = g.find_model(d, 0); btex = g.find_tex0(d); bup = bm.up_scale or 1.0
+            def tf(tri, bd=bd, bup=bup):
+                return [g.Vertex(v.x * bup * bd["sx"] + bd["x"],
+                                 v.y * bup * bd["sy"] + bd["y"],
+                                 v.z * bup * bd["sz"] + bd["z"], v.s, v.t) for v in tri]
+            R._draw_model_triangles(fb, yb, bm, btex, 1.0, ox, oy, transform=tf)
+    out_path = out_path or f"data/unleashed/{name}_full.png"
+    os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
+    Image.fromarray(fb, "RGBA").convert("RGB").save(out_path)
+    print(f"baked {out_path}: {len(cells)} cell(s), {ncol}x{nrow} grid, "
+          f"{ncol*S}x{nrow*S}px")
+    return out_path
+
+
 from PIL import ImageDraw
 if __name__ == "__main__":
-    code, name, tset = sys.argv[1], sys.argv[2], int(sys.argv[3])
-    out, land = export(code, name, tset)
-    bake_2d(code, name, tset, out)
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    opts = [a for a in sys.argv[1:] if a.startswith("--")]
+    code, name, tset = args[0], args[1], int(args[2])
+    out_path = None
+    for o in opts:
+        if o.startswith("--out="):
+            out_path = o.split("=", 1)[1]
+    if "--full" in opts:
+        # Whole-town stitched render (all cells). This is the default for the
+        # committed verification renders.
+        bake_full(code, name, tset, out_path)
+    else:
+        out, land = export(code, name, tset)
+        bake_2d(code, name, tset, out)
