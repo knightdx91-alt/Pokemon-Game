@@ -36,10 +36,41 @@ python3 tools/3ds_decomp.py "/tmp/Pokemon Omega Ruby (USA) (En,Ja,Fr,De,Es,It,Ko
 tractable (reference: SPICA / Ohana3DS). Later offsets hold more BCH resources /
 textures / the `collPw` collision block.
 
+## BCH byte layout — CONFIRMED against real ORAS `a/0/3/9` member 0
+Parser: `tools/bch.py` (`BCH(data, base)`), validated on the real extraction.
+
+**GR sub-resource chain** (member 0): `0x1a00`=BCH model · `0x2700`=`coll`
+collision block (~0x7780 B) · `0x9e80/0x9f00/0x9f80`=empty · `0xa000`=`KAGE`
+(shadow). So terrain geometry+materials are a single self-contained BCH; the
+collision grid is a *separate* GR sub-resource (`coll`), not inside the BCH.
+
+**BCH header** (`BCH\0`, back=fwd=0x21, ver=0xa66f): main@0x44 str@0x5d0
+gpu@0x6e0 data@0xb00 dataExt@0xb80(empty) reloc@0xb80/0x148. Field order for
+back≥0x21 includes dataExtendedOffset/Length — `bch.py` reads this correctly.
+
+**String table** (validated extraction via `BCH.strings()`): the model is named
+by its **map code** `c102r0101_00_00`; material `lambert1`; texture
+`test00_00_00`; shaders `DefaultShader`/`FieldChar`. → material→texture binding
+and map-code naming both come straight out of the string table.
+
+**Content header** (`main_off`): (patricia-dict-ptr, count) pairs — pair0 =
+Models (count 1), then Materials/Shaders/Textures/LUTs. Models dict resolves to
+`0x110`.
+
+## ⚠ Precise next step (the current blocker)
+The **relocation pass is not yet byte-exact** — `bch.py::_apply_relocations`
+re-bases most pointers but mis-bases a few (some content pointers come out as 1
+or unshifted), so the Patricia-dict/mesh walk is unsafe. Reproduce SPICA's exact
+relocation-flag decode (BCH.cs `PatchOffset`: the per-entry flag selects BOTH
+the section the pointer *lives in* and the base to *add*) before geometry decode.
+Once relocation is exact: Models dict → SOBJ → PICA200 command buffer (gpu
+section) → vertex arrays (data section) → triangles.
+
 ## Remaining work (the real build — multi-session)
-1. **BCH model parser** (the big one): PICA200 vertex-attribute decode
-   (positions/UVs/normals), materials → texture bindings, and the embedded
-   texture images (BCH `TXOB`, ETC1/RGBA formats). From-spec, ~SPICA-level.
+1. **BCH model parser** (the big one): fix relocation (above), then PICA200
+   vertex-attribute decode (positions/UVs/normals), materials → texture
+   bindings, and the embedded texture images (BCH `TXOB`, ETC1/RGBA formats).
+   From-spec, ~SPICA-level.
 2. **GR container parser**: walk the offset table → the terrain BCH(s) + the
    `collPw` collision grid; map code (`c102r0101`) → map name.
 3. **Zone table (`a/0/1/3`) decode**: zone → which `a/0/3/9` map model(s) +
@@ -50,4 +81,7 @@ textures / the `collPw` collision block.
 
 ## Status
 Reconnaissance DONE ✅ — all map GARCs located and the GR→BCH path confirmed.
-The BCH parser (step 1) is the gating deliverable and is not yet built.
+BCH parser **foundation built & validated** (`tools/bch.py`): header/section map
++ string table (model/material/texture names) parse correctly on real bytes.
+**Gating item now = byte-exact relocation** (see ⚠ above), then PICA200 geometry
+decode. Extraction: `source/3ds/omegaruby` (gitignored) — re-run the bootstrap.
