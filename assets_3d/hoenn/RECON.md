@@ -106,7 +106,37 @@ geometry — v0 = pos (123.68, 0.65, -126.88) uv (3.09, 0.34); a coherent textur
 terrain cluster (UVs >1 ⇒ texture tiling). So position/UV extraction WORKS; the
 format is no longer a hypothesis.
 
+## ✅ Model-descriptor path RECOVERED (verified on real member 0818)
+The flag!=0 relocation is still not byte-exact (the content-header material/
+shader/texture pointers, pairs 1+, come out mis-based — 0818 pair1=0xf8,
+pair2=0x11 are garbage). BUT the **Models path does not need it** and is now
+decoded + verified in `tools/bch.py::BCH.find_map_model()`:
+
+- GR member 0818 → BCH@0x1a00 (`coll`@0x100480, `KAGE`@0x103700).
+- Content header pair0 = Models, count 1 (readable pre-reloc).
+- Models dict **node** layout = `(u32 nameOffset_str_relative, u32 dataOffset,
+  u32 links, …)`. Find the node by matching its nameOffset to the model-name
+  string; the next word is the descriptor offset. **0818: node@0x10c, name
+  'c09r1002_00_00' (str-rel 0x208) → descriptor @0x2cc.**
+- **Model descriptor @0x2cc** (0818): `+0x00` 4×3 transform (axis-permutation,
+  DS-Y-up→map space), `+0x34` **mesh-table ptr = 0x8c8**, `+0x38` **mesh count
+  = 17**, `+0xb0` name offset, `+0xdc` (ptr,count)=(0x226,109) secondary table.
+- **Mesh-table entries** reference **data-section** buffers: e.g. 0xb980,
+  0xbc30, 0xbef0 (= data_off 0xb780 + 0x200, 0x4b0, 0x770) each paired with a
+  small count (0x2c) — the per-mesh vertex/index buffers to walk next.
+- Terrain material/texture names confirmed present (member 0389 = Route 124
+  sea): `chip_gake_sea`, `chip_sea_a/b`, `chip_rock_c`, `r124_sand`, `sand`,
+  shaders `DefaultShader`/`FieldChar`. So the texture-binding step has its names.
+- `find_map_model()` currently covers `c##r####`-coded maps (verified unique on
+  0818). D-/interior-named members (0389='D01') need the generic Models-dict
+  patricia walk — that's the small remaining piece to enumerate all 416 maps.
+
 ## ⚠ Precise next step (the remaining build — format now proven)
+0. **Generalize model lookup** to non-`c##r####` names via the proper Models
+   patricia-dict walk (pair0 ptr ≈ 0x110 on 0818, node stride 0xc:
+   name/data/links). `find_map_model()` is the verified single-map reference.
+1. **Decode a mesh-table entry** (0818 @0x8c8, 17 entries): map each to its
+   SOBJ / PICA draw block via the data-section buffer offsets found above.
 1. **Iterate sub-meshes**: each SOBJ face/sub-mesh has its OWN 0x200-block +
    0x227/0x228 draw (count is per-sub-mesh — a single 1200 over-read walks past
    the first buffer). Enumerate them from the SOBJ face list.

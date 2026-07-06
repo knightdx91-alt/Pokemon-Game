@@ -138,12 +138,65 @@ class BCH:
         of (patricia-dict pointer, entry count) pairs: [0]=Models, [1]=Materials,
         [2]=Shaders, [3]=Textures, [4]=LUTs, ... (SPICA GfxContentHeader).
 
-        WIP: the models dict pointer resolves (pair0 → 1 model), but the
-        relocation pass (`_apply_relocations`) is NOT yet byte-exact — some
-        pointer words are mis-based, so downstream dict/mesh walking is unsafe
-        until the SPICA relocation-flag decode is reproduced precisely. Do not
-        rely on this for geometry yet; see assets_3d/hoenn/RECON.md."""
-        raise NotImplementedError("relocation not yet byte-exact — see RECON.md")
+        WIP: pair0 (Models, count 1) is readable, but the flag!=0 relocation is
+        NOT byte-exact — the material/shader/texture pointers (pairs 1+) are
+        mis-based, so a blind patricia walk from those is unsafe. For the Models
+        path use `find_map_model()`, which recovers the descriptor directly and
+        VERIFIES it via the model name. See assets_3d/hoenn/RECON.md."""
+        raise NotImplementedError("flag!=0 relocation not byte-exact — see RECON.md")
+
+    # ---- map model descriptor (VERIFIED path, flag-0 only) -------------
+    def _map_code_offset(self):
+        """String-table-relative offset of the map-code model name (e.g.
+        'c09r1002_00_00'), or None. Map codes look like c<digits>r<digits>_NN_NN.
+        Names in BCH are stored as string-table-*relative* offsets."""
+        import re
+        reg = bytes(self.data[self.str_off:self.str_off + self.str_len])
+        m = re.search(rb'c\d+r\d+_\d+_\d+', reg)
+        return m.start() if m else None
+
+    def find_map_model(self):
+        """Locate the terrain model descriptor WITHOUT relying on the (not yet
+        byte-exact) flag!=0 relocation.
+
+        Method (validated on real ORAS a/0/3/9 member 0818 = map 'c09r1002_00_00'):
+        the Models patricia dict stores, for each model, a node whose first two
+        words are `(u32 nameOffset, u32 dataOffset)` — nameOffset is the
+        string-table-relative offset of the model name, dataOffset is the
+        absolute offset of the model descriptor. We find the map-code string,
+        scan the main header for a word equal to its str-relative offset (the
+        node's nameOffset), read the next word as the descriptor offset, and
+        confirm it via the mesh table: descriptor +0x34 = mesh-table pointer
+        (in-file), +0x38 = mesh count (small). The name-string match makes this
+        unambiguous — a bare offset can collide, but a *node* has the descriptor
+        immediately after and passes the mesh-table check (0818: node@0x10c →
+        desc 0x2cc → mesh table 0x8c8, 17 meshes; uniquely).
+
+        Returns dict {name, descriptor, matrix (3x4 floats), mesh_table,
+        mesh_count} or None. Only covers c##r####-coded field maps for now;
+        D-/other-named members need the generic Models-dict walk (see RECON.md).
+        """
+        name_rel = self._map_code_offset()
+        if name_rel is None:
+            return None
+        name = cstr(self.data, self.str_off + name_rel)
+        d = self.data
+        mo, ml = self.main_off, self.main_len
+        for o in range(mo, mo + ml - 8, 4):
+            if u32(d, o) != name_rel:
+                continue
+            desc = u32(d, o + 4)                     # node: name, dataOffset, ...
+            if not (mo <= desc < len(d) - 0xc0):
+                continue
+            mesh_table = u32(d, desc + 0x34)
+            mesh_count = u32(d, desc + 0x38)
+            if not (mo <= mesh_table < len(d)) or not (0 < mesh_count < 1024):
+                continue
+            matrix = [[f32(d, desc + (r * 4 + c) * 4) for c in range(4)]
+                      for r in range(3)]
+            return {"name": name, "descriptor": desc, "matrix": matrix,
+                    "mesh_table": mesh_table, "mesh_count": mesh_count}
+        return None
 
 
 if __name__ == "__main__":
