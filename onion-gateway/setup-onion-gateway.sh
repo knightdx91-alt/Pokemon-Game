@@ -74,6 +74,8 @@ EXTRACT_ROOT = "/tmp/onion-extract"       # where archives are unpacked
 MAX_ARCHIVE_BYTES = 2 * 1024 * 1024 * 1024  # 2 GB download cap
 EXTRACT_TTL = 3600                          # delete extractions older than 1 h
 
+GATEWAY_VERSION = "v2"  # bump on every gateway change so a fresh deploy is visible
+
 app = Flask(__name__)
 session = requests.Session()
 session.proxies = {"http": TOR_PROXY, "https": TOR_PROXY}
@@ -223,8 +225,10 @@ def top_bar(current):
         '<div style="position:sticky;top:0;z-index:2147483647;display:flex;gap:6px;'
         'padding:8px;background:#0c0c14;border-bottom:1px solid #2a2a3a;'
         'font-family:sans-serif">'
-        '<a href="/" style="color:#9a8bff;text-decoration:none;padding:8px 10px;'
-        'background:#16161f;border-radius:8px">🧅</a>'
+        '<a href="/" title="Onion Reader ' + GATEWAY_VERSION + '" '
+        'style="color:#9a8bff;text-decoration:none;padding:8px 10px;'
+        'background:#16161f;border-radius:8px">🧅<sub style="font-size:.6em;'
+        'color:#6a6a80">' + GATEWAY_VERSION + '</sub></a>'
         '<form action="/browse" method="get" style="display:flex;flex:1;gap:6px;margin:0">'
         '<input name="url" value="' + current.replace('"', "&quot;") +
         '" style="flex:1;min-width:0;padding:8px 10px;border-radius:8px;border:1px solid '
@@ -236,7 +240,10 @@ def top_bar(current):
 
 @app.route("/")
 def home():
-    return HOME_PAGE
+    return HOME_PAGE.replace("🧅 Onion Reader",
+                             "🧅 Onion Reader <small style='font-size:.5em;"
+                             "color:#6a6a80;vertical-align:middle'>" +
+                             GATEWAY_VERSION + "</small>")
 
 
 @app.route("/browse", methods=["GET", "POST"])
