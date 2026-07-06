@@ -100,9 +100,11 @@ class Rom:
                 "headers": headers, "models": models}
 
     def area_texset(self, area):
-        """a/0/4/2 record field0 = texture-set id into a/0/4/4."""
+        """a/0/4/2 record: the 2nd u16 (== the area index) is the FULL texture
+        set id into a/0/4/4. (The 1st u16 is a partial/parent set that omits the
+        shared road/grass/flower textures — using it leaves the ground grey.)"""
         d = self.read("a/0/4/2", area)
-        return struct.unpack_from("<H", d, 0)[0]
+        return struct.unpack_from("<H", d, 2)[0]
 
     def cell_buildings(self, cell_id):
         """Parse building-placement model ids from a land cell (a/0/6/5)."""
