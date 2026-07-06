@@ -81,10 +81,15 @@ def parse_buildings(sec):
     def extract(start):
         out = []
         k = start
-        while k + 48 <= len(sec):
+        # Need only model id + fx32 position (16 bytes); the final record may
+        # have its trailing scale/padding truncated by the section length.
+        while k + 16 <= len(sec):
             mid = struct.unpack_from("<I", sec, k)[0]
             x, y, z = (struct.unpack_from("<i", sec, k + o)[0] / 4096.0 for o in (4, 8, 12))
-            sx, sy, sz = (struct.unpack_from("<i", sec, k + o)[0] / 4096.0 for o in (24, 28, 32))
+            if k + 36 <= len(sec):
+                sx, sy, sz = (struct.unpack_from("<i", sec, k + o)[0] / 4096.0 for o in (24, 28, 32))
+            else:
+                sx = sy = sz = 1.0
             if 0 < mid < 340 and abs(x) < 2000 and abs(z) < 2000 and abs(y) < 400:
                 out.append({"model": mid, "x": x, "y": y, "z": z,
                             "sx": sx or 1.0, "sy": sy or 1.0, "sz": sz or 1.0})

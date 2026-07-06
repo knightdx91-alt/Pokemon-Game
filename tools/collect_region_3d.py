@@ -121,7 +121,9 @@ class Rom:
         def extract(start):
             out = []
             k = start
-            while k + 48 <= len(build):
+            # Need only the model id + fx32 position (16 bytes); the final record
+            # may have its trailing padding truncated by the section length.
+            while k + 16 <= len(build):
                 mid = struct.unpack_from("<I", build, k)[0]
                 x, y, z = (struct.unpack_from("<i", build, k + o)[0] / 4096.0
                            for o in (4, 8, 12))
