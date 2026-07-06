@@ -198,6 +198,110 @@ class BCH:
                     "mesh_table": mesh_table, "mesh_count": mesh_count}
         return None
 
+    # ---- PICA200 draw calls (verified on ORAS member 0818) -------------
+    def pica_draw_calls(self):
+        """Scan the GPU command section for per-mesh draw calls, returning a
+        list of dicts {index_addr, count, vbuf_off, stride}.
+
+        Method (validated on real ORAS a/0/3/9 member 0818 = 17 meshes): the
+        per-mesh PICA command buffers write, in order, the vertex-array config
+        (reg 0x200 burst) then the draw (reg 0x227 = index-buffer offset,
+        reg 0x228 = index count, reg 0x22f = draw-elements). A linear command
+        walk from gpu_off desyncs on interleaved non-command data, so we scan
+        raw words for the reg-0x228 command header (0x000f0228), read the count
+        (the word before it) and the index offset (reg 0x227, two words before),
+        then search back <=0x400 bytes for the reg-0x200 burst to get the
+        vertex-buffer offset (reg 0x203) and stride ((reg 0x205 >> 16) & 0xff).
+
+        Offsets are relative to the BCH data section (add self.data_off). u16
+        indices. VERIFIED: mesh0 → index@0xd2278 count 1200 stride 36, vertex0.x
+        == 123.68; 6 meshes reconstruct a coherent map extent X[-288,306]
+        Z[-295,250]. Meshes whose 0x227 is not immediately before 0x228 (array
+        draws) come back with index_addr=None and are skipped by triangles()."""
+        d = self.data
+        g0, g1 = self.gpu_off, self.gpu_off + self.gpu_len
+        draws = []
+        o = g0
+        while o + 8 <= g1:
+            if u32(d, o + 4) == 0x000F0228:            # reg 0x228, mask 0xf
+                count = u32(d, o)
+                index_addr = u32(d, o - 8) if o >= g0 + 8 and \
+                    u32(d, o - 4) == 0x000F0227 else None
+                vbuf_off = stride = 0
+                for q in range(o, max(g0, o - 0x400), -4):
+                    hv = u32(d, q + 4)
+                    if (hv & 0xFFFF) == 0x200 and (hv >> 31) & 1:
+                        extra = (hv >> 20) & 0x7FF
+                        regs = {}
+                        r, p = 0x200, q + 8
+                        regs[0x200] = u32(d, q)
+                        for _ in range(extra):
+                            r += 1
+                            regs[r] = u32(d, p)
+                            p += 4
+                        vbuf_off = regs.get(0x203, 0)
+                        stride = (regs.get(0x205, 0) >> 16) & 0xFF
+                        break
+                draws.append({"index_addr": index_addr, "count": count,
+                              "vbuf_off": vbuf_off, "stride": stride})
+            o += 4
+        return draws
+
+    def map_triangles(self):
+        """Yield (x, y, z, u, v) vertices grouped 3-per-triangle for the map
+        terrain. Positions are raw model units; u,v are the two floats after the
+        position+normal (offset +0x18 for the 36-byte format). Meshes without a
+        resolvable index buffer or with stride < 0x18 are skipped. Reuses the
+        `find_map_model`-confirmed data section. VERIFIED to yield coherent
+        terrain (see pica_draw_calls)."""
+        import math
+        d = self.data
+        base = self.data_off
+        for dc in self.pica_draw_calls():
+            if dc["index_addr"] is None or dc["stride"] < 0x18:
+                continue
+            stride = dc["stride"]
+            vbo = base + dc["vbuf_off"]
+            ib = base + dc["index_addr"]
+            uvo = 0x18 if stride >= 0x20 else 0x0c   # after pos(+normal)
+            # Sanity-gate the mesh: some 0x228 headers belong to array-draws or
+            # get a mismatched 0x227 — their "vertices" are garbage floats. Map
+            # geometry lives within a few hundred model units, so sample the
+            # first vertices and skip the mesh if any position is non-finite or
+            # wildly out of range.
+            end_ok = base + max(dc["vbuf_off"], dc["index_addr"])
+            if end_ok >= len(d):
+                continue
+            bad = False
+            for i in range(0, min(dc["count"], 24)):
+                vi = u16(d, ib + i * 2)
+                o = vbo + vi * stride
+                if o + uvo + 8 > len(d):
+                    bad = True
+                    break
+                for k in (0, 4, 8):
+                    val = f32(d, o + k)
+                    if not math.isfinite(val) or abs(val) > 1e5:
+                        bad = True
+                        break
+                if bad:
+                    break
+            if bad:
+                continue
+            tri = []
+            for i in range(dc["count"]):
+                vi = u16(d, ib + i * 2)
+                o = vbo + vi * stride
+                if o + uvo + 8 > len(d):
+                    tri = []
+                    break
+                v = (f32(d, o), f32(d, o + 4), f32(d, o + 8),
+                     f32(d, o + uvo), f32(d, o + uvo + 4))
+                tri.append(v)
+                if len(tri) == 3:
+                    yield tri
+                    tri = []
+
 
 if __name__ == "__main__":
     data = open(sys.argv[1], "rb").read()

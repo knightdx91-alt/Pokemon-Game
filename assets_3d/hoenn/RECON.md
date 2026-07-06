@@ -131,12 +131,38 @@ decoded + verified in `tools/bch.py::BCH.find_map_model()`:
   0818). D-/interior-named members (0389='D01') need the generic Models-dict
   patricia walk — that's the small remaining piece to enumerate all 416 maps.
 
-## ⚠ Precise next step (the remaining build — format now proven)
-0. **Generalize model lookup** to non-`c##r####` names via the proper Models
-   patricia-dict walk (pair0 ptr ≈ 0x110 on 0818, node stride 0xc:
-   name/data/links). `find_map_model()` is the verified single-map reference.
-1. **Decode a mesh-table entry** (0818 @0x8c8, 17 entries): map each to its
-   SOBJ / PICA draw block via the data-section buffer offsets found above.
+## ✅ PICA200 GEOMETRY EXTRACTION — WORKING (verified on member 0818)
+Implemented in `tools/bch.py`: `BCH.pica_draw_calls()` + `BCH.map_triangles()`.
+
+- **Draw calls** are found by raw-scanning the GPU section for the reg-0x228
+  command header `0x000f0228` (a linear command walk desyncs on interleaved
+  data). Each draw: `reg 0x227` = index-buffer offset (data-relative), `reg
+  0x228` = index count, preceded by a `reg 0x200` burst giving `reg 0x203` =
+  vertex-buffer offset and `reg 0x205` where `(val>>16)&0xff` = **stride**
+  (36 or 24 — formats vary per mesh). **17 draws found = the 17-mesh count.**
+- **Vertices**: `data_off + vbuf_off + index*stride`; position = float3 at +0,
+  UV = float2 at +0x18 (36B fmt) / +0x0c (24B). **u16 indices.**
+- **Primitive mode CONFIRMED = triangle list** (`reg 0x25e` = 0), so indices
+  group 3-at-a-time.
+- **VERIFIED:** mesh0 index@0xd2278 count 1200 stride 36, vertex0.x == 123.68
+  (matches earlier ground truth); the clean meshes reconstruct a coherent map
+  extent **X[-288,306] Z[-306,250]** — real map-sized terrain, map-like
+  structure in a top-down positional render (paths, stepped edges, borders).
+- `map_triangles()` sanity-gates each mesh (skips array-draws / mismatched
+  0x227 whose "vertices" are garbage floats).
+
+## ⚠ Precise next step (geometry proven; remaining = polish + textures)
+1. **Per-mesh robustness**: a few meshes still emit spurious long triangles in
+   the combined render (likely 0xFFFF primitive-restart indices, or a
+   mismatched VAO on the big array-draw meshes — mesh12 = 9048 idx). Handle
+   index-restart / tighten the VAO→draw pairing so every triangle is in-mesh.
+2. **UV + textures**: decode BCH `TXOB` images (ETC1/ETC1A4/RGBA) bound by
+   material name (`chip_grass`,`chip_sea_a`,`chip_gake*`,`r124_sand`,`sand`…),
+   feed `map_triangles()` UVs + the texture to `render_platinum_maps`'s
+   rasterizer (model-agnostic) → bake `assets_3d/hoenn/`.
+3. **Generalize model lookup** to non-`c##r####` names (0389='D01') via the
+   proper Models patricia-dict walk. `find_map_model()` is the verified ref.
+4. **Zone table `a/0/1/3`** → matrix placement + real Hoenn town names.
 1. **Iterate sub-meshes**: each SOBJ face/sub-mesh has its OWN 0x200-block +
    0x227/0x228 draw (count is per-sub-mesh — a single 1200 over-read walks past
    the first buffer). Enumerate them from the SOBJ face list.
@@ -163,7 +189,11 @@ decoded + verified in `tools/bch.py::BCH.find_map_model()`:
 
 ## Status
 Reconnaissance DONE ✅ — all map GARCs located and the GR→BCH path confirmed.
-BCH parser **foundation built & validated** (`tools/bch.py`): header/section map
-+ string table (model/material/texture names) parse correctly on real bytes.
-**Gating item now = byte-exact relocation** (see ⚠ above), then PICA200 geometry
-decode. Extraction: `source/3ds/omegaruby` (gitignored) — re-run the bootstrap.
+BCH parser: header/section map + string table validated; **model-descriptor
+lookup** (`find_map_model`) and **PICA200 geometry extraction**
+(`pica_draw_calls` + `map_triangles`) now WORKING and verified on real member
+0818 (see the two ✅ sections above) — coherent map terrain triangles come out
+at the correct extent. The relocation flag!=0 issue is *bypassed* (not needed
+for the Models path). **Remaining = per-mesh robustness + TXOB textures + zone
+placement** (⚠ next steps above). Extraction: `source/3ds/omegaruby`
+(gitignored) — re-run the bootstrap.
