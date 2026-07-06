@@ -657,6 +657,65 @@ Johto is now a **fully converted, wired, playable region** sourced from HnS.
   `LAYOUT_ROUTE7` (unused Kanto route) reference metatiles beyond what their
   tileset defines — unfinished HnS content, not a converter bug; render harmlessly.
 
+### ▶ 3D map-asset collection (`assets_3d/`) — Kanto + Johto DONE ✅ (HeartGold)
+**User goal:** gather every region's real **3D** field-map assets into one
+self-contained folder per region — *binaries and all* — with attribution
+(Nintendo cleared them for use with credit). "This is how we do every game."
+Order requested: **Kanto → Johto → Sinnoh** (Hoenn/Omega Ruby later). Working
+branch: `claude/session-kkc2g3` (NOT main — per the session task instructions).
+
+- **Tool: `tools/collect_region_3d.py <kanto|johto>`** — resolves each map from
+  the **pokeheartgold decomp** header table and copies the ROM's own asset
+  members verbatim into `assets_3d/<region>/{land,textures,buildings,rooms}` +
+  `MANIFEST.json` + `ATTRIBUTION.md`. Source ROM = **HeartGold (IPKE)**; its
+  overworld is ONE shared Johto/Kanto world (matrix 0), so both regions come
+  from the same ROM. Needs `source/nds/IPKE` (from `nds_decomp.py`, gitignored)
+  and the `pokeheartgold` clone at `/home/user/pokeheartgold`.
+- **The resolved chain (all from the decomp's `src/data/map_headers.h`):**
+  map header (`regionNo` == KANTO/JOHTO) → `matrixId` (`a/0/4/1`) → land-cell
+  ids → `areaDataBank` (`a/0/4/2`) → texture-set id → building placements. On
+  the shared overworld (matrix 0) a map's own cells are those whose per-cell
+  header id == that map's numeric id (from `include/constants/maps.h`).
+- **KEY FORMAT FACTS (hard-won — do not re-derive):**
+  - **Matrix** (`a/0/4/1`, from `src/map_matrix.c`): `u8 w, u8 h, u8 hasHeaders,
+    u8 hasAltitudes, u8 nameLen, name[nameLen]`, then optional `w*h u16` header
+    layer, optional `w*h u8` altitude layer, then the ALWAYS-present `w*h u16`
+    **models** layer = land-cell ids into `a/0/6/5`. (`hgss_map.load_matrix`'s
+    fixed-offset parse is overworld-only; the collector uses the real variable
+    layout.) All 676 land cells (overworld + interiors + dungeons) live in
+    `a/0/6/5`.
+  - **Texset** (`a/0/4/2`, 106×8-byte records): the texture set = the record's
+    **2nd u16** (== the area index) into `a/0/4/4`. The **1st u16 is a partial
+    set** that omits the shared road/grass/flower textures — using it leaves map
+    ground rendering GREY. Each map needs the FULL set (New Bark = area 2 →
+    texset 2, covering all 18 of its material textures).
+  - **Building placements** (land-cell build section): 48-byte record slots
+    `u32 modelId, fx32 x/y/z, ..., fx32 scale`. Empty slots are filled with
+    markers (`0x8006`/`0x0015`/`0x8000`), and **the real records start at a
+    per-cell alignment offset** (New Bark aligns at slot 0, Pallet at slot+4).
+    Parser (`cell_buildings` + `hgss_map.parse_buildings`): scan all 48-byte
+    alignments, keep the one yielding the most valid records (`0 < modelId <
+    340` + plausible fx32 pos). Iterate while only **model+pos (16 bytes)** fit —
+    the section length can truncate the final record's trailing scale/padding
+    (this was dropping Pallet's 2nd house). modelId 0 is a non-building marker.
+- **Result (committed):** `assets_3d/kanto/` (199 maps, 246 land, 41 texsets,
+  102 buildings, 93 rooms) and `assets_3d/johto/` (341 maps, 413 land, 70
+  texsets, 129 buildings, 152 rooms). **Verified by rendering every town in both
+  regions** (`tools/hgss_export_town.py <Tcode> <name> <texset>` → the
+  `data/unleashed` scene + a top-down `_2d.png`) — terrain, textures and placed
+  buildings correct; e.g. Pallet shows both houses + Oak's lab. Verification
+  renders kept in `assets_3d/<region>/renders/`.
+  - Internal town codes: **Kanto = T01–T19, Johto = T20–T31** (Pallet=T01, New
+    Bark=T20).
+  - **Known limitation:** `hgss_export_town` renders ONE representative land cell
+    per town, so multi-cell cities (Goldenrod, Cianwood, Cinnabar, Indigo,
+    Blackthorn) preview with black gaps — the *collected assets* contain every
+    cell (manifest lists them); only the preview renderer doesn't stitch
+    neighbors yet. A multi-cell stitch is a straightforward renderer add.
+- **Next:** Sinnoh via the existing Platinum pipeline (`render_platinum_maps.py`,
+  ROM CPUE) into `assets_3d/sinnoh/`; then Hoenn (Omega Ruby, 3DS — needs a new
+  **BCH** model extractor, not built).
+
 ### Sinnoh via pokeplatinum — DONE ✅ (the DS path)
 - **`source/pokeplatinum`** (pret) was the Sinnoh source (fetched via the
   tarball method — codeload.github.com — in a past session; NOT present in
@@ -939,7 +998,8 @@ projection can never show. Key facts learned:
 #### Region coverage — the user's ROM library ⇒ 3D models of ~every region
 DS ROMs work with THIS session's proven pipeline (nds_decomp → NARC →
 NSBMD/nitro_g3d): **Black = Unova (proven)**, **Platinum = Sinnoh (decomp in
-repo)**, **HGSS = Johto + Kanto (user backing up ROM)**. 3DS ROMs contain
+repo)**, **HGSS = Johto + Kanto (ROM in Drive; 3D assets COLLECTED into
+`assets_3d/` — see the "3D map-asset collection" section)**. 3DS ROMs contain
 full 3D worlds but need a NEW extractor (GARC/BCH formats, community-
 documented): **Omega Ruby = Hoenn (user backing up)**, **Pokémon X = Kalos
 (already in user's Drive as zip)**, **Ultra Moon = Alola (already in
@@ -1278,6 +1338,19 @@ rodata pointer tables are zero on disk, filled at load (recovered by
   tilesets, layouts, map metadata, and `johto_index.json`. See the "Johto via
   HnS — DONE" section above. Reuses (and depends on the fixes in)
   `extract_tilesets_emerald.py`.
+- `collect_region_3d.py <kanto|johto>` — **the 3D map-asset collector** (see the
+  "3D map-asset collection" section above). Resolves each map via the
+  pokeheartgold decomp header table and copies the HeartGold (IPKE) ROM's own
+  terrain/texture/building binaries into `assets_3d/<region>/`. Depends on
+  `source/nds/IPKE` and `/home/user/pokeheartgold`.
+- `hgss_map.py` — HeartGold (IPKE) field-map parser: `map_names()`,
+  `load_matrix()` (overworld), `load_land()` (permissions/collision + building
+  placements), `parse_buildings()` (alignment-scanning 48-byte record parser,
+  shared with the collector). `hgss_export_town.py <Tcode> <name> <texset>` /
+  `hgss_export_map.py` — render a town/cell (terrain + placed buildings) to a
+  WebGL scene JSON + a top-down verification `_2d.png`; used to verify the
+  collected assets. `nitro_g3d.py` decodes the NSBMD/BMD0 + NSBTX;
+  `render_platinum_maps.py`'s rasterizer is reused for the top-down bake.
 - Full workflow doc: **`docs/MAP_EDITING.md`**.
 
 ---
