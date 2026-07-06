@@ -13,6 +13,7 @@ Deliberately simple. Some heavy / JS-driven onion sites won't render perfectly;
 simple sites work well. This is a personal tool — see the security note in
 setup-onion-gateway.sh about who can reach the port.
 """
+import json
 import mimetypes
 import os
 import re
@@ -37,7 +38,13 @@ EXTRACT_ROOT = "/tmp/onion-extract"       # where archives are unpacked
 MAX_ARCHIVE_BYTES = 2 * 1024 * 1024 * 1024  # 2 GB download cap
 EXTRACT_TTL = 3600                          # delete extractions older than 1 h
 
-GATEWAY_VERSION = "v4"  # bump on every gateway change so a fresh deploy is visible
+GATEWAY_VERSION = "v5"  # bump on every gateway change so a fresh deploy is visible
+
+# User-added file hosts persist here (survives restarts). The service runs as
+# root from /opt/onion-gateway, so this is writable; override with ONION_HOSTS_FILE.
+USER_HOSTS_FILE = os.environ.get(
+    "ONION_HOSTS_FILE",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_hosts.json"))
 
 app = Flask(__name__)
 session = requests.Session()
@@ -78,6 +85,15 @@ HOME_PAGE = """<!doctype html>
   <p class="hint">Try DuckDuckGo:<br>
     <a href="/browse?url=https%3A%2F%2Fduckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion">
     duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion</a></p>
+  <hr style="border:0;border-top:1px solid #2a2a3a;margin:22px 0">
+  <form action="/add-host" method="post">
+    <input name="url" autocomplete="off" autocapitalize="off" spellcheck="false"
+           placeholder="Paste a download-page link to add its host">
+    <button type="submit">Add host &amp; open</button>
+  </form>
+  <p class="hint">Registers the site's domain, then tries to grab the file.
+    Simple hosts work automatically; JS/token hosts (GoFile, Mega) need a custom
+    resolver. &nbsp;<a href="/hosts">manage hosts</a></p>
 </div></body></html>"""
 
 # Single-URL attributes we rewrite on EVERY element (not just a fixed tag list),
@@ -312,6 +328,86 @@ RESOLVERS = [
     ("gofile.io", resolve_gofile),
 ]
 
+# ---- user-added hosts (self-service) + generic direct-link detection ---------
+
+FILE_EXTS = (".zip", ".rar", ".7z", ".tar", ".gz", ".tgz", ".bz2", ".xz",
+             ".iso", ".001", ".002", ".003", ".mkv", ".mp4", ".avi", ".mov",
+             ".webm", ".m4v", ".mp3", ".flac", ".wav", ".pdf", ".epub",
+             ".apk", ".exe", ".bin", ".img", ".jpg", ".jpeg", ".png", ".gif")
+
+
+def load_user_hosts():
+    try:
+        with open(USER_HOSTS_FILE) as f:
+            return set(json.load(f).get("hosts", []))
+    except Exception:
+        return set()
+
+
+def save_user_hosts(hosts):
+    try:
+        with open(USER_HOSTS_FILE, "w") as f:
+            json.dump({"hosts": sorted(hosts)}, f)
+        return True
+    except Exception:
+        return False
+
+
+def host_from_input(s):
+    """A pasted URL or bare domain -> its lowercase netloc (or None)."""
+    s = (s or "").strip()
+    if not s:
+        return None
+    if "://" not in s:
+        s = "http://" + s
+    return urlsplit(s).netloc.lower() or None
+
+
+def _looks_file(u):
+    return urlsplit(u).path.lower().endswith(FILE_EXTS)
+
+
+def resolve_generic(html_bytes, page_url):
+    """Best-effort: find a single direct download link in a landing page's HTML.
+
+    Works for hosts that expose the file URL as a real anchor/form/button (the
+    common case). Returns None for JS/API-gated hosts — nothing to find in HTML.
+    """
+    try:
+        s = BeautifulSoup(html_bytes, "html.parser")
+    except Exception:
+        return None
+    cands = []
+    for f in s.find_all("form", action=True):
+        u = urljoin(page_url, f["action"])
+        if u.startswith(("http://", "https://")) and _looks_file(u):
+            cands.append((3, u))
+    for el in s.find_all("a", href=True):
+        u = urljoin(page_url, el["href"])
+        if not u.startswith(("http://", "https://")):
+            continue
+        idc = (str(el.get("id", "")) + " " + " ".join(el.get("class", []) or []) +
+               " " + el.get_text(" ", strip=True)[:40]).lower()
+        score = 0
+        if _looks_file(u):
+            score += 3
+        if el.has_attr("download") or "download" in idc:
+            score += 2
+        if score:
+            cands.append((score, u))
+    for m in s.find_all("meta"):
+        if m.get("http-equiv", "").lower() == "refresh" and m.get("content"):
+            c = m["content"]
+            k = c.lower().find("url=")
+            if k != -1:
+                u = urljoin(page_url, c[k + 4:].strip().strip("'\""))
+                if _looks_file(u):
+                    cands.append((3, u))
+    if not cands:
+        return None
+    cands.sort(key=lambda x: x[0], reverse=True)
+    return cands[0][1]
+
 
 def _fetch_direct(url, referer):
     return session.get(url, timeout=180, allow_redirects=True, stream=True,
@@ -340,6 +436,22 @@ def try_resolve_filehost(r):
                 "This looks like a " + match + " page but the download link "
                 "couldn't be read — the host may have changed. Tell me and I'll "
                 "update it.")
+
+    # User-registered hosts: run the generic HTML link detector on this domain.
+    for uh in load_user_hosts():
+        if uh and uh in host:
+            try:
+                direct = resolve_generic(r.content, r.url)
+            except Exception:
+                direct = None
+            if direct:
+                return serve_stream(_fetch_direct(direct, r.url))
+            return _msg_page(
+                "No download link found on " + host,
+                host + " is in your host list, but I couldn't spot a direct file "
+                "link in this page. Simple hosts work automatically; JS/token "
+                "hosts (GoFile, Mega, etc.) need a custom resolver — tell me the "
+                "host and I'll add one.")
     return None
 
 
@@ -637,6 +749,60 @@ def download_extracted(token, subpath):
         return _msg_page("Not found", "That file is no longer available.")
     return send_file(full, as_attachment=True,
                      download_name=os.path.basename(full))
+
+
+@app.route("/add-host", methods=["POST"])
+def add_host():
+    raw = (request.form.get("url") or "").strip()
+    host = host_from_input(raw)
+    if not host:
+        return redirect("/")
+    hosts = load_user_hosts()
+    hosts.add(host)
+    if not save_user_hosts(hosts):
+        return _msg_page("Couldn't save",
+                         "Added " + host + " for now, but couldn't write the host "
+                         "list to disk (permissions?) — it won't persist a restart.")
+    # If they pasted a full URL, open it straight away so it's a one-step flow.
+    if "://" in raw or "/" in raw:
+        opener = raw if "://" in raw else "http://" + raw
+        return redirect(proxify(opener))
+    return redirect("/hosts")
+
+
+@app.route("/remove-host")
+def remove_host():
+    host = (request.args.get("h") or "").strip().lower()
+    hosts = load_user_hosts()
+    if host in hosts:
+        hosts.discard(host)
+        save_user_hosts(hosts)
+    return redirect("/hosts")
+
+
+@app.route("/hosts")
+def hosts_page():
+    builtin = "".join("<div class=f><b>" + escape(m) + "</b> "
+                      "<span class=sz>built-in</span></div>" for m, _ in RESOLVERS)
+    user = load_user_hosts()
+    if user:
+        rows = "".join(
+            "<div class=f>" + escape(h) +
+            " <a class=sz href='/remove-host?h=" + quote(h) + "'>remove</a></div>"
+            for h in sorted(user))
+    else:
+        rows = "<p class=sz>None yet — add one from the home page.</p>"
+    return _page(
+        "&#128193; File hosts",
+        "<p>Pages from these domains are scanned for a direct download link and "
+        "run through the archive extractor.</p>"
+        "<h3 style='color:#9a8bff;font-size:1rem'>Your hosts</h3>" + rows +
+        "<h3 style='color:#9a8bff;font-size:1rem;margin-top:18px'>Built-in "
+        "(custom resolvers)</h3>" + builtin +
+        "<form action='/add-host' method='post' style='margin-top:18px'>"
+        "<p><input name='url' placeholder='domain or download-page link' "
+        "autocapitalize='off' spellcheck='false'></p>"
+        "<button type='submit'>Add host</button></form>")
 
 
 @app.errorhandler(Exception)
