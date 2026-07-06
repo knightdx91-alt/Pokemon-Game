@@ -22,7 +22,7 @@ import tempfile
 import time
 import uuid
 from html import escape
-from urllib.parse import urljoin, quote, unquote
+from urllib.parse import urljoin, quote, unquote, urlsplit
 
 import requests
 from bs4 import BeautifulSoup
@@ -37,7 +37,7 @@ EXTRACT_ROOT = "/tmp/onion-extract"       # where archives are unpacked
 MAX_ARCHIVE_BYTES = 2 * 1024 * 1024 * 1024  # 2 GB download cap
 EXTRACT_TTL = 3600                          # delete extractions older than 1 h
 
-GATEWAY_VERSION = "v3"  # bump on every gateway change so a fresh deploy is visible
+GATEWAY_VERSION = "v4"  # bump on every gateway change so a fresh deploy is visible
 
 app = Flask(__name__)
 session = requests.Session()
@@ -269,6 +269,80 @@ def resolve_mediafire(html_bytes, page_url):
     return None
 
 
+def resolve_gofile(html_bytes, page_url):
+    """GoFile hides files behind an API (guest token + per-site 'wt' token).
+
+    Flow: mint a guest account token, fetch the folder contents with the wt
+    token scraped from GoFile's own JS, take the first file's CDN link, and set
+    the account-token cookie the CDN requires. Best-effort — GoFile changes this
+    periodically; if it breaks, the error page explains and I update the resolver.
+    """
+    import re as _re
+    m = _re.search(r"/d/([A-Za-z0-9]+)", urlsplit(page_url).path)
+    if not m:
+        return None
+    code = m.group(1)
+    try:
+        acc = session.post("https://api.gofile.io/accounts", timeout=30).json()
+        token = acc["data"]["token"]
+        wt = None
+        try:
+            gjs = session.get("https://gofile.io/dist/js/global.js", timeout=30).text
+            mw = _re.search(r'wt\s*[:=]\s*["\']([A-Za-z0-9]+)["\']', gjs)
+            wt = mw.group(1) if mw else None
+        except Exception:
+            pass
+        url = "https://api.gofile.io/contents/%s" % code + (("?wt=" + wt) if wt else "")
+        r = session.get(url, headers={"Authorization": "Bearer " + token}, timeout=30).json()
+        children = (r.get("data") or {}).get("children") or {}
+        for _, c in children.items():
+            if c.get("type") == "file" and c.get("link"):
+                # the CDN link needs this cookie; session carries it into the fetch
+                session.cookies.set("accountToken", token, domain=".gofile.io")
+                return c["link"]
+    except Exception:
+        return None
+    return None
+
+
+# host substring -> resolver(html_bytes, page_url) -> direct file URL or None.
+# Add a line here to teach the gateway a new file host.
+RESOLVERS = [
+    ("mediafire.com", resolve_mediafire),
+    ("gofile.io", resolve_gofile),
+]
+
+
+def _fetch_direct(url, referer):
+    return session.get(url, timeout=180, allow_redirects=True, stream=True,
+                       headers={"Referer": referer} if referer else {})
+
+
+def try_resolve_filehost(r):
+    """If this HTML page is a known file host, resolve the real file and stream
+    it through the extractor. Returns a Response, or None to show the page."""
+    host = urlsplit(r.url).netloc.lower()
+    if "mega.nz" in host or "mega.co.nz" in host:
+        return _msg_page(
+            "Mega isn't supported",
+            "Mega decrypts files inside your browser using a key in the link, "
+            "which a gateway can't do. Open Mega links on a device with the app.")
+    for match, fn in RESOLVERS:
+        if match in host:
+            try:
+                direct = fn(r.content, r.url)
+            except Exception:
+                direct = None
+            if direct:
+                return serve_stream(_fetch_direct(direct, r.url))
+            return _msg_page(
+                "Couldn't find the download",
+                "This looks like a " + match + " page but the download link "
+                "couldn't be read — the host may have changed. Tell me and I'll "
+                "update it.")
+    return None
+
+
 def top_bar(current):
     return (
         '<div style="position:sticky;top:0;z-index:2147483647;display:flex;gap:6px;'
@@ -325,19 +399,13 @@ def browse():
     if "text/css" in low_ct or ext == "css":
         return Response(rewrite_css(r.text, r.url), mimetype="text/css")
 
-    # File hosts serve an HTML landing page, not the file. Resolve the real
-    # download URL server-side and run it through the same archive pipeline, so
-    # pasting a MediaFire link (clearnet OR onion) actually downloads/extracts.
-    if "mediafire.com" in r.url.lower() and "text/html" in low_ct:
-        direct = resolve_mediafire(r.content, r.url)
-        if direct:
-            try:
-                r2 = session.get(direct, timeout=180, allow_redirects=True,
-                                 stream=True, headers={"Referer": r.url})
-                return serve_stream(r2)
-            except Exception as e:
-                return _msg_page("Couldn't fetch that file",
-                                 "Found the download link but couldn't pull it: " + str(e))
+    # File hosts serve an HTML landing page, not the file. If this is a known
+    # host, resolve the real download URL server-side and run it through the
+    # same archive pipeline (works for clearnet AND onion links).
+    if "text/html" in low_ct:
+        resolved = try_resolve_filehost(r)
+        if resolved is not None:
+            return resolved
 
     if "text/html" not in low_ct:
         return serve_stream(r)
