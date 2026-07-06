@@ -259,6 +259,28 @@ directly (no more draw-order guess) → exact binding. The rare high flags
 (0x25-0x2e) patch deeper header words and aren't needed for the geometry/texture
 walk.
 
+## Overworld is a CELL GRID + mesh-table indirection (session findings)
+- **The ORAS overworld is chunked into `world##` cell maps** — e.g.
+  `world13_07_02`, `world14_05_05` (name = `world<region>_<col>_<row>`), exactly
+  like the DS matrix. Town/route OUTDOOR geometry lives in these cells; building
+  **interiors** are separate models (`t103r0101` = town 103 room 1, `c1##r####`).
+  So "render Littleroot" ≠ pick one model — it's: zone table → the town's
+  `world##` cells → stitch (same pattern as Sinnoh/HGSS). **The zone table
+  `a/0/1/3` (538 `ZO\5` containers) is the required index and is not yet
+  decoded** (its per-zone section-offset table → map-cell list + name id).
+- **Mesh-table (SOBJ) structure** (validated on town c105 = member 0154, desc
+  0x30c, mesh table 0x4bc, 21 meshes, **stride 0x2c**): each 44-byte entry has
+  `+0x10` a pointer (SOBJ, data-region — NOT the raw vertex-buffer offset; it's
+  another indirection), `+0x1c` vertex count, `+0x28` index count. The mesh
+  entry's `+0x10` does NOT equal the draw's reg-0x203 vbuf offset, so the SOBJ
+  it points at must be walked to get the authoritative per-mesh (vertex buffer,
+  index buffer, material). **This is why the current heuristic
+  `pica_draw_calls()` (nearest-preceding 0x200 burst) mis-pairs some meshes →
+  the stray overlay triangles in renders.** Decoding the SOBJ properly fixes
+  the artifacts AND yields mesh→material→texture for exact binding.
+- `find_map_model()` only matches `c##r####` names; broaden the map-code regex
+  to `[a-z]+\d+[a-z]?\d*_\d+_\d+` to cover `c105_00_00` / `world##` / `t###`.
+
 ## ⚠ Precise next step — make the binding exact, then bake for real
 1. **Parse the Textures dict** in the `a/1/5/2` BCH → `{name: (w,h,fmt,
    data_off)}` from the name+pointer table (~end of data section) + the
