@@ -1036,6 +1036,10 @@ documented): **Omega Ruby = Hoenn (user backing up)**, **Pokémon X = Kalos
 Drive)**. Black 2 `.nds` is also in Drive (Unova 2 maps).
 
 #### ▶ 3D map-asset collection (`assets_3d/`) — the per-region 3D pipeline
+**START HERE for any 3D-maps work → `3D_MAPS_HANDOFF.md` (repo root)** — the
+master handoff: ROM Drive ids, per-region status, tool inventory, and the exact
+next-session bootstrap + resume point. The summary below mirrors it.
+
 The active 3D-maps effort now lives under **`assets_3d/<region>/`** (one
 self-contained folder per region: `land/ textures/ buildings/ rooms/ renders/
 MANIFEST.json`). Full status table + regen commands in `assets_3d/README.md`.
