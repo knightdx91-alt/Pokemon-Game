@@ -57,14 +57,49 @@ and map-code naming both come straight out of the string table.
 Models (count 1), then Materials/Shaders/Textures/LUTs. Models dict resolves to
 `0x110`.
 
-## ⚠ Precise next step (the current blocker)
-The **relocation pass is not yet byte-exact** — `bch.py::_apply_relocations`
-re-bases most pointers but mis-bases a few (some content pointers come out as 1
-or unshifted), so the Patricia-dict/mesh walk is unsafe. Reproduce SPICA's exact
-relocation-flag decode (BCH.cs `PatchOffset`: the per-entry flag selects BOTH
-the section the pointer *lives in* and the base to *add*) before geometry decode.
-Once relocation is exact: Models dict → SOBJ → PICA200 command buffer (gpu
-section) → vertex arrays (data section) → triangles.
+## BCH internal structure — DECODED (validated on real ORAS members)
+Relocation flag 0 (majority) is byte-exact in `bch.py`: pointer word at
+`main_off + pos*4`, value `+= main_off`. Flags 1-3 = str/data/gpu bases
+(hypothesis); the 3 rare high-flag entries (0x26/0x28/0x2e) still open — they
+patch words further into the header and are NOT needed for the geometry walk.
+
+**Content header** (`main_off`): array of (pointer-table ptr, count) pairs.
+pair0 = Models (word@0x44 → `0x110`, count 1). The Models pointer-table at
+`0x110` holds `count` pointers → each **model descriptor**.
+
+**Model descriptor** (member 0 @ `0x1cc`; layout confirmed):
+`+0x00` 4×3 world transform matrix (row-major floats; identity on test map) ·
+`+0x34` mesh-table ptr + `+0x38` count · `+0xb0` name offset (string-table
+**relative**, e.g. 0xbc → "c102r0101_00_00" — names are str-relative offsets,
+NOT relocated pointers) · `+0xdc` a (ptr,count) → the `coll`/vertex block table.
+
+**Mesh path**: mesh-table → SOBJ. Per-mesh **PICA200 draw command buffer**
+(found on real member 0818 = map `c09r1002`, @~`0x9e80`):
+```
+reg 0x227 = index-buffer address (offset into data section) | fmt in high nibble
+reg 0x228 = vertex/index count      (0x4b0 = 1200 on that mesh)
+reg 0x25e = primitive config        reg 0x22f/0x231 = draw-elements trigger
+reg 0x200..0x226 = vertex-attribute array config (base addr, per-buffer
+                   offset/format/stride) — the "loadVertexBuffer" block
+```
+Material/fragment state (combiners, LUTs: regs 0x0c0-0x115, 0x2c0/0x2c1) lives
+in the **gpu section**, separate from the per-mesh vertex/draw commands above.
+
+Real map members (by geometry size): `0389`(cliff/sea, 1.3 MB), `0818`
+(`c09r1002`), `0301`, `0264`, … — use these to validate, NOT member 0
+(`c102r0101` = an empty "test00" map: only a `coll` block, no render mesh).
+
+## ⚠ Precise next step (the remaining build)
+Everything above is mapped. What's left is the mechanical decode:
+1. Parse SOBJ → its per-mesh PICA command buffer (offset/len from the mesh
+   struct — the buffers are the reg-0x2xx blocks located above).
+2. **PICA200 VAO interpreter**: reg 0x200 base + per-attribute
+   (0x203+3k: offset/format/stride) → deinterleave positions (float3 or scaled
+   short3) + UVs from the data-section vertex buffer; reg 0x227/0x228 → index
+   buffer → triangles. Apply the descriptor's world matrix.
+3. **Textures**: BCH `TXOB` (ETC1/ETC1A4/RGBA) decode by material name
+   (`chip_grass`, `chip_gake*`, …) → the rasterizer's texture interface.
+4. Feed triangles+texture to `render_platinum_maps` rasterizer → bake PNG.
 
 ## Remaining work (the real build — multi-session)
 1. **BCH model parser** (the big one): fix relocation (above), then PICA200
