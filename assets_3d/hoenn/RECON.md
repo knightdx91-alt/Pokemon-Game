@@ -151,15 +151,42 @@ Implemented in `tools/bch.py`: `BCH.pica_draw_calls()` + `BCH.map_triangles()`.
 - `map_triangles()` sanity-gates each mesh (skips array-draws / mismatched
   0x227 whose "vertices" are garbage floats).
 
-## ⚠ Precise next step (geometry proven; remaining = polish + textures)
-1. **Per-mesh robustness**: a few meshes still emit spurious long triangles in
-   the combined render (likely 0xFFFF primitive-restart indices, or a
-   mismatched VAO on the big array-draw meshes — mesh12 = 9048 idx). Handle
-   index-restart / tighten the VAO→draw pairing so every triangle is in-mesh.
-2. **UV + textures**: decode BCH `TXOB` images (ETC1/ETC1A4/RGBA) bound by
-   material name (`chip_grass`,`chip_sea_a`,`chip_gake*`,`r124_sand`,`sand`…),
-   feed `map_triangles()` UVs + the texture to `render_platinum_maps`'s
+## Material→texture bindings + texture-image location (session findings)
+- **Use a real OUTDOOR map to validate, not 0818** — 0818 (`c09r1002`) is a
+  contest-hall **interior** (strings `room63_kabe/stage/hoshi`, `com_chair05`,
+  `com_table05`), which is why its render has furniture "fans". **Member 0389 =
+  Route 124** (sea/cliffs) is proper terrain: `map_triangles()` yields 28.6k
+  tris that render as coherent map geometry (platforms, stepped paths, borders)
+  — a few spurious long tris remain (the per-mesh-robustness item).
+- **Material descriptors** live in the main header; each material name (e.g.
+  `chip_gake_sea`) is followed at **+0x0c** by its **texture0 name**
+  (`chip_gake_sea`→`gake_sea_a1`, `chip_gake_sea_ground`→`gake_sea_b1`,
+  verified). The +0x0c offset is NOT universal across all material subtypes yet
+  — needs the proper material-struct stride before committing a `materials()`.
+- **Texture IMAGES are NOT in the map BCH.** `gake_sea_a1` etc. appear only as
+  the material's texture-name field — there is no TXOB with that name in the
+  a/0/3/9 member. The pixels live in a **separate texture archive** (same split
+  as DS NSBTX). Locating it is the gating item for a textured bake.
+
+## ✅ Map-texture archive LOCATED — `a/1/5/2` (per-map texture BCHs)
+Tree-grep for the material texture name `gake_sea_a1` → **`a/1/5/2/0890.bch`**
+(449 KB, magic `BCH\0`). It is a per-map texture BCH: names `gake_sea_a1`,
+`chip_gake_sea`, `mapr131_gake_sea_a1`, `mapr131_chip_soil2`, … (map r131).
+`a/1/5/2` has **1263 members** — one texture set per map. The map model
+(`a/0/3/9`) binds a material→texture NAME; the pixels are a **Textures**
+content-dict entry inside the matching `a/1/5/2` BCH (no literal `TXOB` magic —
+BCH textures are H3DTexture resources with image data in the data section).
+
+## ⚠ Precise next step
+1. **Decode `a/1/5/2` textures + match to maps.** Parse the Textures content
+   dict of the `a/1/5/2` BCH (name → width/height/format/data offset), decode
+   the PICA image (ETC1/ETC1A4/RGBA5551/RGBA8), and match each `a/0/3/9` map to
+   its `a/1/5/2` texture BCH (by name prefix `mapr131_*` / the zone table).
+   Then feed `map_triangles()` UVs + texture to `render_platinum_maps`'s
    rasterizer (model-agnostic) → bake `assets_3d/hoenn/`.
+2. **Per-mesh robustness**: a few meshes emit spurious long triangles (0xFFFF
+   primitive-restart, or a mismatched VAO on big array-draws). Handle restart /
+   tighten VAO→draw pairing so every triangle is in-mesh.
 3. **Generalize model lookup** to non-`c##r####` names (0389='D01') via the
    proper Models patricia-dict walk. `find_map_model()` is the verified ref.
 4. **Zone table `a/0/1/3`** → matrix placement + real Hoenn town names.
