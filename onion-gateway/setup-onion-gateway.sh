@@ -52,6 +52,7 @@ setup-onion-gateway.sh about who can reach the port.
 """
 import mimetypes
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -114,8 +115,16 @@ HOME_PAGE = """<!doctype html>
     duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion</a></p>
 </div></body></html>"""
 
-REWRITE = [("a", "href"), ("link", "href"), ("img", "src"), ("script", "src"),
-           ("form", "action"), ("iframe", "src"), ("source", "src")]
+# Single-URL attributes we rewrite on EVERY element (not just a fixed tag list),
+# so backgrounds, lazy-load data-*, media posters, form actions, etc. all route
+# through Tor — not just <a>/<img>/<script>.
+URL_ATTRS = ("href", "src", "action", "formaction", "poster",
+             "data-src", "data-original", "data-lazy-src", "data-url", "data-href")
+SRCSET_ATTRS = ("srcset", "data-srcset", "imagesrcset")
+STRIP_ATTRS = ("integrity", "crossorigin", "nonce")  # SRI/CORS block edited/proxied assets
+
+CSS_URL_RE = re.compile(r"url\(\s*(['\"]?)([^'\")]+)\1\s*\)", re.I)
+CSS_IMPORT_RE = re.compile(r"@import\s+(['\"])([^'\"]+)\1", re.I)
 
 
 def proxify(url):
@@ -125,6 +134,88 @@ def proxify(url):
 def _js_str(s):
     """Safely embed a Python string as a JS string literal."""
     return '"' + s.replace("\\", "\\\\").replace('"', '\\"').replace("<", "\\x3c") + '"'
+
+
+def _abs_or_none(base, v):
+    """Resolve a possibly-relative URL to an http(s) absolute, or None to skip."""
+    if not v:
+        return None
+    v = v.strip()
+    if v.startswith(("data:", "javascript:", "mailto:", "tel:", "#", "blob:", "about:")):
+        return None
+    if v.startswith("/browse?url="):
+        return None
+    absu = urljoin(base, v)
+    return absu if absu.startswith(("http://", "https://")) else None
+
+
+def rewrite_css(text, base):
+    """Rewrite url(...) and @import in a CSS string so their targets go via Tor."""
+    def _url(m):
+        raw = m.group(2).strip()
+        if raw.startswith(("data:", "#")) or raw.startswith("/browse?url="):
+            return m.group(0)
+        absu = urljoin(base, raw)
+        if absu.startswith(("http://", "https://")):
+            return 'url("' + proxify(absu) + '")'
+        return m.group(0)
+
+    def _imp(m):
+        raw = m.group(2).strip()
+        if raw.startswith("/browse?url="):
+            return m.group(0)
+        absu = urljoin(base, raw)
+        if absu.startswith(("http://", "https://")):
+            return '@import "' + proxify(absu) + '"'
+        return m.group(0)
+
+    return CSS_URL_RE.sub(_url, CSS_IMPORT_RE.sub(_imp, text or ""))
+
+
+def proxify_srcset(value, base):
+    """Rewrite each candidate URL in a srcset while keeping its 1x/2x/320w descriptor."""
+    out = []
+    for part in (value or "").split(","):
+        part = part.strip()
+        if not part:
+            continue
+        bits = part.split()
+        absu = _abs_or_none(base, bits[0])
+        if absu:
+            bits[0] = proxify(absu)
+        out.append(" ".join(bits))
+    return ", ".join(out)
+
+
+# Client-side shim. Runs before site scripts. Routes fetch/XHR through the
+# gateway AND rewrites URLs the browser sets at runtime — dynamically inserted
+# nodes (MutationObserver), setAttribute, and the .src property setter (this
+# last one is what makes canvas/slider "rotate" captchas load: they do
+# `img = new Image(); img.src = '/captcha/...'` on a detached element that
+# never hits the DOM, so only a property-setter hook can catch it). All URLs
+# resolve against the real onion base B, not the gateway origin.
+_SHIM_BODY = r"""
+function wrap(u){try{if(u==null)return u;u=String(u);
+if(u.indexOf('/browse?url=')===0)return u;
+if(/^(data:|blob:|javascript:|mailto:|tel:|#|about:)/i.test(u))return u;
+var a=new URL(u,B).href;
+if(a.slice(0,4)==='http')return '/browse?url='+encodeURIComponent(a);}catch(e){}return u;}
+function wss(v){try{return String(v).split(',').map(function(p){p=p.trim();if(!p)return p;var b=p.split(/\s+/);b[0]=wrap(b[0]);return b.join(' ');}).join(', ');}catch(e){return v;}}
+function wcss(t){try{return String(t).replace(/url\(\s*(['"]?)([^'")]+)\1\s*\)/gi,function(m,q,u){if(/^(data:|#)/i.test(u))return m;return 'url("'+wrap(u)+'")';});}catch(e){return t;}}
+var of=window.fetch;if(of){window.fetch=function(i,o){try{if(typeof i==='string')i=wrap(i);else if(i&&i.url)i=new Request(wrap(i.url),i);}catch(e){}return of.call(this,i,o);};}
+var oo=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(m,u){try{arguments[1]=wrap(u);}catch(e){}return oo.apply(this,arguments);};
+var URLA=['src','href','action','formaction','poster','data-src','data-original','data-lazy-src','data-url','data-href'];
+var osa=Element.prototype.setAttribute;Element.prototype.setAttribute=function(n,v){try{var ln=(''+n).toLowerCase();if(URLA.indexOf(ln)>=0)v=wrap(v);else if(ln==='srcset'||ln==='data-srcset')v=wss(v);else if(ln==='style')v=wcss(v);}catch(e){}return osa.call(this,n,v);};
+function ps(proto){try{var d=Object.getOwnPropertyDescriptor(proto,'src');if(d&&d.set&&d.configurable){Object.defineProperty(proto,'src',{enumerable:d.enumerable,configurable:true,get:function(){return d.get.call(this);},set:function(v){try{v=wrap(v);}catch(e){}return d.set.call(this,v);}});}}catch(e){}}
+if(window.HTMLImageElement)ps(HTMLImageElement.prototype);
+if(window.HTMLScriptElement)ps(HTMLScriptElement.prototype);
+if(window.HTMLMediaElement)ps(HTMLMediaElement.prototype);
+function fix(el){try{if(!el||el.nodeType!==1||!el.hasAttribute)return;for(var i=0;i<URLA.length;i++){var a=URLA[i];if(el.hasAttribute(a)){var v=el.getAttribute(a);var w=wrap(v);if(w!==v)osa.call(el,a,w);}}['srcset','data-srcset'].forEach(function(a){if(el.hasAttribute(a)){var v=el.getAttribute(a);var w=wss(v);if(w!==v)osa.call(el,a,w);}});if(el.hasAttribute('style')){var s=el.getAttribute('style');var w=wcss(s);if(w!==s)osa.call(el,'style',w);}if(el.tagName==='STYLE'&&el.textContent){var t=wcss(el.textContent);if(t!==el.textContent)el.textContent=t;}}catch(e){}}
+function walk(r){try{fix(r);if(r.querySelectorAll){var n=r.querySelectorAll('*');for(var i=0;i<n.length;i++)fix(n[i]);}}catch(e){}}
+try{var mo=new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var m=ms[i];if(m.type==='attributes')fix(m.target);if(m.addedNodes)for(var j=0;j<m.addedNodes.length;j++)walk(m.addedNodes[j]);}});
+function st(){try{mo.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['src','href','action','srcset','poster','style','data-src','data-original','data-lazy-src','data-srcset','data-url','data-href']});walk(document.documentElement);}catch(e){}}
+if(document.documentElement)st();else document.addEventListener('DOMContentLoaded',st);}catch(e){}
+"""
 
 
 def top_bar(current):
@@ -169,7 +260,16 @@ def browse():
             mimetype="text/html", status=502)
 
     ctype = r.headers.get("Content-Type", "")
-    if "text/html" not in ctype.lower():
+    low_ct = ctype.lower()
+
+    # Stylesheets: rewrite their url(...) / @import so background images, fonts,
+    # sprites and CSS-based captchas load through the gateway (was passed raw).
+    clean_url = r.url.split("?")[0]
+    ext = clean_url.rsplit(".", 1)[-1].lower() if "." in clean_url.rsplit("/", 1)[-1] else ""
+    if "text/css" in low_ct or ext == "css":
+        return Response(rewrite_css(r.text, r.url), mimetype="text/css")
+
+    if "text/html" not in low_ct:
         # Peek the first chunk to sniff whether this is an archive.
         it = r.iter_content(chunk_size=65536)
         try:
@@ -228,14 +328,40 @@ def browse():
         page_base = urljoin(r.url, base_tag["href"])
         base_tag.decompose()  # remove it so the browser doesn't hit the onion directly
 
-    for tag, attr in REWRITE:
-        for el in soup.find_all(tag):
-            v = el.get(attr)
-            if not v or v.startswith(("data:", "javascript:", "mailto:", "tel:", "#")):
-                continue
-            absu = urljoin(page_base, v)
-            if absu.startswith(("http://", "https://")):
-                el[attr] = proxify(absu)
+    # Rewrite every URL-bearing attribute on every element (not just a fixed tag
+    # list) so backgrounds, responsive srcset, lazy-load data-*, SVG <image>,
+    # <object>/<embed>, media posters, etc. all route through Tor.
+    for el in soup.find_all(True):
+        for bad in STRIP_ATTRS:
+            if el.has_attr(bad):
+                del el[bad]
+        for attr in URL_ATTRS:
+            if el.has_attr(attr):
+                absu = _abs_or_none(page_base, el.get(attr))
+                if absu:
+                    el[attr] = proxify(absu)
+        if el.name == "object" and el.has_attr("data"):
+            absu = _abs_or_none(page_base, el.get("data"))
+            if absu:
+                el["data"] = proxify(absu)
+        if el.has_attr("xlink:href"):
+            absu = _abs_or_none(page_base, el.get("xlink:href"))
+            if absu:
+                el["xlink:href"] = proxify(absu)
+        for attr in SRCSET_ATTRS:
+            if el.has_attr(attr):
+                el[attr] = proxify_srcset(el.get(attr), page_base)
+        if el.has_attr("style"):
+            el["style"] = rewrite_css(el.get("style"), page_base)
+        if el.name == "style" and el.get_text():
+            el.string = rewrite_css(el.get_text(), page_base)
+
+    # Drop any page-embedded Content-Security-Policy — it would block the shim
+    # and the resources we now route through the (same-origin) gateway.
+    for m in soup.find_all("meta"):
+        if m.get("http-equiv", "").lower() in ("content-security-policy",
+                                               "content-security-policy-report-only"):
+            m.decompose()
 
     # Rewrite <meta http-equiv="refresh" content="N; url=..."> redirects.
     for m in soup.find_all("meta"):
@@ -250,20 +376,10 @@ def browse():
 
     html = str(soup)
 
-    # JS shim: route fetch/XHR through the gateway, resolving relatives against
-    # the real onion base (not the gateway URL). Must run before site scripts.
-    shim = (
-        "<script>(function(){var B=" + _js_str(page_base) + ";"
-        "function wrap(u){try{if(!u||typeof u!=='string')return u;"
-        "if(u.indexOf('/browse?url=')===0)return u;"
-        "var a=new URL(u,B).href;"
-        "if(a.indexOf('http')===0)return '/browse?url='+encodeURIComponent(a);}catch(e){}return u;}"
-        "var of=window.fetch;if(of){window.fetch=function(i,o){try{"
-        "if(typeof i==='string')i=wrap(i);else if(i&&i.url)i=new Request(wrap(i.url),i);}catch(e){}"
-        "return of.call(this,i,o);};}"
-        "var oo=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(m,u){"
-        "try{arguments[1]=wrap(u);}catch(e){}return oo.apply(this,arguments);};})();</script>"
-    )
+    # JS shim (see _SHIM_BODY): routes fetch/XHR + runtime-set URLs through the
+    # gateway, resolving relatives against the real onion base. Runs first.
+    shim = ("<script>(function(){var B=" + _js_str(page_base) + ";"
+            + _SHIM_BODY + "})();</script>")
 
     lower = html.lower()
     h = lower.find("<head")
