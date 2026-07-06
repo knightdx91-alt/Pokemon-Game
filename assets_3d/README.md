@@ -15,7 +15,7 @@ region folder is collected verbatim from its source ROM by
 | Region | Source ROM | Status |
 |--------|-----------|--------|
 | Kanto  | Pokemon HeartGold (IPKE) | collected |
-| Johto  | Pokemon HeartGold (IPKE) | pending |
+| Johto  | Pokemon HeartGold (IPKE) | collected |
 | Sinnoh | Pokemon Platinum (CPUE)  | pending |
 | Hoenn  | Pokemon Omega Ruby (3DS) | pending (needs BCH extractor) |
 
