@@ -43,7 +43,7 @@ Johto — one shared overworld. No SoulSilver needed.)
 | **Kanto** | HeartGold | DS Nitro G3D | ✅ DONE | `assets_3d/kanto/` (199 maps) |
 | **Johto** | HeartGold | DS Nitro G3D | ✅ DONE | `assets_3d/johto/` (341 maps) |
 | **Sinnoh** | Platinum | DS Nitro G3D | ✅ DONE | `assets_3d/sinnoh/` (533 maps) |
-| **Hoenn** | Omega Ruby | 3DS BCH/PICA200 | ⏳ IN PROGRESS | parser `tools/bch.py`, see §4 |
+| **Hoenn** | Omega Ruby | 3DS BCH/PICA200 | ⏳ DECODERS WORKING (assembly + binding left) | parser `tools/bch.py` + `render_oras_maps.py`, see §4 |
 | **Unova** | Black/White 1&2 | DS Nitro G3D | ⬜ NOT started (into `assets_3d/`) | (older blind-RE lives in `data/maps/unova*`) |
 | **Kalos** | Pokémon X | 3DS BCH/PICA200 | ⬜ NOT started | reuses `tools/bch.py` |
 | **Alola** | Ultra Moon | 3DS BCH/PICA200 | ⬜ NOT started | reuses `tools/bch.py` |
@@ -57,7 +57,11 @@ MANIFEST.json ATTRIBUTION.md`. Full region table: `assets_3d/README.md`.
 - `nds_decomp.py <rom.nds> -o source/nds/<code>` — DS ROM → NitroFS + unpacked NARCs.
 - `3ds_decomp.py <rom.3ds> -o source/3ds/<code>` — 3DS ROM → romfs + unpacked GARCs.
 - `nitro_g3d.py` — DS BMD0/NSBMD + NSBTX decoder (Model.triangles() API).
-- `bch.py` — **3DS BCH (PICA200) decoder — IN PROGRESS** (the Hoenn blocker; §4).
+- `bch.py` — **3DS BCH (PICA200) decoder** — geometry (`map_triangles`) + ETC1
+  textures (`decode_etc1`) + model lookup WORKING & verified; relocation flag 1
+  + SOBJ mesh walk + full content dict still open (§4).
+- `render_oras_maps.py` — Hoenn top-down textured bake (PREVIEW: approximate
+  texture binding until §4 items 1-2 land). `<model_mem> [tex_mem]`.
 - `render_platinum_maps.py` — top-down rasterizer (`_draw_model_triangles`,
   `rasterize_triangle`, `texture_rgba`); **model-agnostic** — reused by every region.
 - `collect_region_3d.py <kanto|johto>` / `collect_sinnoh_3d.py` — the DS collectors.
@@ -66,7 +70,40 @@ MANIFEST.json ATTRIBUTION.md`. Full region table: `assets_3d/README.md`.
 
 Deps: `pip install ndspy pillow numpy` (DS) / `pip install pillow numpy` (3DS).
 
-## 4. ▶ RESUME POINT — finish the Omega Ruby (Hoenn) BCH parser
+## 4. ▶ RESUME POINT — Omega Ruby (Hoenn): decoders WORK, finish assembly+binding
+Full byte-level detail + all confirmed offsets: **`assets_3d/hoenn/RECON.md`**
+(the authoritative doc — read it first; the summary here is a pointer).
+
+**What now WORKS end-to-end in `tools/bch.py` + `tools/render_oras_maps.py`
+(all verified on the real ROM):**
+- `BCH.find_map_model()` — model descriptor lookup (bypasses relocation).
+- `BCH.pica_draw_calls()` + `BCH.map_triangles()` — PICA geometry → real terrain
+  triangles (v0.x=123.68 ground-truth match; renders a recognizable map).
+- `BCH.pica_textures()` + `decode_etc1()` — ETC1 (3DS byte-reversed/Morton) →
+  recognizable textures. Map textures are a SEPARATE archive: **`a/1/5/2`**
+  (per-map texture BCHs; matched to a map model by texture-name overlap).
+- `render_oras_maps.py <model_mem> [tex_mem]` bakes a textured PREVIEW.
+
+**The 3 remaining pieces for a CLEAN, EXACT bake (each SPICA-level; the current
+preview is garbled without them):**
+1. **SOBJ mesh decode** — the mesh table (`desc+0x34`, stride 0x2c: `+0x10`
+   SOBJ ptr, `+0x1c` vcount, `+0x28` icount) has another indirection; the
+   heuristic `pica_draw_calls()` mis-pairs some meshes → stray overlay
+   triangles. Walk the SOBJ for authoritative per-mesh (vbuf, ibuf, material).
+2. **Relocation flag 1** — flags 0/2/3 are CRACKED (ptr-in-main; value base
+   main/data/gpu). Flag 1 (string ptrs, majority) is delta/sub-tabled — finish
+   it → `content_dict()` + Materials/Textures patricia dicts resolve → EXACT
+   material→texture binding (kills the render striping).
+3. **Zone table `a/0/1/3`** (538 `ZO\5` containers) — the overworld is a
+   `world##_col_row` CELL GRID (like the DS matrix); towns/routes are cells,
+   interiors are separate (`t###r####`,`c1##`). To render a NAMED town (e.g.
+   **Littleroot**, the user's requested first target) you must decode this
+   table: name → its `world##` cells → stitch (same pattern as Sinnoh/HGSS).
+
+**Order to do them:** SOBJ (clean geometry, unblocks material link) → zone table
+(find Littleroot's cells) → flag-1/binding (exact textures) → batch bake.
+
+--- ORIGINAL RECON (still valid, byte-level) BELOW ---
 Full byte-level detail + all confirmed offsets: **`assets_3d/hoenn/RECON.md`**.
 
 **Bootstrap (ephemeral extraction, ~few min):**
