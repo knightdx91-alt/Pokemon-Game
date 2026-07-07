@@ -1046,25 +1046,46 @@ MANIFEST.json`). Full status table + regen commands in `assets_3d/README.md`.
 - **DONE ✅ (DS Nitro G3D, via `tools/collect_region_3d.py` / `collect_sinnoh_3d.py`):**
   **Kanto** (199 maps) + **Johto** (341) from HeartGold, **Sinnoh** (533) from
   Platinum. All terrain/textures/buildings verified by rendering every town.
-- **Hoenn (Omega Ruby, 3DS) — BCH parser IN PROGRESS ⏳.** Omega Ruby is 3DS,
-  so its maps are **BCH (PICA200)** models in GARC `a/0/3/9` (`GR`-wrapped),
-  NOT DS Nitro G3D — `nitro_g3d.py` does not apply. New decoder: **`tools/bch.py`**.
-  Full byte-level format + resume point: **`assets_3d/hoenn/RECON.md`**.
-  **What's decoded & validated on the real ROM (do NOT re-derive):**
-  - GR sub-resources: `0x1a00`=BCH model · `coll` block · `KAGE` shadow.
-  - BCH header/sections parse; **relocation flag 0** (majority) byte-exact
-    (word@`main_off+pos*4`, `+= main_off`); Models dict → `0x110`.
-  - Names are **string-table-relative offsets** (not relocated pointers).
-  - Model descriptor: `+0x00` 4×3 world matrix, `+0x34` mesh-table ptr+count,
-    `+0xb0` name offset.
-  - Per-mesh **PICA200 VAO/draw** (reg 0x200 base, 0x201 fmt, 0x205 stride,
-    0x227 index-buf, 0x228 count, 0x22f draw). **Vertex format CONFIRMED**:
-    `[pos f3, normal f3, uv f2, color ub4]`, **36 B/vtx** — real vertices read
-    back sane (v0 pos (123.68,0.65,-126.88) uv (3.09,0.34) on map `c09r1002`).
-  - Real map members: `0389`/`0818`/`0301`/… ; member 0 = empty "test00".
-  - **Remaining:** per-sub-mesh iteration → index→tris → `TXOB` (ETC1/RGBA)
-    texture decode → feed `render_platinum_maps` rasterizer → bake
-    `assets_3d/hoenn/`; then zone table `a/0/1/3` → matrix/placement + names.
+- **Hoenn (Omega Ruby, 3DS) — BCH decoders WORKING, exact binding left ⏳.**
+  Omega Ruby is 3DS: maps are **BCH (PICA200)** models in GARC `a/0/3/9`
+  (`GR`-wrapped), NOT DS Nitro G3D. Decoder: **`tools/bch.py`** +
+  **`tools/render_oras_maps.py`**. Full byte-level detail + resume point:
+  **`assets_3d/hoenn/RECON.md`** (authoritative — read it first). Work is on
+  branch `claude/3d-maps-assets-decomp-191xu4` (this repo's `assets_3d/` merged
+  onto it; PR #12). **Big-session progress — the hard unknowns are CRACKED:**
+  - **RELOCATION — SPICA-exact (all flags), the foundational unlock.** Each
+    reloc entry = `PtrAddress`(bits0-24, word idx in Source) · `Target`(bits
+    25-28, base added to value) · `Source`(bits29-31, section the ptr word is
+    in). Sections: 0 main·1 str·2/3 gpu·4-8 data·9+ ext. The old "always main"
+    assumption mis-based every non-main pointer. Now EVERY pointer resolves →
+    content dicts readable. Consequence: reg 0x203(vbuf)/0x227(index)/0x085
+    (tex-addr) are ABSOLUTE post-reloc (readers drop the data_off add, mask idx
+    high bit).
+  - **GEOMETRY works** (`BCH.find_map_model` + `pica_draw_calls` +
+    `map_triangles`): PICA triangle-list, vertex fmt `[pos f3, normal f3, uv f2,
+    color ub4]` 36 B/vtx (also a 24 B fmt: pos f3, uv f2, color ub4). v0.x=123.68
+    ground-truth match; per-triangle validation drops mis-paired garbage. Mesh
+    names read out (`c105_house1_a`, `c105_hashi01`=bridge, …).
+  - **ETC1 TEXTURES work** (`pica_textures` + `decode_etc1`): 3DS ETC1
+    (byte-reversed blocks, 8×8 Morton tiling). Map textures are a SEPARATE
+    archive **`a/1/5/2`** (per-map texture BCHs; matched to a model by
+    texture-name overlap, e.g. model 0210 ↔ 0890 = map r131).
+  - **H3DDict node format nailed** (0xc bytes: `u16 Left, u16 Right, u32
+    NameOffset(str-rel), u32 ReferenceBit`; objects in a PARALLEL Values array
+    by node order; root refbit 0xffffffff). Texture names read
+    (`mapr131_chip_soil2`, …). ⚠ locating each dict's node-array START from the
+    content header is the current sticking point (the pairs don't lead to clean
+    arrays yet).
+  - **`render_oras_maps.py`** bakes a textured PREVIEW (approximate `di %
+    n` binding — hence striping; `assets_3d/hoenn/renders/` is gitignored until
+    binding is exact).
+  - **REMAINING (plumbing on a solved foundation):** (1) `read_dict()` walk +
+    Values array → `{texture name→image}` and model `{material→texture}`; (2)
+    per-mesh material index → exact mesh→texture binding (kills striping); (3)
+    zone table `a/0/1/3` (538 `ZO\5`; overworld is a `world##_col_row` CELL
+    GRID) → isolate a named town's cells (user's first target = **Littleroot**)
+    → stitch like the DS regions. NB 0818=`c09r1002` is an INTERIOR (use outdoor
+    maps like 0389/town `c1##`/`world##` to validate).
 - **Kalos (Pokémon X) + Alola (USUM), 3DS — NOT started.** They **reuse the
   ORAS BCH parser unchanged** once it's finished; only the GARC map-archive
   indices differ (locate per game like the ORAS recon did).
@@ -1423,14 +1444,13 @@ rodata pointer tables are zero on disk, filled at load (recovered by
   WebGL scene JSON + a top-down verification `_2d.png`; used to verify the
   collected assets. `nitro_g3d.py` decodes the NSBMD/BMD0 + NSBTX;
   `render_platinum_maps.py`'s rasterizer is reused for the top-down bake.
-- `bch.py` — **3DS BCH (PICA200) model parser** (the Gen-6/7 counterpart to
-  `nitro_g3d.py`; Omega Ruby / X / USUM maps are BCH, not Nitro G3D). IN
-  PROGRESS: `BCH(data, base)` parses header/sections, applies relocation
-  (flag 0 byte-exact), and `strings()` extracts model/material/texture names —
-  all validated on real ORAS `a/0/3/9` bytes. Targets the same duck-typed model
-  API `render_platinum_maps._draw_model_triangles` consumes. Remaining: PICA200
-  VAO/index decode → triangles + `TXOB` texture codec. Full format map + resume
-  point: **`assets_3d/hoenn/RECON.md`**.
+- `bch.py` — **3DS BCH (PICA200) model + texture decoder** (Gen-6/7 counterpart
+  to `nitro_g3d.py`; ORAS / X / USUM maps are BCH). WORKING & verified on real
+  ORAS `a/0/3/9`: SPICA-exact relocation (`_apply_relocations`), model lookup
+  (`find_map_model`), PICA geometry (`pica_draw_calls`/`map_triangles`), ETC1
+  textures (`pica_textures`/`decode_etc1`), and the H3DDict node format. Remaining
+  = `read_dict()` traversal → exact material→texture binding. Paired with
+  `render_oras_maps.py` (textured bake). Full detail: **`assets_3d/hoenn/RECON.md`**.
 - Full workflow doc: **`docs/MAP_EDITING.md`**.
 
 ---
