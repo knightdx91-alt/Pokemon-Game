@@ -270,6 +270,24 @@ border). find_map_model() fails on `world##` names (name not stored as a dict
 node) but map_triangles doesn't need it (it scans the GPU section). Its texture
 BCH is in `a/1/5/2` (find by the cell's texture-name prefix, like the c-maps).
 
+## ✅✅ PIPELINE COMPLETE — Littleroot renders textured (end-to-end)
+`tools/render_oras_maps.py <member>` bakes a top-down TEXTURED map from the ROM
+via the full exact-binding chain. **Littleroot (0006 = world01_02_04) renders as
+a recognizable town** (green grass, tree border, the wooden fenced garden plots
+by the houses) — c105 (Oldale, 0154) likewise (trees + buildings). Chain:
+`find_map_model` (content header) → `materials()` (draw→Texture0Name) →
+`mesh_draws()` → global `texture_table()` index → `decode_etc1` (ETC1/ETC1A4) →
+UV raster. Run: `python3 tools/render_oras_maps.py --build-index` then `… 0006`.
+
+**Remaining polish (not blockers):** (a) buildings/Birch's lab are separate PROP
+models (CGFX in `a/0/3/1`), not in the terrain cell — place them via the zone
+table for a complete town; (b) a few meshes stay untextured (their texture name
+isn't in the ~477-entry index yet — `texture_table()` still under-finds in some
+BCHs; widen it); (c) minor mesh-pairing artifacts (elongated tris). The core RE
+is DONE — this is asset-coverage polish. Next: batch-bake all Hoenn maps into
+`assets_3d/hoenn/`, then reuse the exact same `bch.py` for Kalos (X) + Alola
+(USUM), differing only in the GARC map-archive indices.
+
 ## ✅ EXACT BINDING CHAIN — SOLVED (via Ohana3DS layouts, both sides verified)
 The material→texture binding that blocked the whole session is cracked. Ohana3DS
 (explicit sequential reads, unlike SPICA's attribute-driven serializer) gave the
