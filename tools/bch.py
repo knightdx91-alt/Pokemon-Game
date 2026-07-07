@@ -220,7 +220,13 @@ class BCH:
             target = (entry >> 25) & 0xF
             source = (entry >> 29) & 0x7
             base = self._section_base(source)
-            byte_off = ptr_word * 4
+            # SPICA H3DRelocator: PtrAddress <<= 2 UNLESS the Target is the
+            # Strings section (== 1), whose pointers are byte-addressed. We
+            # previously shifted unconditionally, which mis-landed every
+            # string-target relocation onto the wrong word (corrupting e.g. an
+            # H3DMesh MaterialIndex by adding the string base) AND left the real
+            # string pointer un-relocated. Matching SPICA fixes both.
+            byte_off = ptr_word if target == 1 else ptr_word * 4
             slen = seclen.get(source, self.dataext_len)
             if slen and byte_off + 4 > slen:
                 continue                       # would spill past the section
@@ -230,6 +236,25 @@ class BCH:
             val = u32(d, addr)
             struct.pack_into("<I", d, addr,
                              (val + self._section_base(target)) & 0xFFFFFFFF)
+
+    def _str(self, val):
+        """Resolve a string reference that is EITHER an absolute offset (a
+        relocated string pointer, e.g. a material's Texture0Name) OR a
+        string-table-relative offset (an un-relocated NameOffset). Returns the
+        ASCII string or None. Needed because the corrected relocation makes
+        pointer fields absolute while relative NameOffset fields stay relative."""
+        d = self.data
+        if self.str_off <= val < self.str_off + self.str_len:
+            base = val
+        elif 0 < val < self.str_len:
+            base = self.str_off + val
+        else:
+            return None
+        e = d.find(b"\0", base)
+        if e < 0:
+            return None
+        s = d[base:e]
+        return s.decode("ascii", "replace") if s and all(32 <= c < 127 for c in s) else None
 
     # ---- H3DDict node reader ------------------------------------------
     def read_dict(self, ptr):
@@ -434,12 +459,7 @@ class BCH:
         d = self.data
 
         def s(o):
-            rel = u32(d, o)
-            if not (0 < rel < self.str_len):
-                return None
-            e = d.find(b"\0", self.str_off + rel)
-            v = d[self.str_off + rel:e]
-            return v.decode("ascii", "replace") if v and all(32 <= c < 127 for c in v) else None
+            return self._str(u32(d, o))
 
         out = []
         for e in range(mc):
@@ -464,16 +484,7 @@ class BCH:
         if not m:
             return []
         mt, mc = m["mesh_table"], m["mesh_count"]
-        out = []
-        for e in range(mc):
-            rel = u32(self.data, mt + e * 0x2C + 0x1C)
-            name = None
-            if 0 < rel < self.str_len:
-                s = self.data[self.str_off + rel:self.data.find(b"\0", self.str_off + rel)]
-                if s and all(32 <= c < 127 for c in s):
-                    name = s.decode("ascii", "replace")
-            out.append(name)
-        return out
+        return [self._str(u32(self.data, mt + e * 0x2C + 0x1C)) for e in range(mc)]
 
     def mesh_material_perm(self):
         """EXACT per-draw material index → fixes the by-order guess that garbled
@@ -613,14 +624,9 @@ class BCH:
             rec = u32(d, ep)
             if not (self.main_off <= rec < len(d) - 0x20):
                 continue
-            rel = u32(d, rec + 0x1C)
-            if not (0 < rel < self.str_len):
+            name = self._str(u32(d, rec + 0x1C))
+            if not name:
                 continue
-            e = d.find(b"\0", self.str_off + rel)
-            s = d[self.str_off + rel:e]
-            if not s or not all(32 <= c < 127 for c in s):
-                continue
-            name = s.decode("ascii")
             c0 = u32(d, rec)
             addr = size = fmt = None
             p = c0
