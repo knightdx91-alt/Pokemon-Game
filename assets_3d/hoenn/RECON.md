@@ -579,3 +579,52 @@ roofs + tan walls, Birch's lab, dirt paths, tree/lamp-post border):
 4. Backface culling + roof-cap → clean solid houses.
 5. Then repeat on other towns + stitch multi-cell maps (matrix), like the DS
    regions, into `assets_3d/hoenn/`.
+
+## ▶ SPICA/Ohana format — H3DMesh/H3DSubMesh/H3DModel layout (authoritative, from source)
+
+Pulled the exact structs from SPICA (gdkchan) instead of reverse-engineering.
+Verified byte-for-byte against the real ROM (Littleroot 0006, Petalburg 0066).
+
+**H3DModel header** (the map-model descriptor from `find_map_model`):
+`Flags` · `BoneScaling` · `SilhouetteMaterialsCount` u16 · **`WorldTransform`
+Matrix3x4** (`desc+0x00`, 48 B) · **`Materials` H3DDict** (`desc+0x34` values
+ptr, `+0x38` count) · **`Meshes` List<H3DMesh>** (`desc+0x40` ptr, `+0x44`
+count) · `MeshesLayer0..3` (Range sublists) · `SubMeshCullings` (v7+) ·
+`Skeleton` · `MeshNodesVisibility`.
+
+**H3DMesh record** (inline, stride **0x38**):
+`+0x00` **u16 MaterialIndex** · `+0x02` pad · `+0x03` u8 Flags · `+0x04` u16
+NodeIndex · `+0x06` u16 Key · `+0x08` **EnableCommands** (ptr+len; the PICA
+vertex-array-config cmd buffer) · `+0x10` **SubMeshes** (List ptr+**count**) ·
+`+0x18` DisableCommands (ptr+len) · `+0x20` **MeshCenter** Vector3 (bbox
+centre) · then UserDefinedAddress / MetaData ptrs.
+
+**H3DSubMesh**: `[Padding(2)] Skinning` · u16 BoneIndicesCount · `_BoneIndices[20]`
+(40 B) · `Commands` (PICA cmd stream). Indices are NOT stored as a field — the
+index-buffer ADDRESS + COUNT + primitive mode are read from the submesh's PICA
+`Commands` (reg 0x227 INDEXBUFFER_CONFIG, bit31 = 16- vs 8-bit; reg 0x228
+NUMVERTICES; reg PRIMITIVE_CONFIG>>8). This is exactly what `pica_draw_calls`
+scans — so the current heuristic is the right idea; the exact path is to walk
+each mesh's SubMeshes list and decode each submesh's Commands.
+
+### TWO FIXES/FINDINGS from applying the format
+1. **MaterialIndex must be read PRE-RELOCATION.** The relocation pass adds a
+   section base (0xAD50) to some MaterialIndex words (plain u16 indices, never
+   pointers) — on Petalburg c103 it turned materials 11/13/29 into
+   0xAD5B/0xAD5D/0xAD6D. Fix: `BCH.__init__` keeps `self.orig` (pre-reloc bytes);
+   `mesh_material_perm` reads MaterialIndex from `self.orig`. Result: EXACT
+   binding on Littleroot/Oldale/Petalburg, no repair heuristic. (⚠ implies the
+   reloc pass may over-apply to other u16 index fields too — audit if other
+   fields look corrupted.)
+2. **Global texture index serves WRONG images for map-specific textures.**
+   `render_oras_maps` dedups textures by NAME across ALL a/1/5/2 BCHs. Shared
+   `chip_*` textures are fine, but per-map textures (`chip_gake01`, `c103gate_*`,
+   `touka_*`) differ per map — Petalburg's trees/ledges render with another map's
+   `chip_gake01` (orange). FIX (next): match each MAP model to ITS OWN texture
+   BCH by texture-name overlap (RECON already flags a/1/5/2 as per-map) and
+   resolve textures from that set, not the global dedup.
+
+### Sub-mesh note
+For 0006/0066 every mesh has exactly 1 submesh (31 draws == 31 meshes), so the
+"hollow roof" is NOT a missing sub-draw here — revisit: likely backface culling
++ the per-map texture fix, or roof-cap geometry in a mesh we currently cull.
