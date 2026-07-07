@@ -501,9 +501,28 @@ class BCH:
             b = arr + i * 0x38
             recs.append((u32(self.data, b + 0x08), u16(self.data, b)))
         draw_materials = [mat for _, mat in sorted(recs, key=lambda r: r[0])]
-        if sorted(draw_materials) != list(range(mc)):
+        if sorted(draw_materials) == list(range(mc)):
+            return draw_materials
+        # REPAIR near-permutations: on some larger maps (e.g. Petalburg c103, 31
+        # meshes) a few records read a garbage MaterialIndex (out-of-range /
+        # duplicate) while the rest are a clean partial permutation. Keep the
+        # valid unique entries and assign the MISSING material indices to the bad
+        # slots (in order) so the binding is right for the ~90% that read clean
+        # instead of falling back to fully-wrong identity. Bail only if too many
+        # are bad (interiors with a different record layout).
+        seen = set()
+        bad = []
+        for i, mat in enumerate(draw_materials):
+            if 0 <= mat < mc and mat not in seen:
+                seen.add(mat)
+            else:
+                bad.append(i)
+        if len(bad) > mc // 4:                          # >25% bad → not this layout
             return None
-        return draw_materials
+        missing = [x for x in range(mc) if x not in seen]
+        for slot, mat in zip(bad, missing):
+            draw_materials[slot] = mat
+        return draw_materials if sorted(draw_materials) == list(range(mc)) else None
 
     def mesh_draws(self):
         """Pair each GPU draw with its material/name → list of
