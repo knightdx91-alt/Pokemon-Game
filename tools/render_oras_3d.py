@@ -24,12 +24,46 @@ import bch
 import render_oras_maps as R
 
 
+# Meshes to cull from the static render: `chip_wind` = a flat y=0 alpha wind
+# overlay that reads as a black smear; `chip_kusa_b` = tall-grass BILLBOARD
+# planes that streak when seen edge-on (in-engine they face the camera);
+# `chip_wood_shadow` = dark blob shadows painted opaque. Cull-by-name until the
+# billboard/alpha compositing is implemented.
+CULL = {"chip_wind", "chip_kusa_b", "chip_wood_shadow", "projection_dummy", None}
+
+
 def render(model_mem, index, S=900):
     d = open(os.path.join(R.MODEL_DIR, f"{model_mem}.bin"), "rb").read()
     off = struct.unpack_from("<I", d, 8)[0] & 0x7FFFFFFF
     model = bch.BCH(d, off)
-    R._draw_triangles.res = R.TexResolver(index)
-    meshes = list(R._draw_triangles(model))
+    res = R.TexResolver(index)
+    R._draw_triangles.res = res
+    # Own name-aware draw loop so CULL (by texture name) works.
+    meshes = []
+    for dc in model.mesh_draws():
+        if dc["index_addr"] is None or dc["stride"] < 0x18:
+            continue
+        name = dc.get("texture")
+        if name in CULL:
+            continue
+        im = res.get(name)
+        st, vbo, ib = dc["stride"], dc["vbuf_off"], dc["index_addr"]
+        uvo = 0x18 if st >= 0x20 else 0x0C
+        tris, cur = [], []
+        for i in range(dc["count"]):
+            vi = struct.unpack_from("<H", model.data, ib + i * 2)[0]
+            o = vbo + vi * st
+            if o + uvo + 8 > len(model.data):
+                cur = []
+                break
+            cur.append(tuple(struct.unpack_from("<f", model.data, o + k)[0]
+                             for k in (0, 4, 8, uvo, uvo + 4)))
+            if len(cur) == 3:
+                if all(math.isfinite(c) and abs(c) < 8192 for v in cur for c in v[:3]):
+                    tris.append(cur)
+                cur = []
+        if tris:
+            meshes.append((im, tris))
     pts = [v for _, tris in meshes for t in tris for v in t]
     if not pts:
         return None
@@ -55,9 +89,16 @@ def render(model_mem, index, S=900):
         return (S / 2 + x * F / zc, S / 2 - (y2 - 90) * F / zc, zc)
 
     fb = np.zeros((S, S, 3), np.uint8)
+    fb[:] = (120, 175, 95)          # grass-green background (no black voids)
     zb = np.full((S, S), 1e18)
+    light = np.array([0.3, 0.8, 0.4])
+    light /= np.linalg.norm(light)
     for im, tris in meshes:
         for t in tris:
+            A, B, C = (np.array(t[k][:3]) for k in range(3))
+            n = np.cross(B - A, C - A)
+            ln = float(np.linalg.norm(n))
+            shade = 0.55 + 0.45 * abs(float((n / ln) @ light)) if ln > 1e-6 else 0.75
             P = [project(v) for v in t]
             if any(p is None for p in P):
                 continue
@@ -86,10 +127,10 @@ def render(model_mem, index, S=900):
                         texel = img[int(v * th) % th, int(u * tw) % tw]
                         if texel[3] < 96:
                             continue
-                        fb[Y, X] = texel[:3]
+                        fb[Y, X] = [min(255, int(texel[k] * shade)) for k in range(3)]
+                        zb[Y, X] = zc
                     else:
-                        fb[Y, X] = (90, 170, 80)
-                    zb[Y, X] = zc
+                        continue
     return Image.fromarray(fb, "RGB")
 
 

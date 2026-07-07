@@ -484,3 +484,32 @@ session:**
 3. Load each building BCH via `bch.py`, transform by placement pos/rot, and add
    as extra nodes in `export_oras_gltf.py` (terrain + buildings in ONE .glb).
    This is the deliverable that makes Littleroot look like the Sinnoh 3D maps.
+
+## ▶ ROOT CAUSE of the "garbled mess" = mesh→material binding by draw order (NOT projection)
+
+Validated against IGN's real ORAS Littleroot screenshot (the correct ground
+truth — it IS 3D, so our 3D approach is right; the house meshes `chip_wood_a/b`
++ `chip_mado` windows match the screenshot's tan-plank houses exactly). The
+remaining garble (scattered ground quads, dark streaks, white gaps in houses) is
+because `render_oras_maps.mesh_draws()` pairs each GPU draw to material N **by
+order**, but the GPU-command order ≠ the model's mesh order. Wrong texture on a
+mesh = garbage.
+
+**The fix data is located.** Model descriptor (from `find_map_model`, e.g.
+member 0006 desc @0x28c):
+- `desc+0x34` → material table (13 × 0x2c records), `desc+0x38` = count.
+- **`desc+0x40` → the H3DMesh ARRAY**, `desc+0x44` = count (=13). Each H3DMesh
+  record's first `u16` = **MaterialIndex** (mesh 0 → 4 = `chip_kusa_a`), i.e. a
+  DIFFERENT order than the draw scan. The record also holds sub-mesh / vertex-
+  buffer pointers (e.g. `+0x08`, `+0x18`) + a float bounding box.
+
+**Next step (the real correctness gate):** parse the H3DMesh array at
+`desc+0x40`; for each mesh read MaterialIndex + its vertex-buffer/index pointers;
+match those to the GPU-scanned draw (by index_addr / vbuf_off) so each draw gets
+its TRUE material → texture. That replaces the by-order guess in `mesh_draws()`
+and should make Littleroot match the screenshot. Cosmetic follow-ups after:
+camera-facing billboards for `chip_kusa_b` tall grass; alpha compositing for
+`chip_wind`; per-mesh cull list is a stopgap (`render_oras_3d.CULL`).
+
+`tools/render_oras_3d.py` (committed) = the 3D perspective renderer used for this
+comparison (ORAS_YAW/PITCH/DIST env knobs, cull list, normal-based shading).
