@@ -469,32 +469,41 @@ class BCH:
         return out
 
     def mesh_material_perm(self):
-        """The H3DMesh array's per-mesh MaterialIndex → the EXACT draw→material
-        binding (fixes the by-order guess that garbled renders).
+        """EXACT per-draw material index → fixes the by-order guess that garbled
+        renders. Returns `draw_materials` where `draw_materials[i]` = the
+        material-table index for the i-th GPU draw (`pica_draw_calls()` order).
 
-        The model descriptor at `+0x40` points to the H3DMesh array, `+0x44` =
-        count. Each record (stride 0x38) begins with a `u16` MaterialIndex into
-        the material table. The GPU draws are emitted in mesh-array order, so
-        draw[i]'s TRUE material is `perm[i]` (a non-identity permutation), NOT i.
-        VERIFIED: on outdoor maps (0006/0154/0389) `perm` is a clean permutation
-        of range(mesh_count) and remapping makes the ground/buildings bind
-        correctly. Returns the perm list, or None if it isn't a valid
-        permutation (e.g. some interiors use a different record layout → caller
-        falls back to identity)."""
+        The model descriptor `+0x40` → H3DMesh array, `+0x44` = count. Each
+        record (stride 0x38): `u16` MaterialIndex @+0x00, and a pointer @+0x08 to
+        that mesh's PICA command buffer (which holds its reg-0x228 draw command).
+        `pica_draw_calls()` scans the GPU section in ADDRESS order, so the i-th
+        draw belongs to the mesh whose command buffer is i-th by address. Hence:
+        sort records by command-buffer address, take MaterialIndex in that order.
+
+        VERIFIED DEFINITIVELY on member 0006 by matching each mesh's reg-0x228
+        draw COUNT to the draw of that count: the count-match and the
+        command-address sort agree exactly → draw 8 (n=1779) = `chip_wood_b` (the
+        houses). Returns None if it isn't a clean permutation of range(count)
+        (some interiors use a different record layout → caller falls back to
+        identity)."""
         m = self.find_map_model()
         if not m:
             return None
         desc, mc = m["descriptor"], m["mesh_count"]
         if desc + 0x48 > len(self.data):
             return None
-        arr = u32(self.data, desc + 0x40)
+        arr = u32(self.data, desc + 0x44 - 4)          # +0x40
         acnt = u32(self.data, desc + 0x44)
         if acnt != mc or not (self.main_off <= arr < len(self.data) - mc * 0x38):
             return None
-        perm = [u16(self.data, arr + i * 0x38) for i in range(mc)]
-        if sorted(perm) != list(range(mc)):
+        recs = []                                       # (cmd_addr, material_idx)
+        for i in range(mc):
+            b = arr + i * 0x38
+            recs.append((u32(self.data, b + 0x08), u16(self.data, b)))
+        draw_materials = [mat for _, mat in sorted(recs, key=lambda r: r[0])]
+        if sorted(draw_materials) != list(range(mc)):
             return None
-        return perm
+        return draw_materials
 
     def mesh_draws(self):
         """Pair each GPU draw with its material/name → list of

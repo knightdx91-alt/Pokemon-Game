@@ -513,3 +513,27 @@ camera-facing billboards for `chip_kusa_b` tall grass; alpha compositing for
 
 `tools/render_oras_3d.py` (committed) = the 3D perspective renderer used for this
 comparison (ORAS_YAW/PITCH/DIST env knobs, cull list, normal-based shading).
+
+## ▶ MESH→MATERIAL BINDING — SOLVED & VALIDATED ✅
+
+The garble was the by-order draw→material guess. The fix (`bch.mesh_material_perm`
++ `mesh_draws`): the model descriptor `+0x40` → H3DMesh array (`+0x44` = count);
+each 0x38-byte record has `u16 MaterialIndex @+0x00` and a `u32` pointer @+0x08 to
+that mesh's PICA command buffer. `pica_draw_calls()` scans the GPU section in
+ADDRESS order, so **the i-th draw is the mesh whose command buffer is i-th by
+address** → sort records by cmd-buffer addr, take MaterialIndex in that order =
+per-draw material.
+
+DEFINITIVELY validated on member 0006 by an independent method: each mesh's
+command buffer holds its reg-0x228 draw COUNT; matching count→draw gives the
+SAME mapping as the cmd-address sort → `draw_materials =
+[4,5,6,2,3,0,1,9,8,10,7,11,12]`, i.e. draw 8 (n=1779) = `chip_wood_b` (the
+houses). Generalizes to 0154/0389 (clean permutations); falls back to identity
+when not a clean permutation (some interiors). Result: solid grass ground + real
+house/tree textures bind to the correct geometry.
+
+REMAINING (next): building meshes still render somewhat FLAT (roofs read but
+walls don't stand) — likely a per-mesh vertex STRIDE/format mismatch (24B vs 36B)
+in `pica_draw_calls` for building draws, misreading vertical wall positions. Plus
+cosmetic: a dark road/border mesh at the north edge (add to cull or bind), and
+camera framing.
