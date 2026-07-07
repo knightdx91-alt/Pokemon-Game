@@ -247,11 +247,16 @@ With exact relocation the content-header pairs (`(dictPtr, count)` at `main_off`
 - **Node walk**: after a small header the tree is ~**0xc-byte nodes**
   `(u32 nameOffset_str_RELATIVE, u32 links, u32 dataOffset)`; the root node has
   `ReferenceBit = 0xffffffff` (seen at dict+0x4). name = `str_off + nameOffset`.
-- ⚠ There is a small **alignment drift** (some names read one byte short, e.g.
-  `efaultShader`←`DefaultShader`) — the exact `H3DPatriciaTreeNode` field
-  widths/header size aren't in SPICA's public `H3DDict.cs`/`H3DPatriciaTree.cs`
-  (they delegate to a generic serializer). Nail the node struct (bit-packed
-  ReferenceBit + u16 Left/Right + name + value) to remove the drift.
+- ⚠ **It is a RADIX/patricia TREE, not a flat array** — nodes reference each
+  other by Left/RightNodeIndex, so a linear stride scan drifts (why some names
+  read one byte short, `efaultShader`←`DefaultShader`). Real material/texture
+  names DO appear (`chip_gake_sea`, `chip_gake_sea_ground` at stride 0x10, name
+  field ~+0x8/+0xc), but out of order. Correct read = **traverse the tree from
+  the root** collecting each visited node's Name, exactly as SPICA's
+  `H3DPatriciaTree` deserialize does (`while Index++ <= MaxIndex`, tracking
+  Left/RightNodeIndex). Node ≈ 0x10 bytes: `ReferenceBit, u16 Left, u16 Right,
+  Name(str-rel), Value/dataOffset`; root ReferenceBit = 0xffffffff. Implement
+  the traversal to get a clean ordered `{name: dataOffset}`.
 
 ## ⚠ Precise next step — finish exact binding
 1. Nail the patricia node struct (drift above) → clean `{name: dataOffset}` for
