@@ -448,3 +448,39 @@ at the correct extent. The relocation flag!=0 issue is *bypassed* (not needed
 for the Models path). **Remaining = per-mesh robustness + TXOB textures + zone
 placement** (⚠ next steps above). Extraction: `source/3ds/omegaruby`
 (gitignored) — re-run the bootstrap.
+
+## ▶ PROP / BUILDING SUBSYSTEM — feasibility CRACKED ✅ (this is what makes it look like Littleroot)
+
+The `a/0/3/9` terrain we already decode is ground-only — that's why maps render
+empty (no houses/lab/trees). Buildings & trees are a SEPARATE model+placement
+subsystem, now located and de-risked. **Online research (ProjectPokemon ORAS
+file-system doc + pk3DS/Ohana3DS as format refs) + direct byte inspection this
+session:**
+
+### Archives (all present in `source/3ds/omegaruby/unpacked/`)
+- **`a/0/2/1`** (544 members) = **overworld building models**. Container magic
+  **`MM`**: header = `MM`(2) · ver u16 · `dataOffset` u32 (=0x80) · `fileSize`
+  u32. **One embedded `BCH` model per member** at 0x80 (verified: member 0000 →
+  `42434800`="BCH\0" v0x2121). **Decodes with our EXISTING `bch.py`** — no CGFX
+  parser needed (CGFX was the feared unknown; ORAS building models are plain
+  BCH). Model index in a placement record → member number here.
+- **`a/0/1/4`** (229 members) = **town prop sets** (multiple models per town).
+  Container magic **`AD`**: `AD`(2) · ver u16 · dataOffset u32 · fileSize u32,
+  then at **+8 a u32 offset table** where **high-bit-set entries = embedded BCH
+  models**, high-bit-clear entries = data blobs (bounding-box / scale floats,
+  e.g. `0x3dcccccd`=0.1). Member 0000 → 2 BCH models (0x100, 0x1e80) + data.
+- **`a/0/1/3`** (538 members) = **`ZO` zone data** = the PLACEMENTS. Layout:
+  28-byte header = `ZO`(2)·ver u16 · **6× u32 section offsets**. Sections:
+  0 = 56-byte zone header (matrix/texset/encounter refs); 1 = small table;
+  **2 = the big entity/placement sub-table** (starts with its own u32 size, i.e.
+  a nested container); 3 (often empty); 4 = 12 B; 5 = trailer. Placement records
+  (model_id + xyz + rotation, like HGSS/BW) live in section 2 — decode next.
+
+### Remaining prop work (tractable — no new format parsers)
+1. Decode `ZO` section-2 placement records (model_id, position fx32, rotation)
+   — same record-scan method that cracked HGSS/BW placements.
+2. Map zone → terrain member (`a/0/3/9`) and zone → model archive
+   (`a/0/2/1`/`a/0/1/4`) so a placement's model_id resolves to a BCH.
+3. Load each building BCH via `bch.py`, transform by placement pos/rot, and add
+   as extra nodes in `export_oras_gltf.py` (terrain + buildings in ONE .glb).
+   This is the deliverable that makes Littleroot look like the Sinnoh 3D maps.
