@@ -69,24 +69,38 @@ def render(model_mem, index, S=900):
         return None
     cx = (min(p[0] for p in pts) + max(p[0] for p in pts)) / 2
     cz = (min(p[2] for p in pts) + max(p[2] for p in pts)) / 2
+    cyc = (min(p[1] for p in pts) + max(p[1] for p in pts)) / 2
 
-    yaw = math.radians(float(os.environ.get("ORAS_YAW", "25")))
-    pitch = math.radians(float(os.environ.get("ORAS_PITCH", "38")))
-    dist = float(os.environ.get("ORAS_DIST", "780"))
-    cy, sy = math.cos(pitch), math.sin(pitch)
-    cyw, syw = math.cos(yaw), math.sin(yaw)
-    F = 650.0
+    # Proper LOOK-AT camera (fixes the earlier ad-hoc projection that viewed the
+    # map's UNDERSIDE). The DS/3DS overworld camera sits ABOVE and to the SOUTH,
+    # tilted down onto the top surface, looking north — so building fronts
+    # (doors/windows) face the camera. In this model -Z is north (houses at
+    # z≈-295), so the eye is placed on the +Z (south) side, elevated.
+    #   ORAS_AZ  = azimuth about the vertical axis (deg, 0 = due south)
+    #   ORAS_ELEV= elevation above the horizon (deg; ~50 ≈ the real ORAS tilt)
+    #   ORAS_DIST= eye distance from the target
+    az = math.radians(float(os.environ.get("ORAS_AZ", os.environ.get("ORAS_YAW", "0"))))
+    elev = math.radians(float(os.environ.get("ORAS_ELEV", "52")))
+    dist = float(os.environ.get("ORAS_DIST", "820"))
+    F = float(os.environ.get("ORAS_F", "820"))
+    target = np.array([cx, cyc, cz])
+    eye = target + dist * np.array([math.sin(az) * math.cos(elev),
+                                    math.sin(elev),
+                                    math.cos(az) * math.cos(elev)])
+    fwd = target - eye
+    fwd = fwd / np.linalg.norm(fwd)
+    right = np.cross(fwd, np.array([0.0, 1.0, 0.0]))
+    right = right / np.linalg.norm(right)
+    up = np.cross(right, fwd)
 
     def project(v):
-        p0, p1, p2 = v[0] - cx, v[1], v[2] - cz
-        x = p0 * cyw - p2 * syw
-        z = p0 * syw + p2 * cyw
-        y2 = p1 * cy - z * sy
-        z2 = p1 * sy + z * cy
-        zc = z2 + dist
+        rel = np.array([v[0], v[1], v[2]]) - eye
+        zc = float(rel @ fwd)                 # depth in front of camera
         if zc < 1:
             return None
-        return (S / 2 + x * F / zc, S / 2 - (y2 - 90) * F / zc, zc)
+        xc = float(rel @ right)
+        yc = float(rel @ up)
+        return (S / 2 + xc * F / zc, S / 2 - yc * F / zc, zc)
 
     fb = np.zeros((S, S, 3), np.uint8)
     fb[:] = (120, 175, 95)          # grass-green background (no black voids)
