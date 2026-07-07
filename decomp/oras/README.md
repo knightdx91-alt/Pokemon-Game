@@ -57,3 +57,48 @@ strings source/3ds/omegaruby/romfs/DllField.cro | grep -oE 'N5field[0-9]+[A-Za-z
 3. Then **`field::MapFileSimple` / `field::MapBlock`** — the map-cell loader:
    find where it reads the matrix/placement so multi-cell stitching gets exact
    per-cell offsets (kills the seams).
+
+## Pipeline now runs on ORAS (env overrides) + findings
+The `cro_*` tools take env overrides so the USUM pipeline runs on ORAS:
+```
+export CRO_ROM=source/3ds/omegaruby CRO_MAP_DIR=/tmp/oras_map \
+       CRO_FUNC_DIR=/tmp/oras_functions CRO_VTABLE_DIR=/tmp/oras_vtables
+python3 tools/cro_map.py source/3ds/omegaruby/romfs -o /tmp/oras_map
+python3 tools/cro_disasm.py --scan          # 14,931 funcs located in DllField
+python3 tools/cro_vtables.py DllField -o /tmp/oras_vtables
+```
+- **DllField.cro segments:** text @384 (0xf0270), rodata @987136 (0x1d9e0), data
+  @1316472, bss. RTTI name strings live in **rodata** (e.g. FieldAreaEnv name
+  `N5field12FieldAreaEnvE` @ rodata+0xf0a5; FieldCameraSetting @ 0xf245;
+  MapBlock @ 0x14dce; MapFileSimple @ 0xf101; FieldmapProc @ 0xf0bc).
+- **RTTI→vtable bridge (mechanism confirmed, format TBD):** the C++ ABI puts a
+  type_info at vtable[-1]; type_info+4 points to the name string. Confirmed such
+  a reloc EXISTS: FieldAreaEnv's type_info name-ptr is written at rodata+0xcda8 →
+  name rodata+0xf0a5. But the internal-relocation table (header @0x128 → off
+  0x121710, cnt 0x2a9e) is NOT cleanly 12-byte `[type][value][dest]` from the
+  start — `cro_vtables` pattern-scans for `type==2` and works for FUNCTION-pointer
+  slots, but the rodata→rodata (typeinfo/name) entries appear in a different
+  layout/phase (the FieldAreaEnv one parsed raw as `[dest_tagged=0xcda81]
+  [flags=0x102: patchType 2, srcSeg 1][value=0xf0a5]`). **NEXT: nail the exact
+  internal-reloc entry format** (compare against a known vtable func-slot at
+  rodata+0x7238) → build a complete rodata pointer map → walk name→type_info→
+  vtable→methods for FieldCameraSetting / MapFileSimple / MapBlock → disasm the
+  ctor/setup for the camera constants and the cell-placement/matrix read.
+
+## What the binary has already told us (actionable for the maps)
+1. **Our cell-stitching model is correct.** The map = `field::FieldAreaEnv` (an
+   area) composed of `field::MapBlock` cells, loaded by `field::MapFileSimple`,
+   with a `field::Grid*` collision grid. Stitching `world##_col_row` cells is
+   exactly the engine's own model.
+2. **Static border trees are terrain, not props** — the only vegetation MODEL
+   classes are `FieldH3dKusaModel` (grass) and `field::nuts::FieldNutsModel`
+   (animated berry-trees). There is no static-tree placement class → confirms our
+   ~6-tree Littleroot extraction is complete; denser borders come from neighbor
+   cells (stitching), not missing props.
+3. **A collision grid exists** (`GridBase`/`GridVector`/`PlayerGrid`) — a future
+   extract target for walkability, separate from the render mesh.
+
+Practical implication: the two remaining fidelity fixes (seam-exact cell offsets;
+the field camera) are best gotten by (a) decoding the ROM's zone/matrix DATA
+directly now that the class model confirms the structure, and/or (b) finishing
+the reloc parse above to read `FieldCameraSetting`/`MapFileSimple` constants.
