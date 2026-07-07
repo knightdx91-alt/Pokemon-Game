@@ -1,27 +1,25 @@
 #!/usr/bin/env python3
 """
-render_oras_maps.py — Render Pokémon Omega Ruby (3DS) field-map terrain to a
-flat top-down textured PNG, the Gen-6 counterpart to render_platinum_maps.py.
+render_oras_maps.py — Render Pokémon Omega Ruby (3DS) field maps to flat
+top-down textured PNGs, the Gen-6 counterpart to render_platinum_maps.py.
 
-Pipeline (all decoders proven in tools/bch.py — see assets_3d/hoenn/RECON.md):
-  1. Map model  = a/0/3/9/<mem>.bin  (GR container → BCH; BCH.map_triangles()
-     yields textured triangles, BCH.pica_draw_calls() the per-mesh draws).
-  2. Textures   = a/1/5/2/<mem>.bch  (BCH.pica_textures() → ETC1 units;
-     bch.decode_etc1() decodes them). Matched to the model by texture-name
-     overlap (see find_texture_bch()).
-  3. Rasterize  = orthographic top-down, Y-buffer, affine UV sampling.
+Now with EXACT material->texture binding (no more draw-order guessing):
+  - model (a/0/3/9): bch.mesh_draws() pairs each PICA draw with its material's
+    Texture0Name (materials() reads the material table per Ohana3DS).
+  - textures  (a/1/5/2): a GLOBAL name->image index built from every texture
+    BCH's content-header texture table (bch.texture_table()); ORAS dedups
+    textures across many BCHs, so one shared index serves all maps.
+  - bind: draw -> texture name -> global index -> ETC1/ETC1A4 image -> UV raster.
 
-STATUS: geometry + UV + ETC1 texture sampling are VERIFIED end-to-end (the map's
-cliff/rock meshes texture correctly). The material→texture *binding* is still
-approximate — meshes are paired to textures by draw order because the exact
-mesh→material→texture-name link needs the BCH Textures patricia-dict resolved
-(the last open item in RECON.md). So this bakes a real-textured PREVIEW, not yet
-the pixel-exact asset. Do not commit its output into assets_3d/ until the
-binding is exact.
+Build the index once (cached to /tmp/oras_tex_index.json, ~a few s):
+  python3 tools/render_oras_maps.py --build-index
+Render a map (model member):
+  python3 tools/render_oras_maps.py 0154        # c105 Oldale Town
+  python3 tools/render_oras_maps.py 0006         # world01_02_04 = Littleroot
 
-Usage:
-  python3 tools/render_oras_maps.py <model_mem> [tex_mem]   # e.g. 0210 0890
+See assets_3d/hoenn/RECON.md for the full decode chain.
 """
+import json
 import math
 import os
 import struct
@@ -36,138 +34,121 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
                     "source", "3ds", "omegaruby", "unpacked")
 MODEL_DIR = os.path.join(ROOT, "a", "0", "3", "9")
 TEX_DIR = os.path.join(ROOT, "a", "1", "5", "2")
+INDEX_CACHE = "/tmp/oras_tex_index.json"
 OUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",
                        "assets_3d", "hoenn", "renders")
 
 
-def load_model(mem):
-    d = open(os.path.join(MODEL_DIR, f"{mem}.bin"), "rb").read()
-    off = struct.unpack_from("<I", d, 8)[0] & 0x7FFFFFFF
-    return bch.BCH(d, off)
-
-
-def load_texbch(mem):
-    return bch.BCH(open(os.path.join(TEX_DIR, f"{mem}.bch"), "rb").read(), 0)
-
-
-def _tex_names(b):
-    import re
-    reg = bytes(b.data[b.str_off:b.str_off + b.str_len])
-    return set(m.decode() for m in re.findall(rb"[a-zA-Z_][a-zA-Z0-9_]{2,30}", reg))
-
-
-def find_texture_bch(model):
-    """Find the a/1/5/2 texture BCH whose texture names best cover the model's
-    material texture names (deterministic overlap match — see RECON.md)."""
-    import re
-    reg = bytes(model.data[model.str_off:model.str_off + model.str_len])
-    want = set(m.decode() for m in
-               re.findall(rb"gake_[a-z0-9_]{2,20}|[a-z]+_a1|[a-z]+_b1", reg))
-    if not want:
-        return None
-    best = None
+def build_index(verbose=True):
+    """Scan every a/1/5/2 texture BCH → global {name: [member, addr, w, h, fmt]}."""
+    index = {}
     for f in sorted(os.listdir(TEX_DIR)):
+        if not f.endswith(".bch"):
+            continue
         try:
             tb = bch.BCH(open(os.path.join(TEX_DIR, f), "rb").read(), 0)
+            for name, v in tb.texture_table().items():
+                if name not in index:
+                    index[name] = [f[:-4], v["addr"], v["width"], v["height"], v["fmt"]]
         except Exception:
-            continue
-        base = set(re.sub(r"^mapr?\d+[a-z]?\d*_", "", n) for n in _tex_names(tb))
-        cover = len(want & base) / len(want)
-        if cover > 0.6 and (best is None or cover > best[1]):
-            best = (f[:-4], cover)
-    return best[0] if best else None
+            pass
+    json.dump(index, open(INDEX_CACHE, "w"))
+    if verbose:
+        print(f"  built texture index: {len(index)} textures → {INDEX_CACHE}")
+    return index
 
 
-def decode_textures(texb):
-    """Decode every ETC1 texture unit → list of (np RGB array, w, h)."""
-    imgs = []
-    for t in texb.pica_textures():
-        if t["fmt"] != 0xC:            # only ETC1 handled so far
-            continue
-        rgb = bch.decode_etc1(texb.data, t["addr"],   # addr is absolute (relocated)
-                              t["width"], t["height"])
-        arr = np.frombuffer(rgb, np.uint8).reshape(t["height"], t["width"], 3)
-        imgs.append((arr, t["width"], t["height"]))
-    return imgs
+def load_index():
+    if os.path.isfile(INDEX_CACHE):
+        return json.load(open(INDEX_CACHE))
+    return build_index()
 
 
-def _mesh_triangles(model, dc):
-    """Triangles (with UV) for one draw call, or None if the mesh is garbage."""
-    d = model.data
-    stride = dc["stride"]
-    if dc["index_addr"] is None or stride < 0x18:
-        return None
-    vbo = dc["vbuf_off"]        # absolute (relocated)
-    ib = dc["index_addr"]       # absolute (relocated)
-    uvo = 0x18 if stride >= 0x20 else 0x0C
-    # sanity gate
-    for i in range(min(dc["count"], 24)):
-        vi = struct.unpack_from("<H", d, ib + i * 2)[0]
-        o = vbo + vi * stride
-        if o + uvo + 8 > len(d):
+class TexResolver:
+    def __init__(self, index):
+        self.index = index
+        self._bch = {}
+        self._img = {}
+
+    def get(self, name):
+        if not name:
             return None
-        for k in (0, 4, 8):
-            v = struct.unpack_from("<f", d, o + k)[0]
-            if not math.isfinite(v) or abs(v) > 1e5:
+        key = name
+        if key not in self.index:                      # prefix-fuzzy fallback
+            cands = [k for k in self.index if k.startswith(name) or name.startswith(k)]
+            if not cands:
                 return None
-    tris, cur = [], []
-    for i in range(dc["count"]):
-        vi = struct.unpack_from("<H", d, ib + i * 2)[0]
-        o = vbo + vi * stride
-        cur.append((struct.unpack_from("<f", d, o)[0],
-                    struct.unpack_from("<f", d, o + 4)[0],
-                    struct.unpack_from("<f", d, o + 8)[0],
-                    struct.unpack_from("<f", d, o + uvo)[0],
-                    struct.unpack_from("<f", d, o + uvo + 4)[0]))
-        if len(cur) == 3:
-            tris.append(cur)
-            cur = []
-    return tris
-
-
-def render(model_mem, tex_mem=None, size=768):
-    model = load_model(model_mem)
-    if tex_mem is None:
-        tex_mem = find_texture_bch(model)
-        if tex_mem is None:
-            print(f"  no texture BCH matched for {model_mem}")
+            key = min(cands, key=len)
+        mem, addr, w, h, fmt = self.index[key]
+        if fmt not in (0xC, 0xD) or not (0 < w <= 2048 and 0 < h <= 2048):
             return None
-        print(f"  matched texture BCH: {tex_mem}")
-    imgs = decode_textures(load_texbch(tex_mem))
-    if not imgs:
-        print("  no ETC1 textures decoded")
-        return None
+        ck = (mem, addr)
+        if ck in self._img:
+            return self._img[ck]
+        if mem not in self._bch:
+            self._bch[mem] = bch.BCH(open(os.path.join(TEX_DIR, mem + ".bch"), "rb").read(), 0)
+        tb = self._bch[mem]
+        try:
+            rgb = bch.decode_etc1(tb.data, addr, w, h, alpha=(fmt == 0xD))
+            img = (np.frombuffer(rgb, np.uint8).reshape(h, w, 3), w, h)
+        except Exception:
+            img = None
+        self._img[ck] = img
+        return img
 
-    meshes = []
-    allpts = []
-    for di, dc in enumerate(model.pica_draw_calls()):
-        tris = _mesh_triangles(model, dc)
-        if not tris:
+
+def _draw_triangles(model):
+    """Yield (image_or_None, [ (x,y,z,u,v)*3 ]) per draw with exact texture."""
+    d = model.data
+    res = _draw_triangles.res
+    for dc in model.mesh_draws():
+        if dc["index_addr"] is None or dc["stride"] < 0x18:
             continue
-        meshes.append((di % len(imgs), tris))   # approximate binding (RECON)
-        for t in tris:
-            allpts += t
-    if not allpts:
+        im = res.get(dc.get("texture"))
+        st, vbo, ib = dc["stride"], dc["vbuf_off"], dc["index_addr"]
+        uvo = 0x18 if st >= 0x20 else 0x0C
+        tris, cur = [], []
+        for i in range(dc["count"]):
+            vi = struct.unpack_from("<H", d, ib + i * 2)[0]
+            o = vbo + vi * st
+            if o + uvo + 8 > len(d):
+                cur = []
+                break
+            cur.append(tuple(struct.unpack_from("<f", d, o + k)[0]
+                             for k in (0, 4, 8, uvo, uvo + 4)))
+            if len(cur) == 3:
+                if all(math.isfinite(c) and abs(c) < 8192 for v in cur for c in v):
+                    tris.append(cur)
+                cur = []
+        yield im, tris
+
+
+def render(model_mem, index, size=768):
+    d = open(os.path.join(MODEL_DIR, f"{model_mem}.bin"), "rb").read()
+    off = struct.unpack_from("<I", d, 8)[0] & 0x7FFFFFFF
+    model = bch.BCH(d, off)
+    _draw_triangles.res = TexResolver(index)
+
+    meshes = list(_draw_triangles(model))
+    pts = [v for _, tris in meshes for t in tris for v in t]
+    if not pts:
         return None
-    xs = [p[0] for p in allpts]
-    zs = [p[2] for p in allpts]
+    xs = [p[0] for p in pts]; zs = [p[2] for p in pts]; ys = [p[1] for p in pts]
     minx, maxx, minz, maxz = min(xs), max(xs), min(zs), max(zs)
+    miny, maxy = min(ys), max(ys)
     S = size
+    sc = (S - 4) / max(maxx - minx, maxz - minz, 1e-6)
+    ox = (S - (maxx - minx) * sc) / 2
+    oz = (S - (maxz - minz) * sc) / 2
     fb = np.zeros((S, S, 3), np.uint8)
     yb = np.full((S, S), -1e9)
-    sx = lambda x: (x - minx) / (maxx - minx + 1e-9) * (S - 1)
-    sz = lambda z: (z - minz) / (maxz - minz + 1e-9) * (S - 1)
-
-    for tex_i, tris in meshes:
-        img, tw, th = imgs[tex_i]
+    for im, tris in meshes:
         for t in tris:
-            px = [sx(v[0]) for v in t]
-            pz = [sz(v[2]) for v in t]
+            px = [(v[0] - minx) * sc + ox for v in t]
+            pz = [(v[2] - minz) * sc + oz for v in t]
             ay = sum(v[1] for v in t) / 3
             x0, x1 = int(min(px)), int(max(px)) + 1
             z0, z1 = int(min(pz)), int(max(pz)) + 1
-            if x1 - x0 > S // 2 or z1 - z0 > S // 2:
-                continue                    # stray oversized triangle
             den = (pz[1] - pz[2]) * (px[0] - px[2]) + (px[2] - px[1]) * (pz[0] - pz[2])
             if abs(den) < 1e-6:
                 continue
@@ -177,25 +158,33 @@ def render(model_mem, tex_mem=None, size=768):
                     b = ((pz[2] - pz[0]) * (X - px[2]) + (px[0] - px[2]) * (Z - pz[2])) / den
                     c = 1 - a - b
                     if a >= -.02 and b >= -.02 and c >= -.02 and ay > yb[Z, X]:
-                        u = a * t[0][3] + b * t[1][3] + c * t[2][3]
-                        v = a * t[0][4] + b * t[1][4] + c * t[2][4]
-                        fb[Z, X] = img[int(v * th) % th, int(u * tw) % tw]
+                        if im:
+                            img, tw, th = im
+                            u = a * t[0][3] + b * t[1][3] + c * t[2][3]
+                            v = a * t[0][4] + b * t[1][4] + c * t[2][4]
+                            fb[Z, X] = img[int(v * th) % th, int(u * tw) % tw]
+                        else:
+                            g = int(70 + (ay - miny) / (maxy - miny + 1e-9) * 150)
+                            fb[Z, X] = (g // 2, g, g // 3)
                         yb[Z, X] = ay
     return Image.fromarray(fb, "RGB")
 
 
 def main(argv):
-    if not argv:
-        argv = ["0210"]
-    model_mem = argv[0]
-    tex_mem = argv[1] if len(argv) > 1 else None
-    img = render(model_mem, tex_mem)
-    if img is None:
+    if "--build-index" in argv:
+        build_index()
         return
+    index = load_index()
+    mems = [a for a in argv if not a.startswith("--")] or ["0154"]
     os.makedirs(OUT_DIR, exist_ok=True)
-    out = os.path.join(OUT_DIR, f"map_{model_mem}.png")
-    img.save(out)
-    print(f"  {model_mem}: {img.width}x{img.height} → {out}")
+    for mem in mems:
+        img = render(mem, index)
+        if img is None:
+            print(f"  {mem}: no geometry")
+            continue
+        out = os.path.join(OUT_DIR, f"map_{mem}.png")
+        img.save(out)
+        print(f"  {mem}: {img.width}x{img.height} → {out}")
 
 
 if __name__ == "__main__":
