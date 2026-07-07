@@ -279,12 +279,13 @@ class BCH:
 
     # ---- map model descriptor (VERIFIED path, flag-0 only) -------------
     def _map_code_offset(self):
-        """String-table-relative offset of the map-code model name (e.g.
-        'c09r1002_00_00'), or None. Map codes look like c<digits>r<digits>_NN_NN.
-        Names in BCH are stored as string-table-*relative* offsets."""
+        """String-table-relative offset of the map-code model name, or None.
+        Map codes: c##r####/c1##/r###/d###/t### + `_NN_NN`, and the overworld
+        `world##_NN_NN` cells (e.g. 'c09r1002_00_00', 'r119_03_03',
+        'world13_07_02'). Names in BCH are string-table-*relative* offsets."""
         import re
         reg = bytes(self.data[self.str_off:self.str_off + self.str_len])
-        m = re.search(rb'c\d+r\d+_\d+_\d+', reg)
+        m = re.search(rb'[a-z]+\d+[a-z]?\d*_\d+_\d+', reg)
         return m.start() if m else None
 
     def find_map_model(self):
