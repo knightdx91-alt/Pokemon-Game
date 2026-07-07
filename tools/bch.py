@@ -171,6 +171,13 @@ class BCH:
         else:
             self.dataext_len = 0
         self.reloc_len = u32(d, p); p += 4
+        # Keep the pre-relocation bytes: some plain u16 INDEX fields (e.g. an
+        # H3DMesh's MaterialIndex) must be read from the original data — the
+        # relocation pass can add a section base to their word (observed on
+        # Petalburg c103: material indices 11/13/29 became 0xAD5B/0xAD5D/0xAD6D),
+        # corrupting values that were never pointers. Readers of such fields use
+        # `self.orig`; pointer readers use the relocated `self.data`.
+        self.orig = bytes(d)
         self._apply_relocations()
 
     def _section_base(self, section):
@@ -496,33 +503,21 @@ class BCH:
         acnt = u32(self.data, desc + 0x44)
         if acnt != mc or not (self.main_off <= arr < len(self.data) - mc * 0x38):
             return None
+        # MaterialIndex is a plain u16 index → read PRE-relocation (self.orig);
+        # the cmd-buffer pointer (+0x08) is a real pointer → post-reloc (data).
         recs = []                                       # (cmd_addr, material_idx)
         for i in range(mc):
             b = arr + i * 0x38
-            recs.append((u32(self.data, b + 0x08), u16(self.data, b)))
+            recs.append((u32(self.data, b + 0x08), u16(self.orig, b)))
         draw_materials = [mat for _, mat in sorted(recs, key=lambda r: r[0])]
-        if sorted(draw_materials) == list(range(mc)):
-            return draw_materials
-        # REPAIR near-permutations: on some larger maps (e.g. Petalburg c103, 31
-        # meshes) a few records read a garbage MaterialIndex (out-of-range /
-        # duplicate) while the rest are a clean partial permutation. Keep the
-        # valid unique entries and assign the MISSING material indices to the bad
-        # slots (in order) so the binding is right for the ~90% that read clean
-        # instead of falling back to fully-wrong identity. Bail only if too many
-        # are bad (interiors with a different record layout).
-        seen = set()
-        bad = []
-        for i, mat in enumerate(draw_materials):
-            if 0 <= mat < mc and mat not in seen:
-                seen.add(mat)
-            else:
-                bad.append(i)
-        if len(bad) > mc // 4:                          # >25% bad → not this layout
+        # MaterialIndex need not be a permutation (meshes CAN share a material),
+        # but every index must be in range of the material table. Bail (→ caller
+        # falls back to identity) if any is out of range — signals a layout we
+        # don't understand (e.g. some interiors).
+        nmat = len(self.materials())
+        if not all(0 <= x < nmat for x in draw_materials):
             return None
-        missing = [x for x in range(mc) if x not in seen]
-        for slot, mat in zip(bad, missing):
-            draw_materials[slot] = mat
-        return draw_materials if sorted(draw_materials) == list(range(mc)) else None
+        return draw_materials
 
     def mesh_draws(self):
         """Pair each GPU draw with its material/name → list of
