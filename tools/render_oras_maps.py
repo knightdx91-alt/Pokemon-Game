@@ -89,8 +89,8 @@ class TexResolver:
             self._bch[mem] = bch.BCH(open(os.path.join(TEX_DIR, mem + ".bch"), "rb").read(), 0)
         tb = self._bch[mem]
         try:
-            rgb = bch.decode_etc1(tb.data, addr, w, h, alpha=(fmt == 0xD))
-            img = (np.frombuffer(rgb, np.uint8).reshape(h, w, 3), w, h)
+            rgba = bch.decode_etc1(tb.data, addr, w, h, alpha=(fmt == 0xD))
+            img = (np.frombuffer(rgba, np.uint8).reshape(h, w, 4), w, h)
         except Exception:
             img = None
         self._img[ck] = img
@@ -117,7 +117,8 @@ def _draw_triangles(model):
             cur.append(tuple(struct.unpack_from("<f", d, o + k)[0]
                              for k in (0, 4, 8, uvo, uvo + 4)))
             if len(cur) == 3:
-                if all(math.isfinite(c) and abs(c) < 8192 for v in cur for c in v):
+                if all(math.isfinite(c) and abs(c) < 8192
+                       for v in cur for c in v[:3]):   # position only, not UV
                     tris.append(cur)
                 cur = []
         yield im, tris
@@ -162,10 +163,12 @@ def render(model_mem, index, size=768):
                             img, tw, th = im
                             u = a * t[0][3] + b * t[1][3] + c * t[2][3]
                             v = a * t[0][4] + b * t[1][4] + c * t[2][4]
-                            fb[Z, X] = img[int(v * th) % th, int(u * tw) % tw]
+                            texel = img[int(v * th) % th, int(u * tw) % tw]
+                            if texel[3] < 96:        # transparent overlay/shadow
+                                continue
+                            fb[Z, X] = texel[:3]
                         else:
-                            g = int(70 + (ay - miny) / (maxy - miny + 1e-9) * 150)
-                            fb[Z, X] = (g // 2, g, g // 3)
+                            continue                 # skip untextured (no solid fill)
                         yb[Z, X] = ay
     return Image.fromarray(fb, "RGB")
 

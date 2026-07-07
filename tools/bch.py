@@ -94,12 +94,15 @@ def _etc1_block(bs):
 
 def decode_etc1(data, off, w, h, alpha=False):
     """Decode a 3DS ETC1 (PICA format 0xC) or ETC1A4 (0xD) texture at
-    `data[off:]` of size w x h into a flat RGB bytes buffer (w*h*3). 3DS stores
+    `data[off:]` of size w x h into a flat RGBA bytes buffer (w*h*4). 3DS stores
     the texture 8x8-tiled with 4x4 blocks in Morton order per tile, each 8-byte
-    ETC1 block byte-REVERSED vs the spec. For ETC1A4 (`alpha=True`) each 4x4
-    block is 16 bytes = 8 bytes of 4-bit alpha (ignored for the RGB buffer) then
-    the 8-byte ETC1 colour block. VERIFIED on ORAS a/1/5/2 textures."""
-    buf = bytearray(w * h * 3)
+    ETC1 colour block byte-REVERSED vs the spec. For ETC1A4 (`alpha=True`) each
+    4x4 block is 16 bytes = 8 bytes of 4-bit-per-pixel ALPHA then the 8-byte
+    ETC1 colour block; the alpha is decoded into the RGBA A channel (opaque 255
+    for plain ETC1). Respecting alpha is essential: shadow/overlay/`chip_wind`
+    textures are mostly transparent and paint solid dark/oversaturated if the
+    alpha is dropped."""
+    buf = bytearray(w * h * 4)
     bi = 0
     step = 16 if alpha else 8
     order = ((0, 0), (1, 0), (0, 1), (1, 1))   # 4x4-block Morton order in a tile
@@ -108,7 +111,12 @@ def decode_etc1(data, off, w, h, alpha=False):
             for bx, by in order:
                 base = off + bi * step
                 bi += 1
-                cblk = data[base + (8 if alpha else 0):base + step]
+                if alpha:
+                    ablk = data[base:base + 8]
+                    cblk = data[base + 8:base + 16]
+                else:
+                    ablk = None
+                    cblk = data[base:base + 8]
                 if len(cblk) < 8:
                     continue
                 cols = _etc1_block(cblk[::-1])
@@ -116,8 +124,14 @@ def decode_etc1(data, off, w, h, alpha=False):
                     X = tx + bx * 4 + (p // 4)
                     Y = ty + by * 4 + (p % 4)
                     if X < w and Y < h:
-                        j = (Y * w + X) * 3
+                        j = (Y * w + X) * 4
                         buf[j], buf[j + 1], buf[j + 2] = cols[p]
+                        if ablk is not None and len(ablk) == 8:
+                            # 4 bits per pixel, low nibble = even pixel index
+                            a = (ablk[p >> 1] >> ((p & 1) * 4)) & 0xF
+                            buf[j + 3] = a * 17
+                        else:
+                            buf[j + 3] = 255
     return bytes(buf)
 
 
