@@ -257,6 +257,19 @@ With exact relocation the content-header pairs (`(dictPtr, count)` at `main_off`
   names: e.g. `mapr131_chip_soil2`, `mapr131_gake_basic1`,
   `mapr131_gake_basic_side` (the map's textures, in Values order).
 
+## ✅ LITTLEROOT located + rendered (map identification by name works)
+Towns are identifiable by their mesh names (`mesh_draws()`): c105 (member 0154)
+has `pokecen00`/`pc_mado` → Oldale, NOT Littleroot (the only town with no PC).
+**Littleroot = `world01_02_04` = member `a/0/3/9/0006`** — found by grepping
+a/0/3/9 for `mishiro` (Littleroot's JP name ミシロ); it carries `mishiro_gake`
+(the town cliff). So towns' OUTDOOR terrain lives in the `world##_col_row`
+overworld cells (Littleroot's town proper is one cell; houses/lab are separate
+prop models placed via the zone table). `map_triangles()` renders 0006 directly
+(2641 tris, X[-413,427] Z[-444,359]) — a recognizable town cell (paths, tree
+border). find_map_model() fails on `world##` names (name not stored as a dict
+node) but map_triangles doesn't need it (it scans the GPU section). Its texture
+BCH is in `a/1/5/2` (find by the cell's texture-name prefix, like the c-maps).
+
 ## ⚠ Precise next step — finish exact binding (node format now known)
 1. Implement `read_dict(ptr)` in `bch.py`: 0xc-stride node walk (skip root) →
    ordered name list, plus the **parallel Values array** (H3DTexture /
