@@ -92,23 +92,26 @@ def _etc1_block(bs):
     return out
 
 
-def decode_etc1(data, off, w, h):
-    """Decode a 3DS ETC1 texture (PICA format 0xC) at `data[off:]` of size w x h
-    into a flat RGB bytes buffer (w*h*3). 3DS stores the texture 8x8-tiled with
-    4x4 ETC1 blocks in Morton order per tile, and each 8-byte block byte-REVERSED
-    vs the ETC1 spec. VERIFIED on ORAS a/1/5/2/0890.bch (map r131 'gake_sea':
-    the sea-cliff texture decodes to recognizable rock-over-sea pixels)."""
+def decode_etc1(data, off, w, h, alpha=False):
+    """Decode a 3DS ETC1 (PICA format 0xC) or ETC1A4 (0xD) texture at
+    `data[off:]` of size w x h into a flat RGB bytes buffer (w*h*3). 3DS stores
+    the texture 8x8-tiled with 4x4 blocks in Morton order per tile, each 8-byte
+    ETC1 block byte-REVERSED vs the spec. For ETC1A4 (`alpha=True`) each 4x4
+    block is 16 bytes = 8 bytes of 4-bit alpha (ignored for the RGB buffer) then
+    the 8-byte ETC1 colour block. VERIFIED on ORAS a/1/5/2 textures."""
     buf = bytearray(w * h * 3)
     bi = 0
+    step = 16 if alpha else 8
     order = ((0, 0), (1, 0), (0, 1), (1, 1))   # 4x4-block Morton order in a tile
     for ty in range(0, h, 8):
         for tx in range(0, w, 8):
             for bx, by in order:
-                blk = data[off + bi * 8: off + bi * 8 + 8][::-1]
+                base = off + bi * step
                 bi += 1
-                if len(blk) < 8:
+                cblk = data[base + (8 if alpha else 0):base + step]
+                if len(cblk) < 8:
                     continue
-                cols = _etc1_block(blk)
+                cols = _etc1_block(cblk[::-1])
                 for p in range(16):
                     X = tx + bx * 4 + (p // 4)
                     Y = ty + by * 4 + (p % 4)
@@ -184,12 +187,23 @@ class BCH:
         d = self.data
         o = self.reloc_off
         end = self.reloc_off + self.reloc_len
+        # Per-source section length, so a bad/oversized ptr_word can't spill a
+        # write past its section into the next one (this was corrupting the
+        # string table: an over-length source-0 entry wrote into `str`).
+        seclen = {0: self.main_len, 1: self.str_len, 2: self.gpu_len,
+                  3: self.gpu_len, 4: self.data_len, 5: self.data_len,
+                  6: self.data_len, 7: self.data_len, 8: self.data_len}
         while o < end:
             entry = u32(d, o); o += 4
             ptr_word = entry & 0x1FFFFFF
             target = (entry >> 25) & 0xF
             source = (entry >> 29) & 0x7
-            addr = self._section_base(source) + ptr_word * 4
+            base = self._section_base(source)
+            byte_off = ptr_word * 4
+            slen = seclen.get(source, self.dataext_len)
+            if slen and byte_off + 4 > slen:
+                continue                       # would spill past the section
+            addr = base + byte_off
             if addr + 4 > len(d):
                 continue
             val = u32(d, addr)
@@ -506,49 +520,58 @@ class BCH:
         """Resolve each H3DTexture to its NAME + image params → dict
         {name: {addr, width, height, fmt}} (addr absolute, post-reloc).
 
-        Per Ohana3DS the texture record is: `+0x00` texUnit0CommandsOffset
-        (→ the PICA block that writes reg 0x082 size / 0x085 addr / 0x08e fmt),
-        `+0x1c` textureName (string). We find records by a valid name at +0x1c
-        whose +0x00 points into the GPU section, then read the params from the
-        referenced command block. VERIFIED on ORAS a/1/5/2/0890.bch → chip_gake01
-        →0x7b80, chip_gake_sea→0x9b80, … Names are the SAME base names the model
-        materials reference (no map-prefix), so model.materials()[i]['texture']
-        keys straight into this table."""
+        Enumerated AUTHORITATIVELY via the H3D content header (Ohana3DS): at
+        `main_off + 0x24` = texturesPointerTableOffset, `+0x28` = count. Each
+        table entry is a u32 pointer to an H3DTexture record (stride 0x20):
+        `+0x00` texUnit0CommandsOffset (→ PICA block: reg 0x082 size / 0x085
+        addr / 0x08e fmt), `+0x1c` textureName. VERIFIED on ORAS a/1/5/2/0890
+        (5 textures) and 0840 (17). Names are the SAME base names the model
+        materials reference, so `model.materials()[i]['texture']` keys straight
+        into this table."""
         d = self.data
-        go, ge = self.gpu_off, self.gpu_off + self.gpu_len
         table = {}
-        o = self.main_off
-        end = self.main_off + self.main_len
-        while o + 0x20 <= end:
-            c0 = u32(d, o)
-            rel = u32(d, o + 0x1C)
-            name = None
-            if 0 < rel < self.str_len:
-                e = d.find(b"\0", self.str_off + rel)
-                s = d[self.str_off + rel:e]
-                if s and all(32 <= c < 127 for c in s):
-                    name = s.decode("ascii", "replace")
-            if go <= c0 < ge and name and not name.startswith("$"):
-                addr = size = fmt = None
-                p = c0
-                for _ in range(48):
-                    if p + 8 > ge:
+        ch = self.main_off
+        if ch + 0x2C > len(d):
+            return table
+        tptr = u32(d, ch + 0x24)
+        tcnt = u32(d, ch + 0x28)
+        if not (self.main_off <= tptr < len(d)) or tcnt > 4096:
+            return table
+        for i in range(tcnt):
+            ep = tptr + i * 4
+            if ep + 4 > len(d):
+                break
+            rec = u32(d, ep)
+            if not (self.main_off <= rec < len(d) - 0x20):
+                continue
+            rel = u32(d, rec + 0x1C)
+            if not (0 < rel < self.str_len):
+                continue
+            e = d.find(b"\0", self.str_off + rel)
+            s = d[self.str_off + rel:e]
+            if not s or not all(32 <= c < 127 for c in s):
+                continue
+            name = s.decode("ascii")
+            c0 = u32(d, rec)
+            addr = size = fmt = None
+            p = c0
+            for _ in range(64):
+                if p + 8 > len(d):
+                    break
+                reg = u32(d, p + 4) & 0xFFFF
+                v = u32(d, p)
+                if reg == 0x085:
+                    addr = v & 0x7FFFFFFF
+                elif reg == 0x082:
+                    size = v
+                elif reg == 0x08E:
+                    fmt = v & 0xF
+                    if addr and size:
                         break
-                    reg = u32(d, p + 4) & 0xFFFF
-                    v = u32(d, p)
-                    if reg == 0x085:
-                        addr = v & 0x7FFFFFFF
-                    elif reg == 0x082:
-                        size = v
-                    elif reg == 0x08E:
-                        fmt = v & 0xF
-                    elif reg == 0x022F or reg == 0x0080:
-                        break
-                    p += 8
-                if addr and size and name not in table:
-                    table[name] = {"addr": addr, "width": size & 0xFFFF,
-                                   "height": (size >> 16) & 0xFFFF, "fmt": fmt}
-            o += 4
+                p += 8
+            if addr and size and name not in table:
+                table[name] = {"addr": addr, "width": size & 0xFFFF,
+                               "height": (size >> 16) & 0xFFFF, "fmt": fmt}
         return table
 
     # ---- PICA200 texture units (for a/1/5/2 map-texture BCHs) ----------
