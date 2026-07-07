@@ -156,41 +156,45 @@ class BCH:
         self.reloc_len = u32(d, p); p += 4
         self._apply_relocations()
 
-    def _value_base(self, flag):
-        """Section base ADDED to the pointer word's stored value.
+    def _section_base(self, section):
+        """Base offset of an H3D section id (SPICA H3DRelocator.GetAddress).
 
-        VERIFIED (flag 0): the word at main_off+pos*4 stores a main-relative
-        offset; adding main_off yields the absolute target. Proven on real ORAS
-        member 0 — word@0x44 = 0xcc, +main(0x44) = 0x110 = the Models dict.
-
-        HYPOTHESES (flags 1-3, rarer): 1 → string table (name pointers),
-        2 → data section (vertex/texture buffers), 3 → gpu command section.
-        These still need per-flag byte-exact confirmation (see RECON.md); the
-        rare high-flag entries (0x26/0x28/0x2e) are not yet mapped."""
-        return {
-            0: self.main_off,
-            1: self.str_off,
-            2: self.data_off,
-            3: self.gpu_off,
-        }.get(flag, self.main_off)
+        0 Contents(main) · 1 Strings · 2/3 Commands(gpu) · 4/5/6/8 RawData(data) ·
+        7 RawDataIndex16 (data, high bit is just an index-type marker) ·
+        9-13 RawExt(dataext). Returns the byte base to add / read from."""
+        if section == 0:
+            return self.main_off
+        if section == 1:
+            return self.str_off
+        if section in (2, 3):
+            return self.gpu_off
+        if section in (4, 5, 6, 7, 8):
+            return self.data_off
+        return self.dataext_off
 
     def _apply_relocations(self):
-        """Walk the relocation table. Each 4-byte entry: low 25 bits = pointer
-        word index (relative to main header), high 7 bits = flag selecting the
-        base to add to the stored value. Afterwards, flag-0 pointers are exact
-        absolute offsets; flags 1-3 are best-effort (see _value_base)."""
+        """Walk the relocation table (SPICA H3DRelocator). Each 4-byte entry:
+          bits 0-24  = PtrAddress  (word index of the pointer, within Source)
+          bits 25-28 = Target      (section whose base is ADDED to the value)
+          bits 29-31 = Source      (section the pointer WORD lives in)
+        The pointer word is at section_base(Source) + PtrAddress*4; its stored
+        value gets section_base(Target) added. This makes ALL flags exact (not
+        just flag-0) — the earlier main-only assumption mis-based every pointer
+        whose Source != main (materials/textures/vertex/index)."""
         d = self.data
         o = self.reloc_off
         end = self.reloc_off + self.reloc_len
         while o < end:
             entry = u32(d, o); o += 4
-            pos = (entry & 0x1FFFFFF) * 4
-            flag = (entry >> 25) & 0x7F
-            addr = self.main_off + pos          # pointer word lives in main region
+            ptr_word = entry & 0x1FFFFFF
+            target = (entry >> 25) & 0xF
+            source = (entry >> 29) & 0x7
+            addr = self._section_base(source) + ptr_word * 4
             if addr + 4 > len(d):
                 continue
             val = u32(d, addr)
-            struct.pack_into("<I", d, addr, (val + self._value_base(flag)) & 0xFFFFFFFF)
+            struct.pack_into("<I", d, addr,
+                             (val + self._section_base(target)) & 0xFFFFFFFF)
 
     # ---- string table -------------------------------------------------
     def strings(self):
@@ -282,11 +286,13 @@ class BCH:
         then search back <=0x400 bytes for the reg-0x200 burst to get the
         vertex-buffer offset (reg 0x203) and stride ((reg 0x205 >> 16) & 0xff).
 
-        Offsets are relative to the BCH data section (add self.data_off). u16
-        indices. VERIFIED: mesh0 → index@0xd2278 count 1200 stride 36, vertex0.x
-        == 123.68; 6 meshes reconstruct a coherent map extent X[-288,306]
-        Z[-295,250]. Meshes whose 0x227 is not immediately before 0x228 (array
-        draws) come back with index_addr=None and are skipped by triangles()."""
+        `index_addr` and `vbuf_off` are ABSOLUTE BCH offsets — the relocation
+        (SPICA-exact, all flags) has already added the data-section base to the
+        reg 0x227/0x203 words in the command stream, so map_triangles() reads
+        them directly (no data_off add). u16 indices. VERIFIED: mesh0 →
+        index@0xdd9f8 count 1200 stride 36, vertex0.x == 123.68. Meshes whose
+        0x227 is not immediately before 0x228 (array draws) come back with
+        index_addr=None and are skipped by triangles()."""
         d = self.data
         g0, g1 = self.gpu_off, self.gpu_off + self.gpu_len
         draws = []
@@ -294,7 +300,7 @@ class BCH:
         while o + 8 <= g1:
             if u32(d, o + 4) == 0x000F0228:            # reg 0x228, mask 0xf
                 count = u32(d, o)
-                index_addr = u32(d, o - 8) if o >= g0 + 8 and \
+                index_addr = (u32(d, o - 8) & 0x7FFFFFFF) if o >= g0 + 8 and \
                     u32(d, o - 4) == 0x000F0227 else None
                 vbuf_off = stride = 0
                 for q in range(o, max(g0, o - 0x400), -4):
@@ -325,15 +331,14 @@ class BCH:
         terrain (see pica_draw_calls)."""
         import math
         d = self.data
-        base = self.data_off
         for dc in self.pica_draw_calls():
             if dc["index_addr"] is None or dc["stride"] < 0x18:
                 continue
             stride = dc["stride"]
-            vbo = base + dc["vbuf_off"]
-            ib = base + dc["index_addr"]
+            vbo = dc["vbuf_off"]                     # already absolute (relocated)
+            ib = dc["index_addr"]                    # already absolute (relocated)
             uvo = 0x18 if stride >= 0x20 else 0x0c   # after pos(+normal)
-            if base + max(dc["vbuf_off"], dc["index_addr"]) >= len(d):
+            if max(vbo, ib) >= len(d) or stride == 0:
                 continue
             # Per-TRIANGLE validation. Some 0x228 draws get a mismatched 0x227
             # (my heuristic VAO pairing — the SOBJ decode would make this exact),
@@ -361,10 +366,12 @@ class BCH:
     # ---- PICA200 texture units (for a/1/5/2 map-texture BCHs) ----------
     def pica_textures(self):
         """Scan the GPU section for texture-unit setups and return a list of
-        {addr, width, height, fmt} (addr is BCH-data-relative). PICA regs:
-        0x082 = tex0 size ((h<<16)|w), 0x085 = tex0 address, 0x08e = tex0 format
-        (0xC = ETC1). VERIFIED on ORAS a/1/5/2/0890.bch: 128x128 ETC1 units at
-        data-relative 0x2000, 0x4000, … (each 128x128 ETC1 = 0x2000 bytes)."""
+        {addr, width, height, fmt}. `addr` is an ABSOLUTE BCH offset (the
+        relocation already added the data-section base to the reg 0x085 word).
+        PICA regs: 0x082 = tex0 size ((h<<16)|w), 0x085 = tex0 address,
+        0x08e = tex0 format (0xC = ETC1). VERIFIED on ORAS a/1/5/2/0890.bch:
+        128x128 ETC1 units at absolute 0x3b80, 0x5b80, … (data_off + 0, 0x2000,
+        …; each 128x128 ETC1 = 0x2000 bytes)."""
         d = self.data
         g0, g1 = self.gpu_off, self.gpu_off + self.gpu_len
         size = addr = fmt = None

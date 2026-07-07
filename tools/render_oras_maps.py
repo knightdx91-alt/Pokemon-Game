@@ -84,7 +84,7 @@ def decode_textures(texb):
     for t in texb.pica_textures():
         if t["fmt"] != 0xC:            # only ETC1 handled so far
             continue
-        rgb = bch.decode_etc1(texb.data, texb.data_off + t["addr"],
+        rgb = bch.decode_etc1(texb.data, t["addr"],   # addr is absolute (relocated)
                               t["width"], t["height"])
         arr = np.frombuffer(rgb, np.uint8).reshape(t["height"], t["width"], 3)
         imgs.append((arr, t["width"], t["height"]))
