@@ -196,6 +196,65 @@ class BCH:
             struct.pack_into("<I", d, addr,
                              (val + self._section_base(target)) & 0xFFFFFFFF)
 
+    # ---- H3DDict node reader ------------------------------------------
+    def read_dict(self, ptr):
+        """Read an H3DDict at absolute offset `ptr` → ordered list of
+        (name, refbit, node_index). Node = 0xc bytes: u16 LeftNodeIndex,
+        u16 RightNodeIndex, u32 NameOffset (string-table-RELATIVE), u32
+        ReferenceBit. Node 0 is the root (refbit 0xffffffff, name skipped in
+        SPICA). We read sequentially from the root; the parallel Values array
+        (H3DTexture/H3DMaterial) is indexed by this same node order.
+
+        VERIFIED on ORAS a/1/5/2/0890.bch texture dict (root @0x308): yields
+        the map's texture names mapr131_chip_soil2 / _gake_basic1 /
+        _gake_basic_side / mapr13P_gake_sea_b1 in Values order."""
+        out = []
+        d = self.data
+        i = 0
+        o = ptr
+        while o + 0xC <= len(d):
+            rel = u32(d, o + 4)
+            rb = u32(d, o + 8)
+            name = None
+            if 0 < rel < self.str_len:
+                e = d.find(b"\0", self.str_off + rel)
+                s = d[self.str_off + rel:e]
+                if s and all(32 <= c < 127 for c in s):
+                    name = s.decode("ascii", "replace")
+            # stop when we leave the node run: a non-root node with no name and
+            # an implausible refbit (past the string table) ends the dict.
+            if i > 0 and name is None and rb >= self.str_off:
+                break
+            out.append((name, rb, i))
+            i += 1
+            o += 0xC
+            if i > 4096:
+                break
+        return out
+
+    def object_names(self, prefix=None):
+        """Convenience: scan the main header for H3DDict node runs and return
+        the distinct valid object names (optionally filtered by `prefix`).
+        Used to list a BCH's texture/material/model names without resolving the
+        exact per-dict header offsets."""
+        d = self.data
+        names = []
+        seen = set()
+        o = self.main_off
+        end = self.main_off + self.main_len
+        while o + 0xC <= end:
+            rel = u32(d, o + 4)
+            if 0 < rel < self.str_len:
+                e = d.find(b"\0", self.str_off + rel)
+                s = d[self.str_off + rel:e]
+                if 2 <= len(s) <= 40 and all(32 <= c < 127 for c in s):
+                    nm = s.decode("ascii")
+                    if nm not in seen and (prefix is None or nm.startswith(prefix)):
+                        seen.add(nm)
+                        names.append(nm)
+            o += 4
+        return names
+
     # ---- string table -------------------------------------------------
     def strings(self):
         """All ASCII names in the string table. VALIDATED against real ORAS
