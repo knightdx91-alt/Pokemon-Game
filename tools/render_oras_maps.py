@@ -94,12 +94,11 @@ def decode_textures(texb):
 def _mesh_triangles(model, dc):
     """Triangles (with UV) for one draw call, or None if the mesh is garbage."""
     d = model.data
-    base = model.data_off
     stride = dc["stride"]
     if dc["index_addr"] is None or stride < 0x18:
         return None
-    vbo = base + dc["vbuf_off"]
-    ib = base + dc["index_addr"]
+    vbo = dc["vbuf_off"]        # absolute (relocated)
+    ib = dc["index_addr"]       # absolute (relocated)
     uvo = 0x18 if stride >= 0x20 else 0x0C
     # sanity gate
     for i in range(min(dc["count"], 24)):

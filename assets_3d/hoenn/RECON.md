@@ -222,7 +222,33 @@ material→texture name — so some meshes get the wrong texture (visible stripi
 The output dir `assets_3d/hoenn/renders/` is **gitignored** until the binding is
 exact. The tool is committed; the preview PNG is not.
 
-## Relocation flag analysis (the key to exact binding + clean dicts)
+## ✅ RELOCATION — CRACKED (SPICA-exact, all flags) — foundational unlock
+The relocation is now byte-exact in `bch.py::_apply_relocations` (was main-only).
+Per SPICA `H3DRelocator`, each 4-byte entry is:
+`PtrAddress` (bits 0-24, word index of the pointer within Source) ·
+`Target` (bits 25-28, the section base ADDED to the pointer's value) ·
+`Source` (bits 29-31, the section the pointer WORD lives in). Section map:
+0 Contents(main) · 1 Strings · 2/3 Commands(gpu) · 4-8 RawData(data) · 9+ ext.
+So `word@ base(Source)+PtrAddress*4  +=  base(Target)`. The old "flag = bits
+25-31, Source always main" mis-based every pointer whose Source≠main (materials,
+textures, vertex, index). Now EVERY pointer resolves. Consequences already
+folded in: reg 0x203(vbuf)/0x227(index)/0x085(tex-addr) in the command streams
+are ABSOLUTE post-relocation, so the readers drop the manual `data_off` add and
+mask the index high bit (0818 geometry unchanged 4201 tris; 0890 ETC1 still
+decodes). This is the foundation for the exact material→texture binding.
+
+## ⚠ Precise next step — walk the content patricia dicts for names
+With exact relocation, the content-header dict pointers now resolve, but the
+H3DDict (patricia tree) NODE layout still needs decoding (a first guess of
+`refbit u32, left u16, right u16, name u32, data u32` @0x10 stride did NOT read
+back valid names — wrong layout). Decode the SPICA `H3DPatriciaTree` node format
+(reference `H3DDict`), then: the texture BCH's **Textures** dict → `{name:
+H3DTexture}` (name↔the 3-4 ETC1 images already decoded), and the map model's
+**Materials** dict + per-mesh material index → material→texture name. That gives
+EXACT mesh→texture binding (kills the render striping). Then SOBJ per-mesh
+pairing polish + zone table `a/0/1/3` for named-town (Littleroot) cell stitching.
+
+## Relocation flag analysis (SUPERSEDED by the SPICA-exact decode above)
 The exact material→texture binding (and every content dict) is gated by the BCH
 relocation, which `bch.py` currently applies for flag 0 only (assuming the
 pointer word is always in `main`). Full flag map, measured on `a/1/5/2/0890.bch`
