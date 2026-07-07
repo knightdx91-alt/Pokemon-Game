@@ -382,6 +382,44 @@ class BCH:
             o += 4
         return draws
 
+    def mesh_names(self):
+        """Ordered per-mesh object/material names from the mesh table
+        (`find_map_model().mesh_table`, entry stride 0x2c, name at +0x1c,
+        string-table-relative). VERIFIED on ORAS c105 (member 0154): 21 names
+        incl. `pokecen00`/`pc_mado` (Pokémon Center), `c105_house1_a`,
+        `c105_hashi01` (bridge), `chip_kusa` (grass) — so a town's contents are
+        readable from its mesh names (used to identify maps + bind textures)."""
+        m = self.find_map_model()
+        if not m:
+            return []
+        mt, mc = m["mesh_table"], m["mesh_count"]
+        out = []
+        for e in range(mc):
+            rel = u32(self.data, mt + e * 0x2C + 0x1C)
+            name = None
+            if 0 < rel < self.str_len:
+                s = self.data[self.str_off + rel:self.data.find(b"\0", self.str_off + rel)]
+                if s and all(32 <= c < 127 for c in s):
+                    name = s.decode("ascii", "replace")
+            out.append(name)
+        return out
+
+    def mesh_draws(self):
+        """Pair each mesh with its draw call BY ORDER → list of
+        {name, index_addr, count, vbuf_off, stride}. The mesh table and the GPU
+        draw calls are emitted in the same order and in equal number (VERIFIED
+        on ORAS c105: 21 meshes == 21 draws), so mesh[i] ↔ draw[i]. This gives
+        each drawn triangle group its mesh NAME — the authoritative pairing the
+        heuristic lacked, and the hook for name/material → texture binding."""
+        names = self.mesh_names()
+        draws = self.pica_draw_calls()
+        out = []
+        for i, dc in enumerate(draws):
+            d = dict(dc)
+            d["name"] = names[i] if i < len(names) else None
+            out.append(d)
+        return out
+
     def map_triangles(self):
         """Yield (x, y, z, u, v) vertices grouped 3-per-triangle for the map
         terrain. Positions are raw model units; u,v are the two floats after the
