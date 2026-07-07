@@ -501,6 +501,56 @@ class BCH:
                         yield tri
                     tri = []
 
+    # ---- named texture table (a/1/5/2 map-texture BCHs) ---------------
+    def texture_table(self):
+        """Resolve each H3DTexture to its NAME + image params → dict
+        {name: {addr, width, height, fmt}} (addr absolute, post-reloc).
+
+        Per Ohana3DS the texture record is: `+0x00` texUnit0CommandsOffset
+        (→ the PICA block that writes reg 0x082 size / 0x085 addr / 0x08e fmt),
+        `+0x1c` textureName (string). We find records by a valid name at +0x1c
+        whose +0x00 points into the GPU section, then read the params from the
+        referenced command block. VERIFIED on ORAS a/1/5/2/0890.bch → chip_gake01
+        →0x7b80, chip_gake_sea→0x9b80, … Names are the SAME base names the model
+        materials reference (no map-prefix), so model.materials()[i]['texture']
+        keys straight into this table."""
+        d = self.data
+        go, ge = self.gpu_off, self.gpu_off + self.gpu_len
+        table = {}
+        o = self.main_off
+        end = self.main_off + self.main_len
+        while o + 0x20 <= end:
+            c0 = u32(d, o)
+            rel = u32(d, o + 0x1C)
+            name = None
+            if 0 < rel < self.str_len:
+                e = d.find(b"\0", self.str_off + rel)
+                s = d[self.str_off + rel:e]
+                if s and all(32 <= c < 127 for c in s):
+                    name = s.decode("ascii", "replace")
+            if go <= c0 < ge and name and not name.startswith("$"):
+                addr = size = fmt = None
+                p = c0
+                for _ in range(48):
+                    if p + 8 > ge:
+                        break
+                    reg = u32(d, p + 4) & 0xFFFF
+                    v = u32(d, p)
+                    if reg == 0x085:
+                        addr = v & 0x7FFFFFFF
+                    elif reg == 0x082:
+                        size = v
+                    elif reg == 0x08E:
+                        fmt = v & 0xF
+                    elif reg == 0x022F or reg == 0x0080:
+                        break
+                    p += 8
+                if addr and size and name not in table:
+                    table[name] = {"addr": addr, "width": size & 0xFFFF,
+                                   "height": (size >> 16) & 0xFFFF, "fmt": fmt}
+            o += 4
+        return table
+
     # ---- PICA200 texture units (for a/1/5/2 map-texture BCHs) ----------
     def pica_textures(self):
         """Scan the GPU section for texture-unit setups and return a list of
