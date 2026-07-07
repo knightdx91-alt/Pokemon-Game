@@ -29,7 +29,11 @@ import render_oras_maps as R
 # planes that streak when seen edge-on (in-engine they face the camera);
 # `chip_wood_shadow` = dark blob shadows painted opaque. Cull-by-name until the
 # billboard/alpha compositing is implemented.
-CULL = {"chip_wind", "chip_kusa_b", "chip_wood_shadow", "projection_dummy", None}
+# Cull only genuine overlay/shadow meshes: `chip_wind` = a mostly-transparent
+# sparkle overlay; `chip_wood_shadow` + `t101_a01` = dark navy (31,39,55) shadow
+# layers that paint as black bands winding across the map. Keep `chip_kusa_b`
+# (green) — it's the border trees/bushes, wrongly culled before (missing trees).
+CULL = {"chip_wind", "chip_wood_shadow", "t101_a01", "projection_dummy", None}
 
 
 def render(model_mem, index, S=900):
