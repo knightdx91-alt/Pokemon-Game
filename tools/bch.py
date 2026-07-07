@@ -333,30 +333,15 @@ class BCH:
             vbo = base + dc["vbuf_off"]
             ib = base + dc["index_addr"]
             uvo = 0x18 if stride >= 0x20 else 0x0c   # after pos(+normal)
-            # Sanity-gate the mesh: some 0x228 headers belong to array-draws or
-            # get a mismatched 0x227 — their "vertices" are garbage floats. Map
-            # geometry lives within a few hundred model units, so sample the
-            # first vertices and skip the mesh if any position is non-finite or
-            # wildly out of range.
-            end_ok = base + max(dc["vbuf_off"], dc["index_addr"])
-            if end_ok >= len(d):
+            if base + max(dc["vbuf_off"], dc["index_addr"]) >= len(d):
                 continue
-            bad = False
-            for i in range(0, min(dc["count"], 24)):
-                vi = u16(d, ib + i * 2)
-                o = vbo + vi * stride
-                if o + uvo + 8 > len(d):
-                    bad = True
-                    break
-                for k in (0, 4, 8):
-                    val = f32(d, o + k)
-                    if not math.isfinite(val) or abs(val) > 1e5:
-                        bad = True
-                        break
-                if bad:
-                    break
-            if bad:
-                continue
+            # Per-TRIANGLE validation. Some 0x228 draws get a mismatched 0x227
+            # (my heuristic VAO pairing — the SOBJ decode would make this exact),
+            # so a mesh's vertex buffer can contain interspersed garbage floats.
+            # Map geometry lives within a few hundred model units, so drop any
+            # triangle whose vertices are non-finite or out of range (BOUND),
+            # rather than gating whole meshes on their first few vertices.
+            BOUND = 8192.0
             tri = []
             for i in range(dc["count"]):
                 vi = u16(d, ib + i * 2)
@@ -368,7 +353,9 @@ class BCH:
                      f32(d, o + uvo), f32(d, o + uvo + 4))
                 tri.append(v)
                 if len(tri) == 3:
-                    yield tri
+                    if all(math.isfinite(c) and abs(c) < BOUND
+                           for t in tri for c in t[:3]):
+                        yield tri
                     tri = []
 
     # ---- PICA200 texture units (for a/1/5/2 map-texture BCHs) ----------
