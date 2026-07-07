@@ -382,6 +382,44 @@ class BCH:
             o += 4
         return draws
 
+    def materials(self):
+        """Ordered material records from the model's material table
+        (`find_map_model().mesh_table` — despite the name this is the MATERIALS
+        table, stride 0x2c for ORAS BCH version>=0x21). Layout from Ohana3DS:
+          +0x00 MaterialParamsOffset · +0x10 TextureCommandsOffset ·
+          +0x14 TextureCommandsWordCount · +0x18 MaterialMapperOffset ·
+          +0x1c Texture0Name · +0x20 Texture1Name · +0x24 Texture2Name ·
+          +0x28 material Name  (all string-table-relative).
+        Returns list of dicts {tex0, tex1, tex2, name, texture} where `texture`
+        is the resolved primary texture name (tex0, or tex1 when tex0 is
+        'projection_dummy'). VERIFIED on ORAS c105 (member 0154): mat8.tex0=
+        'chip_kusa' (ground grass), mat14='pokecen_01', mat0='c105_hashi01'."""
+        m = self.find_map_model()
+        if not m:
+            return []
+        mt, mc = m["mesh_table"], m["mesh_count"]
+        d = self.data
+
+        def s(o):
+            rel = u32(d, o)
+            if not (0 < rel < self.str_len):
+                return None
+            e = d.find(b"\0", self.str_off + rel)
+            v = d[self.str_off + rel:e]
+            return v.decode("ascii", "replace") if v and all(32 <= c < 127 for c in v) else None
+
+        out = []
+        for e in range(mc):
+            base = mt + e * 0x2C
+            tex0, tex1, tex2 = s(base + 0x1C), s(base + 0x20), s(base + 0x24)
+            name = s(base + 0x28)
+            primary = tex0
+            if primary in (None, "projection_dummy"):
+                primary = tex1 or tex2 or tex0
+            out.append({"tex0": tex0, "tex1": tex1, "tex2": tex2,
+                        "name": name, "texture": primary})
+        return out
+
     def mesh_names(self):
         """Ordered per-mesh object/material names from the mesh table
         (`find_map_model().mesh_table`, entry stride 0x2c, name at +0x1c,
@@ -412,11 +450,13 @@ class BCH:
         each drawn triangle group its mesh NAME — the authoritative pairing the
         heuristic lacked, and the hook for name/material → texture binding."""
         names = self.mesh_names()
+        mats = self.materials()
         draws = self.pica_draw_calls()
         out = []
         for i, dc in enumerate(draws):
             d = dict(dc)
             d["name"] = names[i] if i < len(names) else None
+            d["texture"] = mats[i]["texture"] if i < len(mats) else None
             out.append(d)
         return out
 
