@@ -468,21 +468,55 @@ class BCH:
             out.append(name)
         return out
 
+    def mesh_material_perm(self):
+        """The H3DMesh array's per-mesh MaterialIndex → the EXACT draw→material
+        binding (fixes the by-order guess that garbled renders).
+
+        The model descriptor at `+0x40` points to the H3DMesh array, `+0x44` =
+        count. Each record (stride 0x38) begins with a `u16` MaterialIndex into
+        the material table. The GPU draws are emitted in mesh-array order, so
+        draw[i]'s TRUE material is `perm[i]` (a non-identity permutation), NOT i.
+        VERIFIED: on outdoor maps (0006/0154/0389) `perm` is a clean permutation
+        of range(mesh_count) and remapping makes the ground/buildings bind
+        correctly. Returns the perm list, or None if it isn't a valid
+        permutation (e.g. some interiors use a different record layout → caller
+        falls back to identity)."""
+        m = self.find_map_model()
+        if not m:
+            return None
+        desc, mc = m["descriptor"], m["mesh_count"]
+        if desc + 0x48 > len(self.data):
+            return None
+        arr = u32(self.data, desc + 0x40)
+        acnt = u32(self.data, desc + 0x44)
+        if acnt != mc or not (self.main_off <= arr < len(self.data) - mc * 0x38):
+            return None
+        perm = [u16(self.data, arr + i * 0x38) for i in range(mc)]
+        if sorted(perm) != list(range(mc)):
+            return None
+        return perm
+
     def mesh_draws(self):
-        """Pair each mesh with its draw call BY ORDER → list of
-        {name, index_addr, count, vbuf_off, stride}. The mesh table and the GPU
-        draw calls are emitted in the same order and in equal number (VERIFIED
-        on ORAS c105: 21 meshes == 21 draws), so mesh[i] ↔ draw[i]. This gives
-        each drawn triangle group its mesh NAME — the authoritative pairing the
-        heuristic lacked, and the hook for name/material → texture binding."""
+        """Pair each GPU draw with its material/name → list of
+        {name, index_addr, count, vbuf_off, stride, texture}.
+
+        The GPU draws are emitted in mesh-array order and in equal number to the
+        materials (VERIFIED on ORAS c105: 21 meshes == 21 draws). Each mesh's
+        material is given by the H3DMesh array (mesh_material_perm) — draw[i] uses
+        material `perm[i]`, a non-identity permutation. Without the perm the
+        binding was by-order (draw[i]→material[i]), which put textures on the
+        wrong geometry and garbled the render; the perm is the correctness fix.
+        Falls back to identity when the perm is unavailable (some interiors)."""
         names = self.mesh_names()
         mats = self.materials()
         draws = self.pica_draw_calls()
+        perm = self.mesh_material_perm()
         out = []
         for i, dc in enumerate(draws):
             d = dict(dc)
-            d["name"] = names[i] if i < len(names) else None
-            d["texture"] = mats[i]["texture"] if i < len(mats) else None
+            j = perm[i] if (perm and i < len(perm)) else i
+            d["name"] = names[j] if j < len(names) else None
+            d["texture"] = mats[j]["texture"] if j < len(mats) else None
             out.append(d)
         return out
 
