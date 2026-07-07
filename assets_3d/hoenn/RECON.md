@@ -237,16 +237,32 @@ are ABSOLUTE post-relocation, so the readers drop the manual `data_off` add and
 mask the index high bit (0818 geometry unchanged 4201 tris; 0890 ETC1 still
 decodes). This is the foundation for the exact material→texture binding.
 
-## ⚠ Precise next step — walk the content patricia dicts for names
-With exact relocation, the content-header dict pointers now resolve, but the
-H3DDict (patricia tree) NODE layout still needs decoding (a first guess of
-`refbit u32, left u16, right u16, name u32, data u32` @0x10 stride did NOT read
-back valid names — wrong layout). Decode the SPICA `H3DPatriciaTree` node format
-(reference `H3DDict`), then: the texture BCH's **Textures** dict → `{name:
-H3DTexture}` (name↔the 3-4 ETC1 images already decoded), and the map model's
-**Materials** dict + per-mesh material index → material→texture name. That gives
-EXACT mesh→texture binding (kills the render striping). Then SOBJ per-mesh
-pairing polish + zone table `a/0/1/3` for named-town (Littleroot) cell stitching.
+## Content patricia dict — walk MECHANISM found (node struct needs exact nail)
+With exact relocation the content-header pairs (`(dictPtr, count)` at `main_off`,
+8 bytes each) now resolve. Empirically on `a/1/5/2/0890.bch`:
+- **pair0 = Models, pair1 = Materials/Shaders(348), pair4 = Textures(452)** —
+  pair4 walks out the real texture names: `mapr131_chip_soil2`,
+  `mapr131_gake_basic1`, `mapr131_gake_basic_side`, `mapr13P_gake_sea_b1`,
+  `gake_O1_01`, … (matches the map's materials).
+- **Node walk**: after a small header the tree is ~**0xc-byte nodes**
+  `(u32 nameOffset_str_RELATIVE, u32 links, u32 dataOffset)`; the root node has
+  `ReferenceBit = 0xffffffff` (seen at dict+0x4). name = `str_off + nameOffset`.
+- ⚠ There is a small **alignment drift** (some names read one byte short, e.g.
+  `efaultShader`←`DefaultShader`) — the exact `H3DPatriciaTreeNode` field
+  widths/header size aren't in SPICA's public `H3DDict.cs`/`H3DPatriciaTree.cs`
+  (they delegate to a generic serializer). Nail the node struct (bit-packed
+  ReferenceBit + u16 Left/Right + name + value) to remove the drift.
+
+## ⚠ Precise next step — finish exact binding
+1. Nail the patricia node struct (drift above) → clean `{name: dataOffset}` for
+   the **Textures** dict of the `a/1/5/2` BCH and the **Materials** dict of the
+   map model. Texture dataOffset → the H3DTexture (dims/format/`reg 0x085` addr,
+   already decoded) → pair each of the 3-4 ETC1 images with its NAME.
+2. Map model: per-mesh material index → material name → its texture0 name →
+   match to the texture-image name from step 1 → EXACT mesh→texture binding
+   (kills `render_oras_maps` striping; `di % len(imgs)` becomes the real map).
+3. Then SOBJ per-mesh pairing polish + zone table `a/0/1/3` for named-town
+   (Littleroot) cell stitching.
 
 ## Relocation flag analysis (SUPERSEDED by the SPICA-exact decode above)
 The exact material→texture binding (and every content dict) is gated by the BCH
