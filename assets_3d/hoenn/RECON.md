@@ -270,6 +270,41 @@ border). find_map_model() fails on `world##` names (name not stored as a dict
 node) but map_triangles doesn't need it (it scans the GPU section). Its texture
 BCH is in `a/1/5/2` (find by the cell's texture-name prefix, like the c-maps).
 
+## ✅ EXACT BINDING CHAIN — SOLVED (via Ohana3DS layouts, both sides verified)
+The material→texture binding that blocked the whole session is cracked. Ohana3DS
+(explicit sequential reads, unlike SPICA's attribute-driven serializer) gave the
+exact record layouts:
+- **MATERIALS table** (the 0x2c-stride table at `find_map_model().mesh_table` —
+  it was materials, not meshes, for BCH version>=0x21): `+0x00` MaterialParams ·
+  `+0x10` TextureCommandsOffset · `+0x14` wordcount · `+0x18` MaterialMapper ·
+  **`+0x1c` Texture0Name · `+0x20` Texture1Name · `+0x24` Texture2Name ·
+  `+0x28` material Name** (all str-relative). `bch.materials()` reads this;
+  `mesh_draws()` now carries each draw's exact texture name (tex0, or tex1 when
+  tex0='projection_dummy'). VERIFIED c105: draw→chip_kusa(ground)/pokecen_01/
+  c105_hashi01(bridge).
+- **TEXTURE records** (in the a/1/5/2 texture BCHs): `+0x00`
+  texUnit0CommandsOffset (→ PICA block w/ reg 0x082 size / 0x085 addr / 0x08e
+  fmt) · `+0x1c` textureName. `bch.texture_table()` → `{name: {addr,w,h,fmt}}`.
+  VERIFIED 0890: chip_gake01→0x7b80, chip_gake_sea→0x9b80. **Crucially the
+  texture BCH uses the SAME base names the model materials reference** (no
+  map-prefix), so `materials()[i]['texture']` keys straight into `texture_table`.
+
+So the full chain now exists: **draw → material → texture name → image**.
+
+## ⚠ Remaining to a clean textured render (bounded, logic proven)
+1. **`texture_table()` under-finds** (~331 across all a/1/5/2; misses chip_kusa).
+   The heuristic (name@+0x1c with +0x00 in gpu) is too narrow — enumerate via
+   the content header's **texturesPointerTableOffset** (Ohana) instead, and
+   accept texUnit0 commands in the data section too.
+2. **Textures are shared across many a/1/5/2 BCHs** (dedup) — build a GLOBAL
+   `{name: (member, addr,w,h,fmt)}` index once (scans in ~2s) and look up each
+   map's texture names in it. (chip_wood_b resolved → member 0229, fmt 0xd
+   ETC1A4 — so add ETC1A4 to decode_etc1.)
+3. **`find_map_model()` fails on `world##` cells** (Littleroot=0006) — the name
+   isn't stored as a dict node. Fix the descriptor lookup for world cells so
+   `materials()`/`mesh_draws()` work there (map_triangles already works).
+Then: per draw, look up texture in the global index → decode → rasterize UVs.
+
 ## ⚠ Precise next step — finish exact binding (node format now known)
 1. Implement `read_dict(ptr)` in `bch.py`: 0xc-stride node walk (skip root) →
    ordered name list, plus the **parallel Values array** (H3DTexture /
