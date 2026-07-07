@@ -102,3 +102,21 @@ Practical implication: the two remaining fidelity fixes (seam-exact cell offsets
 the field camera) are best gotten by (a) decoding the ROM's zone/matrix DATA
 directly now that the class model confirms the structure, and/or (b) finishing
 the reloc parse above to read `FieldCameraSetting`/`MapFileSimple` constants.
+
+## Zone/matrix data probe (seam-exact stitching) — findings
+Tried to derive the exact cell pitch from the ROM data (for seamless stitching):
+- **Cell collision** lives in each `a/0/3/9` GR container as a `coll` sub-block
+  (GR offset-table +0xc). It's a collision MESH (triangle verts + a small header
+  `[u32 0x910][u32 0x5d8][counts 1,3,2,1,2]`), not a tile grid. Its extent is
+  **±363.6** (full 727.2 ≈ 40 tiles @ 18.18 u/tile) — the same for every cell.
+- **But 727 is NOT the render pitch:** at 727 the cells separate (gaps); the
+  rendered geometry doesn't fill the whole collision cell and cell edges are
+  irregular. Empirically the cells mesh best at **pitch ≈ 485** (440 overlaps,
+  512/727 gap). `render_oras_town.py` now defaults to 485.
+- **Seam-exact placement is a code constant, not derivable from geometry.**
+  Because the cells are irregular blobs, no single uniform pitch abuts them
+  perfectly — the engine uses an exact per-cell world offset from
+  `field::MapFileSimple`/`MapBlock` (or a zone-matrix table). Getting pixel-exact
+  seams therefore requires either finishing the reloc→vtable→disasm of
+  `MapFileSimple` (read the placement math) or locating the overworld matrix that
+  lists cell→world-offset. 485 uniform is the best approximation until then.

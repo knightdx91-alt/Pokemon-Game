@@ -95,7 +95,13 @@ def render(area, S=1100):
     if not cells:
         print(f"no cells for {area}")
         return None
-    pitch = float(os.environ.get("ORAS_PITCH", "512"))
+    # Cell pitch (world units between adjacent grid cells). The collision mesh
+    # extent is ±363.6 (727.2 ≈ 40 tiles @ 18.18/tile), but the RENDER geometry
+    # doesn't fill the full cell and the cell edges are irregular, so uniform
+    # placement aligns best empirically at ~485 (727 gaps, 440 overlaps). Exact
+    # seamless placement needs the per-cell offset from field::MapFileSimple /
+    # the zone-matrix data — until then 485 is the best uniform approximation.
+    pitch = float(os.environ.get("ORAS_PITCH", "485"))
     print(f"  {area}: {len(cells)} cells {sorted(cells)} pitch={pitch}")
 
     # Offset each cell's triangles by grid position. +col = +X (east), +row = +Z
