@@ -43,7 +43,7 @@ Johto — one shared overworld. No SoulSilver needed.)
 | **Kanto** | HeartGold | DS Nitro G3D | ✅ DONE | `assets_3d/kanto/` (199 maps) |
 | **Johto** | HeartGold | DS Nitro G3D | ✅ DONE | `assets_3d/johto/` (341 maps) |
 | **Sinnoh** | Platinum | DS Nitro G3D | ✅ DONE | `assets_3d/sinnoh/` (533 maps) |
-| **Hoenn** | Omega Ruby | 3DS BCH/PICA200 | ⏳ DECODERS WORKING (assembly + binding left) | parser `tools/bch.py` + `render_oras_maps.py`, see §4 |
+| **Hoenn** | Omega Ruby | 3DS BCH/PICA200 | ⏳ RENDERS AS 3D TOWN (Littleroot ✅; roof-caps + stitching left) | `tools/bch.py` + `tools/render_oras_3d.py`, see §4 & `assets_3d/hoenn/RECON.md` |
 | **Unova** | Black/White 1&2 | DS Nitro G3D | ⬜ NOT started (into `assets_3d/`) | (older blind-RE lives in `data/maps/unova*`) |
 | **Kalos** | Pokémon X | 3DS BCH/PICA200 | ⬜ NOT started | reuses `tools/bch.py` |
 | **Alola** | Ultra Moon | 3DS BCH/PICA200 | ⬜ NOT started | reuses `tools/bch.py` |
@@ -70,38 +70,39 @@ MANIFEST.json ATTRIBUTION.md`. Full region table: `assets_3d/README.md`.
 
 Deps: `pip install ndspy pillow numpy` (DS) / `pip install pillow numpy` (3DS).
 
-## 4. ▶ RESUME POINT — Omega Ruby (Hoenn): decoders WORK, finish assembly+binding
+## 4. ▶ RESUME POINT — Omega Ruby (Hoenn): renders as a 3D town; roof-caps + stitch left
 Full byte-level detail + all confirmed offsets: **`assets_3d/hoenn/RECON.md`**
 (the authoritative doc — read it first; the summary here is a pointer).
 
-**What now WORKS end-to-end in `tools/bch.py` + `tools/render_oras_maps.py`
-(all verified on the real ROM):**
-- `BCH.find_map_model()` — model descriptor lookup (bypasses relocation).
-- `BCH.pica_draw_calls()` + `BCH.map_triangles()` — PICA geometry → real terrain
-  triangles (v0.x=123.68 ground-truth match; renders a recognizable map).
-- `BCH.pica_textures()` + `decode_etc1()` — ETC1 (3DS byte-reversed/Morton) →
-  recognizable textures. Map textures are a SEPARATE archive: **`a/1/5/2`**
-  (per-map texture BCHs; matched to a map model by texture-name overlap).
-- `render_oras_maps.py <model_mem> [tex_mem]` bakes a textured PREVIEW.
+**What now WORKS end-to-end (verified on the real ROM — Littleroot renders as a
+recognizable 3D town: 2 houses, Birch's lab, dirt paths, tree/lamp-post border):**
+- `BCH.find_map_model()` — model descriptor lookup.
+- `BCH.pica_draw_calls()` + `map_triangles()` — PICA geometry → terrain triangles.
+- `BCH.pica_textures()` + `decode_etc1()` — ETC1/ETC1A4 textures. Map textures =
+  separate archive **`a/1/5/2`** (global name→image index in `render_oras_maps`).
+- **`BCH.mesh_material_perm()` + `mesh_draws()` — EXACT mesh→material binding**
+  (SOLVED this session): sort the H3DMesh array (`desc+0x40`, stride 0x38,
+  MaterialIndex@+0x00) by each record's command-buffer address (`+0x08`);
+  count-validated. This killed the texture garble.
+- **`tools/render_oras_3d.py` — 3D PERSPECTIVE renderer with a real look-at
+  camera** (SOLVED this session; the old top-down/undersided projection is why
+  buildings looked flat). Knobs `ORAS_AZ`/`ORAS_ELEV`/`ORAS_DIST`/`ORAS_F`;
+  Littleroot: `ORAS_AZ=0 ORAS_ELEV=50 ORAS_DIST=820`. `CULL` set drops shadow/
+  overlay meshes (`t101_a01`,`chip_wood_shadow`,`chip_wind`) — classify a mesh's
+  role by per-mesh avg texel color + opaque fraction (see RECON).
+- `tools/export_oras_gltf.py <mem>` — exports a `.glb` (three.js-loadable).
 
-**The 3 remaining pieces for a CLEAN, EXACT bake (each SPICA-level; the current
-preview is garbled without them):**
-1. **SOBJ mesh decode** — the mesh table (`desc+0x34`, stride 0x2c: `+0x10`
-   SOBJ ptr, `+0x1c` vcount, `+0x28` icount) has another indirection; the
-   heuristic `pica_draw_calls()` mis-pairs some meshes → stray overlay
-   triangles. Walk the SOBJ for authoritative per-mesh (vbuf, ibuf, material).
-2. **Relocation flag 1** — flags 0/2/3 are CRACKED (ptr-in-main; value base
-   main/data/gpu). Flag 1 (string ptrs, majority) is delta/sub-tabled — finish
-   it → `content_dict()` + Materials/Textures patricia dicts resolve → EXACT
-   material→texture binding (kills the render striping).
-3. **Zone table `a/0/1/3`** (538 `ZO\5` containers) — the overworld is a
-   `world##_col_row` CELL GRID (like the DS matrix); towns/routes are cells,
-   interiors are separate (`t###r####`,`c1##`). To render a NAMED town (e.g.
-   **Littleroot**, the user's requested first target) you must decode this
-   table: name → its `world##` cells → stitch (same pattern as Sinnoh/HGSS).
+**Remaining for an EXACT bake (priority):**
+1. **Hollow roof-tops** — each building mesh has TWO sub-draws (mesh record's
+   `+0x08` AND `+0x18` cmd-buffer pointers); `pica_draw_calls` captures one → no
+   roof cap. Parse both sub-draws per mesh.
+2. **Zone table `a/0/1/3`** (538 `ZO\5`) — overworld is a `world##_col_row` CELL
+   GRID; decode name → cells → stitch multi-cell towns (like Sinnoh/HGSS), then
+   batch-bake into `assets_3d/hoenn/`.
+3. Backface culling + minor mesh cleanup.
 
-**Order to do them:** SOBJ (clean geometry, unblocks material link) → zone table
-(find Littleroot's cells) → flag-1/binding (exact textures) → batch bake.
+**Order:** roof sub-draws (clean buildings) → zone table (named/stitched towns)
+→ batch bake.
 
 --- ORIGINAL RECON (still valid, byte-level) BELOW ---
 Full byte-level detail + all confirmed offsets: **`assets_3d/hoenn/RECON.md`**.

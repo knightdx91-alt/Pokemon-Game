@@ -1046,13 +1046,27 @@ MANIFEST.json`). Full status table + regen commands in `assets_3d/README.md`.
 - **DONE ✅ (DS Nitro G3D, via `tools/collect_region_3d.py` / `collect_sinnoh_3d.py`):**
   **Kanto** (199 maps) + **Johto** (341) from HeartGold, **Sinnoh** (533) from
   Platinum. All terrain/textures/buildings verified by rendering every town.
-- **Hoenn (Omega Ruby, 3DS) — BCH decoders WORKING, exact binding left ⏳.**
-  Omega Ruby is 3DS: maps are **BCH (PICA200)** models in GARC `a/0/3/9`
-  (`GR`-wrapped), NOT DS Nitro G3D. Decoder: **`tools/bch.py`** +
-  **`tools/render_oras_maps.py`**. Full byte-level detail + resume point:
-  **`assets_3d/hoenn/RECON.md`** (authoritative — read it first). Work is on
-  branch `claude/3d-maps-assets-decomp-191xu4` (this repo's `assets_3d/` merged
-  onto it; PR #12). **Big-session progress — the hard unknowns are CRACKED:**
+- **Hoenn (Omega Ruby, 3DS) — RENDERS AS A 3D TOWN ✅ (Littleroot); roof-caps +
+  stitching left ⏳.** Omega Ruby is 3DS: maps are **BCH (PICA200)** models in
+  GARC `a/0/3/9` (`GR`-wrapped), NOT DS Nitro G3D. Decoder: **`tools/bch.py`** +
+  **`tools/render_oras_3d.py`** (3D perspective/look-at renderer) +
+  `render_oras_maps.py` (top-down) + `export_oras_gltf.py` (.glb). Full
+  byte-level detail + resume point: **`assets_3d/hoenn/RECON.md`** (authoritative
+  — read it first). Branch `claude/3d-maps-assets-decomp-191xu4` (PR #12).
+  **LATEST SESSION — Littleroot now renders as a recognizable 3D town** (2 houses
+  w/ brown roofs + tan walls, Birch's lab, dirt paths, tree/lamp-post border):
+  - **Mesh→material binding SOLVED** — `bch.mesh_material_perm()` sorts the
+    H3DMesh array (`desc+0x40`, stride 0x38, MaterialIndex@0) by cmd-buffer
+    address (`+0x08`); count-validated. Killed the texture garble.
+  - **Look-at CAMERA SOLVED** — old projection viewed the map UNDERSIDE (why
+    buildings looked flat). `render_oras_3d.py` uses an above+south look-at
+    (`ORAS_AZ`/`ORAS_ELEV`/`ORAS_DIST`; Littleroot `AZ=0 ELEV=50 DIST=820`).
+  - **Cull set** — `t101_a01`/`chip_wood_shadow` = dark shadow overlays (the
+    "black lines"); `chip_kusa_b` = border trees (don't cull). Classify a mesh
+    by avg texel color + opaque fraction.
+  - **REMAINING:** hollow roof-tops (2nd sub-draw per mesh, record `+0x18`);
+    zone table `a/0/1/3` for named/stitched towns; backface culling.
+  **Earlier-session foundation (the hard unknowns, CRACKED):**
   - **RELOCATION — SPICA-exact (all flags), the foundational unlock.** Each
     reloc entry = `PtrAddress`(bits0-24, word idx in Source) · `Target`(bits
     25-28, base added to value) · `Source`(bits29-31, section the ptr word is

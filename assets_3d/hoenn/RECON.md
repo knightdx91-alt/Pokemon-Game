@@ -537,3 +537,45 @@ walls don't stand) — likely a per-mesh vertex STRIDE/format mismatch (24B vs 3
 in `pica_draw_calls` for building draws, misreading vertical wall positions. Plus
 cosmetic: a dark road/border mesh at the north edge (add to cull or bind), and
 camera framing.
+
+## ▶ SESSION UPDATE — Littleroot renders as a recognizable 3D town ✅
+
+Three fixes turned the garble into a real 3D Littleroot (two houses w/ brown
+roofs + tan walls, Birch's lab, dirt paths, tree/lamp-post border):
+
+1. **Mesh→material binding SOLVED** (see the section above) — `bch.mesh_material_perm`
+   sorts the H3DMesh array by command-buffer address; count-validated. In
+   `bch.mesh_draws()`.
+2. **Look-at CAMERA** (`tools/render_oras_3d.py`) — the old ad-hoc projection
+   viewed the map's UNDERSIDE (why buildings looked flat). Replaced with a real
+   look-at from ABOVE + SOUTH tilted down (−Z is north here; houses at z≈−295).
+   Knobs: `ORAS_AZ` (azimuth, 0=due south), `ORAS_ELEV` (~50), `ORAS_DIST`,
+   `ORAS_F`. Good Littleroot framing: `ORAS_AZ=0 ORAS_ELEV=50 ORAS_DIST=820`.
+3. **Cull set corrected** — `t101_a01` and `chip_wood_shadow` are dark-navy
+   (31,39,55) SHADOW/overlay meshes (identified by per-mesh avg texel color);
+   painting them opaque made "two black lines winding around" — now culled. The
+   real grass ground is `chip_kusa_a` (solid green). `chip_kusa_b` (green) is
+   BORDER TREES/BUSHES — do NOT cull (was the "missing trees"). `chip_wind` =
+   mostly-transparent sparkle overlay (cull). Per-mesh avg-color +
+   opaque-fraction is the way to classify a mesh's role.
+
+### Per-mesh role map for member 0006 (Littleroot) — reference
+`chip_kusa_a`=grass ground (green, solid); `chip_kusa_b`=border trees/bushes;
+`chip_wood_b`=north tree line (green foliage); `chip_wood_a`=house wood walls
+(brown); `t101_01`/`t101_02_fix`=house roofs/tan; `chip_mado`=windows (grey-blue);
+`chip_gake_b`=cliff/ledge (tan); `chip_alpha`=path/decal (partial alpha);
+`chip_wind`=sparkle overlay (cull); `chip_wood_shadow`+`t101_a01`=shadow overlays
+(cull).
+
+### REMAINING (next session, priority)
+1. **Hollow roof-tops** — each building mesh has a 2nd sub-draw (mesh record's
+   `+0x18` command-buffer pointer; `+0x08` is the 1st). `pica_draw_calls` grabs
+   only one sub-draw per mesh → walls+roof-edges but no roof cap. Parse BOTH
+   sub-draws per mesh (decode each mesh record's two cmd buffers, or make
+   `pica_draw_calls` not stop at one 0x228 per buffer).
+2. Tree coverage denser at north than S/W edges (may be genuine to this cell, or
+   more foliage lives in `chip_kusa_b`/adjacent cells — verify vs stitching).
+3. Faint town-boundary outline still shows (a low subtle mesh; classify + cull).
+4. Backface culling + roof-cap → clean solid houses.
+5. Then repeat on other towns + stitch multi-cell maps (matrix), like the DS
+   regions, into `assets_3d/hoenn/`.
