@@ -303,42 +303,40 @@ class BCH:
         return m.start() if m else None
 
     def find_map_model(self):
-        """Locate the terrain model descriptor WITHOUT relying on the (not yet
-        byte-exact) flag!=0 relocation.
+        """Locate the terrain model descriptor via the H3D content header
+        (Ohana3DS): `main_off + 0x00` = modelsPointerTableOffset, `+0x04` =
+        count; entry i → the model descriptor. The descriptor has the 4x3 world
+        matrix at +0x00, the MATERIAL table pointer at +0x34 and count at +0x38.
 
-        Method (validated on real ORAS a/0/3/9 member 0818 = map 'c09r1002_00_00'):
-        the Models patricia dict stores, for each model, a node whose first two
-        words are `(u32 nameOffset, u32 dataOffset)` — nameOffset is the
-        string-table-relative offset of the model name, dataOffset is the
-        absolute offset of the model descriptor. We find the map-code string,
-        scan the main header for a word equal to its str-relative offset (the
-        node's nameOffset), read the next word as the descriptor offset, and
-        confirm it via the mesh table: descriptor +0x34 = mesh-table pointer
-        (in-file), +0x38 = mesh count (small). The name-string match makes this
-        unambiguous — a bare offset can collide, but a *node* has the descriptor
-        immediately after and passes the mesh-table check (0818: node@0x10c →
-        desc 0x2cc → mesh table 0x8c8, 17 meshes; uniquely).
+        This is authoritative and works for EVERY model — c##r####, town c1##,
+        AND the `world##` overworld cells (Littleroot=0006) whose names are not
+        stored as dict nodes (the old name-node scan failed on those). VERIFIED:
+        0818→desc 0x2cc/17, 0154→0x30c/21, 0006→0x28c/13.
 
-        Returns dict {name, descriptor, matrix (3x4 floats), mesh_table,
-        mesh_count} or None. Only covers c##r####-coded field maps for now;
-        D-/other-named members need the generic Models-dict walk (see RECON.md).
-        """
-        name_rel = self._map_code_offset()
-        if name_rel is None:
-            return None
-        name = cstr(self.data, self.str_off + name_rel)
+        Returns {name, descriptor, matrix, mesh_table, mesh_count} or None.
+        (`mesh_table`/`mesh_count` name the material table — kept for API
+        stability; materials() reads it.)"""
         d = self.data
-        mo, ml = self.main_off, self.main_len
-        for o in range(mo, mo + ml - 8, 4):
-            if u32(d, o) != name_rel:
-                continue
-            desc = u32(d, o + 4)                     # node: name, dataOffset, ...
-            if not (mo <= desc < len(d) - 0xc0):
+        mo = self.main_off
+        if mo + 8 > len(d):
+            return None
+        mptr = u32(d, mo)
+        mcnt = u32(d, mo + 4)
+        if not (mo <= mptr < len(d)) or not (0 < mcnt < 256):
+            return None
+        for i in range(mcnt):
+            ep = mptr + i * 4
+            if ep + 4 > len(d):
+                break
+            desc = u32(d, ep)
+            if not (mo <= desc < len(d) - 0xC0):
                 continue
             mesh_table = u32(d, desc + 0x34)
             mesh_count = u32(d, desc + 0x38)
-            if not (mo <= mesh_table < len(d)) or not (0 < mesh_count < 1024):
+            if not (mo <= mesh_table < len(d)) or not (0 < mesh_count < 2048):
                 continue
+            name_rel = self._map_code_offset()
+            name = cstr(self.data, self.str_off + name_rel) if name_rel else None
             matrix = [[f32(d, desc + (r * 4 + c) * 4) for c in range(4)]
                       for r in range(3)]
             return {"name": name, "descriptor": desc, "matrix": matrix,
