@@ -120,3 +120,25 @@ Tried to derive the exact cell pitch from the ROM data (for seamless stitching):
   seams therefore requires either finishing the reloc→vtable→disasm of
   `MapFileSimple` (read the placement math) or locating the overworld matrix that
   lists cell→world-offset. 485 uniform is the best approximation until then.
+
+## Matrix hunt — DEFINITIVE: no data matrix exists (placement is name + code constant)
+Traced `a/0/1/3` (538 `ZO` zone containers) fully:
+- **ZO member N = the per-cell zone data for a/0/3/9 cell N** (zone header `u16[13]`
+  = the cell's model member index). Not a separate zone/area grouping.
+- ZO header (sec0, 56 B) fields are sequential INDICES tied to the member
+  (`u16[12]` ≈ 524+member, etc.) + texset-ish refs + entity counts. **No world
+  position / grid coordinate.** Verified across the world01 cells: same-column
+  cells (2,1)&(2,2) have identical tail fields (63,0,63) despite different rows,
+  so the tail is not a coordinate.
+- ZO sec1 = **entity/event placements** (NPCs, warps, signs) at tile coords
+  (e.g. 179,106 / 183,100), NOT cell offsets.
+- **There is NO overworld matrix / cell→world-offset table in the data.** The
+  cell grid position lives ONLY in the model NAME (`world<AA>_<col>_<row>`); the
+  world offset = `(col,row) × CELL_PITCH`, where `CELL_PITCH` is a **fixed engine
+  constant** in `field::MapFileSimple`/`MapBlock` — not stored per-cell.
+
+**Consequence:** seam-exact stitching cannot come from the data; it requires
+reading `CELL_PITCH` from the code (finish the reloc→vtable→disasm of
+`MapFileSimple`). The good news: because it's a single global constant, once read
+it applies to EVERY world/town uniformly. Until then `render_oras_town.py`'s
+empirical pitch 485 is the best uniform approximation.
