@@ -247,25 +247,27 @@ With exact relocation the content-header pairs (`(dictPtr, count)` at `main_off`
 - **Node walk**: after a small header the tree is ~**0xc-byte nodes**
   `(u32 nameOffset_str_RELATIVE, u32 links, u32 dataOffset)`; the root node has
   `ReferenceBit = 0xffffffff` (seen at dict+0x4). name = `str_off + nameOffset`.
-- ⚠ **It is a RADIX/patricia TREE, not a flat array** — nodes reference each
-  other by Left/RightNodeIndex, so a linear stride scan drifts (why some names
-  read one byte short, `efaultShader`←`DefaultShader`). Real material/texture
-  names DO appear (`chip_gake_sea`, `chip_gake_sea_ground` at stride 0x10, name
-  field ~+0x8/+0xc), but out of order. Correct read = **traverse the tree from
-  the root** collecting each visited node's Name, exactly as SPICA's
-  `H3DPatriciaTree` deserialize does (`while Index++ <= MaxIndex`, tracking
-  Left/RightNodeIndex). Node ≈ 0x10 bytes: `ReferenceBit, u16 Left, u16 Right,
-  Name(str-rel), Value/dataOffset`; root ReferenceBit = 0xffffffff. Implement
-  the traversal to get a clean ordered `{name: dataOffset}`.
+- ✅ **NODE FORMAT NAILED** (by locating known names' exact str-rel offsets in
+  the node array): each node is **0xc bytes** =
+  `u16 LeftNodeIndex · u16 RightNodeIndex · u32 NameOffset(str-relative) ·
+  u32 ReferenceBit`. Root node (index 0) has ReferenceBit 0xffffffff and no
+  name. The **actual objects (H3DTexture/H3DMaterial) are a PARALLEL Values
+  array**, indexed by node order — the tree only maps name→index (standard
+  SPICA H3DDict). Reading nodes sequentially at 0xc stride gives clean, ordered
+  names: e.g. `mapr131_chip_soil2`, `mapr131_gake_basic1`,
+  `mapr131_gake_basic_side` (the map's textures, in Values order).
 
-## ⚠ Precise next step — finish exact binding
-1. Nail the patricia node struct (drift above) → clean `{name: dataOffset}` for
-   the **Textures** dict of the `a/1/5/2` BCH and the **Materials** dict of the
-   map model. Texture dataOffset → the H3DTexture (dims/format/`reg 0x085` addr,
-   already decoded) → pair each of the 3-4 ETC1 images with its NAME.
-2. Map model: per-mesh material index → material name → its texture0 name →
-   match to the texture-image name from step 1 → EXACT mesh→texture binding
-   (kills `render_oras_maps` striping; `di % len(imgs)` becomes the real map).
+## ⚠ Precise next step — finish exact binding (node format now known)
+1. Implement `read_dict(ptr)` in `bch.py`: 0xc-stride node walk (skip root) →
+   ordered name list, plus the **parallel Values array** (H3DTexture /
+   H3DMaterial objects) that follows the node array — index i's name pairs with
+   Values[i]. For the `a/1/5/2` Textures dict: Values[i] = H3DTexture → its
+   `reg 0x085` addr / dims / format (already decoded by `pica_textures`) → pair
+   each ETC1 image with its NAME.
+2. Model **Materials** dict the same way → material name → its texture0 name;
+   per-mesh material index (from the mesh table / SOBJ) → material → texture
+   name → the named image from step 1 → EXACT mesh→texture binding (replaces
+   `render_oras_maps`'s `di % len(imgs)` guess; kills the striping).
 3. Then SOBJ per-mesh pairing polish + zone table `a/0/1/3` for named-town
    (Littleroot) cell stitching.
 
