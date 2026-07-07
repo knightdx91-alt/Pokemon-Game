@@ -142,3 +142,31 @@ reading `CELL_PITCH` from the code (finish the reloc→vtable→disasm of
 `MapFileSimple`). The good news: because it's a single global constant, once read
 it applies to EVERY world/town uniformly. Until then `render_oras_town.py`'s
 empirical pitch 485 is the best uniform approximation.
+
+## ▶ RELOC FORMAT — CRACKED ✅ (RTTI→vtable→methods now works)
+The DllField internal-relocation table (header @0x128 → off,count) has 12-byte
+entries at a 4-byte phase. **Entry = `[patchType | srcSeg<<8] [value=offset-in-
+srcSeg] [dest=(destOff<<4)|destSeg]`** (patchType 2 = absolute ptr; seg 0 text,
+1 rodata). Verified by matching a known vtable func-slot `[0x2][text_off]
+[(rodOff<<4)|1]` against a type_info name-ptr `[0x102][name_rodOff][(tiOff<<4)|1]`.
+
+**`tools/oras_rtti_vtables.py`** walks name→type_info(+4=name)→vtable(-1=type_info)
+→ text method slots. Recovered vtables (DllField):
+- `FieldCameraSetting` vtable@rodata+0x166a4 (6 methods, e.g. 0x2a6e8)
+- `FieldStereoCamera` @0x16684 (2); `MapFileSimple` @0x163b8 (6, e.g. 0x1ec5c);
+  `MapBlock` @0x19830/0x19860 (7/13); `FieldmapProc` @0x16340 (20).
+This unblocks disassembling ANY ORAS class's methods.
+
+## ▶ CELL_PITCH — RESOLVED from data ✅ = 727.2 units (40 tiles × 18.18)
+The per-cell `coll` collision block extent is **exactly ±363.6** (the constant
+`0xc3b5cccd` = -363.6 = -18.18 × 20), identical for every cell → the walkable
+cell is **40 tiles = 727.2 units**, so `CELL_PITCH = 727.2` and cell (col,row)
+sits at `(col·727.2, row·727.2)`. (Not 485 — at 485 cells massively OVERLAP,
+which only *looked* connected.) Cross-checked by the reloc-recovered class model
+(`MapBlock` cells at fixed pitch).
+- ⚠ **Remaining render issue is ground COVERAGE, not placement:** at the true
+  727.2 pitch the decorative ground mesh (`chip_kusa_a`) leaves ragged voids
+  between cells because it doesn't fill every tile — the full-cell base ground is
+  a layer we currently cull/miss (candidate: the culled `t101_a01`, or a base
+  terrain plane). Fix that layer → seamless at 727.2. Camera constants: next,
+  via disasm of the `FieldCameraSetting` vtable methods above.
