@@ -134,42 +134,52 @@ def render(model_mem, index, size=768):
     pts = [v for _, tris in meshes for t in tris for v in t]
     if not pts:
         return None
-    xs = [p[0] for p in pts]; zs = [p[2] for p in pts]; ys = [p[1] for p in pts]
-    minx, maxx, minz, maxz = min(xs), max(xs), min(zs), max(zs)
-    miny, maxy = min(ys), max(ys)
+    # OBLIQUE (cavalier) projection like render_platinum_maps: screen X = world X,
+    # screen Y = world Z - world Y * TILT, so height lifts geometry up-screen and
+    # building fronts / tree volume become visible (the 2.5D look). Depth for the
+    # Y-buffer = world Z + world Y (more-south and higher surfaces occlude).
+    TILT = float(os.environ.get("ORAS_TILT", "0.7"))
+    sxw = [p[0] for p in pts]                      # screen-space world X
+    syw = [p[2] - p[1] * TILT for p in pts]        # screen-space world Y (tilted)
+    minx, maxx = min(sxw), max(sxw)
+    miny, maxy = min(syw), max(syw)
     S = size
-    sc = (S - 4) / max(maxx - minx, maxz - minz, 1e-6)
+    sc = (S - 8) / max(maxx - minx, maxy - miny, 1e-6)
     ox = (S - (maxx - minx) * sc) / 2
-    oz = (S - (maxz - minz) * sc) / 2
+    oy = (S - (maxy - miny) * sc) / 2
     fb = np.zeros((S, S, 3), np.uint8)
-    yb = np.full((S, S), -1e9)
+    yb = np.full((S, S), -1e18)
     for im, tris in meshes:
         for t in tris:
             px = [(v[0] - minx) * sc + ox for v in t]
-            pz = [(v[2] - minz) * sc + oz for v in t]
-            ay = sum(v[1] for v in t) / 3
+            py = [((v[2] - v[1] * TILT) - miny) * sc + oy for v in t]
+            dep = [v[2] + v[1] for v in t]                # depth per vertex
             x0, x1 = int(min(px)), int(max(px)) + 1
-            z0, z1 = int(min(pz)), int(max(pz)) + 1
-            den = (pz[1] - pz[2]) * (px[0] - px[2]) + (px[2] - px[1]) * (pz[0] - pz[2])
+            y0, y1 = int(min(py)), int(max(py)) + 1
+            den = (py[1] - py[2]) * (px[0] - px[2]) + (px[2] - px[1]) * (py[0] - py[2])
             if abs(den) < 1e-6:
                 continue
             for X in range(max(0, x0), min(S, x1)):
-                for Z in range(max(0, z0), min(S, z1)):
-                    a = ((pz[1] - pz[2]) * (X - px[2]) + (px[2] - px[1]) * (Z - pz[2])) / den
-                    b = ((pz[2] - pz[0]) * (X - px[2]) + (px[0] - px[2]) * (Z - pz[2])) / den
+                for Y in range(max(0, y0), min(S, y1)):
+                    a = ((py[1] - py[2]) * (X - px[2]) + (px[2] - px[1]) * (Y - py[2])) / den
+                    b = ((py[2] - py[0]) * (X - px[2]) + (px[0] - px[2]) * (Y - py[2])) / den
                     c = 1 - a - b
-                    if a >= -.02 and b >= -.02 and c >= -.02 and ay > yb[Z, X]:
-                        if im:
-                            img, tw, th = im
-                            u = a * t[0][3] + b * t[1][3] + c * t[2][3]
-                            v = a * t[0][4] + b * t[1][4] + c * t[2][4]
-                            texel = img[int(v * th) % th, int(u * tw) % tw]
-                            if texel[3] < 96:        # transparent overlay/shadow
-                                continue
-                            fb[Z, X] = texel[:3]
-                        else:
-                            continue                 # skip untextured (no solid fill)
-                        yb[Z, X] = ay
+                    if a < -.02 or b < -.02 or c < -.02:
+                        continue
+                    d = a * dep[0] + b * dep[1] + c * dep[2]
+                    if d <= yb[Y, X]:
+                        continue
+                    if im:
+                        img, tw, th = im
+                        u = a * t[0][3] + b * t[1][3] + c * t[2][3]
+                        v = a * t[0][4] + b * t[1][4] + c * t[2][4]
+                        texel = img[int(v * th) % th, int(u * tw) % tw]
+                        if texel[3] < 96:            # transparent overlay/shadow
+                            continue
+                        fb[Y, X] = texel[:3]
+                    else:
+                        continue                     # skip untextured
+                    yb[Y, X] = d
     return Image.fromarray(fb, "RGB")
 
 
