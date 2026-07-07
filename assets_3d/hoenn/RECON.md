@@ -628,3 +628,52 @@ each mesh's SubMeshes list and decode each submesh's Commands.
 For 0006/0066 every mesh has exactly 1 submesh (31 draws == 31 meshes), so the
 "hollow roof" is NOT a missing sub-draw here — revisit: likely backface culling
 + the per-map texture fix, or roof-cap geometry in a mesh we currently cull.
+
+## ▶ SPICA/Ohana cross-check audit — assumptions validated, ONE major bug fixed
+
+Audited our `bch.py` against SPICA (gdkchan) source per the "read a valid map"
+principle. Results:
+
+1. **RELOCATION — MAJOR BUG FOUND & FIXED.** SPICA H3DRelocator does
+   `PtrAddress <<= 2` for every target EXCEPT `Strings` (section 1), whose
+   pointers are BYTE-addressed. We shifted unconditionally → every string-target
+   relocation (Source=main, Target=Strings) landed on the WRONG word: it added
+   the string-section base (0xAD50 on Petalburg) to e.g. an H3DMesh
+   MaterialIndex (corrupting 11/13/29 → 0xAD5B/5D/6D) AND never relocated the
+   real string pointer (so all name/dict reads were guesswork). Fixed:
+   `byte_off = ptr_word if target == 1 else ptr_word*4`. Verified: MaterialIndex
+   clean post-reloc on Littleroot+Petalburg (no pre-reloc workaround needed);
+   material/mesh/texture NAMES now read exactly; Littleroot renders unchanged.
+   - Consequence: relocated string-pointer fields are now ABSOLUTE offsets;
+     un-relocated NameOffset fields (dict nodes) stay RELATIVE. Added `BCH._str`
+     (resolves either) and routed materials()/mesh_names()/texture_table()
+     through it. read_dict/object_names keep str_off+rel (dict NameOffset is
+     relative — unaffected).
+
+2. **H3DModel / H3DMesh / H3DSubMesh layout — CONFIRMED EXACT** (see the section
+   above): matrix@desc+0x00, Materials dict@+0x34, Meshes list@+0x40; mesh record
+   stride 0x38 with MaterialIndex@0/EnableCommands@+0x08/SubMeshes@+0x10/
+   DisableCommands@+0x18/MeshCenter@+0x20.
+
+3. **VERTEX ATTRIBUTE FORMAT — heuristic validated.** SPICA decodes the exact
+   attribute config from EnableCommands PICA regs (0x201/0x202 formats, 0x205
+   stride+count, permutation). Decoded Littleroot mesh0: reg 0x201=0xd7b →
+   pos float3 + texcoord float2 + color ubyte4 = stride 24, UV@0x0c. Our
+   heuristic (`uvo=0x0c` for stride 24, `0x18` for stride 36 = pos+normal+uv+
+   color) MATCHES the real layout for these maps. ⚠ It ASSUMES that attribute
+   order; a full PICA-attribute decoder (read formats+permutation, compute
+   per-attribute offsets) would harden it against any mesh layout — recommended,
+   not an active bug.
+
+4. **Index/draw extraction** — our `pica_draw_calls` (scan reg 0x228 count +
+   0x227 index addr) matches how SPICA reads indices from each submesh's PICA
+   Commands. For 0006/0066 every mesh has exactly 1 submesh (draws==meshes).
+
+### Still open (fidelity, not read-correctness)
+- **Per-map texture set** (orange trees): the global name-dedup index serves
+  another map's `chip_gake01`/`c103gate_*`. Match each MAP model to its OWN
+  a/1/5/2 texture BCH by name overlap. (Now that names read exactly, this is
+  straightforward.)
+- **Hollow roofs**: not a missing sub-draw (1 submesh/mesh) — likely backface
+  culling / a roof mesh currently culled. Revisit.
+- **Full PICA-attribute decoder** (item 3) for format robustness.
