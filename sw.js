@@ -19,7 +19,7 @@
 /* STABLE — holds cores/assets. Keep in sync with OFFLINE_CACHE_NAME in emulator.html. */
 var RUNTIME = 'retroplay-offline-v2';
 /* Versioned — holds precached HTML. Bump this (only) to force fresh pages. */
-var SHELL   = 'retroplay-shell-v19';
+var SHELL   = 'retroplay-shell-v20';
 
 /* Hosts we must never cache or intercept (auth, Drive picker, uploads). */
 var BYPASS_HOSTS = [
@@ -38,6 +38,8 @@ var PRECACHE = [
     './emulator.html',
     './index.html',
     './reader.html',
+    './manifest.webmanifest',
+    './reader.webmanifest',
     'https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js'
 ];
 
@@ -69,10 +71,34 @@ self.addEventListener('activate', function (e) {
 
 self.addEventListener('fetch', function (e) {
     var req = e.request;
-    if (req.method !== 'GET') return;
 
     var url;
     try { url = new URL(req.url); } catch (err) { return; }
+
+    /* Web Share Target: reader.webmanifest posts a shared file here as
+       multipart/form-data. Pull the file out, stash it in a scratch cache
+       (service workers can't reach the page's IndexedDB directly), then
+       redirect to reader.html?shared=1 which picks it up on load. */
+    if (req.method === 'POST' && url.pathname.indexOf('reader.html') !== -1) {
+        e.respondWith((function () {
+            return req.formData().then(function (form) {
+                var file = form.get('shared_book');
+                if (!file) return Response.redirect('./reader.html', 303);
+                return caches.open('reader-share-inbox').then(function (c) {
+                    var headers = new Headers({
+                        'Content-Type': file.type || 'application/octet-stream',
+                        'X-Shared-Name': encodeURIComponent(file.name || 'shared-book')
+                    });
+                    return c.put('./shared-book', new Response(file, { headers: headers }));
+                }).then(function () {
+                    return Response.redirect('./reader.html?shared=1', 303);
+                });
+            }).catch(function () { return Response.redirect('./reader.html', 303); });
+        })());
+        return;
+    }
+
+    if (req.method !== 'GET') return;
 
     if (BYPASS_HOSTS.indexOf(url.hostname) !== -1) return;
 

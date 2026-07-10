@@ -1,0 +1,44 @@
+{
+  "name": "Book Reader",
+  "short_name": "Reader",
+  "description": "Offline EPUB / PDF / CBZ / TXT reader.",
+  "start_url": "reader.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0d0d0f",
+  "theme_color": "#0d0d0f",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%230d0d0f'/%3E%3Ctext x='256' y='340' font-size='260' text-anchor='middle' font-family='Segoe UI,system-ui,sans-serif'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "reader.html",
+      "accept": {
+        "application/epub+zip": [".epub"],
+        "application/pdf": [".pdf"],
+        "application/vnd.comicbook+zip": [".cbz"],
+        "application/zip": [".zip"],
+        "text/plain": [".txt", ".md", ".text"]
+      }
+    }
+  ],
+  "share_target": {
+    "action": "reader.html",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "files": [
+        {
+          "name": "shared_book",
+          "accept": ["application/epub+zip", "application/pdf", "application/vnd.comicbook+zip", "application/zip", "text/plain", ".epub", ".pdf", ".cbz", ".zip", ".txt"]
+        }
+      ]
+    }
+  }
+}

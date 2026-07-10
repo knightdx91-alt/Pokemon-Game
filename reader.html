@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Book Reader</title>
+<link rel="manifest" href="reader.webmanifest">
+<meta name="theme-color" content="#0d0d0f">
 <style>
     :root {
         --bg: #0d0d0f; --panel: #16161a; --panel2: #1e1e26; --border: #2a2a35;
@@ -262,7 +264,7 @@
 (function () {
     'use strict';
 
-    var READER_VERSION = 'v1.0.38';
+    var READER_VERSION = 'v1.0.39';
     // Hide manga translation/OCR text overlay by default (toggle in reader bar).
     var _hideTextLayer = (function () { try { return localStorage.getItem('reader_hide_text') !== '0'; } catch (_) { return true; } })();
 
@@ -1821,6 +1823,47 @@
         });
     }
     $('btn-diag').addEventListener('click', runDiag);
+
+    // ---- PWA install plumbing: service worker + file_handlers + share_target ----
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(function () {});
+    }
+
+    // file_handlers: fired when the installed app is opened via "Open with" /
+    // set as default handler for .epub/.pdf/.cbz/.zip/.txt.
+    if (window.launchQueue && launchQueue.setConsumer) {
+        launchQueue.setConsumer(function (params) {
+            if (!params.files || !params.files.length) return;
+            showOverlay('Opening shared book…');
+            Promise.all(params.files.map(function (h) { return h.getFile(); })).then(function (files) {
+                return files.reduce(function (p, f) {
+                    return p.then(function () { return addBook(f.name, f); });
+                }, Promise.resolve());
+            }).then(function () {
+                hideOverlay(); refreshLibrary();
+            }).catch(function (e) { hideOverlay(); alert('Open failed: ' + e.message); });
+        });
+    }
+
+    // share_target: the SW intercepts the POSTed multipart form (a share from
+    // another app), stashes the file in a temp cache, then redirects here with
+    // ?shared=1 — pick it up and add it to the library.
+    (function checkSharedFile() {
+        if (location.search.indexOf('shared=1') === -1) return;
+        history.replaceState(null, '', location.pathname);
+        showOverlay('Receiving shared book…');
+        caches.open('reader-share-inbox').then(function (c) {
+            return c.match('./shared-book');
+        }).then(function (resp) {
+            if (!resp) { hideOverlay(); return; }
+            var name = decodeURIComponent(resp.headers.get('X-Shared-Name') || 'shared-book');
+            return resp.blob().then(function (blob) {
+                return addBook(name, blob);
+            }).then(function () {
+                return caches.open('reader-share-inbox').then(function (c) { return c.delete('./shared-book'); });
+            }).then(function () { hideOverlay(); refreshLibrary(); });
+        }).catch(function (e) { hideOverlay(); alert('Share receive failed: ' + e.message); });
+    })();
 
     // ---- Boot ----
     $('reader-ver').textContent = READER_VERSION;
