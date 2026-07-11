@@ -25,11 +25,11 @@ input[type=range] { accent-color:var(--accent); height:20px; }
 /* ---- App shell: top bar + tabs + lists ---- */
 #app { flex:1; display:flex; flex-direction:column; min-height:0; }
 #topbar { display:flex; align-items:center; gap:10px; padding:12px 16px 8px; flex-shrink:0; }
-#topbar-title { flex:1; font-size:19px; font-weight:800; letter-spacing:-.5px;
+#topbar-title { flex:1; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; text-align:center; font-size:18px; font-weight:800; letter-spacing:-.5px;
     background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 #build-tag { font-size:10px; color:var(--dim); font-weight:400; -webkit-text-fill-color:var(--dim); letter-spacing:0; margin-left:4px; }
-#back-hub-btn { display:flex; align-items:center; justify-content:center; width:34px; height:34px; flex-shrink:0; border:1px solid var(--line);
-    background:var(--surface); color:var(--txt); border-radius:50%; font-size:20px; line-height:1; padding:0; }
+#back-hub-btn { display:flex; align-items:center; gap:3px; height:36px; flex-shrink:0; border:1px solid var(--line);
+    background:var(--surface); color:var(--txt); border-radius:18px; font-size:14px; font-weight:700; line-height:1; padding:0 14px 0 11px; white-space:nowrap; }
 #back-hub-btn:active { background:var(--surface2); }
 #import-open-btn { display:flex; align-items:center; gap:5px; height:36px; padding:0 14px; border-radius:18px; border:none; flex-shrink:0;
     background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:13px; font-weight:700; line-height:1; white-space:nowrap; }
@@ -168,15 +168,20 @@ details summary { cursor:pointer; font-size:12px; color:var(--dim); }
 .track .meta { flex:1; min-width:0; }
 .track .t-name { font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .track .t-sub { font-size:11px; color:var(--dim); }
+
+/* The Google Drive picker renders its own dialog on <body>; force it above our
+   fixed overlays (import view is z-index 10000) so it isn't hidden behind them. */
+.picker-dialog-bg { z-index:100000 !important; }
+.picker-dialog { z-index:100001 !important; }
 </style>
 </head>
 <body>
 
 <div id="app">
     <header id="topbar">
-        <button id="back-hub-btn" title="Minimize to picture-in-picture (or back to hub)">‹</button>
-        <div id="topbar-title">RetroPlay <span id="build-tag">build 10</span></div>
-        <button id="import-open-btn" title="Import media">+ Import</button>
+        <button id="back-hub-btn" title="Back to hub (keeps music playing)">‹ Back</button>
+        <div id="topbar-title">RetroPlay <span id="build-tag">build 11</span></div>
+        <button id="import-open-btn" title="Import media">＋ Import</button>
     </header>
 
     <nav id="tabbar">
