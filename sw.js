@@ -19,7 +19,7 @@
 /* STABLE — holds cores/assets. Keep in sync with OFFLINE_CACHE_NAME in emulator.html. */
 var RUNTIME = 'retroplay-offline-v2';
 /* Versioned — holds precached HTML. Bump this (only) to force fresh pages. */
-var SHELL   = 'retroplay-shell-v21';
+var SHELL   = 'retroplay-shell-v22';
 
 /* Hosts we must never cache or intercept (auth, Drive picker, uploads). */
 var BYPASS_HOSTS = [
@@ -38,8 +38,10 @@ var PRECACHE = [
     './emulator.html',
     './index.html',
     './reader.html',
+    './player.html',
     './manifest.webmanifest',
     './reader.webmanifest',
+    './player.webmanifest',
     'https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js'
 ];
 

@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>RetroPlay Media Player</title>
+<link rel="manifest" href="player.webmanifest">
+<meta name="theme-color" content="#0d0d0f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 :root { --accent:#7c6af7; --accent2:#e06af7; --bg:#0d0d0f; --surface:#16161a; --surface2:#1e1e26; --line:#2a2a35; --txt:#e8e8f0; --dim:#8a8a9a; }
@@ -204,6 +209,7 @@ function playIndex(i){
         curURL=URL.createObjectURL(rec.blob); cur=rec;
         vid.src=curURL; $('fp-title').textContent=rec.name;
         fp.classList.add('show'); placeDefault();
+        setMeta(rec);
         vid.play().catch(function(){});
         renderLib();
     }; });
@@ -225,11 +231,43 @@ $('fp-close').onclick=stopPlayer;
 $('fp-pip').onclick=function(){ if(document.pictureInPictureElement) document.exitPictureInPicture(); else if(vid.requestPictureInPicture) vid.requestPictureInPicture().catch(function(e){ alert('PiP unavailable: '+e.message); }); };
 $('fab').onclick=function(){ if(cur){ fp.classList.add('show'); placeDefault(); } else if(LIB.length) playIndex(0); };
 
-// Media Session (lock-screen / hardware keys)
+// Media Session (lock-screen / hardware keys + keeps Chrome playing in
+// the background once you leave the app / press back).
 if('mediaSession' in navigator){
-    navigator.mediaSession.setActionHandler('nexttrack', playNext);
-    navigator.mediaSession.setActionHandler('previoustrack', playPrev);
+    var ms=navigator.mediaSession;
+    ms.setActionHandler('play', function(){ vid.play(); });
+    ms.setActionHandler('pause', function(){ vid.pause(); });
+    ms.setActionHandler('nexttrack', playNext);
+    ms.setActionHandler('previoustrack', playPrev);
+    ms.setActionHandler('seekto', function(d){ if(d.seekTime!=null) vid.currentTime=d.seekTime; });
+    ms.setActionHandler('seekforward', function(){ vid.currentTime=Math.min(vid.duration||1e9,vid.currentTime+10); });
+    ms.setActionHandler('seekbackward', function(){ vid.currentTime=Math.max(0,vid.currentTime-10); });
+    vid.addEventListener('play', function(){ ms.playbackState='playing'; });
+    vid.addEventListener('pause', function(){ ms.playbackState='paused'; });
+    vid.addEventListener('loadedmetadata', updatePos);
+    vid.addEventListener('timeupdate', updatePos);
 }
+function updatePos(){
+    if(!('mediaSession' in navigator)||!navigator.mediaSession.setPositionState) return;
+    if(vid.duration&&isFinite(vid.duration)){
+        try{ navigator.mediaSession.setPositionState({ duration:vid.duration, position:Math.min(vid.currentTime,vid.duration), playbackRate:vid.playbackRate||1 }); }catch(e){}
+    }
+}
+function setMeta(rec){
+    if(!('mediaSession' in navigator)) return;
+    var art=rec.thumb?[{src:rec.thumb,sizes:'320x180',type:'image/jpeg'}]:[];
+    try{ navigator.mediaSession.metadata=new MediaMetadata({ title:rec.name||'Track', artist:rec.source||'RetroPlay', album:'RetroPlay Player', artwork:art }); }catch(e){}
+}
+
+// Keep audio going in the background: if the tab/app is hidden while a
+// VIDEO is playing, hop it into Picture-in-Picture so playback survives
+// leaving the app (audio-only tracks keep playing via MediaSession alone).
+document.addEventListener('visibilitychange', function(){
+    if(document.hidden && cur && !vid.paused && cur.kind==='video'
+       && document.pictureInPictureEnabled && !document.pictureInPictureElement){
+        vid.requestPictureInPicture().catch(function(){});
+    }
+});
 
 /* --- drag: allow swiping the window mostly off-screen; keep a sliver --- */
 var drag=null;
@@ -340,6 +378,8 @@ function driveSeq(docs,token,i){
 $('clear-cache').onclick=function(){ if(confirm('Delete ALL cached media from this browser?')) dbClear().then(function(){ stopPlayer(); refreshLib(); }); };
 
 window.addEventListener('resize',function(){ if(fp.classList.contains('show')){ var r=fp.getBoundingClientRect(); if(r.left>window.innerWidth-40||r.top>window.innerHeight-40) placeDefault(); } });
+
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
 
 refreshLib();
 </script>
