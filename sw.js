@@ -19,7 +19,7 @@
 /* STABLE — holds cores/assets. Keep in sync with OFFLINE_CACHE_NAME in emulator.html. */
 var RUNTIME = 'retroplay-offline-v2';
 /* Versioned — holds precached HTML. Bump this (only) to force fresh pages. */
-var SHELL   = 'retroplay-shell-v23';
+var SHELL   = 'retroplay-shell-v24';
 
 /* Hosts we must never cache or intercept (auth, Drive picker, uploads). */
 var BYPASS_HOSTS = [
@@ -123,6 +123,22 @@ self.addEventListener('fetch', function (e) {
                     return hit || caches.match('./emulator.html');
                 });
             })
+        );
+        return;
+    }
+
+    /* Web app manifests: network-first so a changed display mode / metadata is
+       picked up on the next load instead of being pinned by the precached copy
+       (a stale cached manifest kept the installed app in standalone mode). */
+    if (url.pathname.slice(-13) === '.webmanifest') {
+        e.respondWith(
+            fetch(req, { cache: 'reload' }).then(function (resp) {
+                if (resp && resp.status === 200) {
+                    var clone = resp.clone();
+                    caches.open(SHELL).then(function (c) { c.put(req, clone); });
+                }
+                return resp;
+            }).catch(function () { return caches.match(req); })
         );
         return;
     }
