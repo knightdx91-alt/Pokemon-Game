@@ -130,6 +130,8 @@ input[type=range] { accent-color:var(--accent); height:20px; }
                 <input type="url" id="backend" placeholder="https://retroplay-media-dkmr.onrender.com">
                 <input type="text" id="key" placeholder="Backend access key (optional)" style="margin-top:8px">
                 <p class="hint">YouTube fetching needs the yt-dlp backend (<code>media-backend/</code>). Drive files and cached playback work without it. Files are cached in this browser (IndexedDB) and survive reloads.</p>
+                <p class="hint" id="storage-info" style="margin-top:8px">Checking storage…</p>
+                <p class="hint" id="storage-persisted"></p>
                 <button class="btn ghost" id="clear-cache" style="margin-top:10px">Clear all cached media</button>
             </div>
         </details>
@@ -197,13 +199,31 @@ function dbClear(){ return idb().then(function(db){ return new Promise(function(
 
 if(navigator.storage&&navigator.storage.persist) navigator.storage.persist();
 
+function updateStorageInfo(){
+    var infoEl=$('storage-info'), persistEl=$('storage-persisted');
+    if(navigator.storage&&navigator.storage.estimate){
+        navigator.storage.estimate().then(function(est){
+            var used=est.usage||0, quota=est.quota||0;
+            infoEl.textContent=quota
+                ? fmtBytes(used)+' used of '+fmtBytes(quota)+' available ('+Math.round(used/quota*100)+'%) — shared across IndexedDB/Cache/OPFS for this site.'
+                : fmtBytes(used)+' used (browser did not report a quota).';
+        }).catch(function(){ infoEl.textContent='Storage estimate unavailable in this browser.'; });
+    } else { infoEl.textContent='Storage estimate not supported in this browser.'; }
+    if(navigator.storage&&navigator.storage.persisted){
+        navigator.storage.persisted().then(function(p){
+            persistEl.textContent=p?'Persistent storage: granted ✓ (won’t be evicted under disk pressure).'
+                :'Persistent storage: not granted — the browser may clear this cache if the device runs low on space.';
+        });
+    }
+}
+
 /* ---------- Library UI ---------- */
 var LIB=[];   // in-memory metadata mirror (no blob object URLs until played)
 function saveTrack(rec){ // rec: {id,name,kind,mime,blob,thumb,source}
     rec.added=Date.now();
     return dbPut(rec).then(function(){ return refreshLib(); });
 }
-function refreshLib(){ return dbAll().then(function(all){ LIB=all; renderLib(); }); }
+function refreshLib(){ return dbAll().then(function(all){ LIB=all; renderLib(); updateStorageInfo(); }); }
 function renderLib(){
     var elA=$('lib-audio'), elV=$('lib-video');
     elA.innerHTML=''; elV.innerHTML='';
@@ -417,12 +437,37 @@ function driveToken(){ return new Promise(function(res,rej){ loadG(function(){ g
         callback:function(r){ r.error?rej(new Error(r.error)):res(r.access_token); } }).requestAccessToken();
 }); }); }); }
 function dstat(m,c){ var s=$('dr-status'); s.textContent=m||''; s.className='status'+(c?' '+c:''); }
+// Filename extension is more trustworthy than Drive's reported mimeType —
+// files added via phone sync / third-party uploaders often get a generic or
+// nonstandard mimeType (application/octet-stream, audio/mp3, ...), which
+// would otherwise misfile a track into the wrong library section.
+var EXT_MIME={mp3:'audio/mpeg',m4a:'audio/mp4',flac:'audio/flac',wav:'audio/wav',ogg:'audio/ogg',aac:'audio/aac',
+    opus:'audio/opus',wma:'audio/x-ms-wma',
+    mp4:'video/mp4',m4v:'video/mp4',mov:'video/quicktime',webm:'video/webm',mkv:'video/x-matroska',
+    avi:'video/x-msvideo','3gp':'video/3gpp',mpeg:'video/mpeg'};
+var EXT_AUDIO={mp3:1,m4a:1,flac:1,wav:1,ogg:1,aac:1,opus:1,wma:1};
+function classifyByName(name){
+    var m=/\.([a-z0-9]+)$/i.exec(name||''); var ext=m?m[1].toLowerCase():'';
+    if(!EXT_MIME[ext]) return null;
+    return {kind:EXT_AUDIO[ext]?'audio':'video', mime:EXT_MIME[ext]};
+}
 
 $('drive-pick').onclick=function(){
     dstat('Authorizing Google Drive…');
     driveToken().then(function(token){
         loadG(function(){ gapi.load('picker',function(){
-            var view=new google.picker.DocsView(google.picker.ViewId.DOCS).setIncludeFolders(true).setMimeTypes('video/mp4,video/quicktime,video/webm,video/x-matroska,audio/mpeg,audio/mp4,audio/x-m4a,audio/wav,audio/ogg,audio/flac');
+            // Drive's stored mimeType is often wrong/generic for files that weren't
+            // uploaded via the web UI (phone sync, rclone, etc — commonly land as
+            // audio/mp3, audio/x-mp3, or application/octet-stream instead of the
+            // standard audio/mpeg). setMimeTypes() is an AND filter on top of the
+            // search box, so a mismatched type hides the file no matter what you
+            // type — cast a wide net here and let filename-based detection below
+            // sort out the real kind once a file is picked.
+            var view=new google.picker.DocsView(google.picker.ViewId.DOCS).setIncludeFolders(true).setMimeTypes(
+                'video/mp4,video/quicktime,video/webm,video/x-matroska,video/x-msvideo,video/3gpp,video/mpeg,'+
+                'audio/mpeg,audio/mp3,audio/x-mp3,audio/mpeg3,audio/x-mpeg-3,audio/mp4,audio/x-m4a,audio/wav,'+
+                'audio/x-wav,audio/ogg,audio/flac,audio/x-flac,audio/aac,audio/x-aac,audio/opus,audio/webm,'+
+                'audio/x-ms-wma,application/octet-stream');
             new google.picker.PickerBuilder().addView(view)
                 .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
                 .setTitle('Pick video / music files').setOAuthToken(token)
@@ -447,8 +492,14 @@ function driveSeq(docs,token,i,okCount,fails){
     fetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media',{headers:{Authorization:'Bearer '+token}})
     .then(function(r){ if(!r.ok) return r.text().then(function(t){throw new Error('Drive '+r.status+' '+t);}); return r.blob(); })
     .then(function(blob){
-        var kind=/^audio/.test(mime)?'audio':'video';
-        return saveTrack({ id:'drive_'+id, name:name, kind:kind, mime:mime||blob.type||'video/mp4', blob:blob, source:'Drive', thumb:null });
+        var byName=classifyByName(name);
+        var kind=byName?byName.kind:(/^audio/.test(mime)?'audio':'video');
+        var finalMime=byName?byName.mime:(mime||blob.type||'video/mp4');
+        // Reconstruct with the corrected type — Drive's Content-Type header (which
+        // the fetched Blob's own .type carries) can be wrong/generic too, and that's
+        // what the <video>/<audio> element actually sees via the object URL.
+        if(blob.type!==finalMime) blob=blob.slice(0,blob.size,finalMime);
+        return saveTrack({ id:'drive_'+id, name:name, kind:kind, mime:finalMime, blob:blob, source:'Drive', thumb:null });
     })
     .then(function(){ driveSeq(docs,token,i+1,okCount+1,fails); })
     .catch(function(e){ console.warn('drive fail',name,e); fails.push(name+' — '+e.message); driveSeq(docs,token,i+1,okCount,fails); });
