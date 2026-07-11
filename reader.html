@@ -264,7 +264,7 @@
 (function () {
     'use strict';
 
-    var READER_VERSION = 'v1.0.39';
+    var READER_VERSION = 'v1.0.40-debug';
     // Hide manga translation/OCR text overlay by default (toggle in reader bar).
     var _hideTextLayer = (function () { try { return localStorage.getItem('reader_hide_text') !== '0'; } catch (_) { return true; } })();
 
@@ -1194,14 +1194,25 @@
     $('btn-theme').textContent = themeDef().label;
 
     // ---- Add via file input ----
-    btnFile.addEventListener('click', function () { fileInput.click(); });
+    btnFile.addEventListener('click', function () {
+        alert('DEBUG: Add file tapped, opening picker…');
+        try {
+            fileInput.click();
+            alert('DEBUG: fileInput.click() ran with no error');
+        } catch (e) {
+            alert('DEBUG: fileInput.click() threw: ' + e.message);
+        }
+    });
     fileInput.addEventListener('change', function () {
+        alert('DEBUG: change event fired, files.length=' + (fileInput.files ? fileInput.files.length : 'null'));
         var files = Array.prototype.slice.call(fileInput.files || []);
-        if (!files.length) return;
+        if (!files.length) { alert('DEBUG: no files selected, aborting'); return; }
+        alert('DEBUG: picked file: ' + files[0].name + ' (' + files[0].size + ' bytes, type=' + files[0].type + ')');
         showOverlay('Adding ' + files.length + ' book(s)…');
         files.reduce(function (p, f) {
             return p.then(function () { return addBook(f.name, f); });
         }, Promise.resolve()).then(function () {
+            alert('DEBUG: addBook succeeded');
             fileInput.value = '';
             hideOverlay();
             refreshLibrary();
