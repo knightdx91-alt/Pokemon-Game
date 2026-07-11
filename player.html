@@ -72,7 +72,7 @@ input[type=range] { accent-color:var(--accent); height:20px; }
 </head>
 <body>
 <a class="back" href="index.html">← Back to hub</a>
-<div class="head"><div class="logo">RetroPlay Player</div><div class="logo-sub">cache · playlist · pip</div></div>
+<div class="head"><div class="logo">RetroPlay Player</div><div class="logo-sub">cache · playlist · pip · <span id="build-tag">build 1</span></div></div>
 
 <div class="wrap">
     <div class="panel">
@@ -160,6 +160,9 @@ input[type=range] { accent-color:var(--accent); height:20px; }
 </div>
 
 <script>
+// Bump the number in #build-tag (in the <head> markup above) on every change to
+// this file — same convention as emulator.html's "build N" — so a stale
+// service-worker/browser cache is visible instead of silently masking fixes.
 var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
 var DRIVE_RO  = 'https://www.googleapis.com/auth/drive.readonly';
 var DEFAULT_BACKEND = 'https://retroplay-media-dkmr.onrender.com';
