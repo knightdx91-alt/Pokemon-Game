@@ -113,6 +113,7 @@ def root():
         "RetroPlay media backend is running.\n"
         "POST /api/download  body {url, format:'mp3'|'mp4', cookies?}\n"
         "GET  /api/info?url=...\n"
+        "GET  /api/playlist?url=...  (flat list of playlist entries)\n"
         + ("Access key REQUIRED (X-Access-Key).\n" if ACCESS_KEY else "No access key set (open).\n")
     )
 
@@ -168,6 +169,59 @@ def info(request: Request, url: str):
         "thumbnail": d.get("thumbnail"),
         "uploader": d.get("uploader") or d.get("channel"),
         "extractor": d.get("extractor_key"),
+    })
+
+
+@app.get("/api/playlist")
+def playlist(request: Request, url: str):
+    """Flat-enumerate a playlist (or a channel/mix) → list of entries.
+
+    Returns {title, count, entries:[{id, url, title, duration, uploader}]}.
+    Uses extract_flat so it's fast (no per-video resolution). The frontend
+    then downloads each entry.url one at a time via /api/download.
+    """
+    _check_key(request)
+    cf = _cookiefile("")
+    opts = _base_opts()
+    opts["noplaylist"] = False
+    opts["extract_flat"] = "in_playlist"
+    opts["skip_download"] = True
+    if cf:
+        opts["cookiefile"] = cf
+    try:
+        with yt_dlp.YoutubeDL(opts) as ydl:
+            d = ydl.extract_info(url, download=False)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Could not read playlist: {e}")
+    finally:
+        if cf:
+            with contextlib.suppress(OSError):
+                os.remove(cf)
+
+    raw = d.get("entries")
+    if raw is None:
+        # A single video link — treat it as a one-item playlist.
+        raw = [d]
+    entries = []
+    for e in raw:
+        if not e:
+            continue
+        vid = e.get("id")
+        u = e.get("url") or e.get("webpage_url")
+        if u and not str(u).startswith("http"):
+            # extract_flat gives bare ids for YouTube entries.
+            u = "https://www.youtube.com/watch?v=" + str(vid or u)
+        entries.append({
+            "id": vid,
+            "url": u,
+            "title": e.get("title"),
+            "duration": e.get("duration"),
+            "uploader": e.get("uploader") or e.get("channel"),
+        })
+    return JSONResponse({
+        "title": d.get("title") or d.get("id"),
+        "count": len(entries),
+        "entries": entries,
     })
 
 

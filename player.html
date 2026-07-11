@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>RetroPlay Media Player</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root { --accent:#7c6af7; --accent2:#e06af7; --bg:#0d0d0f; --surface:#16161a; --surface2:#1e1e26; --line:#2a2a35; --txt:#e8e8f0; --dim:#8a8a9a; }
+html,body { height:100%; }
+body {
+    background: var(--bg); color: var(--txt);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    min-height:100vh; padding: env(safe-area-inset-top) 0 90px; overflow-x:hidden;
+}
+a.back { display:inline-block; color:var(--accent); text-decoration:none; font-size:13px; padding:14px 16px 4px; }
+.head { text-align:center; padding: 6px 16px 14px; }
+.logo { font-size:24px; font-weight:800; letter-spacing:-.5px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+.logo-sub { font-size:10px; color:#4a4a5a; letter-spacing:3px; text-transform:uppercase; margin-top:3px; }
+.wrap { max-width:520px; margin:0 auto; padding:0 14px; display:flex; flex-direction:column; gap:14px; }
+.panel { background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px; }
+.panel h2 { font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--dim); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+input[type=url], input[type=text] { width:100%; background:var(--bg); border:1px solid var(--line); border-radius:10px; color:var(--txt); padding:11px 12px; font-size:14px; }
+input:focus { outline:none; border-color:var(--accent); }
+.row { display:flex; gap:8px; margin-top:10px; }
+.fmt { display:flex; gap:8px; margin-top:10px; }
+.fmt button { flex:1; padding:10px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--dim); font-weight:600; font-size:13px; }
+.fmt button.on { border-color:var(--accent); background:#1e1830; color:var(--txt); }
+.btn { flex:1; padding:12px; border:none; border-radius:10px; font-size:14px; font-weight:700; color:#fff; background:linear-gradient(135deg,var(--accent),var(--accent2)); }
+.btn:disabled { opacity:.5; }
+.btn.ghost { background:var(--surface2); border:1px solid var(--line); color:var(--txt); }
+.status { font-size:12px; color:var(--dim); margin-top:10px; min-height:16px; }
+.status.err { color:#f77; } .status.ok { color:#6bdc8a; }
+.bar { height:6px; background:var(--bg); border-radius:4px; overflow:hidden; margin-top:8px; display:none; }
+.bar > i { display:block; height:100%; width:0; background:linear-gradient(90deg,var(--accent),var(--accent2)); transition:width .2s; }
+details summary { cursor:pointer; font-size:12px; color:var(--dim); }
+.hint { font-size:11px; color:#5a5a6a; margin-top:6px; line-height:1.5; }
+.lib { display:flex; flex-direction:column; gap:6px; }
+.track { display:flex; align-items:center; gap:10px; padding:8px; border-radius:10px; background:var(--bg); border:1px solid transparent; }
+.track.playing { border-color:var(--accent); }
+.track .thumb { width:44px; height:44px; border-radius:8px; background:var(--surface2); flex-shrink:0; object-fit:cover; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.track .meta { flex:1; min-width:0; }
+.track .t-name { font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.track .t-sub { font-size:11px; color:var(--dim); }
+.track .x { color:#f77; font-size:18px; padding:4px 8px; }
+.empty { text-align:center; color:#4a4a5a; font-size:13px; padding:20px; }
+
+/* Floating player */
+#fp { position:fixed; z-index:9999; width:320px; max-width:92vw; background:#000; border-radius:14px; overflow:hidden;
+    box-shadow:0 12px 40px rgba(0,0,0,.6); border:1px solid var(--line); display:none; touch-action:none; }
+#fp.show { display:block; }
+#fp-head { display:flex; align-items:center; gap:8px; padding:8px 10px; background:var(--surface); cursor:grab; user-select:none; }
+#fp-head:active { cursor:grabbing; }
+#fp-title { flex:1; font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#fp-head button { background:none; border:none; color:var(--dim); font-size:15px; padding:2px 5px; }
+#fp video { width:100%; display:block; background:#000; max-height:60vh; }
+#fp-ctrl { display:flex; align-items:center; gap:6px; padding:8px 10px; background:var(--surface); }
+#fp-ctrl button { background:none; border:none; color:var(--txt); font-size:17px; padding:4px 6px; }
+#fp-ctrl .sp { flex:1; }
+#fp-seek { flex:2; }
+input[type=range] { accent-color:var(--accent); height:20px; }
+.fab { position:fixed; bottom:18px; right:18px; z-index:9998; width:56px; height:56px; border-radius:50%; border:none;
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:22px; box-shadow:0 6px 20px rgba(124,106,247,.5); display:none; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← Back to hub</a>
+<div class="head"><div class="logo">RetroPlay Player</div><div class="logo-sub">cache · playlist · pip</div></div>
+
+<div class="wrap">
+    <div class="panel">
+        <h2>▶ YouTube playlist / video</h2>
+        <input type="url" id="yt-url" placeholder="Paste a playlist or video link…" autocomplete="off">
+        <div class="fmt">
+            <button id="fmt-mp4" class="on">🎬 Video (mp4)</button>
+            <button id="fmt-mp3">🎵 Music (mp3)</button>
+        </div>
+        <div class="row">
+            <button class="btn" id="yt-go">Download &amp; cache</button>
+        </div>
+        <div class="bar" id="yt-bar"><i></i></div>
+        <div class="status" id="yt-status"></div>
+    </div>
+
+    <div class="panel">
+        <h2>☁ Google Drive</h2>
+        <div class="row">
+            <button class="btn ghost" id="drive-pick">Pick files from Drive</button>
+        </div>
+        <div class="bar" id="dr-bar"><i></i></div>
+        <div class="status" id="dr-status"></div>
+    </div>
+
+    <div class="panel">
+        <h2>📚 Library <span style="flex:1"></span><span id="lib-count" style="color:var(--accent)"></span></h2>
+        <div class="lib" id="lib"></div>
+    </div>
+
+    <div class="panel">
+        <details>
+            <summary>⚙ Backend &amp; storage</summary>
+            <div style="margin-top:10px">
+                <input type="url" id="backend" placeholder="https://retroplay-media-dkmr.onrender.com">
+                <input type="text" id="key" placeholder="Backend access key (optional)" style="margin-top:8px">
+                <p class="hint">YouTube fetching needs the yt-dlp backend (<code>media-backend/</code>). Drive files and cached playback work without it. Files are cached in this browser (IndexedDB) and survive reloads.</p>
+                <button class="btn ghost" id="clear-cache" style="margin-top:10px">Clear all cached media</button>
+            </div>
+        </details>
+    </div>
+</div>
+
+<button class="fab" id="fab">▶</button>
+
+<!-- Floating draggable player -->
+<div id="fp">
+    <div id="fp-head">
+        <span id="fp-title">—</span>
+        <button id="fp-pip" title="Picture-in-Picture">⧉</button>
+        <button id="fp-min" title="Dock to edge">▁</button>
+        <button id="fp-close" title="Close">✕</button>
+    </div>
+    <video id="fp-video" playsinline></video>
+    <div id="fp-ctrl">
+        <button id="c-prev">⏮</button>
+        <button id="c-play">▶</button>
+        <button id="c-next">⏭</button>
+        <input type="range" id="fp-seek" min="0" max="1000" value="0">
+        <button id="c-mute">🔊</button>
+    </div>
+</div>
+
+<script>
+var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
+var DRIVE_RO  = 'https://www.googleapis.com/auth/drive.readonly';
+var DEFAULT_BACKEND = 'https://retroplay-media-dkmr.onrender.com';
+var $ = function (id) { return document.getElementById(id); };
+
+/* ---------- persisted backend settings ---------- */
+['backend','key'].forEach(function(k){
+    var el=$(k); el.value=localStorage.getItem('player_'+k)||(k==='backend'?DEFAULT_BACKEND:'');
+    el.addEventListener('input',function(){ localStorage.setItem('player_'+k, el.value); });
+});
+function backendBase(){ return ($('backend').value||'').trim().replace(/\/+$/,''); }
+function keyHeaders(h){ h=h||{}; var k=($('key').value||'').trim(); if(k) h['X-Access-Key']=k; return h; }
+
+/* ---------- IndexedDB cache ---------- */
+var DB=null;
+function idb(){ return new Promise(function(res,rej){
+    if(DB) return res(DB);
+    var r=indexedDB.open('retroplay_media',1);
+    r.onupgradeneeded=function(){ r.result.createObjectStore('tracks',{keyPath:'id'}); };
+    r.onsuccess=function(){ DB=r.result; res(DB); };
+    r.onerror=function(){ rej(r.error); };
+}); }
+function dbPut(t){ return idb().then(function(db){ return new Promise(function(res,rej){
+    var tx=db.transaction('tracks','readwrite'); tx.objectStore('tracks').put(t);
+    tx.oncomplete=function(){res();}; tx.onerror=function(){rej(tx.error);};
+}); }); }
+function dbDel(id){ return idb().then(function(db){ return new Promise(function(res){
+    var tx=db.transaction('tracks','readwrite'); tx.objectStore('tracks').delete(id); tx.oncomplete=function(){res();};
+}); }); }
+function dbAll(){ return idb().then(function(db){ return new Promise(function(res){
+    var out=[], c=db.transaction('tracks').objectStore('tracks').openCursor();
+    c.onsuccess=function(e){ var cur=e.target.result; if(cur){ out.push(cur.value); cur.continue(); } else res(out.sort(function(a,b){return a.added-b.added;})); };
+}); }); }
+function dbClear(){ return idb().then(function(db){ return new Promise(function(res){
+    var tx=db.transaction('tracks','readwrite'); tx.objectStore('tracks').clear(); tx.oncomplete=function(){res();};
+}); }); }
+
+if(navigator.storage&&navigator.storage.persist) navigator.storage.persist();
+
+/* ---------- Library UI ---------- */
+var LIB=[];   // in-memory metadata mirror (no blob object URLs until played)
+function saveTrack(rec){ // rec: {id,name,kind,mime,blob,thumb,source}
+    rec.added=Date.now();
+    return dbPut(rec).then(function(){ return refreshLib(); });
+}
+function refreshLib(){ return dbAll().then(function(all){ LIB=all; renderLib(); }); }
+function renderLib(){
+    var el=$('lib'); el.innerHTML='';
+    $('lib-count').textContent=LIB.length?LIB.length+' item'+(LIB.length>1?'s':''):'';
+    if(!LIB.length){ el.innerHTML='<div class="empty">No cached media yet.<br>Add a playlist or Drive file above.</div>'; $('fab').style.display='none'; return; }
+    $('fab').style.display='flex';
+    LIB.forEach(function(t,i){
+        var d=document.createElement('div'); d.className='track'+(cur&&cur.id===t.id?' playing':'');
+        var thumb=t.thumb?'<img class="thumb" src="'+t.thumb+'">':'<div class="thumb">'+(t.kind==='audio'?'🎵':'🎬')+'</div>';
+        d.innerHTML=thumb+'<div class="meta"><div class="t-name">'+esc(t.name)+'</div><div class="t-sub">'+(t.kind==='audio'?'Audio':'Video')+' · '+(t.source||'')+'</div></div><span class="x">✕</span>';
+        d.querySelector('.meta').onclick=function(){ playIndex(i); };
+        d.querySelector('.thumb').onclick=function(){ playIndex(i); };
+        d.querySelector('.x').onclick=function(e){ e.stopPropagation(); dbDel(t.id).then(function(){ if(cur&&cur.id===t.id) stopPlayer(); refreshLib(); }); };
+        el.appendChild(d);
+    });
+}
+function esc(s){ return (s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+
+/* ---------- Floating player ---------- */
+var vid=$('fp-video'), fp=$('fp'), cur=null, curURL=null;
+function playIndex(i){
+    var t=LIB[i]; if(!t) return;
+    idb().then(function(db){ db.transaction('tracks').objectStore('tracks').get(t.id).onsuccess=function(e){
+        var rec=e.target.result; if(!rec||!rec.blob) return;
+        if(curURL) URL.revokeObjectURL(curURL);
+        curURL=URL.createObjectURL(rec.blob); cur=rec;
+        vid.src=curURL; $('fp-title').textContent=rec.name;
+        fp.classList.add('show'); placeDefault();
+        vid.play().catch(function(){});
+        renderLib();
+    }; });
+}
+function curIndex(){ return LIB.findIndex(function(t){ return cur&&t.id===cur.id; }); }
+function playNext(){ var i=curIndex(); if(i>=0&&i+1<LIB.length) playIndex(i+1); }
+function playPrev(){ var i=curIndex(); if(i>0) playIndex(i-1); }
+function stopPlayer(){ vid.pause(); fp.classList.remove('show'); cur=null; if(curURL){URL.revokeObjectURL(curURL); curURL=null;} renderLib(); }
+
+vid.addEventListener('ended', playNext);
+vid.addEventListener('play', function(){ $('c-play').textContent='⏸'; });
+vid.addEventListener('pause', function(){ $('c-play').textContent='▶'; });
+vid.addEventListener('timeupdate', function(){ if(vid.duration) $('fp-seek').value=Math.round(vid.currentTime/vid.duration*1000); });
+$('fp-seek').addEventListener('input', function(){ if(vid.duration) vid.currentTime=$('fp-seek').value/1000*vid.duration; });
+$('c-play').onclick=function(){ vid.paused?vid.play():vid.pause(); };
+$('c-next').onclick=playNext; $('c-prev').onclick=playPrev;
+$('c-mute').onclick=function(){ vid.muted=!vid.muted; $('c-mute').textContent=vid.muted?'🔇':'🔊'; };
+$('fp-close').onclick=stopPlayer;
+$('fp-pip').onclick=function(){ if(document.pictureInPictureElement) document.exitPictureInPicture(); else if(vid.requestPictureInPicture) vid.requestPictureInPicture().catch(function(e){ alert('PiP unavailable: '+e.message); }); };
+$('fab').onclick=function(){ if(cur){ fp.classList.add('show'); placeDefault(); } else if(LIB.length) playIndex(0); };
+
+// Media Session (lock-screen / hardware keys)
+if('mediaSession' in navigator){
+    navigator.mediaSession.setActionHandler('nexttrack', playNext);
+    navigator.mediaSession.setActionHandler('previoustrack', playPrev);
+}
+
+/* --- drag: allow swiping the window mostly off-screen; keep a sliver --- */
+var drag=null;
+function placeDefault(){ fp.style.left=Math.max(8,window.innerWidth-fp.offsetWidth-12)+'px'; fp.style.top=(window.innerHeight-fp.offsetHeight-90)+'px'; fp.style.right='auto'; }
+function startDrag(e){
+    var p=e.touches?e.touches[0]:e; var r=fp.getBoundingClientRect();
+    drag={dx:p.clientX-r.left, dy:p.clientY-r.top};
+    document.addEventListener('mousemove',onDrag); document.addEventListener('mouseup',endDrag);
+    document.addEventListener('touchmove',onDrag,{passive:false}); document.addEventListener('touchend',endDrag);
+}
+function onDrag(e){
+    if(!drag) return; if(e.cancelable) e.preventDefault();
+    var p=e.touches?e.touches[0]:e;
+    var w=fp.offsetWidth, h=fp.offsetHeight, edge=40; // keep 40px on screen
+    var x=p.clientX-drag.dx, y=p.clientY-drag.dy;
+    x=Math.min(window.innerWidth-edge, Math.max(edge-w, x));
+    y=Math.min(window.innerHeight-edge, Math.max(0, y));
+    fp.style.left=x+'px'; fp.style.top=y+'px'; fp.style.right='auto';
+}
+function endDrag(){ drag=null; document.removeEventListener('mousemove',onDrag); document.removeEventListener('mouseup',endDrag); document.removeEventListener('touchmove',onDrag); document.removeEventListener('touchend',endDrag); }
+$('fp-head').addEventListener('mousedown',startDrag); $('fp-head').addEventListener('touchstart',startDrag,{passive:true});
+$('fp-min').onclick=function(){ // dock to right edge, leaving a sliver — keeps playing
+    fp.style.left=(window.innerWidth-40)+'px'; fp.style.right='auto';
+};
+
+/* ---------- YouTube playlist download ---------- */
+var fmt='mp4';
+$('fmt-mp4').onclick=function(){ fmt='mp4'; $('fmt-mp4').classList.add('on'); $('fmt-mp3').classList.remove('on'); };
+$('fmt-mp3').onclick=function(){ fmt='mp3'; $('fmt-mp3').classList.add('on'); $('fmt-mp4').classList.remove('on'); };
+function ystat(m,c){ var s=$('yt-status'); s.textContent=m||''; s.className='status'+(c?' '+c:''); }
+function ybar(p){ var b=$('yt-bar'); b.style.display=p==null?'none':'block'; if(p!=null) b.firstElementChild.style.width=(p*100)+'%'; }
+
+$('yt-go').onclick=function(){
+    var url=($('yt-url').value||'').trim(); if(!url){ ystat('Paste a link first.','err'); return; }
+    var base=backendBase(); if(!base){ ystat('Set the backend URL in ⚙ settings.','err'); return; }
+    $('yt-go').disabled=true; ystat('Reading playlist…'); ybar(0);
+    fetch(base+'/api/playlist?url='+encodeURIComponent(url),{headers:keyHeaders()})
+    .then(function(r){ if(!r.ok) return r.text().then(function(t){throw new Error(r.status+' '+t);}); return r.json(); })
+    .then(function(pl){
+        var entries=pl.entries||[]; if(!entries.length) throw new Error('No videos found.');
+        ystat('Found '+entries.length+' item'+(entries.length>1?'s':'')+' · downloading…');
+        return downloadSeq(entries,base,0);
+    })
+    .then(function(n){ ystat('Cached '+n+' item'+(n===1?'':'s')+' ✓','ok'); ybar(null); $('yt-url').value=''; })
+    .catch(function(e){ ystat('Failed: '+e.message,'err'); ybar(null); })
+    .then(function(){ $('yt-go').disabled=false; });
+};
+function downloadSeq(entries,base,done){
+    if(done>=entries.length) return Promise.resolve(done);
+    var e=entries[done];
+    ystat('['+(done+1)+'/'+entries.length+'] '+(e.title||e.id||'')); ybar(done/entries.length);
+    return fetch(base+'/api/download',{ method:'POST', headers:keyHeaders({'Content-Type':'application/json'}),
+        body:JSON.stringify({url:e.url,format:fmt}) })
+    .then(function(r){ if(!r.ok) return r.text().then(function(t){throw new Error(r.status+' '+t);}); return r.blob(); })
+    .then(function(blob){
+        var kind=fmt==='mp3'?'audio':'video';
+        return saveTrack({ id:'yt_'+(e.id||Date.now())+'_'+fmt, name:e.title||e.id||'Track', kind:kind,
+            mime:fmt==='mp3'?'audio/mpeg':'video/mp4', blob:blob, source:'YouTube',
+            thumb:e.id?'https://i.ytimg.com/vi/'+e.id+'/mqdefault.jpg':null });
+    })
+    .then(function(){ ybar((done+1)/entries.length); return downloadSeq(entries,base,done+1); })
+    .catch(function(err){ // skip a single failed item, keep going
+        console.warn('skip',e,err); return downloadSeq(entries,base,done+1);
+    });
+}
+
+/* ---------- Google Drive ---------- */
+function loadG(cb){ if(window._gReady){cb();return;} var n=2,d=function(){if(--n===0){window._gReady=true;cb();}};
+    var a=document.createElement('script'); a.src='https://apis.google.com/js/api.js'; a.onload=d; a.onerror=d; document.body.appendChild(a);
+    var b=document.createElement('script'); b.src='https://accounts.google.com/gsi/client'; b.onload=d; b.onerror=d; document.body.appendChild(b); }
+function driveToken(){ return new Promise(function(res,rej){ loadG(function(){ gapi.load('client',function(){
+    google.accounts.oauth2.initTokenClient({ client_id:CLIENT_ID, scope:DRIVE_RO,
+        callback:function(r){ r.error?rej(new Error(r.error)):res(r.access_token); } }).requestAccessToken();
+}); }); }); }
+function dstat(m,c){ var s=$('dr-status'); s.textContent=m||''; s.className='status'+(c?' '+c:''); }
+
+$('drive-pick').onclick=function(){
+    dstat('Authorizing Google Drive…');
+    driveToken().then(function(token){
+        loadG(function(){ gapi.load('picker',function(){
+            var view=new google.picker.DocsView(google.picker.ViewId.DOCS).setIncludeFolders(true).setMimeTypes('video/mp4,video/quicktime,video/webm,video/x-matroska,audio/mpeg,audio/mp4,audio/x-m4a,audio/wav,audio/ogg,audio/flac');
+            new google.picker.PickerBuilder().addView(view)
+                .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+                .setTitle('Pick video / music files').setOAuthToken(token)
+                .setCallback(function(data){
+                    if(data[google.picker.Response.ACTION]!==google.picker.Action.PICKED) return;
+                    var docs=data[google.picker.Response.DOCUMENTS];
+                    driveSeq(docs,token,0);
+                }).build().setVisible(true);
+        }); });
+    }).catch(function(e){ dstat('Drive auth failed: '+e.message,'err'); });
+};
+function driveSeq(docs,token,i){
+    if(i>=docs.length){ dstat('Cached '+docs.length+' file'+(docs.length>1?'s':'')+' ✓','ok'); $('dr-bar').style.display='none'; return; }
+    var doc=docs[i], id=doc[google.picker.Document.ID], name=doc[google.picker.Document.NAME], mime=doc[google.picker.Document.MIME_TYPE]||'';
+    dstat('['+(i+1)+'/'+docs.length+'] '+name); var b=$('dr-bar'); b.style.display='block'; b.firstElementChild.style.width=(i/docs.length*100)+'%';
+    fetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media',{headers:{Authorization:'Bearer '+token}})
+    .then(function(r){ if(!r.ok) return r.text().then(function(t){throw new Error('Drive '+r.status+' '+t);}); return r.blob(); })
+    .then(function(blob){
+        var kind=/^audio/.test(mime)?'audio':'video';
+        return saveTrack({ id:'drive_'+id, name:name, kind:kind, mime:mime||blob.type||'video/mp4', blob:blob, source:'Drive', thumb:null });
+    })
+    .then(function(){ driveSeq(docs,token,i+1); })
+    .catch(function(e){ dstat('Failed on '+name+': '+e.message,'err'); driveSeq(docs,token,i+1); });
+}
+
+/* ---------- clear ---------- */
+$('clear-cache').onclick=function(){ if(confirm('Delete ALL cached media from this browser?')) dbClear().then(function(){ stopPlayer(); refreshLib(); }); };
+
+window.addEventListener('resize',function(){ if(fp.classList.contains('show')){ var r=fp.getBoundingClientRect(); if(r.left>window.innerWidth-40||r.top>window.innerHeight-40) placeDefault(); } });
+
+refreshLib();
+</script>
+</body>
+</html>
