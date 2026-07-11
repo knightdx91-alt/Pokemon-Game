@@ -175,7 +175,7 @@ details summary { cursor:pointer; font-size:12px; color:var(--dim); }
 <div id="app">
     <header id="topbar">
         <button id="back-hub-btn" title="Minimize to picture-in-picture (or back to hub)">‹</button>
-        <div id="topbar-title">RetroPlay <span id="build-tag">build 7</span></div>
+        <div id="topbar-title">RetroPlay <span id="build-tag">build 8</span></div>
         <button id="import-open-btn" title="Import media">+ Import</button>
     </header>
 
@@ -746,8 +746,6 @@ function showNowPlayingMeta(rec){
     if(!isVideo) setLyricsPanel(rec.lyrics); else setLyricsPanel(null,true);
     setMediaSessionMeta(rec,artSrc);
     if(typeof floatOn!=='undefined' && floatOn) updateFloatMeta();
-    if(typeof loadPipArt==='function'){ loadPipArt(); if(document.pictureInPictureElement===pipVideo) drawPip(); }
-    if(typeof armPip==='function') armPip();
 }
 function setLyricsPanel(lyrics,isVideo){
     var el=$('np-lyrics');
@@ -838,14 +836,13 @@ $('import-close').onclick=closeImport;
 // the home screen and playback keeps going (a full page navigation would kill
 // it). With nothing playing there's nothing to float, so just go to the hub.
 $('back-hub-btn').onclick=function(){
-    if(cur){
-        // Something's loaded: hand it to native PiP. If PiP isn't available,
-        // NEVER navigate away (that would stop playback and, in the installed
-        // app, look like the whole thing closing) — fall back to the in-page
-        // floating widget so the music keeps going and the user stays in-app.
-        enterPiP().catch(function(){
-            if(!document.pictureInPictureElement){ if(!floatOn) openFloat(); npErr('This device blocked picture-in-picture — floating player shown instead.'); }
-        });
+    if(cur && !vid.paused){
+        // Video → native PiP (floats over other apps). Audio can't float over the
+        // home screen on the web, so we DON'T navigate away (that would stop it);
+        // we keep it playing and show the in-app floating player. Pressing the
+        // phone's Home button then keeps it going via the media notification.
+        if(cur.kind==='video'){ enterPiP().catch(function(){ if(!floatOn) openFloat(); }); }
+        else { if(!floatOn) openFloat(); npErr('Music keeps playing — press your Home button to leave the app and control it from the notification.'); }
     } else {
         location.href='index.html';
     }
@@ -999,33 +996,15 @@ function enterPiP(){
         if(document.pictureInPictureEnabled && !vid.disablePictureInPicture) return vid.requestPictureInPicture();
         return Promise.reject(new Error('PiP unsupported'));
     }
-    if(!audioPipSupported()) return Promise.reject(new Error('Audio PiP unsupported'));
-    armPip();
-    // Move audio onto the PiP element (still inside the tap gesture) so it keeps
-    // playing when backgrounded; silence the original to avoid double audio.
-    vid.muted=true; pipVideo.muted=false;
-    // Ready now → request in the same gesture (no await beforehand).
-    if(pipVideo.readyState>=1 && !pipVideo.paused) return pipVideo.requestPictureInPicture();
-    // Not ready yet → wait for metadata, then request (may need a second tap on
-    // strict browsers, but won't be rejected for missing metadata).
-    return new Promise(function(res,rej){
-        var t=setTimeout(function(){ rej(new Error('PiP not ready')); }, 1500);
-        pipVideo.addEventListener('loadedmetadata', function h(){
-            pipVideo.removeEventListener('loadedmetadata',h); clearTimeout(t);
-            pipVideo.requestPictureInPicture().then(res,rej);
-        });
-        pipVideo.play().catch(function(){});
-    });
+    // Audio has no native PiP that survives backgrounding on the web — callers
+    // use background playback + MediaSession instead. Kept as a rejection so any
+    // stray caller falls back gracefully.
+    return Promise.reject(new Error('Audio uses background playback, not PiP'));
 }
-$('np-pip').onclick=function(){ enterPiP().catch(function(e){ npErr('Picture-in-picture failed: '+(e&&e.message||e)); }); };
-pipVideo.addEventListener('enterpictureinpicture', function(){ drawPip(); });
-pipVideo.addEventListener('leavepictureinpicture', function(){
-    cancelAnimationFrame(pipRAF);
-    // Hand audio back to the main element so foreground playback is normal again.
-    vid.muted=false; pipVideo.muted=true;
-});
-// keep the PiP canvas fresh as the track/progress changes
-vid.addEventListener('timeupdate', function(){ if(document.pictureInPictureElement===pipVideo) drawPip(); });
+$('np-pip').onclick=function(){
+    if(cur && cur.kind==='video'){ enterPiP().catch(function(e){ npErr('Picture-in-picture failed: '+(e&&e.message||e)); }); }
+    else { if(!floatOn) openFloat(); npErr('Music plays in the background via the notification — a floating window over the home screen is video-only on the web.'); }
+};
 
 /* Lyrics / Up Next subtabs */
 document.querySelectorAll('.np-subtab').forEach(function(btn){
@@ -1088,10 +1067,13 @@ function setMediaSessionMeta(rec,artSrc){
 // a VIDEO is playing, hop it into Picture-in-Picture (audio-only tracks keep
 // playing via MediaSession alone — no PiP needed since nothing to show).
 document.addEventListener('visibilitychange', function(){
-    if(document.hidden && cur && !vid.paused && !document.pictureInPictureElement){
-        // Video → native element PiP; audio → album-art canvas PiP. Both float
-        // over other apps / the home screen so playback survives leaving the app.
-        enterPiP().catch(function(){});
+    // Only video hops into native PiP when backgrounded. Audio simply keeps
+    // playing in the background via MediaSession (canvas PiP can't survive the
+    // page being frozen, so forcing it there only closed the window and stopped
+    // the sound).
+    if(document.hidden && cur && !vid.paused && cur.kind==='video'
+       && document.pictureInPictureEnabled && !document.pictureInPictureElement){
+        vid.requestPictureInPicture().catch(function(){});
     }
 });
 
