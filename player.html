@@ -42,6 +42,7 @@ input:focus { outline:none; border-color:var(--accent); }
 details summary { cursor:pointer; font-size:12px; color:var(--dim); }
 .hint { font-size:11px; color:#5a5a6a; margin-top:6px; line-height:1.5; }
 .lib { display:flex; flex-direction:column; gap:6px; }
+.lib-heading { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--dim); margin-bottom:8px; }
 .track { display:flex; align-items:center; gap:10px; padding:8px; border-radius:10px; background:var(--bg); border:1px solid transparent; }
 .track.playing { border-color:var(--accent); }
 .track .thumb { width:44px; height:44px; border-radius:8px; background:var(--surface2); flex-shrink:0; object-fit:cover; display:flex; align-items:center; justify-content:center; font-size:18px; }
@@ -116,7 +117,10 @@ input[type=range] { accent-color:var(--accent); height:20px; }
 
     <div class="panel">
         <h2>📚 Library <span style="flex:1"></span><span id="lib-count" style="color:var(--accent)"></span></h2>
-        <div class="lib" id="lib"></div>
+        <div class="lib-heading">🎵 Music <span id="lib-audio-count" style="color:var(--accent)"></span></div>
+        <div class="lib" id="lib-audio"></div>
+        <div class="lib-heading" style="margin-top:14px">🎬 Videos <span id="lib-video-count" style="color:var(--accent)"></span></div>
+        <div class="lib" id="lib-video"></div>
     </div>
 
     <div class="panel">
@@ -201,19 +205,25 @@ function saveTrack(rec){ // rec: {id,name,kind,mime,blob,thumb,source}
 }
 function refreshLib(){ return dbAll().then(function(all){ LIB=all; renderLib(); }); }
 function renderLib(){
-    var el=$('lib'); el.innerHTML='';
+    var elA=$('lib-audio'), elV=$('lib-video');
+    elA.innerHTML=''; elV.innerHTML='';
     $('lib-count').textContent=LIB.length?LIB.length+' item'+(LIB.length>1?'s':''):'';
-    if(!LIB.length){ el.innerHTML='<div class="empty">No cached media yet.<br>Add a playlist or Drive file above.</div>'; $('fab').style.display='none'; return; }
-    $('fab').style.display='flex';
+    $('fab').style.display=LIB.length?'flex':'none';
+    var audioCount=0, videoCount=0;
     LIB.forEach(function(t,i){
         var d=document.createElement('div'); d.className='track'+(cur&&cur.id===t.id?' playing':'');
-        var thumb=t.thumb?'<img class="thumb" src="'+t.thumb+'">':'<div class="thumb">'+(t.kind==='audio'?'🎵':'🎬')+'</div>';
-        d.innerHTML=thumb+'<div class="meta"><div class="t-name">'+esc(t.name)+'</div><div class="t-sub">'+(t.kind==='audio'?'Audio':'Video')+' · '+(t.source||'')+'</div></div><span class="x">✕</span>';
+        var isAudio=t.kind==='audio';
+        var thumb=t.thumb?'<img class="thumb" src="'+t.thumb+'">':'<div class="thumb">'+(isAudio?'🎵':'🎬')+'</div>';
+        d.innerHTML=thumb+'<div class="meta"><div class="t-name">'+esc(t.name)+'</div><div class="t-sub">'+(isAudio?'Audio':'Video')+' · '+(t.source||'')+'</div></div><span class="x">✕</span>';
         d.querySelector('.meta').onclick=function(){ playIndex(i); };
         d.querySelector('.thumb').onclick=function(){ playIndex(i); };
         d.querySelector('.x').onclick=function(e){ e.stopPropagation(); dbDel(t.id).then(function(){ if(cur&&cur.id===t.id) stopPlayer(); refreshLib(); }); };
-        el.appendChild(d);
+        if(isAudio){ elA.appendChild(d); audioCount++; } else { elV.appendChild(d); videoCount++; }
     });
+    $('lib-audio-count').textContent=audioCount||'';
+    $('lib-video-count').textContent=videoCount||'';
+    if(!audioCount) elA.innerHTML='<div class="empty">No music cached yet.</div>';
+    if(!videoCount) elV.innerHTML='<div class="empty">No videos cached yet.</div>';
 }
 function esc(s){ return (s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
 
@@ -353,7 +363,12 @@ $('yt-go').onclick=function(){
         ystat('Found '+entries.length+' item'+(entries.length>1?'s':'')+' · downloading…');
         return downloadSeq(entries,base,0);
     })
-    .then(function(n){ ystat('Cached '+n+' item'+(n===1?'':'s')+' ✓','ok'); ybar(null); $('yt-url').value=''; })
+    .then(function(res){
+        if(!res.fails.length) ystat('Cached '+res.okCount+' item'+(res.okCount===1?'':'s')+' ✓','ok');
+        else if(res.okCount) ystat('Cached '+res.okCount+' of '+res.total+' — failed: '+res.fails.join('; '),'err');
+        else ystat('Failed: '+res.fails.join('; '),'err');
+        ybar(null); $('yt-url').value='';
+    })
     .catch(function(e){ ystat('Failed: '+e.message,'err'); ybar(null); })
     .then(function(){ $('yt-go').disabled=false; });
 };
@@ -372,8 +387,9 @@ $('yt-stream').onclick=function(){
     .catch(function(e){ ystat('Failed: '+e.message,'err'); ybar(null); })
     .then(function(){ $('yt-stream').disabled=false; });
 };
-function downloadSeq(entries,base,done){
-    if(done>=entries.length) return Promise.resolve(done);
+function downloadSeq(entries,base,done,okCount,fails){
+    okCount=okCount||0; fails=fails||[];
+    if(done>=entries.length) return Promise.resolve({okCount:okCount,total:entries.length,fails:fails});
     var e=entries[done];
     ystat('['+(done+1)+'/'+entries.length+'] '+(e.title||e.id||'')); ybar(done/entries.length);
     return fetch(base+'/api/download',{ method:'POST', headers:keyHeaders({'Content-Type':'application/json'}),
@@ -385,9 +401,10 @@ function downloadSeq(entries,base,done){
             mime:fmt==='mp3'?'audio/mpeg':'video/mp4', blob:blob, source:'YouTube',
             thumb:e.id?'https://i.ytimg.com/vi/'+e.id+'/mqdefault.jpg':null });
     })
-    .then(function(){ ybar((done+1)/entries.length); return downloadSeq(entries,base,done+1); })
-    .catch(function(err){ // skip a single failed item, keep going
-        console.warn('skip',e,err); return downloadSeq(entries,base,done+1);
+    .then(function(){ ybar((done+1)/entries.length); return downloadSeq(entries,base,done+1,okCount+1,fails); })
+    .catch(function(err){ // skip a single failed item, keep going, but remember it failed
+        console.warn('skip',e,err); fails.push((e.title||e.id||'item')+' — '+err.message);
+        return downloadSeq(entries,base,done+1,okCount,fails);
     });
 }
 
@@ -417,8 +434,14 @@ $('drive-pick').onclick=function(){
         }); });
     }).catch(function(e){ dstat('Drive auth failed: '+e.message,'err'); });
 };
-function driveSeq(docs,token,i){
-    if(i>=docs.length){ dstat('Cached '+docs.length+' file'+(docs.length>1?'s':'')+' ✓','ok'); $('dr-bar').style.display='none'; return; }
+function driveSeq(docs,token,i,okCount,fails){
+    okCount=okCount||0; fails=fails||[];
+    if(i>=docs.length){
+        if(!fails.length) dstat('Cached '+okCount+' file'+(okCount>1?'s':'')+' ✓','ok');
+        else if(okCount) dstat('Cached '+okCount+' of '+docs.length+' — failed: '+fails.join('; '),'err');
+        else dstat('Failed to cache: '+fails.join('; '),'err');
+        $('dr-bar').style.display='none'; return;
+    }
     var doc=docs[i], id=doc[google.picker.Document.ID], name=doc[google.picker.Document.NAME], mime=doc[google.picker.Document.MIME_TYPE]||'';
     dstat('['+(i+1)+'/'+docs.length+'] '+name); var b=$('dr-bar'); b.style.display='block'; b.firstElementChild.style.width=(i/docs.length*100)+'%';
     fetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media',{headers:{Authorization:'Bearer '+token}})
@@ -427,8 +450,8 @@ function driveSeq(docs,token,i){
         var kind=/^audio/.test(mime)?'audio':'video';
         return saveTrack({ id:'drive_'+id, name:name, kind:kind, mime:mime||blob.type||'video/mp4', blob:blob, source:'Drive', thumb:null });
     })
-    .then(function(){ driveSeq(docs,token,i+1); })
-    .catch(function(e){ dstat('Failed on '+name+': '+e.message,'err'); driveSeq(docs,token,i+1); });
+    .then(function(){ driveSeq(docs,token,i+1,okCount+1,fails); })
+    .catch(function(e){ console.warn('drive fail',name,e); fails.push(name+' — '+e.message); driveSeq(docs,token,i+1,okCount,fails); });
 }
 
 /* ---------- Zip-on-Drive extraction (range-fetch just the picked tracks) ---------- */
@@ -577,15 +600,21 @@ $('zip-add').onclick=function(){
     $('zip-add').disabled=true; zbar(0);
     zipAddSeq(picked,0);
 };
-function zipAddSeq(list,done){
-    if(done>=list.length){ zstat('Added '+list.length+' track'+(list.length>1?'s':'')+' ✓','ok'); zbar(null); $('zip-add').disabled=false; return; }
+function zipAddSeq(list,done,okCount,fails){
+    okCount=okCount||0; fails=fails||[];
+    if(done>=list.length){
+        if(!fails.length) zstat('Added '+okCount+' track'+(okCount>1?'s':'')+' ✓','ok');
+        else if(okCount) zstat('Added '+okCount+' of '+list.length+' — failed: '+fails.join('; '),'err');
+        else zstat('Failed to add: '+fails.join('; '),'err');
+        zbar(null); $('zip-add').disabled=false; return;
+    }
     var e=list[done], short=e.name.split('/').pop();
     zstat('['+(done+1)+'/'+list.length+'] '+short); zbar(done/list.length);
     zipExtractEntry(zipIdx,e).then(function(buf){
         var mime=guessAudioMime(short);
         return saveTrack({ id:'zip_'+zipIdx.fileId+'_'+e.lhOffset, name:short, kind:'audio', mime:mime, blob:new Blob([buf],{type:mime}), source:'Zip: '+zipName, thumb:null });
-    }).then(function(){ zbar((done+1)/list.length); zipAddSeq(list,done+1); })
-    .catch(function(err){ console.warn('zip skip',e,err); zstat('Skipped "'+short+'": '+err.message,'err'); zipAddSeq(list,done+1); });
+    }).then(function(){ zbar((done+1)/list.length); zipAddSeq(list,done+1,okCount+1,fails); })
+    .catch(function(err){ console.warn('zip skip',e,err); fails.push(short+' — '+err.message); zipAddSeq(list,done+1,okCount,fails); });
 }
 
 /* ---------- clear ---------- */
