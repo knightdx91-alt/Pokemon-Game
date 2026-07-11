@@ -175,7 +175,7 @@ details summary { cursor:pointer; font-size:12px; color:var(--dim); }
 <div id="app">
     <header id="topbar">
         <button id="back-hub-btn" title="Minimize to picture-in-picture (or back to hub)">‹</button>
-        <div id="topbar-title">RetroPlay <span id="build-tag">build 9</span></div>
+        <div id="topbar-title">RetroPlay <span id="build-tag">build 10</span></div>
         <button id="import-open-btn" title="Import media">+ Import</button>
     </header>
 
@@ -1123,12 +1123,17 @@ $('yt-stream').onclick=function(){
 function downloadSeq(entries,base,done,okCount,fails){
     okCount=okCount||0; fails=fails||[];
     if(done>=entries.length) return Promise.resolve({okCount:okCount,total:entries.length,fails:fails});
-    var e=entries[done];
-    ystat('['+(done+1)+'/'+entries.length+'] '+(e.title||e.id||'')); ybar(done/entries.length);
-    return fetch(base+'/api/download',{ method:'POST', headers:keyHeaders({'Content-Type':'application/json'}),
-        body:JSON.stringify({url:e.url,format:fmt}) })
-    .then(function(r){ if(!r.ok) return r.text().then(function(t){throw new Error(r.status+' '+t);}); return r.blob(); })
+    var e=entries[done], label=e.title||e.id||'';
+    var setYbar=function(frac){ ybar((done+frac)/entries.length); };
+    ystat('['+(done+1)+'/'+entries.length+'] '+label); setYbar(0);
+    return fetchBlobWithProgress(base+'/api/download',
+        { method:'POST', headers:keyHeaders({'Content-Type':'application/json'}), body:JSON.stringify({url:e.url,format:fmt}) },
+        function(loaded,total){
+            setYbar(total?loaded/total:0);
+            ystat('['+(done+1)+'/'+entries.length+'] '+label+' — '+fmtBytes(loaded)+(total?' / '+fmtBytes(total):''));
+        })
     .then(function(blob){
+        setYbar(1);
         var kind=fmt==='mp3'?'audio':'video';
         return saveTrack({ id:'yt_'+(e.id||Date.now())+'_'+fmt, name:e.title||e.id||'Track', kind:kind,
             mime:fmt==='mp3'?'audio/mpeg':'video/mp4', blob:blob, source:'YouTube',
@@ -1188,12 +1193,15 @@ $('drive-pick').onclick=function(){
     }).catch(function(e){ dstat('Drive auth failed: '+e.message,'err'); });
 };
 // Downloads a URL to a Blob while reporting byte progress. Streams the response
-// body so large videos show a live progress bar instead of freezing at 0% until
-// done. Falls back to a plain .blob() when the body isn't streamable or the
-// server omits Content-Length (progress just can't be shown in that case).
-function fetchBlobWithProgress(url,headers,onProgress){
-    return fetch(url,{headers:headers}).then(function(r){
-        if(!r.ok) return r.text().then(function(t){throw new Error('Drive '+r.status+' '+t);});
+// body so large files show a live progress bar instead of freezing at 0% until
+// done. `init` is the normal fetch() init (method/headers/body), so it works for
+// GET (Drive), POST (the YouTube backend) and ranged GET (zip entries) alike.
+// Falls back to a plain .blob() when the body isn't streamable; `total` is 0 when
+// the server omits Content-Length (e.g. chunked yt-dlp streams) — callers then
+// show bytes-so-far instead of a percentage.
+function fetchBlobWithProgress(url,init,onProgress){
+    return fetch(url,init).then(function(r){
+        if(!(r.ok||r.status===206)) return r.text().then(function(t){throw new Error(r.status+' '+t);});
         var total=parseInt(r.headers.get('content-length')||'0',10);
         if(!r.body||!r.body.getReader){ return r.blob(); }
         var reader=r.body.getReader(), chunks=[], loaded=0;
@@ -1223,7 +1231,7 @@ function driveSeq(docs,token,i,okCount,fails){
     var setBar=function(frac){ b.firstElementChild.style.width=(((i+frac)/docs.length)*100)+'%'; };
     setBar(0);
     fetchBlobWithProgress('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media',
-        {Authorization:'Bearer '+token},
+        {headers:{Authorization:'Bearer '+token}},
         function(loaded,total){
             setBar(total?loaded/total:0);
             dstat('['+(i+1)+'/'+docs.length+'] '+name+' — '+fmtBytes(loaded)+(total?' / '+fmtBytes(total):''));
@@ -1324,14 +1332,18 @@ function fetchAndParseCD(fileId,token,cdOffset,cdSize){
     });
 }
 // Range-fetches + (if needed) inflates just one entry's bytes.
-function zipExtractEntry(idx,entry){
+function zipExtractEntry(idx,entry,onProgress){
     var fileId=idx.fileId, token=idx.token;
     return driveRange(fileId,token,entry.lhOffset,entry.lhOffset+29).then(function(lhBuf){
         var dv=new DataView(lhBuf);
         if(dv.getUint32(0,true)!==ZLOCAL_SIG) throw new Error('Local header mismatch — zip index may be stale, try re-picking.');
         var fnLen=dv.getUint16(26,true), exLen=dv.getUint16(28,true);
         var dataStart=entry.lhOffset+30+fnLen+exLen;
-        return driveRange(fileId,token,dataStart,dataStart+entry.compSize-1);
+        // Stream the entry's compressed bytes so large tracks show live progress.
+        return fetchBlobWithProgress('https://www.googleapis.com/drive/v3/files/'+fileId+'?alt=media',
+            {headers:{Authorization:'Bearer '+token, Range:'bytes='+dataStart+'-'+(dataStart+entry.compSize-1)}},
+            function(loaded,total){ if(onProgress) onProgress(loaded, total||entry.compSize); })
+            .then(function(b){ return b.arrayBuffer(); });
     }).then(function(buf){
         if(entry.method===0) return buf; // stored — already raw file bytes
         if(entry.method===8){
@@ -1404,11 +1416,16 @@ function zipAddSeq(list,done,okCount,fails){
         zbar(null); $('zip-add').disabled=false; return;
     }
     var e=list[done], short=e.name.split('/').pop();
-    zstat('['+(done+1)+'/'+list.length+'] '+short); zbar(done/list.length);
-    zipExtractEntry(zipIdx,e).then(function(buf){
+    var setZbar=function(frac){ zbar((done+frac)/list.length); };
+    zstat('['+(done+1)+'/'+list.length+'] '+short); setZbar(0);
+    zipExtractEntry(zipIdx,e,function(loaded,total){
+        setZbar(total?loaded/total:0);
+        zstat('['+(done+1)+'/'+list.length+'] '+short+' — '+fmtBytes(loaded)+(total?' / '+fmtBytes(total):''));
+    }).then(function(buf){
+        setZbar(1);
         var mime=guessAudioMime(short);
         return saveTrack({ id:'zip_'+zipIdx.fileId+'_'+e.lhOffset, name:short, kind:'audio', mime:mime, blob:new Blob([buf],{type:mime}), source:'Zip: '+zipName, thumb:null });
-    }).then(function(){ zbar((done+1)/list.length); zipAddSeq(list,done+1,okCount+1,fails); })
+    }).then(function(){ setZbar(1); zipAddSeq(list,done+1,okCount+1,fails); })
     .catch(function(err){ console.warn('zip skip',e,err); fails.push(short+' — '+err.message); zipAddSeq(list,done+1,okCount,fails); });
 }
 
