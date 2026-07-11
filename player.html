@@ -182,7 +182,7 @@ details summary { cursor:pointer; font-size:12px; color:var(--dim); }
 <div id="app">
     <header id="topbar">
         <button id="back-hub-btn" title="Back to hub (keeps music playing)">‹ Back</button>
-        <div id="topbar-title">RetroPlay <span id="build-tag">build 13</span></div>
+        <div id="topbar-title">RetroPlay <span id="build-tag">build 14</span></div>
         <button id="diag-btn" title="Playback diagnostic">🔧</button>
         <button id="import-open-btn" title="Import media">＋ Import</button>
     </header>
@@ -1497,6 +1497,10 @@ $('clear-cache').onclick=function(){ if(confirm('Delete ALL cached media from th
     $('diag-btn').onclick=function(){ $('diagview').style.display='flex'; };
     $('diag-close').onclick=function(){ $('diagview').style.display='none'; };
     $('diag-start').onclick=function(){
+        if(!cur || vid.paused){
+            out.value='⚠ No song is playing.\n\nDo this first:\n1. Close this panel (✕).\n2. Tap a song so it starts playing (you hear it).\n3. Come back here and tap Start log.\n4. Then press Home for ~15s and return.';
+            return;
+        }
         logging=true; t0=performance.now(); out.value='';
         line('UA: '+navigator.userAgent);
         line('standalone: '+(window.matchMedia('(display-mode: standalone)').matches||navigator.standalone||false));
