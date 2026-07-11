@@ -180,7 +180,7 @@ details summary { cursor:pointer; font-size:12px; color:var(--dim); }
 <div id="app">
     <header id="topbar">
         <button id="back-hub-btn" title="Back to hub (keeps music playing)">‹ Back</button>
-        <div id="topbar-title">RetroPlay <span id="build-tag">build 11</span></div>
+        <div id="topbar-title">RetroPlay <span id="build-tag">build 12</span></div>
         <button id="import-open-btn" title="Import media">＋ Import</button>
     </header>
 
@@ -237,6 +237,11 @@ details summary { cursor:pointer; font-size:12px; color:var(--dim); }
     </div>
     <div id="float-resize" title="Drag to resize"></div>
 </div>
+
+<!-- Audio tracks play through a real <audio> element so Android keeps them
+     playing in the background (a <video> element gets suspended when the app is
+     backgrounded). Video tracks use #np-video. -->
+<audio id="np-audio" playsinline style="display:none"></audio>
 
 <!-- Hidden video used to push audio album-art into native Picture-in-Picture -->
 <canvas id="pip-canvas" width="480" height="270" style="display:none"></canvas>
@@ -666,7 +671,17 @@ document.querySelectorAll('.tabbtn').forEach(function(btn){
 });
 
 /* ---------- Playback engine: queue + shuffle + repeat ---------- */
-var vid=$('np-video'), cur=null, curURL=null;
+// Two media elements: audio tracks play through <audio> (survives backgrounding
+// on Android), video through <video>. `vid` always points at the ACTIVE one, so
+// all the control/UI code below stays element-agnostic. All the media event
+// listeners are bound to BOTH elements (see bindMediaEvents), and only the one
+// currently playing fires them.
+var vidEl=$('np-video'), audEl=$('np-audio');
+var vid=audEl, cur=null, curURL=null;
+function mediaFor(kind){ return kind==='video'?vidEl:audEl; }
+// Bind a media event to BOTH elements but only run the handler for whichever is
+// currently active, so stray events from the idle element are ignored.
+function onMedia(type,fn){ [audEl,vidEl].forEach(function(el){ el.addEventListener(type,function(e){ if(this===vid) fn.call(this,e); }); }); }
 var Q=[], qi=-1;                       // current queue + index into it (original order)
 var shuffleOn=false, shuffleOrder=[];  // shuffled order of indices into Q, anchored at qi when generated
 var repeatMode='off';                  // 'off' | 'all' | 'one'
@@ -732,8 +747,8 @@ function npErr(msg){ var e=$('np-err'); if(!msg){ e.style.display='none'; e.text
 var ERR_MSGS={1:'Playback aborted.',2:'Network error while loading the file.',
     3:'This file is corrupt or uses an unsupported codec.',
     4:"This browser can't play this file — likely an unsupported codec (e.g. HEVC/H.265 MP4). Try re-encoding to H.264/AAC."};
-vid.addEventListener('error', function(){ var code=vid.error&&vid.error.code; npErr(ERR_MSGS[code]||'Playback failed.'); });
-vid.addEventListener('playing', function(){ npErr(null); });
+onMedia('error', function(){ var code=vid.error&&vid.error.code; npErr(ERR_MSGS[code]||'Playback failed.'); });
+onMedia('playing', function(){ npErr(null); });
 
 function setArtEl(el,src,kind){ el.innerHTML=src?('<img src="'+src+'">'):(kind==='audio'?'🎵':'🎬'); }
 function showNowPlayingMeta(rec){
@@ -764,6 +779,10 @@ function playQ(i){
     qi=i; var item=Q[i];
     npErr(null);
     var start=function(src){
+        // Switch to the right element for this track's kind; silence the other.
+        var other = (item.kind==='video') ? audEl : vidEl;
+        try{ other.pause(); other.removeAttribute('src'); other.load(); }catch(e){}
+        vid = mediaFor(item.kind);
         vid.src=src;
         cur={id:item.trackId,name:item.name,artist:item.artist,kind:item.kind,thumb:item.thumb,art:item.art,source:item.source,lyrics:item.lyrics};
         showNowPlayingMeta(cur);
@@ -780,7 +799,7 @@ function playQ(i){
     }; }); }
 }
 function stopPlayer(){
-    vid.pause(); try{ vid.removeAttribute('src'); vid.load(); }catch(e){}
+    [audEl,vidEl].forEach(function(el){ try{ el.pause(); el.removeAttribute('src'); el.load(); }catch(e){} });
     if(typeof closeFloat==='function') closeFloat();
     if(document.pictureInPictureElement) document.exitPictureInPicture().catch(function(){});
     $('mini').classList.remove('show'); closeNP();
@@ -788,13 +807,13 @@ function stopPlayer(){
     renderLists();
 }
 
-vid.addEventListener('ended', function(){
+onMedia('ended', function(){
     if(repeatMode==='one'){ vid.currentTime=0; vid.play().catch(function(){}); return; }
     playNextTrack();
 });
-vid.addEventListener('play', function(){ $('np-play').textContent='⏸'; $('mini-play').textContent='⏸'; $('float-play').textContent='⏸'; });
-vid.addEventListener('pause', function(){ $('np-play').textContent='▶'; $('mini-play').textContent='▶'; $('float-play').textContent='▶'; });
-vid.addEventListener('timeupdate', function(){
+onMedia('play', function(){ $('np-play').textContent='⏸'; $('mini-play').textContent='⏸'; $('float-play').textContent='⏸'; });
+onMedia('pause', function(){ $('np-play').textContent='▶'; $('mini-play').textContent='▶'; $('float-play').textContent='▶'; });
+onMedia('timeupdate', function(){
     if(vid.duration){
         var pct=vid.currentTime/vid.duration;
         $('np-seek').value=Math.round(pct*1000);
@@ -802,7 +821,7 @@ vid.addEventListener('timeupdate', function(){
         $('np-time-cur').textContent=fmtTime(vid.currentTime);
     }
 });
-vid.addEventListener('loadedmetadata', function(){ if(vid.duration&&isFinite(vid.duration)) $('np-time-dur').textContent=fmtTime(vid.duration); });
+onMedia('loadedmetadata', function(){ if(vid.duration&&isFinite(vid.duration)) $('np-time-dur').textContent=fmtTime(vid.duration); });
 $('np-seek').addEventListener('input', function(){ if(vid.duration) vid.currentTime=$('np-seek').value/1000*vid.duration; });
 $('np-play').onclick=function(){ vid.paused?vid.play():vid.pause(); };
 $('mini-play').onclick=function(e){ e.stopPropagation(); vid.paused?vid.play():vid.pause(); };
@@ -872,7 +891,7 @@ function updateFloatMeta(){
     if(!cur) return;
     var isVideo=cur.kind==='video';
     $('float-art').style.display=isVideo?'none':'flex';
-    vid.style.display=isVideo?'block':'none';
+    vidEl.style.display=isVideo?'block':'none';
     $('float-stage').style.aspectRatio=isVideo?'16/10':'1/1';
     setArtEl($('float-art'), artSrcFor(cur), cur.kind);
     $('float-title').textContent=cur.name||'Track';
@@ -1051,10 +1070,10 @@ if('mediaSession' in navigator){
     ms.setActionHandler('seekto', function(d){ if(d.seekTime!=null) vid.currentTime=d.seekTime; });
     ms.setActionHandler('seekforward', function(){ vid.currentTime=Math.min(vid.duration||1e9,vid.currentTime+10); });
     ms.setActionHandler('seekbackward', function(){ vid.currentTime=Math.max(0,vid.currentTime-10); });
-    vid.addEventListener('play', function(){ ms.playbackState='playing'; });
-    vid.addEventListener('pause', function(){ ms.playbackState='paused'; });
-    vid.addEventListener('loadedmetadata', updatePos);
-    vid.addEventListener('timeupdate', updatePos);
+    onMedia('play', function(){ ms.playbackState='playing'; });
+    onMedia('pause', function(){ ms.playbackState='paused'; });
+    onMedia('loadedmetadata', updatePos);
+    onMedia('timeupdate', updatePos);
 }
 function updatePos(){
     if(!('mediaSession' in navigator)||!navigator.mediaSession.setPositionState) return;
