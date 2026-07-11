@@ -84,13 +84,22 @@ def _safe_name(s: str, fallback: str = "media") -> str:
     return s[:120] or fallback
 
 
+# Optional proxy for YouTube requests. The "bot" wall is IP-based, so routing
+# through a different (ideally residential) IP often clears it with no login.
+# Set YT_PROXY to e.g. http://user:pass@host:port  or  socks5://host:port
+YT_PROXY = os.environ.get("YT_PROXY", "").strip()
+
+
 def _base_opts():
     """Shared yt-dlp options, incl. the player-client bypass for YouTube."""
-    return {
+    opts = {
         "quiet": True,
         "noplaylist": True,
         "extractor_args": {"youtube": {"player_client": PLAYER_CLIENTS}},
     }
+    if YT_PROXY:
+        opts["proxy"] = YT_PROXY
+    return opts
 
 
 def _cookiefile(cookies: str):
@@ -118,6 +127,9 @@ def root():
         "GET  /api/playlist?url=...  (flat list of playlist entries)\n"
         "GET  /api/stream?url=...&kind=audio|video  (proxied on-demand playback)\n"
         + ("Access key REQUIRED (X-Access-Key).\n" if ACCESS_KEY else "No access key set (open).\n")
+        + ("Proxy: ON.\n" if YT_PROXY else "Proxy: off.\n")
+        + ("Cookies: stored.\n" if _load_stored_cookies() or DEFAULT_COOKIES else "Cookies: none.\n")
+        + "Clients: " + ",".join(PLAYER_CLIENTS) + "\n"
     )
 
 
