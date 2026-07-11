@@ -25,9 +25,11 @@ import re
 import shutil
 import tempfile
 import contextlib
+import urllib.request
+import urllib.error
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, StreamingResponse, Response
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.background import BackgroundTask
 from pydantic import BaseModel
@@ -114,6 +116,7 @@ def root():
         "POST /api/download  body {url, format:'mp3'|'mp4', cookies?}\n"
         "GET  /api/info?url=...\n"
         "GET  /api/playlist?url=...  (flat list of playlist entries)\n"
+        "GET  /api/stream?url=...&kind=audio|video  (proxied on-demand playback)\n"
         + ("Access key REQUIRED (X-Access-Key).\n" if ACCESS_KEY else "No access key set (open).\n")
     )
 
@@ -223,6 +226,108 @@ def playlist(request: Request, url: str):
         "count": len(entries),
         "entries": entries,
     })
+
+
+def _resolve_stream(url: str, kind: str):
+    """Resolve a single directly-playable progressive stream (URL + headers).
+
+    kind 'audio' -> a single-file audio track (m4a itag 140 etc.) so it plays
+    in a plain <audio>/<video> and supports HTTP Range (seeking + background).
+    kind 'video' -> a progressive muxed mp4 (itag 18/22) — one URL with both
+    audio & video, so no server-side muxing is needed and it streams instantly.
+    """
+    cf = _cookiefile("")
+    opts = _base_opts()
+    opts["skip_download"] = True
+    if kind == "audio":
+        opts["format"] = "bestaudio[ext=m4a]/bestaudio[protocol^=https]/bestaudio"
+    else:
+        opts["format"] = ("best[ext=mp4][acodec!=none][vcodec!=none]"
+                          "/best[acodec!=none][vcodec!=none]/18/22")
+    if cf:
+        opts["cookiefile"] = cf
+    try:
+        with yt_dlp.YoutubeDL(opts) as ydl:
+            d = ydl.extract_info(url, download=False)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Could not resolve stream: {e}")
+    finally:
+        if cf:
+            with contextlib.suppress(OSError):
+                os.remove(cf)
+    if d.get("entries"):          # playlist link -> first item
+        d = d["entries"][0]
+    # extract_info with a chosen "format" fills top-level url; fall back to
+    # scanning requested_formats / formats for a progressive one.
+    direct = d.get("url")
+    headers = d.get("http_headers") or {}
+    ext = d.get("ext") or ("m4a" if kind == "audio" else "mp4")
+    if not direct and d.get("requested_formats"):
+        f = d["requested_formats"][0]
+        direct = f.get("url"); headers = f.get("http_headers") or headers; ext = f.get("ext") or ext
+    if not direct:
+        raise HTTPException(status_code=400, detail="No progressive stream available for this link.")
+    mime = "audio/mp4" if ext in ("m4a", "mp4a") and kind == "audio" else \
+           ("audio/webm" if kind == "audio" else "video/mp4")
+    return direct, headers, mime
+
+
+@app.get("/api/stream")
+def stream(request: Request, url: str, kind: str = "audio"):
+    """YMusic-style on-demand playback: resolve YouTube's own stream and proxy
+    it (forwarding the browser's Range header) so it plays instantly in the
+    native player — background + PiP + lock-screen — with no full download."""
+    _check_key(request)
+    kind = "video" if kind == "video" else "audio"
+    direct, up_headers, mime = _resolve_stream(url, kind)
+
+    # Forward Range so <video>/<audio> can seek; googlevideo requires the
+    # original request headers (User-Agent etc.).
+    fwd = dict(up_headers)
+    rng = request.headers.get("range")
+    if rng:
+        fwd["Range"] = rng
+    req = urllib.request.Request(direct, headers=fwd)
+    try:
+        up = urllib.request.urlopen(req, timeout=30)
+    except urllib.error.HTTPError as e:
+        if e.code in (206, 200):
+            up = e
+        else:
+            raise HTTPException(status_code=502, detail=f"Upstream {e.code}")
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Upstream error: {e}")
+
+    status = up.status if hasattr(up, "status") else 200
+    out_headers = {"Accept-Ranges": "bytes", "Cache-Control": "no-store"}
+    for h in ("Content-Range", "Content-Length"):
+        v = up.headers.get(h)
+        if v:
+            out_headers[h] = v
+
+    def gen():
+        try:
+            while True:
+                chunk = up.read(262144)
+                if not chunk:
+                    break
+                yield chunk
+        finally:
+            with contextlib.suppress(Exception):
+                up.close()
+
+    return StreamingResponse(gen(), status_code=status, media_type=mime, headers=out_headers)
+
+
+@app.get("/api/stream-url")
+def stream_url(request: Request, url: str, kind: str = "audio"):
+    """Return the resolved direct stream URL (no proxy). Faster/cheaper, but the
+    googlevideo URL is usually IP-locked to this server, so playback via it from
+    a browser may 403 — /api/stream (proxied) is the reliable path."""
+    _check_key(request)
+    kind = "video" if kind == "video" else "audio"
+    direct, _h, mime = _resolve_stream(url, kind)
+    return JSONResponse({"url": direct, "mime": mime})
 
 
 class DownloadBody(BaseModel):

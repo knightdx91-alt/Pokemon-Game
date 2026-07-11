@@ -82,10 +82,12 @@ input[type=range] { accent-color:var(--accent); height:20px; }
             <button id="fmt-mp3">🎵 Music (mp3)</button>
         </div>
         <div class="row">
-            <button class="btn" id="yt-go">Download &amp; cache</button>
+            <button class="btn ghost" id="yt-stream">▶ Stream now</button>
+            <button class="btn" id="yt-go">⤓ Download &amp; cache</button>
         </div>
         <div class="bar" id="yt-bar"><i></i></div>
         <div class="status" id="yt-status"></div>
+        <p class="hint">Stream = plays straight from YouTube (like YMusic), no wait, background + PiP. Download = keeps it offline in this browser.</p>
     </div>
 
     <div class="panel">
@@ -201,23 +203,36 @@ function esc(s){ return (s||'').replace(/[&<>"]/g,function(c){return {'&':'&amp;
 
 /* ---------- Floating player ---------- */
 var vid=$('fp-video'), fp=$('fp'), cur=null, curURL=null;
-function playIndex(i){
-    var t=LIB[i]; if(!t) return;
-    idb().then(function(db){ db.transaction('tracks').objectStore('tracks').get(t.id).onsuccess=function(e){
-        var rec=e.target.result; if(!rec||!rec.blob) return;
-        if(curURL) URL.revokeObjectURL(curURL);
-        curURL=URL.createObjectURL(rec.blob); cur=rec;
-        vid.src=curURL; $('fp-title').textContent=rec.name;
-        fp.classList.add('show'); placeDefault();
-        setMeta(rec);
-        vid.play().catch(function(){});
-        renderLib();
-    }; });
+var Q=[], qi=-1;   // unified play queue: cached items OR live YouTube streams
+
+// Build the queue from the cached library and play item i.
+function playIndex(i){ Q=LIB.map(function(t){ return {kind:t.kind,name:t.name,thumb:t.thumb,source:t.source,trackId:t.id}; }); playQ(i); }
+// Build a live-streaming queue (YMusic-style) from resolved YouTube entries.
+function playStream(entries,kind,i){
+    Q=entries.map(function(e){ return { kind:kind, name:e.title||e.id||'Track', source:'YouTube (stream)',
+        thumb:e.id?'https://i.ytimg.com/vi/'+e.id+'/mqdefault.jpg':null, stream:true, yurl:e.url }; });
+    playQ(i||0);
 }
-function curIndex(){ return LIB.findIndex(function(t){ return cur&&t.id===cur.id; }); }
-function playNext(){ var i=curIndex(); if(i>=0&&i+1<LIB.length) playIndex(i+1); }
-function playPrev(){ var i=curIndex(); if(i>0) playIndex(i-1); }
-function stopPlayer(){ vid.pause(); fp.classList.remove('show'); cur=null; if(curURL){URL.revokeObjectURL(curURL); curURL=null;} renderLib(); }
+function streamSrc(item){
+    var base=backendBase(); var k=($('key').value||'').trim();
+    return base+'/api/stream?kind='+(item.kind==='video'?'video':'audio')+'&url='+encodeURIComponent(item.yurl)+(k?'&key='+encodeURIComponent(k):'');
+}
+function playQ(i){
+    if(i<0||i>=Q.length) return; qi=i; var item=Q[i];
+    var start=function(src){
+        vid.src=src; cur={id:item.trackId,name:item.name,kind:item.kind,thumb:item.thumb,source:item.source};
+        $('fp-title').textContent=item.name; fp.classList.add('show'); placeDefault();
+        setMeta(cur); vid.play().catch(function(){}); renderLib();
+    };
+    if(curURL){ URL.revokeObjectURL(curURL); curURL=null; }
+    if(item.stream){ start(streamSrc(item)); }
+    else { idb().then(function(db){ db.transaction('tracks').objectStore('tracks').get(item.trackId).onsuccess=function(e){
+        var rec=e.target.result; if(!rec||!rec.blob) return; curURL=URL.createObjectURL(rec.blob); start(curURL);
+    }; }); }
+}
+function playNext(){ if(qi>=0&&qi+1<Q.length) playQ(qi+1); }
+function playPrev(){ if(qi>0) playQ(qi-1); }
+function stopPlayer(){ vid.pause(); fp.classList.remove('show'); cur=null; qi=-1; if(curURL){URL.revokeObjectURL(curURL); curURL=null;} renderLib(); }
 
 vid.addEventListener('ended', playNext);
 vid.addEventListener('play', function(){ $('c-play').textContent='⏸'; });
@@ -314,6 +329,21 @@ $('yt-go').onclick=function(){
     .then(function(n){ ystat('Cached '+n+' item'+(n===1?'':'s')+' ✓','ok'); ybar(null); $('yt-url').value=''; })
     .catch(function(e){ ystat('Failed: '+e.message,'err'); ybar(null); })
     .then(function(){ $('yt-go').disabled=false; });
+};
+$('yt-stream').onclick=function(){
+    var url=($('yt-url').value||'').trim(); if(!url){ ystat('Paste a link first.','err'); return; }
+    var base=backendBase(); if(!base){ ystat('Set the backend URL in ⚙ settings.','err'); return; }
+    var kind=fmt==='mp3'?'audio':'video';
+    $('yt-stream').disabled=true; ystat('Reading link…'); ybar(0);
+    fetch(base+'/api/playlist?url='+encodeURIComponent(url),{headers:keyHeaders()})
+    .then(function(r){ if(!r.ok) return r.text().then(function(t){throw new Error(r.status+' '+t);}); return r.json(); })
+    .then(function(pl){
+        var entries=(pl.entries||[]).filter(function(e){return e.url;}); if(!entries.length) throw new Error('No videos found.');
+        ybar(null); ystat('Streaming '+entries.length+' item'+(entries.length>1?'s':'')+' ▶','ok');
+        playStream(entries,kind,0);
+    })
+    .catch(function(e){ ystat('Failed: '+e.message,'err'); ybar(null); })
+    .then(function(){ $('yt-stream').disabled=false; });
 };
 function downloadSeq(entries,base,done){
     if(done>=entries.length) return Promise.resolve(done);
