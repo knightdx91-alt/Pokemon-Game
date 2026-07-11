@@ -456,18 +456,13 @@ $('drive-pick').onclick=function(){
     dstat('Authorizing Google Drive…');
     driveToken().then(function(token){
         loadG(function(){ gapi.load('picker',function(){
-            // Drive's stored mimeType is often wrong/generic for files that weren't
-            // uploaded via the web UI (phone sync, rclone, etc — commonly land as
-            // audio/mp3, audio/x-mp3, or application/octet-stream instead of the
-            // standard audio/mpeg). setMimeTypes() is an AND filter on top of the
-            // search box, so a mismatched type hides the file no matter what you
-            // type — cast a wide net here and let filename-based detection below
-            // sort out the real kind once a file is picked.
-            var view=new google.picker.DocsView(google.picker.ViewId.DOCS).setIncludeFolders(true).setMimeTypes(
-                'video/mp4,video/quicktime,video/webm,video/x-matroska,video/x-msvideo,video/3gpp,video/mpeg,'+
-                'audio/mpeg,audio/mp3,audio/x-mp3,audio/mpeg3,audio/x-mpeg-3,audio/mp4,audio/x-m4a,audio/wav,'+
-                'audio/x-wav,audio/ogg,audio/flac,audio/x-flac,audio/aac,audio/x-aac,audio/opus,audio/webm,'+
-                'audio/x-ms-wma,application/octet-stream');
+            // No setMimeTypes() — Drive's stored mimeType is often wrong/generic for
+            // files that weren't uploaded via the web UI (phone sync, rclone, etc),
+            // and setMimeTypes() is a hard AND filter on top of the search box that
+            // silently hides anything with a mismatched type. Same unrestricted
+            // DocsView pattern as the working emulator.html Drive picker; filename-
+            // based detection below sorts out the real kind once something's picked.
+            var view=new google.picker.DocsView(google.picker.ViewId.DOCS).setIncludeFolders(true);
             new google.picker.PickerBuilder().addView(view)
                 .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
                 .setTitle('Pick video / music files').setOAuthToken(token)
@@ -493,7 +488,11 @@ function driveSeq(docs,token,i,okCount,fails){
     .then(function(r){ if(!r.ok) return r.text().then(function(t){throw new Error('Drive '+r.status+' '+t);}); return r.blob(); })
     .then(function(blob){
         var byName=classifyByName(name);
-        var kind=byName?byName.kind:(/^audio/.test(mime)?'audio':'video');
+        var kind=byName?byName.kind:(/^audio/.test(mime)?'audio':(/^video/.test(mime)?'video':null));
+        // The picker no longer restricts by mimeType (Drive's stored type is
+        // unreliable), so something clearly non-media can come through — fail
+        // it cleanly instead of silently mislabeling it as a video.
+        if(!kind) throw new Error('Not a recognized audio/video file (mimeType: '+(mime||'unknown')+')');
         var finalMime=byName?byName.mime:(mime||blob.type||'video/mp4');
         // Reconstruct with the corrected type — Drive's Content-Type header (which
         // the fetched Blob's own .type carries) can be wrong/generic too, and that's
@@ -613,8 +612,11 @@ $('zip-pick').onclick=function(){
     zstat('Authorizing Google Drive…'); $('zip-list').style.display='none'; $('zip-actions').style.display='none';
     driveToken().then(function(token){
         loadG(function(){ gapi.load('picker',function(){
-            var view=new google.picker.DocsView(google.picker.ViewId.DOCS).setIncludeFolders(true)
-                .setMimeTypes('application/zip,application/x-zip-compressed,application/x-zip,multipart/x-zip');
+            // No setMimeTypes() — same reasoning as the media picker above, and
+            // zips uploaded outside Drive's web UI are especially prone to a wrong
+            // stored mimeType. setQuery() just pre-fills the search box (like
+            // emulator.html's sysQuery) rather than hard-excluding anything.
+            var view=new google.picker.DocsView(google.picker.ViewId.DOCS).setIncludeFolders(true).setQuery('zip');
             new google.picker.PickerBuilder().addView(view)
                 .setTitle('Pick a zip archive').setOAuthToken(token)
                 .setCallback(function(data){
