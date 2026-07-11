@@ -100,6 +100,21 @@ input[type=range] { accent-color:var(--accent); height:20px; }
     </div>
 
     <div class="panel">
+        <h2>📦 Extract songs from a zip on Drive</h2>
+        <div class="row">
+            <button class="btn ghost" id="zip-pick">Pick a zip from Drive</button>
+        </div>
+        <div class="bar" id="zip-bar"><i></i></div>
+        <div class="status" id="zip-status"></div>
+        <div class="lib" id="zip-list" style="display:none;max-height:280px;overflow:auto;margin-top:10px"></div>
+        <div class="row" id="zip-actions" style="display:none">
+            <button class="btn ghost" id="zip-selall">Select all</button>
+            <button class="btn" id="zip-add">Add selected to library</button>
+        </div>
+        <p class="hint">Reads just the zip's file index (a few KB) over Drive, then downloads only the tracks you pick — the rest of a multi-GB archive is never fetched. Needs a browser with codecs your tracks use; compressed (non-Store) zip entries need <code>DecompressionStream</code> support (all current major browsers).</p>
+    </div>
+
+    <div class="panel">
         <h2>📚 Library <span style="flex:1"></span><span id="lib-count" style="color:var(--accent)"></span></h2>
         <div class="lib" id="lib"></div>
     </div>
@@ -414,6 +429,163 @@ function driveSeq(docs,token,i){
     })
     .then(function(){ driveSeq(docs,token,i+1); })
     .catch(function(e){ dstat('Failed on '+name+': '+e.message,'err'); driveSeq(docs,token,i+1); });
+}
+
+/* ---------- Zip-on-Drive extraction (range-fetch just the picked tracks) ---------- */
+var ZEOCD_SIG=0x06054b50, Z64EOCD_SIG=0x06064b50, Z64LOC_SIG=0x07064b50, ZCD_SIG=0x02014b50, ZLOCAL_SIG=0x04034b50;
+var AUDIO_EXT=/\.(mp3|m4a|flac|wav|ogg|aac|opus|wma)$/i;
+
+function driveMeta(id,token,fields){
+    return fetch('https://www.googleapis.com/drive/v3/files/'+id+'?fields='+(fields||'size,name'),{headers:{Authorization:'Bearer '+token}})
+        .then(function(r){ if(!r.ok) return r.text().then(function(t){throw new Error('Drive meta '+r.status+' '+t);}); return r.json(); });
+}
+function driveRange(id,token,start,end){ // inclusive byte range
+    if(end<start) return Promise.resolve(new ArrayBuffer(0));
+    return fetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media',
+        {headers:{Authorization:'Bearer '+token, Range:'bytes='+start+'-'+end}})
+    .then(function(r){ if(!(r.status===206||r.status===200)) return r.text().then(function(t){throw new Error('Drive range '+r.status+' '+t);}); return r.arrayBuffer(); });
+}
+function findSigFromEnd(buf,sig){
+    var dv=new DataView(buf);
+    for(var i=buf.byteLength-4;i>=0;i--){ if(dv.getUint32(i,true)===sig) return i; }
+    return -1;
+}
+function readU64(dv,off){ // JS numbers are exact up to 2^53 — fine for any realistic archive
+    var lo=dv.getUint32(off,true), hi=dv.getUint32(off+4,true);
+    return hi*4294967296+lo;
+}
+
+// Reads a zip's central directory over Drive Range requests (no full download).
+function zipOpenIndex(fileId,token){
+    return driveMeta(fileId,token,'size,name').then(function(meta){
+        var size=parseInt(meta.size,10);
+        var tailLen=Math.min(size,65557); // max EOCD(22) + comment(65535)
+        return driveRange(fileId,token,size-tailLen,size-1).then(function(tailBuf){
+            var tailStart=size-tailLen;
+            var off=findSigFromEnd(tailBuf,ZEOCD_SIG);
+            if(off<0) throw new Error('Not a zip file, or its index could not be located.');
+            var dv=new DataView(tailBuf);
+            var cdCount=dv.getUint16(off+10,true), cdSize=dv.getUint32(off+12,true), cdOffset=dv.getUint32(off+16,true);
+            var isZip64=(cdCount===0xffff||cdSize===0xffffffff||cdOffset===0xffffffff);
+            if(!isZip64) return fetchAndParseCD(fileId,token,cdOffset,cdSize);
+            var locOff=off-20;
+            if(locOff<0||dv.getUint32(locOff,true)!==Z64LOC_SIG) throw new Error('Zip64 index not found.');
+            var z64Off=readU64(dv,locOff+8);
+            return driveRange(fileId,token,z64Off,z64Off+55).then(function(z64buf){
+                var z64dv=new DataView(z64buf);
+                if(z64dv.getUint32(0,true)!==Z64EOCD_SIG) throw new Error('Zip64 EOCD signature mismatch.');
+                return fetchAndParseCD(fileId,token,readU64(z64dv,48),readU64(z64dv,40));
+            });
+        });
+    }).then(function(entries){ return {fileId:fileId,token:token,entries:entries}; });
+}
+function fetchAndParseCD(fileId,token,cdOffset,cdSize){
+    return driveRange(fileId,token,cdOffset,cdOffset+cdSize-1).then(function(buf){
+        var dv=new DataView(buf), entries=[], p=0, dec=new TextDecoder('utf-8');
+        while(p+46<=buf.byteLength && dv.getUint32(p,true)===ZCD_SIG){
+            var method=dv.getUint16(p+10,true);
+            var compSize=dv.getUint32(p+20,true), uncompSize=dv.getUint32(p+24,true);
+            var fnLen=dv.getUint16(p+28,true), exLen=dv.getUint16(p+30,true), cmLen=dv.getUint16(p+32,true);
+            var lhOffset=dv.getUint32(p+42,true);
+            var name=dec.decode(new Uint8Array(buf,p+46,fnLen));
+            if(compSize===0xffffffff||uncompSize===0xffffffff||lhOffset===0xffffffff){
+                var exStart=p+46+fnLen, exEnd=exStart+exLen, ep=exStart;
+                while(ep+4<=exEnd){
+                    var hid=dv.getUint16(ep,true), hsz=dv.getUint16(ep+2,true), hp=ep+4;
+                    if(hid===0x0001){
+                        var q=hp;
+                        if(uncompSize===0xffffffff){ uncompSize=readU64(dv,q); q+=8; }
+                        if(compSize===0xffffffff){ compSize=readU64(dv,q); q+=8; }
+                        if(lhOffset===0xffffffff){ lhOffset=readU64(dv,q); q+=8; }
+                    }
+                    ep+=4+hsz;
+                }
+            }
+            entries.push({name:name,method:method,compSize:compSize,uncompSize:uncompSize,lhOffset:lhOffset});
+            p+=46+fnLen+exLen+cmLen;
+        }
+        return entries;
+    });
+}
+// Range-fetches + (if needed) inflates just one entry's bytes.
+function zipExtractEntry(idx,entry){
+    var fileId=idx.fileId, token=idx.token;
+    return driveRange(fileId,token,entry.lhOffset,entry.lhOffset+29).then(function(lhBuf){
+        var dv=new DataView(lhBuf);
+        if(dv.getUint32(0,true)!==ZLOCAL_SIG) throw new Error('Local header mismatch — zip index may be stale, try re-picking.');
+        var fnLen=dv.getUint16(26,true), exLen=dv.getUint16(28,true);
+        var dataStart=entry.lhOffset+30+fnLen+exLen;
+        return driveRange(fileId,token,dataStart,dataStart+entry.compSize-1);
+    }).then(function(buf){
+        if(entry.method===0) return buf; // stored — already raw file bytes
+        if(entry.method===8){
+            if(typeof DecompressionStream==='undefined') throw new Error("This browser can't inflate zip entries (no DecompressionStream support).");
+            var stream=new Blob([buf]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+            return new Response(stream).arrayBuffer();
+        }
+        throw new Error('Unsupported zip compression method ('+entry.method+') for "'+entry.name+'".');
+    });
+}
+function fmtBytes(n){ if(n>1e9) return (n/1e9).toFixed(1)+' GB'; if(n>1e6) return (n/1e6).toFixed(1)+' MB'; if(n>1e3) return (n/1e3).toFixed(0)+' KB'; return n+' B'; }
+function guessAudioMime(name){
+    var m=/\.([a-z0-9]+)$/i.exec(name), ext=m?m[1].toLowerCase():'';
+    return {mp3:'audio/mpeg',m4a:'audio/mp4',flac:'audio/flac',wav:'audio/wav',ogg:'audio/ogg',aac:'audio/aac',opus:'audio/opus',wma:'audio/x-ms-wma'}[ext]||'audio/mpeg';
+}
+function zstat(m,c){ var s=$('zip-status'); s.textContent=m||''; s.className='status'+(c?' '+c:''); }
+function zbar(p){ var b=$('zip-bar'); b.style.display=p==null?'none':'block'; if(p!=null) b.firstElementChild.style.width=(p*100)+'%'; }
+var zipIdx=null, zipName='';
+
+$('zip-pick').onclick=function(){
+    zstat('Authorizing Google Drive…'); $('zip-list').style.display='none'; $('zip-actions').style.display='none';
+    driveToken().then(function(token){
+        loadG(function(){ gapi.load('picker',function(){
+            var view=new google.picker.DocsView(google.picker.ViewId.DOCS).setIncludeFolders(true)
+                .setMimeTypes('application/zip,application/x-zip-compressed,application/x-zip,multipart/x-zip');
+            new google.picker.PickerBuilder().addView(view)
+                .setTitle('Pick a zip archive').setOAuthToken(token)
+                .setCallback(function(data){
+                    if(data[google.picker.Response.ACTION]!==google.picker.Action.PICKED) return;
+                    var doc=data[google.picker.Response.DOCUMENTS][0];
+                    var id=doc[google.picker.Document.ID]; zipName=doc[google.picker.Document.NAME];
+                    zstat('Reading zip index for "'+zipName+'"…');
+                    zipOpenIndex(id,token).then(function(idx){
+                        zipIdx=idx;
+                        var audio=idx.entries.filter(function(e){ return AUDIO_EXT.test(e.name)&&e.compSize>0; });
+                        if(!audio.length){ zstat('No audio files found in this zip.','err'); return; }
+                        renderZipList(audio);
+                        zstat('Found '+audio.length+' audio file'+(audio.length>1?'s':'')+' — pick which to add.','ok');
+                    }).catch(function(e){ zstat('Failed: '+e.message,'err'); });
+                }).build().setVisible(true);
+        }); });
+    }).catch(function(e){ zstat('Drive auth failed: '+e.message,'err'); });
+};
+function renderZipList(audio){
+    var el=$('zip-list'); el.innerHTML=''; el.style.display='flex'; el._audio=audio;
+    audio.forEach(function(e,i){
+        var d=document.createElement('label'); d.className='track'; d.style.cursor='pointer';
+        d.innerHTML='<input type="checkbox" class="zip-chk" data-i="'+i+'" style="width:18px;height:18px;flex-shrink:0">'+
+            '<div class="meta"><div class="t-name">'+esc(e.name.split('/').pop())+'</div><div class="t-sub">'+fmtBytes(e.uncompSize)+'</div></div>';
+        el.appendChild(d);
+    });
+    $('zip-actions').style.display='flex';
+}
+$('zip-selall').onclick=function(){ document.querySelectorAll('.zip-chk').forEach(function(c){ c.checked=true; }); };
+$('zip-add').onclick=function(){
+    var audio=($('zip-list')._audio)||[], picked=[];
+    document.querySelectorAll('.zip-chk').forEach(function(c){ if(c.checked) picked.push(audio[parseInt(c.dataset.i,10)]); });
+    if(!picked.length){ zstat('Select at least one track first.','err'); return; }
+    $('zip-add').disabled=true; zbar(0);
+    zipAddSeq(picked,0);
+};
+function zipAddSeq(list,done){
+    if(done>=list.length){ zstat('Added '+list.length+' track'+(list.length>1?'s':'')+' ✓','ok'); zbar(null); $('zip-add').disabled=false; return; }
+    var e=list[done], short=e.name.split('/').pop();
+    zstat('['+(done+1)+'/'+list.length+'] '+short); zbar(done/list.length);
+    zipExtractEntry(zipIdx,e).then(function(buf){
+        var mime=guessAudioMime(short);
+        return saveTrack({ id:'zip_'+zipIdx.fileId+'_'+e.lhOffset, name:short, kind:'audio', mime:mime, blob:new Blob([buf],{type:mime}), source:'Zip: '+zipName, thumb:null });
+    }).then(function(){ zbar((done+1)/list.length); zipAddSeq(list,done+1); })
+    .catch(function(err){ console.warn('zip skip',e,err); zstat('Skipped "'+short+'": '+err.message,'err'); zipAddSeq(list,done+1); });
 }
 
 /* ---------- clear ---------- */
