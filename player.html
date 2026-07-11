@@ -28,8 +28,9 @@ input[type=range] { accent-color:var(--accent); height:20px; }
 #topbar-title { flex:1; font-size:19px; font-weight:800; letter-spacing:-.5px;
     background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 #build-tag { font-size:10px; color:var(--dim); font-weight:400; -webkit-text-fill-color:var(--dim); letter-spacing:0; margin-left:4px; }
-#import-open-btn { width:36px; height:36px; border-radius:50%; border:none; flex-shrink:0;
-    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:20px; font-weight:700; line-height:1; }
+#import-open-btn { display:flex; align-items:center; gap:5px; height:36px; padding:0 14px; border-radius:18px; border:none; flex-shrink:0;
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:13px; font-weight:700; line-height:1; white-space:nowrap; }
+.empty-link { color:var(--accent); text-decoration:underline; background:none; border:none; font-size:13px; font-weight:600; padding:2px; }
 
 #tabbar { display:flex; gap:6px; padding:2px 12px 10px; flex-shrink:0; }
 .tabbtn { flex:1; padding:9px; border-radius:10px; border:1px solid var(--line); background:var(--surface); color:var(--dim); font-size:13px; font-weight:600; }
@@ -151,8 +152,8 @@ details summary { cursor:pointer; font-size:12px; color:var(--dim); }
 
 <div id="app">
     <header id="topbar">
-        <div id="topbar-title">RetroPlay <span id="build-tag">build 2</span></div>
-        <button id="import-open-btn" title="Import media">+</button>
+        <div id="topbar-title">RetroPlay <span id="build-tag">build 3</span></div>
+        <button id="import-open-btn" title="Import media">+ Import</button>
     </header>
 
     <nav id="tabbar">
@@ -387,29 +388,57 @@ function findID3Terminator(bytes,start,enc){
     for(var j=start;j<bytes.length;j++) if(bytes[j]===0) return j+1;
     return bytes.length;
 }
+// Walks a SYLT (synchronized lyrics) frame body and returns just the text
+// lines, dropping timestamps — used as a fallback when a file has synced
+// lyrics but no plain USLT frame (some taggers only write one or the other).
+function parseSYLT(body,enc){
+    var descStart=6; // encoding(1) + language(3) + timestamp format(1) + content type(1), already consumed enc/lang before calling
+    var p=findID3Terminator(body,descStart,enc);
+    var lines=[];
+    while(p<body.length){
+        var textEnd=findID3Terminator(body,p,enc);
+        if(textEnd+4>body.length) break;
+        var text=decodeID3Text(body.subarray(p,textEnd),enc);
+        if(text) lines.push(text);
+        p=textEnd+4; // skip the 4-byte timestamp
+    }
+    return lines.join('\n');
+}
 function parseID3(buf){
     var dv=new DataView(buf);
     if(!(dv.getUint8(0)===0x49&&dv.getUint8(1)===0x44&&dv.getUint8(2)===0x33)) return null; // "ID3"
     var major=dv.getUint8(3), flags=dv.getUint8(5);
     var tagSize=readSyncsafe(dv,6,4);
     var p=10, tagEnd=10+tagSize;
-    if(flags&0x40){ var extSize=major>=4?readSyncsafe(dv,p,4):dv.getUint32(p,false); p+=(major>=4?extSize:4+extSize); }
+    if(major>=3 && (flags&0x40)){ var extSize=major>=4?readSyncsafe(dv,p,4):dv.getUint32(p,false); p+=(major>=4?extSize:4+extSize); }
     var out={};
-    while(p+10<=tagEnd && p+10<=buf.byteLength){
-        var id=String.fromCharCode(dv.getUint8(p),dv.getUint8(p+1),dv.getUint8(p+2),dv.getUint8(p+3));
-        if(id==='\0\0\0\0') break;
-        var size=major>=4?readSyncsafe(dv,p+4,4):dv.getUint32(p+4,false);
-        var frameStart=p+10, frameEnd=frameStart+size;
+    // v2.2 uses 3-byte frame ids/sizes and a 6-byte frame header (vs 4-byte/10-byte for v2.3+).
+    var idLen=major===2?3:4, headerLen=major===2?6:10;
+    while(p+headerLen<=tagEnd && p+headerLen<=buf.byteLength){
+        var id=idLen===3
+            ? String.fromCharCode(dv.getUint8(p),dv.getUint8(p+1),dv.getUint8(p+2))
+            : String.fromCharCode(dv.getUint8(p),dv.getUint8(p+1),dv.getUint8(p+2),dv.getUint8(p+3));
+        var isPad=true; for(var k2=0;k2<id.length;k2++) if(id.charCodeAt(k2)!==0){isPad=false;break;} if(isPad) break;
+        var size=major===2 ? ((dv.getUint8(p+3)<<16)|(dv.getUint8(p+4)<<8)|dv.getUint8(p+5))
+            : (major>=4?readSyncsafe(dv,p+4,4):dv.getUint32(p+4,false));
+        var frameStart=p+headerLen, frameEnd=frameStart+size;
         if(size<=0||frameEnd>buf.byteLength) break;
         var body=new Uint8Array(buf,frameStart,size);
         try{
-            if(id==='TIT2'||id==='TPE1'||id==='TALB'){
-                var txt=decodeID3Text(body.subarray(1),body[0]);
-                if(id==='TIT2') out.title=txt; else if(id==='TPE1') out.artist=txt; else out.album=txt;
-            } else if(id==='USLT'){
+            if(id==='TIT2'||id==='TT2'){ out.title=decodeID3Text(body.subarray(1),body[0]); }
+            else if(id==='TPE1'||id==='TP1'){ out.artist=decodeID3Text(body.subarray(1),body[0]); }
+            else if(id==='TALB'||id==='TAL'){ out.album=decodeID3Text(body.subarray(1),body[0]); }
+            else if(id==='USLT'||id==='ULT'){
                 var enc=body[0], descStart=4;
                 var termEnd=findID3Terminator(body,descStart,enc);
-                out.lyrics=decodeID3Text(body.subarray(termEnd),enc);
+                out.lyrics=decodeID3Text(body.subarray(termEnd),enc); // always wins over SYLT below, regardless of frame order
+            } else if(id==='SYLT'||id==='SLT'){
+                if(!out.lyrics) out.lyrics=parseSYLT(body,body[0]);
+            } else if(id==='TXXX'||id==='TXX'){
+                var enc3=body[0];
+                var valueStart=findID3Terminator(body,1,enc3);
+                var desc=decodeID3Text(body.subarray(1,valueStart),enc3);
+                if(!out.lyrics && /lyrics/i.test(desc)) out.lyrics=decodeID3Text(body.subarray(valueStart),enc3);
             } else if(id==='APIC'){
                 var enc2=body[0];
                 var mimeEnd=body.indexOf(0,1);
@@ -417,6 +446,13 @@ function parseID3(buf){
                 var descStart2=mimeEnd+2;
                 var picDataStart=findID3Terminator(body,descStart2,enc2);
                 out.artBlob=new Blob([body.subarray(picDataStart)],{type:mime});
+            } else if(id==='PIC'){
+                // v2.2: encoding(1) + 3-char image format ('JPG'/'PNG', not a MIME string) + picture type(1) + description + data
+                var encP=body[0];
+                var fmt=String.fromCharCode(body[1],body[2],body[3]).toUpperCase();
+                var descStartP=5;
+                var picDataStartP=findID3Terminator(body,descStartP,encP);
+                out.artBlob=new Blob([body.subarray(picDataStartP)],{type:fmt==='PNG'?'image/png':'image/jpeg'});
             }
         }catch(e){ /* skip malformed frame, keep going */ }
         p=frameEnd;
@@ -515,21 +551,36 @@ function artURLFor(id,blob){
 function revokeArtURL(id){ if(artURLCache[id]){ URL.revokeObjectURL(artURLCache[id]); delete artURLCache[id]; } }
 function artSrcFor(rec){ return rec.art ? artURLFor(rec.id||rec.trackId,rec.art) : (rec.thumb||null); }
 
+function applyTags(rec,tags){
+    rec.tagsScanned=true;
+    if(tags){
+        if(tags.title) rec.title=tags.title;
+        if(tags.artist) rec.artist=tags.artist;
+        if(tags.album) rec.album=tags.album;
+        if(tags.lyrics) rec.lyrics=tags.lyrics;
+        if(tags.artBlob) rec.art=tags.artBlob;
+    }
+}
 function saveTrack(rec){ // rec: {id,name,kind,mime,blob,thumb,source}
     rec.added=Date.now();
     var enrich=(rec.kind==='audio'&&TAGGABLE_EXT.test(rec.name||''))
-        ? extractTags(rec.blob,rec.name).then(function(tags){
-            if(tags){
-                if(tags.title) rec.title=tags.title;
-                if(tags.artist) rec.artist=tags.artist;
-                if(tags.album) rec.album=tags.album;
-                if(tags.lyrics) rec.lyrics=tags.lyrics;
-                if(tags.artBlob) rec.art=tags.artBlob;
-            }
-        }) : Promise.resolve();
+        ? extractTags(rec.blob,rec.name).then(function(tags){ applyTags(rec,tags); }) : Promise.resolve();
     return enrich.then(function(){ return dbPut(rec); }).then(function(){ return refreshLib(); });
 }
-function refreshLib(){ return dbAll().then(function(all){ LIB=all; renderLists(); updateStorageInfo(); }); }
+// Tracks cached before embedded-tag extraction existed (or added while it was
+// briefly unavailable) never got a title/lyrics/art pass — re-scan them from
+// the blob already sitting in IndexedDB (no re-download needed) the first
+// time the library loads after this feature ships. tagsScanned marks a track
+// as "processed" (found tags or not) so this never re-runs on the same track.
+function backfillTags(){
+    var todo=LIB.filter(function(t){ return t.kind==='audio'&&TAGGABLE_EXT.test(t.name||'')&&!t.tagsScanned&&t.blob; });
+    if(!todo.length) return Promise.resolve();
+    return Promise.all(todo.map(function(t){
+        return extractTags(t.blob,t.name).then(function(tags){ applyTags(t,tags); return dbPut(t); })
+            .catch(function(e){ console.warn('tag backfill failed',t.name,e); t.tagsScanned=true; return dbPut(t); });
+    })).then(function(){ renderLists(); });
+}
+function refreshLib(){ return dbAll().then(function(all){ LIB=all; renderLists(); updateStorageInfo(); return backfillTags(); }); }
 function renderLists(){
     var elA=$('list-audio'), elV=$('list-video');
     elA.innerHTML=''; elV.innerHTML='';
@@ -546,8 +597,10 @@ function renderLists(){
         row.querySelector('.tdel').onclick=function(e){ e.stopPropagation(); dbDel(t.id).then(function(){ revokeArtURL(t.id); if(cur&&cur.id===t.id) stopPlayer(); refreshLib(); }); };
         if(isAudio){ elA.appendChild(row); audioCount++; } else { elV.appendChild(row); videoCount++; }
     });
-    if(!audioCount) elA.innerHTML='<div class="empty">No music yet.<br>Tap + to import.</div>';
-    if(!videoCount) elV.innerHTML='<div class="empty">No videos yet.<br>Tap + to import.</div>';
+    if(!audioCount) elA.innerHTML='<div class="empty">No music yet.<br><button class="empty-link" id="empty-import-audio">+ Import music</button></div>';
+    if(!videoCount) elV.innerHTML='<div class="empty">No videos yet.<br><button class="empty-link" id="empty-import-video">+ Import videos</button></div>';
+    if($('empty-import-audio')) $('empty-import-audio').onclick=openImport;
+    if($('empty-import-video')) $('empty-import-video').onclick=openImport;
 }
 
 /* ---------- Tabs (Songs / Videos) ---------- */
