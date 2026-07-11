@@ -183,7 +183,7 @@ details summary { cursor:pointer; font-size:12px; color:var(--dim); }
 <div id="app">
     <header id="topbar">
         <button id="back-hub-btn" title="Back to hub (keeps music playing)">‹ Back</button>
-        <div id="topbar-title">RetroPlay <span id="build-tag">build 17</span></div>
+        <div id="topbar-title">RetroPlay <span id="build-tag">build 18</span></div>
         <button id="diag-btn" title="Playback diagnostic">🔧</button>
         <button id="import-open-btn" title="Import media">＋ Import</button>
     </header>
@@ -865,31 +865,33 @@ function mountVideo(where){
     }
 }
 function openNP(){ mountVideo('np'); closeFloat(); $('np').classList.add('show'); }
-function closeNP(){ $('np').classList.remove('show'); }
-$('np-close').onclick=closeNP;
+function closeNP(){ $('np').classList.remove('show'); }        // DOM-only (programmatic)
+$('np-close').onclick=function(){ history.back(); };           // Back → list
 $('mini-body').addEventListener('click', function(e){ if(e.target.closest('.mini-btn')) return; openNP(); });
 function openImport(){ $('importview').classList.add('show'); }
-function closeImport(){ $('importview').classList.remove('show'); }
+function closeImport(){ $('importview').classList.remove('show'); } // DOM-only (programmatic)
 $('import-open-btn').onclick=openImport;
-$('import-close').onclick=closeImport;
+$('import-close').onclick=function(){ history.back(); };
 
-/* ---------- Back button ---------- */
-// If something is playing, "back" hands it to native Picture-in-Picture instead
-// of navigating: on Android the app collapses into the floating PiP window over
-// the home screen and playback keeps going (a full page navigation would kill
-// it). With nothing playing there's nothing to float, so just go to the hub.
-$('back-hub-btn').onclick=function(){
-    if(cur && !vid.paused){
-        // Video → native PiP (floats over other apps). Audio can't float over the
-        // home screen on the web, so we DON'T navigate away (that would stop it);
-        // we keep it playing and show the in-app floating player. Pressing the
-        // phone's Home button then keeps it going via the media notification.
-        if(cur.kind==='video'){ enterPiP().catch(function(){ if(!floatOn) openFloat(); }); }
-        else { if(!floatOn) openFloat(); npErr('Music keeps playing — press your Home button to leave the app and control it from the notification.'); }
-    } else {
-        location.href='index.html';
-    }
-};
+/* ---------- Back navigation ----------
+   System Back (and the on-screen ‹ button) close whatever full-screen view is
+   open first — Now Playing / Import / Diagnostic → back to the song list — and
+   only leave to the hub when you're already on the bare list. Driven by the
+   History API so the phone's hardware/gesture Back drives it, not just the
+   on-screen button. A single guard history entry catches each Back; when it
+   closes a view we re-arm the guard for the next Back. */
+function _closeTopView(){
+    if($('importview').classList.contains('show')){ $('importview').classList.remove('show'); return true; }
+    if($('diagview') && $('diagview').style.display==='flex'){ $('diagview').style.display='none'; return true; }
+    if($('np').classList.contains('show')){ $('np').classList.remove('show'); return true; }
+    return false;
+}
+try{ history.pushState({rp:1},''); }catch(e){}
+window.addEventListener('popstate', function(){
+    if(_closeTopView()){ try{ history.pushState({rp:1},''); }catch(e){} }  // closed a view, re-arm
+    else { location.href='index.html'; }                                    // on the list → hub
+});
+$('back-hub-btn').onclick=function(){ history.back(); };
 
 /* ---------- Floating in-page player (draggable + resizable) ---------- */
 var floatEl=$('float'), floatOn=false;
@@ -1496,7 +1498,7 @@ $('clear-cache').onclick=function(){ if(confirm('Delete ALL cached media from th
     bind(audEl,'audio'); bind(vidEl,'video');
     document.addEventListener('visibilitychange', function(){ if(logging) snap('visibilitychange'); });
     $('diag-btn').onclick=function(){ $('diagview').style.display='flex'; };
-    $('diag-close').onclick=function(){ $('diagview').style.display='none'; };
+    $('diag-close').onclick=function(){ history.back(); };
     $('diag-start').onclick=function(){
         if(!cur || vid.paused){
             out.value='⚠ No song is playing.\n\nDo this first:\n1. Close this panel (✕).\n2. Tap a song so it starts playing (you hear it).\n3. Come back here and tap Start log.\n4. Then press Home for ~15s and return.';
