@@ -175,7 +175,7 @@ details summary { cursor:pointer; font-size:12px; color:var(--dim); }
 <div id="app">
     <header id="topbar">
         <button id="back-hub-btn" title="Minimize to picture-in-picture (or back to hub)">‹</button>
-        <div id="topbar-title">RetroPlay <span id="build-tag">build 8</span></div>
+        <div id="topbar-title">RetroPlay <span id="build-tag">build 9</span></div>
         <button id="import-open-btn" title="Import media">+ Import</button>
     </header>
 
@@ -1187,6 +1187,27 @@ $('drive-pick').onclick=function(){
         }); });
     }).catch(function(e){ dstat('Drive auth failed: '+e.message,'err'); });
 };
+// Downloads a URL to a Blob while reporting byte progress. Streams the response
+// body so large videos show a live progress bar instead of freezing at 0% until
+// done. Falls back to a plain .blob() when the body isn't streamable or the
+// server omits Content-Length (progress just can't be shown in that case).
+function fetchBlobWithProgress(url,headers,onProgress){
+    return fetch(url,{headers:headers}).then(function(r){
+        if(!r.ok) return r.text().then(function(t){throw new Error('Drive '+r.status+' '+t);});
+        var total=parseInt(r.headers.get('content-length')||'0',10);
+        if(!r.body||!r.body.getReader){ return r.blob(); }
+        var reader=r.body.getReader(), chunks=[], loaded=0;
+        onProgress(0,total);
+        return new Promise(function(res,rej){
+            (function pump(){
+                reader.read().then(function(step){
+                    if(step.done){ res(new Blob(chunks)); return; }
+                    chunks.push(step.value); loaded+=step.value.length; onProgress(loaded,total); pump();
+                }).catch(rej);
+            })();
+        });
+    });
+}
 function driveSeq(docs,token,i,okCount,fails){
     okCount=okCount||0; fails=fails||[];
     if(i>=docs.length){
@@ -1196,10 +1217,19 @@ function driveSeq(docs,token,i,okCount,fails){
         $('dr-bar').style.display='none'; return;
     }
     var doc=docs[i], id=doc[google.picker.Document.ID], name=doc[google.picker.Document.NAME], mime=doc[google.picker.Document.MIME_TYPE]||'';
-    dstat('['+(i+1)+'/'+docs.length+'] '+name); var b=$('dr-bar'); b.style.display='block'; b.firstElementChild.style.width=(i/docs.length*100)+'%';
-    fetch('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media',{headers:{Authorization:'Bearer '+token}})
-    .then(function(r){ if(!r.ok) return r.text().then(function(t){throw new Error('Drive '+r.status+' '+t);}); return r.blob(); })
+    var b=$('dr-bar'); b.style.display='block';
+    // Overall bar spans all files: each file occupies 1/docs.length of the bar,
+    // and its own byte-download fraction fills that slice as it streams in.
+    var setBar=function(frac){ b.firstElementChild.style.width=(((i+frac)/docs.length)*100)+'%'; };
+    setBar(0);
+    fetchBlobWithProgress('https://www.googleapis.com/drive/v3/files/'+id+'?alt=media',
+        {Authorization:'Bearer '+token},
+        function(loaded,total){
+            setBar(total?loaded/total:0);
+            dstat('['+(i+1)+'/'+docs.length+'] '+name+' — '+fmtBytes(loaded)+(total?' / '+fmtBytes(total):''));
+        })
     .then(function(blob){
+        setBar(1);
         var byName=classifyByName(name);
         var kind=byName?byName.kind:(/^audio/.test(mime)?'audio':(/^video/.test(mime)?'video':null));
         // The picker no longer restricts by mimeType (Drive's stored type is
