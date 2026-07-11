@@ -28,6 +28,9 @@ input[type=range] { accent-color:var(--accent); height:20px; }
 #topbar-title { flex:1; font-size:19px; font-weight:800; letter-spacing:-.5px;
     background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 #build-tag { font-size:10px; color:var(--dim); font-weight:400; -webkit-text-fill-color:var(--dim); letter-spacing:0; margin-left:4px; }
+#back-hub-btn { display:flex; align-items:center; justify-content:center; width:34px; height:34px; flex-shrink:0; border:1px solid var(--line);
+    background:var(--surface); color:var(--txt); border-radius:50%; font-size:20px; line-height:1; padding:0; }
+#back-hub-btn:active { background:var(--surface2); }
 #import-open-btn { display:flex; align-items:center; gap:5px; height:36px; padding:0 14px; border-radius:18px; border:none; flex-shrink:0;
     background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:13px; font-weight:700; line-height:1; white-space:nowrap; }
 .empty-link { color:var(--accent); text-decoration:underline; background:none; border:none; font-size:13px; font-weight:600; padding:2px; }
@@ -70,6 +73,25 @@ input[type=range] { accent-color:var(--accent); height:20px; }
 .mini-title { font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .mini-sub { font-size:11px; color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .mini-btn { background:none; border:none; color:var(--txt); font-size:20px; padding:6px 8px; flex-shrink:0; }
+
+/* ---- Floating draggable + resizable player ---- */
+#float { position:fixed; z-index:10001; display:none; flex-direction:column; width:220px; left:16px; top:120px;
+    background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden;
+    box-shadow:0 12px 34px rgba(0,0,0,.6); touch-action:none; user-select:none; -webkit-user-select:none; }
+#float.show { display:flex; }
+#float-stage { position:relative; width:100%; aspect-ratio:16/10; background:linear-gradient(135deg,var(--surface2),var(--surface));
+    display:flex; align-items:center; justify-content:center; overflow:hidden; cursor:grab; }
+#float-stage.grabbing { cursor:grabbing; }
+#float-stage video { width:100%; height:100%; object-fit:contain; background:#000; }
+#float-art { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:40px; }
+#float-art img { width:100%; height:100%; object-fit:cover; }
+#float-close { position:absolute; top:4px; right:4px; width:24px; height:24px; border-radius:50%; border:none;
+    background:rgba(0,0,0,.5); color:#fff; font-size:13px; line-height:1; display:flex; align-items:center; justify-content:center; }
+#float-bar { display:flex; align-items:center; gap:2px; padding:4px 6px; }
+#float-bar .fbtn { background:none; border:none; color:var(--txt); font-size:15px; padding:4px 3px; flex-shrink:0; }
+#float-title { flex:1; min-width:0; font-size:11px; color:var(--dim); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 2px; }
+#float-resize { position:absolute; right:0; bottom:0; width:22px; height:22px; cursor:nwse-resize; touch-action:none; z-index:2;
+    background:linear-gradient(135deg,transparent 50%,var(--accent) 50%,var(--accent) 62%,transparent 62%,transparent 74%,var(--accent) 74%,var(--accent) 86%,transparent 86%); opacity:.7; }
 
 /* ---- Now Playing ---- */
 #np { position:fixed; inset:0; background:var(--bg); z-index:9999; display:none; flex-direction:column;
@@ -152,7 +174,8 @@ details summary { cursor:pointer; font-size:12px; color:var(--dim); }
 
 <div id="app">
     <header id="topbar">
-        <div id="topbar-title">RetroPlay <span id="build-tag">build 3</span></div>
+        <button id="back-hub-btn" title="Back to hub">‹</button>
+        <div id="topbar-title">RetroPlay <span id="build-tag">build 4</span></div>
         <button id="import-open-btn" title="Import media">+ Import</button>
     </header>
 
@@ -190,15 +213,40 @@ details summary { cursor:pointer; font-size:12px; color:var(--dim); }
         </div>
         <button class="mini-btn" id="mini-play">▶</button>
         <button class="mini-btn" id="mini-next">⏭</button>
+        <button class="mini-btn" id="mini-popout" title="Pop out to floating player">⤢</button>
     </div>
 </div>
+
+<!-- Draggable + resizable floating player (in-page PiP) -->
+<div id="float">
+    <div id="float-stage">
+        <div id="float-art">🎵</div>
+        <button id="float-close" title="Close">✕</button>
+    </div>
+    <div id="float-bar">
+        <button class="fbtn" id="float-prev" title="Previous">⏮</button>
+        <button class="fbtn" id="float-play" title="Play/Pause">▶</button>
+        <button class="fbtn" id="float-next" title="Next">⏭</button>
+        <div id="float-title">—</div>
+        <button class="fbtn" id="float-expand" title="Open full player">▢</button>
+    </div>
+    <div id="float-resize" title="Drag to resize"></div>
+</div>
+
+<!-- Hidden video used to push audio album-art into native Picture-in-Picture -->
+<canvas id="pip-canvas" width="480" height="270" style="display:none"></canvas>
+<video id="pip-video" muted playsinline style="display:none"></video>
 
 <!-- Now Playing -->
 <div id="np">
     <div id="np-head">
-        <button id="np-close" title="Back">︾</button>
+        <button id="np-close" title="Minimize">︾</button>
         <div id="np-head-title">NOW PLAYING</div>
-        <button id="np-delete" title="Remove from library">🗑</button>
+        <div style="display:flex;align-items:center;gap:2px">
+            <button id="np-pip" title="Picture-in-picture (float over other apps)">⧉</button>
+            <button id="np-popout" title="Pop out to floating player">⤢</button>
+            <button id="np-delete" title="Remove from library">🗑</button>
+        </div>
     </div>
     <div id="np-art-wrap">
         <div id="np-art">🎵</div>
@@ -697,6 +745,8 @@ function showNowPlayingMeta(rec){
     $('np-delete').style.display=rec.id?'':'none';
     if(!isVideo) setLyricsPanel(rec.lyrics); else setLyricsPanel(null,true);
     setMediaSessionMeta(rec,artSrc);
+    if(typeof floatOn!=='undefined' && floatOn) updateFloatMeta();
+    if(typeof loadPipArt==='function'){ loadPipArt(); if(document.pictureInPictureElement===pipVideo) drawPip(); }
 }
 function setLyricsPanel(lyrics,isVideo){
     var el=$('np-lyrics');
@@ -727,6 +777,8 @@ function playQ(i){
 }
 function stopPlayer(){
     vid.pause(); try{ vid.removeAttribute('src'); vid.load(); }catch(e){}
+    if(typeof closeFloat==='function') closeFloat();
+    if(document.pictureInPictureElement) document.exitPictureInPicture().catch(function(){});
     $('mini').classList.remove('show'); closeNP();
     cur=null; qi=-1; if(curURL){ URL.revokeObjectURL(curURL); curURL=null; }
     renderLists();
@@ -736,8 +788,8 @@ vid.addEventListener('ended', function(){
     if(repeatMode==='one'){ vid.currentTime=0; vid.play().catch(function(){}); return; }
     playNextTrack();
 });
-vid.addEventListener('play', function(){ $('np-play').textContent='⏸'; $('mini-play').textContent='⏸'; });
-vid.addEventListener('pause', function(){ $('np-play').textContent='▶'; $('mini-play').textContent='▶'; });
+vid.addEventListener('play', function(){ $('np-play').textContent='⏸'; $('mini-play').textContent='⏸'; $('float-play').textContent='⏸'; });
+vid.addEventListener('pause', function(){ $('np-play').textContent='▶'; $('mini-play').textContent='▶'; $('float-play').textContent='▶'; });
 vid.addEventListener('timeupdate', function(){
     if(vid.duration){
         var pct=vid.currentTime/vid.duration;
@@ -762,7 +814,15 @@ $('np-delete').onclick=function(){
 };
 
 /* ---------- Now Playing / Import overlay open+close ---------- */
-function openNP(){ $('np').classList.add('show'); }
+// The single <video> element (vid) is moved between the full-screen Now Playing
+// stage and the floating widget so playback never stops when you switch views.
+function mountVideo(where){
+    var target = where==='float' ? $('float-stage') : $('np-art-wrap');
+    if(vid.parentNode!==target){
+        if(where==='float') target.insertBefore(vid,$('float-close')); else target.appendChild(vid);
+    }
+}
+function openNP(){ mountVideo('np'); closeFloat(); $('np').classList.add('show'); }
 function closeNP(){ $('np').classList.remove('show'); }
 $('np-close').onclick=closeNP;
 $('mini-body').addEventListener('click', function(e){ if(e.target.closest('.mini-btn')) return; openNP(); });
@@ -770,6 +830,152 @@ function openImport(){ $('importview').classList.add('show'); }
 function closeImport(){ $('importview').classList.remove('show'); }
 $('import-open-btn').onclick=openImport;
 $('import-close').onclick=closeImport;
+
+/* ---------- Back to hub ---------- */
+// Full page navigation tears down this page (and any playback). If something is
+// playing we first try to hand audio/video off to native Picture-in-Picture so
+// it can keep going as a floating window, then navigate.
+$('back-hub-btn').onclick=function(){
+    var go=function(){ location.href='index.html'; };
+    if(cur && !vid.paused){ enterPiP().then(go).catch(go); } else go();
+};
+
+/* ---------- Floating in-page player (draggable + resizable) ---------- */
+var floatEl=$('float'), floatOn=false;
+function openFloat(){
+    if(!cur) return;
+    closeNP();
+    mountVideo('float');
+    updateFloatMeta();
+    floatEl.classList.add('show'); floatOn=true;
+    restoreFloatRect();
+}
+function closeFloat(){
+    if(!floatOn) return;
+    floatEl.classList.remove('show'); floatOn=false;
+    mountVideo('np'); // return the video to the main stage
+}
+function updateFloatMeta(){
+    if(!cur) return;
+    var isVideo=cur.kind==='video';
+    $('float-art').style.display=isVideo?'none':'flex';
+    vid.style.display=isVideo?'block':'none';
+    $('float-stage').style.aspectRatio=isVideo?'16/10':'1/1';
+    setArtEl($('float-art'), artSrcFor(cur), cur.kind);
+    $('float-title').textContent=cur.name||'Track';
+    $('float-play').textContent=vid.paused?'▶':'⏸';
+}
+$('np-popout').onclick=openFloat;
+$('mini-popout').onclick=function(e){ e.stopPropagation(); openFloat(); };
+$('float-close').onclick=closeFloat;
+$('float-expand').onclick=openNP;
+$('float-play').onclick=function(){ vid.paused?vid.play():vid.pause(); };
+$('float-prev').onclick=playPrevTrack;
+$('float-next').onclick=playNextTrack;
+
+// Drag the widget by its stage; resize from the bottom-right handle. Pointer
+// events cover both touch and mouse. Position/size persist in localStorage.
+(function(){
+    var stage=$('float-stage'), handle=$('float-resize');
+    var dragging=false, resizing=false, sx=0, sy=0, ox=0, oy=0, ow=0;
+    function clamp(){
+        var r=floatEl.getBoundingClientRect();
+        var maxL=window.innerWidth-r.width, maxT=window.innerHeight-r.height;
+        var l=Math.min(Math.max(0,parseFloat(floatEl.style.left)||0),Math.max(0,maxL));
+        var t=Math.min(Math.max(0,parseFloat(floatEl.style.top)||0),Math.max(0,maxT));
+        floatEl.style.left=l+'px'; floatEl.style.top=t+'px';
+    }
+    stage.addEventListener('pointerdown', function(e){
+        if(e.target.closest('button')) return;
+        dragging=true; stage.classList.add('grabbing');
+        var r=floatEl.getBoundingClientRect(); ox=r.left; oy=r.top; sx=e.clientX; sy=e.clientY;
+        floatEl.style.left=ox+'px'; floatEl.style.top=oy+'px';
+        stage.setPointerCapture(e.pointerId); e.preventDefault();
+    });
+    stage.addEventListener('pointermove', function(e){
+        if(!dragging) return;
+        floatEl.style.left=(ox+e.clientX-sx)+'px'; floatEl.style.top=(oy+e.clientY-sy)+'px';
+    });
+    stage.addEventListener('pointerup', function(e){ if(dragging){ dragging=false; stage.classList.remove('grabbing'); clamp(); saveFloatRect(); } });
+    handle.addEventListener('pointerdown', function(e){
+        resizing=true; ow=floatEl.getBoundingClientRect().width; sx=e.clientX;
+        handle.setPointerCapture(e.pointerId); e.preventDefault(); e.stopPropagation();
+    });
+    handle.addEventListener('pointermove', function(e){
+        if(!resizing) return;
+        var w=Math.min(Math.max(140,ow+e.clientX-sx), Math.min(window.innerWidth-20, 520));
+        floatEl.style.width=w+'px';
+    });
+    handle.addEventListener('pointerup', function(e){ if(resizing){ resizing=false; clamp(); saveFloatRect(); } });
+    window.addEventListener('resize', function(){ if(floatOn) clamp(); });
+})();
+function saveFloatRect(){
+    try{ localStorage.setItem('player_float', JSON.stringify({
+        left:floatEl.style.left, top:floatEl.style.top, width:floatEl.style.width })); }catch(e){}
+}
+function restoreFloatRect(){
+    try{
+        var r=JSON.parse(localStorage.getItem('player_float')||'null');
+        if(r){ if(r.width) floatEl.style.width=r.width; if(r.left) floatEl.style.left=r.left; if(r.top) floatEl.style.top=r.top; }
+    }catch(e){}
+}
+
+/* ---------- Native Picture-in-Picture (floats over other apps / home screen) ----------
+   Video tracks use the element's own PiP. Audio-only tracks have no picture, so
+   we paint the album art + title + progress onto a canvas, capture it as a video
+   stream, and PiP that muted element while the real audio keeps coming from vid. */
+var pipCanvas=$('pip-canvas'), pipCtx=pipCanvas.getContext('2d'), pipVideo=$('pip-video');
+var pipImg=null, pipImgSrc=null, pipRAF=0;
+function loadPipArt(){
+    var src=cur?artSrcFor(cur):null;
+    if(src===pipImgSrc) return;
+    pipImgSrc=src; pipImg=null;
+    if(src){ var im=new Image(); im.onload=function(){ pipImg=im; }; im.src=src; }
+}
+function drawPip(){
+    var w=pipCanvas.width, h=pipCanvas.height;
+    pipCtx.fillStyle='#0d0d0f'; pipCtx.fillRect(0,0,w,h);
+    if(pipImg){
+        // cover-fit the art on the left square
+        var s=Math.min(w,h); pipCtx.drawImage(pipImg,0,0,s,s);
+    } else {
+        pipCtx.fillStyle='#1e1e26'; pipCtx.fillRect(0,0,h,h);
+        pipCtx.fillStyle='#7c6af7'; pipCtx.font='bold 90px sans-serif'; pipCtx.textAlign='center'; pipCtx.textBaseline='middle';
+        pipCtx.fillText('🎵',h/2,h/2);
+    }
+    var tx=h+18;
+    pipCtx.textAlign='left'; pipCtx.textBaseline='alphabetic';
+    pipCtx.fillStyle='#e8e8f0'; pipCtx.font='bold 26px sans-serif';
+    pipCtx.fillText((cur&&cur.name||'').slice(0,22), tx, h*0.42, w-tx-10);
+    pipCtx.fillStyle='#8a8a9a'; pipCtx.font='20px sans-serif';
+    pipCtx.fillText((cur&&(cur.artist||cur.source)||'').slice(0,26), tx, h*0.56, w-tx-10);
+    // progress bar
+    var pct=(vid.duration&&isFinite(vid.duration))?vid.currentTime/vid.duration:0;
+    var by=h*0.72, bw=w-tx-16;
+    pipCtx.fillStyle='#2a2a35'; pipCtx.fillRect(tx,by,bw,6);
+    pipCtx.fillStyle='#7c6af7'; pipCtx.fillRect(tx,by,bw*pct,6);
+    if(!pipVideo.paused && document.pictureInPictureElement===pipVideo) pipRAF=requestAnimationFrame(drawPip);
+}
+function enterPiP(){
+    if(cur && cur.kind==='video'){
+        if(document.pictureInPictureEnabled && !vid.disablePictureInPicture) return vid.requestPictureInPicture();
+        return Promise.reject(new Error('PiP unsupported'));
+    }
+    // audio path
+    if(!('requestPictureInPicture' in pipVideo) || typeof pipCanvas.captureStream!=='function')
+        return Promise.reject(new Error('Audio PiP unsupported'));
+    loadPipArt(); drawPip();
+    if(!pipVideo.srcObject) pipVideo.srcObject=pipCanvas.captureStream(2);
+    return pipVideo.play().then(function(){
+        cancelAnimationFrame(pipRAF); drawPip();
+        return pipVideo.requestPictureInPicture();
+    });
+}
+$('np-pip').onclick=function(){ enterPiP().catch(function(e){ npErr('Picture-in-picture failed: '+(e&&e.message||e)); }); };
+pipVideo.addEventListener('enterpictureinpicture', function(){ drawPip(); });
+pipVideo.addEventListener('leavepictureinpicture', function(){ cancelAnimationFrame(pipRAF); });
+// keep the PiP canvas fresh as the track/progress changes
+vid.addEventListener('timeupdate', function(){ if(document.pictureInPictureElement===pipVideo) drawPip(); });
 
 /* Lyrics / Up Next subtabs */
 document.querySelectorAll('.np-subtab').forEach(function(btn){
@@ -832,9 +1038,10 @@ function setMediaSessionMeta(rec,artSrc){
 // a VIDEO is playing, hop it into Picture-in-Picture (audio-only tracks keep
 // playing via MediaSession alone — no PiP needed since nothing to show).
 document.addEventListener('visibilitychange', function(){
-    if(document.hidden && cur && !vid.paused && cur.kind==='video'
-       && document.pictureInPictureEnabled && !document.pictureInPictureElement){
-        vid.requestPictureInPicture().catch(function(){});
+    if(document.hidden && cur && !vid.paused && !document.pictureInPictureElement){
+        // Video → native element PiP; audio → album-art canvas PiP. Both float
+        // over other apps / the home screen so playback survives leaving the app.
+        enterPiP().catch(function(){});
     }
 });
 
