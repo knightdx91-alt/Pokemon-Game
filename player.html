@@ -128,6 +128,7 @@ input[type=range] { accent-color:var(--accent); height:20px; }
         <button id="fp-close" title="Close">✕</button>
     </div>
     <video id="fp-video" playsinline></video>
+    <div id="fp-err" style="display:none;padding:6px 10px;font-size:11px;color:#f77;background:var(--surface);line-height:1.4;"></div>
     <div id="fp-ctrl">
         <button id="c-prev">⏮</button>
         <button id="c-play">▶</button>
@@ -217,17 +218,28 @@ function streamSrc(item){
     var base=backendBase(); var k=($('key').value||'').trim();
     return base+'/api/stream?kind='+(item.kind==='video'?'video':'audio')+'&url='+encodeURIComponent(item.yurl)+(k?'&key='+encodeURIComponent(k):'');
 }
+function fpErr(msg){ var e=$('fp-err'); if(!msg){ e.style.display='none'; e.textContent=''; return; } e.textContent=msg; e.style.display='block'; }
+var ERR_MSGS={1:'Playback aborted.',2:'Network error while loading the file.',
+    3:'This file is corrupt or uses an unsupported codec.',
+    4:"This browser can't play this file — likely an unsupported codec (e.g. HEVC/H.265 MP4). Try re-encoding to H.264/AAC."};
+vid.addEventListener('error', function(){
+    var code=vid.error&&vid.error.code; fpErr(ERR_MSGS[code]||'Playback failed.');
+});
+vid.addEventListener('playing', function(){ fpErr(null); });
 function playQ(i){
     if(i<0||i>=Q.length) return; qi=i; var item=Q[i];
+    fpErr(null);
     var start=function(src){
         vid.src=src; cur={id:item.trackId,name:item.name,kind:item.kind,thumb:item.thumb,source:item.source};
         $('fp-title').textContent=item.name; fp.classList.add('show'); placeDefault();
-        setMeta(cur); vid.play().catch(function(){}); renderLib();
+        setMeta(cur); vid.play().catch(function(e){ fpErr(e&&e.message?'Playback failed: '+e.message:'Playback failed.'); }); renderLib();
     };
     if(curURL){ URL.revokeObjectURL(curURL); curURL=null; }
     if(item.stream){ start(streamSrc(item)); }
     else { idb().then(function(db){ db.transaction('tracks').objectStore('tracks').get(item.trackId).onsuccess=function(e){
-        var rec=e.target.result; if(!rec||!rec.blob) return; curURL=URL.createObjectURL(rec.blob); start(curURL);
+        var rec=e.target.result;
+        if(!rec||!rec.blob){ fp.classList.add('show'); placeDefault(); $('fp-title').textContent=item.name; fpErr('This file is missing from the cache — try re-adding it.'); return; }
+        curURL=URL.createObjectURL(rec.blob); start(curURL);
     }; }); }
 }
 function playNext(){ if(qi>=0&&qi+1<Q.length) playQ(qi+1); }
