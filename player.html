@@ -175,7 +175,7 @@ details summary { cursor:pointer; font-size:12px; color:var(--dim); }
 <div id="app">
     <header id="topbar">
         <button id="back-hub-btn" title="Minimize to picture-in-picture (or back to hub)">‹</button>
-        <div id="topbar-title">RetroPlay <span id="build-tag">build 5</span></div>
+        <div id="topbar-title">RetroPlay <span id="build-tag">build 6</span></div>
         <button id="import-open-btn" title="Import media">+ Import</button>
     </header>
 
@@ -747,6 +747,7 @@ function showNowPlayingMeta(rec){
     setMediaSessionMeta(rec,artSrc);
     if(typeof floatOn!=='undefined' && floatOn) updateFloatMeta();
     if(typeof loadPipArt==='function'){ loadPipArt(); if(document.pictureInPictureElement===pipVideo) drawPip(); }
+    if(typeof armPip==='function') armPip();
 }
 function setLyricsPanel(lyrics,isVideo){
     var el=$('np-lyrics');
@@ -837,10 +838,13 @@ $('import-close').onclick=closeImport;
 // the home screen and playback keeps going (a full page navigation would kill
 // it). With nothing playing there's nothing to float, so just go to the hub.
 $('back-hub-btn').onclick=function(){
-    if(cur && !vid.paused){
-        enterPiP().catch(function(e){
-            // No PiP support (e.g. desktop Firefox / iOS) — fall back to the hub.
-            if(!document.pictureInPictureElement) location.href='index.html';
+    if(cur){
+        // Something's loaded: hand it to native PiP. If PiP isn't available,
+        // NEVER navigate away (that would stop playback and, in the installed
+        // app, look like the whole thing closing) — fall back to the in-page
+        // floating widget so the music keeps going and the user stays in-app.
+        enterPiP().catch(function(){
+            if(!document.pictureInPictureElement){ if(!floatOn) openFloat(); npErr('This device blocked picture-in-picture — floating player shown instead.'); }
         });
     } else {
         location.href='index.html';
@@ -963,19 +967,38 @@ function drawPip(){
     pipCtx.fillStyle='#7c6af7'; pipCtx.fillRect(tx,by,bw*pct,6);
     if(!pipVideo.paused && document.pictureInPictureElement===pipVideo) pipRAF=requestAnimationFrame(drawPip);
 }
+function audioPipSupported(){
+    return ('requestPictureInPicture' in pipVideo) && typeof pipCanvas.captureStream==='function' && document.pictureInPictureEnabled;
+}
+// Pre-warm the hidden PiP video the moment an audio track starts so it already
+// has a playing video track with metadata ready. That way the actual
+// requestPictureInPicture() call can run *synchronously* inside the tap handler
+// and keep the browser's user-activation — awaiting play() first (as before)
+// dropped the activation and Android rejected the request.
+function armPip(){
+    if(!cur || cur.kind==='video' || !audioPipSupported()) return;
+    loadPipArt(); drawPip();
+    if(!pipVideo.srcObject) pipVideo.srcObject=pipCanvas.captureStream(2);
+    if(pipVideo.paused) pipVideo.play().catch(function(){});
+}
 function enterPiP(){
     if(cur && cur.kind==='video'){
         if(document.pictureInPictureEnabled && !vid.disablePictureInPicture) return vid.requestPictureInPicture();
         return Promise.reject(new Error('PiP unsupported'));
     }
-    // audio path
-    if(!('requestPictureInPicture' in pipVideo) || typeof pipCanvas.captureStream!=='function')
-        return Promise.reject(new Error('Audio PiP unsupported'));
-    loadPipArt(); drawPip();
-    if(!pipVideo.srcObject) pipVideo.srcObject=pipCanvas.captureStream(2);
-    return pipVideo.play().then(function(){
-        cancelAnimationFrame(pipRAF); drawPip();
-        return pipVideo.requestPictureInPicture();
+    if(!audioPipSupported()) return Promise.reject(new Error('Audio PiP unsupported'));
+    armPip();
+    // Ready now → request in the same gesture (no await beforehand).
+    if(pipVideo.readyState>=1 && !pipVideo.paused) return pipVideo.requestPictureInPicture();
+    // Not ready yet → wait for metadata, then request (may need a second tap on
+    // strict browsers, but won't be rejected for missing metadata).
+    return new Promise(function(res,rej){
+        var t=setTimeout(function(){ rej(new Error('PiP not ready')); }, 1500);
+        pipVideo.addEventListener('loadedmetadata', function h(){
+            pipVideo.removeEventListener('loadedmetadata',h); clearTimeout(t);
+            pipVideo.requestPictureInPicture().then(res,rej);
+        });
+        pipVideo.play().catch(function(){});
     });
 }
 $('np-pip').onclick=function(){ enterPiP().catch(function(e){ npErr('Picture-in-picture failed: '+(e&&e.message||e)); }); };
