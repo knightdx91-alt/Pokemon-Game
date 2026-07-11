@@ -175,7 +175,7 @@ details summary { cursor:pointer; font-size:12px; color:var(--dim); }
 <div id="app">
     <header id="topbar">
         <button id="back-hub-btn" title="Minimize to picture-in-picture (or back to hub)">‹</button>
-        <div id="topbar-title">RetroPlay <span id="build-tag">build 6</span></div>
+        <div id="topbar-title">RetroPlay <span id="build-tag">build 7</span></div>
         <button id="import-open-btn" title="Import media">+ Import</button>
     </header>
 
@@ -967,18 +967,31 @@ function drawPip(){
     pipCtx.fillStyle='#7c6af7'; pipCtx.fillRect(tx,by,bw*pct,6);
     if(!pipVideo.paused && document.pictureInPictureElement===pipVideo) pipRAF=requestAnimationFrame(drawPip);
 }
+var pipStream=null, vidCapStream=null;
 function audioPipSupported(){
-    return ('requestPictureInPicture' in pipVideo) && typeof pipCanvas.captureStream==='function' && document.pictureInPictureEnabled;
+    return ('requestPictureInPicture' in pipVideo) && typeof pipCanvas.captureStream==='function'
+        && (typeof vid.captureStream==='function' || typeof vid.mozCaptureStream==='function')
+        && document.pictureInPictureEnabled;
 }
-// Pre-warm the hidden PiP video the moment an audio track starts so it already
-// has a playing video track with metadata ready. That way the actual
-// requestPictureInPicture() call can run *synchronously* inside the tap handler
-// and keep the browser's user-activation — awaiting play() first (as before)
-// dropped the activation and Android rejected the request.
+function grabAudioTrack(){
+    try{
+        if(!vidCapStream) vidCapStream = vid.captureStream ? vid.captureStream() : vid.mozCaptureStream();
+        var a = vidCapStream && vidCapStream.getAudioTracks && vidCapStream.getAudioTracks()[0];
+        return a||null;
+    }catch(e){ return null; }
+}
+// Pre-warm the hidden PiP video the moment an audio track starts. Critically the
+// PiP element carries BOTH the album-art canvas video track AND the song's audio
+// track (captured from vid) — so when the app is backgrounded and Chrome keeps
+// only the PiP element alive, the sound goes with it. (The old version left audio
+// on the separate vid element, which froze on background → picture kept floating
+// but the music stopped.) Pre-warming also lets requestPictureInPicture() fire
+// synchronously in the tap handler, preserving Android's user-activation.
 function armPip(){
     if(!cur || cur.kind==='video' || !audioPipSupported()) return;
     loadPipArt(); drawPip();
-    if(!pipVideo.srcObject) pipVideo.srcObject=pipCanvas.captureStream(2);
+    if(!pipStream){ pipStream = pipCanvas.captureStream(2); pipVideo.srcObject = pipStream; }
+    if(!pipStream.getAudioTracks().length){ var a=grabAudioTrack(); if(a) pipStream.addTrack(a); }
     if(pipVideo.paused) pipVideo.play().catch(function(){});
 }
 function enterPiP(){
@@ -988,6 +1001,9 @@ function enterPiP(){
     }
     if(!audioPipSupported()) return Promise.reject(new Error('Audio PiP unsupported'));
     armPip();
+    // Move audio onto the PiP element (still inside the tap gesture) so it keeps
+    // playing when backgrounded; silence the original to avoid double audio.
+    vid.muted=true; pipVideo.muted=false;
     // Ready now → request in the same gesture (no await beforehand).
     if(pipVideo.readyState>=1 && !pipVideo.paused) return pipVideo.requestPictureInPicture();
     // Not ready yet → wait for metadata, then request (may need a second tap on
@@ -1003,7 +1019,11 @@ function enterPiP(){
 }
 $('np-pip').onclick=function(){ enterPiP().catch(function(e){ npErr('Picture-in-picture failed: '+(e&&e.message||e)); }); };
 pipVideo.addEventListener('enterpictureinpicture', function(){ drawPip(); });
-pipVideo.addEventListener('leavepictureinpicture', function(){ cancelAnimationFrame(pipRAF); });
+pipVideo.addEventListener('leavepictureinpicture', function(){
+    cancelAnimationFrame(pipRAF);
+    // Hand audio back to the main element so foreground playback is normal again.
+    vid.muted=false; pipVideo.muted=true;
+});
 // keep the PiP canvas fresh as the track/progress changes
 vid.addEventListener('timeupdate', function(){ if(document.pictureInPictureElement===pipVideo) drawPip(); });
 
