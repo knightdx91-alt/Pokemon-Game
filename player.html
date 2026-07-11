@@ -6,8 +6,9 @@
 <title>RetroPlay Media Player</title>
 <link rel="manifest" href="player.webmanifest">
 <meta name="theme-color" content="#0d0d0f">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<!-- Intentionally NOT web-app-capable: the app opens like a Chrome tab so the
+     Back button backgrounds it (keeping audio) instead of closing it. -->
+<meta name="apple-mobile-web-app-capable" content="no">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -182,7 +183,7 @@ details summary { cursor:pointer; font-size:12px; color:var(--dim); }
 <div id="app">
     <header id="topbar">
         <button id="back-hub-btn" title="Back to hub (keeps music playing)">‹ Back</button>
-        <div id="topbar-title">RetroPlay <span id="build-tag">build 14</span></div>
+        <div id="topbar-title">RetroPlay <span id="build-tag">build 15</span></div>
         <button id="diag-btn" title="Playback diagnostic">🔧</button>
         <button id="import-open-btn" title="Import media">＋ Import</button>
     </header>
