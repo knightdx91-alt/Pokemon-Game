@@ -64,7 +64,7 @@
 <a class="back" href="index.html?v=__CACHE_BUST__">‹ Back to hub</a>
 <div>
     <div class="logo-title">Media Downloader</div>
-    <div class="logo-sub">Video link → MP4 / MP3 → Drive <span style="opacity:.5">· build 5</span></div>
+    <div class="logo-sub">Video link → MP4 / MP3 → Drive <span style="opacity:.5">· build 6</span></div>
 </div>
 
 <div class="panel">
@@ -451,13 +451,15 @@ function downloadPhotosItem(item, token) {
 
 $('photos-pick').onclick = function () {
     var btn = $('photos-pick'); btn.disabled = true;
-    var token;
+    var token, stage = 'authorize';
     status('Authorizing Google Photos…');
     photosToken().then(function (t) {
         token = t;
+        stage = 'create-session';
         status('Opening the Google Photos picker…');
         return fetch(PHOTOS_API + '/sessions', { method: 'POST', headers: authJson(token), body: '{}' }).then(okJson);
     }).then(function (sess) {
+        stage = 'poll';
         var win = window.open(sess.pickerUri, '_blank');
         if (!win) {
             status('Pop-up blocked — tap to open the picker: ', 'err');
@@ -470,9 +472,11 @@ $('photos-pick').onclick = function () {
         }
         return pollPhotosSession(token, sess.id);
     }).then(function (sid) {
+        stage = 'read-selection';
         status('Reading your selection…');
         return fetch(PHOTOS_API + '/mediaItems?sessionId=' + sid + '&pageSize=100', { headers: { Authorization: 'Bearer ' + token } }).then(okJson);
     }).then(function (list) {
+        stage = 'transfer';
         var items = (list.mediaItems || []);
         if (!items.length) throw new Error('Nothing was picked.');
         // Save straight to My Drive root — no folder prompt (flaky on mobile).
@@ -489,7 +493,16 @@ $('photos-pick').onclick = function () {
         status('Saved ' + n + ' item(s) from Google Photos to Drive. ' +
                (n === 1 ? 'You can also “⬇ Just download to this device”.' : ''), 'ok');
     }).catch(function (e) {
-        if (e && e.message !== 'Cancelled') status('Photos: ' + e.message, 'err');
+        var m = (e && e.message) || String(e);
+        if (m === 'Cancelled') return;
+        var hint = '';
+        if (/Failed to fetch|NetworkError|Load failed/i.test(m)) {
+            hint = ' — this is a network/CORS-level block, not an HTTP error. ' +
+                   'Most likely a browser extension/ad-blocker or the private-window ' +
+                   'setting is blocking photospicker.googleapis.com. Try a normal ' +
+                   'window with extensions off.';
+        }
+        status('Photos [' + stage + ']: ' + m + hint, 'err');
     }).finally(function () { btn.disabled = false; });
 };
 
