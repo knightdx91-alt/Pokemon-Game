@@ -27,6 +27,7 @@
         NewBarkTown:    { region: 'johto',  x: 13, y: 15, dir: 'down', label: 'Johto — New Bark Town' },
         LittlerootTown: { region: 'hoenn',  x: 9,  y: 10, dir: 'down', label: 'Hoenn — Littleroot Town' },
         twinleaf_town:  { region: 'sinnoh', x: 20, y: 22, dir: 'up',   label: 'Sinnoh — Twinleaf Town' },
+        LannegarTown:   { region: 'custom', x: 48, y: 48, dir: 'down', label: 'Exiled Kingdoms — Lannegar' },
     };
 
     let currentRegion = 'kanto';
@@ -548,8 +549,8 @@
             // ?map=…&region=… (e.g. a map built in the editor) or by a game
             // mode (crater boots at the saved position / Pallet Town).
             const _modeStart = (window.GameMode && GameMode.startOverride) || null;
-            const _startMap = _params.get('map') || (_modeStart && _modeStart.map) || 'twinleaf_town';
-            const _startReg = _params.get('region') || (_modeStart && _modeStart.region) || 'sinnoh';
+            const _startMap = _params.get('map') || (_modeStart && _modeStart.map) || 'LannegarTown';
+            const _startReg = _params.get('region') || (_modeStart && _modeStart.region) || 'custom';
             currentRegion = _startReg;
             await GameMap.load(_startMap, _startReg);
             window._mapName   = (GameMap.current && GameMap.current.name) || _startMap;
