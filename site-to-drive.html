@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Site → Drive · RetroPlay</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #0d0d0f;
+            color: #e8e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 28px;
+            padding: 40px 20px;
+        }
+        a.back { position: fixed; top: 16px; left: 18px; color: #4a4a5a; text-decoration: none; font-size: 13px; }
+        a.back:hover { color: #7c6af7; }
+        .logo { text-align: center; }
+        .logo-title {
+            font-size: 26px; font-weight: 700; letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #7c6af7 0%, #e06af7 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .logo-sub { font-size: 11px; color: #4a4a5a; letter-spacing: 3px; text-transform: uppercase; margin-top: 6px; }
+        .panel {
+            width: 100%; max-width: 420px;
+            background: #16161a; border: 1px solid #2a2a35; border-radius: 16px;
+            padding: 22px; display: flex; flex-direction: column; gap: 14px;
+        }
+        label { font-size: 11px; color: #6a6a7a; letter-spacing: 0.5px; text-transform: uppercase; }
+        input[type=text] {
+            width: 100%; padding: 12px 14px; font-size: 14px;
+            background: #0f0f13; color: #e8e8f0; border: 1px solid #2a2a35; border-radius: 10px;
+            outline: none;
+        }
+        input[type=text]:focus { border-color: #7c6af7; }
+        .row { display: flex; gap: 10px; align-items: center; }
+        .hint { font-size: 11px; color: #4a4a5a; line-height: 1.5; }
+        button {
+            width: 100%; padding: 13px; font-size: 14px; font-weight: 600;
+            color: #fff; background: linear-gradient(135deg, #7c6af7 0%, #e06af7 100%);
+            border: none; border-radius: 12px; cursor: pointer; touch-action: manipulation;
+        }
+        button:disabled { opacity: 0.5; cursor: default; }
+        .checkbox-row { display: flex; align-items: center; gap: 8px; }
+        .checkbox-row input { width: 16px; height: 16px; accent-color: #7c6af7; }
+        .checkbox-row label { text-transform: none; letter-spacing: 0; font-size: 12px; color: #9a9aa8; }
+        .status {
+            width: 100%; max-width: 420px; font-size: 13px; color: #9a9aa8; text-align: center;
+            min-height: 20px; line-height: 1.5;
+        }
+        .status.err { color: #ef5a6a; }
+        .status.ok { color: #57d98a; }
+        .bar { width: 100%; max-width: 420px; height: 6px; background: #1e1e26; border-radius: 4px; overflow: hidden; }
+        .bar-fill { height: 100%; width: 0; background: linear-gradient(90deg, #7c6af7, #e06af7); transition: width 0.2s; }
+    </style>
+</head>
+<body>
+    <a class="back" href="index.html?v=__CACHE_BUST__">‹ RetroPlay</a>
+
+    <div class="logo">
+        <div class="logo-title">Site → Drive</div>
+        <div class="logo-sub">Download HTML · Save to Google Drive</div>
+    </div>
+
+    <div class="panel">
+        <div>
+            <label for="url">Page URL</label>
+            <input id="url" type="text" spellcheck="false" autocomplete="off"
+                   placeholder="https://example.com/page"
+                   value="https://tiermaker.com/create-xy/mistborn-deckbuilding-game-market-cards-18853371">
+        </div>
+        <div>
+            <label for="fname">Save as</label>
+            <input id="fname" type="text" spellcheck="false" autocomplete="off" placeholder="page.html">
+        </div>
+        <div class="checkbox-row">
+            <input id="via-relay" type="checkbox">
+            <label for="via-relay">Force fetch through CORS relay (use if the direct download is blocked)</label>
+        </div>
+        <button id="go">Download &amp; upload to Drive</button>
+        <p class="hint">Fetches the page's raw HTML in your browser, then uploads it to Google
+            Drive as a file (choose or create a destination folder). Cross-origin sites are
+            fetched directly first, then automatically retried through the RetroPlay relay.</p>
+    </div>
+
+    <div class="bar"><div id="bar" class="bar-fill"></div></div>
+    <div id="status" class="status">Ready.</div>
+
+<script>
+(function () {
+    /* ---- shared RetroPlay config (same as emulator.html) --------------- */
+    var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
+    var SCOPE_RW  = 'https://www.googleapis.com/auth/drive.file';
+    var DL_PROXY  = 'https://broad-sound-b608.knightdx91.workers.dev/?url=';
+    function proxify(url) { return DL_PROXY + encodeURIComponent(url); }
+
+    var _accessToken = null, _gLoaded = false;
+
+    var urlEl    = document.getElementById('url');
+    var fnameEl  = document.getElementById('fname');
+    var relayEl  = document.getElementById('via-relay');
+    var goBtn    = document.getElementById('go');
+    var statusEl = document.getElementById('status');
+    var barEl    = document.getElementById('bar');
+
+    function setStatus(msg, cls) { statusEl.textContent = msg; statusEl.className = 'status' + (cls ? ' ' + cls : ''); }
+    function setProgress(pct) { barEl.style.width = Math.min(100, Math.max(0, pct)) + '%'; }
+
+    /* ---- derive a sensible filename from a URL ------------------------- */
+    function defaultName(raw) {
+        try {
+            var u = new URL(raw);
+            var base = (u.pathname.split('/').filter(Boolean).pop() || u.hostname).replace(/[^\w.-]+/g, '_');
+            if (!/\.html?$/i.test(base)) base += '.html';
+            return base;
+        } catch (e) { return 'page.html'; }
+    }
+    function syncName() {
+        var raw = urlEl.value.trim();
+        if (raw) fnameEl.placeholder = defaultName(raw);
+    }
+    urlEl.addEventListener('input', syncName);
+    syncName();
+
+    /* ---- fetch with progress; direct then relay fallback --------------- */
+    function fetchOnce(url, label) {
+        return fetch(url).then(function (resp) {
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            var total = parseInt(resp.headers.get('content-length') || '0', 10);
+            if (resp.body && resp.body.getReader) {
+                var reader = resp.body.getReader(), chunks = [], loaded = 0;
+                function pump() {
+                    return reader.read().then(function (r) {
+                        if (r.done) return new Blob(chunks, { type: 'text/html' });
+                        chunks.push(r.value); loaded += r.value.length;
+                        var kb = (loaded / 1024).toFixed(0);
+                        if (total) { setProgress(Math.round(loaded / total * 90)); setStatus(label + ' · ' + kb + ' KB / ' + (total / 1024).toFixed(0) + ' KB'); }
+                        else { setProgress(45); setStatus(label + ' · ' + kb + ' KB'); }
+                        return pump();
+                    });
+                }
+                return pump();
+            }
+            setStatus(label + '…'); setProgress(45);
+            return resp.blob().then(function (b) { return new Blob([b], { type: 'text/html' }); });
+        });
+    }
+    function fetchHtml(url) {
+        if (relayEl.checked) return fetchOnce(proxify(url), 'Downloading via relay');
+        return fetchOnce(url, 'Downloading').catch(function (err) {
+            setStatus('Direct fetch blocked — retrying via relay…'); setProgress(0);
+            return fetchOnce(proxify(url), 'Downloading via relay');
+        });
+    }
+
+    /* ---- Google Drive: load, token, folder, upload -------------------- */
+    function loadGoogle(cb) {
+        if (_gLoaded) { cb(); return; }
+        var pending = 2;
+        function done() { if (--pending === 0) { _gLoaded = true; cb(); } }
+        function add(src) {
+            var s = document.createElement('script');
+            s.src = src; s.onload = done;
+            s.onerror = function () { setStatus('Failed to load Google scripts (offline?)', 'err'); };
+            document.head.appendChild(s);
+        }
+        add('https://apis.google.com/js/api.js');
+        add('https://accounts.google.com/gsi/client');
+    }
+
+    function getDriveWriteToken() {
+        return new Promise(function (res, rej) {
+            loadGoogle(function () {
+                gapi.load('client', function () {
+                    google.accounts.oauth2.initTokenClient({
+                        client_id: CLIENT_ID, scope: SCOPE_RW,
+                        callback: function (resp) {
+                            if (resp.error) { rej(new Error(resp.error)); return; }
+                            _accessToken = resp.access_token; res(resp.access_token);
+                        }
+                    }).requestAccessToken();
+                });
+            });
+        });
+    }
+
+    function createDriveFolder(name, token) {
+        return fetch('https://www.googleapis.com/drive/v3/files?fields=id', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: name, mimeType: 'application/vnd.google-apps.folder' })
+        }).then(function (resp) {
+            if (!resp.ok) return resp.text().then(function (t) { throw new Error('Folder create failed: ' + t); });
+            return resp.json().then(function (j) { return j.id; });
+        });
+    }
+
+    function chooseDriveFolder(token) {
+        return new Promise(function (resolve, reject) {
+            var name = prompt('Save into a NEW folder? Type a folder name to create it.\n\nLeave blank to choose an existing folder (or My Drive root) instead.', '');
+            if (name === null) { reject(new Error('Cancelled')); return; }
+            name = name.trim();
+            if (name) { setStatus('Creating folder · ' + name); createDriveFolder(name, token).then(resolve).catch(reject); return; }
+            loadGoogle(function () {
+                gapi.load('picker', function () {
+                    var view = new google.picker.DocsView(google.picker.ViewId.FOLDERS)
+                        .setSelectFolderEnabled(true)
+                        .setMimeTypes('application/vnd.google-apps.folder');
+                    new google.picker.PickerBuilder()
+                        .addView(view)
+                        .setTitle('Choose destination folder (close to use My Drive)')
+                        .setOAuthToken(token)
+                        .setCallback(function (data) {
+                            var action = data[google.picker.Response.ACTION];
+                            if (action === google.picker.Action.PICKED) {
+                                resolve(data[google.picker.Response.DOCUMENTS][0][google.picker.Document.ID]);
+                            } else if (action === google.picker.Action.CANCEL) {
+                                resolve(null);   // My Drive root
+                            }
+                        })
+                        .build().setVisible(true);
+                });
+            });
+        });
+    }
+
+    function uploadToDrive(blob, fileName, token, parentId) {
+        setStatus('Uploading to Drive · ' + fileName); setProgress(95);
+        var metadata = { name: fileName, mimeType: 'text/html' };
+        if (parentId) metadata.parents = [parentId];
+        var form = new FormData();
+        form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+        form.append('file', blob);
+        return fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + token },
+            body: form
+        }).then(function (resp) {
+            if (!resp.ok) return resp.text().then(function (t) { throw new Error('HTTP ' + resp.status + ' ' + t); });
+            return resp.json();
+        });
+    }
+
+    /* ---- orchestration ------------------------------------------------- */
+    goBtn.addEventListener('click', function () {
+        var raw = urlEl.value.trim();
+        if (!raw) { setStatus('Enter a page URL first.', 'err'); return; }
+        if (!/^https?:\/\//i.test(raw)) raw = 'https://' + raw;
+        var fileName = fnameEl.value.trim() || defaultName(raw);
+        if (!/\.[a-z0-9]+$/i.test(fileName)) fileName += '.html';
+
+        goBtn.disabled = true; setProgress(0); setStatus('Connecting…');
+        var htmlBlob;
+        fetchHtml(raw)
+            .then(function (blob) {
+                htmlBlob = blob;
+                setStatus('Authorizing Google Drive…');
+                return getDriveWriteToken();
+            })
+            .then(function (token) {
+                return chooseDriveFolder(token).then(function (parentId) {
+                    return uploadToDrive(htmlBlob, fileName, token, parentId);
+                });
+            })
+            .then(function (file) {
+                setProgress(100);
+                setStatus('✓ Saved to Google Drive: ' + (file && file.name ? file.name : fileName) +
+                          ' (' + (htmlBlob.size / 1024).toFixed(0) + ' KB)', 'ok');
+                goBtn.disabled = false;
+            })
+            .catch(function (err) {
+                setProgress(0);
+                setStatus('Failed: ' + (err && err.message ? err.message : err), 'err');
+                goBtn.disabled = false;
+            });
+    });
+})();
+</script>
+</body>
+</html>
