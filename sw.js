@@ -19,7 +19,7 @@
 /* STABLE — holds cores/assets. Keep in sync with OFFLINE_CACHE_NAME in emulator.html. */
 var RUNTIME = 'retroplay-offline-v2';
 /* Versioned — holds precached HTML. Bump this (only) to force fresh pages. */
-var SHELL   = 'retroplay-shell-v26';
+var SHELL   = 'retroplay-shell-v27';
 
 /* Hosts we must never cache or intercept (auth, Drive picker, uploads). */
 var BYPASS_HOSTS = [
@@ -29,6 +29,7 @@ var BYPASS_HOSTS = [
     'content.googleapis.com',
     'oauth2.googleapis.com',
     'photospicker.googleapis.com',
+    'broad-sound-b608.knightdx91.workers.dev',
     'drive.google.com',
     'www.google.com'
 ];

@@ -64,7 +64,7 @@
 <a class="back" href="index.html?v=__CACHE_BUST__">‹ Back to hub</a>
 <div>
     <div class="logo-title">Media Downloader</div>
-    <div class="logo-sub">Video link → MP4 / MP3 → Drive <span style="opacity:.5">· build 6</span></div>
+    <div class="logo-sub">Video link → MP4 / MP3 → Drive <span style="opacity:.5">· build 7</span></div>
 </div>
 
 <div class="panel">
@@ -150,6 +150,12 @@ var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercon
 var DRIVE_RW  = 'https://www.googleapis.com/auth/drive.file';
 var PHOTOS_RO = 'https://www.googleapis.com/auth/photospicker.mediaitems.readonly';
 var PHOTOS_API = 'https://photospicker.googleapis.com/v1';
+// Google Photos picker baseUrl bytes are on googleusercontent.com hosts that send
+// NO CORS headers, so a browser fetch of them always fails ("Failed to fetch" at
+// the transfer stage). Route that one download through the same personal
+// Cloudflare Worker relay the book reader uses; we forward the OAuth Bearer token
+// so the Worker authenticates to Google Photos server-side (no CORS there).
+var MEDIA_RELAY = 'https://broad-sound-b608.knightdx91.workers.dev/?url=';
 // Deployed Render backend (media-backend/). The access key is NOT stored here —
 // paste it once into the ⚙ field; it's kept in localStorage per device.
 var DEFAULT_BACKEND = 'https://retroplay-media-dkmr.onrender.com';
@@ -442,9 +448,11 @@ function downloadPhotosItem(item, token) {
     // '=dv' downloads the actual video file; '=d' downloads a full-res photo.
     var dl = mf.baseUrl + (isVideo ? '=dv' : '=d');
     lastName = mf.filename || (item.id + (isVideo ? '.mp4' : '.jpg'));
-    return fetch(dl, { headers: { Authorization: 'Bearer ' + token } })
+    // Direct fetch is CORS-blocked (googleusercontent sends no CORS headers), so go
+    // through the relay. The Worker forwards our Authorization header to Google.
+    return fetch(MEDIA_RELAY + encodeURIComponent(dl), { headers: { Authorization: 'Bearer ' + token } })
         .then(function (r) {
-            if (!r.ok) return r.text().then(function (t) { throw new Error('Photos download ' + r.status + ' ' + t); });
+            if (!r.ok) return r.text().then(function (t) { throw new Error('relay download ' + r.status + ' ' + t); });
             return r.blob();
         }).then(function (blob) { lastBlob = blob; return blob; });
 }
