@@ -64,7 +64,7 @@
 <a class="back" href="index.html?v=__CACHE_BUST__">‹ Back to hub</a>
 <div>
     <div class="logo-title">Media Downloader</div>
-    <div class="logo-sub">Video link → MP4 / MP3 → Drive <span style="opacity:.5">· build 7</span></div>
+    <div class="logo-sub">Video link → MP4 / MP3 → Drive <span style="opacity:.5">· build 8</span></div>
 </div>
 
 <div class="panel">
@@ -394,16 +394,28 @@ function createDriveFolder(name, token) {
         return r.json().then(function (j) { return j.id; });
     });
 }
-function uploadToDrive(blob, name, token, parentId) {
+function uploadToDrive(blob, name, token, parentId, onProg) {
     var meta = { name: name }; if (parentId) meta.parents = [parentId];
     var form = new FormData();
     form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
     form.append('file', blob);
-    return fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name', {
-        method: 'POST', headers: { Authorization: 'Bearer ' + token }, body: form
-    }).then(function (r) {
-        if (!r.ok) return r.text().then(function (t) { throw new Error('HTTP ' + r.status + ' ' + t); });
-        return r.json();
+    // XHR (not fetch) because only XHR exposes upload progress events.
+    return new Promise(function (res, rej) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+        if (xhr.upload && onProg) {
+            xhr.upload.onprogress = function (e) {
+                onProg(e.loaded, e.lengthComputable ? e.total : (blob.size || 0));
+            };
+        }
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                try { res(JSON.parse(xhr.responseText)); } catch (e) { res({ name: name }); }
+            } else { rej(new Error('HTTP ' + xhr.status + ' ' + xhr.responseText)); }
+        };
+        xhr.onerror = function () { rej(new Error('Upload network error')); };
+        xhr.send(form);
     });
 }
 
@@ -416,6 +428,17 @@ function uploadToDrive(blob, name, token, parentId) {
 // bytes to Drive without a second consent.
 function authJson(token) { return { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' }; }
 function okJson(r) { if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); }); return r.json(); }
+function fmtBytes(b) {
+    if (b == null || isNaN(b)) return '';
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b / 1024).toFixed(0) + ' KB';
+    return (b / 1048576).toFixed(1) + ' MB';
+}
+function progLine(prefix, done, total) {
+    if (total) return prefix + fmtBytes(done) + ' / ' + fmtBytes(total) +
+        ' (' + Math.floor(done / total * 100) + '%)';
+    return prefix + fmtBytes(done);
+}
 
 function photosToken() {
     return new Promise(function (res, rej) {
@@ -442,7 +465,7 @@ function pollPhotosSession(token, sid, deadline, n) {
         });
 }
 
-function downloadPhotosItem(item, token) {
+function downloadPhotosItem(item, token, onProg) {
     var mf = item.mediaFile || {};
     var isVideo = item.type === 'VIDEO';
     // '=dv' downloads the actual video file; '=d' downloads a full-res photo.
@@ -453,7 +476,19 @@ function downloadPhotosItem(item, token) {
     return fetch(MEDIA_RELAY + encodeURIComponent(dl), { headers: { Authorization: 'Bearer ' + token } })
         .then(function (r) {
             if (!r.ok) return r.text().then(function (t) { throw new Error('relay download ' + r.status + ' ' + t); });
-            return r.blob();
+            // Stream the body so we can report progress. Content-Length may be
+            // absent (chunked relay) — then we just show bytes received so far.
+            var total = parseInt(r.headers.get('Content-Length') || mf.sizeBytes || '', 10) || 0;
+            if (!r.body || !r.body.getReader) return r.blob();  // fallback: no streaming
+            var reader = r.body.getReader(), chunks = [], received = 0;
+            return (function pump() {
+                return reader.read().then(function (res) {
+                    if (res.done) return new Blob(chunks, { type: r.headers.get('Content-Type') || '' });
+                    chunks.push(res.value); received += res.value.length;
+                    if (onProg) onProg(received, total);
+                    return pump();
+                });
+            })();
         }).then(function (blob) { lastBlob = blob; return blob; });
 }
 
@@ -490,10 +525,13 @@ $('photos-pick').onclick = function () {
         // Save straight to My Drive root — no folder prompt (flaky on mobile).
         return items.reduce(function (chain, it, i) {
             return chain.then(function () {
-                status('Downloading ' + (i + 1) + '/' + items.length + ' from Photos…');
-                return downloadPhotosItem(it, token).then(function (blob) {
-                    status('Uploading ' + lastName + ' to Drive…');
-                    return uploadToDrive(blob, lastName, token, null);
+                var tag = items.length > 1 ? ' (' + (i + 1) + '/' + items.length + ')' : '';
+                return downloadPhotosItem(it, token, function (done, total) {
+                    status(progLine('⬇ Downloading' + tag + '… ', done, total));
+                }).then(function (blob) {
+                    return uploadToDrive(blob, lastName, token, null, function (done, total) {
+                        status(progLine('⬆ Uploading ' + lastName + tag + '… ', done, total));
+                    });
                 });
             });
         }, Promise.resolve()).then(function () { return items.length; });
