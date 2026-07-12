@@ -475,18 +475,16 @@ $('photos-pick').onclick = function () {
     }).then(function (list) {
         var items = (list.mediaItems || []);
         if (!items.length) throw new Error('Nothing was picked.');
-        status('Choose a Drive folder…');
-        return chooseDriveFolder(token).then(function (parentId) {
-            return items.reduce(function (chain, it, i) {
-                return chain.then(function () {
-                    status('Downloading ' + (i + 1) + '/' + items.length + ' from Photos…');
-                    return downloadPhotosItem(it, token).then(function (blob) {
-                        status('Uploading ' + lastName + ' to Drive…');
-                        return uploadToDrive(blob, lastName, token, parentId);
-                    });
+        // Save straight to My Drive root — no folder prompt (flaky on mobile).
+        return items.reduce(function (chain, it, i) {
+            return chain.then(function () {
+                status('Downloading ' + (i + 1) + '/' + items.length + ' from Photos…');
+                return downloadPhotosItem(it, token).then(function (blob) {
+                    status('Uploading ' + lastName + ' to Drive…');
+                    return uploadToDrive(blob, lastName, token, null);
                 });
-            }, Promise.resolve()).then(function () { return items.length; });
-        });
+            });
+        }, Promise.resolve()).then(function () { return items.length; });
     }).then(function (n) {
         status('Saved ' + n + ' item(s) from Google Photos to Drive. ' +
                (n === 1 ? 'You can also “⬇ Just download to this device”.' : ''), 'ok');
