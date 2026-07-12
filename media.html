@@ -424,13 +424,15 @@ function photosToken() {
     });
 }
 
-function pollPhotosSession(token, sid, deadline) {
+function pollPhotosSession(token, sid, deadline, n) {
     deadline = deadline || (Date.now() + 10 * 60 * 1000);
+    n = n || 0;
     return fetch(PHOTOS_API + '/sessions/' + sid, { headers: { Authorization: 'Bearer ' + token } })
         .then(okJson).then(function (s) {
             if (s.mediaItemsSet) return sid;
-            if (Date.now() > deadline) throw new Error('Timed out waiting for a selection.');
-            return new Promise(function (r) { setTimeout(r, 3000); }).then(function () { return pollPhotosSession(token, sid, deadline); });
+            if (Date.now() > deadline) throw new Error('Timed out. In the Photos tab, be sure you tapped “Done” to confirm, and that it’s signed into the SAME Google account you authorized here.');
+            status('Waiting for your Photos selection… (checked ' + (n + 1) + '×) — tap “Done” in the Photos tab to confirm.');
+            return new Promise(function (r) { setTimeout(r, 2500); }).then(function () { return pollPhotosSession(token, sid, deadline, n + 1); });
         });
 }
 
