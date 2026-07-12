@@ -86,6 +86,17 @@
         <button id="dl-device" type="button">⬇ Just download to this device</button>
     </div>
 
+    <div style="border-top:1px solid #1e1e24;padding-top:12px;margin-top:2px;">
+        <label>Or pull straight from Google Photos</label>
+        <div class="save-row">
+            <button id="photos-pick" type="button">📷 Pick from Google Photos → Drive</button>
+        </div>
+        <p class="hint">yt-dlp (the “video link” box above) can’t read Google Photos share links.
+        This button uses the Google&nbsp;Photos Picker instead: it opens Photos, you tap the
+        photos/videos you want, and they’re copied into a Google&nbsp;Drive folder — no backend
+        needed. Use this for “the video I recorded”.</p>
+    </div>
+
     <img class="thumb" id="thumb" alt="">
     <div class="meta" id="meta"></div>
 
@@ -137,6 +148,8 @@
 <script>
 var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
 var DRIVE_RW  = 'https://www.googleapis.com/auth/drive.file';
+var PHOTOS_RO = 'https://www.googleapis.com/auth/photospicker.mediaitems.readonly';
+var PHOTOS_API = 'https://photospicker.googleapis.com/v1';
 // Deployed Render backend (media-backend/). The access key is NOT stored here —
 // paste it once into the ⚙ field; it's kept in localStorage per device.
 var DEFAULT_BACKEND = 'https://retroplay-media-dkmr.onrender.com';
@@ -387,6 +400,98 @@ function uploadToDrive(blob, name, token, parentId) {
         return r.json();
     });
 }
+
+// ---- Google Photos Picker (photos.google.com → Drive) -------------------
+// Google Photos share links (photos.app.goo.gl / photos.google.com/share/…) are
+// NOT downloadable by yt-dlp or by any public URL — the only supported way to
+// pull a shared/owned item out is the Photos Picker API: create a session, let
+// the user tick items in Google Photos, then GET each item's baseUrl with the
+// OAuth token. We request the Drive scope in the SAME token so we can upload the
+// bytes to Drive without a second consent.
+function authJson(token) { return { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' }; }
+function okJson(r) { if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); }); return r.json(); }
+
+function photosToken() {
+    return new Promise(function (res, rej) {
+        loadGoogleScripts(function () {
+            gapi.load('client', function () {
+                google.accounts.oauth2.initTokenClient({
+                    client_id: CLIENT_ID, scope: DRIVE_RW + ' ' + PHOTOS_RO,
+                    callback: function (resp) { resp.error ? rej(new Error(resp.error)) : res(resp.access_token); }
+                }).requestAccessToken();
+            });
+        });
+    });
+}
+
+function pollPhotosSession(token, sid, deadline) {
+    deadline = deadline || (Date.now() + 10 * 60 * 1000);
+    return fetch(PHOTOS_API + '/sessions/' + sid, { headers: { Authorization: 'Bearer ' + token } })
+        .then(okJson).then(function (s) {
+            if (s.mediaItemsSet) return sid;
+            if (Date.now() > deadline) throw new Error('Timed out waiting for a selection.');
+            return new Promise(function (r) { setTimeout(r, 3000); }).then(function () { return pollPhotosSession(token, sid, deadline); });
+        });
+}
+
+function downloadPhotosItem(item, token) {
+    var mf = item.mediaFile || {};
+    var isVideo = item.type === 'VIDEO';
+    // '=dv' downloads the actual video file; '=d' downloads a full-res photo.
+    var dl = mf.baseUrl + (isVideo ? '=dv' : '=d');
+    lastName = mf.filename || (item.id + (isVideo ? '.mp4' : '.jpg'));
+    return fetch(dl, { headers: { Authorization: 'Bearer ' + token } })
+        .then(function (r) {
+            if (!r.ok) return r.text().then(function (t) { throw new Error('Photos download ' + r.status + ' ' + t); });
+            return r.blob();
+        }).then(function (blob) { lastBlob = blob; return blob; });
+}
+
+$('photos-pick').onclick = function () {
+    var btn = $('photos-pick'); btn.disabled = true;
+    var token;
+    status('Authorizing Google Photos…');
+    photosToken().then(function (t) {
+        token = t;
+        status('Opening the Google Photos picker…');
+        return fetch(PHOTOS_API + '/sessions', { method: 'POST', headers: authJson(token), body: '{}' }).then(okJson);
+    }).then(function (sess) {
+        var win = window.open(sess.pickerUri, '_blank');
+        if (!win) {
+            status('Pop-up blocked — tap to open the picker: ', 'err');
+            var a = document.createElement('a');
+            a.href = sess.pickerUri; a.target = '_blank';
+            a.textContent = 'Open Google Photos'; a.style.color = '#7c6af7';
+            $('status').appendChild(a);
+        } else {
+            status('Pick your video(s) in the Google Photos tab, then come back here. Waiting…');
+        }
+        return pollPhotosSession(token, sess.id);
+    }).then(function (sid) {
+        status('Reading your selection…');
+        return fetch(PHOTOS_API + '/mediaItems?sessionId=' + sid + '&pageSize=100', { headers: { Authorization: 'Bearer ' + token } }).then(okJson);
+    }).then(function (list) {
+        var items = (list.mediaItems || []);
+        if (!items.length) throw new Error('Nothing was picked.');
+        status('Choose a Drive folder…');
+        return chooseDriveFolder(token).then(function (parentId) {
+            return items.reduce(function (chain, it, i) {
+                return chain.then(function () {
+                    status('Downloading ' + (i + 1) + '/' + items.length + ' from Photos…');
+                    return downloadPhotosItem(it, token).then(function (blob) {
+                        status('Uploading ' + lastName + ' to Drive…');
+                        return uploadToDrive(blob, lastName, token, parentId);
+                    });
+                });
+            }, Promise.resolve()).then(function () { return items.length; });
+        });
+    }).then(function (n) {
+        status('Saved ' + n + ' item(s) from Google Photos to Drive. ' +
+               (n === 1 ? 'You can also “⬇ Just download to this device”.' : ''), 'ok');
+    }).catch(function (e) {
+        if (e && e.message !== 'Cancelled') status('Photos: ' + e.message, 'err');
+    }).finally(function () { btn.disabled = false; });
+};
 
 // ---- buttons ----
 $('go').onclick = function () {
