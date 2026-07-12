@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TierMaker Grabber · RetroPlay</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #0d0d0f; color: #e8e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+            padding: 40px 20px 80px; display: flex; flex-direction: column; align-items: center; gap: 24px;
+        }
+        a.back { align-self: flex-start; color: #4a4a5a; text-decoration: none; font-size: 13px; }
+        a.back:hover { color: #7c6af7; }
+        .logo { text-align: center; }
+        .logo-title {
+            font-size: 26px; font-weight: 700; letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #7c6af7 0%, #e06af7 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .logo-sub { font-size: 11px; color: #4a4a5a; letter-spacing: 3px; text-transform: uppercase; margin-top: 6px; }
+        .panel {
+            width: 100%; max-width: 460px; background: #16161a; border: 1px solid #2a2a35;
+            border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 14px;
+        }
+        h2 { font-size: 15px; color: #e8e8f0; }
+        p, li { font-size: 13px; color: #b8b8c6; line-height: 1.6; }
+        ol { padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+        b, strong { color: #e8e8f0; }
+        .blm {
+            display: inline-block; padding: 12px 20px; margin: 4px 0;
+            background: linear-gradient(135deg, #7c6af7 0%, #e06af7 100%);
+            color: #fff; font-weight: 700; font-size: 15px; border-radius: 12px; text-decoration: none;
+        }
+        textarea {
+            width: 100%; height: 140px; background: #0f0f13; color: #7cf7a8;
+            border: 1px solid #2a2a35; border-radius: 10px; padding: 12px;
+            font: 12px/1.4 ui-monospace, Menlo, Consolas, monospace; resize: vertical;
+        }
+        button {
+            padding: 11px 16px; font-size: 13px; font-weight: 600; color: #fff;
+            background: #2a2a35; border: 1px solid #3a3a48; border-radius: 10px; cursor: pointer;
+        }
+        button:active { background: #35354a; }
+        .note { font-size: 12px; color: #6a6a7a; line-height: 1.5; }
+        code { background: #0f0f13; border: 1px solid #2a2a35; border-radius: 5px; padding: 1px 5px; font-size: 12px; color: #e0c07a; }
+    </style>
+</head>
+<body>
+    <a class="back" href="index.html?v=__CACHE_BUST__">‹ RetroPlay</a>
+
+    <div class="logo">
+        <div class="logo-title">TierMaker Grabber</div>
+        <div class="logo-sub">Save every card from a TierMaker page</div>
+    </div>
+
+    <div class="panel">
+        <h2>What it does</h2>
+        <p>Runs <b>on the TierMaker page in your browser</b> (the only place past Cloudflare),
+        pulls every card image at full resolution, and downloads them as one self-contained
+        <code>tiermaker-cards.html</code> gallery to your phone. From <b>Downloads</b> you can
+        open it, or use the <b>Share ▸ Drive</b> to save it to Google Drive — no app needed.</p>
+    </div>
+
+    <div class="panel">
+        <h2>Install on Android Chrome</h2>
+        <ol>
+            <li><b>Copy</b> the bookmarklet code below (tap <i>Copy code</i>).</li>
+            <li>Bookmark <b>any</b> page (tap ☆ in the menu).</li>
+            <li>Open <b>Bookmarks</b>, tap <b>Edit</b> on that bookmark.</li>
+            <li>Set <b>Name</b> to <code>Grab Cards</code> and <b>paste</b> the copied code into the <b>URL</b> field. Save.</li>
+            <li>Go to your TierMaker page (e.g. the Mistborn one). In the address bar type <code>Grab Cards</code> and tap the bookmark suggestion.</li>
+            <li>Wait for the status bar at the bottom — it saves <code>tiermaker-cards.html</code> to Downloads.</li>
+        </ol>
+        <p class="note">Chrome blocks typing <code>javascript:</code> directly in the address bar, which is
+        why it has to live in a <b>bookmark</b>. Typing the bookmark's name and tapping it runs the code on
+        whatever page you're currently viewing.</p>
+    </div>
+
+    <div class="panel">
+        <h2>Bookmarklet code</h2>
+        <textarea id="code" readonly spellcheck="false"></textarea>
+        <div style="display:flex; gap:10px;">
+            <button id="copy">Copy code</button>
+            <a id="drag" class="blm" href="#">Grab Cards</a>
+        </div>
+        <p class="note">On a computer you can also drag the purple <b>Grab Cards</b> button to your bookmarks bar.</p>
+    </div>
+
+<script>
+/* The bookmarklet source — kept readable here, then packed into a javascript: URL. */
+function GRAB() {
+    (async function () {
+        function S(msg) {
+            var d = document.getElementById('tmg');
+            if (!d) {
+                d = document.createElement('div'); d.id = 'tmg';
+                d.style.cssText = 'position:fixed;left:8px;right:8px;bottom:8px;z-index:2147483647;' +
+                    'background:#111;color:#eee;font:14px system-ui,sans-serif;padding:12px 14px;' +
+                    'border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.6);text-align:center';
+                d.onclick = function () { d.remove(); };
+                document.body.appendChild(d);
+            }
+            d.textContent = msg;
+        }
+        try {
+            var m = location.pathname.match(/(\d{6,})/);
+            var ID = (m && m[1]) || prompt('TierMaker template ID (the long number in the URL)?');
+            if (!ID) { S('No template ID — tap to dismiss'); return; }
+            S('Fetching card list…');
+            var res = await fetch('/api/s3.php?type=templates&id=' + ID, { credentials: 'include' });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            var list = await res.json();
+            if (!Array.isArray(list)) throw new Error('Unexpected response');
+            var CDN = 'https://d3c78rhyxtisvh.cloudfront.net/';
+            var urls = list.map(function (p) { return /^https?:/.test(p) ? p : CDN + p; });
+            S('Found ' + urls.length + ' images. Downloading…');
+            async function toData(u) {
+                try {
+                    var b = await (await fetch(u, { mode: 'cors' })).blob();
+                    return await new Promise(function (r) { var fr = new FileReader(); fr.onload = function () { r(fr.result); }; fr.readAsDataURL(b); });
+                } catch (e) { return u; }   // CORS-blocked → fall back to live CDN URL
+            }
+            var srcs = [];
+            for (var i = 0; i < urls.length; i++) { S('Downloading image ' + (i + 1) + ' / ' + urls.length + '…'); srcs.push(await toData(urls[i])); }
+            var body = srcs.map(function (s, i) { return '<figure><img loading="lazy" src="' + s + '" alt="card ' + (i + 1) + '"><figcaption>#' + (i + 1) + '</figcaption></figure>'; }).join('');
+            var doc = '<!doctype html><html><head><meta charset="utf-8">' +
+                '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+                '<title>TierMaker cards (' + srcs.length + ')</title><style>' +
+                'body{background:#111;color:#eee;margin:0;padding:14px;font:14px system-ui,sans-serif}' +
+                'h1{font-size:16px;margin:0 0 12px}main{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}' +
+                'figure{margin:0}img{width:100%;border-radius:8px;background:#222}figcaption{font-size:11px;color:#888;text-align:center;margin-top:4px}' +
+                '</style></head><body><h1>' + srcs.length + ' cards · template ' + ID + '</h1><main>' + body + '</main></body></html>';
+            var blob = new Blob([doc], { type: 'text/html' });
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob); a.download = 'tiermaker-cards.html';
+            document.body.appendChild(a); a.click(); a.remove();
+            S('✓ Saved tiermaker-cards.html to Downloads (' + srcs.length + ' cards). Open it, or Share ▸ Drive. Tap to dismiss.');
+        } catch (e) {
+            S('Error: ' + (e && e.message ? e.message : e) + ' — make sure you are ON the TierMaker page. Tap to dismiss.');
+        }
+    })();
+}
+
+/* Serialize GRAB's body into a bookmarklet URL. */
+var src = GRAB.toString();
+var innerBody = src.slice(src.indexOf('{') + 1, src.lastIndexOf('}'));
+var bookmarklet = 'javascript:' + encodeURIComponent('(function(){' + innerBody + '})()');
+
+document.getElementById('code').value = bookmarklet;
+document.getElementById('drag').setAttribute('href', bookmarklet);
+document.getElementById('copy').addEventListener('click', function () {
+    var ta = document.getElementById('code');
+    ta.select(); ta.setSelectionRange(0, 999999);
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    if (navigator.clipboard) { navigator.clipboard.writeText(ta.value).then(function () {}, function () {}); ok = true; }
+    this.textContent = ok ? 'Copied ✓' : 'Select all & copy';
+    var b = this; setTimeout(function () { b.textContent = 'Copy code'; }, 1800);
+});
+document.getElementById('drag').addEventListener('click', function (e) { e.preventDefault(); });
+</script>
+</body>
+</html>
