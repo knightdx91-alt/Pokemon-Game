@@ -64,7 +64,7 @@
 <a class="back" href="index.html?v=__CACHE_BUST__">‹ Back to hub</a>
 <div>
     <div class="logo-title">Media Downloader</div>
-    <div class="logo-sub">Video link → MP4 / MP3 → Drive <span style="opacity:.5">· build 4</span></div>
+    <div class="logo-sub">Video link → MP4 / MP3 → Drive <span style="opacity:.5">· build 5</span></div>
 </div>
 
 <div class="panel">
@@ -427,9 +427,7 @@ function photosToken() {
 function pollPhotosSession(token, sid, deadline, n) {
     deadline = deadline || (Date.now() + 10 * 60 * 1000);
     n = n || 0;
-    return fetch(PHOTOS_API + '/sessions/' + sid, {
-        headers: { Authorization: 'Bearer ' + token }, cache: 'no-store'
-    })
+    return fetch(PHOTOS_API + '/sessions/' + sid, { headers: { Authorization: 'Bearer ' + token } })
         .then(okJson).then(function (s) {
             if (s.mediaItemsSet) return sid;
             if (Date.now() > deadline) throw new Error('Timed out. In the Photos tab, be sure you tapped “Done” to confirm, and that it’s signed into the SAME Google account you authorized here.');
