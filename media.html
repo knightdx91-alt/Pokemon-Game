@@ -427,7 +427,7 @@ function photosToken() {
 function pollPhotosSession(token, sid, deadline, n) {
     deadline = deadline || (Date.now() + 10 * 60 * 1000);
     n = n || 0;
-    return fetch(PHOTOS_API + '/sessions/' + sid + '?_=' + Date.now(), {
+    return fetch(PHOTOS_API + '/sessions/' + sid, {
         headers: { Authorization: 'Bearer ' + token }, cache: 'no-store'
     })
         .then(okJson).then(function (s) {
