@@ -22,14 +22,17 @@ Usage: python3 tools/cro_vtables.py Battle [-o decomp/vtables]
 """
 import argparse
 import json
+import os
 import struct
 import sys
 from pathlib import Path
 
-MAP = Path('decomp/map')
-FUNC = Path('decomp/functions')
-ROM = Path('source/3ds/ultramoon/romfs')
-OUT = Path('decomp/vtables')
+# Env overrides let the pipeline run on other games (e.g. ORAS).
+MAP = Path(os.environ.get('CRO_MAP_DIR', 'decomp/map'))
+FUNC = Path(os.environ.get('CRO_FUNC_DIR', 'decomp/functions'))
+ROM = Path(os.environ.get('CRO_ROM', 'source/3ds/ultramoon') + '/romfs') \
+    if os.environ.get('CRO_ROM') else Path('source/3ds/ultramoon/romfs')
+OUT = Path(os.environ.get('CRO_VTABLE_DIR', 'decomp/vtables'))
 
 RELOC_TYPE = 2       # ARM absolute pointer relocation
 DEST_RODATA = 1      # target segment nibble for rodata

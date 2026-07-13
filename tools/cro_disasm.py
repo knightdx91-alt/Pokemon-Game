@@ -24,6 +24,7 @@ whose words get rewritten at load with an imported symbol's address.
 import argparse
 import bisect
 import json
+import os
 import re
 import struct
 import sys
@@ -31,9 +32,11 @@ from pathlib import Path
 
 from capstone import Cs, CS_ARCH_ARM, CS_MODE_ARM, CS_MODE_THUMB
 
-MAP_DIR = Path('decomp/map')
-FUNC_DIR = Path('decomp/functions')
-ROM = Path('source/3ds/ultramoon')
+# Paths default to the USUM decomp but honor env overrides so the same pipeline
+# runs on other games (e.g. ORAS): CRO_ROM / CRO_MAP_DIR / CRO_FUNC_DIR.
+MAP_DIR = Path(os.environ.get('CRO_MAP_DIR', 'decomp/map'))
+FUNC_DIR = Path(os.environ.get('CRO_FUNC_DIR', 'decomp/functions'))
+ROM = Path(os.environ.get('CRO_ROM', 'source/3ds/ultramoon'))
 
 PROLOGUE_RE = struct.Struct('<I')
 

@@ -234,9 +234,13 @@ KNOWN_GARCS = {
         'a/1/8/9': 'move data',
         'a/0/7/2': 'text — common',
         'a/0/7/1': 'text — story dialogue',
-        'a/0/1/3': 'wild encounter data',
-        'a/0/3/8': 'trainer data',
-        'a/0/3/9': 'trainer pokemon parties',
+        'a/0/1/3': 'ZONE header table ("ZO" magic, 538 zones) — map header equiv',
+        'a/0/3/9': 'MAP TERRAIN 3D models ("GR" container, 857 members, 416 map '
+                   'codes e.g. c102r0101; embeds BCH geometry at header offset[0], '
+                   'chip_* textures + collPw collision) — the Hoenn field maps',
+        'a/0/3/1': 'CGFX/bcres 3D graphics (2040) — field object/prop models',
+        'a/1/6/0': 'per-map grids (684, 0xfffe-filled ~256KB) — collision/height?',
+        'a/0/0/8': 'pokemon 3D models/textures (BCH — not 2D-convertible)',
     },
 }
 
