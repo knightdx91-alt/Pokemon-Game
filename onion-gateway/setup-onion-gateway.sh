@@ -98,7 +98,7 @@ EXTRACT_ROOT = "/tmp/onion-extract"       # where archives are unpacked
 MAX_ARCHIVE_BYTES = 2 * 1024 * 1024 * 1024  # 2 GB download cap
 EXTRACT_TTL = 3600                          # delete extractions older than 1 h
 
-GATEWAY_VERSION = "v7"  # bump on every gateway change so a fresh deploy is visible
+GATEWAY_VERSION = "v8"  # bump on every gateway change so a fresh deploy is visible
 
 # Tor control port — used by the "New IP" button to request a fresh circuit
 # (SIGNAL NEWNYM). Enabled by setup-onion-gateway.sh (ControlPort 9051 +
@@ -639,25 +639,61 @@ def try_resolve_filehost(r):
 
 
 def top_bar(current):
-    return (
-        '<div style="position:sticky;top:0;z-index:2147483647;display:flex;gap:6px;'
-        'padding:8px;background:#0c0c14;border-bottom:1px solid #2a2a3a;'
-        'font-family:sans-serif">'
-        '<a href="/" title="Onion Reader ' + GATEWAY_VERSION + '" '
-        'style="color:#9a8bff;text-decoration:none;padding:8px 10px;'
-        'background:#16161f;border-radius:8px">🧅<sub style="font-size:.6em;'
-        'color:#6a6a80">' + GATEWAY_VERSION + '</sub></a>'
-        '<form action="/browse" method="get" style="display:flex;flex:1;gap:6px;margin:0">'
-        '<input name="url" value="' + current.replace('"', "&quot;") +
-        '" style="flex:1;min-width:0;padding:8px 10px;border-radius:8px;border:1px solid '
-        '#2a2a3a;background:#16161f;color:#fff" autocapitalize="off" spellcheck="false">'
+    """Overlay chrome injected after <body>.
+
+    position:fixed (NOT sticky) so it takes no layout space — sticky broke the
+    scroll math on forums/chat sites that use a full-height internal scroll
+    container. A '×' collapses it to a small floating 🧅 pill so it can never
+    permanently cover content. A companion script removes the bar inside iframes
+    (framed forum/chat panes were each drawing their own bar -> doubled bar).
+    """
+    cur = current.replace('"', "&quot;")
+    ver = GATEWAY_VERSION
+    bar = (
+        '<div id="__onionbar" style="position:fixed!important;top:0!important;'
+        'left:0!important;right:0!important;z-index:2147483647!important;display:flex;'
+        'gap:6px;padding:8px;background:#0c0c14!important;border-bottom:1px solid #2a2a3a;'
+        'font-family:sans-serif;box-sizing:border-box;max-width:100vw">'
+        '<a href="/" title="Onion Reader ' + ver + '" style="color:#9a8bff;'
+        'text-decoration:none;padding:8px 10px;background:#16161f;border-radius:8px;'
+        'flex:none">🧅<sub style="font-size:.6em;color:#6a6a80">' + ver + '</sub></a>'
+        '<form action="/browse" method="get" style="display:flex;flex:1;gap:6px;'
+        'margin:0;min-width:0">'
+        '<input name="url" value="' + cur + '" style="flex:1;min-width:0;padding:8px 10px;'
+        'border-radius:8px;border:1px solid #2a2a3a;background:#16161f;color:#fff" '
+        'autocapitalize="off" spellcheck="false">'
         '<button style="padding:8px 12px;border:0;border-radius:8px;background:#7c6af7;'
-        'color:#fff">Go</button></form>'
+        'color:#fff;flex:none">Go</button></form>'
         '<a href="/new-identity?back=' + quote(current, safe="") + '" '
-        'title="Get a new Tor exit IP — use this if browsing gets slow" '
+        'title="New Tor exit IP — use this if browsing gets slow" '
         'style="color:#fff;text-decoration:none;padding:8px 10px;background:#2a2a3a;'
-        'border-radius:8px;white-space:nowrap">&#128260; New IP</a></div>'
+        'border-radius:8px;flex:none">&#128260;</a>'
+        '<button type="button" onclick="__onionHide()" title="Hide bar" '
+        'style="padding:8px 11px;border:0;border-radius:8px;background:#2a2a3a;color:#fff;'
+        'flex:none;cursor:pointer">&times;</button>'
+        '</div>'
+        '<button type="button" id="__onionpill" onclick="__onionShow()" '
+        'title="Show Onion Reader controls" style="display:none;position:fixed!important;'
+        'top:6px;left:6px;z-index:2147483647!important;border:0;border-radius:20px;'
+        'background:#7c6af7;color:#fff;padding:6px 12px;font-family:sans-serif;'
+        'cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.5)">🧅</button>'
     )
+    script = (
+        "<script>(function(){try{"
+        "if(window.top!==window.self){"
+        "var e=document.getElementById('__onionbar');if(e)e.remove();"
+        "var p=document.getElementById('__onionpill');if(p)p.remove();return;}"
+        "var bars=document.querySelectorAll('#__onionbar');"
+        "for(var i=1;i<bars.length;i++)bars[i].remove();"
+        "window.__onionHide=function(){"
+        "var b=document.getElementById('__onionbar');if(b)b.style.display='none';"
+        "var q=document.getElementById('__onionpill');if(q)q.style.display='block';};"
+        "window.__onionShow=function(){"
+        "var b=document.getElementById('__onionbar');if(b)b.style.display='flex';"
+        "var q=document.getElementById('__onionpill');if(q)q.style.display='none';};"
+        "}catch(e){}})();</script>"
+    )
+    return bar + script
 
 
 @app.route("/")
