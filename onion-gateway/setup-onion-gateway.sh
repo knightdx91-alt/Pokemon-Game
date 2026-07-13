@@ -26,6 +26,24 @@ if ! curl -s --socks5-hostname 127.0.0.1:9050 -m 20 https://check.torproject.org
   echo "WARNING: Tor SOCKS test didn't confirm. Make sure Tor is running before using the gateway."
 fi
 
+echo "==> Ensuring Tor control port (for the 'New IP' / reset-connection button)..."
+# NEWNYM (new circuit -> new exit IP) needs Tor's ControlPort. Enable it with
+# cookie auth; the gateway runs as root and reads the cookie. Idempotent.
+if [[ -f /etc/tor/torrc ]] && ! grep -q "onion-gateway control port" /etc/tor/torrc; then
+  cat >> /etc/tor/torrc <<'TORRC'
+
+## --- onion-gateway control port (New IP / NEWNYM button) ---
+ControlPort 9051
+CookieAuthentication 1
+CookieAuthFileGroupReadable 1
+TORRC
+  echo "    added ControlPort 9051 to /etc/tor/torrc; restarting Tor..."
+  systemctl restart tor 2>/dev/null || service tor restart 2>/dev/null || true
+  sleep 3
+else
+  echo "    control port already configured (or torrc missing) — skipping."
+fi
+
 echo "==> Installing Python deps..."
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
@@ -52,10 +70,12 @@ Deliberately simple. Some heavy / JS-driven onion sites won't render perfectly;
 simple sites work well. This is a personal tool — see the security note in
 setup-onion-gateway.sh about who can reach the port.
 """
+import binascii
 import json
 import mimetypes
 import os
 import re
+import socket
 import sys
 import shutil
 import subprocess
@@ -78,7 +98,56 @@ EXTRACT_ROOT = "/tmp/onion-extract"       # where archives are unpacked
 MAX_ARCHIVE_BYTES = 2 * 1024 * 1024 * 1024  # 2 GB download cap
 EXTRACT_TTL = 3600                          # delete extractions older than 1 h
 
-GATEWAY_VERSION = "v6"  # bump on every gateway change so a fresh deploy is visible
+GATEWAY_VERSION = "v7"  # bump on every gateway change so a fresh deploy is visible
+
+# Tor control port — used by the "New IP" button to request a fresh circuit
+# (SIGNAL NEWNYM). Enabled by setup-onion-gateway.sh (ControlPort 9051 +
+# CookieAuthentication). The gateway runs as root so it can read the cookie.
+TOR_CONTROL_PORT = 9051
+TOR_COOKIE_PATHS = ("/run/tor/control.authcookie", "/var/run/tor/control.authcookie")
+
+
+def new_tor_circuit():
+    """Ask Tor for a brand-new circuit (new exit relay -> new IP).
+
+    Returns (ok, message). Authenticates on the control port with the safe-cookie
+    file if present, else tries null auth. This is the 'reset the connection when
+    it gets slow' button — NEWNYM tears down existing circuits and builds fresh
+    ones, so the next request very likely exits from a different IP.
+    """
+    cookie = None
+    for p in TOR_COOKIE_PATHS:
+        try:
+            with open(p, "rb") as cf:
+                cookie = cf.read()
+            break
+        except OSError:
+            continue
+    try:
+        s = socket.create_connection(("127.0.0.1", TOR_CONTROL_PORT), timeout=10)
+    except Exception as e:
+        return (False, "Couldn't reach Tor's control port 9051 (" + str(e) +
+                "). Re-run setup-onion-gateway.sh v7+ to enable it.")
+    try:
+        s.settimeout(10)
+        auth = ("AUTHENTICATE " + binascii.hexlify(cookie).decode()
+                if cookie else 'AUTHENTICATE ""') + "\r\n"
+        s.sendall(auth.encode("latin-1"))
+        if not s.recv(256).startswith(b"250"):
+            return (False, "Tor rejected control authentication — check "
+                    "CookieAuthentication in /etc/tor/torrc.")
+        s.sendall(b"SIGNAL NEWNYM\r\n")
+        ok = s.recv(256).startswith(b"250")
+        try:
+            s.sendall(b"QUIT\r\n")
+        except Exception:
+            pass
+        return (ok, "New Tor circuit requested." if ok
+                else "Tor did not accept the NEWNYM signal.")
+    except Exception as e:
+        return (False, "Tor control error: " + str(e))
+    finally:
+        s.close()
 
 # User-added file hosts persist here (survives restarts). The service runs as
 # root from /opt/onion-gateway, so this is writable; override with ONION_HOSTS_FILE.
@@ -125,6 +194,8 @@ HOME_PAGE = """<!doctype html>
   <p class="hint">Try DuckDuckGo:<br>
     <a href="/browse?url=https%3A%2F%2Fduckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion">
     duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion</a></p>
+  <p class="hint"><a href="/new-identity">&#128260; Get a new Tor IP</a>
+    — tap this if browsing gets slow; it builds a fresh circuit.</p>
   <hr style="border:0;border-top:1px solid #2a2a3a;margin:22px 0">
   <form action="/add-host" method="post">
     <input name="url" autocomplete="off" autocapitalize="off" spellcheck="false"
@@ -581,7 +652,11 @@ def top_bar(current):
         '" style="flex:1;min-width:0;padding:8px 10px;border-radius:8px;border:1px solid '
         '#2a2a3a;background:#16161f;color:#fff" autocapitalize="off" spellcheck="false">'
         '<button style="padding:8px 12px;border:0;border-radius:8px;background:#7c6af7;'
-        'color:#fff">Go</button></form></div>'
+        'color:#fff">Go</button></form>'
+        '<a href="/new-identity?back=' + quote(current, safe="") + '" '
+        'title="Get a new Tor exit IP — use this if browsing gets slow" '
+        'style="color:#fff;text-decoration:none;padding:8px 10px;background:#2a2a3a;'
+        'border-radius:8px;white-space:nowrap">&#128260; New IP</a></div>'
     )
 
 
@@ -591,6 +666,26 @@ def home():
                              "🧅 Onion Reader <small style='font-size:.5em;"
                              "color:#6a6a80;vertical-align:middle'>" +
                              GATEWAY_VERSION + "</small>")
+
+
+@app.route("/new-identity")
+def new_identity():
+    """Reset the connection: request a fresh Tor circuit (new exit IP)."""
+    ok, msg = new_tor_circuit()
+    back = (request.args.get("back") or "").strip()
+    if ok:
+        body = ("<p>&#9989; " + escape(msg) + " Give it a few seconds, then reload "
+                "— your exit IP should change. This is what to hit when a site "
+                "gets slow.</p>")
+        if back:
+            body += ("<p><a class=f href='/browse?url=" + quote(back, safe="") +
+                     "'><b>&#8635;</b> Reload the page you were on</a></p>")
+    else:
+        body = ("<p style='color:#e88'>&#9888; " + escape(msg) + "</p>"
+                "<p class=sz>The New-IP button needs Tor's control port. Re-run "
+                "<b>setup-onion-gateway.sh</b> (v7+) on the VPS — it enables "
+                "ControlPort 9051 with cookie auth and restarts Tor.</p>")
+    return _page("&#128260; New Tor circuit", body)
 
 
 @app.route("/browse", methods=["GET", "POST"])

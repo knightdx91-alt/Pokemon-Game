@@ -26,6 +26,27 @@ the 🧅 in the reader's top bar and on the home page. **Bump it on every gatewa
 change.** After deploying, reload the reader — if you see the new `vN`, the fresh
 code is live. If you don't, the VPS is still running the old copy.
 
+## The 🔄 "New IP" / reset-connection button (v7+)
+
+The reader now has a **🔄 New IP** button (top bar of every browsed page, and a
+link on the home page). It hits `/new-identity`, which sends Tor a **NEWNYM**
+signal — Tor drops the current circuits and builds fresh ones, so your next
+request very likely exits from a **different IP**. Use it when a site gets slow.
+
+This needs Tor's **control port**, which older boxes don't have. `setup-onion-gateway.sh`
+(v7+) now appends this to `/etc/tor/torrc` and restarts Tor:
+
+```
+ControlPort 9051
+CookieAuthentication 1
+CookieAuthFileGroupReadable 1
+```
+
+If you only did the one-file `gateway.py` curl update (below) and the button says
+*"Couldn't reach Tor's control port 9051"*, add those three lines to
+`/etc/tor/torrc` and `systemctl restart tor` — or just re-run the full setup
+script, which does it for you.
+
 ## The deploy command (copy-paste runbook)
 
 ### Step 0 — get ONTO the VPS (this is the part that bit us)
