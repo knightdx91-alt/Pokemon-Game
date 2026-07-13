@@ -1,6 +1,7 @@
 // emulator-debug.js — RAM trace + framebuffer capture for the desmume2015 core
-// running under EmulatorJS. Captures are pushed to the repo ('traces' branch)
-// so they can be analysed in a Claude session (the user can't upload files).
+// running under EmulatorJS. Captures are pushed to the repo (main, under
+// storage/traces/) so they can be analysed in a Claude session (the user can't
+// upload files).
 //
 // Reaches DS main RAM through the libretro memory API on the core's Emscripten
 // Module: _retro_get_memory_data(2 = RETRO_MEMORY_SYSTEM_RAM) -> 4MB ARM9 RAM.
