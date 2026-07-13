@@ -26,4 +26,4 @@ Member roles from pret/pokeplatinum `res/graphics/party_menu/party_menu_graphics
   the NCER cell banks (`member_ball_cell.NCER` etc.). Fetch those (WebFetch) to
   place sprites exactly instead of guessing.
 - **Verify** against a real captured frame from `emulator.html` (🔬 → Frame →
-  Shot→Repo pushes the actual bottom screen to the `traces` branch), diff to zero.
+  Shot→Repo pushes the actual bottom screen to `main` under `storage/traces/`), diff to zero.

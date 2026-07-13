@@ -244,8 +244,9 @@ can't upload files; they copy-paste the box back into chat). Features:
 - RAM/heap: desmume2015 under EmulatorJS is a RetroArch build that exports **no**
   `retro_get_memory_data`; value search/watch/dump fall back to the whole
   Emscripten heap (`Module.HEAPU8`).
-- Pushes captures (RAM/diff/frames) to the **`traces`** branch (token embedded,
-  reversed) since the user can't upload.
+- Pushes captures (RAM/diff/frames) to `main` under **`storage/traces/`** (token
+  embedded, reversed; `[skip ci]` so it skips the Pages deploy) since the user
+  can't upload. (Was the `traces` branch before the storage migration.)
 
 ### Cache-busting for emulator JS — IMPORTANT
 CI only substitutes `__CACHE_BUST__` in **`index.html`**, NOT `emulator.html`. So
@@ -280,7 +281,7 @@ verify against**. Three independent sources of drift.
 **Why it can be exact NOW (the real differentiators):**
 1. **Ground truth exists at last** — DS touch works, so the user can open the real
    Platinum screen and the 🔬 **Frame → Shot→Repo** button captures the actual
-   bottom-screen PNG to the `traces` branch. Before there was no reference.
+   bottom-screen PNG to `main` under `storage/traces/`. Before there was no reference.
 2. **Use the game's own layout, not hand-placement** — the exact screen is an
    **NSCR** BG tilemap + **NCER** sprite cells (with real coords) + **NCLR**
    palette + **NCGR** tiles inside the ROM's NARCs. Composite those directly.
@@ -317,8 +318,25 @@ Visual and UI style is based on **Pokémon Emerald Enhanced (EE)** — a GBA ROM
 ---
 
 ## Branch & deploy
-- **Branch: `main`** — the only branch. All commits go here.
+- **Branch: `main`** — the only branch. All commits go here. (A repo cleanup
+  consolidated everything onto `main` and removed all side branches: the `claude/*`
+  work branches were merged/superseded/salvaged, and the storage branches
+  `saves`/`screenshots`/`traces`/`maps`/`uploads` + `rpgmaker-temp` were migrated
+  into folders on `main` — see below.)
 - **Deploy: GitHub Pages** — CI runs on every push to `main`, replaces `__CACHE_BUST__` in `index.html` with `${{ github.sha }}` for cache busting.
+  - App **data writes** (cloud saves, screenshots, traces, editor maps, uploads)
+    now commit to `main` too, so their commit messages include **`[skip ci]`** to
+    avoid triggering a Pages rebuild on every save. Don't remove that tag.
+
+### Repository data folders (were separate branches)
+- **`storage/`** — live app data: `saves/` (cloud saves), `screenshots/`,
+  `traces/`, `maps/` (map-editor output), `uploads/`. See `storage/README.md`.
+- **`Reverse Engineering/<Game>/`** — reverse-engineered ROMs + extractions,
+  one folder per game (e.g. `Pokemon HeartGold/`, `Pokemon Platinum/`,
+  `Pokemon Omega Ruby/`). Committing ROMs/extractions here is authorized (see the
+  ⚖️ block at the top of this file); only GitHub's 100 MB/file limit applies.
+- **`RPG Maker/`** — RPG Maker VX Ace/XP engine binaries + Generator/RTP (distinct
+  from the `RPG_MAKER/` game-project dir).
 
 ---
 
@@ -536,12 +554,12 @@ repo — no new assets:
 
 ### Cloud saves (`cloud-saves.js`)
 - ✅ Universal family cloud save sync for `emulator.html`, `emerald.html`, `pokemon-black.html`
-- ✅ GitHub PAT embedded (reversed string to bypass secret scanner) — pushes/pulls `.srm` files to `saves` branch
-- ✅ Save path: `saves/<game>/<player>.srm` — each family member named on first visit (stored in `localStorage` as `cloud_save_player`)
+- ✅ GitHub PAT embedded (reversed string to bypass secret scanner) — pushes/pulls `.srm` files to `main` under `storage/saves/`
+- ✅ Save path: `storage/saves/<game>/<player>.srm` — each family member named on first visit (stored in `localStorage` as `cloud_save_player`)
 - ✅ Name prompt modal on first visit; ☁ Save button injected into `#top-bar`
 - ✅ `window.CLOUD_SAVE_GAME` — set per page before this script loads; tells it which game folder to use
 - ✅ `window.cloudSaveOnStart` — exposed for pages that set `EJS_onGameStart` dynamically (emulator.html)
-- ✅ `saves` branch exists on GitHub with `saves/.gitkeep` — accumulates `.srm` files as family plays
+- ✅ Writes commit to `main` with **`[skip ci]`** so a save doesn't trigger the Pages deploy. (Was the `saves` branch before the storage migration — see `storage/README.md`.)
 
 ### Per-game emulator pages
 - ✅ `emerald.html` — Pokémon Emerald GBA, uses `cloud-saves.js` with `CLOUD_SAVE_GAME = 'emerald'`
@@ -586,19 +604,23 @@ block. Warp tiles are always walkable.
   grass=13, flowers=4, water=41, 2×2 tree unit = 28/29 (top) 20/21 (bottom),
   dirt path=196. Real tree borders use specific corner/edge tiles per map.
 
-### Save to repo → `maps` branch
-- The editor's **☁ Save to repo** button commits the map to the dedicated
-  **`maps`** branch via the GitHub Contents API (same PAT/mechanism as
-  `cloud-saves.js`; token is reversed in source). Files land at the mirrored
-  `data/` paths so they're trivially merged into `main`:
-  `data/layouts/<region>/<LAYOUT_ID>.json`, `data/maps/<region>/<Name>.json`,
-  and the region index `data/maps/<region>_index.json` (read-modify-write).
-- **☁ Load from repo** button lists every map on the `maps` branch (Git Trees
-  API, recursive) in a picker modal and re-opens the chosen one for editing —
-  fetches the map JSON + its layout, restores tileset/grid/collision/warps.
-- The `maps` branch is an orphan storage branch (just created maps, no game
-  code). To use a saved map in the game, copy its files from `maps` into `data/`
-  on `main` and register the region in `INDEX_FILES` if new.
+### Save to repo → `main` under `storage/maps/`
+- The editor's **☁ Save to repo** button commits the map to `main` under
+  **`storage/maps/`** via the GitHub Contents API (same PAT/mechanism as
+  `cloud-saves.js`; token is reversed in source), with `[skip ci]` so it doesn't
+  trigger the Pages deploy. Files land at:
+  `storage/maps/data/layouts/<region>/<LAYOUT_ID>.json`,
+  `storage/maps/data/maps/<region>/<Name>.json`, and the region index
+  `storage/maps/data/maps/<region>_index.json` (read-modify-write). The
+  `storage/maps/` prefix is deliberate — it keeps editor output from overwriting
+  the real game data trees (`data/layouts/`, `data/maps/`) that ship on `main`.
+- **☁ Load from repo** button lists every map under `storage/maps/` (scoped
+  Contents-API walk, not a recursive Git Trees call) in a picker modal and
+  re-opens the chosen one for editing — fetches the map JSON + its layout,
+  restores tileset/grid/collision/warps.
+- To use a saved map in the game, copy its files from `storage/maps/data/` into
+  the top-level `data/` on `main` and register the region in `INDEX_FILES` if new.
+  (Was the `maps` branch before the storage migration — see `storage/README.md`.)
 
 ### Custom region + test override
 - A **`custom`** region is registered in `INDEX_FILES`. Example map

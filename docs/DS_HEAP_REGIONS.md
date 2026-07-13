@@ -60,6 +60,6 @@ party/save from RAM.
 
 `calibratePalette()` in `emulator-debug.js` registers `palette`, `vram`, and
 `oam` regions from the single live palette anchor. Auto-capture (🔬 panel) then
-dumps all three to the `traces` branch (`regions/<name>/…`) with the same
-sequence number as the frame PNG in `frames/auto/`, so each captured window has
+dumps all three to `main` under `storage/traces/regions/<name>/…` with the same
+sequence number as the frame PNG in `storage/traces/frames/auto/`, so each captured window has
 its full composition (colors + tilemaps/tiles + sprite cells) attached.

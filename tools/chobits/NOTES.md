@@ -16,7 +16,7 @@ Polishing **Gopicolo's 2025 English patch** for *Chobits: Atashi Dake no Hito* (
 Large Drive files (>10 MB) bypass the connector by curl'ing the
 `drive.usercontent.google.com/download` form (handle the virus-scan
 interstitial — see chat history). Or use the hub's "Drive → GitHub Upload"
-button to push the ROM to the `uploads` branch, then read it from there.
+button to push the ROM to `main` under `storage/uploads/`, then read it from there.
 
 ## Text format (verified)
 - Pointer table: file offset **0x84e74 .. 0x8dcc0** = **9,107** little-endian

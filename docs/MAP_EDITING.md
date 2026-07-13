@@ -30,12 +30,13 @@ server — not `file://`). It's also launchable from the **RetroPlay hub**
 - Toggle **Collision** mode to mark blocked tiles (red).
 - Toggle **Warp** mode and click tiles to add warps, then set destinations.
 - **Export** → downloads `<LAYOUT_ID>.json` and `<Name>.json`.
-- **☁ Save to repo** → commits the map to the **`maps`** branch on GitHub
-  (Contents API). Files go to the mirrored `data/` paths
-  (`data/layouts/<region>/…`, `data/maps/<region>/…`, plus the region index),
-  so they can be copied/merged into `main` directly. The `maps` branch is a
-  dedicated storage branch for created maps — no game code.
-- **☁ Load from repo** → lists every map saved on the `maps` branch and re-opens
+- **☁ Save to repo** → commits the map to `main` under **`storage/maps/`** on
+  GitHub (Contents API, `[skip ci]`). Files go to
+  `storage/maps/data/layouts/<region>/…`, `storage/maps/data/maps/<region>/…`,
+  plus the region index. The `storage/maps/` prefix keeps editor output from
+  overwriting the real game data trees; copy files into the top-level `data/` to
+  use a map in the game.
+- **☁ Load from repo** → lists every map saved under `storage/maps/` and re-opens
   the one you pick (restores tileset, grid, collision, and warps) so you can
   keep editing it.
 
