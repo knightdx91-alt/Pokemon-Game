@@ -1,8 +1,15 @@
-# 3D Map Assets (per region)
+# Reverse Engineering — per-game assets & extractions
 
-Self-contained 3D field-map assets for the game, **one folder per region**
-(binaries and all). Each region folder is collected verbatim from its source ROM
-by `tools/collect_region_3d.py` and is fully self-contained:
+This folder holds reverse-engineered material organized **one subfolder per
+game** (`Pokemon HeartGold/`, `Pokemon Platinum/`, `Pokemon Omega Ruby/`, …).
+Committing ROMs and their full extracted file trees here is intentional and
+authorized — so the data persists and doesn't have to be re-extracted every
+session. (GitHub caps files at 100 MB; use Git LFS for large ROMs/extractions.)
+
+Currently these hold the 3D field-map assets. HeartGold's Kanto and Johto data
+live as `kanto/` and `johto/` subfolders since both regions come out of the one
+HeartGold ROM. Each region set is collected verbatim from its source ROM by
+`tools/collect_region_3d.py` and is self-contained:
 
 - `land/`       — land-data cells (embedded BMD0 terrain / interior-room geometry)
 - `textures/`   — NSBTX texture sets (the FULL area set, incl. shared road/grass/flower textures)
@@ -24,7 +31,8 @@ by `tools/collect_region_3d.py` and is fully self-contained:
 | Alola  | Pokémon Ultra Moon | 3DS BCH/PICA200 | ⬜ not started (reuses the ORAS BCH parser) | — | — | — | — | — |
 
 Kanto + Johto both come out of the single HeartGold ROM (its overworld is one
-shared Johto/Kanto world). Verified by rendering every town in both regions —
+shared Johto/Kanto world) — hence the `Pokemon HeartGold/kanto` +
+`Pokemon HeartGold/johto` subfolders. Verified by rendering every town in both regions —
 terrain, textures and placed buildings all correct.
 
 **DS vs 3DS split:** the three collected regions are **DS** games — their maps

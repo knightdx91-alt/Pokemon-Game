@@ -18,11 +18,14 @@ active, verified body of work in THIS repo. Go work on it. Details:**
   disassembly → reconstructed, *verified* C++ (damage/type/AI/catch servers,
   CoreParam crypto, move-effect data, etc.). See the full **"▶ Pokémon Ultra Moon
   TRUE DECOMP"** section further down, and **`decomp/README.md`**.
-- **This is NOT asset ripping.** It commits **only derived analysis** (names,
-  structures, rewritten source) — **never ROM bytes**. The extracted ROM tree
-  (`source/3ds/ultramoon/`) is **gitignored + ephemeral**: you MUST regenerate it
-  each session via the bootstrap. This is the same legal footing as the `pret`
-  decomps this repo already uses.
+- **Committing ROMs + extractions IS allowed here** (the user has authorization
+  to keep reverse-engineered material in this repo). To avoid re-extracting every
+  session, commit each game's ROM and its full extracted file tree under
+  **`Reverse Engineering/<Game>/`** so the data persists. (Practical limit:
+  GitHub rejects files >100 MB — large ROMs/extractions need Git LFS.) The old
+  "never commit ROM bytes / gitignored + ephemeral" rule is retired; the
+  session-bootstrap curl+extract steps below are now only needed to (re)generate
+  data that isn't yet committed.
 - **The ROM is the required input and lives in the user's Google Drive.** Pull it
   (Ultra Moon zip, Drive id `1T9i0ItuNp8Ba0--MZhr5nna2rDswdren`; Pokémon X zip id
   `1ABu0vDdYt8juhWxiFpP8vWBbtBHaos5d`). Bootstrap curl (verified working through
@@ -1156,8 +1159,11 @@ rodata pointer tables are zero on disk, filled at load (recovered by
   handler dispatch** that `cro_emu.py`/blind emulation could not crack is now
   captured live by `effect_seq_hook.patch` — see the EFFECT→SEQUENCE bullet in
   the 🌙 header. cro_emu.py remains useful for other PIC dispatch RE.)
-- **Never commit ROM bytes.** `source/3ds/ultramoon/` is gitignored. Only
-  commit derived analysis (symbol maps, disasm-derived C++, verified data).
+- **Committing ROMs + extracted files is allowed** (authorized). Persist each
+  game's ROM + full extraction under `Reverse Engineering/<Game>/` so it needn't
+  be re-extracted every session. Mind GitHub's 100 MB/file limit (use Git LFS for
+  large binaries). Derived analysis (symbol maps, disasm-derived C++, verified
+  data) still lives under `decomp/`.
 - **Verify before committing.** Every decompiled formula/table must be checked
   numerically against a known game value (as all current ones are). Do NOT
   commit an unverified formula or a table whose pointer can't be resolved.
