@@ -3,7 +3,7 @@
 // and auto-loads it whenever the emulator starts.
 (function () {
     var REPO      = 'knightdx91-alt/pokemon-game';
-    var SAVE_PATH = 'saves/emerald_ee.srm';
+    var SAVE_PATH = 'storage/saves/emerald_ee.srm';
 
     // ── helpers ────────────────────────────────────────────────────────────────
 
@@ -95,7 +95,7 @@
 
         getFileSha(function (sha) {
             var body = {
-                message: 'Save game ' + new Date().toISOString(),
+                message: 'Save game ' + new Date().toISOString() + ' [skip ci]',
                 content: b64,
                 branch: 'main'
             };

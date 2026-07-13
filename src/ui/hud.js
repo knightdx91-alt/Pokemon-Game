@@ -1,5 +1,5 @@
 // GameHUD — renders HUD info and settings button onto #ui-overlay
-const GAME_VERSION = 'v1.2.102';
+const GAME_VERSION = 'v1.2.103';
 
 window.GameHUD = (function () {
     let overlay = null;
@@ -154,14 +154,14 @@ window.GameHUD = (function () {
         if (!screen && !canvas) { alert('No game screen found.'); return; }
         const token = (document.getElementById('screenshot-token') || {}).value || '';
         const REPO = 'knightdx91-alt/pokemon-game';
-        const BRANCH = 'screenshots';
+        const BRANCH = 'main';
         const PAT = token ||
             'IuWWfaKTQMSVRG5HSKuHBZPvlHq1Vpxp3AlUjYkeeF9Qe9dmQyX6f8RcTyg_w567PxfxUQLJ0QCJO3EC11_tap_buhtig'
                 .split('').reverse().join('');
 
         function _upload(b64) {
             const ts = Date.now();
-            const path = 'screenshots/' + ts + '.png';
+            const path = 'storage/screenshots/' + ts + '.png';
             fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
                 method: 'PUT',
                 headers: {
@@ -169,7 +169,7 @@ window.GameHUD = (function () {
                     'Content-Type': 'application/json',
                     Accept: 'application/vnd.github+json'
                 },
-                body: JSON.stringify({ message: 'screenshot ' + ts, content: b64, branch: BRANCH })
+                body: JSON.stringify({ message: 'screenshot ' + ts + ' [skip ci]', content: b64, branch: BRANCH })
             })
             .then(r => r.ok ? r.json() : r.json().then(d => { throw new Error(d.message || 'HTTP ' + r.status); }))
             .then(() => {

@@ -76,14 +76,14 @@
         var b64;
         try { b64 = canvas.toDataURL('image/png').replace(/^data:image\/png;base64,/, ''); }
         catch (e) { alert('Capture failed: ' + e.message); return; }
-        var REPO = 'knightdx91-alt/pokemon-game', BRANCH = 'screenshots';
+        var REPO = 'knightdx91-alt/pokemon-game', BRANCH = 'main';
         var PAT = 'IuWWfaKTQMSVRG5HSKuHBZPvlHq1Vpxp3AlUjYkeeF9Qe9dmQyX6f8RcTyg_w567PxfxUQLJ0QCJO3EC11_tap_buhtig'
             .split('').reverse().join('');
-        var ts = Date.now(), path = 'screenshots/ee_' + ts + '.png';
+        var ts = Date.now(), path = 'storage/screenshots/ee_' + ts + '.png';
         fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
             method: 'PUT',
             headers: { Authorization: 'token ' + PAT, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' },
-            body: JSON.stringify({ message: 'ee screenshot ' + ts, content: b64, branch: BRANCH })
+            body: JSON.stringify({ message: 'ee screenshot ' + ts + ' [skip ci]', content: b64, branch: BRANCH })
         }).then(function (r) {
             if (!r.ok) return r.json().then(function (d) { throw new Error(d.message || 'HTTP ' + r.status); });
             var url = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + path;

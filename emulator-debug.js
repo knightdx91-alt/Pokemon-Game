@@ -6,7 +6,7 @@
 // Module: _retro_get_memory_data(2 = RETRO_MEMORY_SYSTEM_RAM) -> 4MB ARM9 RAM.
 (function () {
   'use strict';
-  var REPO = 'knightdx91-alt/pokemon-game', BRANCH = 'traces';
+  var REPO = 'knightdx91-alt/pokemon-game', BRANCH = 'main', TRACE_DIR = 'storage/traces/';
   var TOKEN = 'IuWWfaKTQMSVRG5HSKuHBZPvlHq1Vpxp3AlUjYkeeF9Qe9dmQyX6f8RcTyg_w567PxfxUQLJ0QCJO3EC11_tap_buhtig'
     .split('').reverse().join('');
   var SYSTEM_RAM = 2;
@@ -113,12 +113,13 @@
   // commit finishes before the next starts.
   var _pq = [], _pbusy = false;
   function _pushNow(path, b64, done) {
-    fetch('https://api.github.com/repos/' + REPO + '/contents/' + path + '?ref=' + BRANCH, { headers: ghHeaders() })
+    var fp = TRACE_DIR + path;
+    fetch('https://api.github.com/repos/' + REPO + '/contents/' + fp + '?ref=' + BRANCH, { headers: ghHeaders() })
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) {
-        var body = { message: 'trace ' + path, content: b64, branch: BRANCH };
+        var body = { message: 'trace ' + path + ' [skip ci]', content: b64, branch: BRANCH };
         if (d && d.sha) body.sha = d.sha;
-        return fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, { method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body) });
+        return fetch('https://api.github.com/repos/' + REPO + '/contents/' + fp, { method: 'PUT', headers: ghHeaders(), body: JSON.stringify(body) });
       })
       .then(function (r) { return r.json(); })
       .then(function (d) { done(!d.message || !!d.content, d.message || 'ok'); })

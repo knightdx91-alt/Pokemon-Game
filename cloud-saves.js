@@ -1,10 +1,10 @@
 // cloud-saves.js — family cloud save sync for RetroPlay
-// Saves battery saves (.srm) to the 'saves' branch on GitHub.
+// Saves battery saves (.srm) to main under storage/saves/ on GitHub.
 // Each page sets window.CLOUD_SAVE_GAME before EJS starts.
 // emulator.html calls window.cloudSaveOnStart() from its EJS_onGameStart.
 (function () {
     var REPO   = 'knightdx91-alt/pokemon-game';
-    var BRANCH = 'saves';
+    var BRANCH = 'main';
     // Token stored reversed to avoid secret scanner triggering on the source file
     var TOKEN  = 'IuWWfaKTQMSVRG5HSKuHBZPvlHq1Vpxp3AlUjYkeeF9Qe9dmQyX6f8RcTyg_w567PxfxUQLJ0QCJO3EC11_tap_buhtig'
                  .split('').reverse().join('');
@@ -14,7 +14,7 @@
 
     function getPlayer() { return _playerName || 'player'; }
     function getGame()   { return window.CLOUD_SAVE_GAME || 'unknown'; }
-    function savePath()  { return 'saves/' + getGame() + '/' + getPlayer() + '.srm'; }
+    function savePath()  { return 'storage/saves/' + getGame() + '/' + getPlayer() + '.srm'; }
 
     function ghHeaders() {
         return {
@@ -75,7 +75,7 @@
             function (s, b) { return s + String.fromCharCode(b); }, ''));
         getFileSha(function (sha) {
             var body = {
-                message: getPlayer() + ': save ' + getGame() + ' ' + new Date().toISOString(),
+                message: getPlayer() + ': save ' + getGame() + ' ' + new Date().toISOString() + ' [skip ci]',
                 content: b64,
                 branch: BRANCH
             };

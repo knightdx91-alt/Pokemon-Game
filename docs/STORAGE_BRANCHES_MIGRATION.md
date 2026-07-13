@@ -1,11 +1,26 @@
-# Storage branches — pending migration onto `main`
+# Storage branches — MIGRATED to `main` under `storage/` ✅
 
-Goal: the repo should eventually have **no branches other than `main`**. The
+**Status: done.** The data that lived on the `saves`, `screenshots`, `traces`,
+`maps`, and `uploads` branches was copied into `storage/<kind>/` on `main`, and
+every app that read/wrote those branches was repointed to `main` + the new
+folder (with `[skip ci]` in write messages so data writes don't trigger the
+Pages deploy). See `storage/README.md` for the live layout.
+
+The only thing left is **deleting the now-unused branches on the remote** — that
+can't be done from the cloud session (the git relay 403s ref deletions), so run
+it from a normal terminal / the GitHub UI:
+`git push origin --delete saves screenshots traces maps uploads`
+(Do this only after confirming the apps work against `storage/`.)
+
+---
+
+## Historical plan (for reference)
+
+Goal was: the repo should have **no branches other than `main`**. The
 `claude/*` work branches are gone (their work is on `main` or was superseded).
-What remains are 5 **storage branches** that hold live application data written
-by the running apps via the GitHub API. They are kept **for now** because
-deleting them would lose data AND break running features — the app code targets
-these branch names directly.
+The 5 **storage branches** held live application data written by the running
+apps via the GitHub API, so migrating required moving data AND rewriting the app
+code in lockstep — now complete.
 
 ## The branches and who writes them
 

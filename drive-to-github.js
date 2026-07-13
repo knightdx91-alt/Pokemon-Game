@@ -1,13 +1,13 @@
 // drive-to-github.js — pick a file from Google Drive, upload it to the GitHub repo.
 // Self-contained: loads Google API scripts, runs the Drive picker, streams the
 // file, then commits it to the repo via the Git Data (blob) API so even large
-// files (ROMs etc.) go through reliably. Files land on the 'uploads' branch at
-// uploads/<filename>. Reuses the same OAuth client + reversed PAT as the rest
-// of RetroPlay. Exposes window.DriveToGitHub.start().
+// files (ROMs etc.) go through reliably. Files land on main at
+// storage/uploads/<filename>. Reuses the same OAuth client + reversed PAT as the
+// rest of RetroPlay. Exposes window.DriveToGitHub.start().
 (function () {
     var REPO   = 'knightdx91-alt/pokemon-game';
-    var BRANCH = 'uploads';
-    var PATH_PREFIX = 'uploads/';
+    var BRANCH = 'main';
+    var PATH_PREFIX = 'storage/uploads/';
     // Same Google OAuth client used by emulator.html
     var CLIENT_ID = '74660999441-3tu0u98phuckm7avp4kh6rnohpo84l1f.apps.googleusercontent.com';
     var SCOPE     = 'https://www.googleapis.com/auth/drive.readonly';
@@ -174,7 +174,7 @@
             })
             .then(function (tree) {
                 return gh('POST', '/git/commits', {
-                    message: 'Upload ' + fileName + ' from Google Drive',
+                    message: 'Upload ' + fileName + ' from Google Drive [skip ci]',
                     tree: tree.sha,
                     parents: [commitSha]
                 });

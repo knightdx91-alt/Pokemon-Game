@@ -1912,7 +1912,7 @@
     // --- Screenshot ---
     (function () {
         var REPO        = 'knightdx91-alt/pokemon-game';
-        var BRANCH      = 'screenshots';
+        var BRANCH      = 'main';
         var TOKEN       = 'IuWWfaKTQMSVRG5HSKuHBZPvlHq1Vpxp3AlUjYkeeF9Qe9dmQyX6f8RcTyg_w567PxfxUQLJ0QCJO3EC11_tap_buhtig'
                           .split('').reverse().join('');
 
@@ -1968,14 +1968,14 @@
             modal.classList.add('visible');
 
             var base64 = dataUrl.replace(/^data:image\/png;base64,/, '');
-            var filename = 'screenshots/' + Date.now() + '.png';
+            var filename = 'storage/screenshots/' + Date.now() + '.png';
             var rawUrl   = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/' + filename;
 
             ensureBranch(function () {
                 fetch('https://api.github.com/repos/' + REPO + '/contents/' + filename, {
                     method: 'PUT',
                     headers: { Authorization: 'token ' + TOKEN, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: 'screenshot', content: base64, branch: BRANCH })
+                    body: JSON.stringify({ message: 'screenshot [skip ci]', content: base64, branch: BRANCH })
                 }).then(function (r) {
                     if (r.ok) {
                         linkInput.value = rawUrl;
@@ -2004,7 +2004,7 @@
     // --- Save / Load game ---
     (function () {
         var REPO       = 'knightdx91-alt/pokemon-game';
-        var SAVE_BRANCH = 'saves';
+        var SAVE_BRANCH = 'main';
         var TOKEN      = 'IuWWfaKTQMSVRG5HSKuHBZPvlHq1Vpxp3AlUjYkeeF9Qe9dmQyX6f8RcTyg_w567PxfxUQLJ0QCJO3EC11_tap_buhtig'
                          .split('').reverse().join('');
 
@@ -2016,7 +2016,7 @@
         }
 
         function savePath() {
-            return 'saves/' + (window.CLOUD_SAVE_GAME || 'unknown') + '/save.srm';
+            return 'storage/saves/' + (window.CLOUD_SAVE_GAME || 'unknown') + '/save.srm';
         }
 
         function gm() { return window.EJS_emulator && window.EJS_emulator.gameManager; }
@@ -2054,7 +2054,7 @@
         }
 
         function statePath() {
-            return 'saves/' + (window.CLOUD_SAVE_GAME || 'unknown') + '/state.bin';
+            return 'storage/saves/' + (window.CLOUD_SAVE_GAME || 'unknown') + '/state.bin';
         }
 
         /* IndexedDB key for the durable save STATE — reliable on every core,

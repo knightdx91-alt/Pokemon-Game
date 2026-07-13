@@ -490,9 +490,12 @@
   $('zoomIn').addEventListener('click', function () { setZoom(state.zoom + 1); });
   $('zoomOut').addEventListener('click', function () { setZoom(state.zoom - 1); });
 
-  // ── Save to GitHub 'maps' branch (same mechanism as cloud-saves.js) ──
+  // ── Save to GitHub, main branch under storage/maps/ (same token mechanism as cloud-saves.js) ──
   var GH_REPO   = 'knightdx91-alt/pokemon-game';
-  var GH_BRANCH = 'maps';
+  var GH_BRANCH = 'main';
+  // Editor maps are kept under storage/maps/ so they never overwrite the real
+  // game data trees (data/layouts, data/maps) that ship on main.
+  var MAP_DIR   = 'storage/maps/';
   // Token stored reversed so secret scanners don't flag the source file.
   var GH_TOKEN  = 'IuWWfaKTQMSVRG5HSKuHBZPvlHq1Vpxp3AlUjYkeeF9Qe9dmQyX6f8RcTyg_w567PxfxUQLJ0QCJO3EC11_tap_buhtig'
                   .split('').reverse().join('');
@@ -547,65 +550,67 @@
     var region = $('mapRegion').value || 'custom';
     var layout = buildLayout();
     var map = buildMap();
-    var layoutPath = 'data/layouts/' + region + '/' + layout.id + '.json';
-    var mapPath    = 'data/maps/' + region + '/' + map.name + '.json';
-    var indexPath  = 'data/maps/' + region + '_index.json';
+    var layoutPath = MAP_DIR + 'data/layouts/' + region + '/' + layout.id + '.json';
+    var mapPath    = MAP_DIR + 'data/maps/' + region + '/' + map.name + '.json';
+    var indexPath  = MAP_DIR + 'data/maps/' + region + '_index.json';
     var stamp = new Date().toISOString();
 
     setRepoBtn('☁ Saving…', '#e8c000');
 
     // 1) layout  2) map  3) region index (read-modify-write)
     ghGet(layoutPath)
-      .then(function (cur) { return ghPut(layoutPath, layout, 'map-editor: layout ' + layout.id + ' ' + stamp, cur.sha); })
+      .then(function (cur) { return ghPut(layoutPath, layout, 'map-editor: layout ' + layout.id + ' ' + stamp + ' [skip ci]', cur.sha); })
       .then(function () { return ghGet(mapPath); })
-      .then(function (cur) { return ghPut(mapPath, map, 'map-editor: map ' + map.name + ' ' + stamp, cur.sha); })
+      .then(function (cur) { return ghPut(mapPath, map, 'map-editor: map ' + map.name + ' ' + stamp + ' [skip ci]', cur.sha); })
       .then(function () { return ghGet(indexPath); })
       .then(function (cur) {
         var index = {};
         if (cur.content) { try { index = JSON.parse(cur.content); } catch (e) { index = {}; } }
         index[map.id] = map.name;
         index[map.name] = map.name;
-        return ghPut(indexPath, index, 'map-editor: index ' + region + ' ' + stamp, cur.sha);
+        return ghPut(indexPath, index, 'map-editor: index ' + region + ' ' + stamp + ' [skip ci]', cur.sha);
       })
       .then(function () {
-        setRepoBtn('✓ Saved to maps', '#20d840');
+        setRepoBtn('✓ Saved to repo', '#20d840');
         setTimeout(function () { setRepoBtn('☁ Save to repo'); }, 2800);
       })
       .catch(function (e) {
         setRepoBtn('✗ Error', '#e82020');
         setTimeout(function () { setRepoBtn('☁ Save to repo'); }, 3500);
         alert('Save to repo failed: ' + e.message +
-          '\n\n(Maps are committed to the "maps" branch. Check your connection.)');
+          '\n\n(Maps are committed to main under storage/maps/. Check your connection.)');
       });
   }
 
   $('repoSaveBtn').addEventListener('click', saveToRepo);
 
-  // ── Load from repo: browse maps on the 'maps' branch and open one ──
-  // List every map file via the Git Trees API (one recursive call), excluding
-  // region index files.
+  // ── Load from repo: browse maps under storage/maps/ on main and open one ──
+  // Walk only the storage/maps/data/maps subtree via the Contents API (scoped so
+  // it never hits the Git Trees truncation limit on the now-large main tree),
+  // excluding <region>_index.json files.
+  function ghContents(path) {
+    return fetch(ghUrl(path) + '?ref=' + GH_BRANCH, { headers: ghHeaders() })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .catch(function () { return []; });
+  }
   function ghListMaps() {
-    var url = 'https://api.github.com/repos/' + GH_REPO + '/git/trees/' +
-      GH_BRANCH + '?recursive=1';
-    return fetch(url, { headers: ghHeaders() })
-      .then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(function (tree) {
-        var maps = [];
-        (tree.tree || []).forEach(function (node) {
-          // data/maps/<region>/<Name>.json  (skip <region>_index.json)
-          var m = /^data\/maps\/([^/]+)\/([^/]+)\.json$/.exec(node.path);
-          if (m && !/_index$/.test(m[2])) {
-            maps.push({ region: m[1], name: m[2], path: node.path });
-          }
+    var base = MAP_DIR + 'data/maps';
+    return ghContents(base).then(function (entries) {
+      var regions = (entries || []).filter(function (e) { return e.type === 'dir'; });
+      return Promise.all(regions.map(function (reg) {
+        return ghContents(base + '/' + reg.name).then(function (files) {
+          return (files || []).filter(function (f) {
+            return f.type === 'file' && /\.json$/.test(f.name) && !/_index\.json$/.test(f.name);
+          }).map(function (f) {
+            return { region: reg.name, name: f.name.replace(/\.json$/, ''), path: f.path };
+          });
         });
-        maps.sort(function (a, b) {
-          return (a.region + a.name).localeCompare(b.region + b.name);
-        });
+      })).then(function (lists) {
+        var maps = [].concat.apply([], lists);
+        maps.sort(function (a, b) { return (a.region + a.name).localeCompare(b.region + b.name); });
         return maps;
       });
+    });
   }
 
   function openRepoModal() {
@@ -614,7 +619,7 @@
     body.innerHTML = '<div class="hint">Loading map list…</div>';
     ghListMaps().then(function (maps) {
       if (!maps.length) {
-        body.innerHTML = '<div class="hint">No maps saved on the "maps" branch yet. ' +
+        body.innerHTML = '<div class="hint">No maps saved under storage/maps/ yet. ' +
           'Use ☁ Save to repo first.</div>';
         return;
       }
@@ -649,9 +654,9 @@
       .then(function (cur) {
         if (!cur.content) throw new Error('map file empty');
         var mapObj = JSON.parse(cur.content);
-        var layoutPath = 'data/layouts/' + mp.region + '/' + mapObj.layout + '.json';
+        var layoutPath = MAP_DIR + 'data/layouts/' + mp.region + '/' + mapObj.layout + '.json';
         return ghGet(layoutPath).then(function (lc) {
-          if (!lc.content) throw new Error('layout "' + mapObj.layout + '" not found on branch');
+          if (!lc.content) throw new Error('layout "' + mapObj.layout + '" not found under storage/maps/');
           return { layout: JSON.parse(lc.content), map: mapObj };
         });
       })
