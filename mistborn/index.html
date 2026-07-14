@@ -101,6 +101,24 @@
      background:linear-gradient(#3a2b52,#2a1e3d);border-color:#5a4a7a;margin-top:4px}
   .endbtn:hover:not(:disabled){border-color:var(--atium)}
 
+  /* in-game toolbar */
+  .gametools{display:flex;gap:8px;justify-content:flex-end;margin-bottom:10px}
+  .gametools button{background:var(--panel);padding:6px 12px}
+  .setup-actions{margin-top:26px}
+  .setup-actions button{padding:9px 18px;font-size:14px;background:var(--panel)}
+
+  /* rules modal */
+  .rules-modal{position:fixed;inset:0;background:#050609ee;z-index:60;overflow:auto;padding:24px 14px}
+  .rules-box{max-width:640px;margin:0 auto;background:var(--panel);border:1px solid var(--gold);
+     border-radius:14px;padding:22px 24px}
+  .rules-box h1{font-size:24px;color:var(--gold);margin-bottom:4px}
+  .rules-box h3{font-size:14px;color:var(--steel);margin:16px 0 4px;text-transform:uppercase;letter-spacing:.6px}
+  .rules-box p,.rules-box li{color:var(--ink);font-size:13px;line-height:1.5}
+  .rules-box ul{margin:4px 0;padding-left:20px} .rules-box li{margin-bottom:4px}
+  .rules-box em{color:var(--atium);font-style:normal}
+  .rules-box .close{margin-top:20px;width:100%;padding:11px;font-weight:700;
+     background:linear-gradient(#2a3350,#1c2338);border-color:#5a4a7a}
+
   #overlay{position:fixed;inset:0;background:#050609dd;display:flex;align-items:center;justify-content:center;z-index:50}
   #overlay .box{background:var(--panel);border:1px solid var(--gold);border-radius:16px;padding:36px;text-align:center;max-width:420px}
   #overlay h1{font-size:30px;margin-bottom:10px}
@@ -120,10 +138,15 @@
       Lord Ruler's minions, complete Missions, and bring his 48 health to zero —
       or play 4 Atium onto <em>Confrontation</em>.
     </p>
+    <div class="setup-actions"><button onclick="MB.openRules()">📖 How to Play</button></div>
   </div>
 
   <!-- GAME -->
   <div id="game" class="hidden">
+    <div class="gametools">
+      <button onclick="MB.openRules()">📖 Rules</button>
+      <button onclick="history.back()">◂ Character Select</button>
+    </div>
     <div class="topbar" id="topbar"></div>
     <div class="grid">
       <div>
@@ -152,6 +175,55 @@
 </div>
 
 <div id="overlay" class="hidden"><div class="box" id="overBox"></div></div>
+
+<div id="rules" class="rules-modal hidden">
+  <div class="rules-box">
+    <h1>Mistborn — How to Play</h1>
+    <p>You are a Mistborn who ingests and <em>burns</em> metals to fuel Allomancy.
+       You start with a weak 10-card deck and build a stronger one from the Market,
+       working to bring the Lord Ruler down.</p>
+
+    <h3>How to win</h3>
+    <ul>
+      <li>Reduce the <em>Lord Ruler</em> from 48 health to 0, or</li>
+      <li>Buy <em>Confrontation</em> and play 4 Atium onto it, or</li>
+      <li>Top all 3 Mission tracks.</li>
+    </ul>
+    <p>You lose if your health hits 0, or if the Lord Ruler's deck runs out.</p>
+
+    <h3>Your turn</h3>
+    <ul>
+      <li>You automatically advance one step up the <em>Training Track</em> (raises your
+          burn limit, grants Atium, unlocks your character ability).</li>
+      <li>You draw a hand of 5. Play cards for their effect:</li>
+      <li><em>Burn</em> a card's metal (uses 1 of your burn limit) to trigger its effect —
+          coins, damage, mission points, healing, card draw, and more.</li>
+      <li><em>Vial</em>: play a card sideways for quick coins without using a burn.</li>
+      <li><em>Flare</em>: burn beyond your limit; that metal stays spent until <em>Refreshed</em>
+          (discard a card to refresh).</li>
+      <li><em>Atium</em> (wild): spend an Atium token to power any card for free.</li>
+    </ul>
+
+    <h3>Resources this turn</h3>
+    <ul>
+      <li><em>Coins</em> — buy cards from the Market and Atium cards.</li>
+      <li><em>Damage</em> — send it at the Lord Ruler (→ LR) or at his minions to break shields.</li>
+      <li><em>Mission points</em> — spend on any Mission track (12 tops a track).</li>
+      <li><em>Burns / Atium</em> — your fuel. Healing applies immediately.</li>
+    </ul>
+
+    <h3>The Lord Ruler acts</h3>
+    <p>When you end your turn he flips a card: an <em>Adversary</em> (a minion that
+       damages you each turn until you break its shields) or an <em>Edict</em>
+       (Dominance rises, he heals for each open Mission, and the Market is purged).</p>
+
+    <h3>The 8 metals</h3>
+    <p>Steel·PUSH, Iron·PULL, Pewter·DEFENDER, Tin·SENSE, Bronze·SEEK,
+       Copper·CLOUD, Zinc·RIOT, Brass·SOOTHE — plus wild Atium.</p>
+
+    <button class="close" onclick="MB.closeRules()">Close</button>
+  </div>
+</div>
 
 <script src="cards.js"></script>
 <script>
@@ -212,6 +284,7 @@ const MB = (function(){
     // turn pools
     S.turn=0;
     el('setup').classList.add('hidden'); el('game').classList.remove('hidden');
+    navPush('game');
     log(`<span class="hl">${ch.name}</span> ingests the mists. The Lord Ruler stirs at Kredik Shaw…`,'gold');
     beginTurn();
   }
@@ -551,9 +624,26 @@ const MB = (function(){
     return parts.join(', ')||'—';
   }
 
+  // ---------- SCREEN NAVIGATION (device/browser back button) ----------
+  // Each sub-screen pushes one history entry so the back button unwinds one
+  // screen at a time. From the character-select screen (empty stack) back
+  // leaves to the hub, as normal.
+  const screenStack=[];
+  function navPush(name){ screenStack.push(name); history.pushState({mb:name},''); }
+  function openRules(){ if(!el('rules').classList.contains('hidden'))return; el('rules').classList.remove('hidden'); navPush('rules'); }
+  function closeRules(){ history.back(); } // let popstate hide it + keep history in sync
+  window.addEventListener('popstate',()=>{
+    const top=screenStack.pop();
+    if(top==='rules'){ el('rules').classList.add('hidden'); }
+    else if(top==='game'){ el('rules').classList.add('hidden'); el('overlay').classList.add('hidden');
+      el('game').classList.add('hidden'); el('setup').classList.remove('hidden'); }
+    // stack empty → nothing to intercept; the browser returns to the hub
+  });
+
   renderCharPick();
   return { startGame, playCard, refresh, buy, buyAtium, useAbility, playAllyEff,
-           spendMission, attackLR, attackAdv, endTurn, playAtiumOntoConfront };
+           spendMission, attackLR, attackAdv, endTurn, playAtiumOntoConfront,
+           openRules, closeRules };
 })();
 </script>
 </body>
