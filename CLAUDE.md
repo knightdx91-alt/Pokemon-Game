@@ -565,6 +565,19 @@ repo — no new assets:
 - ✅ `emerald.html` — Pokémon Emerald GBA, uses `cloud-saves.js` with `CLOUD_SAVE_GAME = 'emerald'`
 - ✅ `pokemon-black.html` — Pokémon Black NDS, uses `cloud-saves.js` with `CLOUD_SAVE_GAME = 'pokemon-black'`
 
+### Bundled: Mistborn deckbuilder (`mistborn/`)
+- ✅ A self-contained browser game — **Mistborn: The Deckbuilding Game, solo mode
+  vs. the Lord Ruler** — bundled at `mistborn/` (`index.html` + `cards.js`, no
+  build, no deps). Linked from a **🪙 Mistborn** card in the **Browser** section of
+  the hub (`index.html`).
+- Source of truth is the sibling **`Mistborn-Card-Game`** repo (`game/`); the copy
+  here is synced so it serves on the same GitHub Pages site the hub card links to.
+  When updating the game, edit it in that repo and copy `index.html`/`cards.js`
+  into `mistborn/` (then bump `GAME_VERSION` in `src/ui/hud.js` per the global
+  rule, as with any commit).
+- DOM board + a canvas mist/particle FX layer; card effects are numeric
+  approximations of the Mistborn repo's `cards.yaml` (no official card DB exists).
+
 ---
 
 ## Map system & custom maps (how to make new maps/regions)
