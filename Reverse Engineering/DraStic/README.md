@@ -34,12 +34,13 @@ FIRMWARE.md      why this firmware, and the survey of the whole dump set
 | DS wireless RF/BB calibration + MAC (firmware) | ✅ **Solved** — CRC-valid retail DS Lite firmware secured (`firmware/`) |
 | Wireless MAC/baseband state machine | ✅ **Solved in principle** — transplant melonDS `Wifi` (GPLv3) |
 | Netplay transport | ✅ **Easy** — add in the Java layer (Android sockets) + one new JNI method; DraStic has **zero** native networking to fight |
-| Hook locus in DraStic's core (§4.1) | ✅ **Found** — dynarec emitter; wifi selected by bit-23 test at `0x8825c` (`libdrastic.so`) / `0x7f788` (compat). See `FINDINGS_JIT.md` |
-| Emitter ABI + scheduler / IRQ / guest-RAM (§4.2–4.4) | ⏳ **Remaining decisive work** — patch the emitter to call a wifi handler, then wire in melonDS `Wifi` |
+| Memory/wireless dispatch locus (§4.1) | ⏳ **Open.** DraStic is a dynarec that *assembles ARM code*, so region bit-patterns litter `.text` as opcode templates — static search can't find it. (A `0x8825c` "hit" was a false positive, **retracted** — see `FINDINGS_JIT.md`.) Needs **dynamic analysis**. |
+| Scheduler / IRQ / guest-RAM (§4.2–4.4) | ⏳ **Blocked on §4.1** |
 
-**Recommendation:** the firmware + melonDS parts are settled, and the JIT hook
-point is now located. The core is a **dynarec** — memory accesses are compiled
-inline, so there is no C slow-path to detour; the fix is **patching the emitter**
-to emit a call-out for the `0x048xxxxx` range, not adding a switch case. The
-project now hinges on reversing the emitter's local ABI and the scheduler / IRQ /
-guest-RAM internals. See `FEASIBILITY.md` §4 and `FINDINGS_JIT.md`.
+**Recommendation:** firmware + melonDS-transplant + Java-transport parts are
+settled. The DraStic-core integration is the hard, unproven part — and the one
+sub-result that looked "found" (a memory-dispatch site) turned out to be a JIT
+opcode-encoding template, not an address. Because DraStic is a dynarec that
+assembles host ARM instructions, **static constant search is confounded**; the
+sound path is **dynamic analysis** (execute a core, trace an access to
+`0x048xxxxx`). See `FEASIBILITY.md` §4 + `FINDINGS_JIT.md`.

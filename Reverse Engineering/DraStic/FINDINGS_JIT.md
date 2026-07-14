@@ -1,96 +1,92 @@
-# §4.1 Result — DraStic's memory dispatch is a JIT emitter (hook locus found)
+# §4.1 — CORRECTED: the "0x8825c wifi hook" was a false positive
 
-This resolves the "deciding risk" question from `FEASIBILITY.md` §4.1: *is there
-a hookable slow-path where wireless (`0x048xxxxx`) accesses can be intercepted?*
+> **Retraction.** An earlier version of this file (commit `df9c312`) claimed the
+> wireless hook point was found at `0x8825c` (`libdrastic.so`) / `0x7f788`
+> (`libdrastic_compat.so`), gated by a "bit-23 address test." **That was wrong.**
+> On verification, the register in question holds a guest **ARM LDR/STR opcode**,
+> not a guest address, and `0x04800000` there is an **ARM instruction-encoding
+> template**, not the DS wireless region base. The real memory/wireless dispatch
+> has **not** been located yet. Details below so the mistake isn't repeated.
 
-**Answer: DraStic does not route memory through a C slow-path switch. It is a
-dynarec (JIT) that emits native ARM code for guest memory accesses, and the
-wireless region is handled inside that emitter.** The hook is at the emitter
-level, and its exact locus is now known.
+## What actually happens at `0x87410` (the "emitter")
 
-Target analyzed: `armeabi-v7a/libdrastic.so` (ARM/A32 core, the tractable build).
+`0x87410`–`~0x8da94` (26 KB, `push {r4-r11,lr}`) is DraStic's **dynarec block
+compiler** — it translates guest ARM instructions into host ARM instructions.
+The sub-region around `0x881f0`–`0x88300` is where it compiles a guest
+**LDR/STR**. There, `sl` (r10) = **the guest instruction opcode**, and the code
+extracts standard LDR/STR encoding fields:
 
-## How it was found
+| instruction | bit(s) | ARM LDR/STR field |
+|---|---|---|
+| `tst sl,#0x800000` | 23 | U (add/subtract offset) |
+| `tst sl,#0x400000` | 22 | B (byte vs word) |
+| `ubfx sl,#0x14,#1` | 20 | L (load vs store) |
+| `ubfx sl,#0xc,#4` | 12–15 | Rd |
+| `and sl,#0xf` | 0–3 | Rm |
+| `ubfx sl,#0x10,#4` | 16–19 | Rn |
 
-1. The core is **ARM (A32) with literal pools**, mostly ARM (1813 `push{..,lr}`
-   ARM prologues vs 404 Thumb) — *not* Thumb-2 as first assumed. (Capstone's
-   linear decode silently halts on the first bad word; a **continue-on-error
-   sweep** was required — without it the whole `.text` looked empty. Prior
-   "no constants" readings were that artifact.)
-2. Robust sweep for guest region bases: main RAM `0x02000000` ×60, I/O
-   `0x04000000` ×54, VRAM/OAM/GBA present — and **`0x04800000` (wireless) exactly
-   once, at `0x8825c`**. The bit-23 mask `0x00800000` (which separates wifi
-   `0x04800000` from main I/O `0x04000000`) appears ×163.
+It then **assembles a host instruction word**: `mov r6,#0x4000000` (LDR/STR
+class, bit 26), `movmi r6,#0x4800000` (**same class + U bit**, mirroring the
+guest's U bit), `orr` in cond/Rn, and `str`s the finished word to the JIT emit
+cursor at `[ctx,#0x4AC]`. Confirming it's opcode assembly: nearby it emits
+`movt …,#0xe340` (0xe3400000 = `movt`/`movw` template) and
+`orr …,#0xe3000000` (mov-immediate template).
 
-## The locus (function ~`0x87994`, emitter body around `0x88180`+)
+**Therefore `0x04800000` @ `0x8825c` = "LDR/STR opcode with U=1", not the
+wireless region.** Same for the other "region constants" found in `.text`
+(`0x02000000`=I-bit, `0x04000000`=LDR/STR class, `0x06000000`, `0x08000000`=cond
+bit) — they are ARM encoding bitfields the JIT ORs together, which is why a
+constant search lit up all over the instruction translator.
 
-```
-0x88204: tst    sl, #0x800000      ; bit 23 of the GUEST address in sl
-0x88210: movweq r2, #4             ; branch factor by region class
-   ...
-0x88250: mov    r6, #0x4000000     ; region base := main I/O 0x04000000
-0x88254: cmp    r2, #0
-0x8825c: movmi  r6, #0x4800000     ; ...or wireless 0x04800000  <-- THE wifi ref
-0x88260: orr    r2, r7, r6
-   ...
-0x881c0: ldr    r3, [r4, #0x4ac]   ; r3 := JIT code-emit cursor (ctx+0x4AC)
-0x881d0: movw   r7, #0x3c
-0x881d4: movt   r7, #0xe51b        ; building an ARM 'ldr/str' encoding (0xe51b003c)
-0x881dc: str    r7, [r3]           ; emit word 0
-0x881e0: str    r2, [r3, #4]       ; emit word 1
-0x8831c: str    r1, [r2], #4       ; post-indexed emit (advance cursor)
-```
+## Why the constant-search approach is confounded here
 
-Evidence it's a code emitter, not an interpreter:
-- The values stored (`0xe3c0….`, `0xe51b003c`, `0xe3000000`) are **ARM opcodes**
-  (`mov`/`movw`/`ldr`/`str`), not data values.
-- The store targets come from **`[ctx, #0x4ac]`** and use post-indexed
-  `str …,[cursor],#4` — the canonical "append instruction to output buffer"
-  pattern. `ctx+0x4AC` is the emit cursor field of the JIT block context.
-- A PC-relative **jump table** at `0x88288` (`add r2,pc,#4; ldr r0,[r2,r0,lsl#2];
-  add pc,r2,r0`, entries `0x1d10/0x1dac/0x1dc8/0x1ed4`) selects the emit path by
-  access class/size.
+DraStic is a **dynarec that assembles ARM host code**, so the exact bit patterns
+that also happen to be DS memory-region bases (`0x02/0x04/0x06/0x08 << 24`)
+appear as *opcode templates* throughout `.text`. **Static constant search cannot
+distinguish "DS region base as an address" from "ARM opcode field" — and in a
+JIT the latter dominates.** This is the core methodological trap; do not treat a
+region-base constant in `.text` as a memory-dispatch site without confirming the
+holding register is a runtime address, not a guest opcode.
 
-## What this means for the multiplayer plan
+## What IS still established (unaffected by the error)
 
-- **There is no C function like `arm7_io_write32()` to LD_PRELOAD/detour.** Guest
-  memory accesses are compiled inline. So the wireless hook is **not** "add cases
-  to a switch"; it is **"change what the dynarec emits for the `0x048xxxxx`
-  range."**
-- Concretely, at the bit-23 branch (`0x88204` / `0x8825c`) the emitter currently
-  produces code that treats wireless like an I/O/open-bus access. To add
-  multiplayer we make the emitter, for the wireless range, emit a **call-out to a
-  transplanted `wifi_read/wifi_write` handler** (the melonDS `Wifi` model) instead
-  of the stub. Two viable routes:
-  1. **Patch the emitter** so the wireless case emits `bl <our handler>` (a small,
-     surgical change at a known address — but requires fully reversing the
-     emitter's register/ABI contract at that point: what holds addr/value/size,
-     and what the emitted callee must preserve).
-  2. ~~Force wireless pages to the interpreter/slow path via the compat core~~ —
-     **checked, ruled out.** `libdrastic_compat.so` is *not* a plain-C
-     interpreter: it has the **identical emitter signature** (`0x04800000`
-     referenced exactly once, at `0x7f788`, gated by the same
-     `tst …,#0x800000` bit-23 test → `movmi r6,#0x4800000`). Both cores are the
-     same dynarec design; there is no easier C dispatch to fall back to.
+- DraStic is a **dynarec/JIT** (this analysis reinforces it — huge `.bss` code
+  cache, an ARM-assembling emitter).
+- Core is **ARM/A32** (mostly ARM, some Thumb). Capstone linear decode halts on
+  the first bad word → a **continue-on-error sweep** is mandatory.
+- Guest region bases also appear as 4-aligned words in a **`.data` cluster**
+  (`~0x12e8xx`) — a *data* table (candidate memory-map descriptor), distinct from
+  the opcode-template hits in `.text`. This is the better lead (see below).
 
-     So **route 1 (patch the emitter) is the only path.** Both `libdrastic.so`
-     (wifi @ `0x8825c`) and `libdrastic_compat.so` (wifi @ `0x7f788`) expose the
-     same surgical patch point.
+## Where the real memory/wireless dispatch actually lives (not yet found)
 
-## Difficulty verdict (updated)
+Guest memory accesses are **runtime-addressed** (page-table style); the guest
+address is a runtime value, so the wireless region will **not** appear as a code
+constant. The real dispatch is in the **runtime memory-access helpers** that
+JIT-compiled code (and DMA, and the interpreter) call — where an actual runtime
+address is range-checked and I/O side effects happen. Those helpers are the true
+hook target and have **not** been located.
 
-- The hook locus is **found and named** (`0x87994` emitter; wifi at `0x8825c`,
-  gated by `tst … ,#0x800000` at `0x88204`). That removes the biggest unknown.
-- But because it's a **dynarec emitter**, the integration is **harder than a C
-  slow-path** would have been: we must reverse the emitter's local calling
-  convention to splice a `bl` to our handler, then drive `Wifi` from there — plus
-  still solve scheduler/IRQ/guest-RAM (§4.2–4.4). The **compat core** is the more
-  promising near-term target and should be checked next (it may expose a plain C
-  memory dispatch).
+## Corrected next steps (harder than the retracted claim implied)
 
-## Reproduce
+1. **Parse the `.data` memory-map table** at `~0x12e8xx`: if it's an array of
+   `{guest_base, size, host_ptr, read_fn, write_fn}`, the per-region **handler
+   function pointers** (values in `.text` range `0xa0d0–0x112e20`) give the I/O
+   read/write routines directly — the clean hook — without any opcode-template
+   confusion.
+2. If that table has no function pointers (pure fastmem page array), fall to
+   **dynamic analysis**: run a core under a Unicorn/QEMU harness (or on-device
+   with a native hook), execute a ROM that touches `0x048xxxxx`, and trace which
+   function services it. Static search alone is insufficient given the JIT.
+3. Only after the *runtime* handler is found does the "emit a call-out / wrap the
+   handler" integration work begin. `0x8825c` is **not** part of it.
+
+## Reproduce the correction
 
 ```
-python3 analysis/analyze_drastic.py <libdrastic.so>          # region-const summary
-# full emitter disasm: continue-on-error ARM sweep around 0x87994..0x8b000
+# sl-holds-opcode proof: every bit tested near 0x88204 maps to an LDR/STR field,
+# and 0x04800000 = LDR/STR class | U-bit (an opcode template), not a DS address.
+python3 - <<'PY'
+for v in (0x04000000,0x04800000): print(hex(v), 'bit26(LDR/STR)|'+('U(bit23)' if v&0x800000 else ''))
+PY
 ```
