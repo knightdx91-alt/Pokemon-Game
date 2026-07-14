@@ -170,6 +170,14 @@ class DraSticEmu:
 
     def _setup_stack_heap(self):
         self.uc.reg_write(UC_ARM_REG_SP, STACK_BASE + STACK_SIZE - 0x100)
+        # Enable VFP/NEON — DraStic uses NEON (e.g. vmov.i32 q8) and Unicorn's
+        # ARM core boots with the FPU disabled (else "invalid instruction").
+        try:
+            cpacr = self.uc.reg_read(UC_ARM_REG_C1_C0_2)
+            self.uc.reg_write(UC_ARM_REG_C1_C0_2, cpacr | (0xf << 20))  # cp10/cp11 full access
+            self.uc.reg_write(UC_ARM_REG_FPEXC, 0x40000000)             # FPEXC.EN
+        except UcError:
+            pass
 
     # --- hooks ---
     def _hook_code(self, uc, addr, size, _):

@@ -51,10 +51,45 @@ tracing a booted core), call it with a wireless address:
 `--call 0x<helper> --args 0x04800000` and let the wireless-watch + branch trace
 show what it touches and dispatches to.
 
-## Honest status
+## Headless-core driver — `drastic_headless.py` (the spike, WORKING to M2)
 
-The harness is the *tool*; it does not yet by itself reach a wireless access,
-because that requires either the translator context layout (experiment A) or a
-booted DS core (out of scope for Unicorn — needs the Android/JNI runtime + ROM +
-BIOS). Next concrete step: reverse the translator's context struct so experiment
-A can run end-to-end and reveal the memory-handler address.
+Rather than reverse the translator context, the more powerful route is to **run
+the core headless** with a *synthetic* Android/JNI runtime (no device, no
+virtualization) and let it execute until the wireless-watch fires.
+`drastic_headless.py` extends the harness with functional libc import handlers
+(memcpy/memset/malloc/open/read/lseek/fopen/fread → serving host ROM/BIOS files)
+and in-guest **JavaVM + JNIEnv vtables** (240 slots) whose entries trap to a
+Python dispatcher (GetEnv, FindClass, NewGlobalRef, GetMethodID,
+GetStringUTFChars, …).
+
+**Verified milestones (run: `python3 drastic_headless.py --lib libdrastic.so`):**
+- **M1 — `JNI_OnLoad` runs clean, returns `0x10006`** (JNI_VERSION_1_6). 11 JNI
+  calls serviced by the fake vtables. ✅
+- **M2 — `insertGame` runs clean, returns `0x1`** (success). Executes its init
+  chain (`0x122ec`, `0x11550`, snprintf path-store into the emulator state global
+  at the pc-relative base, `0xefa4`, `0x116d4`) and releases the ROM string. ✅
+  - Required enabling **VFP/NEON** in Unicorn (DraStic uses `vmov.i32 q8` etc.);
+    done in `drastic_emu.py` (`CPACR` cp10/cp11 + `FPEXC.EN`). Without it the core
+    faults "invalid instruction" on the first NEON op.
+
+This **disproves** the earlier assumption that a booted core was out of reach in
+cloud: the runtime-synthesis approach drives the real core to a ROM-initialized
+state with no Android.
+
+### M3 (next) — step the DS CPU until wifi is touched
+Remaining to reach an actual wireless access:
+1. Locate the **frame/emulation-run** function (from `renderFrame` export or the
+   internal step loop) and call it in a loop.
+2. Wire real inputs through the file-server already built: the APK's
+   `assets/drastic_bios_arm7.bin`/`arm9.bin` (+ the `DS_lite_X2B` firmware in
+   `firmware/`) and a DS ROM, so the core actually boots the DS.
+3. Survive the core's **callbacks into Java** during a frame (video blit / input);
+   the JNI dispatcher returns non-null for handles — `CallVoidMethod`-style
+   callbacks just no-op, but any the emulation *depends on* (input state) may need
+   real returns.
+4. With the wireless-watch armed, run frames; DS boot/firmware or a multiplayer
+   ROM touching `0x048xxxxx` will surface the host handler + backtrace.
+
+Honest caveat: M3 needs a DS ROM and may need scripted input to reach wireless
+code; the DS firmware menu alone doesn't init wifi. But the hard part (a running
+core in cloud) is now proven.
