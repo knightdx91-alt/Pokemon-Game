@@ -14,6 +14,7 @@ simple sites work well. This is a personal tool — see the security note in
 setup-onion-gateway.sh about who can reach the port.
 """
 import binascii
+import hashlib
 import json
 import mimetypes
 import os
@@ -23,12 +24,15 @@ import sys
 import shutil
 import subprocess
 import tempfile
+import threading
 import time
 import uuid
+from collections import OrderedDict
 from html import escape
 from urllib.parse import urljoin, quote, unquote, urlsplit
 
 import requests
+from requests.adapters import HTTPAdapter
 from bs4 import BeautifulSoup
 from flask import Flask, request, Response, redirect, send_file
 from werkzeug.utils import safe_join
@@ -41,7 +45,13 @@ EXTRACT_ROOT = "/tmp/onion-extract"       # where archives are unpacked
 MAX_ARCHIVE_BYTES = 2 * 1024 * 1024 * 1024  # 2 GB download cap
 EXTRACT_TTL = 3600                          # delete extractions older than 1 h
 
-GATEWAY_VERSION = "v8"  # bump on every gateway change so a fresh deploy is visible
+GATEWAY_VERSION = "v9"  # bump on every gateway change so a fresh deploy is visible
+
+# In-memory cache for small static assets (images/fonts) so revisits and shared
+# assets don't re-fetch through Tor. Tightly capped so it can never OOM the box.
+CACHE_MAX_ITEM = 3 * 1024 * 1024       # don't cache anything bigger than 3 MB
+CACHE_MAX_TOTAL = 32 * 1024 * 1024     # 32 MB total ceiling (hard)
+CACHE_TTL = 900                        # 15 min
 
 # Tor control port — used by the "New IP" button to request a fresh circuit
 # (SIGNAL NEWNYM). Enabled by setup-onion-gateway.sh (ControlPort 9051 +
@@ -97,6 +107,12 @@ def new_tor_circuit():
 USER_HOSTS_FILE = os.environ.get(
     "ONION_HOSTS_FILE",
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "user_hosts.json"))
+BOOKMARKS_FILE = os.environ.get(
+    "ONION_BOOKMARKS_FILE",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "bookmarks.json"))
+HISTORY_FILE = os.environ.get(
+    "ONION_HISTORY_FILE",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "history.json"))
 
 app = Flask(__name__)
 session = requests.Session()
@@ -105,6 +121,68 @@ session.headers.update({
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101 Firefox/115.0",
     "Accept-Language": "en-US,en;q=0.9",
 })
+# Bigger connection pool so many sub-resources (images/CSS/JS on one page) fetch
+# in parallel through Tor instead of queueing on a tiny default pool.
+_adapter = HTTPAdapter(pool_connections=32, pool_maxsize=32, max_retries=1)
+session.mount("http://", _adapter)
+session.mount("https://", _adapter)
+
+
+def _proxies_for(url):
+    """Give each destination host its OWN Tor circuit (via SOCKS auth isolation).
+
+    Tor's default SocksPort has IsolateSOCKSAuth on, so a distinct user:pass ->
+    a distinct circuit. Keying it on the hostname means: one slow site can't jam
+    every other site, while a single site's own images/scripts reuse one warm
+    circuit (no per-asset circuit-build latency).
+    """
+    try:
+        host = urlsplit(url).netloc.lower() or "default"
+    except Exception:
+        host = "default"
+    tag = hashlib.sha1(host.encode("utf-8", "ignore")).hexdigest()[:12]
+    p = "socks5h://%s:x@127.0.0.1:9050" % tag
+    return {"http": p, "https": p}
+
+
+# ---- tiny bounded in-memory asset cache (images/fonts) -----------------------
+_CACHE = OrderedDict()
+_CACHE_BYTES = 0
+_CACHE_LOCK = threading.Lock()
+
+
+def _cache_drop(url):  # caller must hold _CACHE_LOCK
+    global _CACHE_BYTES
+    v = _CACHE.pop(url, None)
+    if v:
+        _CACHE_BYTES -= len(v[1])
+
+
+def cache_get(url):
+    with _CACHE_LOCK:
+        v = _CACHE.get(url)
+        if not v:
+            return None
+        ctype, data, ts = v
+        if time.time() - ts > CACHE_TTL:
+            _cache_drop(url)
+            return None
+        _CACHE.move_to_end(url)
+        return ctype, data
+
+
+def cache_put(url, ctype, data):
+    global _CACHE_BYTES
+    if len(data) > CACHE_MAX_ITEM:
+        return
+    with _CACHE_LOCK:
+        if url in _CACHE:
+            _cache_drop(url)
+        _CACHE[url] = (ctype, data, time.time())
+        _CACHE_BYTES += len(data)
+        while _CACHE_BYTES > CACHE_MAX_TOTAL and _CACHE:
+            k, val = _CACHE.popitem(last=False)
+            _CACHE_BYTES -= len(val[1])
 
 HOME_PAGE = """<!doctype html>
 <html><head><meta charset="utf-8">
@@ -138,7 +216,9 @@ HOME_PAGE = """<!doctype html>
     <a href="/browse?url=https%3A%2F%2Fduckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion">
     duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion</a></p>
   <p class="hint"><a href="/new-identity">&#128260; Get a new Tor IP</a>
-    — tap this if browsing gets slow; it builds a fresh circuit.</p>
+    — tap this if browsing gets slow; it builds a fresh circuit. &nbsp;
+    <a href="/bookmarks">&#9733; Bookmarks</a> &nbsp;
+    <a href="/history">&#128340; History</a></p>
   <hr style="border:0;border-top:1px solid #2a2a3a;margin:22px 0">
   <form action="/add-host" method="post">
     <input name="url" autocomplete="off" autocapitalize="off" spellcheck="false"
@@ -253,14 +333,16 @@ if(document.documentElement)st();else document.addEventListener('DOMContentLoade
 """
 
 
-def serve_stream(r):
+def serve_stream(r, cache_key=None):
     """Stream a non-HTML response through; auto-extract if it's a zip/rar/7z.
 
     Shared by the direct-download path and the resolved-file-host path so any
     archive (onion dump OR clearnet host) flows through the same extractor.
+    Propagates the upstream status + range headers (so video seeking / partial
+    content works) and caches small images/fonts when cache_key is given.
     """
     ctype = r.headers.get("Content-Type", "")
-    it = r.iter_content(chunk_size=65536)
+    it = r.iter_content(chunk_size=262144)
     try:
         first = next(it)
     except StopIteration:
@@ -293,18 +375,46 @@ def serve_stream(r):
         return _msg_page("Couldn't open that archive",
                          "It may be corrupt or an unsupported format.")
 
-    # Not an archive: stream it through with download headers intact.
+    # Not an archive: stream it through with download/range headers intact.
     guessed = ctype or mimetypes.guess_type(r.url)[0] or "application/octet-stream"
     headers = {}
-    for hk in ("Content-Disposition", "Content-Length", "Accept-Ranges", "Last-Modified"):
+    for hk in ("Content-Disposition", "Content-Length", "Accept-Ranges",
+               "Last-Modified", "Content-Range"):
         if hk in r.headers:
             headers[hk] = r.headers[hk]
+    # 206 Partial Content must be preserved so <video>/<audio> seeking works.
+    status = r.status_code if r.status_code in (200, 206) else 200
+
+    # Cache small images/fonts in memory so revisits skip Tor entirely.
+    low = guessed.lower()
+    clen = r.headers.get("Content-Length", "")
+    small = (not clen) or (clen.isdigit() and int(clen) <= CACHE_MAX_ITEM)
+    if (cache_key and status == 200 and small
+            and ("image/" in low or "font" in low or "/font" in low)):
+        buf = bytearray(first)
+        over = False
+        for c in it:
+            buf += c
+            if len(buf) > CACHE_MAX_ITEM:
+                over = True
+                break
+        if not over:
+            data = bytes(buf)
+            cache_put(cache_key, guessed, data)
+            return Response(data, status=status, mimetype=guessed, headers=headers)
+
+        def gen_buf(b, iterator):
+            yield bytes(b)
+            for c in iterator:
+                yield c
+        return Response(gen_buf(buf, it), status=status, mimetype=guessed,
+                        headers=headers)
 
     def gen(prefix, iterator):
         yield prefix
         for c in iterator:
             yield c
-    return Response(gen(first, it), mimetype=guessed, headers=headers)
+    return Response(gen(first, it), status=status, mimetype=guessed, headers=headers)
 
 
 def resolve_mediafire(html_bytes, page_url):
@@ -465,7 +575,68 @@ def resolve_generic(html_bytes, page_url):
 
 def _fetch_direct(url, referer):
     return session.get(url, timeout=180, allow_redirects=True, stream=True,
+                       proxies=_proxies_for(url),
                        headers={"Referer": referer} if referer else {})
+
+
+# ---- bookmarks + history (self-service, persisted like user_hosts) -----------
+
+def _load_json(path, default):
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except Exception:
+        return default
+
+
+def _save_json(path, obj):
+    try:
+        with open(path, "w") as f:
+            json.dump(obj, f)
+        return True
+    except Exception:
+        return False
+
+
+def load_bookmarks():
+    """-> list of {'url':..,'title':..} (newest first)."""
+    b = _load_json(BOOKMARKS_FILE, [])
+    return b if isinstance(b, list) else []
+
+
+def add_bookmark(url, title):
+    url = (url or "").strip()
+    if not url:
+        return
+    if not url.startswith(("http://", "https://")):
+        url = "http://" + url
+    title = (title or "").strip() or urlsplit(url).netloc or url
+    marks = [m for m in load_bookmarks() if m.get("url") != url]
+    marks.insert(0, {"url": url, "title": title[:120]})
+    _save_json(BOOKMARKS_FILE, marks[:200])
+
+
+def remove_bookmark(url):
+    marks = [m for m in load_bookmarks() if m.get("url") != url]
+    _save_json(BOOKMARKS_FILE, marks)
+
+
+def record_history(url):
+    """Log a visited page (dedup, newest first, capped)."""
+    url = (url or "").strip()
+    if not url.startswith(("http://", "https://")):
+        return
+    hist = _load_json(HISTORY_FILE, [])
+    if not isinstance(hist, list):
+        hist = []
+    hist = [h for h in hist if h.get("url") != url]
+    hist.insert(0, {"url": url, "t": int(time.time())})
+    _save_json(HISTORY_FILE, hist[:300])
+
+
+def load_history():
+    h = _load_json(HISTORY_FILE, [])
+    return h if isinstance(h, list) else []
 
 
 # ---- yt-dlp engine: covers ~1800 community-maintained sites for free ---------
@@ -607,6 +778,9 @@ def top_bar(current):
         'autocapitalize="off" spellcheck="false">'
         '<button style="padding:8px 12px;border:0;border-radius:8px;background:#7c6af7;'
         'color:#fff;flex:none">Go</button></form>'
+        '<a href="/add-bookmark?url=' + quote(current, safe="") + '" '
+        'title="Bookmark this page" style="color:#ffd479;text-decoration:none;'
+        'padding:8px 10px;background:#2a2a3a;border-radius:8px;flex:none">&#9733;</a>'
         '<a href="/new-identity?back=' + quote(current, safe="") + '" '
         'title="New Tor exit IP — use this if browsing gets slow" '
         'style="color:#fff;text-decoration:none;padding:8px 10px;background:#2a2a3a;'
@@ -667,6 +841,74 @@ def new_identity():
     return _page("&#128260; New Tor circuit", body)
 
 
+@app.route("/add-bookmark", methods=["GET", "POST"])
+def add_bookmark_route():
+    url = (request.values.get("url") or "").strip()
+    title = (request.values.get("title") or "").strip()
+    if not url:
+        return redirect("/bookmarks")
+    add_bookmark(url, title)
+    # From the ⭐ button we came from a page — send them back to it.
+    if request.method == "GET":
+        return redirect(proxify(url if url.startswith(("http://", "https://"))
+                                else "http://" + url))
+    return redirect("/bookmarks")
+
+
+@app.route("/remove-bookmark")
+def remove_bookmark_route():
+    remove_bookmark((request.args.get("url") or "").strip())
+    return redirect("/bookmarks")
+
+
+@app.route("/bookmarks")
+def bookmarks_page():
+    marks = load_bookmarks()
+    if marks:
+        rows = "".join(
+            "<div class=f style='display:flex;align-items:center;gap:8px'>"
+            "<a href='" + proxify(m["url"]) + "' style='flex:1;color:#e6e6f0;"
+            "text-decoration:none'><b>&#9733;</b> " + escape(m.get("title", "")) +
+            "<br><span class=sz>" + escape(m["url"]) + "</span></a>"
+            "<a class=sz href='/remove-bookmark?url=" + quote(m["url"], safe="") +
+            "'>remove</a></div>"
+            for m in marks if m.get("url"))
+    else:
+        rows = "<p class=sz>None yet — open a page and tap &#9733; in the top bar.</p>"
+    return _page(
+        "&#9733; Bookmarks",
+        rows +
+        "<form action='/add-bookmark' method='post' style='margin-top:18px'>"
+        "<p><input name='title' placeholder='name (optional)' "
+        "autocapitalize='off'></p>"
+        "<p><input name='url' placeholder='http://....onion/' "
+        "autocapitalize='off' spellcheck='false'></p>"
+        "<button type='submit'>Add bookmark</button></form>"
+        "<p style='margin-top:16px'><a href='/history'>&#128340; History</a></p>")
+
+
+@app.route("/clear-history")
+def clear_history():
+    _save_json(HISTORY_FILE, [])
+    return redirect("/history")
+
+
+@app.route("/history")
+def history_page():
+    hist = load_history()
+    if hist:
+        rows = "".join(
+            "<a class=f href='" + proxify(h["url"]) + "'>" + escape(h["url"]) + "</a>"
+            for h in hist if h.get("url"))
+        rows += ("<p style='margin-top:12px'><a class=sz href='/clear-history'>"
+                 "clear history</a></p>")
+    else:
+        rows = "<p class=sz>No history yet.</p>"
+    return _page("&#128340; History",
+                 rows + "<p style='margin-top:16px'><a href='/bookmarks'>"
+                 "&#9733; Bookmarks</a></p>")
+
+
 @app.route("/browse", methods=["GET", "POST"])
 def browse():
     target = (request.values.get("url") or "").strip()
@@ -674,12 +916,29 @@ def browse():
         return redirect("/")
     if not target.startswith(("http://", "https://")):
         target = "http://" + target
+
+    # Forward the browser's Range header so <video>/<audio>/large downloads can
+    # seek and resume instead of always restarting from byte 0.
+    fwd = {}
+    if request.headers.get("Range"):
+        fwd["Range"] = request.headers["Range"]
+
+    # Fast path: a cached small asset (image/font) skips Tor entirely.
+    is_plain_get = request.method == "GET" and "Range" not in fwd
+    if is_plain_get:
+        hit = cache_get(target)
+        if hit:
+            return Response(hit[1], mimetype=hit[0])
+
+    proxies = _proxies_for(target)
     try:
         if request.method == "POST":
             r = session.post(target, data=request.form, timeout=180,
-                             allow_redirects=True, stream=True)
+                             allow_redirects=True, stream=True, proxies=proxies,
+                             headers=fwd or None)
         else:
-            r = session.get(target, timeout=180, allow_redirects=True, stream=True)
+            r = session.get(target, timeout=180, allow_redirects=True, stream=True,
+                            proxies=proxies, headers=fwd or None)
     except Exception as e:
         return Response(
             top_bar(target) + '<div style="padding:20px;font-family:sans-serif;color:#e6e6f0">'
@@ -706,8 +965,9 @@ def browse():
             return resolved
 
     if "text/html" not in low_ct:
-        return serve_stream(r)
+        return serve_stream(r, cache_key=(target if is_plain_get else None))
 
+    record_history(r.url)
     soup = BeautifulSoup(r.content, "html.parser")
 
     # Resolve relative links against <base href> if the page sets one, else r.url.
@@ -1040,6 +1300,6 @@ if __name__ == "__main__":
     os.makedirs(EXTRACT_ROOT, exist_ok=True)
     try:
         from waitress import serve
-        serve(app, host=LISTEN_HOST, port=LISTEN_PORT, threads=8)
+        serve(app, host=LISTEN_HOST, port=LISTEN_PORT, threads=24)
     except ImportError:
         app.run(host=LISTEN_HOST, port=LISTEN_PORT)
