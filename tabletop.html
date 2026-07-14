@@ -171,6 +171,22 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 .tl-item .ev{font-size:13px;line-height:1.55;color:#d0ccc4}
 .tl-item .ev b{color:var(--accent)}
 .empty{color:var(--muted);text-align:center;padding:20px;font-style:italic}
+
+/* ---------- Dex (species browser) ---------- */
+.dex-count{color:var(--muted);font-size:11px;margin:-6px 0 12px;text-transform:uppercase;letter-spacing:1px}
+.dex-card{border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:var(--panel);overflow:hidden}
+.dex-head{display:flex;align-items:center;gap:8px;padding:11px 13px;cursor:pointer}
+.dex-head .nm{flex:1;font-size:15px;color:var(--accent);font-weight:700}
+.dex-head .bst{font-size:11px;color:var(--muted)}
+.type-badge{font-size:10px;font-weight:700;letter-spacing:.3px;color:#0b0a10;border-radius:6px;padding:2px 7px;text-transform:uppercase}
+.dex-detail{padding:0 13px 13px;font-size:12px;line-height:1.5;color:#d0ccc4;border-top:1px solid var(--line);margin-top:2px;padding-top:10px}
+.dex-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin-bottom:10px}
+.dex-stat{text-align:center;background:var(--panel2);border-radius:7px;padding:5px 2px}
+.dex-stat b{display:block;font-size:15px;color:var(--accent)}
+.dex-stat small{font-size:9px;color:var(--muted);text-transform:uppercase}
+.dex-detail .lbl{color:var(--accent);font-weight:700}
+.dex-detail .mv{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:14px;
+  padding:2px 9px;margin:2px 4px 2px 0;font-size:11px}
 </style>
 </head>
 <body>
@@ -236,12 +252,19 @@ button{font-family:inherit;color:inherit;cursor:pointer}
     </div></div>
 
     <div class="view hidden" id="v-timeline"><div class="pad" id="timeline-body"></div></div>
+
+    <div class="view hidden" id="v-dex"><div class="pad">
+      <input id="dex-search" class="codex-search" placeholder="Search species or type… (e.g. Charizard, Dragon)" autocomplete="off" spellcheck="false">
+      <div id="dex-count" class="dex-count"></div>
+      <div id="dex-body"></div>
+    </div></div>
   </div>
 
 </div>
 
 <script src="tabletop-games.js"></script>
 <script src="tabletop-wot.js"></script>
+<script src="tabletop-pta-dex.js"></script>
 <script src="tabletop-pta.js"></script>
 <script>
 (function(){
@@ -299,6 +322,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
     buildDice(); buildSheet(); buildLore(); buildBoardTools(); renderTokens();
     if(current.story) buildStory();
     if(current.codex) buildCodex();
+    if(current.dex && current.dex.length) buildDex();
     if(current.timeline) buildTimeline();
     showView('board');
     $('picker').style.display='none';
@@ -313,6 +337,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
     { view:'sheet', label:'Sheet', always:true },
     { view:'story', label:'Story', field:'story' },
     { view:'codex', label:'Codex', field:'codex' },
+    { view:'dex',   label:'Dex',   field:'dex' },
     { view:'timeline', label:'Timeline', field:'timeline' },
     { view:'lore',  label:'Lore',  field:'lore' }
   ];
@@ -337,7 +362,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 
   /* ---------------- Tab switching ---------------- */
   function showView(name){
-    ['board','dice','sheet','lore','story','codex','timeline'].forEach(function(v){
+    ['board','dice','sheet','lore','story','codex','timeline','dex'].forEach(function(v){
       var el=$('v-'+v); if(el) el.classList.toggle('hidden', v!==name);
     });
     Array.prototype.forEach.call($('tabs').children,function(b){
@@ -606,6 +631,51 @@ button{font-family:inherit;color:inherit;cursor:pointer}
       d.innerHTML='<div class="when">'+esc(t.when)+'</div><div class="ev">'+mdlite(t.event)+'</div>';
       body.appendChild(d);
     });
+  }
+
+  /* ======================================================= DEX */
+  var TYPE_COLORS = {
+    Normal:'#9099a1',Fire:'#ff6b3d',Water:'#4d90d5',Electric:'#f4d23c',Grass:'#63bb5b',
+    Ice:'#74cec0',Fighting:'#ce4069',Poison:'#ab5ec4',Ground:'#d97746',Flying:'#8fa9de',
+    Psychic:'#f97176',Bug:'#90c12c',Rock:'#c7b78b',Ghost:'#5269ac',Dragon:'#0b6dc3',
+    Dark:'#5a5366',Steel:'#5a8ea1',Fairy:'#ec8fe6'
+  };
+  var STAT_LABELS = ['HP','ATK','DEF','SpA','SpD','SPD'];
+  function typeBadge(t){ return '<span class="type-badge" style="background:'+(TYPE_COLORS[t]||'#888')+'">'+esc(t)+'</span>'; }
+  function buildDex(){
+    var input=$('dex-search'), body=$('dex-body'), count=$('dex-count');
+    var dex=current.dex||[];
+    function render(q){
+      q=(q||'').toLowerCase().trim();
+      var list = !q ? dex : dex.filter(function(s){
+        return s.n.toLowerCase().indexOf(q)!==-1 ||
+               s.t.some(function(t){return t.toLowerCase().indexOf(q)!==-1;});
+      });
+      count.textContent = list.length+' of '+dex.length+' species'+(list.length>80?' — showing first 80':'');
+      var shown=list.slice(0,80);
+      body.innerHTML='';
+      if(!shown.length){ body.innerHTML='<div class="empty">No species match.</div>'; return; }
+      shown.forEach(function(s){
+        var bst=s.s.reduce(function(a,b){return a+b;},0);
+        var card=document.createElement('div'); card.className='dex-card';
+        var head=document.createElement('div'); head.className='dex-head';
+        head.innerHTML='<span class="nm">'+esc(s.n)+'</span>'+s.t.map(typeBadge).join(' ')+
+          '<span class="bst">Σ'+bst+'</span>';
+        var detail=document.createElement('div'); detail.className='dex-detail'; detail.style.display='none';
+        detail.innerHTML=
+          '<div class="dex-stats">'+s.s.map(function(v,i){
+            return '<div class="dex-stat"><b>'+v+'</b><small>'+STAT_LABELS[i]+'</small></div>';}).join('')+'</div>'+
+          '<div style="margin-bottom:6px"><span class="lbl">Size:</span> '+esc(s.sz)+' · <span class="lbl">Weight:</span> '+esc(s.w)+'</div>'+
+          (s.sk?'<div style="margin-bottom:6px"><span class="lbl">Skills:</span> '+esc(s.sk)+'</div>':'')+
+          (s.pa?'<div style="margin-bottom:6px"><span class="lbl">Passives:</span> '+esc(s.pa)+'</div>':'')+
+          (s.mv&&s.mv.length?'<div><span class="lbl">Moves:</span><br>'+s.mv.map(function(m){return '<span class="mv">'+esc(m)+'</span>';}).join('')+'</div>':'');
+        head.onclick=function(){ var open=detail.style.display!=='none'; detail.style.display=open?'none':'block'; };
+        card.appendChild(head); card.appendChild(detail);
+        body.appendChild(card);
+      });
+    }
+    input.value=''; input.oninput=function(){ render(input.value); };
+    render('');
   }
 
   /* ---------------- Install prompt ---------------- */

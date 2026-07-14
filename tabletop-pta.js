@@ -142,5 +142,9 @@
     ]
   };
 
+  // Pokédex species browser (832 species) — data lives in tabletop-pta-dex.js,
+  // loaded before this file. Drives the "Dex" tab.
+  game.dex = window.PTA_DEX || [];
+
   window.TABLETOP_GAMES.push(game);
 })();
