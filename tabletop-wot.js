@@ -137,4 +137,53 @@
     { when:'Tarmon Gai’don', event:'**The Last Battle.** The nations unite on four fronts while Rand faces the Dark One at Shayol Ghul. The Age turns. (*A Memory of Light*)' }
   ];
 
+  /* ─────────────── RULEBOOK MECHANICS ───────────────
+     Folded in from the user's Wheel of Time Roleplaying Game (d20) rulebook.
+     The DC scale (Table 4-5), the seven base classes, and the Five-Power
+     Affinity system are taken from the book itself. */
+
+  // Faithful d20 dice, keyed to the rulebook's real Difficulty Class scale.
+  wot.dice = {
+    mode:'expr',
+    note:'Wheel of Time RPG (d20): roll d20 + ability modifier + skill ranks vs a Difficulty Class. DC scale — Very easy 0 · Easy 5 · Average 10 · Tough 15 · Challenging 20 · Formidable 25 · Heroic 30 · Nearly impossible 40.',
+    presets:[
+      { label:'Skill / Ability', expr:'1d20', note:'+ ability mod + skill ranks vs the DC.' },
+      { label:'Channel a Weave',  expr:'1d20', note:'Concentration + affinity; beat the weave’s DC.' },
+      { label:'Attack roll',      expr:'1d20', note:'+ Base Attack Bonus + Str (melee) / Dex (ranged).' },
+      { label:'Saving throw',     expr:'1d20', note:'Fortitude (Con) · Reflex (Dex) · Will (Wis).' },
+      { label:'Take the best (2)', expr:'2d20kh1', note:'Roll twice, keep the higher.' },
+      { label:'Damage — heron blade', expr:'1d8', note:'Longsword / heron-mark blade.' },
+      { label:'Ta’veren twist',   expr:'1d100', note:'GM: let the Pattern decide.' }
+    ]
+  };
+
+  // Patch the character sheet to the rulebook's real classes + add Affinity.
+  (function(){
+    var idg = (wot.sheet||[]).filter(function(g){return g.group==='Identity';})[0];
+    if(!idg) return;
+    var cls = idg.fields.filter(function(f){return f.key==='class';})[0];
+    if(cls){
+      cls.label='Class';
+      cls.options=['Initiate','Wilder','Armsman','Noble','Wanderer','Woodsman','Algai’d’siswai (Aiel)'];
+      cls.default='Wanderer';
+    }
+    // Add One Power Affinity right after class if not already present.
+    if(!idg.fields.some(function(f){return f.key==='affinity';})){
+      idg.fields.push({ key:'affinity', label:'One Power Affinity', type:'select', default:'None',
+        options:['None','Air','Earth','Fire','Water','Spirit'] });
+    }
+  })();
+
+  // Add rulebook reference sections to the Lore tab.
+  wot.lore.push(
+    { title:'Making Checks (d20)', body:
+      'Roll **d20 + ability modifier + skill ranks** (+ other modifiers) and compare to the **Difficulty Class (DC)**. Meet or beat it to succeed.\n\n**DC scale (Table 4-5):** Very easy **0** · Easy **5** · Average **10** · Tough **15** · Challenging **20** · Formidable **25** · Heroic **30** · Nearly impossible **40**. Skills use a **key ability** (Str, Dex, Con, Int, Wis, or Cha); some can be used untrained, others need at least 1 rank.' },
+    { title:'The Seven Classes', body:
+      'Base classes in the Wheel of Time RPG: **Initiate** (a trained channeler — Aes Sedai and their like), **Wilder** (an untrained, instinctive channeler), **Armsman** (soldier, guard, blademaster), **Noble** (leader who commands and inspires), **Wanderer** (jack-of-all-trades traveller), **Woodsman** (hunter/scout of the wilds), and **Algai’d’siswai** (Aiel warrior of the spear). Characters can multiclass (e.g. wilder/armsman).' },
+    { title:'Channeling & Weaves', body:
+      'Channelers weave the **Five Powers — Air, Earth, Fire, Water, Spirit** — into effects called **weaves**. You begin with one **Affinity** (a Power you’re especially strong in) and can gain more with the *Additional Affinity* feat. Weaving is a check against the weave’s DC; a channeler can try to **hide** a weave (DC 10 + casting level) or **unlace** one (DC 25 + casting level — failure collapses it into a random effect). Men wield **saidin** (tainted), women **saidar**.' },
+    { title:'Feats (a taste)', body:
+      'Character feats from the rulebook include **Additional Affinity** (learn another Power), **Strong Soul** (resist being severed from the Source), **Disciplined** (steady concentration while channeling), **Animal Empathy**, and **Latent Dreamer** (a knack for Tel’aran’rhiod, the World of Dreams).' }
+  );
+
 })();

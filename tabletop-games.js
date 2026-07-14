@@ -84,9 +84,9 @@ window.TABLETOP_GAMES = [
     { title: 'The Seven Ajahs', body:
       '**Blue** — causes & justice. **Green** — the Battle Ajah. **Red** — hunt men who channel. **White** — logic & philosophy. **Yellow** — Healing. **Brown** — knowledge & lore. **Gray** — mediation & diplomacy. (And the hidden **Black Ajah**, sworn to the Shadow.)' },
     { title: 'The Forsaken', body:
-      'Thirteen of the Age of Legends’ most powerful channelers who turned to the Shadow and were sealed at Shayol Ghul: Ishamael, Lanfear, Sammael, Rahvin, Be’lal, Asmodean, Graendal, Semirhage, Mesaana, Moghedien, Aginor, Balthamel, and Demandred.' },
-    { title: 'Difficulty Guide (d20)', body:
-      'Trivial **5** · Easy **10** · Moderate **15** · Hard **20** · Formidable **25** · Heroic **30**. Roll d20 + attribute mod + skill; meet or beat the DC.' }
+      'Thirteen of the Age of Legends’ most powerful channelers who turned to the Shadow and were sealed at Shayol Ghul: Ishamael, Lanfear, Sammael, Rahvin, Be’lal, Asmodean, Graendal, Semirhage, Mesaana, Moghedien, Aginor, Balthamel, and Demandred.' }
+    /* Rulebook mechanics (Making Checks, Classes, Channeling, Feats) are
+       appended in tabletop-wot.js from the Wheel of Time RPG rulebook. */
   ]
 },
 
