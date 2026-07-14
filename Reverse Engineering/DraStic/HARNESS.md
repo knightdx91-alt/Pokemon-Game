@@ -94,25 +94,34 @@ emulation-step; `renderFrame` only blits). DS emulation runs on a **pthread**;
 `drastic_headless.py` captures its `start_routine` from `pthread_create` so it can
 be run single-threaded.
 
-**Current blocker (one concrete loader gap):** `onInit` faults — it reaches a
-**PLT stub** (`ldr pc,[ip,#off]!` at ~`0x9a80`) whose GOT slot the synthetic
-loader didn't resolve, so the indirect jump lands in garbage. `drastic_emu.py`
-relocates the 239 `R_ARM_JUMP_SLOT` entries to import stubs, but this slot is a
-**lazy/unrelocated GOT.plt entry** (normally filled by the dynamic linker on
-first call). Fix options:
-  1. Pre-resolve every `.got.plt` slot that still points into the PLT (lazy
-     value) to a generic "return 0" import stub; or
-  2. Emulate the PLT[0] resolver: on entry to any PLT stub, decode the reloc
-     index and dispatch to the right stub.
-Until then, `onInit` doesn't complete, so no emu thread is created and
-`updateFrame` no-ops (0 I/O calls observed — the symptom).
+**BREAKTHROUGH — the full init sequence now runs headless.** The `onInit` fault
+was NOT a loader gap; it was an **ARM/Thumb interworking bug in the harness**:
+import/JNI stubs returned via `reg_write(PC, lr & ~1)`, which force-clears the
+Thumb bit, so a Thumb caller resumed in ARM mode → garbage → fault. (My first
+"PLT lands in garbage" read was a mode-confused mis-trace — the PLT actually
+resolves fine.) **Fix:** each stub slot now holds a real `bx lr` (`0xe12fff1e`)
+and the hooks set only the return value, letting the CPU interwork correctly
+(setting CPSR.T inside a hook is unreliable in Unicorn). Also fixed: `memalign`
+size arg (r1 not r0), and a 128 MB alloc arena (the 64 KB one overflowed once the
+core allocated JIT/RAM buffers).
 
-Once `onInit` completes: run `updateFrame` (or the captured emu-thread routine)
-for one frame with the I/O-block detector → the hot `0x04xxxxxx`-arg block is the
-memory/IO helper → read its `0x048xxxxx` sub-branch statically = the wireless
-hook. That is the finish line for §4.1.
+With that, **`onInit → insertGame(directBoot=1) → resetDS → startGame` all run
+CLEAN** (verified). The DS core initializes fully headless in-cloud.
 
-Honest status: M1+M2 proven; M3 has the path + tooling but is blocked on the PLT
-lazy-binding fix in the loader. Performance note: Unicorn emulating DraStic's JIT
-compiling+running a DS frame is slow but the first I/O access comes early in the
-frame, so a bounded instruction cap should reach it.
+**Remaining (close):** emulation runs on a **separate thread** that isn't spawned
+in this path (`pthread_create` isn't hit during the init sequence — likely gated
+on state our stubs don't set, or created lazily). `updateFrame` is only a
+47-instruction sync stub. The emulation **thread routine was located statically**
+at **`0x37ae4`** (the `start_routine` passed at the `pthread_create` call site
+`0x38368`). Invoking it directly with the I/O-block detector is the current
+experiment: it runs for a long time (real work — good sign), so the detector now
+early-stops once the I/O helper is identified.
+
+**Finish line (unchanged):** the hot `0x04xxxxxx`-arg block during emulation is
+DraStic's memory/IO helper; its `0x048xxxxx` sub-branch is the wireless hook =
+§4.1 answer. Just needs the emu routine to run guest code far enough to hit I/O
+(happens on the DS's first frame).
+
+Honest status: M1+M2+init-sequence proven; M3 is one step away — get `0x37ae4`
+(or the properly-spawned emu thread) to execute guest code so the I/O helper
+fires. Performance: Unicorn-over-DraStic-JIT is slow, so use the early-stop.

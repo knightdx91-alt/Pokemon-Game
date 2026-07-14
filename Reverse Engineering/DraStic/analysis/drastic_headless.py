@@ -62,8 +62,10 @@ class Headless(DraSticEmu):
         p = self.fake; self.fake += (n+7)&~7; return p
 
     def _build_runtime(self):
-        for base in (JNIENV_VT, JNIENV_OBJ, JAVAVM_VT, JAVAVM_OBJ, JNI_TRAP, SCRATCH, FAKE_HANDLE):
+        for base in (JNIENV_VT, JNIENV_OBJ, JAVAVM_VT, JAVAVM_OBJ, JNI_TRAP):
             self._ensure_mapped(base, 0x10000)
+        self._ensure_mapped(SCRATCH, 0x100000)       # 1 MB scratch (strings)
+        self._ensure_mapped(FAKE_HANDLE, 0x8000000)  # 128 MB alloc arena (JIT cache, DS RAM, etc.)
         # vtable slots -> trap stubs
         for idx in range(240):
             self.uc.mem_write(JNIENV_VT + idx*4, struct.pack('<I', JNI_TRAP + idx*4))
@@ -71,6 +73,8 @@ class Headless(DraSticEmu):
         for idx in range(16):
             self.uc.mem_write(JAVAVM_VT + idx*4, struct.pack('<I', JNI_TRAP + 0x1000 + idx*4))
         self.uc.mem_write(JAVAVM_OBJ, struct.pack('<I', JAVAVM_VT))
+        # fill the JNI trap region with real `bx lr` so returns interwork via CPU
+        self.uc.mem_write(JNI_TRAP, struct.pack('<I', 0xe12fff1e) * (0x10000 // 4))
         # hook the trap regions + import stubs with our functional dispatcher
         self.uc.hook_add(UC_HOOK_CODE, self._rt_dispatch, begin=JNI_TRAP, end=JNI_TRAP+0x10000)
 
@@ -92,11 +96,17 @@ class Headless(DraSticEmu):
             r=n
         elif name in ('strcmp','strncmp'):
             r=0
-        elif name in ('malloc','calloc','realloc','memalign','valloc'):
-            n=a0 if name!='calloc' else a0*a1
-            if name=='realloc': n=a1
-            r=self._alloc(max(n,16))
-            if name=='calloc': uc.mem_write(r, b'\0'*n)
+        elif name in ('malloc','calloc','realloc','memalign','valloc','posix_memalign'):
+            if name=='calloc': n=a0*a1
+            elif name=='realloc': n=a1
+            elif name in ('memalign','posix_memalign'): n=a1  # (alignment=a0, size=a1)
+            else: n=a0
+            n=max(n,16)
+            # align the heap pointer up to the requested alignment for memalign
+            if name in ('memalign','posix_memalign') and a0 and (a0 & (a0-1))==0:
+                self.fake = (self.fake + a0 - 1) & ~(a0-1)
+            r=self._alloc(n)
+            uc.mem_write(r, b'\0'*n)     # zero all allocations (safer for headless)
         elif name=='free': r=0
         elif name in ('open','open64','__open_2'):
             path=self._cstr(a0); data=self._match_file(path)
@@ -144,8 +154,13 @@ class Headless(DraSticEmu):
         else:
             r=0  # default: benign 0
         self.log.append(('libc',name,hex(a0),hex(r)))
-        uc.reg_write(UC_ARM_REG_R0, r)
-        lr=uc.reg_read(UC_ARM_REG_LR); uc.reg_write(UC_ARM_REG_PC, lr & ~1)
+        self._ret(r)
+
+    def _ret(self, r0):
+        """Set the return value only. Each stub slot holds a real `bx lr`, so the
+        CPU performs the ARM/Thumb-correct return after this hook returns (setting
+        PC/CPSR.T from inside a hook does not interwork reliably in Unicorn)."""
+        self.uc.reg_write(UC_ARM_REG_R0, r0)
 
     def _cstr(self, p):
         out=b''
@@ -199,8 +214,7 @@ class Headless(DraSticEmu):
                 r=self._alloc(16)  # any other -> non-null opaque handle
             tag=f"JNIEnv[{idx}]"
         self.log.append(('jni',tag,hex(r)))
-        uc.reg_write(UC_ARM_REG_R0, r)
-        lr=uc.reg_read(UC_ARM_REG_LR); uc.reg_write(UC_ARM_REG_PC, lr & ~1)
+        self._ret(r)
 
     # --- milestones ---
     def run_onload(self, addr):

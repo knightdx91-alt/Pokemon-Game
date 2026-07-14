@@ -148,6 +148,10 @@ class DraSticEmu:
         self._ensure_mapped(STUB_BASE, 0x100000)
         self._ensure_mapped(HEAP_BASE, 0x2000000)
         self._ensure_mapped(STACK_BASE, STACK_SIZE)
+        # Fill the import-stub region with real `bx lr` (0xe12fff1e) so returns
+        # interwork ARM/Thumb correctly via the CPU (setting CPSR.T inside a hook
+        # is unreliable). Hooks set only the return value, then bx lr executes.
+        self.uc.mem_write(STUB_BASE, struct.pack('<I', 0xe12fff1e) * (0x100000 // 4))
 
     def _apply_relocs(self):
         bias = 0  # segments mapped at their p_vaddr
