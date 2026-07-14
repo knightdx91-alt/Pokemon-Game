@@ -55,9 +55,13 @@ pip3 install -U --break-system-packages yt-dlp 2>/dev/null || pip3 install -U yt
 # WebSocket support (live chat/forums): gunicorn+gevent is a WS-capable server
 # (waitress can't upgrade), flask-sock bridges browser<->gateway, websocket-client
 # connects upstream over Tor. All optional — the reader falls back without them.
-echo "==> Installing WebSocket stack (gunicorn/gevent/flask-sock/websocket-client)..."
-pip3 install -U --break-system-packages gunicorn gevent flask-sock websocket-client 2>/dev/null \
-  || pip3 install -U gunicorn gevent flask-sock websocket-client || true
+# gunicorn from apt is the most reliable on Ubuntu (lands at /usr/bin/gunicorn,
+# pulls no fragile deps). flask-sock + websocket-client come from pip. We use
+# gunicorn's gthread worker (threads) so NO gevent/zope.event chain is needed.
+echo "==> Installing WebSocket stack (gunicorn + flask-sock + websocket-client)..."
+apt-get install -y gunicorn 2>/dev/null || true
+pip3 install -U --break-system-packages flask-sock websocket-client 2>/dev/null \
+  || pip3 install -U flask-sock websocket-client || true
 
 # Headless-Chromium render mode (JS-heavy sites). Heavy (~300 MB); optional.
 echo "==> Installing headless Chromium (Playwright) for render mode..."
@@ -1534,12 +1538,13 @@ echo "==> Writing launcher (${APP_DIR}/run.sh)..."
 cat > "${APP_DIR}/run.sh" <<'RUNEOF'
 #!/usr/bin/env bash
 cd /opt/onion-gateway
-if command -v gunicorn >/dev/null 2>&1 && python3 -c 'import gevent, flask_sock' 2>/dev/null; then
-  echo "Starting gunicorn (gevent) — WebSockets enabled"
-  exec gunicorn -k gevent -w 1 --worker-connections 256 \
+# gthread worker (real threads) supports flask-sock WebSockets with no gevent.
+if command -v gunicorn >/dev/null 2>&1 && python3 -c 'import flask_sock' 2>/dev/null; then
+  echo "Starting gunicorn (gthread) — WebSockets enabled"
+  exec gunicorn -k gthread -w 2 --threads 32 \
        -b 0.0.0.0:8888 --timeout 300 gateway:app
 else
-  echo "Starting waitress fallback — WebSockets disabled (install gunicorn+gevent+flask-sock)"
+  echo "Starting waitress fallback — WebSockets disabled (need gunicorn + flask-sock)"
   exec python3 gateway.py
 fi
 RUNEOF
