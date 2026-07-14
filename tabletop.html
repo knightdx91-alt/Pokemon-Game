@@ -144,6 +144,33 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 .lore-item[open] summary::after{content:'–'}
 .lore-body{padding:0 16px 16px;font-size:14px;line-height:1.65;color:#d8d4cc}
 .lore-body b{color:var(--accent)}
+
+/* ---------- Story / Codex / Timeline ---------- */
+.story-item{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden;background:var(--panel)}
+.story-item summary{padding:13px 16px;cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px}
+.story-item summary::-webkit-details-marker{display:none}
+.story-item .bk{flex:1}
+.story-item .bk b{display:block;font-size:15px;color:var(--accent)}
+.story-item .bk small{color:var(--muted);font-size:11px}
+.story-item .warn{color:#e0b050;font-size:11px;border:1px solid #6a5420;border-radius:8px;padding:2px 6px;white-space:nowrap}
+.story-body{padding:0 16px 15px;font-size:14px;line-height:1.65;color:#d8d4cc}
+.story-body b{color:var(--accent)}
+.codex-search{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;color:var(--text);font-size:15px;font-family:inherit;margin-bottom:14px}
+.codex-card{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:9px;background:var(--panel)}
+.codex-card h4{margin:0;font-size:15px;color:var(--accent);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.codex-card h4 .fac{font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:#0b0a10;background:var(--accent);
+  border-radius:20px;padding:2px 8px;white-space:nowrap;font-weight:700}
+.codex-card .role{font-size:11px;color:var(--muted);font-style:italic;margin:2px 0 6px}
+.codex-card p{margin:0;font-size:13px;line-height:1.55;color:#d0ccc4}
+.codex-card b{color:var(--accent)}
+.tl-item{position:relative;padding:0 0 16px 22px;border-left:2px solid var(--line);margin-left:6px}
+.tl-item::before{content:'';position:absolute;left:-7px;top:2px;width:12px;height:12px;border-radius:50%;
+  background:var(--accent);border:2px solid var(--bg)}
+.tl-item .when{font-size:13px;color:var(--accent);font-weight:700;margin-bottom:3px}
+.tl-item .ev{font-size:13px;line-height:1.55;color:#d0ccc4}
+.tl-item .ev b{color:var(--accent)}
+.empty{color:var(--muted);text-align:center;padding:20px;font-style:italic}
 </style>
 </head>
 <body>
@@ -170,12 +197,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
       <span class="gemoji" id="t-emoji"></span>
       <div class="ttl"><b id="t-title"></b><span id="t-tag"></span></div>
     </div>
-    <div class="tabs" id="tabs">
-      <button data-view="board" class="sel">Board</button>
-      <button data-view="dice">Dice</button>
-      <button data-view="sheet">Sheet</button>
-      <button data-view="lore">Lore</button>
-    </div>
+    <div class="tabs" id="tabs"></div>
 
     <div class="view" id="v-board">
       <div id="board-wrap">
@@ -205,11 +227,21 @@ button{font-family:inherit;color:inherit;cursor:pointer}
     </div></div>
 
     <div class="view hidden" id="v-lore"><div class="pad" id="lore-body"></div></div>
+
+    <div class="view hidden" id="v-story"><div class="pad" id="story-body"></div></div>
+
+    <div class="view hidden" id="v-codex"><div class="pad">
+      <input id="codex-search" class="codex-search" placeholder="Search the codex…" autocomplete="off" spellcheck="false">
+      <div id="codex-body"></div>
+    </div></div>
+
+    <div class="view hidden" id="v-timeline"><div class="pad" id="timeline-body"></div></div>
   </div>
 
 </div>
 
 <script src="tabletop-games.js"></script>
+<script src="tabletop-wot.js"></script>
 <script>
 (function(){
   "use strict";
@@ -262,11 +294,37 @@ button{font-family:inherit;color:inherit;cursor:pointer}
     $('board-wrap').style.background =
       current.bg+',radial-gradient(var(--line) 1px,transparent 1px)';
     $('board-wrap').style.backgroundSize='cover,32px 32px';
+    buildTabs();
     buildDice(); buildSheet(); buildLore(); buildBoardTools(); renderTokens();
+    if(current.story) buildStory();
+    if(current.codex) buildCodex();
+    if(current.timeline) buildTimeline();
     showView('board');
     $('picker').style.display='none';
     $('table').classList.add('on');
     location.hash = 'g='+id;
+  }
+  // Tabs are built per game — extra sections (Story/Codex/Timeline) appear
+  // only for worlds that define them.
+  var TAB_DEFS = [
+    { view:'board', label:'Board', always:true },
+    { view:'dice',  label:'Dice',  always:true },
+    { view:'sheet', label:'Sheet', always:true },
+    { view:'story', label:'Story', field:'story' },
+    { view:'codex', label:'Codex', field:'codex' },
+    { view:'timeline', label:'Timeline', field:'timeline' },
+    { view:'lore',  label:'Lore',  field:'lore' }
+  ];
+  var activeViews=[];
+  function buildTabs(){
+    var bar=$('tabs'); bar.innerHTML=''; activeViews=[];
+    TAB_DEFS.forEach(function(t){
+      if(!t.always && !(current[t.field]&&current[t.field].length)) return;
+      activeViews.push(t.view);
+      var b=document.createElement('button'); b.dataset.view=t.view; b.textContent=t.label;
+      b.onclick=function(){ showView(t.view); };
+      bar.appendChild(b);
+    });
   }
   function closeGame(){
     $('table').classList.remove('on');
@@ -278,16 +336,13 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 
   /* ---------------- Tab switching ---------------- */
   function showView(name){
-    ['board','dice','sheet','lore'].forEach(function(v){
-      $('v-'+v).classList.toggle('hidden', v!==name);
+    ['board','dice','sheet','lore','story','codex','timeline'].forEach(function(v){
+      var el=$('v-'+v); if(el) el.classList.toggle('hidden', v!==name);
     });
     Array.prototype.forEach.call($('tabs').children,function(b){
       b.classList.toggle('sel', b.dataset.view===name);
     });
   }
-  Array.prototype.forEach.call($('tabs').children,function(b){
-    b.onclick=function(){ showView(b.dataset.view); };
-  });
   $('back-btn').onclick = closeGame;
 
   /* ======================================================= BOARD */
@@ -504,6 +559,50 @@ button{font-family:inherit;color:inherit;cursor:pointer}
     (current.lore||[]).forEach(function(l,i){
       var d=document.createElement('details'); d.className='lore-item'; if(i===0)d.open=true;
       d.innerHTML='<summary>'+esc(l.title)+'</summary><div class="lore-body">'+mdlite(l.body)+'</div>';
+      body.appendChild(d);
+    });
+  }
+
+  /* ======================================================= STORY */
+  function buildStory(){
+    var body=$('story-body'); body.innerHTML='';
+    (current.story||[]).forEach(function(s){
+      var d=document.createElement('details'); d.className='story-item';
+      var warn = /⚠/.test(s.era||'') ? '<span class="warn">spoilers</span>' : '';
+      d.innerHTML='<summary><span class="bk"><b>'+esc(s.book)+'</b>'+
+        '<small>'+esc((s.era||'').replace('⚠','').trim())+(s.chapters?' · '+s.chapters+' chapters':'')+'</small></span>'+warn+'</summary>'+
+        '<div class="story-body">'+mdlite(s.blurb)+'</div>';
+      body.appendChild(d);
+    });
+  }
+
+  /* ======================================================= CODEX */
+  function buildCodex(){
+    var input=$('codex-search');
+    function render(q){
+      q=(q||'').toLowerCase();
+      var body=$('codex-body'); body.innerHTML='';
+      var list=(current.codex||[]).filter(function(c){
+        return !q || (c.name+' '+c.faction+' '+c.role+' '+c.desc).toLowerCase().indexOf(q)!==-1;
+      });
+      if(!list.length){ body.innerHTML='<div class="empty">No entries match.</div>'; return; }
+      list.forEach(function(c){
+        var card=document.createElement('div'); card.className='codex-card';
+        card.innerHTML='<h4>'+esc(c.name)+'<span class="fac">'+esc(c.faction)+'</span></h4>'+
+          '<div class="role">'+esc(c.role)+'</div><p>'+mdlite(c.desc)+'</p>';
+        body.appendChild(card);
+      });
+    }
+    input.value=''; input.oninput=function(){ render(input.value); };
+    render('');
+  }
+
+  /* ======================================================= TIMELINE */
+  function buildTimeline(){
+    var body=$('timeline-body'); body.innerHTML='';
+    (current.timeline||[]).forEach(function(t){
+      var d=document.createElement('div'); d.className='tl-item';
+      d.innerHTML='<div class="when">'+esc(t.when)+'</div><div class="ev">'+mdlite(t.event)+'</div>';
       body.appendChild(d);
     });
   }
