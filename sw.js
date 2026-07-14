@@ -19,7 +19,7 @@
 /* STABLE — holds cores/assets. Keep in sync with OFFLINE_CACHE_NAME in emulator.html. */
 var RUNTIME = 'retroplay-offline-v2';
 /* Versioned — holds precached HTML. Bump this (only) to force fresh pages. */
-var SHELL   = 'retroplay-shell-v36';
+var SHELL   = 'retroplay-shell-v37';
 
 /* Hosts we must never cache or intercept (auth, Drive picker, uploads). */
 var BYPASS_HOSTS = [
@@ -47,6 +47,7 @@ var PRECACHE = [
     './tabletop-pta-dex.js',
     './tabletop-engine.js',
     './tabletop-pta-campaign.js',
+    './tabletop-pta-kanto.js',
     './tabletop.webmanifest',
     './reader.html',
     './player.html',

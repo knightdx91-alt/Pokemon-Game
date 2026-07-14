@@ -85,14 +85,45 @@
     function moveRange(m){ return 2 + Math.floor(m.spd/4); }
 
     function start(opts){
-      // opts: { player:mon, party:[mon...], enemy:mon, catchable, bag:{balls,potions}, onEnd(fn) }
-      B={ player:{mon:opts.player,x:1,y:H-2}, enemy:{mon:opts.enemy,x:W-2,y:1},
+      // opts: { player:mon, party:[mon...], enemy:mon | enemyTeam:[mon...],
+      //         foeLabel, catchable, bag:{balls,potions}, onEnd(fn) }
+      var team = opts.enemyTeam ? opts.enemyTeam.slice() : [opts.enemy];
+      B={ player:{mon:opts.player,x:1,y:H-2}, enemy:{mon:team[0],x:W-2,y:1},
+          enemyTeam:team, enemyIdx:0, foeLabel:opts.foeLabel||'',
           party:opts.party||[opts.player], bag:opts.bag||{balls:0,potions:0},
           catchable:!!opts.catchable, onEnd:opts.onEnd||function(){}, log:[], phase:'player', moved:false, acted:false };
       sel=0;
       el=$('tt-battle'); el.classList.add('on');
-      log('A wild '+B.enemy.mon.n+' (Lv '+B.enemy.mon.level+') appeared!');
+      log(opts.foeLabel ? opts.foeLabel+' sent out '+B.enemy.mon.n+'!'
+                        : 'A wild '+B.enemy.mon.n+' (Lv '+B.enemy.mon.level+') appeared!');
       render();
+    }
+    /* ---- Status conditions (afflictions) ---- */
+    function statusFor(type){ // a move of this type may inflict this status
+      switch(type){
+        case 'Fire': return {t:'burn',chance:.20,turns:99,label:'burned'};
+        case 'Electric': return {t:'paralysis',chance:.25,turns:99,label:'paralyzed'};
+        case 'Ice': return {t:'freeze',chance:.12,turns:99,label:'frozen solid'};
+        case 'Poison': return {t:'poison',chance:.25,turns:99,label:'poisoned'};
+        case 'Grass': return {t:'poison',chance:.12,turns:99,label:'poisoned'};
+        case 'Psychic': return {t:'confusion',chance:.15,turns:3,label:'confused'};
+        case 'Ghost': return {t:'confusion',chance:.20,turns:3,label:'confused'};
+        default: return null;
+      }
+    }
+    function preAct(mon){ // can this mon act? (mutates status)
+      var s=mon.status; if(!s) return {act:true};
+      if(s.t==='freeze'){ if(Math.random()<0.25){ mon.status=null; return {act:true,msg:mon.n+' thawed out!'}; } return {act:false,msg:mon.n+' is frozen solid!'}; }
+      if(s.t==='sleep'){ s.turns--; if(s.turns<=0){ mon.status=null; return {act:true,msg:mon.n+' woke up!'}; } return {act:false,msg:mon.n+' is fast asleep.'}; }
+      if(s.t==='paralysis'){ if(Math.random()<0.25) return {act:false,msg:mon.n+' is paralyzed! It can’t move!'}; }
+      if(s.t==='confusion'){ s.turns--; if(s.turns<=0){ mon.status=null; }
+        else if(Math.random()<0.33){ var d=roll(1,6)+2; mon.hp-=d; return {act:false,msg:mon.n+' is confused and hurt itself! ('+d+')'}; } }
+      return {act:true};
+    }
+    function residual(mon){ // end-of-turn burn/poison damage; returns msg or ''
+      var s=mon.status; if(!s) return '';
+      if(s.t==='burn'||s.t==='poison'){ var d=roll(1,10); mon.hp-=d; return mon.n+' is hurt by its '+s.t+'! ('+d+')'; }
+      return '';
     }
     function log(t){ B.log.unshift(t); if(B.log.length>6) B.log.length=6; }
 
@@ -158,101 +189,135 @@
       var pct=Math.max(0,Math.round(m.hp/m.maxhp*100));
       var col=pct>50?'#63bb5b':pct>20?'#f4d23c':'#ee1515';
       return '<div class="bt-info '+side+'"><div class="bt-nm">'+esc(m.n)+' <small>Lv'+m.level+'</small>'+
-        (m.status?' <em>'+esc(m.status)+'</em>':'')+'</div>'+
+        (m.status?' <em>'+esc(m.status.t)+'</em>':'')+'</div>'+
         '<div class="bt-hp"><i style="width:'+pct+'%;background:'+col+'"></i></div>'+
         '<div class="bt-hpn">'+Math.max(0,m.hp)+' / '+m.maxhp+'</div></div>';
     }
     function cellTap(x,y){
       if(B.phase!=='player') return;
       // tap enemy in range → attack with selected move
-      if(x===B.enemy.x&&y===B.enemy.y){ if(!B.acted) doAttack(B.player,B.enemy,B.player.mon.moves[sel]); return; }
+      if(x===B.enemy.x&&y===B.enemy.y){ playerAttack(B.player.mon.moves[sel]); return; }
       // move
       if(!B.moved && reachable()[x+','+y]){ B.player.x=x; B.player.y=y; B.moved=true; render(); }
     }
     function cmd(c){
       if(c==='run'){ finish('run'); return; }
       if(B.phase!=='player') return;
-      if(c==='fight'){ doAttack(B.player,B.enemy,B.player.mon.moves[sel]); }
+      if(c==='fight'){ playerAttack(B.player.mon.moves[sel]); }
       else if(c==='catch'){ doCatch(); }
       else if(c==='potion'){ doPotion(); }
       else if(c==='switch'){ doSwitch(); }
       else if(c==='end'){ endPlayerTurn(); }
     }
+    function effTxt(m){ return m===0?' It had no effect…':m>1?' Super effective!':m<1?' Not very effective…':''; }
     function damage(att,def,mv){
       var base=roll(mv.dice[0],mv.dice[1]) + Math.floor(mv.stat/2) + Math.floor(att.level/3);
+      if(att.status && att.status.t==='burn' && mv.cat==='phys') base=Math.round(base*0.6); // burn saps physical
       var mult=typeMult(mv.type,def.types);
       var stab = att.types.indexOf(mv.type)!==-1 ? 1.5 : 1;
       var dmg=Math.max(mult===0?0:1, Math.round(base*mult*stab));
       return {dmg:dmg,mult:mult};
     }
-    function doAttack(from,to,mv){
-      if(dist(from,to)>mv.range){ log(from.mon.n+' is too far to use '+mv.name+'.'); render(); return; }
-      var r=damage(from.mon,to.mon,mv);
-      to.mon.hp-=r.dmg;
-      var eff=r.mult===0?' It had no effect…':r.mult>1?' Super effective!':r.mult<1?' Not very effective…':'';
-      log(from.mon.n+' used '+mv.name+'! '+r.dmg+' dmg.'+eff);
-      B.acted=true;
+    function inflict(mv,to){
+      if(to.mon.hp>0 && !to.mon.status){
+        var st=statusFor(mv.type);
+        if(st && Math.random()<st.chance){ to.mon.status={t:st.t,turns:st.turns}; log(to.mon.n+' is '+st.label+'!'); }
+      }
+    }
+    // Player attacks with the selected move; then the turn passes to the foe.
+    function playerAttack(mv){
+      if(B.phase!=='player'||B.acted) return;
+      var from=B.player, to=B.enemy;
+      if(dist(from,to)>mv.range){ log(from.mon.n+' is too far — move closer or pick a ranged move.'); render(); return; }
+      var r=damage(from.mon,to.mon,mv); to.mon.hp-=r.dmg;
+      log(from.mon.n+' used '+mv.name+'! '+r.dmg+' dmg.'+effTxt(r.mult));
+      inflict(mv,to); B.acted=true;
       if(to.mon.hp<=0){ afterKO(to); return; }
-      if(from===B.player) maybeEnemyTurn(); else render();
+      endPlayerTurn();
     }
     function afterKO(side){
-      if(side===B.enemy){ log('The wild '+B.enemy.mon.n+' fainted!'); render(); setTimeout(function(){ finish('win'); },700); }
-      else { // player's mon fainted
+      if(side===B.enemy){
+        log(B.enemy.mon.n+' fainted!');
+        B.enemyIdx++;
+        if(B.enemyIdx < B.enemyTeam.length){
+          B.enemy.mon=B.enemyTeam[B.enemyIdx]; B.enemy.x=W-2; B.enemy.y=1; B.enemy.mon.status=null;
+          log((B.foeLabel||'The foe')+' sent out '+B.enemy.mon.n+'!');
+          B.phase='player'; B.moved=B.acted=false; render();
+        } else { render(); setTimeout(function(){ finish('win'); },700); }
+      } else {
         log(B.player.mon.n+' fainted!');
         var next=B.party.filter(function(x){return x.hp>0&&x!==B.player.mon;})[0];
-        if(next){ B.player.mon=next; sel=0; B.moved=B.acted=false; log('Go, '+next.n+'!'); render(); }
+        if(next){ B.player.mon=next; sel=0; B.moved=B.acted=false; B.phase='player'; log('Go, '+next.n+'!'); render(); }
         else { render(); setTimeout(function(){ finish('lose'); },700); }
       }
     }
     function doCatch(){
       B.bag.balls--; B.acted=true;
       var e=B.enemy.mon;
-      // PTA-style: roll d100, want LOW. Threshold rises as the foe weakens.
-      var hpPct=e.hp/e.maxhp;
-      var thresh=25 + Math.round((1-hpPct)*45) + (e.status?15:0); // 25..85
+      var thresh=25 + Math.round((1-e.hp/e.maxhp)*45) + (e.status?15:0); // d100, roll low
       var r=roll(1,100);
       log('You threw a Poké Ball… (need ≤'+thresh+', rolled '+r+')');
       if(r<=thresh){ log('Gotcha! '+e.n+' was caught!'); render(); setTimeout(function(){ finish('caught'); },700); }
-      else { log(e.n+' broke free!'); maybeEnemyTurn(); }
+      else { log(e.n+' broke free!'); endPlayerTurn(); }
     }
     function doPotion(){
       B.bag.potions--; var heal=Math.round(B.player.mon.maxhp*0.5);
       B.player.mon.hp=Math.min(B.player.mon.maxhp,B.player.mon.hp+heal);
-      log(B.player.mon.n+' recovered '+heal+' HP.'); B.acted=true; maybeEnemyTurn();
+      log(B.player.mon.n+' recovered '+heal+' HP.'); B.acted=true; endPlayerTurn();
     }
     function doSwitch(){
       var opts=B.party.filter(function(x){return x.hp>0&&x!==B.player.mon;});
       if(!opts.length) return;
-      B.player.mon=opts[0]; sel=0; log('Go, '+opts[0].n+'!'); B.acted=true; maybeEnemyTurn();
+      B.player.mon=opts[0]; sel=0; log('Go, '+opts[0].n+'!'); B.acted=true; endPlayerTurn();
     }
-    function endPlayerTurn(){ maybeEnemyTurn(true); }
-    function maybeEnemyTurn(force){
-      if(!force && !B.acted) { render(); return; }
+    // ---- Turn transitions with status ticks ----
+    function endPlayerTurn(){
+      var msg=residual(B.player.mon); if(msg) log(msg);
+      if(B.player.mon.hp<=0){ afterKO(B.player); return; }
       B.phase='enemy'; render();
-      setTimeout(enemyTurn, 550);
+      setTimeout(enemyTurn, 600);
+    }
+    function chooseEnemyMove(em,pm){
+      var best=em.moves[0], bestScore=-1;
+      em.moves.forEach(function(m){
+        var avg=(m.dice[0]*(m.dice[1]+1)/2)+Math.floor(m.stat/2);
+        var score=avg*typeMult(m.type,pm.types)*(em.types.indexOf(m.type)!==-1?1.5:1);
+        if(score>bestScore){ bestScore=score; best=m; }
+      });
+      return best;
     }
     function enemyTurn(){
-      var e=B.enemy,p=B.player;
-      // pick best move; move into range if needed
-      var mv=e.mon.moves[0];
-      e.mon.moves.forEach(function(m){ if(m.range>=mv.range) {} });
-      var best=e.mon.moves.slice().sort(function(a,b){return b.range-a.range;})[0]||mv;
+      var e=B.enemy, p=B.player;
+      var pre=preAct(e.mon); if(pre.msg) log(pre.msg);
+      if(e.mon.hp<=0){ afterKO(e); return; }
+      if(!pre.act){ render(); setTimeout(endEnemyTurn, 550); return; }
+      var best=chooseEnemyMove(e.mon,p.mon);
       if(dist(e,p)>best.range){
-        // step toward player up to its move range
-        var mr=moveRange(e.mon);
-        var dx=Math.sign(p.x-e.x), dy=Math.sign(p.y-e.y), steps=mr;
+        var mr=moveRange(e.mon), dx=Math.sign(p.x-e.x), dy=Math.sign(p.y-e.y), steps=mr;
         while(steps-->0 && dist(e,p)>best.range){
-          var nx=e.x+dx, ny=e.y+dy;
-          if(nx===p.x&&ny===p.y) break;
+          var nx=e.x+dx, ny=e.y+dy; if(nx===p.x&&ny===p.y) break;
           e.x=Math.max(0,Math.min(W-1,nx)); e.y=Math.max(0,Math.min(H-1,ny));
         }
       }
       render();
       setTimeout(function(){
-        if(dist(e,p)<=best.range){ doAttack(e,p,best); }
-        else { log('The wild '+e.mon.n+' crept closer.'); }
-        if(B.enemy.mon.hp>0 && B.player.mon.hp>0){ B.phase='player'; B.moved=B.acted=false; render(); }
-      }, 550);
+        if(dist(e,p)<=best.range){
+          var r=damage(e.mon,p.mon,best); p.mon.hp-=r.dmg;
+          log(e.mon.n+' used '+best.name+'! '+r.dmg+' dmg.'+effTxt(r.mult));
+          inflict(best,p);
+          if(p.mon.hp<=0){ afterKO(p); return; }
+        } else { log((B.foeLabel?'The foe’s ':'The wild ')+e.mon.n+' crept closer.'); }
+        endEnemyTurn();
+      }, 520);
+    }
+    function endEnemyTurn(){
+      var msg=residual(B.enemy.mon); if(msg) log(msg);
+      if(B.enemy.mon.hp<=0){ afterKO(B.enemy); return; }
+      B.phase='player'; B.moved=B.acted=false;
+      var pre=preAct(B.player.mon); if(pre.msg) log(pre.msg);
+      if(B.player.mon.hp<=0){ afterKO(B.player); return; }
+      if(!pre.act){ render(); setTimeout(endPlayerTurn, 850); return; } // player can't act this turn
+      render();
     }
     function finish(result){
       el.classList.remove('on');
@@ -348,6 +413,8 @@
       wireHeader();
     }
 
+    function badgeCount(){ return Object.keys(S.flags||{}).filter(function(f){ return f.indexOf('badge_')===0; }).length; }
+    function subst(t){ return String(t).replace(/\{badges\}/g, badgeCount()); } // dynamic text tokens
     function scene(id){ return camp.scenes[id]; }
     function goScene(id){
       S.scene=id; save();
@@ -366,15 +433,16 @@
     function renderScene(sc){
       var box=$('play-body');
       var choices=(sc.choices||[]).map(function(ch,i){
-        var lock = ch.need && !S.flags[ch.need];
+        var need = ch.need ? (Array.isArray(ch.need)?ch.need:[ch.need]) : null;
+        var lock = need && need.some(function(f){ return !S.flags[f]; });
         return '<button class="scene-choice" data-i="'+i+'"'+(lock?' disabled':'')+'>'+
           md(ch.label)+(ch.check?'<small>check: '+ch.check.stat.toUpperCase()+' vs DC '+ch.check.dc+'</small>':'')+
-          (lock?'<small>requires '+esc(ch.need)+'</small>':'')+'</button>';
+          (lock&&ch.needMsg?'<small>'+esc(ch.needMsg)+'</small>':'')+'</button>';
       }).join('');
       box.innerHTML = playHeader()+
         '<div class="scene">'+
-          (sc.title?'<h3 class="scene-title">'+esc(sc.title)+'</h3>':'')+
-          '<div class="scene-text">'+md(sc.text||'')+'</div>'+
+          (sc.title?'<h3 class="scene-title">'+esc(subst(sc.title))+'</h3>':'')+
+          '<div class="scene-text">'+md(subst(sc.text||''))+'</div>'+
           (sc.type==='starter'?starterUI(sc):'')+
           '<div class="scene-choices">'+choices+
             (sc.type==='end'?'<button class="scene-choice end" id="scene-finish">✦ Finish</button>':'')+
@@ -442,16 +510,20 @@
       }
       if(!party.length){ renderScene({type:'story',title:'No Pokémon!',text:'You have no Pokémon able to battle.',choices:[{label:'Continue',to:sc.lose||camp.start}]}); return; }
       var lead=party[0];
-      var enemy=TTMon(sc.enemy.n, sc.enemy.level||lead.level);
+      var foes = sc.team ? sc.team : [sc.enemy];
+      var enemyTeam = foes.map(function(en){ return TTMon(en.n, en.level||lead.level); });
+      var catchable = sc.catchable!==false && !sc.team && !sc.foe; // wild only
       TTBattle.start({
-        player:lead, party:derivedParty(), enemy:enemy, catchable:sc.catchable!==false, bag:S.bag,
+        player:lead, party:derivedParty(), enemyTeam:enemyTeam, foeLabel:sc.foe||'',
+        catchable:catchable, bag:S.bag,
         onEnd:function(out){
           // persist party hp + bag + catches
           S.party.forEach(function(pm){ if(pm._mon) pm.hp=pm._mon.hp; });
           S.bag=out.bag;
           if(out.caught){ addMon(out.caught.n, out.caught.level); toast('Caught & registered '+out.caught.n+'!'); }
           if(out.result==='win'||out.result==='caught'){
-            var ups=awardExp((sc.enemy.level||5)*6 + 12);  // auto EXP + level-ups
+            var base=foes.reduce(function(a,e){return a+(e.level||5)*5;},0)+10; // auto EXP + level-ups
+            var ups=awardExp(base);
             save();
             if(ups.length) setTimeout(function(){ toast(ups.join(' · ')); }, out.caught?900:0);
             goScene(sc.win);
