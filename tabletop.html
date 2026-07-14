@@ -187,6 +187,74 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 .dex-detail .lbl{color:var(--accent);font-weight:700}
 .dex-detail .mv{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:14px;
   padding:2px 9px;margin:2px 4px 2px 0;font-size:11px}
+
+/* ---------- Play (campaign runner) ---------- */
+.camp-hero{border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;background:var(--panel)}
+.camp-hero h2{margin:0 0 6px;color:var(--accent);font-size:20px}
+.camp-hero p{margin:0;font-size:14px;line-height:1.6;color:#d8d4cc}
+.camp-btn{display:block;width:100%;border:1px solid var(--line);background:var(--panel2);border-radius:12px;
+  padding:13px;font-size:15px;margin-bottom:10px;color:var(--text)}
+.camp-btn.primary{border-color:var(--accent);background:var(--accent);color:#0b0a10;font-weight:700}
+.camp-status{color:var(--muted);font-size:12px;text-align:center;margin:-2px 0 12px}
+.scene{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--panel);margin-bottom:12px}
+.scene-title{margin:0 0 10px;color:var(--accent);font-size:17px}
+.scene-text{font-size:15px;line-height:1.7;color:#e2ded6}
+.scene-text b{color:var(--accent)}
+.scene-choices{margin-top:16px;display:flex;flex-direction:column;gap:9px}
+.scene-choice{text-align:left;border:1px solid var(--line);background:var(--panel2);border-radius:11px;
+  padding:12px 14px;font-size:14px;color:var(--text);line-height:1.4}
+.scene-choice:active{transform:scale(.98)}
+.scene-choice[disabled]{opacity:.45}
+.scene-choice small{display:block;color:var(--muted);font-size:11px;margin-top:3px;font-style:italic}
+.scene-choice.end{border-color:var(--accent);color:var(--accent);text-align:center;font-weight:700}
+.starter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px}
+.starter-card{border:1px solid var(--line);background:var(--panel2);border-radius:11px;padding:12px 6px;text-align:center;color:var(--text)}
+.starter-card b{display:block;color:var(--accent);font-size:14px}
+.starter-card span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.starter-card small{display:block;font-size:10px;color:#b8b4ac;margin-top:5px}
+.party-strip{display:flex;flex-wrap:wrap;gap:6px}
+.party-chip{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:4px 10px;font-size:12px}
+.party-chip small{color:var(--muted)}
+.party-chip.bag{margin-left:auto}
+.tt-toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%) translateY(20px);opacity:0;
+  background:#0b0a10;border:1px solid var(--accent);color:var(--accent);border-radius:20px;padding:9px 18px;
+  font-size:14px;z-index:9999;transition:opacity .3s,transform .3s;pointer-events:none;max-width:80%;text-align:center}
+.tt-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- Grid battle overlay ---------- */
+#tt-battle{position:fixed;inset:0;z-index:5000;background:var(--bg);display:none;flex-direction:column;
+  padding:calc(var(--safe-t) + 10px) 10px calc(var(--safe-b) + 10px);overflow-y:auto}
+#tt-battle.on{display:flex}
+.bt-top,.bt-bottom{display:flex}
+.bt-bottom{justify-content:flex-end}
+.bt-info{border:1px solid var(--line);border-radius:10px;padding:7px 11px;background:var(--panel);min-width:56%}
+.bt-info.me{margin-left:auto}
+.bt-nm{font-size:13px;font-weight:700}.bt-nm small{color:var(--muted);font-weight:400}
+.bt-nm em{color:#e0b050;font-style:normal;font-size:11px}
+.bt-hp{height:7px;border-radius:4px;background:var(--panel2);overflow:hidden;margin:4px 0 2px}
+.bt-hp i{display:block;height:100%;border-radius:4px;transition:width .3s}
+.bt-hpn{font-size:11px;color:var(--muted)}
+.bt-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;margin:10px auto;width:100%;max-width:420px;aspect-ratio:8/6}
+.bt-cell{background:#141019;border:1px solid #221c2c;border-radius:4px;position:relative;display:flex;align-items:center;justify-content:center}
+.bt-cell.reach{background:#1c2a1e;border-color:#2e7d32;cursor:pointer}
+.bt-cell.target{outline:2px solid var(--accent);cursor:pointer}
+.bt-tok{width:84%;height:84%;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;text-align:center;border:2px solid #0009}
+.bt-tok.me{background:#4d90d5;color:#fff}
+.bt-tok.foe{background:#ee1515;color:#fff}
+.bt-log{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:8px 11px;
+  font-size:12px;line-height:1.5;color:#d0ccc4;min-height:52px;margin-bottom:8px}
+.bt-log div:first-child{color:var(--accent)}
+.bt-actions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.bt-move{flex:1;min-width:30%;border:1px solid var(--line);background:var(--panel2);border-radius:9px;
+  padding:8px 6px;font-size:12px;color:var(--text);text-align:left}
+.bt-move.sel{border-color:var(--accent);background:rgba(238,21,21,.12)}
+.bt-move small{display:block;color:var(--muted);font-size:9px}
+.bt-cmd{display:flex;gap:6px;flex-wrap:wrap}
+.bt-cmd button{flex:1;min-width:28%;border:1px solid var(--line);background:var(--panel2);border-radius:9px;
+  padding:11px 6px;font-size:13px;color:var(--text)}
+.bt-cmd button[disabled]{opacity:.4}
+.bt-cmd button.run{border-color:var(--accent2);color:#e8a0a0;flex-basis:100%}
 </style>
 </head>
 <body>
@@ -253,6 +321,8 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 
     <div class="view hidden" id="v-timeline"><div class="pad" id="timeline-body"></div></div>
 
+    <div class="view hidden" id="v-play"><div class="pad" id="play-body"></div></div>
+
     <div class="view hidden" id="v-dex"><div class="pad">
       <input id="dex-search" class="codex-search" placeholder="Search species or type… (e.g. Charizard, Dragon)" autocomplete="off" spellcheck="false">
       <div id="dex-count" class="dex-count"></div>
@@ -260,12 +330,17 @@ button{font-family:inherit;color:inherit;cursor:pointer}
     </div></div>
   </div>
 
+  <!-- ============ GRID BATTLE OVERLAY ============ -->
+  <div id="tt-battle"></div>
+
 </div>
 
 <script src="tabletop-games.js"></script>
 <script src="tabletop-wot.js"></script>
 <script src="tabletop-pta-dex.js"></script>
 <script src="tabletop-pta.js"></script>
+<script src="tabletop-engine.js"></script>
+<script src="tabletop-pta-campaign.js"></script>
 <script>
 (function(){
   "use strict";
@@ -323,6 +398,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
     if(current.story) buildStory();
     if(current.codex) buildCodex();
     if(current.dex && current.dex.length) buildDex();
+    if(current.campaigns && current.campaigns.length) buildPlay();
     if(current.timeline) buildTimeline();
     showView('board');
     $('picker').style.display='none';
@@ -331,6 +407,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
   // Tabs are built per game — extra sections (Story/Codex/Timeline) appear
   // only for worlds that define them.
   var TAB_DEFS = [
+    { view:'play',  label:'▶ Play', field:'campaigns' },
     { view:'board', label:'Board', always:true },
     { view:'dice',  label:'Dice',  always:true },
     { view:'sheet', label:'Sheet', always:true },
@@ -375,7 +452,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 
   /* ---------------- Tab switching ---------------- */
   function showView(name){
-    ['board','dice','sheet','lore','story','codex','timeline','dex'].forEach(function(v){
+    ['play','board','dice','sheet','lore','story','codex','timeline','dex'].forEach(function(v){
       var el=$('v-'+v); if(el) el.classList.toggle('hidden', v!==name);
     });
     Array.prototype.forEach.call($('tabs').children,function(b){
@@ -452,7 +529,15 @@ button{font-family:inherit;color:inherit;cursor:pointer}
       document.removeEventListener('pointermove',move);
       document.removeEventListener('pointerup',up);
       el.style.zIndex='';
-      if(moved){ persist(); }
+      if(moved){
+        // Snap to the 32px board grid so tokens line up like a real battle map.
+        var G=32;
+        tk.x=Math.round(tk.x/G)*G; tk.y=Math.round(tk.y/G)*G;
+        var w=$('board-wrap').clientWidth,h=$('board-wrap').clientHeight;
+        tk.x=Math.max(0,Math.min(w-52,tk.x)); tk.y=Math.max(0,Math.min(h-104,tk.y));
+        el.style.left=tk.x+'px'; el.style.top=tk.y+'px';
+        persist();
+      }
       else{ var now=Date.now(); if(now-lastTap<350){ removeToken(idx); } lastTap=now; }
     }
     el.addEventListener('pointerdown',down);
@@ -650,6 +735,14 @@ button{font-family:inherit;color:inherit;cursor:pointer}
       d.innerHTML='<div class="when">'+esc(t.when)+'</div><div class="ev">'+mdlite(t.event)+'</div>';
       body.appendChild(d);
     });
+  }
+
+  /* ======================================================= PLAY */
+  function buildPlay(){
+    // For now, launch the first campaign directly into its hub (continue/start).
+    if(window.TTPlay && current.campaigns && current.campaigns.length){
+      TTPlay.open(current, current.campaigns[0]);
+    }
   }
 
   /* ======================================================= DEX */
