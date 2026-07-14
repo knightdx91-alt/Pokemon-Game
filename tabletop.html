@@ -300,7 +300,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
         '<h2 style="color:'+g.accent+'">'+esc(g.title)+'</h2>'+
         '<p class="tag">'+esc(g.tagline)+'</p>'+
         '<p class="auth">'+esc(g.author)+'</p>';
-      c.onclick=function(){ openGame(g.id); };
+      c.onclick=function(){ location.hash = 'g='+g.id; };
       grid.appendChild(c);
     });
   }
@@ -327,7 +327,6 @@ button{font-family:inherit;color:inherit;cursor:pointer}
     showView('board');
     $('picker').style.display='none';
     $('table').classList.add('on');
-    location.hash = 'g='+id;
   }
   // Tabs are built per game — extra sections (Story/Codex/Timeline) appear
   // only for worlds that define them.
@@ -352,12 +351,26 @@ button{font-family:inherit;color:inherit;cursor:pointer}
       bar.appendChild(b);
     });
   }
+  // Reset the UI back to the picker (main screen). Does NOT touch history —
+  // navigation is driven by the URL hash (see applyHash / the back button).
   function closeGame(){
     $('table').classList.remove('on');
     $('picker').style.display='block';
     var r=document.documentElement.style; r.setProperty('--accent','#d9a441'); r.setProperty('--accent2','#8b1e1e');
     document.querySelector('meta[name=theme-color]').setAttribute('content','#0b0a10');
-    current=null; location.hash='';
+    current=null;
+  }
+  // Single source of truth for which screen is shown: the location hash.
+  // '#g=<id>' → that game's table; empty → the picker. The hardware/browser
+  // back button changes the hash, which fires 'hashchange' → applyHash, so it
+  // behaves exactly like the in-app back button.
+  function applyHash(){
+    var m=location.hash.match(/g=([\w-]+)/);
+    if(m && byId[m[1]]){
+      if(!current || current.id!==m[1]) openGame(m[1]);
+    } else if(current){
+      closeGame();
+    }
   }
 
   /* ---------------- Tab switching ---------------- */
@@ -369,7 +382,13 @@ button{font-family:inherit;color:inherit;cursor:pointer}
       b.classList.toggle('sel', b.dataset.view===name);
     });
   }
-  $('back-btn').onclick = closeGame;
+  // In-app back: step back through history (to the picker), same as the
+  // device back button. If somehow there's no game hash, leave to the hub.
+  $('back-btn').onclick = function(){
+    if(location.hash) history.back();
+    else location.href = 'index.html';
+  };
+  window.addEventListener('hashchange', applyHash);
 
   /* ======================================================= BOARD */
   function buildBoardTools(){
@@ -687,8 +706,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 
   /* ---------------- Boot ---------------- */
   buildPicker();
-  var m=location.hash.match(/g=([\w-]+)/);
-  if(m && byId[m[1]]) openGame(m[1]);
+  applyHash();  // deep-link support: opening tabletop.html#g=<id> jumps straight in
 
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('sw.js').catch(function(){});
