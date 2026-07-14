@@ -67,11 +67,15 @@ under DraStic we must reverse DraStic's equivalents and write glue. Remaining RE
 tasks, in dependency order:
 
 1. **ARM7 I/O read/write dispatch + the `0x048xxxxx` stub** — the hook point.
-   *Complication:* DraStic is a **JIT**; memory accesses may be inlined into
-   compiled blocks rather than routed through a C function. Must confirm the
-   wireless range falls to a hookable **slow-path** handler (I/O regions almost
-   always do — but this must be proven, and the handler's address found). This
-   is the single most important unknown.
+   ✅ **RESOLVED — see `FINDINGS_JIT.md`.** DraStic compiles memory accesses in a
+   **dynarec (JIT) emitter**; there is **no C slow-path** to detour. The wireless
+   region is handled inside the emitter, selected by a **bit-23 test**
+   (`tst addr,#0x800000`) — located at `0x8825c` in `libdrastic.so` and `0x7f788`
+   in `libdrastic_compat.so` (both cores, same design). So the hook is
+   "**patch the emitter to emit a call-out to our `wifi_read/write` handler for
+   the `0x048xxxxx` range**," not "add a switch case." Harder than a C hook, but
+   the exact locus is now known. Remaining sub-task: reverse the emitter's local
+   register/ABI contract at that point to splice a `bl`.
 2. **Scheduler / timing** — how to read a cycle/µs timestamp and register a
    timed callback, so the (extremely timing-sensitive) beacon/CMD/REPLY state
    machine ticks correctly.
@@ -115,19 +119,22 @@ implications. Fine for private/personal use; flag before any distribution.
 - ✅ Firmware/calibration — solved.
 - ✅ Wireless state machine — solved in principle (melonDS transplant).
 - ✅ Netplay transport — easy (Java sockets + 1 JNI method).
-- ⏳ **Core integration (§4) — unresolved and decisive.** Feasible *iff* the
-  wireless region has a hookable slow-path I/O handler (§4.1) and the scheduler/
-  IRQ/RAM internals can be located. This is a multi-week-to-multi-month
-  disassembly effort on a stripped binary with a genuine chance of not
-  converging (worst case: JIT-inlined memory access with no clean seam).
+- ⏳ **Core integration (§4) — partially resolved, still decisive.** §4.1 is
+  **done**: the hook locus is found (dynarec emitter; wifi at `0x8825c` /
+  `0x7f788`, gated by the bit-23 test). The confirmed "worst case" from before is
+  what we have — **JIT-inlined memory access, no clean C seam** — so the emitter
+  must be patched to call out for the wireless range. That is bounded and located
+  but non-trivial, and §4.2–4.4 (scheduler, IRQ, guest-RAM) remain.
 
 ### Recommended next step
 
-Interactive disassembly of the **v7 core** focused solely on **§4.1**: trace an
-ARM7 `str`/`ldr` to `0x048xxxxx` from the memory dispatcher to prove a
-hookable slow-path and recover its address. That single result flips the project
-from "maybe" to "buildable" (or kills it). Everything else in §4 is
-conventional once §4.1 lands.
+Now that §4.1 is pinned, the next concrete task is to **reverse the emitter's
+local ABI at `0x88204`–`0x8825c`**: which registers carry the guest address,
+value, and access size at that point, and what an emitted `bl <handler>` must
+preserve. Then prototype: patch the emitter so the `0x048xxxxx` case emits a call
+to a stub `wifi_read/write` (first just logging), and confirm — on-device or via
+a Unicorn harness — that wireless accesses reach it. That proves the emitter-hook
+mechanism end-to-end before wiring in melonDS's `Wifi` + scheduler/IRQ (§4.2–4.4).
 
 > Honest note: if the aim is simply *DS multiplayer on Android*, packaging
 > **melonDS** (open source, wireless already working) is dramatically less risky

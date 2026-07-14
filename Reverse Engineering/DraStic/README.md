@@ -34,9 +34,12 @@ FIRMWARE.md      why this firmware, and the survey of the whole dump set
 | DS wireless RF/BB calibration + MAC (firmware) | ✅ **Solved** — CRC-valid retail DS Lite firmware secured (`firmware/`) |
 | Wireless MAC/baseband state machine | ✅ **Solved in principle** — transplant melonDS `Wifi` (GPLv3) |
 | Netplay transport | ✅ **Easy** — add in the Java layer (Android sockets) + one new JNI method; DraStic has **zero** native networking to fight |
-| Hooking it into DraStic's core (JIT mem dispatch, scheduler, IRQ, guest RAM) | ⏳ **The deciding risk** — deep RE of a stripped Thumb-2 / AArch64 binary, still open |
+| Hook locus in DraStic's core (§4.1) | ✅ **Found** — dynarec emitter; wifi selected by bit-23 test at `0x8825c` (`libdrastic.so`) / `0x7f788` (compat). See `FINDINGS_JIT.md` |
+| Emitter ABI + scheduler / IRQ / guest-RAM (§4.2–4.4) | ⏳ **Remaining decisive work** — patch the emitter to call a wifi handler, then wire in melonDS `Wifi` |
 
-**Recommendation:** the firmware + melonDS parts are settled. The project's
-success hinges entirely on the last row — reversing DraStic's internals well
-enough to splice a wireless device in. See `FEASIBILITY.md` for the honest
-odds and the exact remaining RE tasks.
+**Recommendation:** the firmware + melonDS parts are settled, and the JIT hook
+point is now located. The core is a **dynarec** — memory accesses are compiled
+inline, so there is no C slow-path to detour; the fix is **patching the emitter**
+to emit a call-out for the `0x048xxxxx` range, not adding a switch case. The
+project now hinges on reversing the emitter's local ABI and the scheduler / IRQ /
+guest-RAM internals. See `FEASIBILITY.md` §4 and `FINDINGS_JIT.md`.
