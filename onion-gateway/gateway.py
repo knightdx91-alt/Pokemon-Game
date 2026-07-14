@@ -45,7 +45,7 @@ EXTRACT_ROOT = "/tmp/onion-extract"       # where archives are unpacked
 MAX_ARCHIVE_BYTES = 2 * 1024 * 1024 * 1024  # 2 GB download cap
 EXTRACT_TTL = 3600                          # delete extractions older than 1 h
 
-GATEWAY_VERSION = "v9"  # bump on every gateway change so a fresh deploy is visible
+GATEWAY_VERSION = "v10"  # bump on every gateway change so a fresh deploy is visible
 
 # In-memory cache for small static assets (images/fonts) so revisits and shared
 # assets don't re-fetch through Tor. Tightly capped so it can never OOM the box.
@@ -319,6 +319,8 @@ function wss(v){try{return String(v).split(',').map(function(p){p=p.trim();if(!p
 function wcss(t){try{return String(t).replace(/url\(\s*(['"]?)([^'")]+)\1\s*\)/gi,function(m,q,u){if(/^(data:|#)/i.test(u))return m;return 'url("'+wrap(u)+'")';});}catch(e){return t;}}
 var of=window.fetch;if(of){window.fetch=function(i,o){try{if(typeof i==='string')i=wrap(i);else if(i&&i.url)i=new Request(wrap(i.url),i);}catch(e){}return of.call(this,i,o);};}
 var oo=XMLHttpRequest.prototype.open;XMLHttpRequest.prototype.open=function(m,u){try{arguments[1]=wrap(u);}catch(e){}return oo.apply(this,arguments);};
+if(window.WebSocket){var _OW=window.WebSocket;function _wsu(u){try{u=String(u);var a=new URL(u,B);if(a.protocol==='http:')a.protocol='ws:';else if(a.protocol==='https:')a.protocol='wss:';if(a.protocol==='ws:'||a.protocol==='wss:'){return (location.protocol==='https:'?'wss://':'ws://')+location.host+'/__ws?url='+encodeURIComponent(a.href);}}catch(e){}return u;}
+var _NW=function(u,p){return (p===undefined)?new _OW(_wsu(u)):new _OW(_wsu(u),p);};try{_NW.prototype=_OW.prototype;_NW.CONNECTING=_OW.CONNECTING;_NW.OPEN=_OW.OPEN;_NW.CLOSING=_OW.CLOSING;_NW.CLOSED=_OW.CLOSED;}catch(e){}window.WebSocket=_NW;}
 var URLA=['src','href','action','formaction','poster','data-src','data-original','data-lazy-src','data-url','data-href'];
 var osa=Element.prototype.setAttribute;Element.prototype.setAttribute=function(n,v){try{var ln=(''+n).toLowerCase();if(URLA.indexOf(ln)>=0)v=wrap(v);else if(ln==='srcset'||ln==='data-srcset')v=wss(v);else if(ln==='style')v=wcss(v);}catch(e){}return osa.call(this,n,v);};
 function ps(proto){try{var d=Object.getOwnPropertyDescriptor(proto,'src');if(d&&d.set&&d.configurable){Object.defineProperty(proto,'src',{enumerable:d.enumerable,configurable:true,get:function(){return d.get.call(this);},set:function(v){try{v=wrap(v);}catch(e){}return d.set.call(this,v);}});}}catch(e){}}
@@ -785,6 +787,10 @@ def top_bar(current):
         'title="New Tor exit IP — use this if browsing gets slow" '
         'style="color:#fff;text-decoration:none;padding:8px 10px;background:#2a2a3a;'
         'border-radius:8px;flex:none">&#128260;</a>'
+        '<a href="/render?url=' + quote(current, safe="") + '" '
+        'title="Render with headless Chromium (for JS-heavy sites)" '
+        'style="color:#fff;text-decoration:none;padding:8px 10px;background:#2a2a3a;'
+        'border-radius:8px;flex:none">&#128421;</a>'
         '<button type="button" onclick="__onionHide()" title="Hide bar" '
         'style="padding:8px 11px;border:0;border-radius:8px;background:#2a2a3a;color:#fff;'
         'flex:none;cursor:pointer">&times;</button>'
@@ -909,6 +915,96 @@ def history_page():
                  "&#9733; Bookmarks</a></p>")
 
 
+def build_proxied_page(content, base_url, display_url):
+    """Rewrite a fetched HTML doc so every link/asset/WS routes through the gateway,
+    inject the JS shim + the top bar, and return the final HTML string.
+
+    Shared by the plain /browse path and the headless-Chromium /render path (which
+    passes already-JS-executed HTML), so both behave identically once returned.
+    """
+    soup = BeautifulSoup(content, "html.parser")
+
+    # Resolve relative links against <base href> if the page sets one, else base_url.
+    page_base = base_url
+    base_tag = soup.find("base", href=True)
+    if base_tag:
+        page_base = urljoin(base_url, base_tag["href"])
+        base_tag.decompose()  # remove it so the browser doesn't hit the onion directly
+
+    # Rewrite every URL-bearing attribute on every element (not just a fixed tag
+    # list) so backgrounds, responsive srcset, lazy-load data-*, SVG <image>,
+    # <object>/<embed>, media posters, etc. all route through Tor.
+    for el in soup.find_all(True):
+        for bad in STRIP_ATTRS:
+            if el.has_attr(bad):
+                del el[bad]
+        for attr in URL_ATTRS:
+            if el.has_attr(attr):
+                absu = _abs_or_none(page_base, el.get(attr))
+                if absu:
+                    el[attr] = proxify(absu)
+        if el.name == "object" and el.has_attr("data"):
+            absu = _abs_or_none(page_base, el.get("data"))
+            if absu:
+                el["data"] = proxify(absu)
+        if el.has_attr("xlink:href"):
+            absu = _abs_or_none(page_base, el.get("xlink:href"))
+            if absu:
+                el["xlink:href"] = proxify(absu)
+        for attr in SRCSET_ATTRS:
+            if el.has_attr(attr):
+                el[attr] = proxify_srcset(el.get(attr), page_base)
+        if el.has_attr("style"):
+            el["style"] = rewrite_css(el.get("style"), page_base)
+        if el.name == "style" and el.get_text():
+            el.string = rewrite_css(el.get_text(), page_base)
+
+    # Drop any page-embedded Content-Security-Policy — it would block the shim
+    # and the resources we now route through the (same-origin) gateway.
+    for m in soup.find_all("meta"):
+        if m.get("http-equiv", "").lower() in ("content-security-policy",
+                                               "content-security-policy-report-only"):
+            m.decompose()
+
+    # Rewrite <meta http-equiv="refresh" content="N; url=..."> redirects.
+    for m in soup.find_all("meta"):
+        if (m.get("http-equiv", "").lower() == "refresh") and m.get("content"):
+            c = m["content"]
+            low = c.lower()
+            k = low.find("url=")
+            if k != -1:
+                dest = urljoin(page_base, c[k + 4:].strip().strip("'\""))
+                if dest.startswith(("http://", "https://")):
+                    m["content"] = c[:k] + "url=" + proxify(dest)
+
+    html = str(soup)
+
+    # JS shim (see _SHIM_BODY): routes fetch/XHR/WebSocket + runtime-set URLs
+    # through the gateway, resolving relatives against the real onion base. First.
+    shim = ("<script>(function(){var B=" + _js_str(page_base) + ";"
+            + _SHIM_BODY + "})();</script>")
+
+    lower = html.lower()
+    h = lower.find("<head")
+    if h != -1:
+        he = html.find(">", h)
+        if he != -1:
+            html = html[: he + 1] + shim + html[he + 1:]
+    else:
+        html = shim + html
+
+    # inject the address bar right after <body>
+    lower = html.lower()
+    i = lower.find("<body")
+    if i != -1:
+        j = html.find(">", i)
+        if j != -1:
+            html = html[: j + 1] + top_bar(display_url) + html[j + 1:]
+    else:
+        html = top_bar(display_url) + html
+    return html
+
+
 @app.route("/browse", methods=["GET", "POST"])
 def browse():
     target = (request.values.get("url") or "").strip()
@@ -968,87 +1064,8 @@ def browse():
         return serve_stream(r, cache_key=(target if is_plain_get else None))
 
     record_history(r.url)
-    soup = BeautifulSoup(r.content, "html.parser")
-
-    # Resolve relative links against <base href> if the page sets one, else r.url.
-    page_base = r.url
-    base_tag = soup.find("base", href=True)
-    if base_tag:
-        page_base = urljoin(r.url, base_tag["href"])
-        base_tag.decompose()  # remove it so the browser doesn't hit the onion directly
-
-    # Rewrite every URL-bearing attribute on every element (not just a fixed tag
-    # list) so backgrounds, responsive srcset, lazy-load data-*, SVG <image>,
-    # <object>/<embed>, media posters, etc. all route through Tor.
-    for el in soup.find_all(True):
-        for bad in STRIP_ATTRS:
-            if el.has_attr(bad):
-                del el[bad]
-        for attr in URL_ATTRS:
-            if el.has_attr(attr):
-                absu = _abs_or_none(page_base, el.get(attr))
-                if absu:
-                    el[attr] = proxify(absu)
-        if el.name == "object" and el.has_attr("data"):
-            absu = _abs_or_none(page_base, el.get("data"))
-            if absu:
-                el["data"] = proxify(absu)
-        if el.has_attr("xlink:href"):
-            absu = _abs_or_none(page_base, el.get("xlink:href"))
-            if absu:
-                el["xlink:href"] = proxify(absu)
-        for attr in SRCSET_ATTRS:
-            if el.has_attr(attr):
-                el[attr] = proxify_srcset(el.get(attr), page_base)
-        if el.has_attr("style"):
-            el["style"] = rewrite_css(el.get("style"), page_base)
-        if el.name == "style" and el.get_text():
-            el.string = rewrite_css(el.get_text(), page_base)
-
-    # Drop any page-embedded Content-Security-Policy — it would block the shim
-    # and the resources we now route through the (same-origin) gateway.
-    for m in soup.find_all("meta"):
-        if m.get("http-equiv", "").lower() in ("content-security-policy",
-                                               "content-security-policy-report-only"):
-            m.decompose()
-
-    # Rewrite <meta http-equiv="refresh" content="N; url=..."> redirects.
-    for m in soup.find_all("meta"):
-        if (m.get("http-equiv", "").lower() == "refresh") and m.get("content"):
-            c = m["content"]
-            low = c.lower()
-            k = low.find("url=")
-            if k != -1:
-                dest = urljoin(page_base, c[k + 4:].strip().strip("'\""))
-                if dest.startswith(("http://", "https://")):
-                    m["content"] = c[:k] + "url=" + proxify(dest)
-
-    html = str(soup)
-
-    # JS shim (see _SHIM_BODY): routes fetch/XHR + runtime-set URLs through the
-    # gateway, resolving relatives against the real onion base. Runs first.
-    shim = ("<script>(function(){var B=" + _js_str(page_base) + ";"
-            + _SHIM_BODY + "})();</script>")
-
-    lower = html.lower()
-    h = lower.find("<head")
-    if h != -1:
-        he = html.find(">", h)
-        if he != -1:
-            html = html[: he + 1] + shim + html[he + 1:]
-    else:
-        html = shim + html
-
-    # inject the address bar right after <body>
-    lower = html.lower()
-    i = lower.find("<body")
-    if i != -1:
-        j = html.find(">", i)
-        if j != -1:
-            html = html[: j + 1] + top_bar(r.url) + html[j + 1:]
-    else:
-        html = top_bar(r.url) + html
-    return Response(html, mimetype="text/html")
+    return Response(build_proxied_page(r.content, r.url, r.url),
+                    mimetype="text/html")
 
 
 # --------------------------------------------------------------------------
@@ -1283,6 +1300,141 @@ def supported():
         (" of " + str(len(_EXTRACTORS)) if not q else "") + ". If your host is "
         "here, add it on the <a href='/hosts'>hosts page</a> and it'll use "
         "yt-dlp automatically.</p>" + rows + more)
+
+
+# --------------------------------------------------------------------------
+# WebSocket bridge (live chat / forums) — proxies browser <-> onion WS over Tor
+# --------------------------------------------------------------------------
+# Optional: needs flask-sock (server side) + websocket-client (upstream) AND a
+# WS-capable server (gunicorn -k gevent; waitress can't upgrade). If the stack
+# isn't present the rest of the reader still works — WS pages just won't get
+# live updates. The client shim rewrites `new WebSocket(...)` to hit /__ws.
+_WS_OK = False
+try:
+    from flask_sock import Sock
+    import websocket as _wsclient          # websocket-client
+    _sock = Sock(app)
+    _WS_OK = True
+except Exception:
+    _WS_OK = False
+
+if _WS_OK:
+    @_sock.route("/__ws")
+    def _ws_bridge(ws):
+        target = (request.args.get("url") or "").strip()
+        if not target.startswith(("ws://", "wss://")):
+            ws.close()
+            return
+        host = urlsplit(target).hostname or ""
+        try:
+            origin = ("https://" + host) if target.startswith("wss://") else ("http://" + host)
+            up = _wsclient.create_connection(
+                target, timeout=30,
+                http_proxy_host="127.0.0.1", http_proxy_port=9050,
+                proxy_type="socks5h",
+                header=["Origin: " + origin],
+                enable_multithread=True)
+        except Exception:
+            try:
+                ws.close()
+            except Exception:
+                pass
+            return
+        alive = {"v": True}
+
+        def up_to_client():
+            try:
+                while alive["v"]:
+                    msg = up.recv()          # str (text) or bytes (binary)
+                    if msg is None or msg == "":
+                        break
+                    ws.send(msg)
+            except Exception:
+                pass
+            finally:
+                alive["v"] = False
+                try:
+                    ws.close()
+                except Exception:
+                    pass
+
+        t = threading.Thread(target=up_to_client, daemon=True)
+        t.start()
+        try:
+            while alive["v"]:
+                data = ws.receive()          # from the browser
+                if data is None:
+                    break
+                if isinstance(data, str):
+                    up.send(data)
+                else:
+                    up.send_binary(data)
+        except Exception:
+            pass
+        finally:
+            alive["v"] = False
+            try:
+                up.close()
+            except Exception:
+                pass
+
+
+# --------------------------------------------------------------------------
+# Headless-Chromium render mode (JS-heavy onion sites)
+# --------------------------------------------------------------------------
+# Runs a real Chromium (via Playwright) through Tor in a SUBPROCESS — isolated
+# from this server's event loop so it can't deadlock gevent. Returns the DOM
+# after JS runs, then feeds it through the same rewriter as /browse. Optional:
+# needs `pip install playwright` + `playwright install chromium` on the VPS.
+_RENDER_SEM = threading.Semaphore(2)   # cap concurrent Chromiums (RAM guard)
+_RENDER_SNIPPET = r'''
+import sys
+from playwright.sync_api import sync_playwright
+url = sys.argv[1]
+with sync_playwright() as p:
+    b = p.chromium.launch(proxy={"server": "socks5://127.0.0.1:9050"},
+                          args=["--no-sandbox", "--disable-dev-shm-usage"])
+    try:
+        pg = b.new_page()
+        pg.goto(url, wait_until="networkidle", timeout=60000)
+        pg.wait_for_timeout(1500)
+        sys.stdout.write(pg.content())
+    finally:
+        b.close()
+'''
+
+
+@app.route("/render")
+def render():
+    target = (request.args.get("url") or "").strip()
+    if not target:
+        return redirect("/")
+    if not target.startswith(("http://", "https://")):
+        target = "http://" + target
+    with _RENDER_SEM:
+        try:
+            p = subprocess.run([sys.executable, "-c", _RENDER_SNIPPET, target],
+                               stdin=subprocess.DEVNULL, capture_output=True,
+                               text=True, timeout=120)
+        except subprocess.TimeoutExpired:
+            return _msg_page("Render timed out",
+                             "Chromium took too long on that page. Try the normal "
+                             "reader, or hit \U0001f504 New IP and retry.")
+        except FileNotFoundError:
+            return _msg_page("Render unavailable", "Python/Chromium not found.")
+    html = p.stdout or ""
+    if not html.strip():
+        err = (p.stderr or "").strip()
+        if "playwright" in err.lower() or "No module named" in err:
+            return _msg_page(
+                "Render mode isn't installed",
+                "The headless-Chromium engine needs Playwright on the VPS. Re-run "
+                "setup-onion-gateway.sh (v10+), which installs it.")
+        return _msg_page("Render failed",
+                         "Chromium couldn't load that page. Details: " + escape(err[-400:]))
+    record_history(target)
+    return Response(build_proxied_page(html.encode("utf-8", "ignore"), target, target),
+                    mimetype="text/html")
 
 
 @app.errorhandler(Exception)

@@ -47,6 +47,25 @@ If you only did the one-file `gateway.py` curl update (below) and the button say
 `/etc/tor/torrc` and `systemctl restart tor` — or just re-run the full setup
 script, which does it for you.
 
+## WebSockets (chat rooms) + render mode need the FULL setup script (v10+)
+
+The one-file `gateway.py` curl below updates the app code only. Two v10 features
+need more than that, so for them **re-run `setup-onion-gateway.sh`**, not the curl:
+
+- **WebSockets (live chat/forums)** — needs a WS-capable server. The setup script
+  installs `gunicorn gevent flask-sock websocket-client`, writes `run.sh`
+  (gunicorn -k gevent, falls back to waitress), and points the systemd unit at it.
+  Without gunicorn+gevent the reader still runs (waitress) but WS pages get no
+  live updates. Client `new WebSocket()` calls are rewritten to `/__ws`, which
+  bridges to the real onion WS over Tor.
+- **🖥 Render mode (headless Chromium)** — needs Playwright + Chromium (~300 MB),
+  which the setup script installs. `/render?url=…` runs Chromium through Tor in a
+  subprocess, then feeds the JS-executed DOM through the same rewriter. If it's
+  not installed the button shows a friendly "not installed" page.
+
+Both degrade gracefully, so a box that only got the one-file update just won't
+have these two features until the full script runs.
+
 ## The deploy command (copy-paste runbook)
 
 ### Step 0 — get ONTO the VPS (this is the part that bit us)
