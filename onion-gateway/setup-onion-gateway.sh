@@ -1560,6 +1560,12 @@ WorkingDirectory=${APP_DIR}
 ExecStart=/usr/bin/env bash ${APP_DIR}/run.sh
 Restart=always
 User=root
+# Memory cap: render mode can spawn Chromium (RAM-hungry). If the gateway ever
+# balloons, systemd throttles then restarts JUST this service instead of letting
+# it OOM the box and take down Tor. Sized for an 8 GB VPS (leaves ~4 GB for Tor
+# + system). Lower these if your box has less RAM.
+MemoryHigh=3500M
+MemoryMax=4G
 [Install]
 WantedBy=multi-user.target
 EOF
