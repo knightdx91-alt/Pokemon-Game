@@ -76,20 +76,43 @@ This **disproves** the earlier assumption that a booted core was out of reach in
 cloud: the runtime-synthesis approach drives the real core to a ROM-initialized
 state with no Android.
 
-### M3 (next) — step the DS CPU until wifi is touched
-Remaining to reach an actual wireless access:
-1. Locate the **frame/emulation-run** function (from `renderFrame` export or the
-   internal step loop) and call it in a loop.
-2. Wire real inputs through the file-server already built: the APK's
-   `assets/drastic_bios_arm7.bin`/`arm9.bin` (+ the `DS_lite_X2B` firmware in
-   `firmware/`) and a DS ROM, so the core actually boots the DS.
-3. Survive the core's **callbacks into Java** during a frame (video blit / input);
-   the JNI dispatcher returns non-null for handles — `CallVoidMethod`-style
-   callbacks just no-op, but any the emulation *depends on* (input state) may need
-   real returns.
-4. With the wireless-watch armed, run frames; DS boot/firmware or a multiplayer
-   ROM touching `0x048xxxxx` will surface the host handler + backtrace.
+### M3 (in progress) — step the DS CPU until the I/O helper fires
 
-Honest caveat: M3 needs a DS ROM and may need scripted input to reach wireless
-code; the DS firmware menu alone doesn't init wifi. But the hard part (a running
-core in cloud) is now proven.
+**Key simplification found:** we do NOT need to reach the Union Room. Every DS
+game reads DS I/O registers (DISPSTAT/VCOUNT/keypad/timers/IPC) on its very first
+frame, so DraStic's **I/O read/write helper — the function whose internal
+address-dispatch contains the wireless (`0x048xxxxx`) sub-branch — is called from
+frame 1.** `drastic_headless.py`'s `run_frame` detects it by trapping any basic
+block entered with an argument register in the guest I/O range `0x04xxxxxx`
+(0x048xxxxx flagged as wireless). So **one booted DS frame is enough** to surface
+the handler; a multiplayer ROM/save is only needed later to exercise the wifi
+*case*, not to find it.
+
+**Real emulation API mapped** (from the export table): the flow is
+`onInit → insertGame(directBoot=1) → startGame → updateFrame` (the true
+emulation-step; `renderFrame` only blits). DS emulation runs on a **pthread**;
+`drastic_headless.py` captures its `start_routine` from `pthread_create` so it can
+be run single-threaded.
+
+**Current blocker (one concrete loader gap):** `onInit` faults — it reaches a
+**PLT stub** (`ldr pc,[ip,#off]!` at ~`0x9a80`) whose GOT slot the synthetic
+loader didn't resolve, so the indirect jump lands in garbage. `drastic_emu.py`
+relocates the 239 `R_ARM_JUMP_SLOT` entries to import stubs, but this slot is a
+**lazy/unrelocated GOT.plt entry** (normally filled by the dynamic linker on
+first call). Fix options:
+  1. Pre-resolve every `.got.plt` slot that still points into the PLT (lazy
+     value) to a generic "return 0" import stub; or
+  2. Emulate the PLT[0] resolver: on entry to any PLT stub, decode the reloc
+     index and dispatch to the right stub.
+Until then, `onInit` doesn't complete, so no emu thread is created and
+`updateFrame` no-ops (0 I/O calls observed — the symptom).
+
+Once `onInit` completes: run `updateFrame` (or the captured emu-thread routine)
+for one frame with the I/O-block detector → the hot `0x04xxxxxx`-arg block is the
+memory/IO helper → read its `0x048xxxxx` sub-branch statically = the wireless
+hook. That is the finish line for §4.1.
+
+Honest status: M1+M2 proven; M3 has the path + tooling but is blocked on the PLT
+lazy-binding fix in the loader. Performance note: Unicorn emulating DraStic's JIT
+compiling+running a DS frame is slow but the first I/O access comes early in the
+frame, so a bounded instruction cap should reach it.

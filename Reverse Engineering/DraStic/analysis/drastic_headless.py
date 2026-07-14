@@ -20,7 +20,7 @@ Usage:
 """
 import struct, sys, argparse, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from drastic_emu import DraSticEmu, Elf32
+from drastic_emu import DraSticEmu, Elf32, STUB_BASE
 from unicorn import *
 from unicorn.arm_const import *
 
@@ -47,6 +47,7 @@ class Headless(DraSticEmu):
         self.fake = FAKE_HANDLE
         self.rom = rom
         self.log = []
+        self.threads = []   # captured (start_routine, arg) from pthread_create
         if rom and os.path.exists(rom):   self.files['rom'] = open(rom,'rb').read()
         if bios7 and os.path.exists(bios7): self.files['bios7'] = open(bios7,'rb').read()
         if bios9 and os.path.exists(bios9): self.files['bios9'] = open(bios9,'rb').read()
@@ -123,6 +124,23 @@ class Headless(DraSticEmu):
                 data,pos=self.fds[fd]; chunk=data[pos:pos+sz]
                 uc.mem_write(a0,chunk); self.fds[fd][1]+=len(chunk); r=len(chunk)//max(a1,1)
         elif name in ('fclose',): r=0
+        elif name in ('mmap','mmap64'):
+            n=a1 if a1 else 0x1000
+            r=self._alloc((n+0xfff)&~0xfff)
+        elif name in ('mprotect','munmap','madvise','msync','cacheflush',
+                      '__aeabi_atexit','__cxa_atexit','pthread_mutex_lock',
+                      'pthread_mutex_unlock','pthread_cond_signal',
+                      'pthread_cond_broadcast','sched_yield','usleep','nanosleep'):
+            r=0
+        elif name=='sysconf':
+            r=0x1000  # _SC_PAGESIZE and friends -> plausible
+        elif name in ('clock_gettime','gettimeofday','clock','time'):
+            r=0
+        elif name in ('pthread_create',):
+            # pthread_create(thread*, attr, start_routine=r2, arg=r3): capture the
+            # routine so we can run the emulation loop ourselves (single-threaded).
+            self.threads.append((a2, a3))
+            r=0  # report success
         else:
             r=0  # default: benign 0
         self.log.append(('libc',name,hex(a0),hex(r)))
@@ -167,6 +185,14 @@ class Headless(DraSticEmu):
                 r=self._emit_str(self.rom or '/sdcard/game.nds')
             elif idx==170:    # ReleaseStringUTFChars
                 r=0
+            elif idx in (222, 223):   # Get/ReleasePrimitiveArrayCritical
+                # return a large framebuffer buffer (2 DS screens, RGBA)
+                if idx == 222:
+                    r = self._alloc(256*192*4 + 0x1000)
+                else:
+                    r = 0
+            elif idx == 171:          # GetArrayLength
+                r = 256*192
             elif idx in (6,21,94,113):  # FindClass/NewGlobalRef/GetMethodID/GetStaticMethodID -> handle
                 r=self._alloc(64)
             else:
@@ -181,11 +207,46 @@ class Headless(DraSticEmu):
         self.log.clear()
         r0,err=self.call(addr, [JAVAVM_OBJ, 0], timeout_s=10)
         return r0, err
-    def run_insertgame(self, addr, r3=0):
+    def run_insertgame(self, addr, r3=1):
         self.log.clear()
-        # insertGame(env, thiz, jstring rom, jint, ... stack args)
+        # insertGame(env, thiz, jstring rom, jint directBoot=1, ... stack args)
         r0,err=self.call(addr, [JNIENV_OBJ, self._alloc(16), self._alloc(16), r3], timeout_s=15)
         return r0, err
+
+    def run_frame(self, addr, max_insns=40_000_000):
+        """Call renderFrame and detect the DS I/O helper: any basic block entered
+        with an argument register in the guest I/O range 0x04xxxxxx is a call to
+        the memory/IO handler; 0x048xxxxx specifically is WIRELESS."""
+        from collections import Counter
+        IO_LO, IO_HI = 0x04000000, 0x05000000
+        self.io_calls = Counter()      # block_addr -> count (arg in IO range)
+        self.wifi_calls = []           # (block_addr, arg)
+        base_lo, base_hi = 0, 0x140000  # module .text range (vaddr==fileoff)
+        def blk(uc, address, size, _):
+            if not (base_lo <= address < base_hi):
+                return
+            for reg in (UC_ARM_REG_R0, UC_ARM_REG_R1, UC_ARM_REG_R2, UC_ARM_REG_R3):
+                v = uc.reg_read(reg)
+                if IO_LO <= v < IO_HI:
+                    self.io_calls[address] += 1
+                    if 0x04800000 <= v < 0x04810000:
+                        self.wifi_calls.append((address, v))
+                    break
+        hb = self.uc.hook_add(UC_HOOK_BLOCK, blk)
+        hi = self.uc.hook_add(UC_HOOK_CODE, self._hook_import, begin=STUB_BASE, end=STUB_BASE+0x100000)
+        hr = self.uc.hook_add(UC_HOOK_CODE, self._rt_dispatch, begin=JNI_TRAP, end=JNI_TRAP+0x10000)
+        hu = self.uc.hook_add(UC_HOOK_MEM_READ_UNMAPPED | UC_HOOK_MEM_WRITE_UNMAPPED | UC_HOOK_MEM_FETCH_UNMAPPED, self._hook_mem_unmapped)
+        # renderFrame(env, thiz, intArray top, intArray bottom, ...) — pass fake arrays
+        for i,a in enumerate([JNIENV_OBJ, self._alloc(16), self._alloc(16), self._alloc(16)]):
+            self.uc.reg_write([UC_ARM_REG_R0,UC_ARM_REG_R1,UC_ARM_REG_R2,UC_ARM_REG_R3][i], a)
+        self.uc.reg_write(UC_ARM_REG_LR, 1)
+        err=None
+        try:
+            self.uc.emu_start(addr, 0, count=max_insns)
+        except UcError as e:
+            err=e
+        for h in (hb,hi,hr,hu): self.uc.hook_del(h)
+        return err
 
 
 def _exports(lib):
