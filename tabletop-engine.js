@@ -43,6 +43,9 @@
     Steel:{sup:['Ice','Rock','Fairy'],res:['Fire','Water','Electric','Steel']},
     Fairy:{sup:['Fighting','Dragon','Dark'],res:['Fire','Poison','Steel']}
   };
+  var TCOL={Normal:'#9099a1',Fire:'#ff6b3d',Water:'#4d90d5',Electric:'#f4d23c',Grass:'#63bb5b',Ice:'#74cec0',
+    Fighting:'#ce4069',Poison:'#ab5ec4',Ground:'#d97746',Flying:'#8fa9de',Psychic:'#f97176',Bug:'#90c12c',
+    Rock:'#c7b78b',Ghost:'#5269ac',Dragon:'#0b6dc3',Dark:'#5a5366',Steel:'#5a8ea1',Fairy:'#ec8fe6'};
   function typeMult(atkType, defTypes){
     var c=CHART[atkType]; if(!c) return 1; var m=1;
     (defTypes||[]).forEach(function(dt){
@@ -385,13 +388,49 @@
     }
     function playHeader(){
       var multi=(game.campaigns||[]).length>1;
+      var hasTeam = S && S.party && S.party.length;
       return '<div class="play-bar">'+
         (multi?'<button id="pb-menu">≡ Campaigns</button>':'<span></span>')+
+        (hasTeam?'<button id="pb-team">👥 Team</button>':'')+
         '<button id="pb-save">💾 Save &amp; Quit</button></div>';
     }
     function wireHeader(){
       var m=$('pb-menu'); if(m) m.onclick=function(){ save(); menu(game); };
+      var t=$('pb-team'); if(t) t.onclick=function(){ renderTeam(); };
       var s=$('pb-save'); if(s) s.onclick=function(){ save(); toast('Progress saved ✓'); if((game.campaigns||[]).length>1) menu(game); else renderHub(); };
+    }
+    // Team management: view party/box, set the lead, swap in/out — outside battle.
+    function renderTeam(){
+      var box=$('play-body'); if(!box) return;
+      function card(e,where,i){
+        var mon=TTMon(e.n,e.level), mx=mon.maxhp, hp=Math.max(0,e.hp!=null?e.hp:mx);
+        var pct=Math.round(hp/mx*100), col=pct>50?'#63bb5b':pct>20?'#f4d23c':'#ee1515';
+        var need=expNeeded(e.level), epct=Math.min(100,Math.round((e.exp||0)/need*100));
+        return '<div class="team-card"><div class="team-top"><b>'+esc(e.n)+'</b> <small>Lv'+e.level+'</small>'+
+          mon.types.map(function(t){return '<span class="type-badge" style="background:'+(TCOL[t]||'#888')+'">'+esc(t)+'</span>';}).join('')+
+          (where==='party'&&i===0?'<span class="lead-tag">LEAD</span>':'')+'</div>'+
+          '<div class="team-bar"><i style="width:'+pct+'%;background:'+col+'"></i></div><div class="team-num">HP '+hp+' / '+mx+'</div>'+
+          '<div class="team-bar xp"><i style="width:'+epct+'%;background:#4d90d5"></i></div><div class="team-num">EXP '+(e.exp||0)+' / '+need+'</div>'+
+          '<div class="team-acts">'+
+            (where==='party'
+              ? (i>0?'<button data-act="lead" data-i="'+i+'">★ Make lead</button>':'')+((S.box&&1)&&S.party.length>1?'<button data-act="tobox" data-i="'+i+'">→ Box</button>':'')
+              : '<button data-act="toparty" data-i="'+i+'"'+(S.party.length>=6?' disabled':'')+'>→ Party</button>')+
+          '</div></div>';
+      }
+      box.innerHTML=playHeader()+'<div class="team-screen"><h3 class="scene-title">Your Team ('+S.party.length+'/6)</h3>'+
+        S.party.map(function(e,i){return card(e,'party',i);}).join('')+
+        ((S.box&&S.box.length)?'<h3 class="scene-title" style="margin-top:18px">Box ('+S.box.length+')</h3>'+S.box.map(function(e,i){return card(e,'box',i);}).join(''):'')+
+        '<button class="camp-btn" id="team-back">← Back to your adventure</button></div>';
+      Array.prototype.forEach.call(box.querySelectorAll('.team-acts button'),function(bt){
+        bt.onclick=function(){ var i=+bt.dataset.i, act=bt.dataset.act;
+          if(act==='lead'){ var e=S.party.splice(i,1)[0]; S.party.unshift(e); }
+          else if(act==='tobox'){ S.box=S.box||[]; S.box.push(S.party.splice(i,1)[0]); }
+          else if(act==='toparty'){ if(S.party.length<6) S.party.push(S.box.splice(i,1)[0]); }
+          save(); renderTeam();
+        };
+      });
+      $('team-back').onclick=function(){ if(S.done) renderHub(); else goScene(S.scene); };
+      wireHeader();
     }
     // The "Play" tab landing: continue or start.
     function renderHub(){
@@ -420,6 +459,11 @@
       S.scene=id; save();
       var sc=scene(id);
       if(!sc){ renderScene({type:'end',title:'The End',text:'(Missing scene: '+id+')'}); return; }
+      if(sc.type==='branch'){ // auto-redirect by the first matching flag
+        var target=sc.else;
+        for(var f in (sc.on||{})){ if(S.flags[f]){ target=sc.on[f]; break; } }
+        goScene(target); return;
+      }
       if(sc.type==='battle'){ runBattle(sc); return; }
       if(sc.type==='reward'){ applyReward(sc); return; }
       renderScene(sc);
