@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0b0a10">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Grand Tabletop</title>
+<link rel="manifest" href="tabletop.webmanifest">
+<style>
+:root{
+  --accent:#d9a441; --accent2:#8b1e1e;
+  --bg:#0b0a10; --panel:#15141c; --panel2:#1e1c28;
+  --line:#2c2a38; --text:#e8e4dc; --muted:#8a8798;
+  --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  overflow:hidden; overscroll-behavior:none;
+}
+button{font-family:inherit;color:inherit;cursor:pointer}
+.hidden{display:none!important}
+
+/* ---------- App frame ---------- */
+#app{height:100%;display:flex;flex-direction:column}
+
+/* ---------- Picker ---------- */
+#picker{height:100%;overflow-y:auto;padding:calc(var(--safe-t) + 20px) 16px calc(var(--safe-b) + 24px)}
+.pk-head{text-align:center;margin:14px 0 26px}
+.pk-head h1{margin:0;font-size:30px;letter-spacing:2px;
+  background:linear-gradient(90deg,#d9a441,#f2d68a,#d9a441);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pk-head p{margin:6px 0 0;color:var(--muted);font-size:14px;font-style:italic}
+.pk-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));max-width:760px;margin:0 auto}
+.card{
+  position:relative;border:1px solid var(--line);border-radius:16px;padding:18px 16px 16px;
+  min-height:168px;display:flex;flex-direction:column;justify-content:flex-end;
+  overflow:hidden;transition:transform .12s,border-color .2s;text-align:left}
+.card:active{transform:scale(.97)}
+.card .emoji{position:absolute;top:10px;right:14px;font-size:40px;opacity:.85;filter:drop-shadow(0 2px 6px #000)}
+.card h2{margin:0 0 2px;font-size:19px;line-height:1.1}
+.card .tag{margin:0;font-size:12px;font-style:italic;color:#e8e4dc;opacity:.85}
+.card .auth{margin:8px 0 0;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.card .badge{position:absolute;top:12px;left:12px;font-size:9px;letter-spacing:1px;text-transform:uppercase;
+  background:#0007;border:1px solid var(--line);border-radius:20px;padding:3px 8px;color:#f2d68a}
+.pk-foot{max-width:760px;margin:26px auto 0;color:var(--muted);font-size:12px;text-align:center;line-height:1.6}
+.pk-foot .install{display:inline-block;margin-top:10px;border:1px solid var(--accent);color:var(--accent);
+  background:transparent;border-radius:10px;padding:8px 16px;font-size:13px}
+
+/* ---------- Table ---------- */
+#table{height:100%;display:none;flex-direction:column}
+#table.on{display:flex}
+.tbar{display:flex;align-items:center;gap:8px;padding:calc(var(--safe-t) + 8px) 12px 8px;
+  background:var(--panel);border-bottom:1px solid var(--line)}
+.tbar .back{background:transparent;border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-size:15px}
+.tbar .ttl{flex:1;min-width:0}
+.tbar .ttl b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--accent)}
+.tbar .ttl span{font-size:11px;color:var(--muted);font-style:italic}
+.tbar .gemoji{font-size:24px}
+
+.tabs{display:flex;background:var(--panel);border-bottom:1px solid var(--line)}
+.tabs button{flex:1;background:transparent;border:none;border-bottom:2px solid transparent;
+  padding:11px 4px;font-size:13px;color:var(--muted);letter-spacing:.5px}
+.tabs button.sel{color:var(--accent);border-bottom-color:var(--accent)}
+
+.view{flex:1;overflow-y:auto;position:relative;-webkit-overflow-scrolling:touch}
+.pad{padding:16px calc(var(--safe-b) + 16px) calc(var(--safe-b) + 32px)}
+
+/* ---------- Board ---------- */
+#board-wrap{position:absolute;inset:0;overflow:hidden;
+  background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:32px 32px;background-position:center}
+#board{position:absolute;inset:0}
+.tok{position:absolute;width:52px;height:52px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  font-size:10px;line-height:1.05;font-weight:700;color:#0b0a10;
+  border:2px solid #0009;box-shadow:0 3px 8px #000a;touch-action:none;user-select:none;padding:2px;overflow:hidden}
+.board-tools{position:absolute;left:0;right:0;bottom:0;padding:10px 12px calc(var(--safe-b) + 12px);
+  display:flex;gap:8px;flex-wrap:wrap;background:linear-gradient(transparent,#000a 40%)}
+.board-tools .chip{border:1px solid var(--line);background:#0008;border-radius:20px;padding:7px 12px;font-size:12px;
+  display:flex;align-items:center;gap:6px}
+.board-tools .chip i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.board-tools .clear{margin-left:auto;border-color:var(--accent2);color:#e8a0a0}
+.board-hint{position:absolute;top:12px;left:0;right:0;text-align:center;color:var(--muted);font-size:12px;pointer-events:none}
+
+/* ---------- Dice ---------- */
+.dice-note{color:var(--muted);font-size:13px;line-height:1.5;font-style:italic;
+  border-left:2px solid var(--accent);padding:2px 0 2px 12px;margin:0 0 16px}
+.dice-presets{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));margin-bottom:16px}
+.dbtn{border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:12px;text-align:left}
+.dbtn b{display:block;font-size:15px;color:var(--accent)}
+.dbtn small{color:var(--muted);font-size:11px}
+.custom-roll{display:flex;gap:8px;margin-bottom:18px}
+.custom-roll input{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+  padding:11px 12px;color:var(--text);font-size:15px;font-family:inherit}
+.custom-roll button{border:1px solid var(--accent);background:var(--accent);color:#0b0a10;
+  border-radius:10px;padding:0 18px;font-size:15px;font-weight:700}
+#dice-result{text-align:center;margin:0 0 18px;min-height:96px;
+  border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:16px;display:flex;
+  flex-direction:column;justify-content:center}
+#dice-result .total{font-size:52px;font-weight:800;color:var(--accent);line-height:1}
+#dice-result .detail{color:var(--muted);font-size:13px;margin-top:8px}
+#dice-result .faces{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+#dice-result .face{width:36px;height:36px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700}
+#dice-result .face.hit{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.spin{animation:spin .5s ease}
+@keyframes spin{from{transform:rotateX(180deg) scale(.6);opacity:.3}to{transform:none;opacity:1}}
+.hist h3{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:0 0 8px}
+.hist .row{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:8px 2px;font-size:13px}
+.hist .row b{color:var(--accent)}
+
+/* ---------- Sheet ---------- */
+.sheet-group{margin-bottom:20px}
+.sheet-group h3{font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;
+  margin:0 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;background:var(--panel2);border:1px solid var(--line);
+  border-radius:9px;padding:9px 10px;color:var(--text);font-size:15px;font-family:inherit}
+.field textarea{min-height:80px;resize:vertical}
+.field.inline{display:flex;align-items:center;gap:10px}
+.field.inline label{flex:1;margin:0}
+.field.inline input{width:72px;text-align:center}
+.track{display:flex;align-items:center;gap:8px}
+.track button{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);font-size:18px}
+.track .val{flex:1;text-align:center;font-size:17px;font-weight:700;color:var(--accent)}
+.track .bar{position:relative;height:8px;border-radius:4px;background:var(--panel2);overflow:hidden;flex:2}
+.track .bar i{position:absolute;inset:0 auto 0 0;background:var(--accent);border-radius:4px}
+.sheet-actions{display:flex;gap:8px;margin-top:8px}
+.sheet-actions button{flex:1;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:11px;font-size:14px}
+.sheet-actions .reset{border-color:var(--accent2);color:#e8a0a0}
+.saved-tag{color:#7bbf7b;font-size:12px;text-align:center;margin-top:10px;height:16px;transition:opacity .3s}
+
+/* ---------- Lore ---------- */
+.lore-item{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden;background:var(--panel)}
+.lore-item summary{padding:14px 16px;font-size:15px;color:var(--accent);cursor:pointer;list-style:none;
+  display:flex;justify-content:space-between;align-items:center}
+.lore-item summary::-webkit-details-marker{display:none}
+.lore-item summary::after{content:'+';color:var(--muted);font-size:20px}
+.lore-item[open] summary::after{content:'–'}
+.lore-body{padding:0 16px 16px;font-size:14px;line-height:1.65;color:#d8d4cc}
+.lore-body b{color:var(--accent)}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ PICKER ============ -->
+  <div id="picker">
+    <div class="pk-head">
+      <h1>GRAND TABLETOP</h1>
+      <p>Choose your world. The table is set.</p>
+    </div>
+    <div class="pk-grid" id="pk-grid"></div>
+    <div class="pk-foot">
+      Everything runs offline once loaded — dice, tokens, sheets, and lore.
+      <br>Add it to your home screen to play like an installed app.
+      <br><button class="install hidden" id="install-btn">⤓ Install to home screen</button>
+    </div>
+  </div>
+
+  <!-- ============ TABLE ============ -->
+  <div id="table">
+    <div class="tbar">
+      <button class="back" id="back-btn">‹</button>
+      <span class="gemoji" id="t-emoji"></span>
+      <div class="ttl"><b id="t-title"></b><span id="t-tag"></span></div>
+    </div>
+    <div class="tabs" id="tabs">
+      <button data-view="board" class="sel">Board</button>
+      <button data-view="dice">Dice</button>
+      <button data-view="sheet">Sheet</button>
+      <button data-view="lore">Lore</button>
+    </div>
+
+    <div class="view" id="v-board">
+      <div id="board-wrap">
+        <div class="board-hint" id="board-hint">Tap a token below to place it · drag to move · double-tap a token to remove</div>
+        <div id="board"></div>
+        <div class="board-tools" id="board-tools"></div>
+      </div>
+    </div>
+
+    <div class="view hidden" id="v-dice"><div class="pad">
+      <p class="dice-note" id="dice-note"></p>
+      <div id="dice-result"><div class="total">—</div><div class="detail">Roll something.</div></div>
+      <div class="dice-presets" id="dice-presets"></div>
+      <div class="custom-roll" id="custom-roll">
+        <input id="custom-input" placeholder="e.g. 2d6+3, 1d20, 4d6kh3" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button id="custom-go">Roll</button>
+      </div>
+      <div class="hist"><h3>History</h3><div id="dice-hist"></div></div>
+    </div></div>
+
+    <div class="view hidden" id="v-sheet"><div class="pad">
+      <div id="sheet-body"></div>
+      <div class="sheet-actions">
+        <button class="reset" id="sheet-reset">Reset sheet</button>
+      </div>
+      <div class="saved-tag" id="sheet-saved"></div>
+    </div></div>
+
+    <div class="view hidden" id="v-lore"><div class="pad" id="lore-body"></div></div>
+  </div>
+
+</div>
+
+<script src="tabletop-games.js"></script>
+<script>
+(function(){
+  "use strict";
+  var GAMES = window.TABLETOP_GAMES || [];
+  var byId = {}; GAMES.forEach(function(g){ byId[g.id]=g; });
+  var STATE_KEY = 'tabletop_state_v2';
+  var current = null;          // active game object
+  var store = load();          // persisted per-game state
+
+  function load(){ try{ return JSON.parse(localStorage.getItem(STATE_KEY))||{}; }catch(e){ return {}; } }
+  function persist(){ try{ localStorage.setItem(STATE_KEY, JSON.stringify(store)); }catch(e){} }
+  function gs(){ // get-or-create this game's state bucket
+    if(!store[current.id]) store[current.id] = { tokens:[], sheet:{}, dice:[] };
+    var b = store[current.id];
+    b.tokens = b.tokens||[]; b.sheet = b.sheet||{}; b.dice = b.dice||[];
+    return b;
+  }
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
+  function mdlite(s){ return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>'); }
+
+  /* ---------------- Picker ---------------- */
+  function buildPicker(){
+    var grid = $('pk-grid'); grid.innerHTML='';
+    GAMES.forEach(function(g){
+      var c = document.createElement('button');
+      c.className='card'; c.style.background=g.bg;
+      c.style.borderColor=g.accent;
+      c.innerHTML =
+        (g.ready?'':'<span class="badge">Preview</span>')+
+        '<span class="emoji">'+g.emoji+'</span>'+
+        '<h2 style="color:'+g.accent+'">'+esc(g.title)+'</h2>'+
+        '<p class="tag">'+esc(g.tagline)+'</p>'+
+        '<p class="auth">'+esc(g.author)+'</p>';
+      c.onclick=function(){ openGame(g.id); };
+      grid.appendChild(c);
+    });
+  }
+
+  /* ---------------- Open / close ---------------- */
+  function openGame(id){
+    current = byId[id]; if(!current) return;
+    var r = document.documentElement.style;
+    r.setProperty('--accent', current.accent);
+    r.setProperty('--accent2', current.accent2||current.accent);
+    document.querySelector('meta[name=theme-color]').setAttribute('content', current.accent);
+    $('t-emoji').textContent = current.emoji;
+    $('t-title').textContent = current.title;
+    $('t-tag').textContent = current.tagline;
+    $('board-wrap').style.background =
+      current.bg+',radial-gradient(var(--line) 1px,transparent 1px)';
+    $('board-wrap').style.backgroundSize='cover,32px 32px';
+    buildDice(); buildSheet(); buildLore(); buildBoardTools(); renderTokens();
+    showView('board');
+    $('picker').style.display='none';
+    $('table').classList.add('on');
+    location.hash = 'g='+id;
+  }
+  function closeGame(){
+    $('table').classList.remove('on');
+    $('picker').style.display='block';
+    var r=document.documentElement.style; r.setProperty('--accent','#d9a441'); r.setProperty('--accent2','#8b1e1e');
+    document.querySelector('meta[name=theme-color]').setAttribute('content','#0b0a10');
+    current=null; location.hash='';
+  }
+
+  /* ---------------- Tab switching ---------------- */
+  function showView(name){
+    ['board','dice','sheet','lore'].forEach(function(v){
+      $('v-'+v).classList.toggle('hidden', v!==name);
+    });
+    Array.prototype.forEach.call($('tabs').children,function(b){
+      b.classList.toggle('sel', b.dataset.view===name);
+    });
+  }
+  Array.prototype.forEach.call($('tabs').children,function(b){
+    b.onclick=function(){ showView(b.dataset.view); };
+  });
+  $('back-btn').onclick = closeGame;
+
+  /* ======================================================= BOARD */
+  function buildBoardTools(){
+    var wrap=$('board-tools'); wrap.innerHTML='';
+    (current.tokens||[]).forEach(function(t){
+      var b=document.createElement('button');
+      b.className='chip';
+      b.innerHTML='<i style="background:'+t.color+'"></i>'+esc(t.label);
+      b.onclick=function(){ addToken(t); };
+      wrap.appendChild(b);
+    });
+    var clr=document.createElement('button');
+    clr.className='chip clear'; clr.textContent='Clear board';
+    clr.onclick=function(){ gs().tokens=[]; persist(); renderTokens(); };
+    wrap.appendChild(clr);
+  }
+  function addToken(t){
+    var w=$('board-wrap').clientWidth, h=$('board-wrap').clientHeight;
+    gs().tokens.push({ label:t.label, color:t.color,
+      x:Math.max(20,w/2-26+ (Math.random()*60-30)),
+      y:Math.max(60,h/2-26+ (Math.random()*60-30)) });
+    persist(); renderTokens();
+    $('board-hint').style.opacity='0';
+  }
+  function renderTokens(){
+    var board=$('board'); board.innerHTML='';
+    var toks = current? gs().tokens : [];
+    toks.forEach(function(tk,idx){
+      var el=document.createElement('div');
+      el.className='tok'; el.style.background=tk.color;
+      el.style.left=tk.x+'px'; el.style.top=tk.y+'px';
+      el.style.color = isDark(tk.color)?'#fff':'#0b0a10';
+      el.textContent=tk.label;
+      makeDraggable(el,tk,idx);
+      board.appendChild(el);
+    });
+  }
+  function isDark(hex){
+    var c=hex.replace('#',''); if(c.length===3)c=c.replace(/./g,'$&$&');
+    var r=parseInt(c.substr(0,2),16),g=parseInt(c.substr(2,2),16),b=parseInt(c.substr(4,2),16);
+    return (0.299*r+0.587*g+0.114*b)<130;
+  }
+  function makeDraggable(el,tk,idx){
+    var startX,startY,ox,oy,moved,lastTap=0;
+    function down(e){
+      e.preventDefault();
+      var p=point(e); startX=p.x; startY=p.y; ox=tk.x; oy=tk.y; moved=false;
+      el.style.zIndex=99;
+      document.addEventListener('pointermove',move);
+      document.addEventListener('pointerup',up);
+    }
+    function move(e){
+      var p=point(e), dx=p.x-startX, dy=p.y-startY;
+      if(Math.abs(dx)>3||Math.abs(dy)>3) moved=true;
+      var w=$('board-wrap').clientWidth,h=$('board-wrap').clientHeight;
+      tk.x=Math.max(0,Math.min(w-52,ox+dx));
+      tk.y=Math.max(0,Math.min(h-104,oy+dy));
+      el.style.left=tk.x+'px'; el.style.top=tk.y+'px';
+    }
+    function up(){
+      document.removeEventListener('pointermove',move);
+      document.removeEventListener('pointerup',up);
+      el.style.zIndex='';
+      if(moved){ persist(); }
+      else{ var now=Date.now(); if(now-lastTap<350){ removeToken(idx); } lastTap=now; }
+    }
+    el.addEventListener('pointerdown',down);
+  }
+  function point(e){ return {x:e.clientX,y:e.clientY}; }
+  function removeToken(idx){ gs().tokens.splice(idx,1); persist(); renderTokens(); }
+
+  /* ======================================================= DICE */
+  function buildDice(){
+    var d=current.dice;
+    $('dice-note').textContent=d.note||'';
+    var wrap=$('dice-presets'); wrap.innerHTML='';
+    (d.presets||[]).forEach(function(p){
+      var b=document.createElement('button'); b.className='dbtn';
+      var sub = d.mode==='pool' ? (p.dice+' dice') : p.expr;
+      b.innerHTML='<b>'+esc(p.label)+'</b><small>'+esc(sub)+(p.note?' · '+esc(p.note):'')+'</small>';
+      b.onclick=function(){ d.mode==='pool'? rollPool(p.dice,p.label) : rollExpr(p.expr,p.label); };
+      wrap.appendChild(b);
+    });
+    $('custom-roll').style.display = d.mode==='pool' ? 'none' : 'flex';
+    $('custom-input').placeholder = 'e.g. 2d6+3, 1d20, 4d6kh3';
+    renderHist();
+  }
+  // Expression roller: NdX (+/-M), optional khK / klK (keep highest/lowest)
+  function rollExpr(expr,label){
+    var total=0, parts=[], faces=[], hitset=[];
+    var terms=expr.replace(/\s+/g,'').replace(/-/g,'+-').split('+').filter(Boolean);
+    terms.forEach(function(term){
+      var neg = term[0]==='-'; if(neg) term=term.slice(1);
+      var m = term.match(/^(\d*)d(\d+)(?:k([hl])(\d+))?$/i);
+      if(m){
+        var n=parseInt(m[1]||'1',10), sides=parseInt(m[2],10);
+        var keep = m[3]?{mode:m[3].toLowerCase(),k:parseInt(m[4],10)}:null;
+        var rolls=[]; for(var i=0;i<n;i++) rolls.push(1+Math.floor(Math.random()*sides));
+        var used=rolls.slice();
+        if(keep){
+          var sorted=rolls.slice().sort(function(a,b){return a-b;});
+          used = keep.mode==='h'? sorted.slice(-keep.k) : sorted.slice(0,keep.k);
+        }
+        var sum=used.reduce(function(a,b){return a+b;},0);
+        rolls.forEach(function(r){ faces.push({v:r,hit:false}); });
+        total += neg?-sum:sum; parts.push((neg?'-':'')+'['+rolls.join(',')+(keep?' k'+keep.mode+keep.k:'')+']');
+      } else if(/^\d+$/.test(term)){
+        var v=parseInt(term,10); total += neg?-v:v; parts.push((neg?'-':'+')+v);
+      }
+    });
+    showResult(total, (label?label+' — ':'')+expr, parts.join(' '), faces);
+    pushHist(label||expr, total, parts.join(' '));
+  }
+  // Pool roller: N d6, report largest matching set + successes (5-6)
+  function rollPool(n,label){
+    var faces=[], counts={}, succ=0;
+    for(var i=0;i<n;i++){ var r=1+Math.floor(Math.random()*6); faces.push({v:r,hit:false}); counts[r]=(counts[r]||0)+1; if(r>=5)succ++; }
+    // biggest set
+    var bestVal=0,bestCnt=0;
+    for(var v in counts){ if(counts[v]>bestCnt || (counts[v]===bestCnt && +v>bestVal)){ bestCnt=counts[v]; bestVal=+v; } }
+    faces.forEach(function(f){ f.hit = (f.v===bestVal && bestCnt>1); });
+    var headline = bestCnt>1 ? (bestCnt+'×'+bestVal) : ('single '+bestVal);
+    var detail = 'Best set: '+headline+' · Successes (5–6): '+succ;
+    showResult(bestCnt>1?bestCnt:1, (label?label+' — ':'')+n+' dice', detail, faces, headline);
+    pushHist(label||(n+'d6 pool'), (bestCnt>1?bestCnt+'×'+bestVal:'—'), detail);
+  }
+  function showResult(total,title,detail,faces,bigOverride){
+    var box=$('dice-result');
+    var facesHtml = faces.length? '<div class="faces">'+faces.map(function(f){
+      return '<span class="face'+(f.hit?' hit':'')+'">'+f.v+'</span>'; }).join('')+'</div>' : '';
+    box.innerHTML='<div class="total">'+(bigOverride||total)+'</div>'+
+      '<div class="detail"><b style="color:var(--accent)">'+esc(title)+'</b><br>'+esc(detail)+'</div>'+facesHtml;
+    box.classList.remove('spin'); void box.offsetWidth; box.classList.add('spin');
+  }
+  function pushHist(label,total,detail){
+    var b=gs(); b.dice.unshift({label:label,total:total,detail:detail,t:Date.now()});
+    if(b.dice.length>25) b.dice.length=25; persist(); renderHist();
+  }
+  function renderHist(){
+    var wrap=$('dice-hist'); var h=gs().dice; wrap.innerHTML='';
+    if(!h.length){ wrap.innerHTML='<div class="row" style="color:var(--muted)">No rolls yet.</div>'; return; }
+    h.forEach(function(r){
+      var row=document.createElement('div'); row.className='row';
+      row.innerHTML='<span>'+esc(r.label)+'</span><b>'+esc(String(r.total))+'</b>';
+      wrap.appendChild(row);
+    });
+  }
+  $('custom-go').onclick=function(){ var v=$('custom-input').value.trim(); if(v) rollExpr(v,''); };
+  $('custom-input').addEventListener('keydown',function(e){ if(e.key==='Enter') $('custom-go').click(); });
+
+  /* ======================================================= SHEET */
+  function buildSheet(){
+    var body=$('sheet-body'); body.innerHTML='';
+    var saved=gs().sheet;
+    (current.sheet||[]).forEach(function(grp){
+      var g=document.createElement('div'); g.className='sheet-group';
+      g.innerHTML='<h3>'+esc(grp.group)+'</h3>';
+      grp.fields.forEach(function(f){
+        var val = (f.key in saved)? saved[f.key] : f.default;
+        var fld=document.createElement('div'); fld.className='field';
+        if(f.type==='number'){
+          fld.className='field inline';
+          fld.innerHTML='<label>'+esc(f.label)+'</label>';
+          var inp=document.createElement('input'); inp.type='number'; inp.value=val;
+          inp.oninput=function(){ saved[f.key]=inp.value; flagSave(); };
+          fld.appendChild(inp);
+        } else if(f.type==='select'){
+          fld.innerHTML='<label>'+esc(f.label)+'</label>';
+          var sel=document.createElement('select');
+          (f.options||[]).forEach(function(o){ var op=document.createElement('option'); op.value=o; op.textContent=o; if(o===val)op.selected=true; sel.appendChild(op); });
+          sel.onchange=function(){ saved[f.key]=sel.value; flagSave(); };
+          fld.appendChild(sel);
+        } else if(f.type==='textarea'){
+          fld.innerHTML='<label>'+esc(f.label)+'</label>';
+          var ta=document.createElement('textarea'); ta.value=val||'';
+          ta.oninput=function(){ saved[f.key]=ta.value; flagSave(); };
+          fld.appendChild(ta);
+        } else if(f.type==='track'){
+          fld.innerHTML='<label>'+esc(f.label)+'</label>';
+          var max=f.max||20; var cur=(val==null?f.default:val);
+          var tr=document.createElement('div'); tr.className='track';
+          var minus=btn('−'), valEl=document.createElement('div'), bar=document.createElement('div'), plus=btn('+');
+          valEl.className='val'; bar.className='bar'; bar.innerHTML='<i></i>';
+          function paint(){ valEl.textContent=cur+' / '+max; bar.firstChild.style.right=(100-Math.max(0,Math.min(100,cur/max*100)))+'%'; }
+          minus.onclick=function(){ cur=Math.max(-max,cur-1); saved[f.key]=cur; paint(); flagSave(); };
+          plus.onclick=function(){ cur=Math.min(max,cur+1); saved[f.key]=cur; paint(); flagSave(); };
+          paint();
+          tr.appendChild(minus); tr.appendChild(bar); tr.appendChild(valEl); tr.appendChild(plus);
+          fld.appendChild(tr);
+        } else { // text
+          fld.innerHTML='<label>'+esc(f.label)+'</label>';
+          var t=document.createElement('input'); t.type='text'; t.value=val||'';
+          t.oninput=function(){ saved[f.key]=t.value; flagSave(); };
+          fld.appendChild(t);
+        }
+        g.appendChild(fld);
+      });
+      body.appendChild(g);
+    });
+    function btn(txt){ var b=document.createElement('button'); b.textContent=txt; return b; }
+  }
+  var saveTimer=null;
+  function flagSave(){ persist(); var el=$('sheet-saved'); el.textContent='Saved ✓'; el.style.opacity='1';
+    clearTimeout(saveTimer); saveTimer=setTimeout(function(){ el.style.opacity='0'; },900); }
+  $('sheet-reset').onclick=function(){
+    if(!confirm('Reset this character sheet to defaults?')) return;
+    gs().sheet={}; persist(); buildSheet(); flagSave();
+  };
+
+  /* ======================================================= LORE */
+  function buildLore(){
+    var body=$('lore-body'); body.innerHTML='';
+    (current.lore||[]).forEach(function(l,i){
+      var d=document.createElement('details'); d.className='lore-item'; if(i===0)d.open=true;
+      d.innerHTML='<summary>'+esc(l.title)+'</summary><div class="lore-body">'+mdlite(l.body)+'</div>';
+      body.appendChild(d);
+    });
+  }
+
+  /* ---------------- Install prompt ---------------- */
+  var deferredPrompt=null;
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault(); deferredPrompt=e; $('install-btn').classList.remove('hidden');
+  });
+  $('install-btn').onclick=function(){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; $('install-btn').classList.add('hidden'); } };
+
+  /* ---------------- Boot ---------------- */
+  buildPicker();
+  var m=location.hash.match(/g=([\w-]+)/);
+  if(m && byId[m[1]]) openGame(m[1]);
+
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  }
+})();
+</script>
+</body>
+</html>
