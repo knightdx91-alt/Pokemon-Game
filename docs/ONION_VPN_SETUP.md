@@ -1,5 +1,17 @@
 # Access .onion links in Chrome on Android (cell data, no app)
 
+> **Two ways to reach onion sites on this VPS — pick one:**
+> 1. **This doc: the built-in Android IKEv2 VPN.** Turn on the VPN and `.onion`
+>    addresses open in plain Chrome; everything else stays fast/un-torified.
+> 2. **The Onion Reader gateway** (`onion-gateway/`, deploy guide in
+>    `onion-gateway/DEPLOY.md`). A web page on the VPS (port 8888) where you paste
+>    an onion link — no VPN toggle, works on any device/browser, and adds
+>    bookmarks, a 🔄 New-IP button, live-chat WebSockets, and a headless-Chromium
+>    render mode. This is the actively-developed path.
+>
+> Both run on the same Tor install and can coexist (the VPN torifies `.onion` at
+> the network layer; the gateway fetches pages server-side and rewrites links).
+
 Goal: open `.onion` links in **plain Chrome on Android over cell data**, with
 **no app installed** on the phone, using your **Contabo Ubuntu VPS**.
 

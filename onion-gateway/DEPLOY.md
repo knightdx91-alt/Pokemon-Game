@@ -47,21 +47,41 @@ If you only did the one-file `gateway.py` curl update (below) and the button say
 `/etc/tor/torrc` and `systemctl restart tor` — or just re-run the full setup
 script, which does it for you.
 
+## Current features (v10)
+
+- **🧅 core reader** — paste an onion link, fetched through Tor, links rewritten.
+- **🔄 New IP** — Tor NEWNYM (fresh circuit / new exit) when a site gets slow.
+- **Speed** — 32-connection pool + gunicorn threads, **per-site circuit isolation**
+  (one slow site can't jam the rest), a small in-memory image/font cache, and
+  `Range`/`206` passthrough so video seeks and downloads resume.
+- **★ Bookmarks + history** — `/bookmarks`, `/history` (persisted JSON on the VPS).
+- **💬 WebSockets** — live chat/forums (see below).
+- **🖥 Render mode** — headless Chromium for JS-heavy sites (see below).
+- **Memory cap** — the systemd unit has `MemoryMax=4G` so render/Chromium can't
+  OOM the box and take down Tor.
+
 ## WebSockets (chat rooms) + render mode need the FULL setup script (v10+)
 
-The one-file `gateway.py` curl below updates the app code only. Two v10 features
-need more than that, so for them **re-run `setup-onion-gateway.sh`**, not the curl:
+The one-file `gateway.py` curl below updates the app code only. Two features need
+more than that, so for them **re-run `setup-onion-gateway.sh`**, not the curl:
 
 - **WebSockets (live chat/forums)** — needs a WS-capable server. The setup script
-  installs `gunicorn gevent flask-sock websocket-client`, writes `run.sh`
-  (gunicorn -k gevent, falls back to waitress), and points the systemd unit at it.
-  Without gunicorn+gevent the reader still runs (waitress) but WS pages get no
-  live updates. Client `new WebSocket()` calls are rewritten to `/__ws`, which
-  bridges to the real onion WS over Tor.
+  installs **gunicorn** (from apt) + **flask-sock** + **websocket-client** (pip),
+  writes `run.sh`, and points the systemd unit at it. `run.sh` launches
+  **`gunicorn -k gthread`** (real-thread worker — deliberately NOT gevent; gevent's
+  `zope.event`/`zope.interface`/`greenlet` chain kept half-installing and leaving
+  the box on the waitress fallback). Without gunicorn+flask-sock the reader still
+  runs under waitress, just with no live WS updates. Client `new WebSocket()` calls
+  are rewritten by the shim to `/__ws`, which bridges to the real onion WS over Tor
+  via `websocket-client` (socks5h). The bridge uses `threading.Thread`, which is
+  correct for the gthread worker.
 - **🖥 Render mode (headless Chromium)** — needs Playwright + Chromium (~300 MB),
-  which the setup script installs. `/render?url=…` runs Chromium through Tor in a
-  subprocess, then feeds the JS-executed DOM through the same rewriter. If it's
-  not installed the button shows a friendly "not installed" page.
+  which the setup script installs (`pip install playwright` **and**
+  `playwright install --with-deps chromium` — the library and the browser are
+  separate). `/render?url=…` runs Chromium through Tor in a **subprocess**
+  (isolated from the server), then feeds the JS-executed DOM through the same
+  rewriter. Capped at 2 concurrent Chromiums. If it's not installed the button
+  shows a friendly "not installed" page.
 
 Both degrade gracefully, so a box that only got the one-file update just won't
 have these two features until the full script runs.
@@ -100,6 +120,74 @@ curl -fsSL "https://cdn.jsdelivr.net/gh/knightdx91-alt/Pokemon-Game@main/onion-g
 
 Expected tail: `active` then `UPDATED …`. Reload the reader and confirm the new
 `GATEWAY_VERSION`. (No `sudo` needed once you're logged in as `root`.)
+
+## Rebuild from scratch (after a Contabo OS reinstall)
+
+When the box gets wedged (e.g. a local LLM ate all the RAM/disk and killed Tor),
+the clean fix is to reinstall the OS in the Contabo panel (**Ubuntu 24.04 LTS**)
+and re-run the two installers. From Google Cloud Shell (or any shell):
+
+```
+ssh-keygen -R 144.126.132.69        # only if "host key verification failed" (new box = new key)
+ssh root@144.126.132.69             # accept the new key, enter root password
+```
+
+Then on the VPS:
+
+```
+apt-get update -y && apt-get upgrade -y
+curl -fsSL "https://cdn.jsdelivr.net/gh/knightdx91-alt/Pokemon-Game@main/vps-onion-vpn-setup.sh" -o /tmp/tor.sh && bash /tmp/tor.sh
+curl -fsSL "https://cdn.jsdelivr.net/gh/knightdx91-alt/Pokemon-Game@main/onion-gateway/setup-onion-gateway.sh" -o /tmp/gw.sh && bash /tmp/gw.sh
+```
+
+`tor.sh` installs Tor (+ the IKEv2 VPN pieces); `gw.sh` installs the v10 gateway,
+the WebSocket + Playwright stacks, the control port, and the memory cap.
+
+## Health check (paste on the VPS)
+
+```
+bash -c '
+systemctl is-active --quiet tor && echo "[PASS] Tor" || echo "[FAIL] Tor"
+systemctl is-active --quiet onion-gateway && echo "[PASS] gateway" || echo "[FAIL] gateway"
+curl -s --socks5-hostname 127.0.0.1:9050 -m 25 https://check.torproject.org/ | grep -qi congrat && echo "[PASS] Tor SOCKS" || echo "[FAIL] Tor SOCKS"
+(exec 3<>/dev/tcp/127.0.0.1/9051) 2>/dev/null && echo "[PASS] control port 9051 (New IP)" || echo "[FAIL] control port 9051"
+ss -ltn 2>/dev/null | grep -q ":8888" && echo "[PASS] listening 8888" || echo "[FAIL] not on 8888"
+systemctl status onion-gateway --no-pager | grep -qi gunicorn && echo "[PASS] gunicorn (WebSockets ON)" || echo "[WARN] waitress fallback (WS off)"
+python3 -c "import flask_sock,websocket" 2>/dev/null && echo "[PASS] WS deps" || echo "[FAIL] WS deps"
+python3 -c "import playwright" 2>/dev/null && echo "[PASS] Playwright" || echo "[WARN] no Playwright"
+systemctl show onion-gateway -p MemoryMax | grep -q "4294967296" && echo "[PASS] memory cap 4G" || echo "[WARN] no memory cap"
+curl -s -m5 http://127.0.0.1:8888/ | grep -o "v1[0-9]" | head -1
+'
+```
+
+All `[PASS]` + version `v10` = healthy. `[WARN]` = an optional feature is off but
+the reader works. `[FAIL]` on Tor or the gateway is a real problem.
+
+## Troubleshooting WebSockets ("running under waitress fallback")
+
+The launcher only starts gunicorn if **both** `gunicorn` is on PATH **and**
+`python3 -c 'import flask_sock'` succeeds. If it falls back to waitress, check the
+service is actually pointed at `run.sh` and both conditions pass:
+
+```
+systemctl cat onion-gateway | grep ExecStart     # must be run.sh, NOT "python3 gateway.py"
+command -v gunicorn                                # install with: apt-get install -y gunicorn
+python3 -c "import flask_sock"                     # install with: pip install --break-system-packages flask-sock websocket-client
+```
+
+Fixes for the things we actually hit:
+- **`ExecStart` still says `python3 gateway.py`** (box only got the one-file
+  update) → the unit was never switched to `run.sh`. Re-run the full setup script,
+  or rewrite the unit to `ExecStart=/usr/bin/env bash /opt/onion-gateway/run.sh`,
+  `daemon-reload`, restart.
+- **`gunicorn` not found** → `apt-get install -y gunicorn` (apt lands it at
+  `/usr/bin/gunicorn`, on the service's PATH; pip's copy sometimes isn't).
+- **`import gevent` → `No module named zope.event`** → this is why we **dropped
+  gevent** and use the **gthread** worker instead. If an old `run.sh` still says
+  `-k gevent`, replace it with `-k gthread -w 2 --threads 32` (needs no gevent).
+- **`Errno 98 Address already in use`** when running `run.sh` by hand → harmless:
+  the service already holds port 8888. Don't run `run.sh` manually; check the
+  service with `systemctl status` instead.
 
 ## Gotchas we actually hit (and why the command looks like it does)
 
