@@ -108,20 +108,36 @@ core allocated JIT/RAM buffers).
 With that, **`onInit → insertGame(directBoot=1) → resetDS → startGame` all run
 CLEAN** (verified). The DS core initializes fully headless in-cloud.
 
-**Remaining (close):** emulation runs on a **separate thread** that isn't spawned
-in this path (`pthread_create` isn't hit during the init sequence — likely gated
-on state our stubs don't set, or created lazily). `updateFrame` is only a
-47-instruction sync stub. The emulation **thread routine was located statically**
-at **`0x37ae4`** (the `start_routine` passed at the `pthread_create` call site
-`0x38368`). Invoking it directly with the I/O-block detector is the current
-experiment: it runs for a long time (real work — good sign), so the detector now
-early-stops once the I/O helper is identified.
+**The real M3 blocker: DraStic's emulation is multi-threaded, and a single-
+threaded raw harness can't drive it.** Details (with a correction):
+- `updateFrame` is only a 47-instruction sync stub (not the emulator).
+- The routine `0x37ae4` (the `start_routine` at the `pthread_create` call site
+  `0x38368`) is a **worker thread that immediately blocks on
+  `pthread_cond_wait`** (confirmed: it spins `0x37b80`/`0x37b8c` calling the
+  `pthread_cond_wait` stub 750k× — a busy-wait because our stub returns instantly
+  instead of blocking). It is a *consumer* waiting to be signalled, **not** the
+  emulation loop.
+- **Correction of an earlier overclaim:** a prior note here said invoking
+  `0x37ae4` "ran 1,000,000 JIT-code-cache blocks (emulation runs)." That was
+  **wrong** — those were 1M spins on the `pthread_cond_wait` stub at `0x7f0000f8`,
+  which sits in the `0x7f…` stub region and was mis-counted as JIT `.bss`
+  (`>0x135000`). No guest DS code actually executed. Distinct-block diagnostic:
+  only 5 `.text` + 2 stub blocks total.
 
-**Finish line (unchanged):** the hot `0x04xxxxxx`-arg block during emulation is
-DraStic's memory/IO helper; its `0x048xxxxx` sub-branch is the wireless hook =
-§4.1 answer. Just needs the emu routine to run guest code far enough to hit I/O
-(happens on the DS's first frame).
+**What this means:** DraStic uses a producer/consumer threading model (a main
+side signals worker threads via condvars; frames are synced with
+`pthread_cond_wait`/`signal`). Our harness stubs pthreads as no-ops and runs one
+thread, so nothing ever signals the worker and no frame is ever produced. To
+drive emulation headless we'd have to **reproduce the threading/sync
+orchestration** — cooperatively schedule the worker(s), emulate condvar
+signal/wait ordering, and drive the frame handshake — a substantial additional
+effort, and easy to get subtly wrong.
 
-Honest status: M1+M2+init-sequence proven; M3 is one step away — get `0x37ae4`
-(or the properly-spawned emu thread) to execute guest code so the I/O helper
-fires. Performance: Unicorn-over-DraStic-JIT is slow, so use the early-stop.
+**Honest status:** M1 + M2 + the full init sequence (`onInit`/`insertGame`/
+`resetDS`/`startGame`) are proven to run headless in-cloud — a real result. But
+**M3 (actually emulating a frame) is blocked on the multi-threaded driving
+model**, which is a large piece of work on its own. This is exactly the class of
+problem a real device/emulator solves for free (the OS runs the threads), which
+is why the on-device Frida route (`frida_trace.js`) remains the low-risk way to
+get the live I/O-helper address. The headless path proved the core *loads and
+initializes*; driving its emulation loop headless is a separate, larger project.
