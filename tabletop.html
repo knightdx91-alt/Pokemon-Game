@@ -189,6 +189,17 @@ button{font-family:inherit;color:inherit;cursor:pointer}
   padding:2px 9px;margin:2px 4px 2px 0;font-size:11px}
 
 /* ---------- Play (campaign runner) ---------- */
+.play-bar{display:flex;justify-content:space-between;gap:8px;margin-bottom:12px}
+.play-bar button{border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:8px 12px;font-size:13px;color:var(--text)}
+.play-bar span{flex:1}
+.camp-menu h2{margin:0 0 4px;color:var(--accent);font-size:20px}
+.camp-intro{margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.5}
+.camp-list{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--panel);
+  border-radius:12px;padding:14px;margin-bottom:10px;color:var(--text)}
+.camp-list b{display:block;color:var(--accent);font-size:16px;margin-bottom:3px}
+.camp-list small{display:block;color:#c8c4bc;font-size:12px;line-height:1.5}
+.camp-list .camp-tag{display:inline-block;margin-top:8px;font-size:11px;color:var(--muted);
+  border:1px solid var(--line);border-radius:12px;padding:2px 9px}
 .camp-hero{border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;background:var(--panel)}
 .camp-hero h2{margin:0 0 6px;color:var(--accent);font-size:20px}
 .camp-hero p{margin:0;font-size:14px;line-height:1.6;color:#d8d4cc}
@@ -337,6 +348,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
 
 <script src="tabletop-games.js"></script>
 <script src="tabletop-wot.js"></script>
+<script src="tabletop-wot-campaigns.js"></script>
 <script src="tabletop-pta-dex.js"></script>
 <script src="tabletop-pta.js"></script>
 <script src="tabletop-engine.js"></script>
@@ -741,7 +753,7 @@ button{font-family:inherit;color:inherit;cursor:pointer}
   function buildPlay(){
     // For now, launch the first campaign directly into its hub (continue/start).
     if(window.TTPlay && current.campaigns && current.campaigns.length){
-      TTPlay.open(current, current.campaigns[0]);
+      TTPlay.mount(current);
     }
   }
 

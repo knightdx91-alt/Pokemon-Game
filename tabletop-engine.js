@@ -275,13 +275,64 @@
     function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
     function fresh(){
-      return { scene:camp.start, party:[], bag:{balls:5,potions:3}, flags:{}, dex:[], done:false, logline:'' };
+      return { scene:camp.start, party:[], box:[], bag:{balls:5,potions:3}, flags:{}, dex:[], done:false, logline:'' };
+    }
+
+    /* ---- Pokémon auto-progression: EXP, leveling, HP (all tracked for you) ---- */
+    function expNeeded(lv){ return 12 + lv*lv*6; }
+    function levelUp(entry){
+      entry.level++;
+      var before=TTMon(entry.n, entry.level-1).maxhp;
+      var after=TTMon(entry.n, entry.level).maxhp;
+      entry.hp=Math.min(after, (entry.hp!=null?entry.hp:after) + (after-before)); // gain the new HP
+      entry._mon=null; // rebuild at the new level next battle
+    }
+    function awardExp(base){
+      var alive=S.party.filter(function(m){return m.hp>0;});
+      var ups=[];
+      alive.forEach(function(m,i){
+        var gain = i===0 ? base : Math.ceil(base/2);
+        m.exp=(m.exp||0)+gain;
+        while(m.exp>=expNeeded(m.level)){ m.exp-=expNeeded(m.level); levelUp(m); ups.push(m.n+' → Lv'+m.level); }
+      });
+      return ups;
+    }
+    // Multi-campaign menu + entry point.
+    function mount(g){
+      game=g;
+      var camps=g.campaigns||[];
+      if(camps.length===1) open(g,camps[0]); else menu(g);
+    }
+    function menu(g){
+      game=g; camp=null;
+      var box=$('play-body'); if(!box) return;
+      box.innerHTML='<div class="camp-menu"><h2>Campaigns</h2><p class="camp-intro">Pick an adventure. Your progress in each is saved separately — come back any time.</p>'+
+        (g.campaigns||[]).map(function(c,i){
+          var st=null; try{ st=JSON.parse(localStorage.getItem('tt_camp_'+g.id+'_'+c.id)); }catch(e){}
+          var status = st ? (st.done?'✓ Completed':'▶ Continue') : 'New';
+          var extra = st&&!st.done&&st.party&&st.party.length ? ' · '+st.party.length+' in party' : '';
+          return '<button class="camp-list" data-i="'+i+'"><b>'+esc(c.title)+'</b>'+
+            '<small>'+esc(c.blurb||'')+'</small><span class="camp-tag">'+status+extra+'</span></button>';
+        }).join('')+'</div>';
+      Array.prototype.forEach.call(box.querySelectorAll('.camp-list'),function(b){
+        b.onclick=function(){ open(g, g.campaigns[+b.dataset.i]); };
+      });
+    }
+    function playHeader(){
+      var multi=(game.campaigns||[]).length>1;
+      return '<div class="play-bar">'+
+        (multi?'<button id="pb-menu">≡ Campaigns</button>':'<span></span>')+
+        '<button id="pb-save">💾 Save &amp; Quit</button></div>';
+    }
+    function wireHeader(){
+      var m=$('pb-menu'); if(m) m.onclick=function(){ save(); menu(game); };
+      var s=$('pb-save'); if(s) s.onclick=function(){ save(); toast('Progress saved ✓'); if((game.campaigns||[]).length>1) menu(game); else renderHub(); };
     }
     // The "Play" tab landing: continue or start.
     function renderHub(){
       var box=$('play-body'); if(!box) return;
       var has = S && !S.done;
-      box.innerHTML =
+      box.innerHTML = playHeader()+
         '<div class="camp-hero">'+
           '<h2>'+esc(camp.title)+'</h2>'+
           '<p>'+md(camp.blurb||'')+'</p>'+
@@ -294,6 +345,7 @@
         if(has && !confirm('Restart from the beginning? Your current run is lost.')) return;
         S=fresh(); save(); goScene(S.scene);
       };
+      wireHeader();
     }
 
     function scene(id){ return camp.scenes[id]; }
@@ -319,7 +371,7 @@
           md(ch.label)+(ch.check?'<small>check: '+ch.check.stat.toUpperCase()+' vs DC '+ch.check.dc+'</small>':'')+
           (lock?'<small>requires '+esc(ch.need)+'</small>':'')+'</button>';
       }).join('');
-      box.innerHTML =
+      box.innerHTML = playHeader()+
         '<div class="scene">'+
           (sc.title?'<h3 class="scene-title">'+esc(sc.title)+'</h3>':'')+
           '<div class="scene-text">'+md(sc.text||'')+'</div>'+
@@ -331,8 +383,9 @@
       Array.prototype.forEach.call(box.querySelectorAll('.scene-choice[data-i]'),function(b){
         b.onclick=function(){ choose(sc, +b.dataset.i); };
       });
-      if(sc.type==='end'){ S.done=true; save(); var f=$('scene-finish'); if(f) f.onclick=renderHub; }
+      if(sc.type==='end'){ S.done=true; save(); var f=$('scene-finish'); if(f) f.onclick=function(){ if((game.campaigns||[]).length>1) menu(game); else renderHub(); }; }
       if(sc.type==='starter'){ wireStarter(sc); }
+      wireHeader();
     }
     function partyStrip(){
       if(!S.party.length) return '';
@@ -359,7 +412,8 @@
     }
     function addMon(name,level){
       var mon=TTMon(name,level);
-      S.party.push({ n:mon.n, level:level, hp:mon.maxhp });
+      var entry={ n:mon.n, level:level, hp:mon.maxhp, exp:0 };
+      if(S.party.length<6) S.party.push(entry); else { S.box=S.box||[]; S.box.push(entry); }
       if(S.dex.indexOf(mon.n)===-1) S.dex.push(mon.n);
       save();
     }
@@ -395,11 +449,15 @@
           // persist party hp + bag + catches
           S.party.forEach(function(pm){ if(pm._mon) pm.hp=pm._mon.hp; });
           S.bag=out.bag;
-          if(out.caught){ addMon(out.caught.n, out.caught.level); toast('Caught '+out.caught.n+'!'); }
-          save();
-          if(out.result==='win'||out.result==='caught'){ goScene(sc.win); }
-          else if(out.result==='run'){ goScene(sc.run||sc.win); }
-          else { goScene(sc.lose||camp.start); }
+          if(out.caught){ addMon(out.caught.n, out.caught.level); toast('Caught & registered '+out.caught.n+'!'); }
+          if(out.result==='win'||out.result==='caught'){
+            var ups=awardExp((sc.enemy.level||5)*6 + 12);  // auto EXP + level-ups
+            save();
+            if(ups.length) setTimeout(function(){ toast(ups.join(' · ')); }, out.caught?900:0);
+            goScene(sc.win);
+          }
+          else if(out.result==='run'){ save(); goScene(sc.run||sc.win); }
+          else { save(); goScene(sc.lose||camp.start); }
         }
       });
     }
@@ -418,7 +476,7 @@
       document.body.appendChild(d); setTimeout(function(){ d.classList.add('show'); },10);
       setTimeout(function(){ d.classList.remove('show'); setTimeout(function(){ d.remove(); },300); },1600);
     }
-    return { open:open, renderHub:renderHub };
+    return { open:open, mount:mount, menu:menu, renderHub:renderHub };
   })();
 
   window.TTMon=TTMon; window.TTBattle=TTBattle; window.TTPlay=TTPlay;
