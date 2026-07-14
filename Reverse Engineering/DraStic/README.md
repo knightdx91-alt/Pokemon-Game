@@ -6,6 +6,11 @@ feature DraStic has never had.
 
 RE is authorized for this repo (see the ⚖️ block in the root `CLAUDE.md`).
 
+> ## ▶ RESUMING? READ **[`CONTINUE_HERE.md`](CONTINUE_HERE.md)** FIRST.
+> It is the single source of truth for continuing this work (session bootstrap,
+> settled facts, retracted false positives, exact addresses, the current blocker,
+> and the ordered next tasks). This README is just the overview.
+
 ## Goal
 
 Make two DraStic instances link over the DS's local wireless (Download Play /
@@ -17,30 +22,36 @@ the wireless emulation from scratch.
 ## What's here
 
 ```
-apk/        the two r2.6.0.4a APK builds (arm64-v8a and armeabi-v7a)   [see note]
+CONTINUE_HERE.md the single resume point (read this first when continuing)
+apk/        the two r2.6.0.4a APK builds (arm64-v8a and armeabi-v7a) — the RE subject
 firmware/   DS_lite_X2B-W-20051130_1616.bin — the DS Lite firmware we need
-analysis/   analyze_drastic.py — reproducible ELF/const/symbol recon
+analysis/   analyze_drastic.py  — ELF/const/symbol recon
+            drastic_emu.py      — Unicorn ARM loader (relocs, import stubs, tracing)
+            drastic_headless.py — synthetic Android/JNI runtime + init driver
+            frida_trace.js      — on-device tracer (low-risk alternative)
 FEASIBILITY.md   the full go/no-go engineering assessment
+FINDINGS_JIT.md  dynarec analysis + the 0x8825c false-positive retraction
+HARNESS.md       the Unicorn harness + headless driver results + blocker
 FIRMWARE.md      why this firmware, and the survey of the whole dump set
 ```
-
-> **APK note:** the two APKs are the RE subject. If they aren't committed yet
-> (size/LFS), pull them from the owner's Drive — see `apk/README.md`.
 
 ## TL;DR status
 
 | Sub-problem | State |
 |---|---|
-| DS wireless RF/BB calibration + MAC (firmware) | ✅ **Solved** — CRC-valid retail DS Lite firmware secured (`firmware/`) |
-| Wireless MAC/baseband state machine | ✅ **Solved in principle** — transplant melonDS `Wifi` (GPLv3) |
-| Netplay transport | ✅ **Easy** — add in the Java layer (Android sockets) + one new JNI method; DraStic has **zero** native networking to fight |
-| Memory/wireless dispatch locus (§4.1) | ⏳ **Open.** DraStic is a dynarec that *assembles ARM code*, so region bit-patterns litter `.text` as opcode templates — static search can't find it. (A `0x8825c` "hit" was a false positive, **retracted** — see `FINDINGS_JIT.md`.) Needs **dynamic analysis**. |
-| Scheduler / IRQ / guest-RAM (§4.2–4.4) | ⏳ **Blocked on §4.1** |
+| DS wifi RF/BB calibration + MAC (firmware) | ✅ **Solved** — CRC-valid retail DS Lite firmware (`firmware/`) |
+| Wireless state machine | ✅ **Solved in principle** — transplant melonDS `Wifi` (GPLv3) |
+| Netplay transport | ✅ **Easy** — Java layer (Android sockets) + 1 JNI method; DraStic has **zero** native networking |
+| Headless core **loads + fully initializes** in-cloud | ✅ `onInit`/`insertGame`/`resetDS`/`startGame` all run CLEAN (Unicorn harness) |
+| Headless core **emulates a frame** | ⏳ **Blocked** — emulation is producer/consumer **multi-threaded**; the worker (`0x37ae4`) waits on a condvar nothing signals single-threaded. Needs cooperative thread scheduling (or use the on-device Frida route). |
+| Memory/wireless hook + scheduler/IRQ/RAM (§4.1–4.4) | ⏳ **Blocked on the above** — needs a live frame to surface the I/O helper |
 
-**Recommendation:** firmware + melonDS-transplant + Java-transport parts are
-settled. The DraStic-core integration is the hard, unproven part — and the one
-sub-result that looked "found" (a memory-dispatch site) turned out to be a JIT
-opcode-encoding template, not an address. Because DraStic is a dynarec that
-assembles host ARM instructions, **static constant search is confounded**; the
-sound path is **dynamic analysis** (execute a core, trace an access to
-`0x048xxxxx`). See `FEASIBILITY.md` §4 + `FINDINGS_JIT.md`.
+**Two false positives were caught and retracted** (recorded so they aren't
+repeated): `0x8825c` is a JIT opcode template, not the wireless hook; and a
+"1M JIT blocks ran" claim was actually 1M condvar busy-spins (no guest code ran).
+See `FINDINGS_JIT.md` / `HARNESS.md`.
+
+**Next:** see `CONTINUE_HERE.md` §3 — determine how emulation is driven (Java-thread
+vs native pthread), implement cooperative scheduling so a frame runs, then read the
+I/O helper's `0x048xxxxx` branch. Lower-risk alternative: `frida_trace.js` on a
+real device/emulator.
