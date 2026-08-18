@@ -37,12 +37,19 @@ Belt-and-suspenders so the dex can **never** hang again for any species:
 - **Defensive guard in `src/pokedex.c`** — `PrintMonInfo()` falls back to
   placeholder text if a description is ever NULL.
 
-### 3. Starters randomized
-`src/starter_choose.c` — the starter choices are randomized per save.
-`RyuGetRandomStarterSpecies(slot)` is seeded from the player's Trainer ID, so the
-displayed sprite, cry, and the Pokémon you actually receive always match and stay
-consistent for the whole playthrough, while differing between new games. Starters
-are also dex-safe.
+### 3. Starters randomized (fresh line-up every time)
+`src/starter_choose.c` — the starter line-up is now **re-rolled every time the
+selection screen is shown**, drawing from the **entire dex** (any of the ~907
+catchable species can appear). `RyuRollRandomStarters()` fills the 7 slots with
+unique random dex-safe species in `Task_StarterChoose`, which runs on entry and
+again after each decline — so picking a starter, viewing its stats, and choosing
+**No** sends you back to a **completely new line-up**, exactly like the reference
+ROM.
+
+The chosen species is persisted to a save variable (`VAR_RANDOM_STARTER_SPECIES`,
+0x417F) on confirm, and the later code that references the starter (credits,
+`field_specials`) reads that var — so the starter stays correct for the whole
+playthrough even though the on-screen line-up keeps re-rolling.
 
 ### 4. Dev mode via button combo
 `src/field_control_avatar.c` — in the overworld, **hold L + R and press SELECT**

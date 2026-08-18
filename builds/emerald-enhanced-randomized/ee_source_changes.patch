@@ -11,6 +11,18 @@ index f9b5b85e3..7f9f71c2e 100644
  
  // Hoenn Dex(ORAS) Index Defines
  #define HOENN_DEX_NONE 0
+diff --git a/include/constants/vars.h b/include/constants/vars.h
+index fed7ece52..92d41e605 100644
+--- a/include/constants/vars.h
++++ b/include/constants/vars.h
+@@ -318,6 +318,7 @@
+ //vars 4100 thru 417f are new; total of 128.
+ 
+ 
++#define VAR_RANDOM_STARTER_SPECIES           0x417F // chosen randomized starter species (persisted)
+ #define VARS_END                             0x417F
+ #define VARS_COUNT                           (VARS_END - VARS_START + 1)
+ 
 diff --git a/include/global.h b/include/global.h
 index f94aeec82..ab769d17f 100644
 --- a/include/global.h
@@ -51,6 +63,31 @@ index c70388d27..f2cb80931 100644
  bool8 TryDoDoubleWildBattle(void);
  bool32 AreMonsRepelled(void);
  
+diff --git a/src/battle_setup.c b/src/battle_setup.c
+index 0fa7a4a3d..18c07628e 100644
+--- a/src/battle_setup.c
++++ b/src/battle_setup.c
+@@ -1069,6 +1069,7 @@ static void CB2_GiveStarter(void)
+ 
+     *GetVarPointer(VAR_STARTER_MON) = gSpecialVar_Result;
+     starterMon = GetStarterPokemon(gSpecialVar_Result);
++    VarSet(VAR_RANDOM_STARTER_SPECIES, starterMon); // persist the pick
+     ScriptGiveMon(starterMon, 10, ITEM_NONE);
+     ResetTasks();
+     PlayBattleBGM();
+diff --git a/src/credits.c b/src/credits.c
+index f29e09591..624146641 100644
+--- a/src/credits.c
++++ b/src/credits.c
+@@ -2463,7 +2463,7 @@ static void sub_81772B8(struct Sprite *sprite)
+ 
+ static void DeterminePokemonToShow(void)
+ {
+-    u16 starter = SpeciesToNationalPokedexNum(GetStarterPokemon(VarGet(VAR_STARTER_MON)));
++    u16 starter = SpeciesToNationalPokedexNum(VarGet(VAR_RANDOM_STARTER_SPECIES));
+     u16 page;
+     u16 dexNum;
+     u16 j;
 diff --git a/src/data/pokemon/pokedex_entries.h b/src/data/pokemon/pokedex_entries.h
 index 8ebb1c3c9..62e117e21 100644
 --- a/src/data/pokemon/pokedex_entries.h
@@ -3758,6 +3795,19 @@ index e10da64e1..bd8c3b37f 100644
      playerDirection = GetPlayerFacingDirection();
      GetPlayerPosition(&position);
      metatileBehavior = MapGridGetMetatileBehaviorAt(position.x, position.y);
+diff --git a/src/field_specials.c b/src/field_specials.c
+index 6f2fb3b64..f927a7ca4 100644
+--- a/src/field_specials.c
++++ b/src/field_specials.c
+@@ -1159,7 +1159,7 @@ void PutZigzagoonInPlayerParty(void)
+ bool8 IsStarterInParty(void)
+ {
+     u8 i;
+-    u16 starter = GetStarterPokemon(VarGet(VAR_STARTER_MON));
++    u16 starter = VarGet(VAR_RANDOM_STARTER_SPECIES);
+     u8 partyCount = CalculatePlayerPartyCount();
+     for (i = 0; i < partyCount; i++)
+     {
 diff --git a/src/pokedex.c b/src/pokedex.c
 index 8990bb2d0..ca4586c2a 100644
 --- a/src/pokedex.c
@@ -3795,7 +3845,7 @@ index ed8d691b2..08c0ce96e 100644
  
  const u16 gHoennToNationalOrder[HOENN_DEX_COUNT] = // Assigns Hoenn Dex Pokémon (Using National Dex Index)
 diff --git a/src/starter_choose.c b/src/starter_choose.c
-index bd907c66b..dfb746dcc 100644
+index bd907c66b..f7cd04d76 100644
 --- a/src/starter_choose.c
 +++ b/src/starter_choose.c
 @@ -10,6 +10,7 @@
@@ -3806,7 +3856,36 @@ index bd907c66b..dfb746dcc 100644
  #include "scanline_effect.h"
  #include "sound.h"
  #include "sprite.h"
-@@ -373,9 +374,9 @@ static const struct SpriteTemplate sSpriteTemplate_StarterCircle =
+@@ -370,12 +371,40 @@ static const struct SpriteTemplate sSpriteTemplate_StarterCircle =
+     .callback = SpriteCB_StarterPokemon
+ };
+ 
++// Live randomized starter line-up. Re-rolled every time the selection screen
++// is (re)shown, so declining a starter reveals a whole new set.
++static EWRAM_DATA u16 sRolledStarters[STARTER_MON_COUNT] = {0};
++static EWRAM_DATA bool8 sStartersRolled = FALSE;
++
++void RyuRollRandomStarters(void)
++{
++    u8 i, j;
++    for (i = 0; i < STARTER_MON_COUNT; i++)
++    {
++        u16 species;
++        bool8 dup;
++        u16 tries = 0;
++        do
++        {
++            species = RyuGetRandomSafeSpecies();
++            dup = FALSE;
++            for (j = 0; j < i; j++)
++                if (sRolledStarters[j] == species)
++                    dup = TRUE;
++        } while (dup && ++tries < 64);
++        sRolledStarters[i] = species;
++    }
++    sStartersRolled = TRUE;
++}
++
  // .text
  u16 GetStarterPokemon(u16 chosenStarterId)
  {
@@ -3814,13 +3893,25 @@ index bd907c66b..dfb746dcc 100644
 +    if (chosenStarterId >= STARTER_MON_COUNT)
          chosenStarterId = 0;
 -    return sStarterMon[chosenStarterId];
-+    return RyuGetRandomStarterSpecies(chosenStarterId); // randomized, stable per save
++    if (!sStartersRolled)
++        RyuRollRandomStarters();
++    return sRolledStarters[chosenStarterId];
  }
  
  static void VblankCB_StarterChoose(void)
-@@ -599,7 +600,7 @@ static void Task_HandleConfirmStarterInput(u8 taskId)
+@@ -508,6 +537,7 @@ static void CB2_StarterChoose(void)
+ 
+ static void Task_StarterChoose(u8 taskId)
+ {
++    RyuRollRandomStarters(); // fresh random line-up every time the screen is (re)shown
+     CreateStarterPokemonLabel(gTasks[taskId].tStarterSelection);
+     DrawStdFrameWithCustomTileAndPalette(0, FALSE, 0x2A8, 0xD);
+     AddTextPrinterParameterized(0, 1, gText_BirchInTrouble, 0, 1, 0, NULL);
+@@ -598,8 +628,9 @@ static void Task_HandleConfirmStarterInput(u8 taskId)
+         // Give starter, finish UI. 
          FlagSet(FLAG_SYS_POKEMON_GET);
          gSpecialVar_Result = gTasks[taskId].tStarterSelection;
++        VarSet(VAR_RANDOM_STARTER_SPECIES, GetStarterPokemon(gSpecialVar_Result)); // persist the pick
          RyuLegendaryDoBossRoll();
 -        CreateMon(&gPlayerParty[0], sStarterMon[gSpecialVar_Result], 10, 32, 0, 0, OT_ID_PLAYER_ID, FALSE);
 +        CreateMon(&gPlayerParty[0], GetStarterPokemon(gSpecialVar_Result), 10, 32, 0, 0, OT_ID_PLAYER_ID, FALSE);
