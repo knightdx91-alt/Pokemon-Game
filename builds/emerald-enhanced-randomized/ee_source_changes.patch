@@ -3769,7 +3769,7 @@ index 000000000..881279857
 +    "all those who oppose it, showing not a\n"
 +    "shred of mercy.");
 diff --git a/src/field_control_avatar.c b/src/field_control_avatar.c
-index e10da64e1..bd8c3b37f 100644
+index e10da64e1..5a78eeedb 100644
 --- a/src/field_control_avatar.c
 +++ b/src/field_control_avatar.c
 @@ -158,6 +158,22 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
@@ -3789,7 +3789,7 @@ index e10da64e1..bd8c3b37f 100644
 +            FlagSet(FLAG_RYU_DEV_MODE);
 +            PlaySE(SE_PC_LOGIN);
 +        }
-+        return TRUE;
++        return FALSE;
 +    }
 +
      playerDirection = GetPlayerFacingDirection();
