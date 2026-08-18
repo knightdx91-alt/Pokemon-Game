@@ -106,6 +106,110 @@ continue — NOT to question whether it can be done.**
 
 <!-- ============================================================= -->
 
+## ✅ Emerald Enhanced — RANDOMIZER GBA BUILD (DONE — do NOT redo the dex/randomizer)
+
+A buildable, playable **randomized Emerald Enhanced GBA ROM** was produced from
+the `source/emerald-enhanced/` submodule. **All the work below is already done and
+captured in a patch — never re-derive the dex entries or randomizer from scratch.**
+
+**Deliverables live at `builds/emerald-enhanced-randomized/`:**
+- `EmeraldEnhanced-Randomized.gba` — the built ROM (32 MB; commit it, it's < 100 MB).
+- `ee_source_changes.patch` — **THE SOURCE OF TRUTH.** Full diff of every code +
+  data change (13+ files, incl. the 3 generated dex-data headers). To resume:
+  `cd source/emerald-enhanced && git apply ../../builds/emerald-enhanced-randomized/ee_source_changes.patch`
+  then build. The submodule is left CLEAN each session, so the patch is how the
+  changes come back — apply it first, always.
+- `README.md` — human summary of the features.
+- `dexfix-tools/` — the PokéAPI fetch/generate scripts + cached `data.json` so the
+  216 dex entries can be regenerated WITHOUT re-hitting the API (normally not
+  needed — the output is already in the patch).
+
+### Build bootstrap (toolchain is NOT preinstalled — ~7 min, do this first)
+```
+# 1. ARM toolchain (MODERN=0 build still uses arm-none-eabi as/ld):
+apt-get install -y --no-install-recommends gcc-arm-none-eabi binutils-arm-none-eabi
+# 2. agbcc (the compiler EE's default MODERN=0 build needs) -> installs into tools/agbcc:
+cd /tmp && git clone --depth 1 https://github.com/pret/agbcc && cd agbcc && ./build.sh \
+  && ./install.sh /home/user/Pokemon-Game/source/emerald-enhanced
+# 3. poryscript (Go tool, excluded from `make`'s tool build) -> tools/poryscript:
+cd /tmp && git clone --depth 1 https://github.com/huderlem/poryscript && cd poryscript \
+  && GOFLAGS=-mod=mod go build -o poryscript .
+mkdir -p /home/user/Pokemon-Game/source/emerald-enhanced/tools/poryscript
+cp poryscript font_config.json command_config.json /home/user/Pokemon-Game/source/emerald-enhanced/tools/poryscript/
+# 4. build (MODERN=0 default):
+cd /home/user/Pokemon-Game/source/emerald-enhanced && git apply ../../builds/emerald-enhanced-randomized/ee_source_changes.patch
+make -j$(nproc)     # -> pokeemerald.gba   (pipe to a log file; the ld line is enormous)
+```
+`agbcc`, `tools/poryscript/`, and the ARM toolchain are all ephemeral per session —
+redo bootstrap each time. The `.patch` is the only thing that persists the code.
+
+### Features implemented (what the patch contains)
+1. **All wild Pokémon randomized** — `src/wild_encounter.c`:
+   `GenerateWildMonWithBossProbability()` overrides the species with
+   `RyuGetRandomSafeSpecies()` (the single choke point for grass/water/rock/fishing).
+   Helpers `RyuIsSpeciesDexSafe()` / `RyuGetRandomSafeSpecies()` also added there
+   (prototypes in `include/wild_encounter.h`). "Dex-safe" = real base HP + a
+   National Dex number whose entry has a non-NULL description.
+2. **Starters fully random + re-roll every time** — `src/starter_choose.c`:
+   `RyuRollRandomStarters()` fills 7 EWRAM slots with unique random dex-safe species
+   in `Task_StarterChoose` (runs on entry AND after each decline → declining gives a
+   whole new line-up, drawn from the entire dex). `GetStarterPokemon()` returns the
+   rolled array. Chosen species persisted to **`VAR_RANDOM_STARTER_SPECIES` (0x417F,
+   added in `include/constants/vars.h`)**; `credits.c` + `field_specials.c` read that
+   var, `battle_setup.c` (`CB2_GiveStarter`) also sets it. (The old deterministic
+   `RyuGetRandomStarterSpecies()` in wild_encounter.c is now unused but still defined.)
+3. **Pokédex entries for ALL catchable species** — EE shipped ~216 real species
+   (Solgaleo, Necrozma, Ultra Beasts, Tapus, Meltan/Melmetal, every Mega form,
+   Alolan forms, unfinished Gen 4/5/7) with **no dex number / no entry** → the info
+   screen showed zeros and hung. Fixed by generating real entries (category, height,
+   weight, description from PokéAPI — its dm/hg units match the GBA struct) into three
+   included files:
+   - `src/data/pokemon/pokedex_text_random.h` (description strings)
+   - `src/data/pokemon/pokedex_entries_random.h` (`[num] = {...}` — `#include`d just
+     before the closing `};` of `gPokedexEntries[]` in `pokedex_entries.h`)
+   - `src/data/pokemon/pokedex_natdex_random.h` (`[SPECIES_X-1] = num` — `#include`d
+     just before the closing `};` of `gSpeciesToNationalPokedexNum[]` in `pokemon.c`,
+     right after `SPECIES_TO_NATIONAL(DEOXYS_SPEED)`).
+   Each gets a unique free National Dex number ≥686. To make them register as
+   Seen/Caught, **`NATIONAL_DEX_COUNT` 686→909** (`include/constants/species.h`) and
+   **`POKEMON_SLOTS_NUMBER` 808→909** (`include/global.h`; only feeds the dex bit
+   arrays — SaveBlock1 had ~2 KB headroom in its 4 save sectors). Plus a defensive
+   guard in `src/pokedex.c` `PrintMonInfo()`: NULL description → `gDummyPokedexText`
+   (dex can never hang again for any species). `extern gPokedexEntries[]` added to
+   `include/pokedex.h`. Result: **907 of 908 real species catchable + working entry**
+   (only `SPECIES_NONE` excluded). NOTE: "909" = `NUM_SPECIES` incl. NONE/EGG/Unown
+   forms; the real roster is 908/907.
+4. **Dev mode via button combo** — `src/field_control_avatar.c`
+   `ProcessPlayerFieldInput()`: hold **L+R and press SELECT** toggles
+   `FLAG_RYU_DEV_MODE` (0x39) with PC-login/PC-off SFX. **MUST `return FALSE`** after
+   toggling — returning TRUE makes the field engine think a script started and
+   FREEZES the player (no move / no start menu). (This was a real bug that got fixed.)
+
+### Gotchas learned (don't re-discover)
+- The submodule is left clean at session end (stop-hook requires a clean repo), so
+  `git checkout -- include/ src/` + `rm src/data/pokemon/pokedex_*_random.h` is the
+  cleanup; **re-apply the patch to get the code back.** New untracked files must be
+  `git add -N`'d before `git diff` to include them when regenerating the patch.
+- `gSpeciesToNationalPokedexNum` (u16) ENDS at pokemon.c ~line 1013; the big
+  `[SPECIES_X-1]=0xNN` block near line ~1900 is `sMonFrontAnimIdsTable` (u8 anim
+  ids), NOT dex numbers — don't inject dex mappings there.
+- Species→natdex uses `SPECIES_TO_NATIONAL(name)` macros AND raw
+  `[SPECIES_X-1]=NATIONAL_DEX_Y` lines (form variants share a base's dex slot, e.g.
+  the two Lycanroc forms — those are fine, leave them). agbcc errors on duplicate
+  designated indices, so only add mappings for species that have none.
+- ROM is 32 MB → over the 30 MB chat upload limit; deliver via the GitHub branch
+  raw link (or Google Drive), not `SendUserFile`.
+- Because the save format grew (bigger dex bit-arrays), **players must start a fresh
+  save** — old `.sav` is incompatible.
+
+### Branch note (this game vs. the EE ROM)
+This RPG repo's own rule is "work on `main` only." The EE randomizer work was done
+under a GitHub-task session that pinned branch
+`claude/pokemon-emerald-enhanced-psrwj1`; the deliverables were pushed there. If
+continuing outside that task, prefer `main` per the global rule unless told otherwise.
+
+<!-- ============================================================= -->
+
 ## ▶ ACTIVE PRIORITY — FireRed-faithful UI overhaul for the Pokémon RPG (`game.html`)
 
 Bring the battle screen and dialogue box up to a pixel-faithful FireRed look,
