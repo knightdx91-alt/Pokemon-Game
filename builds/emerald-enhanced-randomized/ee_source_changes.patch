@@ -1,0 +1,178 @@
+diff --git a/include/pokedex.h b/include/pokedex.h
+index b1529275b..b1d666ed4 100644
+--- a/include/pokedex.h
++++ b/include/pokedex.h
+@@ -31,6 +31,8 @@ struct PokedexEntry
+     /*0x1C*/ u16 trainerOffset;
+ };  /*size = 0x20*/
+ 
++extern const struct PokedexEntry gPokedexEntries[];
++
+ //#define KANTO_DEX_COUNT 151
+ //#define JOHTO_DEX_COUNT 252
+ 
+diff --git a/include/wild_encounter.h b/include/wild_encounter.h
+index c70388d27..f2cb80931 100644
+--- a/include/wild_encounter.h
++++ b/include/wild_encounter.h
+@@ -48,6 +48,9 @@ u8 ChooseWildMonIndex_Land(void);
+ u8 ChooseWildMonIndex_WaterRock(void);
+ u8 ChooseHiddenMonIndex(void);
+ bool8 GenerateWildMonWithBossProbability(u16 species, u8 level, u16 rarity);
++bool8 RyuIsSpeciesDexSafe(u16 species);
++u16 RyuGetRandomSafeSpecies(void);
++u16 RyuGetRandomStarterSpecies(u8 slot);
+ bool8 TryDoDoubleWildBattle(void);
+ bool32 AreMonsRepelled(void);
+ 
+diff --git a/src/field_control_avatar.c b/src/field_control_avatar.c
+index e10da64e1..bd8c3b37f 100644
+--- a/src/field_control_avatar.c
++++ b/src/field_control_avatar.c
+@@ -158,6 +158,22 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
+     gSpecialVar_LastTalked = 0;
+     gSelectedObjectEvent = 0;
+ 
++    // Dev mode toggle: hold L + R and press SELECT.
++    if (JOY_NEW(SELECT_BUTTON) && (gMain.heldKeys & L_BUTTON) && (gMain.heldKeys & R_BUTTON))
++    {
++        if (FlagGet(FLAG_RYU_DEV_MODE))
++        {
++            FlagClear(FLAG_RYU_DEV_MODE);
++            PlaySE(SE_PC_OFF);
++        }
++        else
++        {
++            FlagSet(FLAG_RYU_DEV_MODE);
++            PlaySE(SE_PC_LOGIN);
++        }
++        return TRUE;
++    }
++
+     playerDirection = GetPlayerFacingDirection();
+     GetPlayerPosition(&position);
+     metatileBehavior = MapGridGetMetatileBehaviorAt(position.x, position.y);
+diff --git a/src/pokedex.c b/src/pokedex.c
+index 8990bb2d0..57a155594 100644
+--- a/src/pokedex.c
++++ b/src/pokedex.c
+@@ -4032,6 +4032,11 @@ static void PrintMonInfo(u32 num, u32 value, u32 owned, u32 newEntry)
+         description = gPokedexEntries[num].description;
+     else
+         description = gExpandedPlaceholder_PokedexDescription;
++    // Safety: a randomized/unregistered species can map to a Pokedex slot with
++    // no description (NULL). Printing a NULL string hangs the info screen, so
++    // fall back to placeholder text instead of freezing.
++    if (description == NULL)
++        description = gDummyPokedexText;
+     PrintInfoScreenText(description, GetStringCenterAlignXOffset(1, description, 0xF0), 0x5F);
+ }
+ 
+diff --git a/src/starter_choose.c b/src/starter_choose.c
+index bd907c66b..dfb746dcc 100644
+--- a/src/starter_choose.c
++++ b/src/starter_choose.c
+@@ -10,6 +10,7 @@
+ #include "palette.h"
+ #include "pokedex.h"
+ #include "pokemon.h"
++#include "wild_encounter.h"
+ #include "scanline_effect.h"
+ #include "sound.h"
+ #include "sprite.h"
+@@ -373,9 +374,9 @@ static const struct SpriteTemplate sSpriteTemplate_StarterCircle =
+ // .text
+ u16 GetStarterPokemon(u16 chosenStarterId)
+ {
+-    if (chosenStarterId > STARTER_MON_COUNT)
++    if (chosenStarterId >= STARTER_MON_COUNT)
+         chosenStarterId = 0;
+-    return sStarterMon[chosenStarterId];
++    return RyuGetRandomStarterSpecies(chosenStarterId); // randomized, stable per save
+ }
+ 
+ static void VblankCB_StarterChoose(void)
+@@ -599,7 +600,7 @@ static void Task_HandleConfirmStarterInput(u8 taskId)
+         FlagSet(FLAG_SYS_POKEMON_GET);
+         gSpecialVar_Result = gTasks[taskId].tStarterSelection;
+         RyuLegendaryDoBossRoll();
+-        CreateMon(&gPlayerParty[0], sStarterMon[gSpecialVar_Result], 10, 32, 0, 0, OT_ID_PLAYER_ID, FALSE);
++        CreateMon(&gPlayerParty[0], GetStarterPokemon(gSpecialVar_Result), 10, 32, 0, 0, OT_ID_PLAYER_ID, FALSE);
+         if(FlagGet(FLAG_RYU_BOSS_WILD) == TRUE)
+         {
+             bool8 tru = TRUE;
+diff --git a/src/wild_encounter.c b/src/wild_encounter.c
+index 94bbbaeea..f3ee67b5e 100644
+--- a/src/wild_encounter.c
++++ b/src/wild_encounter.c
+@@ -1,6 +1,7 @@
+ #include "global.h"
+ #include "wild_encounter.h"
+ #include "pokemon.h"
++#include "pokedex.h"
+ #include "metatile_behavior.h"
+ #include "fieldmap.h"
+ #include "random.h"
+@@ -517,7 +518,62 @@ void RyuGenerateWeakMon(u16 species, u8 level)
+     CalculateMonStats(&gEnemyParty[0]);
+ }
+ 
++// Returns TRUE only for species that are safe to encounter/register: a real
++// species (nonzero base HP), with a National Dex number that has a valid
++// Pokedex entry (non-NULL description). This guarantees every wild/starter mon
++// can be shown in the Pokedex without the info screen hanging.
++bool8 RyuIsSpeciesDexSafe(u16 species)
++{
++    u16 dexNum;
++
++    if (species == SPECIES_NONE || species >= NUM_SPECIES)
++        return FALSE;
++    if (gBaseStats[species].baseHP == 0)
++        return FALSE;
++    dexNum = SpeciesToNationalPokedexNum(species);
++    if (dexNum == 0)
++        return FALSE;
++    if (gPokedexEntries[dexNum].description == NULL)
++        return FALSE;
++    return TRUE;
++}
++
++// Picks a fully-random species that is guaranteed dex-safe.
++u16 RyuGetRandomSafeSpecies(void)
++{
++    u16 species;
++    u16 tries;
++
++    for (tries = 0; tries < 512; tries++)
++    {
++        species = (Random() % (NUM_SPECIES - 1)) + 1;
++        if (RyuIsSpeciesDexSafe(species))
++            return species;
++    }
++    return SPECIES_ZIGZAGOON; // guaranteed-valid fallback
++}
++
++// Deterministic per-save random starter for a given slot. Seeded from the
++// player's trainer ID so the displayed sprite, cry, and received mon all match
++// and stay consistent for the whole playthrough, while differing between saves.
++u16 RyuGetRandomStarterSpecies(u8 slot)
++{
++    u32 seed = T1_READ_32(gSaveBlock2Ptr->playerTrainerId) ^ (0x9E3779B1u * (slot + 1));
++    u16 species;
++    u16 tries;
++
++    for (tries = 0; tries < 4096; tries++)
++    {
++        seed = seed * 1103515245u + 12345u;
++        species = ((seed >> 16) % (NUM_SPECIES - 1)) + 1;
++        if (RyuIsSpeciesDexSafe(species))
++            return species;
++    }
++    return SPECIES_MUDKIP; // guaranteed-valid fallback
++}
++
+ bool8 GenerateWildMonWithBossProbability(u16 species, u8 level, u16 rarity) {
++    species = RyuGetRandomSafeSpecies(); // randomize every wild encounter
+     if (CheckAPFlag(AP_ALPHA_AURA) == TRUE)
+         rarity -= (rarity / 10);
+ 
