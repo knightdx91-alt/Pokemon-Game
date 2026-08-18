@@ -11,19 +11,31 @@ Source diff: `ee_source_changes.patch` (apply inside `source/emerald-enhanced`).
 now draws a fully random species. Randomization happens at the single choke point
 `GenerateWildMonWithBossProbability()`, so all encounter paths are covered.
 
-### 2. No more Pokédex hang on new catches
-The previous randomizer froze on the Pokédex info screen because randomized
-species could map to a National Dex slot with **no entry** (NULL description →
-the text printer hung; height/weight showed zeros).
+### 2. Pokédex entries added for every catchable species (Solgaleo, forms, etc.)
+The previous randomizer froze on the Pokédex info screen because ~216 species
+(Solgaleo, Necrozma, the Ultra Beasts, Tapus, Meltan/Melmetal, the Mega forms,
+Alolan forms, all the Gen 4/5/7 mons EE never finished, …) had **no National Dex
+number and no entry** — so the info screen showed zeros and hung.
 
-Two-layer fix:
+These species now have **real Pokédex entries**:
+- Every previously entry-less species is assigned a unique National Dex number
+  and a full entry: **category, height, weight, and a real description**, sourced
+  from PokéAPI (height in decimetres and weight in hectograms — the exact units
+  the GBA Pokédex uses). See the generated files:
+  `src/data/pokemon/pokedex_entries_random.h`, `pokedex_text_random.h`,
+  `pokedex_natdex_random.h`.
+- `NATIONAL_DEX_COUNT` and `POKEMON_SLOTS_NUMBER` were raised so the new species
+  actually register as Seen/Caught (the old dex bit-arrays and the
+  `GetSetPokedexFlag` gate stopped at 686).
+- Forms that share a base Pokémon's dex slot (e.g. the two Lycanroc forms) keep
+  showing the base entry — they already displayed fine.
+
+Belt-and-suspenders so the dex can **never** hang again for any species:
 - **Only dex-safe species are ever spawned.** `RyuIsSpeciesDexSafe()` requires a
-  real species (nonzero base HP) whose National Dex entry has a valid
-  (non-NULL) description. The wild and starter randomizers both use it, so every
-  catchable Pokémon is guaranteed a working Pokédex entry.
+  real species (nonzero base HP) with a valid, non-NULL Pokédex description — now
+  satisfied by every real species.
 - **Defensive guard in `src/pokedex.c`** — `PrintMonInfo()` falls back to
-  placeholder text if a description is ever NULL, so the info screen can never
-  hang for *any* species (gifts, evolutions, trades included).
+  placeholder text if a description is ever NULL.
 
 ### 3. Starters randomized
 `src/starter_choose.c` — the starter choices are randomized per save.

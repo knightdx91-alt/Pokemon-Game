@@ -1,3 +1,29 @@
+diff --git a/include/constants/species.h b/include/constants/species.h
+index f9b5b85e3..7f9f71c2e 100644
+--- a/include/constants/species.h
++++ b/include/constants/species.h
+@@ -1779,7 +1779,7 @@
+ #define NATIONAL_DEX_DEOXYS_ATTACK 903
+ #define NATIONAL_DEX_DEOXYS_SPEED 904
+ 
+-#define NATIONAL_DEX_COUNT 686
++#define NATIONAL_DEX_COUNT 909
+ 
+ // Hoenn Dex(ORAS) Index Defines
+ #define HOENN_DEX_NONE 0
+diff --git a/include/global.h b/include/global.h
+index f94aeec82..ab769d17f 100644
+--- a/include/global.h
++++ b/include/global.h
+@@ -80,7 +80,7 @@
+ #define Q_4_12_ROUND ((1) << (12 - 1))
+ #define UQ_4_12_ROUND ((1) << (12 - 1))
+ 
+-#define POKEMON_SLOTS_NUMBER 808
++#define POKEMON_SLOTS_NUMBER 909
+ 
+ #define min(a, b) ((a) < (b) ? (a) : (b))
+ #define max(a, b) ((a) >= (b) ? (a) : (b))
 diff --git a/include/pokedex.h b/include/pokedex.h
 index b1529275b..b1d666ed4 100644
 --- a/include/pokedex.h
@@ -25,6 +51,3686 @@ index c70388d27..f2cb80931 100644
  bool8 TryDoDoubleWildBattle(void);
  bool32 AreMonsRepelled(void);
  
+diff --git a/src/data/pokemon/pokedex_entries.h b/src/data/pokemon/pokedex_entries.h
+index 8ebb1c3c9..62e117e21 100644
+--- a/src/data/pokemon/pokedex_entries.h
++++ b/src/data/pokemon/pokedex_entries.h
+@@ -9779,4 +9779,5 @@ const struct PokedexEntry gPokedexEntries[] =
+ 		.trainerScale = 387,
+ 		.trainerOffset = 2,
+ 	},*/
++#include "data/pokemon/pokedex_entries_random.h"
+ };
+diff --git a/src/data/pokemon/pokedex_entries_random.h b/src/data/pokemon/pokedex_entries_random.h
+new file mode 100644
+index 000000000..3b60c2d85
+--- /dev/null
++++ b/src/data/pokemon/pokedex_entries_random.h
+@@ -0,0 +1,2377 @@
++    // AUTO-GENERATED dex entries for previously entry-less species.
++    [686] =
++    {
++        .categoryName = _("Plump Mouse"),
++        .height = 5,
++        .weight = 200,
++        .description = gRandomDexText_BIDOOF,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [687] =
++    {
++        .categoryName = _("Beaver"),
++        .height = 10,
++        .weight = 315,
++        .description = gRandomDexText_BIBAREL,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [688] =
++    {
++        .categoryName = _("Cricket"),
++        .height = 3,
++        .weight = 22,
++        .description = gRandomDexText_KRICKETOT,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [689] =
++    {
++        .categoryName = _("Cricket"),
++        .height = 10,
++        .weight = 255,
++        .description = gRandomDexText_KRICKETUNE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [690] =
++    {
++        .categoryName = _("Bagworm"),
++        .height = 2,
++        .weight = 34,
++        .description = gRandomDexText_BURMY,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [691] =
++    {
++        .categoryName = _("Bagworm"),
++        .height = 5,
++        .weight = 65,
++        .description = gRandomDexText_WORMADAM,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [692] =
++    {
++        .categoryName = _("Moth"),
++        .height = 9,
++        .weight = 233,
++        .description = gRandomDexText_MOTHIM,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [693] =
++    {
++        .categoryName = _("Tiny Bee"),
++        .height = 3,
++        .weight = 55,
++        .description = gRandomDexText_COMBEE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [694] =
++    {
++        .categoryName = _("Beehive"),
++        .height = 12,
++        .weight = 385,
++        .description = gRandomDexText_VESPIQUEN,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [695] =
++    {
++        .categoryName = _("EleSquirrel"),
++        .height = 4,
++        .weight = 39,
++        .description = gRandomDexText_PACHIRISU,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [696] =
++    {
++        .categoryName = _("Sea Weasel"),
++        .height = 7,
++        .weight = 295,
++        .description = gRandomDexText_BUIZEL,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [697] =
++    {
++        .categoryName = _("Sea Weasel"),
++        .height = 11,
++        .weight = 335,
++        .description = gRandomDexText_FLOATZEL,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [698] =
++    {
++        .categoryName = _("Catty"),
++        .height = 5,
++        .weight = 39,
++        .description = gRandomDexText_GLAMEOW,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [699] =
++    {
++        .categoryName = _("Tiger Cat"),
++        .height = 10,
++        .weight = 438,
++        .description = gRandomDexText_PURUGLY,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [700] =
++    {
++        .categoryName = _("Bell"),
++        .height = 2,
++        .weight = 6,
++        .description = gRandomDexText_CHINGLING,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [701] =
++    {
++        .categoryName = _("Skunk"),
++        .height = 4,
++        .weight = 192,
++        .description = gRandomDexText_STUNKY,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [702] =
++    {
++        .categoryName = _("Skunk"),
++        .height = 10,
++        .weight = 380,
++        .description = gRandomDexText_SKUNTANK,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [703] =
++    {
++        .categoryName = _("Bronze"),
++        .height = 5,
++        .weight = 605,
++        .description = gRandomDexText_BRONZOR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [704] =
++    {
++        .categoryName = _("Bronze Bell"),
++        .height = 13,
++        .weight = 1870,
++        .description = gRandomDexText_BRONZONG,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [705] =
++    {
++        .categoryName = _("Music Note"),
++        .height = 5,
++        .weight = 19,
++        .description = gRandomDexText_CHATOT,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [706] =
++    {
++        .categoryName = _("Knowledge"),
++        .height = 3,
++        .weight = 3,
++        .description = gRandomDexText_UXIE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [707] =
++    {
++        .categoryName = _("Emotion"),
++        .height = 3,
++        .weight = 3,
++        .description = gRandomDexText_MESPRIT,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [708] =
++    {
++        .categoryName = _("Willpower"),
++        .height = 3,
++        .weight = 3,
++        .description = gRandomDexText_AZELF,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [709] =
++    {
++        .categoryName = _("Temporal"),
++        .height = 54,
++        .weight = 6830,
++        .description = gRandomDexText_DIALGA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [710] =
++    {
++        .categoryName = _("Spatial"),
++        .height = 42,
++        .weight = 3360,
++        .description = gRandomDexText_PALKIA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [711] =
++    {
++        .categoryName = _("Renegade"),
++        .height = 45,
++        .weight = 7500,
++        .description = gRandomDexText_GIRATINA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [712] =
++    {
++        .categoryName = _("Lunar"),
++        .height = 15,
++        .weight = 856,
++        .description = gRandomDexText_CRESSELIA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [713] =
++    {
++        .categoryName = _("Gratitude"),
++        .height = 2,
++        .weight = 21,
++        .description = gRandomDexText_SHAYMIN,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [714] =
++    {
++        .categoryName = _("Scout"),
++        .height = 5,
++        .weight = 116,
++        .description = gRandomDexText_PATRAT,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [715] =
++    {
++        .categoryName = _("Lookout"),
++        .height = 11,
++        .weight = 270,
++        .description = gRandomDexText_WATCHOG,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [716] =
++    {
++        .categoryName = _("Grass Monke"),
++        .height = 6,
++        .weight = 105,
++        .description = gRandomDexText_PANSAGE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [717] =
++    {
++        .categoryName = _("Thorn Monke"),
++        .height = 11,
++        .weight = 305,
++        .description = gRandomDexText_SIMISAGE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [718] =
++    {
++        .categoryName = _("High Temp"),
++        .height = 6,
++        .weight = 110,
++        .description = gRandomDexText_PANSEAR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [719] =
++    {
++        .categoryName = _("Ember"),
++        .height = 10,
++        .weight = 280,
++        .description = gRandomDexText_SIMISEAR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [720] =
++    {
++        .categoryName = _("Spray"),
++        .height = 6,
++        .weight = 135,
++        .description = gRandomDexText_PANPOUR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [721] =
++    {
++        .categoryName = _("Geyser"),
++        .height = 10,
++        .weight = 290,
++        .description = gRandomDexText_SIMIPOUR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [722] =
++    {
++        .categoryName = _("Dream Eater"),
++        .height = 6,
++        .weight = 233,
++        .description = gRandomDexText_MUNNA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [723] =
++    {
++        .categoryName = _("Drowsing"),
++        .height = 11,
++        .weight = 605,
++        .description = gRandomDexText_MUSHARNA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [724] =
++    {
++        .categoryName = _("Tiny Pigeon"),
++        .height = 3,
++        .weight = 21,
++        .description = gRandomDexText_PIDOVE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [725] =
++    {
++        .categoryName = _("Wild Pigeon"),
++        .height = 6,
++        .weight = 150,
++        .description = gRandomDexText_TRANQUILL,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [726] =
++    {
++        .categoryName = _("Proud"),
++        .height = 12,
++        .weight = 290,
++        .description = gRandomDexText_UNFEZANT,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [727] =
++    {
++        .categoryName = _("Bat"),
++        .height = 4,
++        .weight = 21,
++        .description = gRandomDexText_WOOBAT,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [728] =
++    {
++        .categoryName = _("Courting"),
++        .height = 9,
++        .weight = 105,
++        .description = gRandomDexText_SWOOBAT,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [729] =
++    {
++        .categoryName = _("Judo"),
++        .height = 13,
++        .weight = 555,
++        .description = gRandomDexText_THROH,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [730] =
++    {
++        .categoryName = _("Karate"),
++        .height = 14,
++        .weight = 510,
++        .description = gRandomDexText_SAWK,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [731] =
++    {
++        .categoryName = _("Sewing"),
++        .height = 3,
++        .weight = 25,
++        .description = gRandomDexText_SEWADDLE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [732] =
++    {
++        .categoryName = _("Leaf-Wrappe"),
++        .height = 5,
++        .weight = 73,
++        .description = gRandomDexText_SWADLOON,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [733] =
++    {
++        .categoryName = _("Nurturing"),
++        .height = 12,
++        .weight = 205,
++        .description = gRandomDexText_LEAVANNY,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [734] =
++    {
++        .categoryName = _("Trash Bag"),
++        .height = 6,
++        .weight = 310,
++        .description = gRandomDexText_TRUBBISH,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [735] =
++    {
++        .categoryName = _("Trash Heap"),
++        .height = 19,
++        .weight = 1073,
++        .description = gRandomDexText_GARBODOR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [736] =
++    {
++        .categoryName = _("Fixation"),
++        .height = 4,
++        .weight = 58,
++        .description = gRandomDexText_GOTHITA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [737] =
++    {
++        .categoryName = _("Manipulate"),
++        .height = 7,
++        .weight = 180,
++        .description = gRandomDexText_GOTHORITA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [738] =
++    {
++        .categoryName = _("Astral Body"),
++        .height = 15,
++        .weight = 440,
++        .description = gRandomDexText_GOTHITELLE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [739] =
++    {
++        .categoryName = _("Water Bird"),
++        .height = 5,
++        .weight = 55,
++        .description = gRandomDexText_DUCKLETT,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [740] =
++    {
++        .categoryName = _("White Bird"),
++        .height = 13,
++        .weight = 242,
++        .description = gRandomDexText_SWANNA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [741] =
++    {
++        .categoryName = _("Clamping"),
++        .height = 5,
++        .weight = 59,
++        .description = gRandomDexText_KARRABLAST,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [742] =
++    {
++        .categoryName = _("Cavalry"),
++        .height = 10,
++        .weight = 330,
++        .description = gRandomDexText_ESCAVALIER,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [743] =
++    {
++        .categoryName = _("Mushroom"),
++        .height = 2,
++        .weight = 10,
++        .description = gRandomDexText_FOONGUS,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [744] =
++    {
++        .categoryName = _("Mushroom"),
++        .height = 6,
++        .weight = 105,
++        .description = gRandomDexText_AMOONGUSS,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [745] =
++    {
++        .categoryName = _("Caring"),
++        .height = 12,
++        .weight = 316,
++        .description = gRandomDexText_ALOMOMOLA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [746] =
++    {
++        .categoryName = _("Gear"),
++        .height = 3,
++        .weight = 210,
++        .description = gRandomDexText_KLINK,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [747] =
++    {
++        .categoryName = _("Gear"),
++        .height = 6,
++        .weight = 510,
++        .description = gRandomDexText_KLANG,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [748] =
++    {
++        .categoryName = _("Gear"),
++        .height = 6,
++        .weight = 810,
++        .description = gRandomDexText_KLINKLANG,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [749] =
++    {
++        .categoryName = _("Snail"),
++        .height = 4,
++        .weight = 77,
++        .description = gRandomDexText_SHELMET,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [750] =
++    {
++        .categoryName = _("Shell Out"),
++        .height = 8,
++        .weight = 253,
++        .description = gRandomDexText_ACCELGOR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [751] =
++    {
++        .categoryName = _("Cave"),
++        .height = 16,
++        .weight = 1390,
++        .description = gRandomDexText_DRUDDIGON,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [752] =
++    {
++        .categoryName = _("Bash Buffal"),
++        .height = 16,
++        .weight = 946,
++        .description = gRandomDexText_BOUFFALANT,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [753] =
++    {
++        .categoryName = _("Diapered"),
++        .height = 5,
++        .weight = 90,
++        .description = gRandomDexText_VULLABY,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [754] =
++    {
++        .categoryName = _("Bone Vultur"),
++        .height = 12,
++        .weight = 395,
++        .description = gRandomDexText_MANDIBUZZ,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [755] =
++    {
++        .categoryName = _("Anteater"),
++        .height = 14,
++        .weight = 580,
++        .description = gRandomDexText_HEATMOR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [756] =
++    {
++        .categoryName = _("Cyclone"),
++        .height = 15,
++        .weight = 630,
++        .description = gRandomDexText_TORNADUS,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [757] =
++    {
++        .categoryName = _("Bolt Strike"),
++        .height = 15,
++        .weight = 610,
++        .description = gRandomDexText_THUNDURUS,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [758] =
++    {
++        .categoryName = _("Vast White"),
++        .height = 32,
++        .weight = 3300,
++        .description = gRandomDexText_RESHIRAM,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [759] =
++    {
++        .categoryName = _("Deep Black"),
++        .height = 29,
++        .weight = 3450,
++        .description = gRandomDexText_ZEKROM,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [760] =
++    {
++        .categoryName = _("Abundance"),
++        .height = 15,
++        .weight = 680,
++        .description = gRandomDexText_LANDORUS,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [761] =
++    {
++        .categoryName = _("Boundary"),
++        .height = 30,
++        .weight = 3250,
++        .description = gRandomDexText_KYUREM,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [762] =
++    {
++        .categoryName = _("Scatterdust"),
++        .height = 3,
++        .weight = 25,
++        .description = gRandomDexText_SCATTERBUG,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [763] =
++    {
++        .categoryName = _("Scatterdust"),
++        .height = 3,
++        .weight = 84,
++        .description = gRandomDexText_SPEWPA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [764] =
++    {
++        .categoryName = _("Scale"),
++        .height = 12,
++        .weight = 170,
++        .description = gRandomDexText_VIVILLON,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [765] =
++    {
++        .categoryName = _("Lion Cub"),
++        .height = 6,
++        .weight = 135,
++        .description = gRandomDexText_LITLEO,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [766] =
++    {
++        .categoryName = _("Royal"),
++        .height = 15,
++        .weight = 815,
++        .description = gRandomDexText_PYROAR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [767] =
++    {
++        .categoryName = _("Single Bloo"),
++        .height = 1,
++        .weight = 1,
++        .description = gRandomDexText_FLABEBE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [768] =
++    {
++        .categoryName = _("Single Bloo"),
++        .height = 2,
++        .weight = 9,
++        .description = gRandomDexText_FLOETTE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [769] =
++    {
++        .categoryName = _("Garden"),
++        .height = 11,
++        .weight = 100,
++        .description = gRandomDexText_FLORGES,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [770] =
++    {
++        .categoryName = _("Poodle"),
++        .height = 12,
++        .weight = 280,
++        .description = gRandomDexText_FURFROU,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [771] =
++    {
++        .categoryName = _("Restraint"),
++        .height = 3,
++        .weight = 35,
++        .description = gRandomDexText_ESPURR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [772] =
++    {
++        .categoryName = _("Constraint"),
++        .height = 6,
++        .weight = 85,
++        .description = gRandomDexText_MEOWSTIC,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [773] =
++    {
++        .categoryName = _("Perfume"),
++        .height = 2,
++        .weight = 5,
++        .description = gRandomDexText_SPRITZEE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [774] =
++    {
++        .categoryName = _("Fragrance"),
++        .height = 8,
++        .weight = 155,
++        .description = gRandomDexText_AROMATISSE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [775] =
++    {
++        .categoryName = _("Cotton Cand"),
++        .height = 4,
++        .weight = 35,
++        .description = gRandomDexText_SWIRLIX,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [776] =
++    {
++        .categoryName = _("Meringue"),
++        .height = 8,
++        .weight = 50,
++        .description = gRandomDexText_SLURPUFF,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [777] =
++    {
++        .categoryName = _("Revolving"),
++        .height = 4,
++        .weight = 35,
++        .description = gRandomDexText_INKAY,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [778] =
++    {
++        .categoryName = _("Overturning"),
++        .height = 15,
++        .weight = 470,
++        .description = gRandomDexText_MALAMAR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [779] =
++    {
++        .categoryName = _("Generator"),
++        .height = 5,
++        .weight = 60,
++        .description = gRandomDexText_HELIOPTILE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [780] =
++    {
++        .categoryName = _("Generator"),
++        .height = 10,
++        .weight = 210,
++        .description = gRandomDexText_HELIOLISK,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [781] =
++    {
++        .categoryName = _("Antenna"),
++        .height = 2,
++        .weight = 22,
++        .description = gRandomDexText_DEDENNE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [782] =
++    {
++        .categoryName = _("Key Ring"),
++        .height = 2,
++        .weight = 30,
++        .description = gRandomDexText_KLEFKI,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [783] =
++    {
++        .categoryName = _("Life"),
++        .height = 30,
++        .weight = 2150,
++        .description = gRandomDexText_XERNEAS,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [784] =
++    {
++        .categoryName = _("Destruction"),
++        .height = 58,
++        .weight = 2030,
++        .description = gRandomDexText_YVELTAL,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [785] =
++    {
++        .categoryName = _("Order"),
++        .height = 50,
++        .weight = 3050,
++        .description = gRandomDexText_ZYGARDE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [786] =
++    {
++        .categoryName = _("Loitering"),
++        .height = 4,
++        .weight = 60,
++        .description = gRandomDexText_YUNGOOS,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [787] =
++    {
++        .categoryName = _("Stakeout"),
++        .height = 7,
++        .weight = 142,
++        .description = gRandomDexText_GUMSHOOS,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [788] =
++    {
++        .categoryName = _("Dancing"),
++        .height = 6,
++        .weight = 34,
++        .description = gRandomDexText_ORICORIO,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [789] =
++    {
++        .categoryName = _("Bee Fly"),
++        .height = 1,
++        .weight = 2,
++        .description = gRandomDexText_CUTIEFLY,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [790] =
++    {
++        .categoryName = _("Bee Fly"),
++        .height = 2,
++        .weight = 5,
++        .description = gRandomDexText_RIBOMBEE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [791] =
++    {
++        .categoryName = _("Small Fry"),
++        .height = 2,
++        .weight = 3,
++        .description = gRandomDexText_WISHIWASHI,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [792] =
++    {
++        .categoryName = _("Illuminatin"),
++        .height = 2,
++        .weight = 15,
++        .description = gRandomDexText_MORELULL,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [793] =
++    {
++        .categoryName = _("Illuminatin"),
++        .height = 10,
++        .weight = 115,
++        .description = gRandomDexText_SHIINOTIC,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [794] =
++    {
++        .categoryName = _("Posy Picker"),
++        .height = 1,
++        .weight = 3,
++        .description = gRandomDexText_COMFEY,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [795] =
++    {
++        .categoryName = _("Meteor"),
++        .height = 3,
++        .weight = 400,
++        .description = gRandomDexText_MINIOR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [796] =
++    {
++        .categoryName = _("Drowsing"),
++        .height = 4,
++        .weight = 199,
++        .description = gRandomDexText_KOMALA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [797] =
++    {
++        .categoryName = _("Gnash Teeth"),
++        .height = 9,
++        .weight = 190,
++        .description = gRandomDexText_BRUXISH,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [798] =
++    {
++        .categoryName = _("Placid"),
++        .height = 30,
++        .weight = 1850,
++        .description = gRandomDexText_DRAMPA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [799] =
++    {
++        .categoryName = _("Sea Creeper"),
++        .height = 39,
++        .weight = 2100,
++        .description = gRandomDexText_DHELMISE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [800] =
++    {
++        .categoryName = _("Land Spirit"),
++        .height = 18,
++        .weight = 205,
++        .description = gRandomDexText_TAPU_KOKO,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [801] =
++    {
++        .categoryName = _("Land Spirit"),
++        .height = 12,
++        .weight = 186,
++        .description = gRandomDexText_TAPU_LELE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [802] =
++    {
++        .categoryName = _("Land Spirit"),
++        .height = 19,
++        .weight = 455,
++        .description = gRandomDexText_TAPU_BULU,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [803] =
++    {
++        .categoryName = _("Land Spirit"),
++        .height = 13,
++        .weight = 212,
++        .description = gRandomDexText_TAPU_FINI,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [804] =
++    {
++        .categoryName = _("Nebula"),
++        .height = 2,
++        .weight = 1,
++        .description = gRandomDexText_COSMOG,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [805] =
++    {
++        .categoryName = _("Protostar"),
++        .height = 1,
++        .weight = 9999,
++        .description = gRandomDexText_COSMOEM,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [806] =
++    {
++        .categoryName = _("Sunne"),
++        .height = 34,
++        .weight = 2300,
++        .description = gRandomDexText_SOLGALEO,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [807] =
++    {
++        .categoryName = _("Fireworks"),
++        .height = 18,
++        .weight = 130,
++        .description = gRandomDexText_BLACEPHALON,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [808] =
++    {
++        .categoryName = _("Hex Nut"),
++        .height = 2,
++        .weight = 80,
++        .description = gRandomDexText_MELTAN,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [809] =
++    {
++        .categoryName = _("Hex Nut"),
++        .height = 25,
++        .weight = 8000,
++        .description = gRandomDexText_MELMETAL,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [810] =
++    {
++        .categoryName = _("Light"),
++        .height = 14,
++        .weight = 615,
++        .description = gRandomDexText_MEGA_AMPHAROS,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [811] =
++    {
++        .categoryName = _("Seed"),
++        .height = 24,
++        .weight = 1555,
++        .description = gRandomDexText_MEGA_VENUSAUR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [812] =
++    {
++        .categoryName = _("Flame"),
++        .height = 17,
++        .weight = 1105,
++        .description = gRandomDexText_MEGA_CHARIZARD_X,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [813] =
++    {
++        .categoryName = _("Flame"),
++        .height = 17,
++        .weight = 1005,
++        .description = gRandomDexText_MEGA_CHARIZARD_Y,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [814] =
++    {
++        .categoryName = _("Genetic"),
++        .height = 23,
++        .weight = 1270,
++        .description = gRandomDexText_MEGA_MEWTWO_X,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [815] =
++    {
++        .categoryName = _("Genetic"),
++        .height = 15,
++        .weight = 330,
++        .description = gRandomDexText_MEGA_MEWTWO_Y,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [816] =
++    {
++        .categoryName = _("Blaze"),
++        .height = 19,
++        .weight = 520,
++        .description = gRandomDexText_MEGA_BLAZIKEN,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [817] =
++    {
++        .categoryName = _("Meditate"),
++        .height = 13,
++        .weight = 315,
++        .description = gRandomDexText_MEGA_MEDICHAM,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [818] =
++    {
++        .categoryName = _("Dark"),
++        .height = 19,
++        .weight = 495,
++        .description = gRandomDexText_MEGA_HOUNDOOM,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [819] =
++    {
++        .categoryName = _("Iron Armor"),
++        .height = 22,
++        .weight = 3950,
++        .description = gRandomDexText_MEGA_AGGRON,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [820] =
++    {
++        .categoryName = _("Marionette"),
++        .height = 12,
++        .weight = 130,
++        .description = gRandomDexText_MEGA_BANETTE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [821] =
++    {
++        .categoryName = _("Armor"),
++        .height = 25,
++        .weight = 2550,
++        .description = gRandomDexText_MEGA_TYRANITAR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [822] =
++    {
++        .categoryName = _("Pincer"),
++        .height = 20,
++        .weight = 1250,
++        .description = gRandomDexText_MEGA_SCIZOR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [823] =
++    {
++        .categoryName = _("Stag Beetle"),
++        .height = 17,
++        .weight = 590,
++        .description = gRandomDexText_MEGA_PINSIR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [824] =
++    {
++        .categoryName = _("Fossil"),
++        .height = 21,
++        .weight = 790,
++        .description = gRandomDexText_MEGA_AERODACTYL,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [825] =
++    {
++        .categoryName = _("Aura"),
++        .height = 13,
++        .weight = 575,
++        .description = gRandomDexText_MEGA_LUCARIO,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [826] =
++    {
++        .categoryName = _("Frost Tree"),
++        .height = 27,
++        .weight = 1850,
++        .description = gRandomDexText_MEGA_ABOMASNOW,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [827] =
++    {
++        .categoryName = _("Shellfish"),
++        .height = 16,
++        .weight = 1011,
++        .description = gRandomDexText_MEGA_BLASTOISE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [828] =
++    {
++        .categoryName = _("Parent"),
++        .height = 22,
++        .weight = 1000,
++        .description = gRandomDexText_MEGA_KANGASKHAN,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [829] =
++    {
++        .categoryName = _("Atrocious"),
++        .height = 65,
++        .weight = 3050,
++        .description = gRandomDexText_MEGA_GYARADOS,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [830] =
++    {
++        .categoryName = _("Disaster"),
++        .height = 12,
++        .weight = 490,
++        .description = gRandomDexText_MEGA_ABSOL,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [831] =
++    {
++        .categoryName = _("Psi"),
++        .height = 12,
++        .weight = 480,
++        .description = gRandomDexText_MEGA_ALAKAZAM,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [832] =
++    {
++        .categoryName = _("Single Horn"),
++        .height = 17,
++        .weight = 625,
++        .description = gRandomDexText_MEGA_HERACROSS,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [833] =
++    {
++        .categoryName = _("Deceiver"),
++        .height = 10,
++        .weight = 235,
++        .description = gRandomDexText_MEGA_MAWILE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [834] =
++    {
++        .categoryName = _("Discharge"),
++        .height = 18,
++        .weight = 440,
++        .description = gRandomDexText_MEGA_MANECTRIC,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [835] =
++    {
++        .categoryName = _("Mach"),
++        .height = 19,
++        .weight = 950,
++        .description = gRandomDexText_MEGA_GARCHOMP,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [836] =
++    {
++        .categoryName = _("Eon"),
++        .height = 23,
++        .weight = 700,
++        .description = gRandomDexText_MEGA_LATIOS,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [837] =
++    {
++        .categoryName = _("Eon"),
++        .height = 18,
++        .weight = 520,
++        .description = gRandomDexText_MEGA_LATIAS,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [838] =
++    {
++        .categoryName = _("Mud Fish"),
++        .height = 19,
++        .weight = 1020,
++        .description = gRandomDexText_MEGA_SWAMPERT,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [839] =
++    {
++        .categoryName = _("Forest"),
++        .height = 19,
++        .weight = 552,
++        .description = gRandomDexText_MEGA_SCEPTILE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [840] =
++    {
++        .categoryName = _("Darkness"),
++        .height = 5,
++        .weight = 1610,
++        .description = gRandomDexText_MEGA_SABLEYE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [841] =
++    {
++        .categoryName = _("Humming"),
++        .height = 15,
++        .weight = 206,
++        .description = gRandomDexText_MEGA_ALTARIA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [842] =
++    {
++        .categoryName = _("Blade"),
++        .height = 16,
++        .weight = 564,
++        .description = gRandomDexText_MEGA_GALLADE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [843] =
++    {
++        .categoryName = _("Hearing"),
++        .height = 15,
++        .weight = 320,
++        .description = gRandomDexText_MEGA_AUDINO,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [844] =
++    {
++        .categoryName = _("Brutal"),
++        .height = 25,
++        .weight = 1303,
++        .description = gRandomDexText_MEGA_SHARPEDO,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [845] =
++    {
++        .categoryName = _("Hermit Crab"),
++        .height = 20,
++        .weight = 1200,
++        .description = gRandomDexText_MEGA_SLOWBRO,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [846] =
++    {
++        .categoryName = _("Iron Snake"),
++        .height = 105,
++        .weight = 7400,
++        .description = gRandomDexText_MEGA_STEELIX,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [847] =
++    {
++        .categoryName = _("Bird"),
++        .height = 22,
++        .weight = 505,
++        .description = gRandomDexText_MEGA_PIDGEOT,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [848] =
++    {
++        .categoryName = _("Face"),
++        .height = 21,
++        .weight = 3502,
++        .description = gRandomDexText_MEGA_GLALIE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [849] =
++    {
++        .categoryName = _("Jewel"),
++        .height = 11,
++        .weight = 278,
++        .description = gRandomDexText_MEGA_DIANCIE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [850] =
++    {
++        .categoryName = _("Iron Leg"),
++        .height = 25,
++        .weight = 9429,
++        .description = gRandomDexText_MEGA_METAGROSS,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [851] =
++    {
++        .categoryName = _("Sky High"),
++        .height = 108,
++        .weight = 3920,
++        .description = gRandomDexText_MEGA_RAYQUAZA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [852] =
++    {
++        .categoryName = _("Eruption"),
++        .height = 25,
++        .weight = 3205,
++        .description = gRandomDexText_MEGA_CAMERUPT,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [853] =
++    {
++        .categoryName = _("Rabbit"),
++        .height = 13,
++        .weight = 283,
++        .description = gRandomDexText_MEGA_LOPUNNY,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [854] =
++    {
++        .categoryName = _("Dragon"),
++        .height = 18,
++        .weight = 1126,
++        .description = gRandomDexText_MEGA_SALAMENCE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [855] =
++    {
++        .categoryName = _("Poison Bee"),
++        .height = 14,
++        .weight = 405,
++        .description = gRandomDexText_MEGA_BEEDRILL,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [856] =
++    {
++        .categoryName = _("Shadow"),
++        .height = 14,
++        .weight = 405,
++        .description = gRandomDexText_MEGA_GENGAR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [857] =
++    {
++        .categoryName = _("Embrace"),
++        .height = 16,
++        .weight = 484,
++        .description = gRandomDexText_MEGA_GARDEVOIR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [858] =
++    {
++        .categoryName = _("Bagworm"),
++        .height = 2,
++        .weight = 34,
++        .description = gRandomDexText_BURMY_SANDY,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [859] =
++    {
++        .categoryName = _("Bagworm"),
++        .height = 2,
++        .weight = 34,
++        .description = gRandomDexText_BURMY_TRASH,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [860] =
++    {
++        .categoryName = _("Bagworm"),
++        .height = 5,
++        .weight = 65,
++        .description = gRandomDexText_WORMADAM_SANDY,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [861] =
++    {
++        .categoryName = _("Bagworm"),
++        .height = 5,
++        .weight = 65,
++        .description = gRandomDexText_WORMADAM_TRASH,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [862] =
++    {
++        .categoryName = _("Plasma"),
++        .height = 3,
++        .weight = 3,
++        .description = gRandomDexText_ROTOM_HEAT,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [863] =
++    {
++        .categoryName = _("Plasma"),
++        .height = 3,
++        .weight = 3,
++        .description = gRandomDexText_ROTOM_WASH,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [864] =
++    {
++        .categoryName = _("Plasma"),
++        .height = 3,
++        .weight = 3,
++        .description = gRandomDexText_ROTOM_FROST,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [865] =
++    {
++        .categoryName = _("Plasma"),
++        .height = 3,
++        .weight = 3,
++        .description = gRandomDexText_ROTOM_FAN,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [866] =
++    {
++        .categoryName = _("Plasma"),
++        .height = 3,
++        .weight = 3,
++        .description = gRandomDexText_ROTOM_MOW,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [867] =
++    {
++        .categoryName = _("Boundary"),
++        .height = 33,
++        .weight = 3250,
++        .description = gRandomDexText_KYUREM_BLACK,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [868] =
++    {
++        .categoryName = _("Boundary"),
++        .height = 36,
++        .weight = 3250,
++        .description = gRandomDexText_KYUREM_WHITE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [869] =
++    {
++        .categoryName = _("Constraint"),
++        .height = 6,
++        .weight = 85,
++        .description = gRandomDexText_MEOWSTIC_F,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [870] =
++    {
++        .categoryName = _("Mouse"),
++        .height = 3,
++        .weight = 38,
++        .description = gRandomDexText_ALOLAN_RATTATA,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [871] =
++    {
++        .categoryName = _("Mouse"),
++        .height = 7,
++        .weight = 255,
++        .description = gRandomDexText_ALOLAN_RATICATE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [872] =
++    {
++        .categoryName = _("Mouse"),
++        .height = 7,
++        .weight = 210,
++        .description = gRandomDexText_ALOLAN_RAICHU,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [873] =
++    {
++        .categoryName = _("Mouse"),
++        .height = 7,
++        .weight = 400,
++        .description = gRandomDexText_ALOLAN_SANDSHREW,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [874] =
++    {
++        .categoryName = _("Mouse"),
++        .height = 12,
++        .weight = 550,
++        .description = gRandomDexText_ALOLAN_SANDSLASH,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [875] =
++    {
++        .categoryName = _("Fox"),
++        .height = 6,
++        .weight = 99,
++        .description = gRandomDexText_ALOLAN_VULPIX,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [876] =
++    {
++        .categoryName = _("Fox"),
++        .height = 11,
++        .weight = 199,
++        .description = gRandomDexText_ALOLAN_NINETALES,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [877] =
++    {
++        .categoryName = _("Mole"),
++        .height = 2,
++        .weight = 10,
++        .description = gRandomDexText_ALOLAN_DIGLETT,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [878] =
++    {
++        .categoryName = _("Mole"),
++        .height = 7,
++        .weight = 666,
++        .description = gRandomDexText_ALOLAN_DUGTRIO,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [879] =
++    {
++        .categoryName = _("Scratch Cat"),
++        .height = 4,
++        .weight = 42,
++        .description = gRandomDexText_ALOLAN_MEOWTH,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [880] =
++    {
++        .categoryName = _("Classy Cat"),
++        .height = 11,
++        .weight = 330,
++        .description = gRandomDexText_ALOLAN_PERSIAN,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [881] =
++    {
++        .categoryName = _("Rock"),
++        .height = 4,
++        .weight = 203,
++        .description = gRandomDexText_ALOLAN_GEODUDE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [882] =
++    {
++        .categoryName = _("Rock"),
++        .height = 10,
++        .weight = 1100,
++        .description = gRandomDexText_ALOLAN_GRAVELER,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [883] =
++    {
++        .categoryName = _("Megaton"),
++        .height = 17,
++        .weight = 3160,
++        .description = gRandomDexText_ALOLAN_GOLEM,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [884] =
++    {
++        .categoryName = _("Sludge"),
++        .height = 7,
++        .weight = 420,
++        .description = gRandomDexText_ALOLAN_GRIMER,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [885] =
++    {
++        .categoryName = _("Sludge"),
++        .height = 10,
++        .weight = 520,
++        .description = gRandomDexText_ALOLAN_MUK,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [886] =
++    {
++        .categoryName = _("Coconut"),
++        .height = 109,
++        .weight = 4156,
++        .description = gRandomDexText_ALOLAN_EXEGGUTOR,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [887] =
++    {
++        .categoryName = _("Bone Keeper"),
++        .height = 10,
++        .weight = 340,
++        .description = gRandomDexText_ALOLAN_MAROWAK,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [888] =
++    {
++        .categoryName = _("Sea Basin"),
++        .height = 98,
++        .weight = 4300,
++        .description = gRandomDexText_PRIMAL_KYOGRE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [889] =
++    {
++        .categoryName = _("Continent"),
++        .height = 50,
++        .weight = 9997,
++        .description = gRandomDexText_PRIMAL_GROUDON,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [890] =
++    {
++        .categoryName = _("Gratitude"),
++        .height = 4,
++        .weight = 52,
++        .description = gRandomDexText_SHAYMIN_SKY,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [891] =
++    {
++        .categoryName = _("Renegade"),
++        .height = 69,
++        .weight = 6500,
++        .description = gRandomDexText_GIRATINA_ORIGIN,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [892] =
++    {
++        .categoryName = _("Blazing"),
++        .height = 13,
++        .weight = 929,
++        .description = gRandomDexText_DARMANITAN_ZEN,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [893] =
++    {
++        .categoryName = _("Cyclone"),
++        .height = 14,
++        .weight = 630,
++        .description = gRandomDexText_TORNADUS_THERIAN,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [894] =
++    {
++        .categoryName = _("Bolt Strike"),
++        .height = 30,
++        .weight = 610,
++        .description = gRandomDexText_THUNDURUS_THERIAN,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [895] =
++    {
++        .categoryName = _("Abundance"),
++        .height = 13,
++        .weight = 680,
++        .description = gRandomDexText_LANDORUS_THERIAN,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [896] =
++    {
++        .categoryName = _("Melody"),
++        .height = 6,
++        .weight = 65,
++        .description = gRandomDexText_MELOETTA_PIROUETTE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [897] =
++    {
++        .categoryName = _("Royal Sword"),
++        .height = 17,
++        .weight = 530,
++        .description = gRandomDexText_AEGISLASH_BLADE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [898] =
++    {
++        .categoryName = _("Mischief"),
++        .height = 65,
++        .weight = 4900,
++        .description = gRandomDexText_HOOPA_UNBOUND,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [899] =
++    {
++        .categoryName = _("Meteor"),
++        .height = 3,
++        .weight = 3,
++        .description = gRandomDexText_MINIOR_CORE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [905] =
++    {
++        .categoryName = _("Order"),
++        .height = 12,
++        .weight = 335,
++        .description = gRandomDexText_ZYGARDE_10,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
++    [906] =
++    {
++        .categoryName = _("Order"),
++        .height = 45,
++        .weight = 6100,
++        .description = gRandomDexText_ZYGARDE_COMPLETE,
++        .pokemonScale = 256,
++        .pokemonOffset = 0,
++        .trainerScale = 256,
++        .trainerOffset = 0,
++    },
+diff --git a/src/data/pokemon/pokedex_natdex_random.h b/src/data/pokemon/pokedex_natdex_random.h
+new file mode 100644
+index 000000000..ed3e060ed
+--- /dev/null
++++ b/src/data/pokemon/pokedex_natdex_random.h
+@@ -0,0 +1,217 @@
++    // AUTO-GENERATED national dex numbers for previously unmapped species.
++    [SPECIES_BIDOOF - 1] = 686,
++    [SPECIES_BIBAREL - 1] = 687,
++    [SPECIES_KRICKETOT - 1] = 688,
++    [SPECIES_KRICKETUNE - 1] = 689,
++    [SPECIES_BURMY - 1] = 690,
++    [SPECIES_WORMADAM - 1] = 691,
++    [SPECIES_MOTHIM - 1] = 692,
++    [SPECIES_COMBEE - 1] = 693,
++    [SPECIES_VESPIQUEN - 1] = 694,
++    [SPECIES_PACHIRISU - 1] = 695,
++    [SPECIES_BUIZEL - 1] = 696,
++    [SPECIES_FLOATZEL - 1] = 697,
++    [SPECIES_GLAMEOW - 1] = 698,
++    [SPECIES_PURUGLY - 1] = 699,
++    [SPECIES_CHINGLING - 1] = 700,
++    [SPECIES_STUNKY - 1] = 701,
++    [SPECIES_SKUNTANK - 1] = 702,
++    [SPECIES_BRONZOR - 1] = 703,
++    [SPECIES_BRONZONG - 1] = 704,
++    [SPECIES_CHATOT - 1] = 705,
++    [SPECIES_UXIE - 1] = 706,
++    [SPECIES_MESPRIT - 1] = 707,
++    [SPECIES_AZELF - 1] = 708,
++    [SPECIES_DIALGA - 1] = 709,
++    [SPECIES_PALKIA - 1] = 710,
++    [SPECIES_GIRATINA - 1] = 711,
++    [SPECIES_CRESSELIA - 1] = 712,
++    [SPECIES_SHAYMIN - 1] = 713,
++    [SPECIES_PATRAT - 1] = 714,
++    [SPECIES_WATCHOG - 1] = 715,
++    [SPECIES_PANSAGE - 1] = 716,
++    [SPECIES_SIMISAGE - 1] = 717,
++    [SPECIES_PANSEAR - 1] = 718,
++    [SPECIES_SIMISEAR - 1] = 719,
++    [SPECIES_PANPOUR - 1] = 720,
++    [SPECIES_SIMIPOUR - 1] = 721,
++    [SPECIES_MUNNA - 1] = 722,
++    [SPECIES_MUSHARNA - 1] = 723,
++    [SPECIES_PIDOVE - 1] = 724,
++    [SPECIES_TRANQUILL - 1] = 725,
++    [SPECIES_UNFEZANT - 1] = 726,
++    [SPECIES_WOOBAT - 1] = 727,
++    [SPECIES_SWOOBAT - 1] = 728,
++    [SPECIES_THROH - 1] = 729,
++    [SPECIES_SAWK - 1] = 730,
++    [SPECIES_SEWADDLE - 1] = 731,
++    [SPECIES_SWADLOON - 1] = 732,
++    [SPECIES_LEAVANNY - 1] = 733,
++    [SPECIES_TRUBBISH - 1] = 734,
++    [SPECIES_GARBODOR - 1] = 735,
++    [SPECIES_GOTHITA - 1] = 736,
++    [SPECIES_GOTHORITA - 1] = 737,
++    [SPECIES_GOTHITELLE - 1] = 738,
++    [SPECIES_DUCKLETT - 1] = 739,
++    [SPECIES_SWANNA - 1] = 740,
++    [SPECIES_KARRABLAST - 1] = 741,
++    [SPECIES_ESCAVALIER - 1] = 742,
++    [SPECIES_FOONGUS - 1] = 743,
++    [SPECIES_AMOONGUSS - 1] = 744,
++    [SPECIES_ALOMOMOLA - 1] = 745,
++    [SPECIES_KLINK - 1] = 746,
++    [SPECIES_KLANG - 1] = 747,
++    [SPECIES_KLINKLANG - 1] = 748,
++    [SPECIES_SHELMET - 1] = 749,
++    [SPECIES_ACCELGOR - 1] = 750,
++    [SPECIES_DRUDDIGON - 1] = 751,
++    [SPECIES_BOUFFALANT - 1] = 752,
++    [SPECIES_VULLABY - 1] = 753,
++    [SPECIES_MANDIBUZZ - 1] = 754,
++    [SPECIES_HEATMOR - 1] = 755,
++    [SPECIES_TORNADUS - 1] = 756,
++    [SPECIES_THUNDURUS - 1] = 757,
++    [SPECIES_RESHIRAM - 1] = 758,
++    [SPECIES_ZEKROM - 1] = 759,
++    [SPECIES_LANDORUS - 1] = 760,
++    [SPECIES_KYUREM - 1] = 761,
++    [SPECIES_SCATTERBUG - 1] = 762,
++    [SPECIES_SPEWPA - 1] = 763,
++    [SPECIES_VIVILLON - 1] = 764,
++    [SPECIES_LITLEO - 1] = 765,
++    [SPECIES_PYROAR - 1] = 766,
++    [SPECIES_FLABEBE - 1] = 767,
++    [SPECIES_FLOETTE - 1] = 768,
++    [SPECIES_FLORGES - 1] = 769,
++    [SPECIES_FURFROU - 1] = 770,
++    [SPECIES_ESPURR - 1] = 771,
++    [SPECIES_MEOWSTIC - 1] = 772,
++    [SPECIES_SPRITZEE - 1] = 773,
++    [SPECIES_AROMATISSE - 1] = 774,
++    [SPECIES_SWIRLIX - 1] = 775,
++    [SPECIES_SLURPUFF - 1] = 776,
++    [SPECIES_INKAY - 1] = 777,
++    [SPECIES_MALAMAR - 1] = 778,
++    [SPECIES_HELIOPTILE - 1] = 779,
++    [SPECIES_HELIOLISK - 1] = 780,
++    [SPECIES_DEDENNE - 1] = 781,
++    [SPECIES_KLEFKI - 1] = 782,
++    [SPECIES_XERNEAS - 1] = 783,
++    [SPECIES_YVELTAL - 1] = 784,
++    [SPECIES_ZYGARDE - 1] = 785,
++    [SPECIES_YUNGOOS - 1] = 786,
++    [SPECIES_GUMSHOOS - 1] = 787,
++    [SPECIES_ORICORIO - 1] = 788,
++    [SPECIES_CUTIEFLY - 1] = 789,
++    [SPECIES_RIBOMBEE - 1] = 790,
++    [SPECIES_WISHIWASHI - 1] = 791,
++    [SPECIES_MORELULL - 1] = 792,
++    [SPECIES_SHIINOTIC - 1] = 793,
++    [SPECIES_COMFEY - 1] = 794,
++    [SPECIES_MINIOR - 1] = 795,
++    [SPECIES_KOMALA - 1] = 796,
++    [SPECIES_BRUXISH - 1] = 797,
++    [SPECIES_DRAMPA - 1] = 798,
++    [SPECIES_DHELMISE - 1] = 799,
++    [SPECIES_TAPU_KOKO - 1] = 800,
++    [SPECIES_TAPU_LELE - 1] = 801,
++    [SPECIES_TAPU_BULU - 1] = 802,
++    [SPECIES_TAPU_FINI - 1] = 803,
++    [SPECIES_COSMOG - 1] = 804,
++    [SPECIES_COSMOEM - 1] = 805,
++    [SPECIES_SOLGALEO - 1] = 806,
++    [SPECIES_BLACEPHALON - 1] = 807,
++    [SPECIES_MELTAN - 1] = 808,
++    [SPECIES_MELMETAL - 1] = 809,
++    [SPECIES_MEGA_AMPHAROS - 1] = 810,
++    [SPECIES_MEGA_VENUSAUR - 1] = 811,
++    [SPECIES_MEGA_CHARIZARD_X - 1] = 812,
++    [SPECIES_MEGA_CHARIZARD_Y - 1] = 813,
++    [SPECIES_MEGA_MEWTWO_X - 1] = 814,
++    [SPECIES_MEGA_MEWTWO_Y - 1] = 815,
++    [SPECIES_MEGA_BLAZIKEN - 1] = 816,
++    [SPECIES_MEGA_MEDICHAM - 1] = 817,
++    [SPECIES_MEGA_HOUNDOOM - 1] = 818,
++    [SPECIES_MEGA_AGGRON - 1] = 819,
++    [SPECIES_MEGA_BANETTE - 1] = 820,
++    [SPECIES_MEGA_TYRANITAR - 1] = 821,
++    [SPECIES_MEGA_SCIZOR - 1] = 822,
++    [SPECIES_MEGA_PINSIR - 1] = 823,
++    [SPECIES_MEGA_AERODACTYL - 1] = 824,
++    [SPECIES_MEGA_LUCARIO - 1] = 825,
++    [SPECIES_MEGA_ABOMASNOW - 1] = 826,
++    [SPECIES_MEGA_BLASTOISE - 1] = 827,
++    [SPECIES_MEGA_KANGASKHAN - 1] = 828,
++    [SPECIES_MEGA_GYARADOS - 1] = 829,
++    [SPECIES_MEGA_ABSOL - 1] = 830,
++    [SPECIES_MEGA_ALAKAZAM - 1] = 831,
++    [SPECIES_MEGA_HERACROSS - 1] = 832,
++    [SPECIES_MEGA_MAWILE - 1] = 833,
++    [SPECIES_MEGA_MANECTRIC - 1] = 834,
++    [SPECIES_MEGA_GARCHOMP - 1] = 835,
++    [SPECIES_MEGA_LATIOS - 1] = 836,
++    [SPECIES_MEGA_LATIAS - 1] = 837,
++    [SPECIES_MEGA_SWAMPERT - 1] = 838,
++    [SPECIES_MEGA_SCEPTILE - 1] = 839,
++    [SPECIES_MEGA_SABLEYE - 1] = 840,
++    [SPECIES_MEGA_ALTARIA - 1] = 841,
++    [SPECIES_MEGA_GALLADE - 1] = 842,
++    [SPECIES_MEGA_AUDINO - 1] = 843,
++    [SPECIES_MEGA_SHARPEDO - 1] = 844,
++    [SPECIES_MEGA_SLOWBRO - 1] = 845,
++    [SPECIES_MEGA_STEELIX - 1] = 846,
++    [SPECIES_MEGA_PIDGEOT - 1] = 847,
++    [SPECIES_MEGA_GLALIE - 1] = 848,
++    [SPECIES_MEGA_DIANCIE - 1] = 849,
++    [SPECIES_MEGA_METAGROSS - 1] = 850,
++    [SPECIES_MEGA_RAYQUAZA - 1] = 851,
++    [SPECIES_MEGA_CAMERUPT - 1] = 852,
++    [SPECIES_MEGA_LOPUNNY - 1] = 853,
++    [SPECIES_MEGA_SALAMENCE - 1] = 854,
++    [SPECIES_MEGA_BEEDRILL - 1] = 855,
++    [SPECIES_MEGA_GENGAR - 1] = 856,
++    [SPECIES_MEGA_GARDEVOIR - 1] = 857,
++    [SPECIES_BURMY_SANDY - 1] = 858,
++    [SPECIES_BURMY_TRASH - 1] = 859,
++    [SPECIES_WORMADAM_SANDY - 1] = 860,
++    [SPECIES_WORMADAM_TRASH - 1] = 861,
++    [SPECIES_ROTOM_HEAT - 1] = 862,
++    [SPECIES_ROTOM_WASH - 1] = 863,
++    [SPECIES_ROTOM_FROST - 1] = 864,
++    [SPECIES_ROTOM_FAN - 1] = 865,
++    [SPECIES_ROTOM_MOW - 1] = 866,
++    [SPECIES_KYUREM_BLACK - 1] = 867,
++    [SPECIES_KYUREM_WHITE - 1] = 868,
++    [SPECIES_MEOWSTIC_F - 1] = 869,
++    [SPECIES_ALOLAN_RATTATA - 1] = 870,
++    [SPECIES_ALOLAN_RATICATE - 1] = 871,
++    [SPECIES_ALOLAN_RAICHU - 1] = 872,
++    [SPECIES_ALOLAN_SANDSHREW - 1] = 873,
++    [SPECIES_ALOLAN_SANDSLASH - 1] = 874,
++    [SPECIES_ALOLAN_VULPIX - 1] = 875,
++    [SPECIES_ALOLAN_NINETALES - 1] = 876,
++    [SPECIES_ALOLAN_DIGLETT - 1] = 877,
++    [SPECIES_ALOLAN_DUGTRIO - 1] = 878,
++    [SPECIES_ALOLAN_MEOWTH - 1] = 879,
++    [SPECIES_ALOLAN_PERSIAN - 1] = 880,
++    [SPECIES_ALOLAN_GEODUDE - 1] = 881,
++    [SPECIES_ALOLAN_GRAVELER - 1] = 882,
++    [SPECIES_ALOLAN_GOLEM - 1] = 883,
++    [SPECIES_ALOLAN_GRIMER - 1] = 884,
++    [SPECIES_ALOLAN_MUK - 1] = 885,
++    [SPECIES_ALOLAN_EXEGGUTOR - 1] = 886,
++    [SPECIES_ALOLAN_MAROWAK - 1] = 887,
++    [SPECIES_PRIMAL_KYOGRE - 1] = 888,
++    [SPECIES_PRIMAL_GROUDON - 1] = 889,
++    [SPECIES_SHAYMIN_SKY - 1] = 890,
++    [SPECIES_GIRATINA_ORIGIN - 1] = 891,
++    [SPECIES_DARMANITAN_ZEN - 1] = 892,
++    [SPECIES_TORNADUS_THERIAN - 1] = 893,
++    [SPECIES_THUNDURUS_THERIAN - 1] = 894,
++    [SPECIES_LANDORUS_THERIAN - 1] = 895,
++    [SPECIES_MELOETTA_PIROUETTE - 1] = 896,
++    [SPECIES_AEGISLASH_BLADE - 1] = 897,
++    [SPECIES_HOOPA_UNBOUND - 1] = 898,
++    [SPECIES_MINIOR_CORE - 1] = 899,
++    [SPECIES_ZYGARDE_10 - 1] = 905,
++    [SPECIES_ZYGARDE_COMPLETE - 1] = 906,
+diff --git a/src/data/pokemon/pokedex_text_random.h b/src/data/pokemon/pokedex_text_random.h
+new file mode 100644
+index 000000000..881279857
+--- /dev/null
++++ b/src/data/pokemon/pokedex_text_random.h
+@@ -0,0 +1,1058 @@
++// AUTO-GENERATED Pokedex descriptions (PokeAPI: height=dm, weight=hg).
++
++const u8 gRandomDexText_BIDOOF[] = _(
++    "It lives in groups by the water. It\n"
++    "chews up boulders and trees around its\n"
++    "nest with its incisors.");
++const u8 gRandomDexText_BIBAREL[] = _(
++    "Bibarel fur repels water and is also a\n"
++    "fantastic material for heat retention.\n"
++    "These Pokémon create dams on rivers to\n"
++    "live in.");
++const u8 gRandomDexText_KRICKETOT[] = _(
++    "It shakes its head back to front,\n"
++    "causing its antennae to hit each other\n"
++    "and sound like a xylophone.");
++const u8 gRandomDexText_KRICKETUNE[] = _(
++    "It uses its cutlass-like arms to\n"
++    "produce sound, the melody of which\n"
++    "varies from individual to individual.\n"
++    "It is a worthwhile endeavor to seek out");
++const u8 gRandomDexText_BURMY[] = _(
++    "If its cloak is even slightly damaged,\n"
++    "Burmy will immediately repair it with\n"
++    "whatever is close at hand. The Pokémon\n"
++    "within the cloak is scrawny and");
++const u8 gRandomDexText_WORMADAM[] = _(
++    "Its appearance changes depending on\n"
++    "where it evolved. The materials on hand\n"
++    "become a part of its body.");
++const u8 gRandomDexText_MOTHIM[] = _(
++    "Scatters steel-colored scales as it\n"
++    "flaps its wings. Despite being observed\n"
++    "feeding primarily on the nectar of\n"
++    "flowers, Mothim is not often seen");
++const u8 gRandomDexText_COMBEE[] = _(
++    "They swear fealty to a queen Pokémon\n"
++    "and work diligently to gather nectar.\n"
++    "Each swarm produces a different flavor\n"
++    "of honey.");
++const u8 gRandomDexText_VESPIQUEN[] = _(
++    "Commands its subjects to build its\n"
++    "hive. It will dispatch any interlopers\n"
++    "who dare sneak into its nest and use\n"
++    "them as nourishment for itself.");
++const u8 gRandomDexText_PACHIRISU[] = _(
++    "A species related to the Pikachu line.\n"
++    "Though Pachirisu is a calm Pokémon, it\n"
++    "still presents a danger should one\n"
++    "touch its electrified tail or cheeks.");
++const u8 gRandomDexText_BUIZEL[] = _(
++    "It moves freely in the water by\n"
++    "spinning its forked tail for\n"
++    "propulsion. The resemblance to the\n"
++    "screw of a steamboat is coincidental.");
++const u8 gRandomDexText_FLOATZEL[] = _(
++    "Has a long, rather splendid flotation\n"
++    "sac, which prevents Floatzel from\n"
++    "drowning even in stormy seas. One might\n"
++    "glimpse this species around fishing");
++const u8 gRandomDexText_GLAMEOW[] = _(
++    "Bewitches humans with its helical tail\n"
++    "and piercing gaze. Its hidden claws are\n"
++    "quite sharp as well, making this\n"
++    "Pokémon an exceedingly tricky opponent");
++const u8 gRandomDexText_PURUGLY[] = _(
++    "Though impudent and difficult to tame,\n"
++    "Purugly enjoys great popularity due to\n"
++    "its fur, the beauty of which surpasses\n"
++    "even velveteen.");
++const u8 gRandomDexText_CHINGLING[] = _(
++    "It emits high-frequency cries that\n"
++    "people can't hear. Once it starts, it\n"
++    "can cry for an awfully long time.");
++const u8 gRandomDexText_STUNKY[] = _(
++    "The poison that gushes from its aft end\n"
++    "is accompanied by an utterly\n"
++    "evil-smelling odor with such potency\n"
++    "that one whiff can induce memory loss.");
++const u8 gRandomDexText_SKUNTANK[] = _(
++    "Sprays a poisonous fluid to take down\n"
++    "prey. Sometimes, unable to stomach the\n"
++    "stench of its own fluid, it leaves the\n"
++    "bested prey uneaten.");
++const u8 gRandomDexText_BRONZOR[] = _(
++    "Polishing Bronzor to a shine makes its\n"
++    "surface reflect the truth, according to\n"
++    "common lore. Be that as it may, Bronzor\n"
++    "hates being polished.");
++const u8 gRandomDexText_BRONZONG[] = _(
++    "Some believe it to be a deity that\n"
++    "summons rain clouds. When angered, it\n"
++    "lets out a warning cry that rings out\n"
++    "like the tolling of a bell.");
++const u8 gRandomDexText_CHATOT[] = _(
++    "It mimics the cries of other Pokémon to\n"
++    "trick them into thinking it's one of\n"
++    "them. This way they won't attack it.");
++const u8 gRandomDexText_UXIE[] = _(
++    "A Pokémon feared but also respected for\n"
++    "stealing away the memories of\n"
++    "evildoers. I have found records that\n"
++    "suggest Uxie holds dominion over");
++const u8 gRandomDexText_MESPRIT[] = _(
++    "Known as the Being of Emotion. In\n"
++    "legend, this Pokémon was feared, as any\n"
++    "who showed disrespect would have their\n"
++    "emotions thrown into disarray.");
++const u8 gRandomDexText_AZELF[] = _(
++    "The dreaded Being of Willpower. Legends\n"
++    "tell of this Pokémon manipulating the\n"
++    "will of its adversaries and turning\n"
++    "them into puppets of its own.");
++const u8 gRandomDexText_DIALGA[] = _(
++    "This Pokémon is revered as a deity in\n"
++    "Hisuian legend. The birth of Dialga was\n"
++    "what caused the vast river of time to\n"
++    "begin flowing in our world.");
++const u8 gRandomDexText_PALKIA[] = _(
++    "Its total control over the boundaries\n"
++    "of space enable it to transport itself\n"
++    "to faraway places or even other\n"
++    "dimensions.");
++const u8 gRandomDexText_GIRATINA[] = _(
++    "There is one Hisuian verse that tells\n"
++    "of a powerful light creating a deep\n"
++    "shadow. I imagine that this deep shadow\n"
++    "is Giratina.");
++const u8 gRandomDexText_CRESSELIA[] = _(
++    "Those who sleep holding CRESSELIA's\n"
++    "feather are assured of joyful dreams.\n"
++    "It is said to represent the crescent\n"
++    "moon.");
++const u8 gRandomDexText_SHAYMIN[] = _(
++    "The blooming of Gracidea flowers\n"
++    "confers the power of flight upon it.\n"
++    "Feelings of gratitude are the message\n"
++    "it delivers.");
++const u8 gRandomDexText_PATRAT[] = _(
++    "Extremely cautious, they take shifts to\n"
++    "maintain a constant watch of their\n"
++    "nest. They feel insecure without a\n"
++    "lookout.");
++const u8 gRandomDexText_WATCHOG[] = _(
++    "They make the patterns on their bodies\n"
++    "shine in order to threaten predators.\n"
++    "Keen eyesight lets them see in the\n"
++    "dark.");
++const u8 gRandomDexText_PANSAGE[] = _(
++    "This Pokémon dwells deep in the forest.\n"
++    "Eating a leaf from its head whisks\n"
++    "weariness away as if by magic.");
++const u8 gRandomDexText_SIMISAGE[] = _(
++    "Ill tempered, it fights by swinging its\n"
++    "barbed tail around wildly. The leaf\n"
++    "growing on its head is very bitter.");
++const u8 gRandomDexText_PANSEAR[] = _(
++    "This Pokémon lives in caves in\n"
++    "volcanoes. The fire within the tuft on\n"
++    "its head can reach 600 degrees\n"
++    "Fahrenheit.");
++const u8 gRandomDexText_SIMISEAR[] = _(
++    "When it gets excited, embers rise from\n"
++    "its head and tail and it gets hot. For\n"
++    "some reason, it loves sweets.");
++const u8 gRandomDexText_PANPOUR[] = _(
++    "It does not thrive in dry environments.\n"
++    "It keeps itself damp by shooting water\n"
++    "stored in its head tuft from its tail.");
++const u8 gRandomDexText_SIMIPOUR[] = _(
++    "The tuft on its head holds water. When\n"
++    "the level runs low, it replenishes the\n"
++    "tuft by siphoning up water with its\n"
++    "tail.");
++const u8 gRandomDexText_MUNNA[] = _(
++    "Late at night, it appears beside\n"
++    "people's pillows. As it feeds on\n"
++    "dreams, the patterns on its body give\n"
++    "off a faint glow.");
++const u8 gRandomDexText_MUSHARNA[] = _(
++    "It drowses and dreams all the time.\n"
++    "It's best to leave it be if it's just\n"
++    "woken up, as it's a terrible grump when\n"
++    "freshly roused from sleep.");
++const u8 gRandomDexText_PIDOVE[] = _(
++    "Where people go, these Pokémon follow.\n"
++    "If you're scattering food for them, be\n"
++    "careful- several hundred of them can\n"
++    "gather at once.");
++const u8 gRandomDexText_TRANQUILL[] = _(
++    "It can fly moderately quickly. No\n"
++    "matter how far it travels, it can\n"
++    "always find its way back to its master\n"
++    "and its nest.");
++const u8 gRandomDexText_UNFEZANT[] = _(
++    "Unfezant are exceptional fliers. The\n"
++    "females are known for their stamina,\n"
++    "while the males outclass them in terms\n"
++    "of speed.");
++const u8 gRandomDexText_WOOBAT[] = _(
++    "While inside a cave, if you look up and\n"
++    "see lots of heart-shaped marks lining\n"
++    "the walls, it's evidence that Woobat\n"
++    "live there.");
++const u8 gRandomDexText_SWOOBAT[] = _(
++    "Anyone who comes into contact with the\n"
++    "ultrasonic waves emitted by a courting\n"
++    "male experiences a positive mood shift.");
++const u8 gRandomDexText_THROH[] = _(
++    "It performs throwing moves with\n"
++    "first-rate skill. Over the course of\n"
++    "many battles, Throh's belt grows darker\n"
++    "as it absorbs its wearer's sweat.");
++const u8 gRandomDexText_SAWK[] = _(
++    "Tying their belts gets them pumped and\n"
++    "makes their punches more destructive.\n"
++    "Disturbing their training angers them.");
++const u8 gRandomDexText_SEWADDLE[] = _(
++    "This Pokémon makes clothes for itself.\n"
++    "It chews up leaves and sews them with\n"
++    "sticky thread extruded from its mouth.");
++const u8 gRandomDexText_SWADLOON[] = _(
++    "Forests where Swadloon live have superb\n"
++    "foliage because the nutrients they make\n"
++    "from fallen leaves nourish the plant\n"
++    "life.");
++const u8 gRandomDexText_LEAVANNY[] = _(
++    "Upon finding a small Pokémon, it weaves\n"
++    "clothing for it from leaves by using\n"
++    "the sticky silk secreted from its\n"
++    "mouth.");
++const u8 gRandomDexText_TRUBBISH[] = _(
++    "Its favorite places are unsanitary\n"
++    "ones. If you leave trash lying around,\n"
++    "you could even find one of these\n"
++    "Pokémon living in your room.");
++const u8 gRandomDexText_GARBODOR[] = _(
++    "This Pokémon eats trash, which turns\n"
++    "into poison inside its body. The main\n"
++    "component of the poison depends on what\n"
++    "sort of trash was eaten.");
++const u8 gRandomDexText_GOTHITA[] = _(
++    "Even when nobody seems to be around,\n"
++    "Gothita can still be heard making a\n"
++    "muted cry. Many believe it's speaking\n"
++    "to something only it can see.");
++const u8 gRandomDexText_GOTHORITA[] = _(
++    "It's said that when stars shine in the\n"
++    "night sky, this Pokémon will spirit\n"
++    "away sleeping children. Some call it\n"
++    "the Witch of Punishment.");
++const u8 gRandomDexText_GOTHITELLE[] = _(
++    "It has tremendous psychic power, but it\n"
++    "dislikes conflict. It's also able to\n"
++    "predict the future based on the\n"
++    "movement of the stars.");
++const u8 gRandomDexText_DUCKLETT[] = _(
++    "They are better at swimming than\n"
++    "flying, and they happily eat their\n"
++    "favorite food, peat moss, as they dive\n"
++    "underwater.");
++const u8 gRandomDexText_SWANNA[] = _(
++    "It administers sharp, powerful pecks\n"
++    "with its bill. It whips its long neck\n"
++    "to deliver forceful repeated strikes.");
++const u8 gRandomDexText_KARRABLAST[] = _(
++    "Its strange physiology reacts to\n"
++    "electrical energy in interesting ways.\n"
++    "The presence of a Shelmet will cause\n"
++    "this Pokémon to evolve.");
++const u8 gRandomDexText_ESCAVALIER[] = _(
++    "It charges its enemies, lances at the\n"
++    "ready. An image of one of its duels is\n"
++    "captured in a famous painting of\n"
++    "Escavalier clashing with Sirfetch'd.");
++const u8 gRandomDexText_FOONGUS[] = _(
++    "The spores released from this Pokémon's\n"
++    "hands are highly poisonous, but when\n"
++    "thoroughly dried, the spores can be\n"
++    "used as stomach medicine.");
++const u8 gRandomDexText_AMOONGUSS[] = _(
++    "This Pokémon puffs poisonous spores at\n"
++    "its foes. If the spores aren't washed\n"
++    "off quickly, they'll grow into\n"
++    "mushrooms wherever they land.");
++const u8 gRandomDexText_ALOMOMOLA[] = _(
++    "Fishermen take them along on long\n"
++    "voyages, because if you have an\n"
++    "Alomomola with you, there'll be no need\n"
++    "for a doctor or medicine.");
++const u8 gRandomDexText_KLINK[] = _(
++    "The two minigears that mesh together\n"
++    "are predetermined. Each will rebound\n"
++    "from other minigears without meshing.");
++const u8 gRandomDexText_KLANG[] = _(
++    "When Klang goes all out, the minigear\n"
++    "links up perfectly with the outer part\n"
++    "of the big gear, and this Pokémon's\n"
++    "rotation speed increases sharply.");
++const u8 gRandomDexText_KLINKLANG[] = _(
++    "The minigear spins at high speed. Then\n"
++    "the energy from the red core charges\n"
++    "the minigear to make it ready to fire.");
++const u8 gRandomDexText_SHELMET[] = _(
++    "When attacked, it tightly shuts the lid\n"
++    "of its shell. This reaction fails to\n"
++    "protect it from Karrablast, however,\n"
++    "because they can still get into the");
++const u8 gRandomDexText_ACCELGOR[] = _(
++    "It moves with blinding speed and lobs\n"
++    "poison at foes. Featuring Accelgor as a\n"
++    "main character is a surefire way to\n"
++    "make a movie or comic popular.");
++const u8 gRandomDexText_DRUDDIGON[] = _(
++    "Druddigon are vicious and cunning. They\n"
++    "take up residence in nests dug out by\n"
++    "other Pokémon, treating the stolen\n"
++    "nests as their own lairs.");
++const u8 gRandomDexText_BOUFFALANT[] = _(
++    "These Pokémon can crush a car with no\n"
++    "more than a headbutt. Bouffalant with\n"
++    "more hair on their heads hold higher\n"
++    "positions within the herd.");
++const u8 gRandomDexText_VULLABY[] = _(
++    "Mandibuzz gives it the bones it wears.\n"
++    "Vullaby's wings are short, so it can't\n"
++    "fly yet, but it jumps around, dreaming\n"
++    "of wide open skies.");
++const u8 gRandomDexText_MANDIBUZZ[] = _(
++    "Although it's a bit of a ruffian, this\n"
++    "Pokémon will take lost Vullaby under\n"
++    "its wing and care for them till they're\n"
++    "ready to leave the nest.");
++const u8 gRandomDexText_HEATMOR[] = _(
++    "There's a hole in its tail that allows\n"
++    "it to draw in the air it needs to keep\n"
++    "its fire burning. If the hole gets\n"
++    "blocked, this Pokémon will fall ill.");
++const u8 gRandomDexText_TORNADUS[] = _(
++    "This storm-stirring Pokémon is said to\n"
++    "cause the seasons to turn by whipping\n"
++    "up the air. I suspect its humanlike\n"
++    "form to be a false one.");
++const u8 gRandomDexText_THUNDURUS[] = _(
++    "The spikes on its tail discharge\n"
++    "immense bolts of lightning. It flies\n"
++    "around the Unova region firing off\n"
++    "lightning bolts.");
++const u8 gRandomDexText_RESHIRAM[] = _(
++    "According to myth, if people ignore\n"
++    "truth and let themselves become\n"
++    "consumed by greed, Reshiram will arrive\n"
++    "to burn their kingdoms down.");
++const u8 gRandomDexText_ZEKROM[] = _(
++    "When the interior part of its tail\n"
++    "spins like a motor, Zekrom can generate\n"
++    "many bolts of lightning to blast its\n"
++    "surroundings.");
++const u8 gRandomDexText_LANDORUS[] = _(
++    "From the forces of lightning and wind,\n"
++    "it creates energy to give nutrients to\n"
++    "the soil and make the land abundant.");
++const u8 gRandomDexText_KYUREM[] = _(
++    "It appears that this Pokémon uses its\n"
++    "powers over ice to freeze its own body\n"
++    "in order to stabilize its cellular\n"
++    "structure.");
++const u8 gRandomDexText_SCATTERBUG[] = _(
++    "When under attack from bird Pokémon, it\n"
++    "spews a poisonous black powder that\n"
++    "causes paralysis on contact.");
++const u8 gRandomDexText_SPEWPA[] = _(
++    "It lives hidden within thicket shadows.\n"
++    "When predators attack, it quickly\n"
++    "bristles the fur covering its body in\n"
++    "an effort to threaten them.");
++const u8 gRandomDexText_VIVILLON[] = _(
++    "Vivillon with many different patterns\n"
++    "are found all over the world. These\n"
++    "patterns are affected by the climate of\n"
++    "their habitat.");
++const u8 gRandomDexText_LITLEO[] = _(
++    "When they're young, they live with a\n"
++    "pride. Once they're able to hunt prey\n"
++    "on their own, they're kicked out and\n"
++    "have to make their own way.");
++const u8 gRandomDexText_PYROAR[] = _(
++    "The temperature of its breath is over\n"
++    "10,000 degrees Fahrenheit, but Pyroar\n"
++    "doesn't use it on its prey. This\n"
++    "Pokémon prefers to eat raw meat.");
++const u8 gRandomDexText_FLABEBE[] = _(
++    "When it finds a flower it likes, it\n"
++    "dwells on that flower its whole life\n"
++    "long. It floats in the wind's embrace\n"
++    "with an untroubled heart.");
++const u8 gRandomDexText_FLOETTE[] = _(
++    "It flutters around fields of flowers\n"
++    "and cares for flowers that are starting\n"
++    "to wilt. It draws out the hidden power\n"
++    "of flowers to battle.");
++const u8 gRandomDexText_FLORGES[] = _(
++    "It claims exquisite flower gardens as\n"
++    "its territory, and it obtains power\n"
++    "from basking in the energy emitted by\n"
++    "flowering plants.");
++const u8 gRandomDexText_FURFROU[] = _(
++    "There was an era when aristocrats would\n"
++    "compete to see who could trim their\n"
++    "Furfrou's fur into the most exquisite\n"
++    "style.");
++const u8 gRandomDexText_ESPURR[] = _(
++    "There's enough psychic power in Espurr\n"
++    "to send a wrestler flying, but because\n"
++    "this power can't be controlled, Espurr\n"
++    "finds it troublesome.");
++const u8 gRandomDexText_MEOWSTIC[] = _(
++    "The defensive instinct of the males is\n"
++    "strong. It's when they're protecting\n"
++    "themselves or their partners that they\n"
++    "unleash their full power.");
++const u8 gRandomDexText_SPRITZEE[] = _(
++    "A scent pouch within this Pokémon's\n"
++    "body allows it to create various\n"
++    "scents. A change in its diet will alter\n"
++    "the fragrance it produces.");
++const u8 gRandomDexText_AROMATISSE[] = _(
++    "Its scent is so overpowering that,\n"
++    "unless a Trainer happens to really\n"
++    "enjoy the smell, he or she will have a\n"
++    "hard time walking alongside it.");
++const u8 gRandomDexText_SWIRLIX[] = _(
++    "The sweet smell of cotton candy\n"
++    "perfumes Swirlix's fluffy fur. This\n"
++    "Pokémon spits out sticky string to\n"
++    "tangle up its enemies.");
++const u8 gRandomDexText_SLURPUFF[] = _(
++    "By taking in a person's scent, it can\n"
++    "sniff out their mental and physical\n"
++    "condition. It's hoped that this skill\n"
++    "will have many medical applications.");
++const u8 gRandomDexText_INKAY[] = _(
++    "It flashes the light-emitting spots on\n"
++    "its body, which drains its opponent's\n"
++    "will to fight. It takes the opportunity\n"
++    "to scuttle away and hide.");
++const u8 gRandomDexText_MALAMAR[] = _(
++    "It lures its prey close with hypnotic\n"
++    "motions, then wraps its tentacles\n"
++    "around it before finishing it off with\n"
++    "digestive fluids.");
++const u8 gRandomDexText_HELIOPTILE[] = _(
++    "The sun powers this Pokémon's\n"
++    "electricity generation. Interruption of\n"
++    "that process stresses Helioptile to the\n"
++    "point of weakness.");
++const u8 gRandomDexText_HELIOLISK[] = _(
++    "A now-vanished desert culture treasured\n"
++    "these Pokémon. Appropriately, when\n"
++    "Heliolisk came to the Galar region,\n"
++    "treasure came with them.");
++const u8 gRandomDexText_DEDENNE[] = _(
++    "A Dedenne's whiskers pick up electrical\n"
++    "waves other Dedenne send out. These\n"
++    "Pokémon share locations of food or\n"
++    "electricity with one another.");
++const u8 gRandomDexText_KLEFKI[] = _(
++    "Klefki sucks in metal ions with the\n"
++    "horn topping its head. It seems this\n"
++    "Pokémon loves keys so much that its\n"
++    "head needed to look like one, too.");
++const u8 gRandomDexText_XERNEAS[] = _(
++    "Legends say it can share eternal life.\n"
++    "It slept for a thousand years in the\n"
++    "form of a tree before its revival.");
++const u8 gRandomDexText_YVELTAL[] = _(
++    "When this legendary Pokémon's wings and\n"
++    "tail feathers spread wide and glow red,\n"
++    "it absorbs the life force of living\n"
++    "creatures.");
++const u8 gRandomDexText_ZYGARDE[] = _(
++    "This is Zygarde's form when it has\n"
++    "gathered 50% of its cells. It wipes out\n"
++    "all those who oppose it, showing not a\n"
++    "shred of mercy.");
++const u8 gRandomDexText_YUNGOOS[] = _(
++    "Its stomach takes up most of its long\n"
++    "torso. It's a big eater, so the amount\n"
++    "Trainers have to spend on its food is\n"
++    "no laughing matter.");
++const u8 gRandomDexText_GUMSHOOS[] = _(
++    "It adores having Rattata and Raticate\n"
++    "for dinner, but as it's diurnal, it\n"
++    "never encounters them. This Pokémon\n"
++    "boasts incredible patience.");
++const u8 gRandomDexText_ORICORIO[] = _(
++    "It wins the hearts of its enemies with\n"
++    "its passionate dancing and then uses\n"
++    "the opening it creates to burn them up\n"
++    "with blazing flames.");
++const u8 gRandomDexText_CUTIEFLY[] = _(
++    "Cutiefly can pick up the auras of\n"
++    "living things. It skillfully reads\n"
++    "those auras to predict its foes'\n"
++    "movements and make fools of them.");
++const u8 gRandomDexText_RIBOMBEE[] = _(
++    "It can predict the weather from\n"
++    "moisture levels and wind direction.\n"
++    "Ribombee only reveals itself when there\n"
++    "are a few clear days in a row.");
++const u8 gRandomDexText_WISHIWASHI[] = _(
++    "It's awfully weak and notably tasty, so\n"
++    "everyone is always out to get it. As it\n"
++    "happens, anyone trying to bully it\n"
++    "receives a painful lesson.");
++const u8 gRandomDexText_MORELULL[] = _(
++    "It scatters its shining spores around\n"
++    "itself. Even though they're dangerous,\n"
++    "nighttime tours of forests where\n"
++    "Morelull live are popular.");
++const u8 gRandomDexText_SHIINOTIC[] = _(
++    "Forests where Shiinotic live are\n"
++    "treacherous to enter at night. People\n"
++    "confused by its strange lights can\n"
++    "never find their way home again.");
++const u8 gRandomDexText_COMFEY[] = _(
++    "Comfey picks flowers with its vine and\n"
++    "decorates itself with them. For some\n"
++    "reason, flowers won't wither once\n"
++    "they're attached to a Comfey.");
++const u8 gRandomDexText_MINIOR[] = _(
++    "It lives in the ozone layer, where it\n"
++    "becomes food for stronger Pokémon. When\n"
++    "it tries to run away, it falls to the\n"
++    "ground.");
++const u8 gRandomDexText_KOMALA[] = _(
++    "It is born asleep, and it dies asleep.\n"
++    "All its movements are apparently no\n"
++    "more than the results of it tossing and\n"
++    "turning in its dreams.");
++const u8 gRandomDexText_BRUXISH[] = _(
++    "When it unleashes its psychic power\n"
++    "from the protuberance on its head, the\n"
++    "grating sound of grinding teeth echoes\n"
++    "through the area.");
++const u8 gRandomDexText_DRAMPA[] = _(
++    "This Pokémon is friendly to people and\n"
++    "loves children most of all. It comes\n"
++    "from deep in the mountains to play with\n"
++    "children it likes in town.");
++const u8 gRandomDexText_DHELMISE[] = _(
++    "The soul of seaweed adrift in the waves\n"
++    "became reborn as this Pokémon. It\n"
++    "maintains itself with new infusions of\n"
++    "seabed detritus and seaweed.");
++const u8 gRandomDexText_TAPU_KOKO[] = _(
++    "It confuses its enemies by flying too\n"
++    "quickly for the eye to follow. It has a\n"
++    "hair-trigger temper but forgets what\n"
++    "made it angry an instant later.");
++const u8 gRandomDexText_TAPU_LELE[] = _(
++    "Although called a guardian deity, Tapu\n"
++    "Lele is devoid of guilt about its cruel\n"
++    "disposition and can be described as\n"
++    "nature incarnate.");
++const u8 gRandomDexText_TAPU_BULU[] = _(
++    "The guardian deity of Ula'ula is a lazy\n"
++    "Pokémon. It commands plants to\n"
++    "immobilize its foes and then deals them\n"
++    "a savage blow with its horns.");
++const u8 gRandomDexText_TAPU_FINI[] = _(
++    "This guardian deity of Poni Island\n"
++    "manipulates water. Because it lives\n"
++    "deep within a thick fog, it came to be\n"
++    "both feared and revered.");
++const u8 gRandomDexText_COSMOG[] = _(
++    "In ages past, it was called the child\n"
++    "of the stars. It's said to be a Pokémon\n"
++    "from another world, but no specific\n"
++    "details are known.");
++const u8 gRandomDexText_COSMOEM[] = _(
++    "There's something accumulating around\n"
++    "the black core within its hard shell.\n"
++    "People think this Pokémon may come from\n"
++    "another world.");
++const u8 gRandomDexText_SOLGALEO[] = _(
++    "When light radiates from its body, this\n"
++    "Pokémon could almost appear to be the\n"
++    "sun. It will dispel any darkness and\n"
++    "light up the world.");
++const u8 gRandomDexText_BLACEPHALON[] = _(
++    "A UB that appeared from an Ultra\n"
++    "Wormhole, it causes explosions, then\n"
++    "takes advantage of opponents' surprise\n"
++    "to rob them of their vitality.");
++const u8 gRandomDexText_MELTAN[] = _(
++    "It melts particles of iron and other\n"
++    "metals found in the subsoil, so it can\n"
++    "absorb them into its body of molten\n"
++    "steel.");
++const u8 gRandomDexText_MELMETAL[] = _(
++    "Centrifugal force is behind the punches\n"
++    "of Melmetal's heavy hex-nut arms.\n"
++    "Melmetal is said to deliver the\n"
++    "strongest punches of all Pokémon.");
++const u8 gRandomDexText_MEGA_AMPHAROS[] = _(
++    "The light from its tail can be seen\n"
++    "from space. This is why you can always\n"
++    "tell exactly where it is, which is why\n"
++    "it usually keeps the light off.");
++const u8 gRandomDexText_MEGA_VENUSAUR[] = _(
++    "VENUSAUR's flower is said to take on\n"
++    "vivid colors if it gets plenty of\n"
++    "nutrition and sunlight. The flower's\n"
++    "aroma soothes the emotions of people.");
++const u8 gRandomDexText_MEGA_CHARIZARD_X[] = _(
++    "A CHARIZARD flies about in search of\n"
++    "strong opponents. It breathes intense\n"
++    "flames that can melt any material.\n"
++    "However, it will never torch a weaker");
++const u8 gRandomDexText_MEGA_CHARIZARD_Y[] = _(
++    "A CHARIZARD flies about in search of\n"
++    "strong opponents. It breathes intense\n"
++    "flames that can melt any material.\n"
++    "However, it will never torch a weaker");
++const u8 gRandomDexText_MEGA_MEWTWO_X[] = _(
++    "A Pokémon that was created by genetic\n"
++    "manipulation. However, even though the\n"
++    "scientific power of humans made its\n"
++    "body, they failed to give it a warm");
++const u8 gRandomDexText_MEGA_MEWTWO_Y[] = _(
++    "A Pokémon that was created by genetic\n"
++    "manipulation. However, even though the\n"
++    "scientific power of humans made its\n"
++    "body, they failed to give it a warm");
++const u8 gRandomDexText_MEGA_BLAZIKEN[] = _(
++    "It learns martial arts that use punches\n"
++    "and kicks. Every several years, its old\n"
++    "feathers burn off, and new, supple\n"
++    "feathers grow back in their place.");
++const u8 gRandomDexText_MEGA_MEDICHAM[] = _(
++    "Through crushingly harsh yoga training,\n"
++    "it gained the power to foretell its\n"
++    "foe's actions. It battles with elegant,\n"
++    "dance- like movement.");
++const u8 gRandomDexText_MEGA_HOUNDOOM[] = _(
++    "In a HOUNDOOM pack, the one with its\n"
++    "horns raked sharply back serves a\n"
++    "leadership role. They choose their\n"
++    "leader by fighting among themselves.");
++const u8 gRandomDexText_MEGA_AGGRON[] = _(
++    "Long ago, there was a king who wore a\n"
++    "helmet meant to resemble the head of an\n"
++    "Aggron. He was trying to channel the\n"
++    "Pokémon's strength.");
++const u8 gRandomDexText_MEGA_BANETTE[] = _(
++    "It's a stuffed toy that was thrown away\n"
++    "and became possessed, ever searching\n"
++    "for the one who threw it away so it can\n"
++    "exact its revenge.");
++const u8 gRandomDexText_MEGA_TYRANITAR[] = _(
++    "It wanders through the mountains\n"
++    "seeking opponents to fight. If it finds\n"
++    "an opponent that's not worthy,\n"
++    "Tyranitar ignores it and wanders on.");
++const u8 gRandomDexText_MEGA_SCIZOR[] = _(
++    "Once it has identified something as an\n"
++    "enemy, it will continue beating them\n"
++    "with its steel-hard pincers until\n"
++    "there's nothing left but scraps.");
++const u8 gRandomDexText_MEGA_PINSIR[] = _(
++    "Their pincers are strong enough to\n"
++    "shatter thick logs. Because they\n"
++    "dislike cold, PINSIR burrow and sleep\n"
++    "under the ground on chilly nights.");
++const u8 gRandomDexText_MEGA_AERODACTYL[] = _(
++    "This is a ferocious Pokémon from\n"
++    "ancient times. Apparently even modern\n"
++    "technology is incapable of producing a\n"
++    "perfectly restored specimen.");
++const u8 gRandomDexText_MEGA_LUCARIO[] = _(
++    "They can detect the species of a living\n"
++    "being- and its emotions-from over half\n"
++    "a mile away. They control auras and\n"
++    "hunt their prey in packs.");
++const u8 gRandomDexText_MEGA_ABOMASNOW[] = _(
++    "It lives a quiet life on mountains that\n"
++    "are perpetually covered in snow. It\n"
++    "hides itself by whipping up blizzards.");
++const u8 gRandomDexText_MEGA_BLASTOISE[] = _(
++    "The waterspouts that protrude from its\n"
++    "shell are highly accurate. Their\n"
++    "bullets of water can precisely nail tin\n"
++    "cans from a distance of over 160 feet.");
++const u8 gRandomDexText_MEGA_KANGASKHAN[] = _(
++    "Kangaskhan protects its child by\n"
++    "keeping it in its pouch. It has zero\n"
++    "forgiveness for those who harm its\n"
++    "child and will beat them down.");
++const u8 gRandomDexText_MEGA_GYARADOS[] = _(
++    "A tale is told of a town that angered\n"
++    "Gyarados. Before the sun rose the next\n"
++    "day, flames utterly consumed the town,\n"
++    "leaving not a trace behind.");
++const u8 gRandomDexText_MEGA_ABSOL[] = _(
++    "Long ago, superstitions were spread\n"
++    "about it, saying it brought disaster.\n"
++    "This fed a hatred of it, and it was\n"
++    "driven deep into the mountains.");
++const u8 gRandomDexText_MEGA_ALAKAZAM[] = _(
++    "It has an incredibly high level of\n"
++    "intelligence. Some say that Alakazam\n"
++    "remembers everything that ever happens\n"
++    "to it, from birth till death.");
++const u8 gRandomDexText_MEGA_HERACROSS[] = _(
++    "Heracross loves sweet sap and will go\n"
++    "looking through forests for it. The\n"
++    "Pokémon uses its two antennae to pick\n"
++    "up scents as it searches.");
++const u8 gRandomDexText_MEGA_MAWILE[] = _(
++    "A cunning and terrifying Pokémon, its\n"
++    "cuteness makes opponents let down their\n"
++    "guard-and then it swallows them whole\n"
++    "with its huge jaws.");
++const u8 gRandomDexText_MEGA_MANECTRIC[] = _(
++    "Because lightning falls in their\n"
++    "vicinities, MANECTRIC were thought to\n"
++    "have been born from lightning. In\n"
++    "battle, they create thunderclouds.");
++const u8 gRandomDexText_MEGA_GARCHOMP[] = _(
++    "Garchomp is fast both underground and\n"
++    "above. It can bring down prey and\n"
++    "return to its den before its body has\n"
++    "chilled from being outside.");
++const u8 gRandomDexText_MEGA_LATIOS[] = _(
++    "Latios has the ability to make others\n"
++    "see an image of what it has seen or\n"
++    "imagines in its head. This Pokémon is\n"
++    "intelligent and understands human");
++const u8 gRandomDexText_MEGA_LATIAS[] = _(
++    "They make a small herd of only several\n"
++    "members. They rarely make contact with\n"
++    "people or other Pokémon. They disappear\n"
++    "if they sense enemies.");
++const u8 gRandomDexText_MEGA_SWAMPERT[] = _(
++    "If it senses the approach of a storm\n"
++    "and a tidal wave, it protects its\n"
++    "seaside nest by piling up boulders. It\n"
++    "swims as fast as a jet ski.");
++const u8 gRandomDexText_MEGA_SCEPTILE[] = _(
++    "In the jungle, its power is without\n"
++    "equal. This Pokémon carefully grows\n"
++    "trees and plants. It regulates its body\n"
++    "temperature by basking in sunlight.");
++const u8 gRandomDexText_MEGA_SABLEYE[] = _(
++    "It digs branching holes in caves using\n"
++    "its sharp claws in search of food--raw\n"
++    "gems. A SABLEYE lurks in darkness and\n"
++    "is seen only rarely.");
++const u8 gRandomDexText_MEGA_ALTARIA[] = _(
++    "This Pokémon has a kind disposition,\n"
++    "but if it's provoked, it will threaten\n"
++    "opponents with shrill cries before\n"
++    "attacking them without mercy.");
++const u8 gRandomDexText_MEGA_GALLADE[] = _(
++    "The blades extending from its elbows\n"
++    "are sharper than the finest swords. Its\n"
++    "swordsmanship, albeit self-taught, is\n"
++    "astonishingly impressive.");
++const u8 gRandomDexText_MEGA_AUDINO[] = _(
++    "This Pokémon has a kind heart. By\n"
++    "touching with its feelers, Audino can\n"
++    "gauge other creatures' feelings and\n"
++    "physical conditions.");
++const u8 gRandomDexText_MEGA_SHARPEDO[] = _(
++    "The vicious and sly gangster of the\n"
++    "sea. Its skin is specially textured to\n"
++    "minimize drag in water. Its speed tops\n"
++    "out at over 75 miles per hour.");
++const u8 gRandomDexText_MEGA_SLOWBRO[] = _(
++    "Slowpoke became Slowbro when a Shellder\n"
++    "bit on to its tail. Sweet flavors\n"
++    "seeping from the tail make the Shellder\n"
++    "feel as if its life is a dream.");
++const u8 gRandomDexText_MEGA_STEELIX[] = _(
++    "This Pokémon evolved through use of a\n"
++    "strange item. Its body is coated with\n"
++    "steel powder and notably hard-not even\n"
++    "diamond can leave so much as a scratch.");
++const u8 gRandomDexText_MEGA_PIDGEOT[] = _(
++    "This Pokémon has gorgeous, glossy\n"
++    "feathers. Many TRAINERS are so\n"
++    "captivated by the beautiful feathers on\n"
++    "its head that they choose PIDGEOT as");
++const u8 gRandomDexText_MEGA_GLALIE[] = _(
++    "A GLALIE has the power to\n"
++    "instantaneously freeze moisture in the\n"
++    "atmosphere. A dazzling cloud of\n"
++    "diamondlike ice crystals forms around");
++const u8 gRandomDexText_MEGA_DIANCIE[] = _(
++    "A sudden transformation of Carbink, its\n"
++    "pink, glimmering body is said to be the\n"
++    "loveliest sight in the whole world.");
++const u8 gRandomDexText_MEGA_METAGROSS[] = _(
++    "It boasts not only psychic powers but\n"
++    "also fantastic strength. It grabs its\n"
++    "prey with its four legs and holds them\n"
++    "in place with its claws.");
++const u8 gRandomDexText_MEGA_RAYQUAZA[] = _(
++    "Rayquaza is said to have lived for\n"
++    "hundreds of millions of years. Legends\n"
++    "remain of how it put to rest the clash\n"
++    "between Kyogre and Groudon.");
++const u8 gRandomDexText_MEGA_CAMERUPT[] = _(
++    "A Pokémon that lives in the crater of a\n"
++    "volcano. Every 10 years, the volcanoes\n"
++    "on its back erupt violently. Research\n"
++    "is under way on the cause of eruption.");
++const u8 gRandomDexText_MEGA_LOPUNNY[] = _(
++    "Once hot seasons are over, Lopunny's\n"
++    "coat will be replaced with fur that\n"
++    "holds a lot of insulating air in\n"
++    "preparation for colder weather.");
++const u8 gRandomDexText_MEGA_SALAMENCE[] = _(
++    "It flies around on its wings, which\n"
++    "have grown in at last. In its\n"
++    "happiness, it gushes hot flames,\n"
++    "burning up the fields it passes over.");
++const u8 gRandomDexText_MEGA_BEEDRILL[] = _(
++    "A BEEDRILL is extremely territorial.\n"
++    "For safety reasons, no one should ever\n"
++    "approach its nest. If angered, they\n"
++    "will attack in a swarm.");
++const u8 gRandomDexText_MEGA_GENGAR[] = _(
++    "It apparently wishes for a traveling\n"
++    "companion. Since it was once human\n"
++    "itself, it tries to create one by\n"
++    "taking the lives of other humans.");
++const u8 gRandomDexText_MEGA_GARDEVOIR[] = _(
++    "It apparently does not feel the pull of\n"
++    "gravity because it supports itself with\n"
++    "psychic power. It will give its life to\n"
++    "protect its TRAINER.");
++const u8 gRandomDexText_BURMY_SANDY[] = _(
++    "If its cloak is even slightly damaged,\n"
++    "Burmy will immediately repair it with\n"
++    "whatever is close at hand. The Pokémon\n"
++    "within the cloak is scrawny and");
++const u8 gRandomDexText_BURMY_TRASH[] = _(
++    "If its cloak is even slightly damaged,\n"
++    "Burmy will immediately repair it with\n"
++    "whatever is close at hand. The Pokémon\n"
++    "within the cloak is scrawny and");
++const u8 gRandomDexText_WORMADAM_SANDY[] = _(
++    "Its appearance changes depending on\n"
++    "where it evolved. The materials on hand\n"
++    "become a part of its body.");
++const u8 gRandomDexText_WORMADAM_TRASH[] = _(
++    "Its appearance changes depending on\n"
++    "where it evolved. The materials on hand\n"
++    "become a part of its body.");
++const u8 gRandomDexText_ROTOM_HEAT[] = _(
++    "This bizarre Pokémon appears to be a\n"
++    "will-o'-the-wisp powered by\n"
++    "electricity. Be wary, as Rotom is both\n"
++    "smart and mischievous.");
++const u8 gRandomDexText_ROTOM_WASH[] = _(
++    "This bizarre Pokémon appears to be a\n"
++    "will-o'-the-wisp powered by\n"
++    "electricity. Be wary, as Rotom is both\n"
++    "smart and mischievous.");
++const u8 gRandomDexText_ROTOM_FROST[] = _(
++    "This bizarre Pokémon appears to be a\n"
++    "will-o'-the-wisp powered by\n"
++    "electricity. Be wary, as Rotom is both\n"
++    "smart and mischievous.");
++const u8 gRandomDexText_ROTOM_FAN[] = _(
++    "This bizarre Pokémon appears to be a\n"
++    "will-o'-the-wisp powered by\n"
++    "electricity. Be wary, as Rotom is both\n"
++    "smart and mischievous.");
++const u8 gRandomDexText_ROTOM_MOW[] = _(
++    "This bizarre Pokémon appears to be a\n"
++    "will-o'-the-wisp powered by\n"
++    "electricity. Be wary, as Rotom is both\n"
++    "smart and mischievous.");
++const u8 gRandomDexText_KYUREM_BLACK[] = _(
++    "It appears that this Pokémon uses its\n"
++    "powers over ice to freeze its own body\n"
++    "in order to stabilize its cellular\n"
++    "structure.");
++const u8 gRandomDexText_KYUREM_WHITE[] = _(
++    "It appears that this Pokémon uses its\n"
++    "powers over ice to freeze its own body\n"
++    "in order to stabilize its cellular\n"
++    "structure.");
++const u8 gRandomDexText_MEOWSTIC_F[] = _(
++    "The defensive instinct of the males is\n"
++    "strong. It's when they're protecting\n"
++    "themselves or their partners that they\n"
++    "unleash their full power.");
++const u8 gRandomDexText_ALOLAN_RATTATA[] = _(
++    "Its incisors grow continuously\n"
++    "throughout its life. If its incisors\n"
++    "get too long, this Pokémon becomes\n"
++    "unable to eat, and it starves to death.");
++const u8 gRandomDexText_ALOLAN_RATICATE[] = _(
++    "A RATICATE's sturdy fangs grow\n"
++    "steadily. To keep them ground down, it\n"
++    "gnaws on rocks and logs. It may even\n"
++    "chew on the walls of houses.");
++const u8 gRandomDexText_ALOLAN_RAICHU[] = _(
++    "As electricity builds up inside its\n"
++    "body, it becomes more aggressive. One\n"
++    "theory is that the electricity buildup\n"
++    "is actually causing stress.");
++const u8 gRandomDexText_ALOLAN_SANDSHREW[] = _(
++    "When its skin gets wrinkled from\n"
++    "moisture, it heads for a volcano. It\n"
++    "lies flat on a spot with a lot of\n"
++    "geothermal heat and dries itself out.");
++const u8 gRandomDexText_ALOLAN_SANDSLASH[] = _(
++    "Thanks to its thick claws, it's good at\n"
++    "climbing trees. There are plenty of\n"
++    "Sandslash that park themselves in trees\n"
++    "and go right to sleep.");
++const u8 gRandomDexText_ALOLAN_VULPIX[] = _(
++    "Its beautiful tails have made it very\n"
++    "popular. However, if it's not brushed\n"
++    "diligently, it will be a mass of\n"
++    "tangles before you know it.");
++const u8 gRandomDexText_ALOLAN_NINETALES[] = _(
++    "It is vindictive and relentless by\n"
++    "nature. Those who cross it even once\n"
++    "will be cursed for a thousand years,\n"
++    "along with their descendants.");
++const u8 gRandomDexText_ALOLAN_DIGLETT[] = _(
++    "DIGLETT are raised in most farms. The\n"
++    "reason is simple--wherever they burrow,\n"
++    "the soil is left perfectly tilled for\n"
++    "growing delicious crops.");
++const u8 gRandomDexText_ALOLAN_DUGTRIO[] = _(
++    "Because the triplets originally split\n"
++    "from one body, they think exactly\n"
++    "alike. They work cooperatively to\n"
++    "burrow endlessly through the ground.");
++const u8 gRandomDexText_ALOLAN_MEOWTH[] = _(
++    "It loves coins, so if you give it one,\n"
++    "you can make friends with Meowth\n"
++    "easily. But it's fickle, so you can't\n"
++    "count on that friendship lasting.");
++const u8 gRandomDexText_ALOLAN_PERSIAN[] = _(
++    "It has a high opinion of itself,\n"
++    "although not to the same extent as the\n"
++    "Alolan Persian. It's quite difficult to\n"
++    "make friends with this Pokémon.");
++const u8 gRandomDexText_ALOLAN_GEODUDE[] = _(
++    "There are plenty of them to be found\n"
++    "along any road. A scholar with too much\n"
++    "free time once counted a hundred of\n"
++    "them along a single route.");
++const u8 gRandomDexText_ALOLAN_GRAVELER[] = _(
++    "It climbs up cliffs as it heads toward\n"
++    "the peak of a mountain. As soon as it\n"
++    "reaches the summit, it rolls back down\n"
++    "the way it came.");
++const u8 gRandomDexText_ALOLAN_GOLEM[] = _(
++    "Once a year, this Pokémon molts, and\n"
++    "its shed shell returns to the soil.\n"
++    "This process creates enriched soil, so\n"
++    "farmers collect the shells.");
++const u8 gRandomDexText_ALOLAN_GRIMER[] = _(
++    "The wastewater coming from factories is\n"
++    "clean these days, so Grimer have\n"
++    "nothing to eat. They're said to be on\n"
++    "the verge of extinction.");
++const u8 gRandomDexText_ALOLAN_MUK[] = _(
++    "It prefers warm and humid habitats. In\n"
++    "the summertime, the toxic substances in\n"
++    "its body intensify, making MUK reek\n"
++    "like putrid kitchen garbage.");
++const u8 gRandomDexText_ALOLAN_EXEGGUTOR[] = _(
++    "Each of its three heads has its own\n"
++    "thoughts. When they want to go in\n"
++    "different directions, Exeggutor becomes\n"
++    "unable to move.");
++const u8 gRandomDexText_ALOLAN_MAROWAK[] = _(
++    "Originally, it was weak and timid.\n"
++    "After evolution, its temperament\n"
++    "becomes violent, and it begins to wield\n"
++    "bones as weapons.");
++const u8 gRandomDexText_PRIMAL_KYOGRE[] = _(
++    "Through Primal Reversion and with\n"
++    "nature's full power, it will take back\n"
++    "its true form. It can summon storms\n"
++    "that cause the sea levels to rise.");
++const u8 gRandomDexText_PRIMAL_GROUDON[] = _(
++    "GROUDON has appeared in mythology as\n"
++    "the creator of the land. It sleeps in\n"
++    "magma underground and is said to make\n"
++    "volcanoes erupt on awakening.");
++const u8 gRandomDexText_SHAYMIN_SKY[] = _(
++    "The blooming of Gracidea flowers\n"
++    "confers the power of flight upon it.\n"
++    "Feelings of gratitude are the message\n"
++    "it delivers.");
++const u8 gRandomDexText_GIRATINA_ORIGIN[] = _(
++    "There is one Hisuian verse that tells\n"
++    "of a powerful light creating a deep\n"
++    "shadow. I imagine that this deep shadow\n"
++    "is Giratina.");
++const u8 gRandomDexText_DARMANITAN_ZEN[] = _(
++    "Its internal fire burns at 2,500\n"
++    "degrees Fahrenheit, making enough power\n"
++    "that it can destroy a dump truck with\n"
++    "one punch.");
++const u8 gRandomDexText_TORNADUS_THERIAN[] = _(
++    "This storm-stirring Pokémon is said to\n"
++    "cause the seasons to turn by whipping\n"
++    "up the air. I suspect its humanlike\n"
++    "form to be a false one.");
++const u8 gRandomDexText_THUNDURUS_THERIAN[] = _(
++    "The spikes on its tail discharge\n"
++    "immense bolts of lightning. It flies\n"
++    "around the Unova region firing off\n"
++    "lightning bolts.");
++const u8 gRandomDexText_LANDORUS_THERIAN[] = _(
++    "From the forces of lightning and wind,\n"
++    "it creates energy to give nutrients to\n"
++    "the soil and make the land abundant.");
++const u8 gRandomDexText_MELOETTA_PIROUETTE[] = _(
++    "Its melodies are sung with a special\n"
++    "vocalization method that can control\n"
++    "the feelings of those who hear it.");
++const u8 gRandomDexText_AEGISLASH_BLADE[] = _(
++    "Its potent spectral powers allow it to\n"
++    "manipulate others. It once used its\n"
++    "powers to force people and Pokémon to\n"
++    "build a kingdom to its liking.");
++const u8 gRandomDexText_HOOPA_UNBOUND[] = _(
++    "It is said to be able to seize anything\n"
++    "it desires with its six rings and six\n"
++    "huge arms. With its power sealed, it is\n"
++    "transformed into a much smaller form.");
++const u8 gRandomDexText_MINIOR_CORE[] = _(
++    "It lives in the ozone layer, where it\n"
++    "becomes food for stronger Pokémon. When\n"
++    "it tries to run away, it falls to the\n"
++    "ground.");
++const u8 gRandomDexText_ZYGARDE_10[] = _(
++    "This is Zygarde's form when it has\n"
++    "gathered 50% of its cells. It wipes out\n"
++    "all those who oppose it, showing not a\n"
++    "shred of mercy.");
++const u8 gRandomDexText_ZYGARDE_COMPLETE[] = _(
++    "This is Zygarde's form when it has\n"
++    "gathered 50% of its cells. It wipes out\n"
++    "all those who oppose it, showing not a\n"
++    "shred of mercy.");
 diff --git a/src/field_control_avatar.c b/src/field_control_avatar.c
 index e10da64e1..bd8c3b37f 100644
 --- a/src/field_control_avatar.c
@@ -53,10 +3759,18 @@ index e10da64e1..bd8c3b37f 100644
      GetPlayerPosition(&position);
      metatileBehavior = MapGridGetMetatileBehaviorAt(position.x, position.y);
 diff --git a/src/pokedex.c b/src/pokedex.c
-index 8990bb2d0..57a155594 100644
+index 8990bb2d0..ca4586c2a 100644
 --- a/src/pokedex.c
 +++ b/src/pokedex.c
-@@ -4032,6 +4032,11 @@ static void PrintMonInfo(u32 num, u32 value, u32 owned, u32 newEntry)
+@@ -843,6 +843,7 @@ static const u8 sText_TenDashes[] = _("----------");
+ ALIGNED(4) static const u8 gExpandedPlaceholder_PokedexDescription[] = _("");
+ 
+ #include "data/pokemon/pokedex_text.h"
++#include "data/pokemon/pokedex_text_random.h"
+ #include "data/pokemon/pokedex_entries.h"
+ 
+ static const u16 sSizeScreenSilhouette_Pal[] = INCBIN_U16("graphics/pokedex/size_silhouette.gbapal");
+@@ -4032,6 +4033,11 @@ static void PrintMonInfo(u32 num, u32 value, u32 owned, u32 newEntry)
          description = gPokedexEntries[num].description;
      else
          description = gExpandedPlaceholder_PokedexDescription;
@@ -68,6 +3782,18 @@ index 8990bb2d0..57a155594 100644
      PrintInfoScreenText(description, GetStringCenterAlignXOffset(1, description, 0xF0), 0x5F);
  }
  
+diff --git a/src/pokemon.c b/src/pokemon.c
+index ed8d691b2..08c0ce96e 100644
+--- a/src/pokemon.c
++++ b/src/pokemon.c
+@@ -1010,6 +1010,7 @@ const u16 gSpeciesToNationalPokedexNum[NUM_SPECIES] = // Assigns all species to
+     SPECIES_TO_NATIONAL(DEOXYS_ATTACK),
+     SPECIES_TO_NATIONAL(DEOXYS_DEFENSE),
+     SPECIES_TO_NATIONAL(DEOXYS_SPEED),
++#include "data/pokemon/pokedex_natdex_random.h"
+ };
+ 
+ const u16 gHoennToNationalOrder[HOENN_DEX_COUNT] = // Assigns Hoenn Dex Pokémon (Using National Dex Index)
 diff --git a/src/starter_choose.c b/src/starter_choose.c
 index bd907c66b..dfb746dcc 100644
 --- a/src/starter_choose.c
