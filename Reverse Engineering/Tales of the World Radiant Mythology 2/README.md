@@ -5,12 +5,14 @@ Graphics-only patch that runs **on top of the fan-translated build `RM2_EN_iter3
 English; this patch translates the Japanese text that was baked into images.
 
 ## Apply
-Patch: `RM2_images_EN.xdelta` (xdelta3/VCDIFF)
+**Use `RM2_EN_full.xdelta`** (images + script fixes). `RM2_images_EN.xdelta` is the older images-only patch.
+Both apply to the same input.
 
 | | MD5 |
 |---|---|
 | Input `RM2_EN_iter3_31_08.iso` | `8215d5acf24c6afb79783b1ffaa63abc` |
-| Output (patched) | `897856ba6a9fcaaf11d1893f94a27682` |
+| Output of `RM2_EN_full.xdelta` | `197090942cb3fb5c8dc2d80b4d2e1ed7` |
+| Output of `RM2_images_EN.xdelta` | `897856ba6a9fcaaf11d1893f94a27682` |
 
 - Phone/browser: open Rom Patcher JS (marcrobledo.com/RomPatcher.js), pick the ISO + the .xdelta.
 - PC: `xdelta3 -d -s RM2_EN_iter3_31_08.iso RM2_images_EN.xdelta RM2_EN_images.iso`
@@ -25,6 +27,19 @@ Patch: `RM2_images_EN.xdelta` (xdelta3/VCDIFF)
 | Ending logo | katakana title reading | erased |
 | "Golden Victory" banner (5 skit archives) + mercenary card | テイルズ オブ ゴールデンビクトリー | TALES OF GOLDEN VICTORY |
 | Hex puzzle "How to Play" pages ×2 (both copies) | Japanese instructions | English instructions |
+
+## Script fixes (in `RM2_EN_full.xdelta`)
+Targeted defect fixes only, applied to 1,013 string slots across 484 skit/NPC archives:
+- **Player-name placeholder:** the Japanese uses ○○ for the player's name; 206 English lines kept a
+  literal `??`, which the game prints as-is. 89 lines where `??` only addressed the player
+  (`"Thank you, ??."`, `"??, are you okay?"`) were rewritten without it. ~84 lines that use the name
+  mid-sentence still contain `??` and need a human rewrite (`tools/fixes.py` lists the rules).
+- **Stray tildes:** single Japanese-style `~` in normal speech converted to English punctuation
+  (singing/drawl lines with several tildes left alone).
+- **Overflowing lines:** 244 boxes with lines over 44 characters re-wrapped to 42 without adding lines.
+
+A full English style pass is not done. To do one: `tools/script_tsv.py export GAME.iso lines.tsv`,
+edit the text column, then `tools/script_tsv.py import GAME.iso lines.tsv`.
 
 ## Not changed (known)
 - Videos: `ev3003.pmf` has a "一ヶ月後" (One Month Later) card and `title.pmf` shows the katakana
